@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+Type=Application
+Categories=Science;GTK;
+Encoding=UTF-8
+Name=wxChaos
+GenericName=Desktop fractal generator
+Comment=An open source fractal generator.
+Exec=/opt/extras.ubuntu.com/wxChaos/wxchaos
+Icon=/opt/extras.ubuntu.com/wxChaos/wxChaos.png
+Terminal=false
+Name[es_MX]=wxChaos

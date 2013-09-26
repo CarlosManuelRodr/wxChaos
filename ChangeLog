@@ -1,0 +1,23 @@
+wxChaos Changelog
+------------------
+
+- Version 1.1.0
+	- Linux: Modified the installing directories according to the Ubuntu store guidelines.
+
+- Version 1.0.3
+	- Switched to the double precision model on the scripting language.
+	- Script fractals now plot on "x" and "y" instead of "real" and "imaginary".
+	- Added cut billiard fractal.
+	- Fixed a linking problem on Ubuntu 13.04
+
+- Version 1.0.2
+	- Fixed a bug on the WASD navigation.
+
+- Version 1.0.1
+	- Added support for unicode build.
+	- Parser now reports errors.
+	- Fixed bug that made Julia Mode crash.
+	- "AddLine" command added.
+	- Fixed Show Orbit bug that made some lines to be rendered incorrectly.
+	- Various bugfixes.
+	- Linux support.

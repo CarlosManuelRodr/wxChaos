@@ -1,0 +1,16 @@
+Source: wxchaos
+Maintainer: Carlos Manuel Rodriguez Martinez <fis.carlosmanuel@gmail.com>
+Section: science
+Priority: optional
+Build-Depends: debhelper (>= 8), libwxgtk2.8-dev, libglu1-mesa-dev, libsfml-dev, libgtk2.0-dev
+Standards-Version: 3.9.2
+
+Package: wxchaos
+Architecture: any
+Section: science
+Priority: optional
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: An open source fractal generator.
+ wxChaos has a lot of fractals preimplemented with different algorithms 
+ so you can easily create beautiful fractals. You can also implement your 
+ own fractals using user formulas or an scripting language.
