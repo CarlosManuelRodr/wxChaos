@@ -9,11 +9,23 @@ Features
 * User formulas.
 * Create any types of fractals through an scripting language.
 
-
-Install
+Download
 ========
-On Linux you can build it yourself or use the following Ubuntu PPA: "ppa:fis-carlosmanuel/wxchaos".
-The installer for Windows can be found at: "http://sourceforge.net/projects/grufifractalgen/"
+* [Windows Installer](https://github.com/cmrm/wxChaos/releases/download/v1.0.3/wxChaos-1.0.3.exe)
+
+Screenshot
+==========
+![Screenshot](images/screenshot.png?raw=true "Screenshot")
+
+
+Showcase
+========
+Examples of images generated with wxChaos.
+
+![Example1](images/example1.jpg?raw=true "Example 1")
+![Example2](images/example2.jpg?raw=true "Example 2")
+![Example3](images/example3.jpg?raw=true "Example 3")
+![Example4](images/example4.jpg?raw=true "Example 4")
 
 Build Instructions
 ========
@@ -21,14 +33,12 @@ Build Instructions
 Linux
 --------
 
-To build you'll need the following packages:
+To build you'll need the following libraries:
 
-- libwxgtk2.8-dev
-- libglu1-mesa-dev
-- libsfml-dev
-- libgtk2.0-dev
+* [wxGtk](https://www.wxwidgets.org/)
+* [SFML](http://www.sfml-dev.org/) (Version 1.6)
 
-On Debian based distros: "sudo apt-get install libwxgtk2.8-dev libglu1-mesa-dev libsfml-dev libgtk2.0-dev"
+On Debian based distros: "sudo apt-get install libwxgtk2.8-dev  libsfml-dev"
 
 To install use make && make install.
 If you want to use the app without installing it you can build the no_setup version with "make no_setup".
@@ -40,6 +50,10 @@ You'll need to have installed WxWidgets on your system first.
 If you want to make the setup version use the Unicode Setup build and use the NSIS script provided.
 
 To compile use the MSVC++ project file.
+
+Warning
+=======
+This project was developed when I was still learning to code. The code is messy, ugly and uses outdated libraries. Please consider using another well mantained fractal program.
 
 Copyright
 ========
