@@ -24,11 +24,8 @@ wxSFMLCanvas::wxSFMLCanvas( wxWindow* Parent, wxWindowID Id, const wxPoint& Posi
         GdkWindow* Win = GTK_PIZZA( m_wxwindow )->bin_window;
         XFlush( GDK_WINDOW_XDISPLAY( Win ) );
         sf::RenderWindow::Create( GDK_WINDOW_XWINDOW( Win ) );
-
     #else
-
         sf::RenderWindow::Create( GetHandle() );
-
     #endif
 }
 wxSFMLCanvas::~wxSFMLCanvas()

@@ -245,9 +245,6 @@
     <ClCompile Include="wxSFMLCanvas.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="wxChaos.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="angelscript\src\as_callfunc_arm_gcc.S" />
     <None Include="angelscript\src\as_callfunc_arm_msvc.asm" />
     <None Include="angelscript\src\as_callfunc_arm_xcode.S" />
@@ -264,35 +261,41 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup English|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup Spanish|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -325,8 +328,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\wxWidgets-2.8.12\include;C:\wxWidgets-2.8.12\lib\vc_lib\mswud;C:\wxWidgets-2.8.12\contrib\include;..\libs\MPIR;..\libs\SFML\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\wxWidgets-2.8.12\lib\vc_lib;C:\wxWidgets-2.8.12\contrib\lib;..\libs\MPIR;..\libs\SFML\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\wxMSW-2.8.12\include;$(SolutionDir)libs\wxMSW-2.8.12\lib\vc_lib\mswud;$(SolutionDir)libs\wxMSW-2.8.12\contrib\include;$(SolutionDir)libs\SFML_1.6\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\wxMSW-2.8.12\lib\vc_lib;$(SolutionDir)libs\wxMSW-2.8.12\contrib\lib;$(SolutionDir)libs\SFML_1.6\lib\vc2008;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
     <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -339,8 +342,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\wxWidgets-2.8.12\include;C:\wxWidgets-2.8.12\lib\vc_lib\mswu;C:\wxWidgets-2.8.12\contrib\include;..\libs\MPIR;..\libs\SFML\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\wxWidgets-2.8.12\lib\vc_lib;..\libs\MPIR;..\libs\SFML\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\wxMSW-2.8.12\include;$(SolutionDir)libs\wxMSW-2.8.12\lib\vc_lib\msw;$(SolutionDir)libs\wxMSW-2.8.12\contrib\include;$(SolutionDir)libs\SFML_1.6\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\wxMSW-2.8.12\lib\vc_lib;$(SolutionDir)libs\wxMSW-2.8.12\contrib\lib;$(SolutionDir)libs\SFML_1.6\lib\vc2008;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
     <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
   </PropertyGroup>

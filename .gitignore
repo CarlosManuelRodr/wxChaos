@@ -1,0 +1,96 @@
+# Mathematica output
+/ProcessedDataset/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows executable
+*.exe
+*.lib
+*.dll
+*.obj
+
+# Unix executable
+*.so
+*.a
+*.o
+*.so.*
+
+# Windows shortcuts
+*.lnk
+
+# =========================
+# Operating System Files
+# =========================
+
+# OSX
+# =========================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# VS User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.ilk
+*.pdb
+*.iobj
+*.ipdb
+*.lib
+*.tlog
+*.idb
+
+
+# Other
+*.dat
+*.user
+*.sdf
+*.log
+*.aux
+*.synctex.gz
+**/.vs/
+**/x64/
+**/obj/
+**/Debug/
+**/AS_DEBUG/
+**/.idea/
+**/Temp/vc2008/
+**/lib/vc_lib/msw
+**/lib/vc_lib/mswd
+**/lib/vc_lib/mswu
+**/lib/vc_lib/mswud
+**/build/msw/vc_msw
+**/build/msw/vc_mswd
+**/build/msw/vc_mswu
+**/build/msw/vc_mswud

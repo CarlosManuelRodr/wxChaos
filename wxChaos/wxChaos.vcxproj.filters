@@ -682,11 +682,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="wxChaos.rc">
-      <Filter>Archivos de recursos</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="angelscript\src\as_callfunc_arm_gcc.S">
       <Filter>angelscript\src</Filter>
     </None>

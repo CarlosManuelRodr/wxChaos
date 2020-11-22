@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="stb_vorbis">
+      <UniqueIdentifier>{7bd97106-b285-4d6a-9d4e-e3cd3de29f06}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\SFML\Audio\stb_vorbis\stb_vorbis.c">
+      <Filter>stb_vorbis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\SFML\Audio\AudioDevice.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\AudioResource.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\Listener.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\Music.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\Sound.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\SoundBuffer.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\SoundBufferRecorder.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\SoundFile.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\SoundFileDefault.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\SoundFileOgg.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\SoundRecorder.cpp" />
+    <ClCompile Include="..\..\src\SFML\Audio\SoundStream.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\SFML\Audio\stb_vorbis\stb_vorbis.h">
+      <Filter>stb_vorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\SFML\Audio\AudioDevice.hpp" />
+    <ClInclude Include="..\..\include\SFML\Audio\AudioResource.hpp" />
+    <ClInclude Include="..\..\include\SFML\Audio\Listener.hpp" />
+    <ClInclude Include="..\..\include\SFML\Audio\Music.hpp" />
+    <ClInclude Include="..\..\src\SFML\Audio\OpenAL.hpp" />
+    <ClInclude Include="..\..\include\SFML\Audio\Sound.hpp" />
+    <ClInclude Include="..\..\include\SFML\Audio\SoundBuffer.hpp" />
+    <ClInclude Include="..\..\include\SFML\Audio\SoundBufferRecorder.hpp" />
+    <ClInclude Include="..\..\src\SFML\Audio\SoundFile.hpp" />
+    <ClInclude Include="..\..\src\SFML\Audio\SoundFileDefault.hpp" />
+    <ClInclude Include="..\..\src\SFML\Audio\SoundFileOgg.hpp" />
+    <ClInclude Include="..\..\include\SFML\Audio\SoundRecorder.hpp" />
+    <ClInclude Include="..\..\include\SFML\Audio\SoundStream.hpp" />
+  </ItemGroup>
+</Project>

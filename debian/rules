@@ -1,5 +1,0 @@
-#!/usr/bin/make -f
-# -*- makefile -*-
-override_dh_usrlocal:
-%:
-	dh $@ 
