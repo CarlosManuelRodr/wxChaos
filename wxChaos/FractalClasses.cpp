@@ -25,7 +25,8 @@ int Get_Cores()
     SYSTEM_INFO sysinfo;
     GetSystemInfo(&sysinfo);
 
-    return sysinfo.dwNumberOfProcessors;
+    //return sysinfo.dwNumberOfProcessors;
+    return 2;
 #endif
 
 #ifdef linux

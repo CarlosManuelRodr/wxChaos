@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="wxMathPlot">
-      <UniqueIdentifier>{7d935f18-5611-4c30-84fe-c0583c774a88}</UniqueIdentifier>
-    </Filter>
     <Filter Include="muParserX">
       <UniqueIdentifier>{13b793e5-2db7-4fcb-ab98-18e17626cef3}</UniqueIdentifier>
     </Filter>
@@ -58,12 +55,6 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="ConstDialog.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="DimensionFrame.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="DPExplorer.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="FormulaDialog.h">
@@ -119,6 +110,123 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript.h">
+      <Filter>angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_array.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_atomic.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_builder.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_bytecode.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_callfunc.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_compiler.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_config.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_configgroup.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_context.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_criticalsection.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_datatype.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_debug.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_gc.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_generic.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_map.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_memory.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_module.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_objecttype.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_outputbuffer.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_parser.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_property.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_restore.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_scriptcode.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_scriptengine.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_scriptfunction.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_scriptnode.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_scriptobject.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_string.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_string_util.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_symboltable.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_texts.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_thread.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_tokendef.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_tokenizer.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_typeinfo.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\src\as_variablescope.h">
+      <Filter>angelscript\src</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\add_on\scriptarray\scriptarray.h">
+      <Filter>angelscript\add_on\scriptarray</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\add_on\scriptstdstring\scriptstdstring.h">
+      <Filter>angelscript\add_on\scriptstdstring</Filter>
     </ClInclude>
     <ClInclude Include="muParserX\mpDefines.h">
       <Filter>muParserX</Filter>
@@ -252,126 +360,6 @@
     <ClInclude Include="muParserX\utGeneric.h">
       <Filter>muParserX</Filter>
     </ClInclude>
-    <ClInclude Include="wxMathPlot\mathplot.h">
-      <Filter>wxMathPlot</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\angelscript.h">
-      <Filter>angelscript</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_array.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_atomic.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_builder.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_bytecode.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_callfunc.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_compiler.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_config.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_configgroup.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_context.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_criticalsection.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_datatype.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_debug.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_gc.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_generic.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_map.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_memory.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_module.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_objecttype.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_outputbuffer.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_parser.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_property.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_restore.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_scriptcode.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_scriptengine.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_scriptfunction.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_scriptnode.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_scriptobject.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_string.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_string_util.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_symboltable.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_texts.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_thread.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_tokendef.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_tokenizer.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_typeinfo.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\src\as_variablescope.h">
-      <Filter>angelscript\src</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\add_on\scriptarray\scriptarray.h">
-      <Filter>angelscript\add_on\scriptarray</Filter>
-    </ClInclude>
-    <ClInclude Include="angelscript\add_on\scriptstdstring\scriptstdstring.h">
-      <Filter>angelscript\add_on\scriptstdstring</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="About.cpp">
@@ -396,12 +384,6 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="ConstDialog.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
-    <ClCompile Include="DimensionFrame.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
-    <ClCompile Include="DPExplorer.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="FormulaDialog.cpp">
@@ -448,114 +430,6 @@
     </ClCompile>
     <ClCompile Include="wxSFMLCanvas.cpp">
       <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpError.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpFuncCmplx.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpFuncCommon.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpFuncMatrix.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpFuncNonCmplx.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpFuncStr.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpICallback.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpIfThenElse.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpIOprt.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpIPackage.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpIToken.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpIValReader.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpIValue.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpOprtBinAssign.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpOprtBinCommon.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpOprtCmplx.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpOprtIndex.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpOprtMatrix.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpOprtNonCmplx.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpPackageCmplx.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpPackageCommon.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpPackageMatrix.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpPackageNonCmplx.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpPackageStr.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpPackageUnit.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpParser.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpParserBase.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpRPN.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpScriptTokens.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpTest.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpTokenReader.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpValReader.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpValue.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpValueCache.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="muParserX\mpVariable.cpp">
-      <Filter>muParserX</Filter>
-    </ClCompile>
-    <ClCompile Include="wxMathPlot\mathplot.cpp">
-      <Filter>wxMathPlot</Filter>
     </ClCompile>
     <ClCompile Include="angelscript\src\as_atomic.cpp">
       <Filter>angelscript\src</Filter>
@@ -679,6 +553,111 @@
     </ClCompile>
     <ClCompile Include="angelscript\add_on\scriptstdstring\scriptstdstring_utils.cpp">
       <Filter>angelscript\add_on\scriptstdstring</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpError.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpFuncCmplx.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpFuncCommon.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpFuncMatrix.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpFuncNonCmplx.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpFuncStr.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpICallback.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpIfThenElse.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpIOprt.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpIPackage.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpIToken.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpIValReader.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpIValue.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpOprtBinAssign.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpOprtBinCommon.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpOprtCmplx.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpOprtIndex.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpOprtMatrix.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpOprtNonCmplx.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpPackageCmplx.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpPackageCommon.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpPackageMatrix.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpPackageNonCmplx.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpPackageStr.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpPackageUnit.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpParser.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpParserBase.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpRPN.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpScriptTokens.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpTest.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpTokenReader.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpValReader.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpValue.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpValueCache.cpp">
+      <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="muParserX\mpVariable.cpp">
+      <Filter>muParserX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

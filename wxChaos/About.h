@@ -16,11 +16,12 @@
 #include <wx/gbsizer.h>
 #include <wx/gdicmn.h>
 #include <wx/wx.h>
+#include <wx/window.h>
 
 #define SYMBOL_ABOUTDIALOG_STYLE wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_ABOUTDIALOG_TITLE _("About ")
 #define SYMBOL_ABOUTDIALOG_IDNAME ID_ABOUTDIALOG
-#define SYMBOL_ABOUTDIALOG_SIZE wxSize(400, 300)
+#define SYMBOL_ABOUTDIALOG_SIZE wxSize(500, 400)
 #define SYMBOL_ABOUTDIALOG_POSITION wxDefaultPosition
 
 /**
@@ -36,19 +37,19 @@ public:
     // Constructors
     AboutDialog();
     AboutDialog( wxWindow* parent, 
-		wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME, 
-		const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE, 
-		const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION, 
-		const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE, 
-		long style = SYMBOL_ABOUTDIALOG_STYLE );
+        wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME, 
+        const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE, 
+        const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION, 
+        const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE, 
+        long style = SYMBOL_ABOUTDIALOG_STYLE );
 
     // Creation
     bool Create( wxWindow* parent, 
-		wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME, 
-		const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE, 
-		const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION, 
-		const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE, 
-		long style = SYMBOL_ABOUTDIALOG_STYLE );
+        wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME, 
+        const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE, 
+        const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION, 
+        const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE,
+        long style = SYMBOL_ABOUTDIALOG_STYLE );
 
     // Destructor
     ~AboutDialog();
@@ -90,7 +91,7 @@ public:
     void ApplyInfo();
 
 private:
-	//AboutDialog member variables
+    //AboutDialog member variables
     wxPanel* m_ContentPanel;
     wxStaticBitmap* m_HeaderStaticBitmap;
     wxStaticText* m_AppNameStaticText;

@@ -52,7 +52,7 @@ void AboutDialog::CreateControls()
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
     itemDialog1->SetSizer(itemBoxSizer2);
 
-    m_ContentPanel = new wxPanel( itemDialog1, ID_ContentPanel, wxDefaultPosition, wxSize(200, 300), wxNO_BORDER|wxTAB_TRAVERSAL );
+    m_ContentPanel = new wxPanel( itemDialog1, ID_ContentPanel, wxDefaultPosition, wxSize(290, 350), wxNO_BORDER|wxTAB_TRAVERSAL );
     m_ContentPanel->SetBackgroundColour(wxColour(255, 255, 255));
     itemBoxSizer2->Add(m_ContentPanel, 0, wxGROW, 0);
 

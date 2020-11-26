@@ -196,8 +196,6 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
 
     // Tools menu.
     toolMenu->Append(ID_INFO_FRAME, wxT(menuConsoleTxt), wxT(menuConsoleDescriptionTxt));
-    toolMenu->Append(ID_CALC_DIM, wxT(menuDimCalcTxt), wxT(menuDimCalcDescriptionTxt));
-    toolMenu->Append(ID_DP_EXPLORER, wxT(menuDPExpTxt), wxT(menuDPExpDescriptionTxt));
 
     // Iteracions.
     itManual = new wxMenuItem(iterationsMenu, ID_IT_MANUAL, wxString(wxT(menuManualIterTxt)), wxEmptyString, wxITEM_NORMAL);
@@ -398,8 +396,6 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_ENTER_SLD_CONSTANT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnSldIntroConst));
     this->Connect(ID_IT_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnItManual));
     this->Connect(ID_INFO_FRAME, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnCommandDialog));
-    this->Connect(ID_CALC_DIM, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnDimensionDialog));
-    this->Connect(ID_DP_EXPLORER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnDPDialog));
     this->Connect(ID_FORMULA_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFormulaDialog));
     this->Connect(ID_OPTPANEL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFractalOptions));
     this->Connect(ID_USER_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnUserManual));
@@ -546,26 +542,6 @@ void MainFrame::OnCommandDialog(wxCommandEvent &event)
             infoFrame->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
     }
     else infoFrame->SetFocus();
-}
-void MainFrame::OnDimensionDialog(wxCommandEvent &event)
-{
-    if(!dimFrameState)
-    {
-        dimFrameState = true;
-        dimensionFrame = new DimensionFrame(this);
-        dimensionFrame->Show(true);
-    }
-    else dimensionFrame->SetFocus();
-}
-void MainFrame::OnDPDialog(wxCommandEvent &event)
-{
-    if(!dpExplorerState)
-    {
-        dpExplorerState = true;
-        dpFrame = new DPFrame(GetWxAbsPath("Resources/dpDefault.bmp"), this);
-        dpFrame->Show(true);
-    }
-    else dpFrame->SetFocus();
 }
 void MainFrame::OnRedraw(wxCommandEvent &event)
 {

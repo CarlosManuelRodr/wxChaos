@@ -6792,11 +6792,7 @@ void RenderUserDefined::SetFormula(FormulaOpt formula)
 void RenderUserDefined::Render()
 {
     mup::ParserX parser;
-#ifdef UNICODE
     parser.SetExpr(parserFormula.wc_str());
-#else
-    parser.SetExpr(string(parserFormula.mb_str()));
-#endif
 
     unsigned n;
     int squaredBail = bailout*bailout;
@@ -6893,7 +6889,7 @@ UserDefined::UserDefined(sf::RenderWindow *Window) : Fractal(Window)
 
     type = USER_DEFINED;
     hasOrbit = true;
-    myRender = new RenderUserDefined[threadNumber];
+    myRender = new RenderUserDefined[1];
     SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.

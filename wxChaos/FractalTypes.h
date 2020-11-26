@@ -20,27 +20,27 @@
 */
 class RenderMandelbrot : public RenderFractal
 {
-	double c_im;
-	double c_re;
-	double Z_re;
-	double Z_im;
-	double Z_re2;
-	double Z_im2;
-	int buddhaRandomP;
-	int bd;
+    double c_im;
+    double c_re;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    int buddhaRandomP;
+    int bd;
 
-	bool insideSet;
+    bool insideSet;
 
 public:
-	void Render();
-	void SpecialRender();
+    void Render();
+    void SpecialRender();
 
-	///@brief Number of random points that will launch in Buddhabrot mode.
-	///@param n Number of points.
-	void SetBuddhaRandomP(int n);
-	RenderMandelbrot();
+    ///@brief Number of random points that will launch in Buddhabrot mode.
+    ///@param n Number of points.
+    void SetBuddhaRandomP(int n);
+    RenderMandelbrot();
 
-	int AskProgress();
+    int AskProgress();
 };
 
 /**
@@ -49,22 +49,22 @@ public:
 */
 class Mandelbrot : public Fractal
 {
-	RenderMandelbrot *myRender;
-	int buddhaRandomP;
+    RenderMandelbrot *myRender;
+    int buddhaRandomP;
 public:
-	void Render();																///< Launch threads.
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
-	void PreRender();
-	void PreDrawMaps();
-	void ChangeThreadNumber();
-	Mandelbrot( sf::RenderWindow *Window );
-	Mandelbrot( int width, int height );
-	~Mandelbrot();
+    void Render();                                                                ///< Launch threads.
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
+    void PreRender();
+    void PreDrawMaps();
+    void ChangeThreadNumber();
+    Mandelbrot( sf::RenderWindow *Window );
+    Mandelbrot( int width, int height );
+    ~Mandelbrot();
 };
 
 /**
@@ -75,22 +75,22 @@ class RenderMandelbrotZN : public RenderFractal
 {
 private:
 
-	double c_im;
-	double c_re;
-	double Z_re;
-	double Z_im;
-	double Z_re2;
-	double Z_im2;
-	int n;
-	double bailout;
+    double c_im;
+    double c_re;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    int n;
+    double bailout;
 
-	bool insideSet;
+    bool insideSet;
 
 public:
-	void Render();						// Render dentro de la thread.
-	void SpecialRender();				// SpecialRender dentro de la thread.
-	void SetParams(int _n, double _bailout);
-	RenderMandelbrotZN();
+    void Render();                        // Render dentro de la thread.
+    void SpecialRender();                // SpecialRender dentro de la thread.
+    void SetParams(int _n, double _bailout);
+    RenderMandelbrotZN();
 };
 
 
@@ -100,21 +100,21 @@ public:
 */
 class MandelbrotZN : public Fractal
 {
-	int n;
-	double bailout;
-	RenderMandelbrotZN *myRender;
+    int n;
+    double bailout;
+    RenderMandelbrotZN *myRender;
 public:
-	void Render();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
-	void ChangeThreadNumber();
-	MandelbrotZN( sf::RenderWindow *Window );
-	MandelbrotZN( int width, int height );
-	~MandelbrotZN();
+    void Render();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
+    void ChangeThreadNumber();
+    MandelbrotZN( sf::RenderWindow *Window );
+    MandelbrotZN( int width, int height );
+    ~MandelbrotZN();
 };
 
 /**
@@ -124,18 +124,18 @@ public:
 class RenderJulia : public RenderFractal
 {
 private:
-	double c_im;
-	double c_re;
-	double Z_re;
-	double Z_im;
-	double Z_re2;
-	double Z_im2;
-	bool insideSet;
+    double c_im;
+    double c_re;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
 
 public:
-	void Render();
-	void SpecialRender();
-	RenderJulia();
+    void Render();
+    void SpecialRender();
+    RenderJulia();
 };
 
 /**
@@ -144,16 +144,16 @@ public:
 */
 class Julia: public Fractal
 {
-	RenderJulia *myRender;
+    RenderJulia *myRender;
 public:
-	Julia( sf::RenderWindow *Window );
-	Julia( int width, int height );
-	~Julia();
-	void ChangeThreadNumber();
-	void Render();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    Julia( sf::RenderWindow *Window );
+    Julia( int width, int height );
+    ~Julia();
+    void ChangeThreadNumber();
+    void Render();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -163,21 +163,21 @@ public:
 class RenderJuliaZN : public RenderFractal
 {
 private:
-	double c_im;
-	double c_re;
-	double Z_re;
-	double Z_im;
-	double Z_re2;
-	double Z_im2;
-	int n;
-	double bailout;
-	bool insideSet;
+    double c_im;
+    double c_re;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    int n;
+    double bailout;
+    bool insideSet;
 
 public:
-	void Render();
-	void SpecialRender();
-	RenderJuliaZN();
-	void SetParams(int _n, double _bailout);
+    void Render();
+    void SpecialRender();
+    RenderJuliaZN();
+    void SetParams(int _n, double _bailout);
 };
 
 /**
@@ -186,21 +186,21 @@ public:
 */
 class JuliaZN: public Fractal
 {
-	RenderJuliaZN *myRender;
-	int n;
-	double bailout;
+    RenderJuliaZN *myRender;
+    int n;
+    double bailout;
 
 public:
-	JuliaZN( sf::RenderWindow *Window );
-	JuliaZN( int width, int height );
-	~JuliaZN();
-	void ChangeThreadNumber();
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
-	void Render();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    JuliaZN( sf::RenderWindow *Window );
+    JuliaZN( int width, int height );
+    ~JuliaZN();
+    void ChangeThreadNumber();
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
+    void Render();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -210,18 +210,18 @@ public:
 class RenderNewton : public RenderFractal
 {
 private:
-	double re, im;
-	double tmp;
-	double d;
-	double re2, im2;
-	double minStep;
+    double re, im;
+    double tmp;
+    double d;
+    double re2, im2;
+    double minStep;
 
-	double re_ant, im_ant;
+    double re_ant, im_ant;
 public:
-	RenderNewton();
-	void Render();
-	void SpecialRender();
-	void SetParams(double _minStep);
+    RenderNewton();
+    void Render();
+    void SpecialRender();
+    void SetParams(double _minStep);
 };
 
 /**
@@ -230,19 +230,19 @@ public:
 */
 class Newton : public Fractal
 {
-	RenderNewton *myRender;
-	double minStep;
+    RenderNewton *myRender;
+    double minStep;
 public:
-	void Render();
-	Newton( sf::RenderWindow *Window );
-	Newton( int width, int height );
-	~Newton();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
+    void Render();
+    Newton( sf::RenderWindow *Window );
+    Newton( int width, int height );
+    ~Newton();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
 };
 
 /**
@@ -252,9 +252,9 @@ public:
 class RenderSinoidal : public RenderFractal
 {
 public:
-	RenderSinoidal();
-	void Render();
-	void SpecialRender();
+    RenderSinoidal();
+    void Render();
+    void SpecialRender();
 };
 
 /**
@@ -263,16 +263,16 @@ public:
 */
 class Sinoidal : public Fractal
 {
-	RenderSinoidal *myRender;
+    RenderSinoidal *myRender;
 public:
-	void Render();
-	Sinoidal( sf::RenderWindow *Window );
-	Sinoidal( int width, int height );
-	~Sinoidal();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    void Render();
+    Sinoidal( sf::RenderWindow *Window );
+    Sinoidal( int width, int height );
+    ~Sinoidal();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -282,8 +282,8 @@ public:
 class RenderMagnet : public RenderFractal
 {
 public:
-	RenderMagnet();
-	void Render();
+    RenderMagnet();
+    void Render();
 };
 
 /**
@@ -293,16 +293,16 @@ public:
 
 class Magnet : public Fractal
 {
-	RenderMagnet *myRender;
+    RenderMagnet *myRender;
 public:
-	void Render();
-	Magnet( sf::RenderWindow *Window );
-	Magnet( int width, int height );
-	~Magnet();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    void Render();
+    Magnet( sf::RenderWindow *Window );
+    Magnet( int width, int height );
+    ~Magnet();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -312,9 +312,9 @@ public:
 class RenderManowar : public RenderFractal
 {
 public:
-	RenderManowar();
-	void Render();
-	void SpecialRender();
+    RenderManowar();
+    void Render();
+    void SpecialRender();
 };
 
 /**
@@ -323,16 +323,16 @@ public:
 */
 class Manowar : public Fractal
 {
-	RenderManowar *myRender;
+    RenderManowar *myRender;
 public:
-	void Render();
-	Manowar( sf::RenderWindow *Window );
-	Manowar( int width, int height );
-	~Manowar();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    void Render();
+    Manowar( sf::RenderWindow *Window );
+    Manowar( int width, int height );
+    ~Manowar();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -342,9 +342,9 @@ public:
 class RenderManowarJulia : public RenderFractal
 {
 public:
-	RenderManowarJulia();
-	void Render();
-	void SpecialRender();
+    RenderManowarJulia();
+    void Render();
+    void SpecialRender();
 };
 
 /**
@@ -353,16 +353,16 @@ public:
 */
 class ManowarJulia : public Fractal
 {
-	RenderManowarJulia *myRender;
+    RenderManowarJulia *myRender;
 public:
-	void Render();
-	ManowarJulia( sf::RenderWindow *Window );
-	ManowarJulia( int width, int height );
-	~ManowarJulia();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    void Render();
+    ManowarJulia( sf::RenderWindow *Window );
+    ManowarJulia( int width, int height );
+    ~ManowarJulia();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -372,9 +372,9 @@ public:
 class RenderMedusa : public RenderFractal
 {
 public:
-	RenderMedusa();
-	void Render();
-	void SpecialRender();
+    RenderMedusa();
+    void Render();
+    void SpecialRender();
 };
 
 /**
@@ -383,16 +383,16 @@ public:
 */
 class Medusa : public Fractal
 {
-	RenderMedusa *myRender;
+    RenderMedusa *myRender;
 public:
-	void Render();
-	Medusa( sf::RenderWindow *Window );
-	Medusa( int width, int height );
-	~Medusa();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    void Render();
+    Medusa( sf::RenderWindow *Window );
+    Medusa( int width, int height );
+    ~Medusa();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -402,8 +402,8 @@ public:
 class RenderSierpTriangle : public RenderFractal
 {
 public:
-	RenderSierpTriangle();
-	void Render();
+    RenderSierpTriangle();
+    void Render();
 };
 
 /**
@@ -412,13 +412,13 @@ public:
 */
 class SierpTriangle : public Fractal
 {
-	RenderSierpTriangle *myRender;
+    RenderSierpTriangle *myRender;
 
 public:
-	void Render();
-	SierpTriangle( sf::RenderWindow *Window );
-	SierpTriangle( int width, int height );
-	wxString AskInfo();
+    void Render();
+    SierpTriangle( sf::RenderWindow *Window );
+    SierpTriangle( int width, int height );
+    wxString AskInfo();
 };
 
 // FixedPoint1 z = sin(z)
@@ -428,11 +428,11 @@ public:
 */
 class RenderFixedPoint1 : public RenderFractal
 {
-	double minStep;
+    double minStep;
 public:
-	RenderFixedPoint1();
-	void Render();
-	void SetParams(double _minStep);
+    RenderFixedPoint1();
+    void Render();
+    void SetParams(double _minStep);
 };
 
 /**
@@ -441,19 +441,19 @@ public:
 */
 class FixedPoint1 : public Fractal
 {
-	RenderFixedPoint1 *myRender;
-	double minStep;
+    RenderFixedPoint1 *myRender;
+    double minStep;
 public:
-	void Render();
-	FixedPoint1( sf::RenderWindow *Window );
-	FixedPoint1( int width, int height );
-	~FixedPoint1();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
+    void Render();
+    FixedPoint1( sf::RenderWindow *Window );
+    FixedPoint1( int width, int height );
+    ~FixedPoint1();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
 };
 
 // FixedPoint2 z = cos(z)
@@ -463,11 +463,11 @@ public:
 */
 class RenderFixedPoint2 : public RenderFractal
 {
-	double minStep;
+    double minStep;
 public:
-	RenderFixedPoint2();
-	void Render();
-	void SetParams(double _minStep);
+    RenderFixedPoint2();
+    void Render();
+    void SetParams(double _minStep);
 };
 
 /**
@@ -476,19 +476,19 @@ public:
 */
 class FixedPoint2 : public Fractal
 {
-	RenderFixedPoint2 *myRender;
-	double minStep;
+    RenderFixedPoint2 *myRender;
+    double minStep;
 public:
-	void Render();
-	FixedPoint2( sf::RenderWindow *Window );
-	FixedPoint2( int width, int height );
-	~FixedPoint2();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
+    void Render();
+    FixedPoint2( sf::RenderWindow *Window );
+    FixedPoint2( int width, int height );
+    ~FixedPoint2();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
 };
 
 // FixedPoint3 z = tan(z)
@@ -498,11 +498,11 @@ public:
 */
 class RenderFixedPoint3 : public RenderFractal
 {
-	double minStep;
+    double minStep;
 public:
-	RenderFixedPoint3();
-	void Render();
-	void SetParams(double _minStep);
+    RenderFixedPoint3();
+    void Render();
+    void SetParams(double _minStep);
 };
 
 /**
@@ -511,19 +511,19 @@ public:
 */
 class FixedPoint3 : public Fractal
 {
-	RenderFixedPoint3 *myRender;
-	double minStep;
+    RenderFixedPoint3 *myRender;
+    double minStep;
 public:
-	void Render();
-	FixedPoint3( sf::RenderWindow *Window );
-	FixedPoint3( int width, int height );
-	~FixedPoint3();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
+    void Render();
+    FixedPoint3( sf::RenderWindow *Window );
+    FixedPoint3( int width, int height );
+    ~FixedPoint3();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
 };
 
 // FixedPoint4 z = z^2
@@ -533,11 +533,11 @@ public:
 */
 class RenderFixedPoint4 : public RenderFractal
 {
-	double minStep;
+    double minStep;
 public:
-	RenderFixedPoint4();
-	void Render();
-	void SetParams(double _minStep);
+    RenderFixedPoint4();
+    void Render();
+    void SetParams(double _minStep);
 };
 
 /**
@@ -546,19 +546,19 @@ public:
 */
 class FixedPoint4 : public Fractal
 {
-	RenderFixedPoint4 *myRender;
-	double minStep;
+    RenderFixedPoint4 *myRender;
+    double minStep;
 public:
-	void Render();
-	FixedPoint4( sf::RenderWindow *Window );
-	FixedPoint4( int width, int height );
-	~FixedPoint4();
-	void ChangeThreadNumber();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
+    void Render();
+    FixedPoint4( sf::RenderWindow *Window );
+    FixedPoint4( int width, int height );
+    ~FixedPoint4();
+    void ChangeThreadNumber();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
 };
 
 /**
@@ -568,8 +568,8 @@ public:
 class RenderTricorn : public RenderFractal
 {
 public:
-	RenderTricorn();
-	void Render();
+    RenderTricorn();
+    void Render();
 };
 
 /**
@@ -578,16 +578,16 @@ public:
 */
 class Tricorn : public Fractal
 {
-	RenderTricorn *myRender;
+    RenderTricorn *myRender;
 public:
-	Tricorn( sf::RenderWindow *Window );
-	Tricorn( int width, int height );
-	~Tricorn();
-	void ChangeThreadNumber();
-	void Render();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    Tricorn( sf::RenderWindow *Window );
+    Tricorn( int width, int height );
+    ~Tricorn();
+    void ChangeThreadNumber();
+    void Render();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -597,8 +597,8 @@ public:
 class RenderBurningShip : public RenderFractal
 {
 public:
-	RenderBurningShip();
-	void Render();
+    RenderBurningShip();
+    void Render();
 };
 
 /**
@@ -607,16 +607,16 @@ public:
 */
 class BurningShip : public Fractal
 {
-	RenderBurningShip *myRender;
+    RenderBurningShip *myRender;
 public:
-	BurningShip( sf::RenderWindow *Window );
-	BurningShip( int width, int height );
-	~BurningShip();
-	void ChangeThreadNumber();
-	void Render();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    BurningShip( sf::RenderWindow *Window );
+    BurningShip( int width, int height );
+    ~BurningShip();
+    void ChangeThreadNumber();
+    void Render();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -626,8 +626,8 @@ public:
 class RenderBurningShipJulia : public RenderFractal
 {
 public:
-	RenderBurningShipJulia();
-	void Render();
+    RenderBurningShipJulia();
+    void Render();
 };
 
 /**
@@ -636,16 +636,16 @@ public:
 */
 class BurningShipJulia : public Fractal
 {
-	RenderBurningShipJulia *myRender;
+    RenderBurningShipJulia *myRender;
 public:
-	BurningShipJulia( sf::RenderWindow *Window );
-	BurningShipJulia( int width, int height );
-	~BurningShipJulia();
-	void ChangeThreadNumber();
-	void Render();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    BurningShipJulia( sf::RenderWindow *Window );
+    BurningShipJulia( int width, int height );
+    ~BurningShipJulia();
+    void ChangeThreadNumber();
+    void Render();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 
@@ -656,8 +656,8 @@ public:
 class RenderFractory : public RenderFractal
 {
 public:
-	RenderFractory();
-	void Render();
+    RenderFractory();
+    void Render();
 };
 
 /**
@@ -666,16 +666,16 @@ public:
 */
 class Fractory : public Fractal
 {
-	RenderFractory *myRender;
+    RenderFractory *myRender;
 public:
-	Fractory( sf::RenderWindow *Window );
-	Fractory( int width, int height );
-	~Fractory();
-	void ChangeThreadNumber();
-	void Render();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
+    Fractory( sf::RenderWindow *Window );
+    Fractory( int width, int height );
+    ~Fractory();
+    void ChangeThreadNumber();
+    void Render();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
 };
 
 /**
@@ -684,11 +684,11 @@ public:
 */
 class RenderCell : public RenderFractal
 {
-	double bailout;
+    double bailout;
 public:
-	RenderCell();
-	void Render();
-	void SetParams(double _bailout);
+    RenderCell();
+    void Render();
+    void SetParams(double _bailout);
 };
 
 /**
@@ -697,19 +697,19 @@ public:
 */
 class Cell : public Fractal
 {
-	RenderCell *myRender;
-	double bailout;
+    RenderCell *myRender;
+    double bailout;
 public:
-	Cell( sf::RenderWindow *Window );
-	Cell( int width, int height );
-	~Cell();
-	void ChangeThreadNumber();
-	void Render();
-	void DrawOrbit();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
+    Cell( sf::RenderWindow *Window );
+    Cell( int width, int height );
+    ~Cell();
+    void ChangeThreadNumber();
+    void Render();
+    void DrawOrbit();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
 };
 
 /**
@@ -719,15 +719,15 @@ public:
 
 class RenderLogisticMap : public RenderFractal
 {
-	double seed;
-	bool stabilizePoint;
-	double progress;
+    double seed;
+    bool stabilizePoint;
+    double progress;
 
 public:
-	RenderLogisticMap();
-	void Render();
-	void SetParams(double _seed, bool _stabilizePoint);
-	int AskProgress();
+    RenderLogisticMap();
+    void Render();
+    void SetParams(double _seed, bool _stabilizePoint);
+    int AskProgress();
 };
 
 /**
@@ -736,16 +736,16 @@ public:
 */
 class LogisticMap : public Fractal
 {
-	RenderLogisticMap *myRender;
-	double logisticSeed;
-	bool stabilizePoint;
+    RenderLogisticMap *myRender;
+    double logisticSeed;
+    bool stabilizePoint;
 
 public:
-	void Render();
-	LogisticMap( sf::RenderWindow *Window );
-	LogisticMap( int width, int height );
-	wxString AskInfo();
-	void CopyOptFromPanel();
+    void Render();
+    LogisticMap( sf::RenderWindow *Window );
+    LogisticMap( int width, int height );
+    wxString AskInfo();
+    void CopyOptFromPanel();
 };
 
 /**
@@ -755,14 +755,14 @@ public:
 
 class RenderHenonMap : public RenderFractal
 {
-	double alpha, beta;
-	double x0, y0;
-	int i;
+    double alpha, beta;
+    double x0, y0;
+    int i;
 public:
-	RenderHenonMap();
-	void Render();
-	void SetParams(double _alpha, double _beta, double _x0, double _y0);
-	int AskProgress();
+    RenderHenonMap();
+    void Render();
+    void SetParams(double _alpha, double _beta, double _x0, double _y0);
+    int AskProgress();
 };
 
 /**
@@ -772,18 +772,18 @@ public:
 
 class HenonMap : public Fractal
 {
-	RenderHenonMap *myRender;
-	double alpha, beta;
-	double x0, y0;
+    RenderHenonMap *myRender;
+    double alpha, beta;
+    double x0, y0;
 public:
-	HenonMap(sf::RenderWindow *Window);
-	HenonMap(int width, int height);
-	~HenonMap();
-	void Render();
-	wxString AskInfo();
-	void CopyOptFromPanel();
-	void MoreIter();
-	void LessIter();
+    HenonMap(sf::RenderWindow *Window);
+    HenonMap(int width, int height);
+    ~HenonMap();
+    void Render();
+    wxString AskInfo();
+    void CopyOptFromPanel();
+    void MoreIter();
+    void LessIter();
 };
 
 /**
@@ -792,17 +792,17 @@ public:
 */
 class RenderDPendulum : public RenderFractal
 {
-	bool th1Bailout, th2Bailout;
-	double th1NumBailout, th2NumBailout;
-	double m1, m2, l, g;
-	double dt;
-	bool referenced, rungeKutta;
+    bool th1Bailout, th2Bailout;
+    double th1NumBailout, th2NumBailout;
+    double m1, m2, l, g;
+    double dt;
+    bool referenced, rungeKutta;
 
 public:
-	RenderDPendulum();
-	void Render();
-	void SetParams(bool th1B, bool th2B, double th1NB, double th2NB,
-					double _dt, double _m1, double _m2, double _l, double _g, bool ref, bool _rungeKutta);
+    RenderDPendulum();
+    void Render();
+    void SetParams(bool th1B, bool th2B, double th1NB, double th2NB,
+                    double _dt, double _m1, double _m2, double _l, double _g, bool ref, bool _rungeKutta);
 };
 
 /**
@@ -811,27 +811,27 @@ public:
 */
 class DPendulum : public Fractal
 {
-	bool th1Bailout, th2Bailout;
-	double th1NumBailout, th2NumBailout;
-	double m1, m2, l, g;
-	double dt;
-	bool referenced;
-	bool rungeKutta;
-	RenderDPendulum *myRender;
+    bool th1Bailout, th2Bailout;
+    double th1NumBailout, th2NumBailout;
+    double m1, m2, l, g;
+    double dt;
+    bool referenced;
+    bool rungeKutta;
+    RenderDPendulum *myRender;
 public:
-	void Render();
-	DPendulum( sf::RenderWindow *Window );
-	DPendulum( int width, int height );
-	~DPendulum();
-	void ChangeThreadNumber();
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	void DrawOrbit();
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
-	void MoreIter();
-	void LessIter();
-	void SpecialSaveRoutine(string filename);
+    void Render();
+    DPendulum( sf::RenderWindow *Window );
+    DPendulum( int width, int height );
+    ~DPendulum();
+    void ChangeThreadNumber();
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    void DrawOrbit();
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
+    void MoreIter();
+    void LessIter();
+    void SpecialSaveRoutine(string filename);
 };
 
 /**
@@ -840,18 +840,18 @@ public:
 */
 class RenderUserDefined : public RenderFractal
 {
-	int bailout;
-	bool julia;
-	wxString errorInfo;
-	wxString parserFormula;
+    int bailout;
+    bool julia;
+    wxString errorInfo;
+    wxString parserFormula;
 
 public:
-	RenderUserDefined();
-	void SetFormula( FormulaOpt formula );
-	void Render();
-	wxString GetErrorInfo();
-	void ClearErrorInfo();
-	bool IsThereError();
+    RenderUserDefined();
+    void SetFormula( FormulaOpt formula );
+    void Render();
+    wxString GetErrorInfo();
+    void ClearErrorInfo();
+    bool IsThereError();
 };
 
 /**
@@ -860,19 +860,19 @@ public:
 */
 class UserDefined : public Fractal
 {
-	RenderUserDefined* myRender;
+    RenderUserDefined* myRender;
 public:
-	UserDefined( sf::RenderWindow* Window );
-	UserDefined( int width, int height );
-	~UserDefined();
-	void ChangeThreadNumber();
-	void Render();
-	void SetFormula( FormulaOpt formula );		///< Sets user formula.
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
-	void DrawOrbit();
-	void PostRender();
+    UserDefined( sf::RenderWindow* Window );
+    UserDefined( int width, int height );
+    ~UserDefined();
+    void ChangeThreadNumber();
+    void Render();
+    void SetFormula( FormulaOpt formula );        ///< Sets user formula.
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
+    void DrawOrbit();
+    void PostRender();
 };
 
 /**
@@ -881,20 +881,20 @@ public:
 */
 class RenderFPUserDefined : public RenderFractal
 {
-	int bailout;
-	bool julia;
-	double minStep;
-	wxString errorInfo;
-	wxString parserFormula;
+    int bailout;
+    bool julia;
+    double minStep;
+    wxString errorInfo;
+    wxString parserFormula;
 
 public:
-	RenderFPUserDefined();
-	void SetFormula( FormulaOpt formula );
-	void Render();
-	void SetParams(double _minStep);
-	wxString GetErrorInfo();
-	void ClearErrorInfo();
-	bool IsThereError();
+    RenderFPUserDefined();
+    void SetFormula( FormulaOpt formula );
+    void Render();
+    void SetParams(double _minStep);
+    wxString GetErrorInfo();
+    void ClearErrorInfo();
+    bool IsThereError();
 };
 
 /**
@@ -903,22 +903,22 @@ public:
 */
 class FPUserDefined : public Fractal
 {
-	RenderFPUserDefined* myRender;
-	double minStep;
+    RenderFPUserDefined* myRender;
+    double minStep;
 public:
-	FPUserDefined( sf::RenderWindow* Window );
-	FPUserDefined( int width, int height );
-	~FPUserDefined();
-	void ChangeThreadNumber();
-	void Render();
-	void SetFormula( FormulaOpt formula );		///< Sets user formula.
-	wxString AskInfo();
-	wxString AskInfo( double real, double imag, int iter = 0 );
-	wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
-	void DrawOrbit();
-	void SpecialSaveRenderJob(std::ofstream &dataFile);
-	void CopyOptFromPanel();
-	void PostRender();
+    FPUserDefined( sf::RenderWindow* Window );
+    FPUserDefined( int width, int height );
+    ~FPUserDefined();
+    void ChangeThreadNumber();
+    void Render();
+    void SetFormula( FormulaOpt formula );        ///< Sets user formula.
+    wxString AskInfo();
+    wxString AskInfo( double real, double imag, int iter = 0 );
+    wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
+    void DrawOrbit();
+    void SpecialSaveRenderJob(std::ofstream &dataFile);
+    void CopyOptFromPanel();
+    void PostRender();
 };
 
 /**
@@ -927,23 +927,23 @@ public:
 */
 class RenderScriptFractal : public RenderFractal
 {
-	asIScriptEngine *engine;
-	asIScriptContext *ctx;
-	string path;
-	wxString errorInfo;
-	int threadIndex;
-	bool hasEnded;
+    asIScriptEngine *engine;
+    asIScriptContext *ctx;
+    string path;
+    wxString errorInfo;
+    int threadIndex;
+    bool hasEnded;
 
 public:
-	void Render();
-	RenderScriptFractal();
-	~RenderScriptFractal();
-	void SetPath(string scriptPath);
-	wxString GetErrorInfo();
-	void ClearErrorInfo();
-	void PreTerminate();
-	bool IsThereError();
-	void SetParams(int _threadIndex);
+    void Render();
+    RenderScriptFractal();
+    ~RenderScriptFractal();
+    void SetPath(string scriptPath);
+    wxString GetErrorInfo();
+    void ClearErrorInfo();
+    void PreTerminate();
+    bool IsThereError();
+    void SetParams(int _threadIndex);
 };
 
 /**
@@ -952,19 +952,19 @@ public:
 */
 class ScriptFractal : public Fractal
 {
-	string path;
-	ScriptData myScriptData;
-	RenderScriptFractal *myRender;
+    string path;
+    ScriptData myScriptData;
+    RenderScriptFractal *myRender;
 public:
-	void Render();
-	ScriptFractal(sf::RenderWindow *Window, ScriptData scriptData);
-	ScriptFractal(int width, int height, ScriptData scriptData);
-	ScriptFractal(int width, int height, string scriptPath);
-	void ChangeThreadNumber();
-	void PostRender();
-	void PreRestartRender();
-	wxString AskInfo();
-	~ScriptFractal();
+    void Render();
+    ScriptFractal(sf::RenderWindow *Window, ScriptData scriptData);
+    ScriptFractal(int width, int height, ScriptData scriptData);
+    ScriptFractal(int width, int height, string scriptPath);
+    void ChangeThreadNumber();
+    void PostRender();
+    void PreRestartRender();
+    wxString AskInfo();
+    ~ScriptFractal();
 };
 
 /**
@@ -973,48 +973,48 @@ public:
 */
 class FractalHandler
 {
-	Mandelbrot *mandelbrot;
-	MandelbrotZN *mandelbrotZN;
-	Julia *julia;
-	JuliaZN *juliaZN;
-	Newton *newton;
-	Sinoidal *sinoidal;
-	Magnet *magnet;
-	Medusa *medusa;
-	Manowar *manowar;
-	ManowarJulia *manowarJulia;
-	SierpTriangle *triangulo;
-	FixedPoint1 *fixedPoint1;
-	FixedPoint2 *fixedPoint2;
-	FixedPoint3 *fixedPoint3;
-	FixedPoint4 *fixedPoint4;
-	Tricorn *tricorn;
-	BurningShip *burningShip;
-	BurningShipJulia *burningShipJulia;
-	Fractory* fractory;
-	Cell* cell;
-	LogisticMap *logisticMap;
-	HenonMap *henonMap;
-	DPendulum *dPendulum;
-	UserDefined *userDefined;
-	FPUserDefined *fpUserDefined;
-	ScriptFractal *scriptFractal;
+    Mandelbrot *mandelbrot;
+    MandelbrotZN *mandelbrotZN;
+    Julia *julia;
+    JuliaZN *juliaZN;
+    Newton *newton;
+    Sinoidal *sinoidal;
+    Magnet *magnet;
+    Medusa *medusa;
+    Manowar *manowar;
+    ManowarJulia *manowarJulia;
+    SierpTriangle *triangulo;
+    FixedPoint1 *fixedPoint1;
+    FixedPoint2 *fixedPoint2;
+    FixedPoint3 *fixedPoint3;
+    FixedPoint4 *fixedPoint4;
+    Tricorn *tricorn;
+    BurningShip *burningShip;
+    BurningShipJulia *burningShipJulia;
+    Fractory* fractory;
+    Cell* cell;
+    LogisticMap *logisticMap;
+    HenonMap *henonMap;
+    DPendulum *dPendulum;
+    UserDefined *userDefined;
+    FPUserDefined *fpUserDefined;
+    ScriptFractal *scriptFractal;
 
-	Fractal *target;
-	FRACTAL_TYPE type;
+    Fractal *target;
+    FRACTAL_TYPE type;
 
 public:
-	FractalHandler();
-	~FractalHandler();
-	void CreateFractal(FRACTAL_TYPE _type, sf::RenderWindow *Window);
-	void CreateFractal(FRACTAL_TYPE _type, int width, int height);
-	void CreateScriptFractal(sf::RenderWindow *Window, ScriptData scriptData);
-	void CreateScriptFractal(int width, int height, ScriptData scriptData);
-	void CreateScriptFractal(int width, int height, string scriptPath);
-	void SetFormula(FormulaOpt formula);
-	void DeleteFractal();
-	Fractal* GetTarget();
-	FRACTAL_TYPE GetType();
+    FractalHandler();
+    ~FractalHandler();
+    void CreateFractal(FRACTAL_TYPE _type, sf::RenderWindow *Window);
+    void CreateFractal(FRACTAL_TYPE _type, int width, int height);
+    void CreateScriptFractal(sf::RenderWindow *Window, ScriptData scriptData);
+    void CreateScriptFractal(int width, int height, ScriptData scriptData);
+    void CreateScriptFractal(int width, int height, string scriptPath);
+    void SetFormula(FormulaOpt formula);
+    void DeleteFractal();
+    Fractal* GetTarget();
+    FRACTAL_TYPE GetType();
 };
 
 #endif

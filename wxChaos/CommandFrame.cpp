@@ -33,18 +33,6 @@ void ClearConsoleText()
     thereIsConsoleText = false;
 }
 
-// This is used because XP and Vista and higher have different console fonts.
-#ifdef _WIN32
-bool IsWindowsVistaOrHigher()
-{
-    OSVERSIONINFO osvi;
-    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    GetVersionEx(&osvi);
-    return osvi.dwMajorVersion >= 6;
-}
-#endif
-
 CommandFrame::CommandFrame(bool* Active, Fractal* _target, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
     : wxFrame(parent, id, title, pos, size, style)
 {
@@ -72,13 +60,7 @@ CommandFrame::CommandFrame(bool* Active, Fractal* _target, wxWindow* parent, wxW
     panelBoxxy = new wxBoxSizer(wxVERTICAL);
 
     infoText = new wxRichTextCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxSIMPLE_BORDER);
-
-#ifdef _WIN32
-    if(IsWindowsVistaOrHigher())
-        infoText->SetFont( wxFont( 10, 74, 90, 90, false, wxT("Consolas") ) );
-    else
-        infoText->SetFont( wxFont( 10, 74, 90, 90, false, wxT("Lucida Console") ) );
-#endif
+    infoText->SetFont(wxFont(10, 74, 90, 90, false, wxT("Consolas")));
 
     infoText->SetBackgroundColour( wxColour( 37, 52, 80 ) );
     panelBoxxy->Add(infoText, 7, wxEXPAND | wxALL, 5);
@@ -92,17 +74,12 @@ CommandFrame::CommandFrame(bool* Active, Fractal* _target, wxWindow* parent, wxW
 
     commandCtrl = new wxTextCtrl( mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_PROCESS_TAB);
 
-#ifdef _WIN32
-    if(IsWindowsVistaOrHigher())
-        commandCtrl->SetFont( wxFont( 10, 74, 90, 90, false, wxT("Consolas") ) );
-    else
-        commandCtrl->SetFont( wxFont( 10, 74, 90, 90, false, wxT("Lucida Console") ) );
-#endif
+    commandCtrl->SetFont(wxFont(10, 74, 90, 90, false, wxT("Consolas")));
 
-    commandBoxxy->Add( commandCtrl, 1, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+    commandBoxxy->Add( commandCtrl, 1, wxALL|wxEXPAND, 5 );
 
     commandButton = new wxButton( mainPanel, wxID_ANY, wxT("Enter"), wxDefaultPosition, wxDefaultSize, 0 );
-    commandBoxxy->Add( commandButton, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+    commandBoxxy->Add( commandButton, 0, wxALL|wxEXPAND, 5 );
 
     panelBoxxy->Add( commandBoxxy, 0, wxEXPAND, 5 );
 

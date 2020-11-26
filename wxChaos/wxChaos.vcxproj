@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Unicode Debug|Win32">
       <Configuration>Unicode Debug</Configuration>
       <Platform>Win32</Platform>
@@ -17,12 +9,12 @@
       <Configuration>Unicode Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Unicode Setup English|Win32">
-      <Configuration>Unicode Setup English</Configuration>
+    <ProjectConfiguration Include="wx3 Unicode Debug|Win32">
+      <Configuration>wx3 Unicode Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Unicode Setup Spanish|Win32">
-      <Configuration>Unicode Setup Spanish</Configuration>
+    <ProjectConfiguration Include="wx3 Unicode Release|Win32">
+      <Configuration>wx3 Unicode Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -74,8 +66,6 @@
     <ClInclude Include="CommandFrame.h" />
     <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="ConstDialog.h" />
-    <ClInclude Include="DimensionFrame.h" />
-    <ClInclude Include="DPExplorer.h" />
     <ClInclude Include="FormulaDialog.h" />
     <ClInclude Include="FractalCanvas.h" />
     <ClInclude Include="FractalClasses.h" />
@@ -137,7 +127,6 @@
     <ClInclude Include="SizeDialogSave.h" />
     <ClInclude Include="StringFuncs.h" />
     <ClInclude Include="Styles.h" />
-    <ClInclude Include="wxMathPlot\mathplot.h" />
     <ClInclude Include="wxSFMLCanvas.h" />
   </ItemGroup>
   <ItemGroup>
@@ -190,8 +179,6 @@
     <ClCompile Include="CommandFrame.cpp" />
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="ConstDialog.cpp" />
-    <ClCompile Include="DimensionFrame.cpp" />
-    <ClCompile Include="DPExplorer.cpp" />
     <ClCompile Include="FormulaDialog.cpp" />
     <ClCompile Include="FractalCanvas.cpp" />
     <ClCompile Include="FractalClasses.cpp" />
@@ -241,7 +228,6 @@
     <ClCompile Include="muParserX\mpVariable.cpp" />
     <ClCompile Include="SizeDialogSave.cpp" />
     <ClCompile Include="StringFuncs.cpp" />
-    <ClCompile Include="wxMathPlot\mathplot.cpp" />
     <ClCompile Include="wxSFMLCanvas.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -257,23 +243,23 @@
     <RootNamespace>wxChaos</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'" Label="Configuration">
@@ -283,49 +269,22 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup English|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup Spanish|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup English|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup Spanish|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\wxWidgets-2.8.12\include;C:\wxWidgets-2.8.12\lib\vc_lib\mswd;C:\wxWidgets-2.8.12\contrib\include;..\libs\MPIR;..\libs\SFML\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\wxWidgets-2.8.12\lib\vc_lib;C:\wxWidgets-2.8.12\contrib\lib;..\libs\MPIR;..\libs\SFML\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
-    <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)libs\wxMSW-2.8.12\include;$(SolutionDir)libs\wxMSW-2.8.12\lib\vc_lib\mswud;$(SolutionDir)libs\wxMSW-2.8.12\contrib\include;$(SolutionDir)libs\SFML_1.6\include;$(IncludePath)</IncludePath>
@@ -333,10 +292,17 @@
     <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
     <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\wxWidgets-2.8.12\include;C:\wxWidgets-2.8.12\lib\vc_lib\mswu;C:\wxWidgets-2.8.12\contrib\include;..\libs\MPIR;..\libs\SFML\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\wxWidgets-2.8.12\lib\vc_lib;..\libs\MPIR;..\libs\SFML\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\wxMSW-3.1.4\include;$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib\mswu;$(SolutionDir)libs\wxMSW-3.1.4\contrib\include;$(SolutionDir)libs\SFML_1.6\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib;$(SolutionDir)libs\wxMSW-3.1.4\contrib\lib;$(SolutionDir)libs\SFML_1.6\lib\vc2008;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
+    <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)libs\wxMSW-3.1.4\include;$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib\mswud;$(SolutionDir)libs\wxMSW-3.1.4\contrib\include;$(SolutionDir)libs\SFML_1.6\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib;$(SolutionDir)libs\wxMSW-3.1.4\contrib\lib;$(SolutionDir)libs\SFML_1.6\lib\vc2008;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
     <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -347,35 +313,6 @@
     <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
     <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup English|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\wxWidgets-2.8.12\include;C:\wxWidgets-2.8.12\lib\vc_lib\mswu;C:\wxWidgets-2.8.12\contrib\include;..\libs\SFML\include;..\libs\Boost;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\wxWidgets-2.8.12\lib\vc_lib;..\libs\SFML\lib;..\libs\Boost\Lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
-    <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup Spanish|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\wxWidgets-2.8.12\include;C:\wxWidgets-2.8.12\lib\vc_lib\mswu;C:\wxWidgets-2.8.12\contrib\include;..\libs\SFML\include;..\libs\Boost;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\wxWidgets-2.8.12\lib\vc_lib;..\libs\SFML\lib;..\libs\Boost\Lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
-    <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
-  </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;__WXMSW__;__WXDEBUG__;_WINDOWS;NOPCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>wxmsw28d_core.lib;wxbase28d.lib;wxbase28d_xml.lib;wxmsw28d_adv.lib;wxmsw28d_richtext.lib;wxmsw28d_html.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexd.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-main-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>
@@ -392,27 +329,48 @@
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;__WXMSW__;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalDependencies>wxmsw31u_core.lib;wxbase31u.lib;wxbase31u_xml.lib;wxmsw31u_adv.lib;wxmsw31u_richtext.lib;wxmsw31u_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>wxmsw28_core.lib;wxbase28.lib;wxbase28_xml.lib;wxmsw28_adv.lib;wxmsw28_richtext.lib;wxmsw28_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregex.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <ResourceCompile>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;__WXMSW__;__WXDEBUG__;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>wxmsw31ud_core.lib;wxbase31ud.lib;wxbase31ud_xml.lib;wxmsw31ud_adv.lib;wxmsw31ud_richtext.lib;wxmsw31ud_html.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-main-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">
     <ClCompile>
@@ -436,86 +394,6 @@
     <ResourceCompile>
       <Culture>0x0409</Culture>
     </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup English|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;__WXMSW__;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;BUILD_SETUP;USE_BOOST;USE_LANG_ENGLISH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>wxmsw28u_core.lib;wxbase28u.lib;wxbase28u_xml.lib;wxmsw28u_adv.lib;wxmsw28u_richtext.lib;wxmsw28u_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-main.lib;libboost_filesystem-vc100-mt-1_51.lib;libboost_random-vc100-mt-1_51.lib;libboost_system-vc100-mt-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <ResourceCompile>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-    <PostBuildEvent>
-      <Command>mkdir "..\bin\win32_Unicode Setup English\Doc"
-mkdir "..\bin\win32_Unicode Setup English\Resources"
-mkdir "..\bin\win32_Unicode Setup English\ScriptSamples"
-mkdir "..\bin\win32_Unicode Setup English\UserScripts"
-xcopy ..\app_resources\English\Doc "..\bin\win32_Unicode Setup English\Doc\" /y
-xcopy ..\app_resources\English\Resources "..\bin\win32_Unicode Setup English\Resources\" /E /y
-xcopy ..\app_resources\English\ScriptSamples "..\bin\win32_Unicode Setup English\ScriptSamples\" /y
-xcopy ..\app_resources\English\UserScripts "..\bin\win32_Unicode Setup English\UserScripts\" /y
-xcopy ..\app_resources\English\config.ini "..\bin\win32_Unicode Setup English\" /y
-xcopy ..\app_resources\English\msvcp100.dll "..\bin\win32_Unicode Setup English\" /y
-xcopy ..\app_resources\English\msvcr100.dll "..\bin\win32_Unicode Setup English\" /y</Command>
-    </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Setup Spanish|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;__WXMSW__;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;BUILD_SETUP;USE_BOOST;USE_LANG_SPANISH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>wxmsw28u_core.lib;wxbase28u.lib;wxbase28u_xml.lib;wxmsw28u_adv.lib;wxmsw28u_richtext.lib;wxmsw28u_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-main.lib;libboost_filesystem-vc100-mt-1_51.lib;libboost_random-vc100-mt-1_51.lib;libboost_system-vc100-mt-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <ResourceCompile>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-    <PostBuildEvent>
-      <Command>mkdir "..\bin\win32_Unicode Setup Spanish\Doc"
-mkdir "..\bin\win32_Unicode Setup Spanish\Resources"
-mkdir "..\bin\win32_Unicode Setup Spanish\ScriptSamples"
-mkdir "..\bin\win32_Unicode Setup Spanish\UserScripts"
-xcopy ..\app_resources\Spanish\Doc "..\bin\win32_Unicode Setup Spanish\Doc\" /y
-xcopy ..\app_resources\Spanish\Resources "..\bin\win32_Unicode Setup Spanish\Resources\" /E /y
-xcopy ..\app_resources\Spanish\ScriptSamples "..\bin\win32_Unicode Setup Spanish\ScriptSamples\" /y
-xcopy ..\app_resources\Spanish\UserScripts "..\bin\win32_Unicode Setup Spanish\UserScripts\" /y
-xcopy ..\app_resources\Spanish\config.ini "..\bin\win32_Unicode Setup Spanish\" /y
-xcopy ..\app_resources\Spanish\msvcp100.dll "..\bin\win32_Unicode Setup Spanish\" /y
-xcopy ..\app_resources\Spanish\msvcr100.dll "..\bin\win32_Unicode Setup Spanish\" /y</Command>
-    </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
