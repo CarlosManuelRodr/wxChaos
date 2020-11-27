@@ -95,7 +95,7 @@ struct ConfigParserOpt
     int maxIterations;
     int paletteSize;
     string colorStyleGrad;
-    EST_STYLES colorStyleEST;
+    GAUSS_STYLES colorStyleEST;
     bool constantWindow, commandConsole, juliaMode;
     bool colorPaletteWindow, colorFractal, colorSet;
     bool firstUse;
@@ -171,7 +171,7 @@ class MainFrame : public wxFrame
     bool formDiagActive;
     bool pause;
     bool showOptPanel;
-    EST_STYLES colorStyle;
+    GAUSS_STYLES colorStyle;
     FRACTAL_TYPE fractalType;
     ConfigParserOpt opt;
     vector<string> fractalOpt;

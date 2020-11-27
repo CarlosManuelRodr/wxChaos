@@ -12,40 +12,40 @@
 #include <wx/string.h>
 
 /**
-* @enum EST_STYLES
+* @enum GAUSS_STYLES
 * @brief Enum of EST styles.
 */
-enum EST_STYLES
+enum GAUSS_STYLES
 {
-	SUMMER_DAY,
-	COOL_BLUE,
-	HARD_RED,
-	BLACK_AND_WHITE,
-	PASTEL,
-	PSYCH_EXPERIENCE,
-	VIVID_COLORS,
-	CUSTOM
+    SUMMER_DAY,
+    COOL_BLUE,
+    HARD_RED,
+    BLACK_AND_WHITE,
+    PASTEL,
+    PSYCH_EXPERIENCE,
+    VIVID_COLORS,
+    CUSTOM
 };
 
 
 /**
-* @class ESTFractalColor
+* @class GaussianColorPalette
 * @brief Class that assigns parameters according to the selected style.
 */
-class ESTFractalColor
+class GaussianColorPalette
 {
 public:
-	int redInt , greenInt, blueInt;
-	double redMed, greenMed, blueMed;
-	double redDes, greenDes, blueDes;
-	int paletteSize;
+    int redInt , greenInt, blueInt;
+    double redMed, greenMed, blueMed;
+    double redDes, greenDes, blueDes;
+    int paletteSize;
 
-	///@brief Empty constructor.
-	ESTFractalColor();
+    ///@brief Empty constructor.
+    GaussianColorPalette();
 
-	///@brief Assigns parameters according to the style selected.
-	///@param style Style selected.
-	void SetStyle(EST_STYLES style);
+    ///@brief Assigns parameters according to the style selected.
+    ///@param style Style selected.
+    void SetStyle(GAUSS_STYLES style);
 };
 
 /**
@@ -54,28 +54,28 @@ public:
 */
 enum GRAD_STYLES
 {
-	RETRO,
-	HAKIM,
-	AGUAMARINA,
-	GRAD_CUSTOM
+    RETRO,
+    HAKIM,
+    AGUAMARINA,
+    GRAD_CUSTOM
 };
 
 /**
-* @class GradFractalColor
+* @class GradientColorPalette
 * @brief Class that assign a wxString parameter according to the selected style.
 */
-class GradFractalColor
+class GradientColorPalette
 {
 public:
-	int paletteSize;
-	wxString grad;
+    int paletteSize;
+    wxString grad;
 
-	///@brief Empty constructor.
-	GradFractalColor();
+    ///@brief Empty constructor.
+    GradientColorPalette();
 
-	///@brief Assign wxString parameter according to the style selected.
-	///@param style Style selected.
-	void SetStyle(GRAD_STYLES style);
+    ///@brief Assign wxString parameter according to the style selected.
+    ///@param style Style selected.
+    void SetStyle(GRAD_STYLES style);
 };
 
 #endif

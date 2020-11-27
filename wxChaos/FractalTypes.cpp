@@ -905,7 +905,7 @@ MandelbrotZN::MandelbrotZN(sf::RenderWindow *Window):Fractal(Window)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     smoothRender = false;
-    colorPaletteMode = EST_MODE;
+    colorPaletteMode = GAUSSIAN;
     myRender = new RenderMandelbrotZN[threadNumber];
     SetWatchdog<RenderMandelbrotZN>(myRender, &watchdog, threadNumber);
 
@@ -1771,7 +1771,7 @@ JuliaZN::JuliaZN(sf::RenderWindow *Window):Fractal(Window)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     smoothRender = false;
-    colorPaletteMode = EST_MODE;
+    colorPaletteMode = GAUSSIAN;
     myRender = new RenderJuliaZN[threadNumber];
     SetWatchdog<RenderJuliaZN>(myRender, &watchdog, threadNumber);
 
@@ -6889,7 +6889,7 @@ UserDefined::UserDefined(sf::RenderWindow *Window) : Fractal(Window)
 
     type = USER_DEFINED;
     hasOrbit = true;
-    myRender = new RenderUserDefined[1];
+    myRender = new RenderUserDefined[threadNumber];
     SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
@@ -6962,11 +6962,7 @@ wxString UserDefined::AskInfo(double real, double imag, int iter)
     else
     {
         mup::ParserX parser;
-    #ifdef UNICODE
         parser.SetExpr(userFormula.userFormula.wc_str());
-    #else
-        parser.SetExpr(string(userFormula.userFormula.mb_str()));
-    #endif
 
         int bailout = userFormula.bailout;
         mup::Value zVal;
@@ -7010,11 +7006,7 @@ wxString UserDefined::AskInfo(double real, double imag, int iter)
 wxString UserDefined::SaveOrbit(double real, double imag, int iter, wxString filepath)
 {
     mup::ParserX parser;
-#ifdef UNICODE
     parser.SetExpr(userFormula.userFormula.wc_str());
-#else
-    parser.SetExpr(string(userFormula.userFormula.mb_str()));
-#endif
 
     vector< complex<double> > zVector;
     int squaredBail = userFormula.bailout*userFormula.bailout;
@@ -7067,12 +7059,7 @@ void UserDefined::DrawOrbit()
     bool julia = userFormula.julia;
     vector< complex<double> > zVector;
     mup::ParserX parser;
-
-#ifdef UNICODE
     parser.SetExpr(userFormula.userFormula.wc_str());
-#else
-    parser.SetExpr(string(userFormula.userFormula.mb_str()));
-#endif
 
     int bailout = userFormula.bailout;
     mup::Value zVal;
@@ -7148,11 +7135,7 @@ void RenderFPUserDefined::SetFormula(FormulaOpt formula)
 void RenderFPUserDefined::Render()
 {
     mup::ParserX  parser;
-#ifdef UNICODE
     parser.SetExpr(parserFormula.wc_str());
-#else
-    parser.SetExpr(string(parserFormula.mb_str()));
-#endif
 
     // Creates fractal.
     double z_y;
@@ -7315,11 +7298,7 @@ wxString FPUserDefined::AskInfo(double real, double imag, int iter)
     else
     {
         mup::ParserX parser;
-    #ifdef UNICODE
         parser.SetExpr(userFormula.userFormula.wc_str());
-    #else
-        parser.SetExpr(string(userFormula.userFormula.mb_str()));
-    #endif
 
         mup::Value zVal, z_antVal;
         parser.DefineVar(_T("z"), mup::Variable(&zVal));
@@ -7357,11 +7336,7 @@ wxString FPUserDefined::AskInfo(double real, double imag, int iter)
 wxString FPUserDefined::SaveOrbit(double real, double imag, int iter, wxString filepath)
 {
     mup::ParserX parser;
-#ifdef UNICODE
     parser.SetExpr(userFormula.userFormula.wc_str());
-#else
-    parser.SetExpr(string(userFormula.userFormula.mb_str()));
-#endif
 
     vector< complex<double> > zVector;
 
@@ -7409,11 +7384,8 @@ void FPUserDefined::DrawOrbit()
 {
     vector< complex<double> > zVector;
     mup::ParserX parser;
-#ifdef UNICODE
     parser.SetExpr(userFormula.userFormula.wc_str());
-#else
-    parser.SetExpr(string(userFormula.userFormula.mb_str()));
-#endif
+
     mup::Value zVal;
     parser.DefineVar(_T("z"), mup::Variable(&zVal));
     parser.DefineVar(_T("Z"), mup::Variable(&zVal));
@@ -7517,7 +7489,7 @@ void RenderScriptFractal::Render()
     r = engine->RegisterGlobalProperty("int paletteSize", &myOpt.paletteSize); assert( r >= 0 );
 
     // Compile the script code.
-    r = CompileScript(engine, path);
+    r = CompileScriptFromPath(engine, path);
     if( r < 0 )
     {
         engine->Release();

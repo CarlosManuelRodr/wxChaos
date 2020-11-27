@@ -56,7 +56,7 @@ void FuncDialog::OnClose(wxCommandEvent& event)
 }
 
 // FormulaDialog
-FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, EST_STYLES* mColorStyle, wxMenuItem* juliaSlider, wxMenuItem* juliaManual,
+FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GAUSS_STYLES* mColorStyle, wxMenuItem* juliaSlider, wxMenuItem* juliaManual,
                                 bool *Active, FractalCanvas* _fCanvas, wxWindow* _parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
                             : wxDialog(_parent, id, title, pos, size, style)
 {

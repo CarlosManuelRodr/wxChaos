@@ -23,8 +23,8 @@
 */
 struct PauseContinueButton
 {
-	wxMenuItem* pauseContinue;
-	bool state;
+    wxMenuItem* pauseContinue;
+    bool state;
 };
 
 /**
@@ -33,9 +33,9 @@ struct PauseContinueButton
 */
 struct MainWindowStatus
 {
-	wxStatusBar* status;
-	wxMenuItem* showOrbit;
-	wxMenuItem* slider;
+    wxStatusBar* status;
+    wxMenuItem* showOrbit;
+    wxMenuItem* slider;
 };
 
 
@@ -48,132 +48,132 @@ struct MainWindowStatus
 */
 class FractalCanvas : public wxSFMLCanvas
 {
-	// Fractal
-	FractalHandler fractalHandler;
-	SelectRect *selection;
-	ButtonChange *play;
-	ScreenPointer *pointer;
-	FRACTAL_TYPE type;
-	Fractal *target;					///< Internally the methods of this class communicate with the fractal through this pointer.
-	CommandFrame* commandTarget;
+    // Fractal
+    FractalHandler fractalHandler;
+    SelectRect *selection;
+    ButtonChange *play;
+    ScreenPointer *pointer;
+    FRACTAL_TYPE type;
+    Fractal *target;                    ///< Internally the methods of this class communicate with the fractal through this pointer.
+    CommandFrame* commandTarget;
 
-	sf::Image keybImage;				// Texture of the info images.
-	sf::Image mouseImage;
-	sf::Image helpImage;
-	sf::Sprite outKeyb;					// Sprite of the info images.
-	sf::Sprite outMouse;
-	sf::Sprite outHelp;
+    sf::Image keybImage;                // Texture of the info images.
+    sf::Image mouseImage;
+    sf::Image helpImage;
+    sf::Sprite outKeyb;                 // Sprite of the info images.
+    sf::Sprite outMouse;
+    sf::Sprite outHelp;
 
     /* Since Linux can't handle wxSfml and a separate Sfml window the Julia fractal will be
        displayed on the fractal canvas. */
 #ifdef __linux__
-	sf::Image juliaImage;
-	sf::Sprite outJulia;
-	FractalHandler juliaHandler;
+    sf::Image juliaImage;
+    sf::Sprite outJulia;
+    FractalHandler juliaHandler;
 #endif
 
-	FormulaOpt userFormula;
-	ScriptData scriptData;
+    FormulaOpt userFormula;
+    ScriptData scriptData;
 
-	sf::Event event;
-	wxSize wSize;							///< Size of the fractalCanvas.
-    virtual void OnUpdate();				///< Handles the SFML events and the drawing of the textures.
+    sf::Event event;
+    wxSize wSize;                          ///< Size of the fractalCanvas.
+    virtual void OnUpdate();               ///< Handles the SFML events and the drawing of the textures.
 
-	bool juliaMode;							///< State of the Julia mode.
-	double kReal;
-	double kImaginary;
-	double prevKReal;
-	double prevKImag;
-	bool pointerChange;					///< If there is a change in the pointer this one is activated.
-	bool keybGuide;						///< State of the keyboard guide.
-	bool keybGuideMode;
-	bool helpImageMode;
-	bool orbitMode;
-	bool sliderMode;
-	bool onUpdate;
+    bool juliaMode;                        ///< State of the Julia mode.
+    double kReal;
+    double kImaginary;
+    double prevKReal;
+    double prevKImag;
+    bool pointerChange;                    ///< If there is a change in the pointer this one is activated.
+    bool keybGuide;                        ///< State of the keyboard guide.
+    bool keybGuideMode;
+    bool helpImageMode;
+    bool orbitMode;
+    bool sliderMode;
+    bool onUpdate;
 
-	MainWindowStatus statusData;
-	PauseContinueButton* btn;
+    MainWindowStatus statusData;
+    PauseContinueButton* btn;
 
 public :
-	///@brief Constructor
-	///@param status Pointer to the status bar of the MainFrame.
-	///@param pcb Pointer to struct that holds the adress of the pause button and it's status.
-	///@param fractType Type of the fractal to be created.
-	///@param parent Parent wxWindow.
+    ///@brief Constructor
+    ///@param status Pointer to the status bar of the MainFrame.
+    ///@param pcb Pointer to struct that holds the adress of the pause button and it's status.
+    ///@param fractType Type of the fractal to be created.
+    ///@param parent Parent wxWindow.
     FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FRACTAL_TYPE fractType, wxWindow* Parent, wxWindowID Id,
                     const wxPoint& Position, const wxSize& Size, long Style = 0);
-	~FractalCanvas();
+    ~FractalCanvas();
 
-	///@brief Changes the size of the canvas.
-	///@param size New size. Must be the size of the parent container.
-	void SetWxSize(wxSize size);
+    ///@brief Changes the size of the canvas.
+    ///@param size New size. Must be the size of the parent container.
+    void SetWxSize(wxSize size);
 
-	///@brief Changes the Julia mode.
-	///@param mode New mode.
-	void SetJuliaMode(bool mode);
+    ///@brief Changes the Julia mode.
+    ///@param mode New mode.
+    void SetJuliaMode(bool mode);
 
-	///@return Real value of the K constant.
-	double GetKReal();
+    ///@return Real value of the K constant.
+    double GetKReal();
 
-	///@return Imaginary value of the K constant.
-	double GetKImaginary();
+    ///@return Imaginary value of the K constant.
+    double GetKImaginary();
 
-	///@brief State of the ScreenPointer.
-	///@return true if there was a change in the pointer. false if not.
-	bool ChangeInPointer();
+    ///@brief State of the ScreenPointer.
+    ///@return true if there was a change in the pointer. false if not.
+    bool ChangeInPointer();
 
-	///@brief Changes the fractal type.
-	///@param _type New fractal type.
-	void ChangeType(FRACTAL_TYPE _type);
+    ///@brief Changes the fractal type.
+    ///@param _type New fractal type.
+    void ChangeType(FRACTAL_TYPE _type);
 
-	///@brief Like ChangeType but used when a script fractal selected.
-	///@param _scriptData Script parameters.
-	void ChangeToScript(ScriptData _scriptData);
+    ///@brief Like ChangeType but used when a script fractal selected.
+    ///@param _scriptData Script parameters.
+    void ChangeToScript(ScriptData _scriptData);
 
-	///@return A pointer to the fractal.
-	Fractal *GetTarget();
+    ///@return A pointer to the fractal.
+    Fractal *GetTarget();
 
-	///@brief Sets the keyboard guide mode.
-	///@param mode New mode.
-	void SetKeybGuide(bool mode);
+    ///@brief Sets the keyboard guide mode.
+    ///@param mode New mode.
+    void SetKeybGuide(bool mode);
 
-	///@brief Shows the help image.
-	void ShowHelpImage();
+    ///@brief Shows the help image.
+    void ShowHelpImage();
 
-	///@brief Resets the fractal. Internally it deletes it and creates a new one exactly the same.
-	void Reset();
+    ///@brief Resets the fractal. Internally it deletes it and creates a new one exactly the same.
+    void Reset();
 
-	///@brief Sets the orbit mode.
-	///@param mode New mode.
-	void SetOrbitMode(bool mode);
+    ///@brief Sets the orbit mode.
+    ///@param mode New mode.
+    void SetOrbitMode(bool mode);
 
-	///@brief Sets the slider mode.
-	///@param mode New mode.
-	void SetSliderMode(bool mode);
+    ///@brief Sets the slider mode.
+    ///@param mode New mode.
+    void SetSliderMode(bool mode);
 
-	///@brief Sets a pointer to the command console. Used to send information there.
-	///@param _infoTarget Pointer to the console frame.
-	void SetCommandConsole(CommandFrame* _infoTarget);
+    ///@brief Sets a pointer to the command console. Used to send information there.
+    ///@param _infoTarget Pointer to the console frame.
+    void SetCommandConsole(CommandFrame* _infoTarget);
 
-	///@brief Sets the user formula.
-	///@param _userFormula Formula specified by the user.
-	void SetUserFormula(FormulaOpt _userFormula);
+    ///@brief Sets the user formula.
+    ///@param _userFormula Formula specified by the user.
+    void SetUserFormula(FormulaOpt _userFormula);
 
-	///@return Formula in the user defined fractal.
-	FormulaOpt GetFormula();
+    ///@return Formula in the user defined fractal.
+    FormulaOpt GetFormula();
 
-	///@brief Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
-	void OnMoveMouse(wxMouseEvent &event);
+    ///@brief Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
+    void OnMoveMouse(wxMouseEvent &event);
 
-	void OnClick(wxMouseEvent &event);
-	void OnUnClick(wxMouseEvent &event);
+    void OnClick(wxMouseEvent &event);
+    void OnUnClick(wxMouseEvent &event);
 
-	///@brief Resizes the frame.
-	void OnResize(wxSizeEvent &event);
+    ///@brief Resizes the frame.
+    void OnResize(wxSizeEvent &event);
 
-	void OnKeyDown(wxKeyEvent& event);
-	void OnKeyUp(wxKeyEvent& event);
+    void OnKeyDown(wxKeyEvent& event);
+    void OnKeyUp(wxKeyEvent& event);
 };
 
 extern FractalCanvas* fractalCanvasPtr;

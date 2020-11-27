@@ -13,7 +13,7 @@ SelectRect::SelectRect(sf::RenderWindow *Window)
     pos.Right = 0;
 
     color = sf::Color(0, 0, 255, 100);
-    texture.Create(Window->GetWidth(), Window->GetHeight(), color);
+    texture.Create(500, 500, color);
     output.SetImage(texture);
 }
 void SelectRect::Show(sf::RenderWindow *Window)

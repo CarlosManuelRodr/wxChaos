@@ -275,7 +275,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     fractalType = opt.type;
     fractalCanvas = new FractalCanvas(statusData, &pauseBtn, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
 
-    if(opt.mode == EST_MODE)
+    if(opt.mode == GAUSSIAN)
         fractalCanvas->GetTarget()->SetESTStyle(colorStyle);
     else
     {
@@ -922,7 +922,7 @@ void MainFrame::GetParserOpt()
         colorOpt.push_back("EST_Mode");
         vector<COLOR_MODE> colorValues;
         colorValues.push_back(GRADIENT);
-        colorValues.push_back(EST_MODE);
+        colorValues.push_back(GAUSSIAN);
 
         fractalOpt.push_back("Mandelbrot");
         fractalOpt.push_back("MandelbrotZN");
@@ -983,7 +983,7 @@ void MainFrame::GetParserOpt()
         styleOpt.push_back("Pastel");
         styleOpt.push_back("Psych_Experience");
         styleOpt.push_back("Vivid_Colors");
-        vector<EST_STYLES> styleValues;
+        vector<GAUSS_STYLES> styleValues;
         styleValues.push_back(SUMMER_DAY);
         styleValues.push_back(COOL_BLUE);
         styleValues.push_back(HARD_RED);
@@ -992,7 +992,7 @@ void MainFrame::GetParserOpt()
         styleValues.push_back(PSYCH_EXPERIENCE);
         styleValues.push_back(VIVID_COLORS);
 
-        p.OptionToVar<COLOR_MODE>(opt.mode, "COLOR_TYPE", colorOpt, colorValues, EST_MODE);
+        p.OptionToVar<COLOR_MODE>(opt.mode, "COLOR_TYPE", colorOpt, colorValues, GAUSSIAN);
         p.OptionToVar<FRACTAL_TYPE>(opt.type, "FRACTAL_TYPE", fractalOpt, fractalValues, MANDELBROT);
         p.IntArgToVar(opt.maxIterations, "DEFAULT_ITERATION", 100);
         if(opt.mode == GRADIENT)
@@ -1250,7 +1250,7 @@ void MainFrame::GetScriptFractals()
         filePath += "/UserScripts/";
     #endif
         filePath += filesInFolder[i];
-        r = CompileScript(engine, filePath);
+        r = CompileScriptFromPath(engine, filePath);
         if( r < 0 )
         {
             string errorMsg = "Compile error in file: ";

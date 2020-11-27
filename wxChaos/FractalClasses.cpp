@@ -10,7 +10,7 @@
 
 const int stdSpeed = 1;
 const GRAD_STYLES defaultGradStyle = RETRO;
-const EST_STYLES defaultEstStyle = SUMMER_DAY;
+const GAUSS_STYLES defaultEstStyle = SUMMER_DAY;
 
 
 inline double CalcSquaredDist(const double x1, const double y1, const double x2, const double y2)
@@ -25,8 +25,7 @@ int Get_Cores()
     SYSTEM_INFO sysinfo;
     GetSystemInfo(&sysinfo);
 
-    //return sysinfo.dwNumberOfProcessors;
-    return 2;
+    return sysinfo.dwNumberOfProcessors;
 #endif
 
 #ifdef linux
@@ -238,7 +237,7 @@ Fractal::Fractal(int width, int height)
     relativeColor = false;
     gradPaletteSize = 300;
     alg = OTHER;
-    colorPaletteMode = EST_MODE;
+    colorPaletteMode = GAUSSIAN;
     estStyle = defaultEstStyle;
     gradStyle = defaultGradStyle;
     gradient.fromString(wxString(wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);")));
@@ -304,7 +303,7 @@ Fractal::Fractal(sf::RenderWindow *Window)
     output.SetImage(image);
     tempSprite.SetImage(tempImage);
     outGeom.SetImage(geomImage);
-    font.LoadFromFile(GetAbsPath("Resources/DiavloFont.otf"));
+    font.LoadFromFile(GetAbsPath("Resources/PublicSans-Regular.otf"));
     text.SetFont(font);
 
     // Set fractal properties.
@@ -377,7 +376,7 @@ Fractal::Fractal(sf::RenderWindow *Window)
     alg = OTHER;
     estStyle = defaultEstStyle;
     gradStyle = defaultGradStyle;
-    colorPaletteMode = EST_MODE;
+    colorPaletteMode = GAUSSIAN;
     gradient.fromString(wxString(wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);")));
     gradient.setMin(0);
     gradient.setMax(gradPaletteSize);
@@ -571,10 +570,10 @@ void Fractal::Show(sf::RenderWindow *Window)
             }
 
             // Creates support layer.
-            base.Create(153 + (12*digits), 35, sf::Color(0, 0, 0, 100));
+            base.Create(148 + (12*digits), 35, sf::Color(0, 0, 0, 100));
             baseSprite.SetPosition(0, 0);
             baseSprite.SetImage(base);
-            baseSprite.Resize(static_cast<float>(153 + (12*digits)), static_cast<float>(35));
+            baseSprite.Resize(static_cast<float>(148 + (12*digits)), static_cast<float>(35));
 
             // Writes text.
             string temp;
@@ -1603,7 +1602,7 @@ void Fractal::PrepareSnapshot(bool mode)
 void Fractal::SetInt(int intensidad, COLOR col)
 {
     // Changes intensity value.
-    colorPaletteMode = EST_MODE;
+    colorPaletteMode = GAUSSIAN;
     if(col == red)
     {
         redInt = intensidad;
@@ -1621,7 +1620,7 @@ void Fractal::SetInt(int intensidad, COLOR col)
 void Fractal::SetMed(double med, COLOR col)
 {
     // Changes mean value.
-    colorPaletteMode = EST_MODE;
+    colorPaletteMode = GAUSSIAN;
     if(col == red)
     {
         redMed = med;
@@ -1639,7 +1638,7 @@ void Fractal::SetMed(double med, COLOR col)
 void Fractal::SetDes(double des, COLOR col)
 {
     // Changes standard deviation value.
-    colorPaletteMode = EST_MODE;
+    colorPaletteMode = GAUSSIAN;
     if(col == red)
     {
         redDes = des;
@@ -1704,11 +1703,11 @@ double Fractal::GetDes(COLOR col)
 }
 
 // Color styles.
-void Fractal::SetESTStyle(EST_STYLES _estStyle)
+void Fractal::SetESTStyle(GAUSS_STYLES _estStyle)
 {
     // Changes color palette.
     estStyle = _estStyle;
-    ESTFractalColor c;
+    GaussianColorPalette c;
     c.SetStyle(estStyle);
 
     // Sets parameters for new palette.
@@ -1736,7 +1735,7 @@ void Fractal::SetESTStyle(EST_STYLES _estStyle)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
     }
 }
-EST_STYLES Fractal::GetESTSyle()
+GAUSS_STYLES Fractal::GetESTSyle()
 {
     return estStyle;
 }

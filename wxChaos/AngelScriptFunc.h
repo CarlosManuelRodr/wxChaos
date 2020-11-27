@@ -68,7 +68,7 @@ extern bool noSetMap;
 ///@brief Compiles angelscript file.
 ///@param engine Pointer to the angelscript engine which will hold the script.
 ///@param filepath Path to the script.
-int CompileScript(asIScriptEngine *engine, const std::string filePath);
+int CompileScriptFromPath(asIScriptEngine *engine, const std::string filePath);
 
 ///@brief Register the functions used by the scripts.
 ///@param engine Pointer to the angelscript engine which will hold the script.

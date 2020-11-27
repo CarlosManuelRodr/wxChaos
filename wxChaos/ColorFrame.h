@@ -20,7 +20,7 @@
 #include "gradientdlg.h"
 
 #ifdef _WIN32
-#define ColorFrameSize wxSize( 672,555 )
+#define ColorFrameSize wxSize( 672, 650 )
 #elif __linux__
 #define ColorFrameSize wxSize( 690,600 )
 #endif
@@ -81,12 +81,12 @@ class ColorFrame : public wxFrame
     wxSpinCtrl* gradPalSize;
     wxStaticText* colorVarText;
     wxSlider* colorVarSlider;
-
-    Fractal *target;                         ///< Target fractal.
-    bool *active;                            ///< Used to communicate with the MainFrame.
-    sf::Color setColor;                      ///< Color of the fractal set.
-    ESTFractalColor estFractalColor;         ///< Color in EST color mode.
-    GradFractalColor gradFractalColor;       ///< Color in Grad color mode.
+    
+    Fractal *target;                               ///< Target fractal.
+    bool *active;                                  ///< Used to communicate with the MainFrame.
+    sf::Color setColor;                            ///< Color of the fractal set.
+    GaussianColorPalette estFractalColor;          ///< Color in EST color mode.
+    GradientColorPalette gradFractalColor;         ///< Color in Grad color mode.
     int escapeTimeIndex, gaussIntIndex, buddhabrotIndex;
     int escapeAngleIndex, triangleIneqIndex, chaoticMapIndex;
     int lyapunovIndex, convergenceTestIndex;
@@ -104,7 +104,8 @@ class ColorFrame : public wxFrame
     void OnSetBlue( wxScrollEvent& event );
     void OnOk( wxCommandEvent& event );
     void OnGrad( wxCommandEvent& event );
-    void ESTChangeSelection( wxCommandEvent& event );
+    void GaussianColorChangeSelection( wxCommandEvent& event );
+    void GradientColorChangeSelection(wxCommandEvent& event);
     void OnPaletteSize( wxSpinEvent& event );
     void ChangeIntRed( wxScrollEvent& event );
     void ChangePosRed( wxScrollEvent& event );
@@ -116,12 +117,11 @@ class ColorFrame : public wxFrame
     void ChangePosBlue( wxScrollEvent& event );
     void ChangeDesBlue( wxScrollEvent& event );
     void OnGradPaletteSize( wxSpinEvent& event );
-    void GradChangeSelection( wxCommandEvent& event );
     void OnColorVar( wxScrollEvent& event );
 
     void ConnectEvents();
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
-    wxBitmap PaintGradient();        ///< Paints the gradient widget.
+    wxBitmap PaintGradient();          ///< Paints the gradient widget.
 
 
 public:

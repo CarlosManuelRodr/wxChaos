@@ -22,7 +22,7 @@ bool extColor = true;
 bool noSetMap = false;
 string consoleText;
 
-int CompileScript(asIScriptEngine *engine, const string filePath)
+int CompileScriptFromPath(asIScriptEngine *engine, const string filePath)
 {
     int r;
 

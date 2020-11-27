@@ -3,11 +3,11 @@
 #include "global.h"
 
 
-ESTFractalColor::ESTFractalColor()
+GaussianColorPalette::GaussianColorPalette()
 {
 
 }
-void ESTFractalColor::SetStyle(EST_STYLES style)
+void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
 {
     // Sets the parameters of each color style.
     switch(style)
@@ -116,11 +116,11 @@ void ESTFractalColor::SetStyle(EST_STYLES style)
     };
 }
 
-GradFractalColor::GradFractalColor()
+GradientColorPalette::GradientColorPalette()
 {
 
 }
-void GradFractalColor::SetStyle(GRAD_STYLES style)
+void GradientColorPalette::SetStyle(GRAD_STYLES style)
 {
     // Sets the wxString parameter of each color style.
     switch(style)
@@ -521,7 +521,7 @@ ColorFrame::~ColorFrame()
 void ColorFrame::ConnectEvents()
 {
     this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( ColorFrame::OnClose ) );
-    gradStylesChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ColorFrame::GradChangeSelection ), NULL, this );
+    gradStylesChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ColorFrame::GradientColorChangeSelection ), NULL, this );
     algorithmChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ColorFrame::OnChangeAlgorithm ), NULL, this );
     relativeCheck->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ColorFrame::OnRelativeColor ), NULL, this );
     gradPalSize->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ColorFrame::OnGradPaletteSize ), NULL, this );
@@ -559,7 +559,7 @@ void ColorFrame::ConnectEvents()
     blueSetSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
     okButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ColorFrame::OnOk ), NULL, this );
     gradButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ColorFrame::OnGrad ), NULL, this );
-    ESTStylesChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ColorFrame::ESTChangeSelection ), NULL, this );
+    ESTStylesChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ColorFrame::GaussianColorChangeSelection ), NULL, this );
     pSizeSpin->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ColorFrame::OnPaletteSize ), NULL, this );
     redIntSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeIntRed ), NULL, this );
     redIntSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeIntRed ), NULL, this );
@@ -903,14 +903,14 @@ void ColorFrame::OnOk(wxCommandEvent& event)
 {
     this->Destroy();
 }
-void ColorFrame::ESTChangeSelection(wxCommandEvent& event)
+void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
 {
     // Change colors according to selection.
     estFractalColor.redInt = redIntSld->GetValue(); estFractalColor.greenInt = greenIntSld->GetValue(); estFractalColor.blueInt = blueIntSld->GetValue();
     estFractalColor.redMed = redPosSld->GetValue(); estFractalColor.greenMed = greenPosSld->GetValue(); estFractalColor.blueMed = bluePosSld->GetValue();
     estFractalColor.redDes = redDesSld->GetValue(); estFractalColor.greenDes = greenDesSld->GetValue(); estFractalColor.blueDes = blueDesSld->GetValue();
 
-    estFractalColor.SetStyle(static_cast<EST_STYLES>(ESTStylesChoice->GetCurrentSelection()));
+    estFractalColor.SetStyle(static_cast<GAUSS_STYLES>(ESTStylesChoice->GetCurrentSelection()));
     int paletteSize = estFractalColor.paletteSize;
     redPosSld->SetRange(0, paletteSize);
     greenPosSld->SetRange(0, paletteSize);
@@ -918,7 +918,7 @@ void ColorFrame::ESTChangeSelection(wxCommandEvent& event)
     colorVarSlider->SetRange(0, paletteSize);
     pSizeSpin->SetValue(paletteSize);
     target->SetPaletteSize(paletteSize);
-    target->SetESTStyle(static_cast<EST_STYLES>(ESTStylesChoice->GetCurrentSelection()));
+    target->SetESTStyle(static_cast<GAUSS_STYLES>(ESTStylesChoice->GetCurrentSelection()));
 
     // Red
     // Intensity
@@ -988,7 +988,7 @@ void ColorFrame::ESTChangeSelection(wxCommandEvent& event)
     text += num_to_string(estFractalColor.blueDes);
     blueDesText->SetLabel(text);
 }
-void ColorFrame::GradChangeSelection( wxCommandEvent& event )
+void ColorFrame::GradientColorChangeSelection( wxCommandEvent& event )
 {
     // Changes the gradStyle.
     gradFractalColor.SetStyle(static_cast<GRAD_STYLES>(gradStylesChoice->GetCurrentSelection()));
@@ -1173,7 +1173,7 @@ void ColorFrame::OnPageChange( wxNotebookEvent& event )
         if(event.GetSelection() == 0)
             target->SetPaletteMode(GRADIENT);
         else
-            target->SetPaletteMode(EST_MODE);
+            target->SetPaletteMode(GAUSSIAN);
         typeNotebook->ChangeSelection(event.GetSelection());
         colorVarSlider->SetRange(0, target->GetPaletteSize());
     }

@@ -90,7 +90,7 @@ enum ALGORITHM
 enum COLOR_MODE
 {
     GRADIENT,
-    EST_MODE
+    GAUSSIAN
 };
 
 /**
@@ -223,12 +223,12 @@ protected:
     int ho;        ///< Upper render limit.
     int wf;        ///< Right render limit.
     int hf;        ///< Bottom render limit.
-    int oldHo;    ///< Previus upper render limit.
+    int oldHo;     ///< Previus upper render limit.
 
     bool threadRunning;         ///< Flag to stop the thread.
     bool stopped;
-    bool specialRenderMode;        ///< Controls the rendering modes.
-    Options myOpt;                ///< A copy of the parameters found in the Fractal class.
+    bool specialRenderMode;     ///< Controls the rendering modes.
+    Options myOpt;              ///< A copy of the parameters found in the Fractal class.
 
     FRACTAL_TYPE type;
     double xFactor;
@@ -329,9 +329,9 @@ public:
 */
 template<class MT> class ThreadWatchdog : public sf::Thread        // Controla el estado de las threads.
 {
-    MT** threadList;        ///< An array with pointers to the execution threads.
-    bool threadRunning;        ///< State of the threads.
-    unsigned int threadCounter;        ///< Number of threads to watch over.
+    MT** threadList;               ///< An array with pointers to the execution threads.
+    bool threadRunning;            ///< State of the threads.
+    unsigned int threadCounter;    ///< Number of threads to watch over.
 
 public:
     ThreadWatchdog();
@@ -513,27 +513,27 @@ protected:
     FormulaOpt userFormula;         ///< Formula specified by the user.
 
     // System.
-    unsigned int threadNumber;        ///< Number of threads. By default is the same as the number of cores in the system.
+    unsigned int threadNumber;      ///< Number of threads. By default is the same as the number of cores in the system.
 
     // Julia variables.
     double kReal;
     double kImaginary;
 
     // Image properties.
-    int xVel, yVel;                            ///< Speed of movement of the fractal image.
-    int posX, posY;                            ///< Positionof the fractal image.
-    int xMoved, yMoved;                        ///< Total movement of the image. Used just before redering a new area.
+    int xVel, yVel;                 ///< Speed of movement of the fractal image.
+    int posX, posY;                 ///< Positionof the fractal image.
+    int xMoved, yMoved;             ///< Total movement of the image. Used just before redering a new area.
 
-    sf::Image image;                        ///< Layer where the output image is created.
-    sf::Sprite output;                        ///< Sprite to draw the output image.
-    vector<sf::Image> imgVector;            ///< Vector of rendering images that are loaded on zoomback.
+    sf::Image image;                ///< Layer where the output image is created.
+    sf::Sprite output;              ///< Sprite to draw the output image.
+    vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
     sf::Font font;
     sf::String text;
     wxString tempText;
-    sf::Image tempImage;                    ///< Temporary image. Shows low res image while renering.
-    sf::Sprite tempSprite;                    ///< tempImage sprite.
+    sf::Image tempImage;            ///< Temporary image. Shows low res image while renering.
+    sf::Sprite tempSprite;          ///< tempImage sprite.
 
-    vector<double> zoom[4];                    ///< Saves the performed zooms.
+    vector<double> zoom[4];         ///< Saves the performed zooms.
     int screenWidth;
     int screenHeight;
     int backScreenWidth;
@@ -552,14 +552,14 @@ protected:
     sf::Uint8* greenPalette;
     sf::Uint8* bluePalette;
     sf::Color* palette;
-    int redInt, greenInt, blueInt;            // Intensity parameters.
-    double redMed, greenMed, blueMed;        // Mean parameters.
-    double redDes, greenDes, blueDes;        // Standard deviation parameters.
+    int redInt, greenInt, blueInt;          // Intensity parameters.
+    double redMed, greenMed, blueMed;       // Mean parameters.
+    double redDes, greenDes, blueDes;       // Standard deviation parameters.
     bool relativeColor;
-    bool colorSet;                            ///< Activates internal coloring.
-    bool colorMode;                            ///< Activates external coloring.
-    EST_STYLES estStyle;                    ///< EST color palette to be used.
-    GRAD_STYLES gradStyle;                    ///< Grad color palette to be used.
+    bool colorSet;                          ///< Activates internal coloring.
+    bool colorMode;                         ///< Activates external coloring.
+    GAUSS_STYLES estStyle;                  ///< Gaussian color palette to be used.
+    GRAD_STYLES gradStyle;                  ///< Grad color palette to be used.
     int paletteSize;
     int estPaletteSize;
     int gradPaletteSize;
@@ -574,7 +574,7 @@ protected:
     bool paused;
     bool pausing;
     bool changeFractalIter;
-    bool varGradient;                        ///< If this is activated (by the play button) the gradient variation mode starts.
+    bool varGradient;                       ///< If this is activated (by the play button) the gradient variation mode starts.
     bool onSnapshot;
     bool waitRoutine;
     bool redrawAll;
@@ -586,7 +586,7 @@ protected:
     bool zoomingBack;
     bool dontDrawTempImage;
     bool varGradChange;
-    bool renderJobComp;                        ///< Fractal compatible with renderJobs.
+    bool renderJobComp;                     ///< Fractal compatible with renderJobs.
     bool changeFractalProp;
     bool onWxCtrl;
     vector<Coord> endPoints;
@@ -783,8 +783,8 @@ public:
     void PrepareSnapshot( bool mode );
 
     // Color styles.
-    void SetESTStyle( EST_STYLES _estStyle );
-    EST_STYLES GetESTSyle();
+    void SetESTStyle( GAUSS_STYLES _estStyle );
+    GAUSS_STYLES GetESTSyle();
     void SetGradStyle( GRAD_STYLES _gradStyle );
     GRAD_STYLES GetGradStyle();
 
