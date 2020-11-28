@@ -22,11 +22,11 @@ typedef int int32;
 */
 struct BMPHeader
 {
-	uint16 identifier;
-	uint32 size;
-	uint16 appSpecific1;
-	uint16 appSpecific2;
-	uint32 bitmapData;
+    uint16 identifier;
+    uint32 size;
+    uint16 appSpecific1;
+    uint16 appSpecific2;
+    uint32 bitmapData;
 };
 
 /**
@@ -35,17 +35,17 @@ struct BMPHeader
 */
 struct DIBHeader
 {
-	uint32 headerSize;
-	int32 width;
-	int32 height;
-	uint16 nPlanes;
-	uint16 colorDepth;
-	uint32 compression;
-	uint32 bmpBytes;
-	int32 hRes;
-	int32 vRes;
-	uint32 nColors;
-	uint32 nImpColors;
+    uint32 headerSize;
+    int32 width;
+    int32 height;
+    uint16 nPlanes;
+    uint16 colorDepth;
+    uint32 compression;
+    uint32 bmpBytes;
+    int32 hRes;
+    int32 vRes;
+    uint32 nColors;
+    uint32 nImpColors;
 };
 
 /**
@@ -54,7 +54,7 @@ struct DIBHeader
 */
 struct BMPPixel
 {
-	char r, g, b;	
+    char r, g, b;    
 };
 
 /**
@@ -67,27 +67,27 @@ struct BMPPixel
 */
 class BMPWriter
 {
-	BMPHeader* myBmpHdr;
-	DIBHeader* myDibHdr;
-	std::ofstream file;
-	unsigned int imageWidth;
-	unsigned int imageHeight;
-	unsigned int paddingBytes;
-	int dataSize;
-	unsigned int indexHeight;
+    BMPHeader* myBmpHdr;
+    DIBHeader* myDibHdr;
+    std::ofstream file;
+    unsigned int imageWidth;
+    unsigned int imageHeight;
+    unsigned int paddingBytes;
+    int dataSize;
+    unsigned int indexHeight;
 
 public:
-	///@brief Constructor.
-	///@param filepath Path of file to save.
-	///@param width Width of the image.
-	///@param height Height of the image.
-	BMPWriter(const char* filepath, unsigned int width, unsigned int height);
-	~BMPWriter();
+    ///@brief Constructor.
+    ///@param filepath Path of file to save.
+    ///@param width Width of the image.
+    ///@param height Height of the image.
+    BMPWriter(const char* filepath, unsigned int width, unsigned int height);
+    ~BMPWriter();
 
-	///@brief Writes BMP line.
-	///@param data Array of pixels to write.
-	void WriteLine(BMPPixel* data);
-	void CloseBMP();
+    ///@brief Writes BMP line.
+    ///@param data Array of pixels to write.
+    void WriteLine(BMPPixel* data);
+    void CloseBMP();
 };
 
 #endif  // __bmpWriter

@@ -20,12 +20,12 @@
 */
 class wxSFMLCanvas : public wxControl, public sf::RenderWindow
 {
-public :
-    wxSFMLCanvas(wxWindow* Parent = NULL, wxWindowID Id = -1, const wxPoint& Position = wxDefaultPosition, const wxSize& Size = wxDefaultSize, long Style = 0);
+public:
+    wxSFMLCanvas(wxWindow* Parent = NULL, wxWindowID Id = -1, const wxPoint& Position = wxDefaultPosition, 
+                 const wxSize& Size = wxDefaultSize, long Style = 0);
     virtual ~wxSFMLCanvas();
 
-private :
-
+private:
     DECLARE_EVENT_TABLE()
 
     virtual void OnUpdate();
@@ -33,6 +33,5 @@ private :
     void OnPaint(wxPaintEvent&);
     void OnEraseBackground(wxEraseEvent&);
 };
-
 
 #endif

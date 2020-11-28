@@ -78,219 +78,8 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     wxIcon icon(GetWxAbsPath("Resources\\icon.ico"), wxBITMAP_TYPE_ICO);
 #endif
     this->SetIcon(icon);
-
     this->GetParserOpt();    // Gets configuration from config.ini.
-
-    // Init menu.
-    menubar = new wxMenuBar();
-    fileMenu = new wxMenu();
-    fractalMenu = new wxMenu();
-    iterationsMenu = new wxMenu();
-    toolMenu = new wxMenu();
-    colorMenu = new wxMenu();
-    helpMenu = new wxMenu();
-    formula = new wxMenu();
-    pal = NULL;
-
-    // Formulas.
-    wxMenuItem *mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinoidal, *magnet;
-    wxMenuItem *medusa, *manowar, *manowarJulia, *triangulo, *fixedPoint1, *fixedPoint2;
-    wxMenuItem *fixedPoint3, *fixedPoint4, *logisticMap, *userDefined, *fpUserDefined;
-    wxMenuItem *tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *dPendulum;
-    wxMenuItem *henonMap;
-
-#ifdef _WIN32
-#define menuSeparator wxT('\t')
-#elif __linux__
-#define menuSeparator wxT("    ")
-#endif
-
-    mandelbrot = new wxMenuItem(formula, ID_MANDELBROT, wxString(wxT(menuMandelbrotTxt)) + menuSeparator + wxT("z = z^2 + c") , wxEmptyString, wxITEM_NORMAL);
-    mandelbrotZN = new wxMenuItem(formula, ID_MANDELBROT_ZN, wxString(wxT(menuMandelbrotTxt)) + menuSeparator + wxT("z = z^n + c") , wxEmptyString, wxITEM_NORMAL);
-    julia = new wxMenuItem(formula, ID_JULIA, wxString(wxT(menuJuliaTxt)) + menuSeparator + wxT("z = z^2 + k")  , wxEmptyString, wxITEM_NORMAL);
-    juliaZN = new wxMenuItem(formula, ID_JULIA_ZN, wxString(wxT(menuJuliaTxt)) + menuSeparator + wxT("z = z^n + k")  , wxEmptyString, wxITEM_NORMAL);
-    newton = new wxMenuItem(formula, ID_NEWTON, wxString(wxT(menuNewtonTxt)) + menuSeparator + wxT("z^3 - 1 = 0") , wxEmptyString, wxITEM_NORMAL);
-    sinoidal = new wxMenuItem(formula, ID_SINOIDAL, wxString(wxT(menuSineTxt)) + menuSeparator + wxT("Z = c*Sin(Z)") , wxEmptyString, wxITEM_NORMAL);
-    magnet = new wxMenuItem(formula, ID_MAGNET, wxString(wxT(menuMagnetTxt)) , wxEmptyString, wxITEM_NORMAL);
-    medusa = new wxMenuItem(formula, ID_MEDUSA, wxString(wxT(menuJellyfishTxt)) , wxEmptyString, wxITEM_NORMAL);
-    manowar = new wxMenuItem(formula, ID_MANOWAR, wxString(wxT(menuManowarTxt)) , wxEmptyString, wxITEM_NORMAL);
-    manowarJulia = new wxMenuItem(formula, ID_MANOWAR_JULIA, wxString(wxT(menuManowarJuliaTxt)) , wxEmptyString, wxITEM_NORMAL);
-    triangulo = new wxMenuItem(formula, ID_SIERP_TRIANGLE, wxString(wxT(menuSierpinskiTxt)) , wxEmptyString, wxITEM_NORMAL);
-    fixedPoint1 = new wxMenuItem(formula, ID_FIXEDPOINT1, wxString(wxT(menuFixedPointTxt)) + menuSeparator + wxT("z = sin(z)") , wxEmptyString, wxITEM_NORMAL);
-    fixedPoint2 = new wxMenuItem(formula, ID_FIXEDPOINT2, wxString(wxT(menuFixedPointTxt)) + menuSeparator + wxT("z = cos(z)") , wxEmptyString, wxITEM_NORMAL);
-    fixedPoint3 = new wxMenuItem(formula, ID_FIXEDPOINT3, wxString(wxT(menuFixedPointTxt)) + menuSeparator + wxT("z = tan(z)") , wxEmptyString, wxITEM_NORMAL);
-    fixedPoint4 = new wxMenuItem(formula, ID_FIXEDPOINT4, wxString(wxT(menuFixedPointTxt)) + menuSeparator + wxT("z = z^2") , wxEmptyString, wxITEM_NORMAL);
-    tricorn = new wxMenuItem(formula, ID_TRICORN, wxString(wxT(menuTricornTxt)) , wxEmptyString, wxITEM_NORMAL);
-    burningShip = new wxMenuItem(formula, ID_BURNING_SHIP, wxString(wxT(menuBurningShipTxt)) , wxEmptyString, wxITEM_NORMAL);
-    burningShipJulia = new wxMenuItem(formula, ID_BURNING_SHIP_JULIA, wxString(wxT(menuBurningShipJuliaTxt)) , wxEmptyString, wxITEM_NORMAL);
-    fractory = new wxMenuItem(formula, ID_FRACTORY, wxString(wxT(menuFractoryTxt)) , wxEmptyString, wxITEM_NORMAL);
-    cell = new wxMenuItem(formula, ID_CELL, wxString(wxT(menuCellTxt)) , wxEmptyString, wxITEM_NORMAL);
-    logisticMap = new wxMenuItem(formula, ID_LOGISTIC, wxString(wxT(menuLogisticTxt)) , wxEmptyString, wxITEM_NORMAL);
-    henonMap = new wxMenuItem(formula, ID_HENON_MAP, wxString(wxT(menuHenonMapTxt)) , wxEmptyString, wxITEM_NORMAL);
-    dPendulum = new wxMenuItem(formula, ID_DPENDULUM, wxString(wxT(menuDoublePendulumTxt)) , wxEmptyString, wxITEM_NORMAL);
-    userDefined = new wxMenuItem(formula, ID_USER_DEFINED, wxString(wxT(menuUserFormComplexTxt)) , wxEmptyString, wxITEM_NORMAL);
-    fpUserDefined = new wxMenuItem(formula, ID_FPUSER_DEFINED, wxString(wxT(menuUserFormFixedTxt)) , wxEmptyString, wxITEM_NORMAL);
-
-    typeComplex = new wxMenu();
-    typeNumMet = new wxMenu();
-    typePhysics = new wxMenu();
-    typeOther = new wxMenu();
-
-    typeComplex->Append(mandelbrot);
-    typeComplex->Append(mandelbrotZN);
-    typeComplex->Append(julia);
-    typeComplex->Append(juliaZN);
-    typeComplex->Append(sinoidal);
-    typeComplex->Append(medusa);
-    typeComplex->Append(manowar);
-    typeComplex->Append(manowarJulia);
-    typeComplex->Append(tricorn);
-    typeComplex->Append(burningShip);
-    typeComplex->Append(burningShipJulia);
-    typeComplex->Append(fractory);
-    typeComplex->Append(cell);
-    typeNumMet->Append(newton);
-    typeNumMet->Append(fixedPoint1);
-    typeNumMet->Append(fixedPoint2);
-    typeNumMet->Append(fixedPoint3);
-    typeNumMet->Append(fixedPoint4);
-    typePhysics->Append(magnet);
-    typePhysics->Append(dPendulum);
-    typeOther->Append(triangulo);
-    typeOther->Append(logisticMap);
-    typeOther->Append(henonMap);
-
-    formula->Append(-1, wxT(menuComplexTxt), typeComplex);
-    formula->Append(-1, wxT(menuNumMetTxt), typeNumMet);
-    formula->Append(-1, wxT(menuPhysicTxt), typePhysics);
-    formula->Append(-1, wxT(menuOtherTxt), typeOther);
-    formula->Append(userDefined);
-    formula->Append(fpUserDefined);
-    fractalMenu->Append(wxID_ANY, wxT(menuFormulaTxt), formula);
-
-    // Julia constant.
-    introConstant = new wxMenu();
-    manual = new wxMenuItem(introConstant, ID_ENTER_MAN_CONSTANT, wxString(wxT(menuManualConstTxt)) , wxEmptyString, wxITEM_NORMAL);
-    introConstant->Append(manual);
-    manual->Enable(false);
-
-    statusData.slider = slider = new wxMenuItem(introConstant, ID_ENTER_SLD_CONSTANT, wxString(wxT(menuSliderTxt)) + wxT('\t') + wxT("F1") , wxEmptyString, wxITEM_CHECK);
-    introConstant->Append(slider);
-    slider->Enable(false);
-    slider->Check(false);
-    fractalMenu->Append(-1, wxT(menuEnterConstTxt), introConstant);
-
-    // Julia constant and show orbit.
-    juliaMode = new wxMenuItem(fractalMenu, ID_JULIA_MODE, wxString(wxT(menuJuliaModeTxt)), wxEmptyString, wxITEM_CHECK);
-    statusData.showOrbit = showOrbit = new wxMenuItem(fractalMenu, ID_SHOW_ORBIT, wxString(wxT(menuShowOrbitTxt)) + wxT('\t') + wxT("F2") , wxEmptyString, wxITEM_CHECK);
-
-    fractalMenu->Append(juliaMode);
-
-    fractalMenu->Append(showOrbit);
-    juliaMode->Check(false);
-    showOrbit->Check(false);
-
-    // File menu.
-    fileMenu->Append(ID_SAVE, wxString(wxT(menuSaveImageTxt)) + wxT('\t') + wxT("F4"));
-    fileMenu->Append(wxID_EXIT, wxT(menuQuitTxt));
-
-    // Tools menu.
-    toolMenu->Append(ID_INFO_FRAME, wxT(menuConsoleTxt), wxT(menuConsoleDescriptionTxt));
-
-    // Iteracions.
-    itManual = new wxMenuItem(iterationsMenu, ID_IT_MANUAL, wxString(wxT(menuManualIterTxt)), wxEmptyString, wxITEM_NORMAL);
-    iterationsMenu->Append(itManual);
-    MoreIter = new wxMenuItem(iterationsMenu, ID_INCREASE_IT, wxString(wxT(menuIncIterTxt)) + wxT('\t') + wxT("L"), wxEmptyString, wxITEM_NORMAL);
-    iterationsMenu->Append(MoreIter);
-
-    lessIter = new wxMenuItem(iterationsMenu, ID_DECREASE_IT, wxString(wxT(menuDecIterTxt)) + wxT('\t') + wxT("K"), wxEmptyString, wxITEM_NORMAL);
-    iterationsMenu->Append(lessIter);
-
-    // Fractal menu.
-    fractOptItem = new wxMenuItem( fractalMenu, ID_OPTPANEL, wxString( wxT(menuFractalOptTxt) ) , wxEmptyString, wxITEM_CHECK );    // Txt: "Fractal options"
-    fractalMenu->Append(fractOptItem);
-    fractalMenu->Append(ID_FORMULA_DIALOG,  wxT(menuEnterUserFormTxt)); // Txt: "Enter user formula"
-    wxMenuItem* separador;
-    separador = fractalMenu->AppendSeparator();
-
-    pauseBtn.pauseContinue = fractalMenu->Append(ID_PAUSE_CONTINUE, wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: Pause
-    pauseBtn.state = false;
-    fractalMenu->Append(ID_REDRAW, wxString(wxT(menuRedrawTxt))+ wxT('\t') + wxT("F5"));
-    fractalMenu->Append(ID_RESET, wxString(wxT(menuResetTxt)));
-
-    colorMenu->Append(ID_PALETA, wxT(menuColorOptTxt));
-
-    // Help menu.
-    helpMenu->Append(ID_USER_MANUAL, wxT(menuUserManTxt));
-#ifdef __linux__
-    helpMenu->Append(ID_OPEN_SCRIPT_FOLDER, wxT(menuOpenScriptFolder));
-#endif
-    keyboardGuide = new wxMenuItem(helpMenu, ID_KEYBGUIDE, wxString(wxT(menuKeybGuideTxt)), wxEmptyString, wxITEM_CHECK);
-    helpMenu->Append(keyboardGuide);
-    helpMenu->Append(ID_WELCOME_DIALOG, wxT(welcomeDialogTxt));
-    helpMenu->Append(ID_ABOUT, wxT(menuAboutTxt));
-
-
-    menubar->Append(fileMenu, wxT(menuFileTxt));
-    menubar->Append(fractalMenu, wxT(menuFractalTxt));
-    menubar->Append(iterationsMenu, wxT(menuIterationsTxt));
-    menubar->Append(colorMenu, wxT(menuColorTxt));
-    menubar->Append(toolMenu, wxT(menuToolsTxt));
-    menubar->Append(helpMenu, wxT(menuHelpTxt));
-    this->SetMenuBar(menubar);
-
-    boxxy = new wxBoxSizer(wxHORIZONTAL);
-
-    fractalBoxxy = new wxBoxSizer( wxVERTICAL );
-
-    boxxy->Add( fractalBoxxy, 7, wxEXPAND, 5 );
-
-    wxBoxSizer* panelBoxxy;
-    panelBoxxy = new wxBoxSizer( wxVERTICAL );
-
-    // Option panel.
-    optionPanel = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
-    optionPanel->SetScrollRate( 5, 5 );
-    optionPanel->Hide();
-    showOptPanel = false;
-    optionBoxxy = new wxBoxSizer( wxVERTICAL );
-
-    propBitmap = new wxStaticBitmap( optionPanel, wxID_ANY, wxBitmap( GetWxAbsPath("Resources/prop.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
-    optionBoxxy->Add( propBitmap, 0, wxALL, 0 );
-
-    optionPanel->SetSizer( optionBoxxy );
-    optionPanel->Layout();
-    optionBoxxy->Fit( optionPanel );
-    panelBoxxy->Add( optionPanel, 1, wxEXPAND | wxALL, 1 );
-
-    boxxy->Add( panelBoxxy, 2, wxEXPAND, 5 );
-    this->SetSizer(boxxy);
-    this->Layout();
-    this->Centre( wxVERTICAL );
-    statusData.status = status = this->CreateStatusBar(1, wxST_SIZEGRIP, wxID_ANY);
-
-    size = fractalBoxxy->GetSize();
-
-    // Creates fractalCanvas.
-    colorStyle = opt.colorStyleEST;
-    fractalType = opt.type;
-    fractalCanvas = new FractalCanvas(statusData, &pauseBtn, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
-
-    if(opt.mode == GAUSSIAN)
-        fractalCanvas->GetTarget()->SetESTStyle(colorStyle);
-    else
-    {
-        wxGradient grad;
-        grad.setMin(0);
-        grad.setMax(opt.paletteSize);
-        grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
-        fractalCanvas->GetTarget()->SetGradient(grad);
-    }
-    fractalCanvas->GetTarget()->ChangeIterations(opt.maxIterations);
-    fractalCanvas->GetTarget()->SetExtColorMode(opt.colorFractal);
-    fractalCanvas->GetTarget()->SetFractalSetColorMode(opt.colorSet);
-
-    fractalBoxxy->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
+    this->SetUpGUI();
 
     juliaModeState = false;
     changeJuliaMode = false;
@@ -303,23 +92,23 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     pause = false;
     selectedScriptIndex = -1;
 
-    this->AdjustMenu();
+    this->UpdateMenu();
 
-    // Sets parameters found in the config.ini file.
-    if(opt.juliaMode) this->AdjustJuliaMode();
-    if(opt.colorPaletteWindow)  // Color palette.
+    // Set parameters found in the config.ini file.
+    if(opt.juliaMode) this->UpdateJuliaMode();
+    if(opt.colorPaletteWindow)
     {
         colorFrameActive = true;
         pal = new ColorFrame(&colorFrameActive, fractalCanvas->GetTarget(), this);
         pal->Show(true);
     }
-    if(opt.constantWindow)  // Constant window.
+    if(opt.constantWindow)
     {
         diag = new ConstDialog(&introConstActive, fractalCanvas->GetTarget(), this);
         diag->Show(true);
         introConstActive = true;
     }
-    if(opt.commandConsole)  // Command console.
+    if(opt.commandConsole)
     {
         infoFrameActive = true;
         infoFrame = new CommandFrame(&infoFrameActive, fractalCanvas->GetTarget(), this);
@@ -406,6 +195,221 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_OPEN_SCRIPT_FOLDER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnOpenScriptFolder));
 #endif
 }
+
+void MainFrame::SetUpGUI()
+{
+    // Init menu.
+    menubar = new wxMenuBar();
+    fileMenu = new wxMenu();
+    fractalMenu = new wxMenu();
+    iterationsMenu = new wxMenu();
+    toolMenu = new wxMenu();
+    colorMenu = new wxMenu();
+    helpMenu = new wxMenu();
+    formula = new wxMenu();
+    pal = NULL;
+
+    // Formulas.
+    wxMenuItem* mandelbrot, * mandelbrotZN, * julia, * juliaZN, * newton, * sinoidal, * magnet;
+    wxMenuItem* medusa, * manowar, * manowarJulia, * triangulo, * fixedPoint1, * fixedPoint2;
+    wxMenuItem* fixedPoint3, * fixedPoint4, * logisticMap, * userDefined, * fpUserDefined;
+    wxMenuItem* tricorn, * burningShip, * burningShipJulia, * fractory, * cell, * dPendulum;
+    wxMenuItem* henonMap;
+
+#ifdef _WIN32
+#define menuSeparator wxT('\t')
+#elif __linux__
+#define menuSeparator wxT("    ")
+#endif
+
+    mandelbrot = new wxMenuItem(formula, ID_MANDELBROT, wxString(wxT(menuMandelbrotTxt)) + menuSeparator + wxT("z = z^2 + c"), wxEmptyString, wxITEM_NORMAL);
+    mandelbrotZN = new wxMenuItem(formula, ID_MANDELBROT_ZN, wxString(wxT(menuMandelbrotTxt)) + menuSeparator + wxT("z = z^n + c"), wxEmptyString, wxITEM_NORMAL);
+    julia = new wxMenuItem(formula, ID_JULIA, wxString(wxT(menuJuliaTxt)) + menuSeparator + wxT("z = z^2 + k"), wxEmptyString, wxITEM_NORMAL);
+    juliaZN = new wxMenuItem(formula, ID_JULIA_ZN, wxString(wxT(menuJuliaTxt)) + menuSeparator + wxT("z = z^n + k"), wxEmptyString, wxITEM_NORMAL);
+    newton = new wxMenuItem(formula, ID_NEWTON, wxString(wxT(menuNewtonTxt)) + menuSeparator + wxT("z^3 - 1 = 0"), wxEmptyString, wxITEM_NORMAL);
+    sinoidal = new wxMenuItem(formula, ID_SINOIDAL, wxString(wxT(menuSineTxt)) + menuSeparator + wxT("Z = c*Sin(Z)"), wxEmptyString, wxITEM_NORMAL);
+    magnet = new wxMenuItem(formula, ID_MAGNET, wxString(wxT(menuMagnetTxt)), wxEmptyString, wxITEM_NORMAL);
+    medusa = new wxMenuItem(formula, ID_MEDUSA, wxString(wxT(menuJellyfishTxt)), wxEmptyString, wxITEM_NORMAL);
+    manowar = new wxMenuItem(formula, ID_MANOWAR, wxString(wxT(menuManowarTxt)), wxEmptyString, wxITEM_NORMAL);
+    manowarJulia = new wxMenuItem(formula, ID_MANOWAR_JULIA, wxString(wxT(menuManowarJuliaTxt)), wxEmptyString, wxITEM_NORMAL);
+    triangulo = new wxMenuItem(formula, ID_SIERP_TRIANGLE, wxString(wxT(menuSierpinskiTxt)), wxEmptyString, wxITEM_NORMAL);
+    fixedPoint1 = new wxMenuItem(formula, ID_FIXEDPOINT1, wxString(wxT(menuFixedPointTxt)) + menuSeparator + wxT("z = sin(z)"), wxEmptyString, wxITEM_NORMAL);
+    fixedPoint2 = new wxMenuItem(formula, ID_FIXEDPOINT2, wxString(wxT(menuFixedPointTxt)) + menuSeparator + wxT("z = cos(z)"), wxEmptyString, wxITEM_NORMAL);
+    fixedPoint3 = new wxMenuItem(formula, ID_FIXEDPOINT3, wxString(wxT(menuFixedPointTxt)) + menuSeparator + wxT("z = tan(z)"), wxEmptyString, wxITEM_NORMAL);
+    fixedPoint4 = new wxMenuItem(formula, ID_FIXEDPOINT4, wxString(wxT(menuFixedPointTxt)) + menuSeparator + wxT("z = z^2"), wxEmptyString, wxITEM_NORMAL);
+    tricorn = new wxMenuItem(formula, ID_TRICORN, wxString(wxT(menuTricornTxt)), wxEmptyString, wxITEM_NORMAL);
+    burningShip = new wxMenuItem(formula, ID_BURNING_SHIP, wxString(wxT(menuBurningShipTxt)), wxEmptyString, wxITEM_NORMAL);
+    burningShipJulia = new wxMenuItem(formula, ID_BURNING_SHIP_JULIA, wxString(wxT(menuBurningShipJuliaTxt)), wxEmptyString, wxITEM_NORMAL);
+    fractory = new wxMenuItem(formula, ID_FRACTORY, wxString(wxT(menuFractoryTxt)), wxEmptyString, wxITEM_NORMAL);
+    cell = new wxMenuItem(formula, ID_CELL, wxString(wxT(menuCellTxt)), wxEmptyString, wxITEM_NORMAL);
+    logisticMap = new wxMenuItem(formula, ID_LOGISTIC, wxString(wxT(menuLogisticTxt)), wxEmptyString, wxITEM_NORMAL);
+    henonMap = new wxMenuItem(formula, ID_HENON_MAP, wxString(wxT(menuHenonMapTxt)), wxEmptyString, wxITEM_NORMAL);
+    dPendulum = new wxMenuItem(formula, ID_DPENDULUM, wxString(wxT(menuDoublePendulumTxt)), wxEmptyString, wxITEM_NORMAL);
+    userDefined = new wxMenuItem(formula, ID_USER_DEFINED, wxString(wxT(menuUserFormComplexTxt)), wxEmptyString, wxITEM_NORMAL);
+    fpUserDefined = new wxMenuItem(formula, ID_FPUSER_DEFINED, wxString(wxT(menuUserFormFixedTxt)), wxEmptyString, wxITEM_NORMAL);
+
+    typeComplex = new wxMenu();
+    typeNumMet = new wxMenu();
+    typePhysics = new wxMenu();
+    typeOther = new wxMenu();
+
+    typeComplex->Append(mandelbrot);
+    typeComplex->Append(mandelbrotZN);
+    typeComplex->Append(julia);
+    typeComplex->Append(juliaZN);
+    typeComplex->Append(sinoidal);
+    typeComplex->Append(medusa);
+    typeComplex->Append(manowar);
+    typeComplex->Append(manowarJulia);
+    typeComplex->Append(tricorn);
+    typeComplex->Append(burningShip);
+    typeComplex->Append(burningShipJulia);
+    typeComplex->Append(fractory);
+    typeComplex->Append(cell);
+    typeNumMet->Append(newton);
+    typeNumMet->Append(fixedPoint1);
+    typeNumMet->Append(fixedPoint2);
+    typeNumMet->Append(fixedPoint3);
+    typeNumMet->Append(fixedPoint4);
+    typePhysics->Append(magnet);
+    typePhysics->Append(dPendulum);
+    typeOther->Append(triangulo);
+    typeOther->Append(logisticMap);
+    typeOther->Append(henonMap);
+
+    formula->Append(-1, wxT(menuComplexTxt), typeComplex);
+    formula->Append(-1, wxT(menuNumMetTxt), typeNumMet);
+    formula->Append(-1, wxT(menuPhysicTxt), typePhysics);
+    formula->Append(-1, wxT(menuOtherTxt), typeOther);
+    formula->Append(userDefined);
+    formula->Append(fpUserDefined);
+    fractalMenu->Append(wxID_ANY, wxT(menuFormulaTxt), formula);
+
+    // Julia constant.
+    introConstant = new wxMenu();
+    manual = new wxMenuItem(introConstant, ID_ENTER_MAN_CONSTANT, wxString(wxT(menuManualConstTxt)), wxEmptyString, wxITEM_NORMAL);
+    introConstant->Append(manual);
+    manual->Enable(false);
+
+    statusData.slider = slider = new wxMenuItem(introConstant, ID_ENTER_SLD_CONSTANT, wxString(wxT(menuSliderTxt)) + wxT('\t') + wxT("F1"), wxEmptyString, wxITEM_CHECK);
+    introConstant->Append(slider);
+    slider->Enable(false);
+    slider->Check(false);
+    fractalMenu->Append(-1, wxT(menuEnterConstTxt), introConstant);
+
+    // Julia constant and show orbit.
+    juliaMode = new wxMenuItem(fractalMenu, ID_JULIA_MODE, wxString(wxT(menuJuliaModeTxt)), wxEmptyString, wxITEM_CHECK);
+    statusData.showOrbit = showOrbit = new wxMenuItem(fractalMenu, ID_SHOW_ORBIT, wxString(wxT(menuShowOrbitTxt)) + wxT('\t') + wxT("F2"), wxEmptyString, wxITEM_CHECK);
+
+    fractalMenu->Append(juliaMode);
+
+    fractalMenu->Append(showOrbit);
+    juliaMode->Check(false);
+    showOrbit->Check(false);
+
+    // File menu.
+    fileMenu->Append(ID_SAVE, wxString(wxT(menuSaveImageTxt)) + wxT('\t') + wxT("F4"));
+    fileMenu->Append(wxID_EXIT, wxT(menuQuitTxt));
+
+    // Tools menu.
+    toolMenu->Append(ID_INFO_FRAME, wxT(menuConsoleTxt), wxT(menuConsoleDescriptionTxt));
+
+    // Iteracions.
+    itManual = new wxMenuItem(iterationsMenu, ID_IT_MANUAL, wxString(wxT(menuManualIterTxt)), wxEmptyString, wxITEM_NORMAL);
+    iterationsMenu->Append(itManual);
+    MoreIter = new wxMenuItem(iterationsMenu, ID_INCREASE_IT, wxString(wxT(menuIncIterTxt)) + wxT('\t') + wxT("L"), wxEmptyString, wxITEM_NORMAL);
+    iterationsMenu->Append(MoreIter);
+
+    lessIter = new wxMenuItem(iterationsMenu, ID_DECREASE_IT, wxString(wxT(menuDecIterTxt)) + wxT('\t') + wxT("K"), wxEmptyString, wxITEM_NORMAL);
+    iterationsMenu->Append(lessIter);
+
+    // Fractal menu.
+    fractOptItem = new wxMenuItem(fractalMenu, ID_OPTPANEL, wxString(wxT(menuFractalOptTxt)), wxEmptyString, wxITEM_CHECK);    // Txt: "Fractal options"
+    fractalMenu->Append(fractOptItem);
+    fractalMenu->Append(ID_FORMULA_DIALOG, wxT(menuEnterUserFormTxt)); // Txt: "Enter user formula"
+    wxMenuItem* separador;
+    separador = fractalMenu->AppendSeparator();
+
+    pauseBtn.pauseContinue = fractalMenu->Append(ID_PAUSE_CONTINUE, wxString(wxT(menuPauseTxt)) + wxT('\t') + wxT("P"));    // Txt: Pause
+    pauseBtn.state = false;
+    fractalMenu->Append(ID_REDRAW, wxString(wxT(menuRedrawTxt)) + wxT('\t') + wxT("F5"));
+    fractalMenu->Append(ID_RESET, wxString(wxT(menuResetTxt)));
+
+    colorMenu->Append(ID_PALETA, wxT(menuColorOptTxt));
+
+    // Help menu.
+    helpMenu->Append(ID_USER_MANUAL, wxT(menuUserManTxt));
+#ifdef __linux__
+    helpMenu->Append(ID_OPEN_SCRIPT_FOLDER, wxT(menuOpenScriptFolder));
+#endif
+    keyboardGuide = new wxMenuItem(helpMenu, ID_KEYBGUIDE, wxString(wxT(menuKeybGuideTxt)), wxEmptyString, wxITEM_CHECK);
+    helpMenu->Append(keyboardGuide);
+    helpMenu->Append(ID_WELCOME_DIALOG, wxT(welcomeDialogTxt));
+    helpMenu->Append(ID_ABOUT, wxT(menuAboutTxt));
+
+
+    menubar->Append(fileMenu, wxT(menuFileTxt));
+    menubar->Append(fractalMenu, wxT(menuFractalTxt));
+    menubar->Append(iterationsMenu, wxT(menuIterationsTxt));
+    menubar->Append(colorMenu, wxT(menuColorTxt));
+    menubar->Append(toolMenu, wxT(menuToolsTxt));
+    menubar->Append(helpMenu, wxT(menuHelpTxt));
+    this->SetMenuBar(menubar);
+
+    boxxy = new wxBoxSizer(wxHORIZONTAL);
+
+    fractalBoxxy = new wxBoxSizer(wxVERTICAL);
+
+    boxxy->Add(fractalBoxxy, 7, wxEXPAND, 5);
+
+    wxBoxSizer* panelBoxxy;
+    panelBoxxy = new wxBoxSizer(wxVERTICAL);
+
+    // Option panel.
+    optionPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+    optionPanel->SetScrollRate(5, 5);
+    optionPanel->Hide();
+    showOptPanel = false;
+    optionBoxxy = new wxBoxSizer(wxVERTICAL);
+
+    propBitmap = new wxStaticBitmap(optionPanel, wxID_ANY, wxBitmap(GetWxAbsPath("Resources/prop.png"), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
+    optionBoxxy->Add(propBitmap, 0, wxALL, 0);
+
+    optionPanel->SetSizer(optionBoxxy);
+    optionPanel->Layout();
+    optionBoxxy->Fit(optionPanel);
+    panelBoxxy->Add(optionPanel, 1, wxEXPAND | wxALL, 1);
+
+    boxxy->Add(panelBoxxy, 2, wxEXPAND, 5);
+    this->SetSizer(boxxy);
+    this->Layout();
+    this->Centre(wxVERTICAL);
+    statusData.status = status = this->CreateStatusBar(1, wxST_SIZEGRIP, wxID_ANY);
+
+    size = fractalBoxxy->GetSize();
+
+    // Creates fractalCanvas.
+    colorStyle = opt.colorStyleGaussian;
+    fractalType = opt.type;
+    fractalCanvas = new FractalCanvas(statusData, &pauseBtn, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
+
+    if (opt.mode == GAUSSIAN)
+        fractalCanvas->GetTarget()->SetGaussianColorStyle(colorStyle);
+    else
+    {
+        wxGradient grad;
+        grad.setMin(0);
+        grad.setMax(opt.paletteSize);
+        grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
+        fractalCanvas->GetTarget()->SetGradient(grad);
+    }
+    fractalCanvas->GetTarget()->ChangeIterations(opt.maxIterations);
+    fractalCanvas->GetTarget()->SetExtColorMode(opt.colorFractal);
+    fractalCanvas->GetTarget()->SetFractalSetColorMode(opt.colorSet);
+
+    fractalBoxxy->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
+}
+
 void MainFrame::OnClose(wxCloseEvent& event)
 {
     this->CloseAll();
@@ -437,7 +441,7 @@ void MainFrame::OnResize(wxSizeEvent &event)
 void MainFrame::OnJuliaMode(wxCommandEvent &event)
 {
     // Opens the Julia mode.
-    this->AdjustJuliaMode();
+    this->UpdateJuliaMode();
 }
 void MainFrame::JuliaHandle(wxUpdateUIEvent &event)
 {
@@ -575,8 +579,8 @@ void MainFrame::OnReset(wxCommandEvent &event)
         fractalCanvas->GetTarget()->SetGradient(grad);
     }
     else
-        fractalCanvas->GetTarget()->SetESTStyle(colorStyle);
-    this->AdjustMenu();
+        fractalCanvas->GetTarget()->SetGaussianColorStyle(colorStyle);
+    this->UpdateMenu();
 }
 void MainFrame::OnMoreIt(wxCommandEvent &event)
 {
@@ -890,12 +894,12 @@ void MainFrame::ChangeFractal(FRACTAL_TYPE fType, bool enableJulia)
             if(opt.mode == GRADIENT)
                 fractalCanvas->GetTarget()->SetGradient(fractOpt.gradient);
             else
-                fractalCanvas->GetTarget()->SetESTStyle(colorStyle);
+                fractalCanvas->GetTarget()->SetGaussianColorStyle(colorStyle);
         }
-        else fractalCanvas->GetTarget()->SetESTStyle(colorStyle);
+        else fractalCanvas->GetTarget()->SetGaussianColorStyle(colorStyle);
 
         fractalType = fType;
-        this->AdjustMenu();
+        this->UpdateMenu();
         juliaMode->Enable(enableJulia);
     }
 }
@@ -906,10 +910,10 @@ void MainFrame::ChangeScriptItem(wxCommandEvent &event)
     if(fractalCanvas->GetTarget()->GetWatchdog()->ThreadRunning()) fractalCanvas->GetTarget()->PauseContinue();
     Options fractOpt = fractalCanvas->GetTarget()->GetOptions();
     fractalCanvas->ChangeToScript(scriptDataVect[id]);
-    fractalCanvas->GetTarget()->SetESTStyle(colorStyle);
+    fractalCanvas->GetTarget()->SetGaussianColorStyle(colorStyle);
 
     fractalType = SCRIPT_FRACTAL;
-    this->AdjustMenu();
+    this->UpdateMenu();
     juliaMode->Enable(false);
 }
 
@@ -920,10 +924,12 @@ void MainFrame::GetParserOpt()
     string dir = GetWorkingDirectory();
     dir += "/config.ini";
     ConfigParser p(dir);
+    vector<string> fractalOpt;
+    vector<FRACTAL_TYPE> fractalValues;
 
     if(p.FileOpened())
     {
-        // Parameters to analyze.
+        // Parameters to parse.
         vector<string> colorOpt;
         colorOpt.push_back("Gradient");
         colorOpt.push_back("EST_Mode");
@@ -1005,11 +1011,11 @@ void MainFrame::GetParserOpt()
         if(opt.mode == GRADIENT)
         {
             p.StringArgToVar(opt.colorStyleGrad, "COLOR_STYLE",    "rgb(0,0,0);rgb(255,255,255);");
-            opt.colorStyleEST = SUMMER_DAY;
+            opt.colorStyleGaussian = SUMMER_DAY;
         }
         else
         {
-            p.OptionToVar(opt.colorStyleEST, "COLOR_STYLE", styleOpt, styleValues, SUMMER_DAY);
+            p.OptionToVar(opt.colorStyleGaussian, "COLOR_STYLE", styleOpt, styleValues, SUMMER_DAY);
             opt.colorStyleGrad = "rgb(0,0,0);rgb(255,255,255);";
         }
 
@@ -1042,7 +1048,7 @@ void MainFrame::GetParserOpt()
         opt.maxIterations = 100;
         opt.paletteSize = 300;
         opt.colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);\n";
-        opt.colorStyleEST = SUMMER_DAY;
+        opt.colorStyleGaussian = SUMMER_DAY;
         opt.constantWindow = false;
         opt.commandConsole = false;
         opt.juliaMode = false;
@@ -1052,7 +1058,7 @@ void MainFrame::GetParserOpt()
         opt.firstUse = false;
     }
 }
-void MainFrame::AdjustOptPanel()
+void MainFrame::UpdateOptPanel()
 {
     PanelOptions* pOptions = fractalCanvas->GetTarget()->GetOptPanel();
     int index, labelIndex;
@@ -1320,7 +1326,7 @@ void MainFrame::GetScriptFractals()
         this->Connect(SCRIPT_ID_INDEX+i, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
     }
 }
-void MainFrame::AdjustMenu()
+void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
     if(colorFrameActive) pal->SetTarget(fractalCanvas->GetTarget());
@@ -1380,9 +1386,9 @@ void MainFrame::AdjustMenu()
         changeJuliaMode = false;
         fractalCanvas->SetJuliaMode(false);
     }
-    this->AdjustOptPanel();
+    this->UpdateOptPanel();
 }
-void MainFrame::AdjustJuliaMode()
+void MainFrame::UpdateJuliaMode()
 {
     // Destroy Julia window.
     if(juliaModeState)

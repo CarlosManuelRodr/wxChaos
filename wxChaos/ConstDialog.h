@@ -30,24 +30,25 @@
 class ConstDialog : public wxDialog
 {
 private:
-	wxPanel* dumbPanel;
-	wxTextCtrl* realText;
-	wxTextCtrl* imText;
-	wxButton* okButton;
-	wxButton* applyButton;
-	Fractal *target;
+    wxPanel* dumbPanel;
+    wxTextCtrl* realText;
+    wxTextCtrl* imText;
+    wxButton* okButton;
+    wxButton* applyButton;
+    Fractal* target;
 
-	double lastReal, lastIm;
-	bool *active;
+    double lastReal, lastIm;
+    bool* active;
 
-	void OnOk( wxCommandEvent& event );
-	void OnApply( wxCommandEvent& event );
-	void OnClose( wxCloseEvent& event );
+    void OnOk( wxCommandEvent& event );
+    void OnApply( wxCommandEvent& event );
+    void OnClose( wxCloseEvent& event );
 
 public:
-	ConstDialog( bool *Active, Fractal *mTarget, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT( "Enter constant" ),
-		const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 191,209 ), long style = wxDEFAULT_DIALOG_STYLE );
-	~ConstDialog();
+    ConstDialog(bool* Active, Fractal* mTarget, wxWindow* parent, wxWindowID id = wxID_ANY, 
+                const wxString& title = wxT("Enter constant"), const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxSize(191, 209), long style = wxDEFAULT_DIALOG_STYLE);
+    ~ConstDialog();
 
 };
 

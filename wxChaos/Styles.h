@@ -36,7 +36,7 @@ class GaussianColorPalette
 {
 public:
     int redInt , greenInt, blueInt;
-    double redMed, greenMed, blueMed;
+    double redMean, greenMean, blueMean;
     double redStdDev, greenStdDev, blueStdDev;
     int paletteSize;
 

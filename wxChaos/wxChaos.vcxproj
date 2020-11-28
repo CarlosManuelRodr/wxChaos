@@ -115,7 +115,6 @@
     <ClInclude Include="muParserX\mpVariable.h" />
     <ClInclude Include="muParserX\suSortPred.h" />
     <ClInclude Include="muParserX\utGeneric.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="SizeDialogSave.h" />
     <ClInclude Include="StringFuncs.h" />
     <ClInclude Include="Styles.h" />

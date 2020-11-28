@@ -108,9 +108,6 @@
     <ClInclude Include="Lang.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="angelscript\angelscript.h">
       <Filter>angelscript</Filter>
     </ClInclude>

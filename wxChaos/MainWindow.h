@@ -86,7 +86,7 @@ enum IDS
 
 /**
 * @struct ConfigParserOpt
-* @brief Struct used to hold information gathered from the "config.ini" file.
+* @brief Struct used to hold information parsed from the "config.ini" file.
 */
 
 struct ConfigParserOpt
@@ -96,7 +96,7 @@ struct ConfigParserOpt
     int maxIterations;
     int paletteSize;
     string colorStyleGrad;
-    GAUSS_STYLES colorStyleEST;
+    GAUSS_STYLES colorStyleGaussian;
     bool constantWindow, commandConsole, juliaMode;
     bool colorPaletteWindow, colorFractal, colorSet;
     bool firstUse;
@@ -175,12 +175,11 @@ class MainFrame : public wxFrame
     GAUSS_STYLES colorStyle;
     FRACTAL_TYPE fractalType;
     ConfigParserOpt opt;
-    vector<string> fractalOpt;
-    vector<FRACTAL_TYPE> fractalValues;
 
-    void AdjustMenu();                    ///< Adjust menu items when a new fractal type is selected.
-    void AdjustOptPanel();                ///< Adjust the option panel when a new fractal type is selected.
-    void AdjustJuliaMode();               ///< Closes the Julia window when a new fractal is selected.
+    void SetUpGUI();                      ///< Create the main window.
+    void UpdateMenu();                    ///< Adjust menu items when a new fractal type is selected.
+    void UpdateOptPanel();                ///< Adjust the option panel when a new fractal type is selected.
+    void UpdateJuliaMode();               ///< Closes the Julia window when a new fractal is selected.
     ///@brief Changes the fractal type.
     ///@param fType Type of the fractal.
     ///@param enableJulia Enables a Julia version of this type.

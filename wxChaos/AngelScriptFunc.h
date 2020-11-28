@@ -27,10 +27,10 @@
 */
 enum CATEGORY
 {
-	CAT_COMPLEX,
-	CAT_NUMMET,
-	CAT_PHYSIC,
-	CAT_OTHER
+    CAT_COMPLEX,
+    CAT_NUMMET,
+    CAT_PHYSIC,
+    CAT_OTHER
 };
 
 /**
@@ -42,15 +42,15 @@ enum CATEGORY
 */
 struct ScriptData
 {
-	std::string file;
-	std::string name;
-	CATEGORY cat;
-	double minX, maxX, minY;
-	int defaultIter;
-	bool juliaVariety;
-	bool redrawAlways;
-	bool extColor;
-	bool noSetMap;
+    std::string file;
+    std::string name;
+    CATEGORY cat;
+    double minX, maxX, minY;
+    int defaultIter;
+    bool juliaVariety;
+    bool redrawAlways;
+    bool extColor;
+    bool noSetMap;
 };
 
 // Variables accesible from the scripts.
@@ -97,41 +97,41 @@ void MessageCallback(const asSMessageInfo *msg, void *param);
 
 /**
 * @struct Complex
-* @brief Wrapper of a complex number used to do complex operations in a script.
+* @brief Wrapper of a complex number used to do complex number arithmetic in a script.
 */
 struct Complex
 {
-	Complex();
-	Complex(const Complex &other);
-	Complex(const std::complex<double> &other);
-	Complex(double r, double i = 0);
+    Complex();
+    Complex(const Complex &other);
+    Complex(const std::complex<double> &other);
+    Complex(double r, double i = 0);
 
-	// Assignment operator.
-	Complex &operator=(const Complex &other);
+    // Assignment operator.
+    Complex &operator=(const Complex &other);
 
-	// Compound assigment operators.
-	Complex &operator+=(const Complex &other);
-	Complex &operator-=(const Complex &other);
-	Complex &operator*=(const Complex &other);
-	Complex &operator/=(const Complex &other);
+    // Compound assigment operators.
+    Complex &operator+=(const Complex &other);
+    Complex &operator-=(const Complex &other);
+    Complex &operator*=(const Complex &other);
+    Complex &operator/=(const Complex &other);
 
-	double norm() const;
-	double squaredNorm() const;
+    double norm() const;
+    double squaredNorm() const;
 
-	// Comparison.
-	bool operator==(const Complex &other) const;
-	bool operator!=(const Complex &other) const;
+    // Comparison.
+    bool operator==(const Complex &other) const;
+    bool operator!=(const Complex &other) const;
 
-	// Math operators.
-	Complex operator+(const Complex &other) const;
-	Complex operator-(const Complex &other) const;
-	Complex operator*(const Complex &other) const;
-	Complex operator/(const Complex &other) const;
+    // Math operators.
+    Complex operator+(const Complex &other) const;
+    Complex operator-(const Complex &other) const;
+    Complex operator*(const Complex &other) const;
+    Complex operator/(const Complex &other) const;
 
-	// Complex values.
-	std::complex<double> complexNum;
-	double real();
-	double imag();
+    // Complex values.
+    std::complex<double> complexNum;
+    double real();
+    double imag();
 };
 
 void asPrintComplex(const Complex &num);

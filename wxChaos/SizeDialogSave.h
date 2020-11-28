@@ -24,6 +24,7 @@
 */
 class SaveProgressDiag : public wxDialog
 {
+private:
     wxGauge* progress;
     wxStaticText* progressLabel;
     wxStaticLine* staticLine;
@@ -58,6 +59,7 @@ public:
 */
 class SizeDialogSave : public wxDialog
 {
+private:
     wxPanel* mainPanel;
     wxStaticText* selectText;
     wxStaticText* widthText;

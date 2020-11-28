@@ -157,7 +157,7 @@ struct Options
     ALGORITHM alg;
     FRACTAL_TYPE type;
     int paletteSize;
-    int estPaletteSize;
+    int gaussianPaletteSize;
     int gradPaletteSize;
     PanelOptions panelOpt;
 
@@ -168,13 +168,11 @@ struct Options
     bool colorSet;
     bool colorMode;
     bool buddhaMode;
-    bool gmpRender;
     bool smoothRender;
     bool justLaunchThreads;
     bool relativeColor;
-    int gmpPrec;
     int redInt, greenInt, blueInt;
-    double redMed, greenMed, blueMed;
+    double redMean, greenMean, blueMean;
     double redStdDev, greenStdDev, blueStdDev;
     sf::Color fSetColor;
 
@@ -235,7 +233,7 @@ protected:
     int ho;        ///< Upper render limit.
     int wf;        ///< Right render limit.
     int hf;        ///< Bottom render limit.
-    int oldHo;     ///< Previus upper render limit.
+    int oldHo;     ///< Previous upper render limit.
 
     bool threadRunning;         ///< Flag to stop the thread.
     bool stopped;
@@ -267,7 +265,7 @@ public:
     ///@param heightO Upper rendering limit.
     ///@param widthF Right rendering limit.
     ///@param heightF Lower rendering limit.
-    void SetLimits( int widthO, int heightO, int widthF, int heightF );
+    void SetLimits(int widthO, int heightO, int widthF, int heightF);
 
     ///@brief Sets the original lower height limit.
     ///@param _oldHo Original lower height limit.
@@ -279,7 +277,7 @@ public:
 
     ///@brief Activates the special rendering mode.
     ///@param mode New mode.
-    void SetSpecialRenderMode( bool mode );
+    void SetSpecialRenderMode(bool mode);
 
     /**
     * @brief Sets the rendering parameters.
@@ -288,7 +286,7 @@ public:
     * you need to set the same pack of parameters that a non threaded one would find.
     * @param opt Fractal options.
     */
-    void SetOpt( Options opt );
+    void SetOpt(Options opt);
 
     ///@brief Get the rendering parameters.
     ///@return Fractal options.
@@ -298,12 +296,12 @@ public:
     ///@param outSetMap Pointer to Set map.
     ///@param outColorMap Pointer to the color map.
     ///@param outAux Pointer to the auxiliar map.
-    void SetRenderOut( bool** outSetMap, int** outColorMap, unsigned int** outAux = NULL );
+    void SetRenderOut(bool** outSetMap, int** outColorMap, unsigned int** outAux = NULL);
 
     ///@brief Sets the K constant.
     ///@param re Real parameter.
     ///@param im Imaginary parameter.
-    void SetK( double re, double im );
+    void SetK(double re, double im);
 
     ///@brief Resets x and y positions.
     void Reset();
@@ -351,11 +349,11 @@ public:
 
     ///@brief Changes the number of execution threads. For this it will have to delete the previous ones.
     ///@param nThreads Number of new threads.
-    void SetThreadNumber( int nThreads );
+    void SetThreadNumber(int nThreads);
 
     ///@brief Sets a new thread to watch over.
     ///@param threadAdress Pointer to the thread to watch over.
-    void SetThread( MT* threadAdress );
+    void SetThread(MT* threadAdress);
 
     ///@brief Resets the RenderFractal.
     void Reset();
@@ -565,15 +563,15 @@ protected:
     sf::Uint8* bluePalette;
     sf::Color* palette;
     int redInt, greenInt, blueInt;                ///< Intensity parameters.
-    double redMed, greenMed, blueMed;             ///< Mean parameters.
+    double redMean, greenMean, blueMean;          ///< Mean parameters.
     double redStdDev, greenStdDev, blueStdDev;    ///< Standard deviation parameters.
     bool relativeColor;
     bool colorSet;                          ///< Activates internal coloring.
     bool colorMode;                         ///< Activates external coloring.
-    GAUSS_STYLES estStyle;                  ///< Gaussian color palette to be used.
+    GAUSS_STYLES gaussianStyle;             ///< Gaussian color palette to be used.
     GRAD_STYLES gradStyle;                  ///< Grad color palette to be used.
     int paletteSize;
-    int estPaletteSize;
+    int gaussianPaletteSize;
     int gradPaletteSize;
     int varGradientStep;
     int maxColorMapVal;
@@ -636,29 +634,29 @@ protected:
     ///@param colorNum Color parameter.
     ///@param col Channel to calculate.
     ///@return A 8 bit unsigned integer with the calculated color.
-    sf::Uint8 CalcGradient( int colorNum, COLOR col );
+    sf::Uint8 CalcGradient(int colorNum, COLOR col);
 
     ///@brief Looks into the color palette for the corresponding color.
     ///@param colorNum Color parameter.
     ///@return A struct with the color.
-    sf::Color CalcColor( int colorNum );
+    sf::Color CalcColor(int colorNum);
 
     ///@brief Calculates a normal distribution.
-    double NormalDist( int x, double mean, double stdDev );
+    double NormalDist(int x, double mean, double stdDev);
 
     ///@brief Rebuilds the color palette in the colorPaletteMode.
     void RebuildPalette();
 
     ///@brief Draws the maps into the screen.
-    void DrawMaps( sf::RenderWindow *Window );
+    void DrawMaps(sf::RenderWindow *Window);
 
     ///@brief If some minor change was made like a color adjustement redraws the maps.
     void RedrawMaps();
 
     // Geometry.
     ///@brief Draws a simple line. Used in orbit mode.
-    void DrawLine( double x1, double y1, double x2, double y2, sf::Color color = sf::Color( 0, 0, 0 ), bool orbitLine = false );
-    void DrawCircle( double x_center, double y_center, double radius, sf::Color color = sf::Color( 0, 0, 0 ) );
+    void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
+    void DrawCircle(double x_center, double y_center, double radius, sf::Color color = sf::Color(0, 0, 0));
     void DrawGeom(sf::RenderWindow *Window);
 
     ///@brief By default it doesn't do anything. Has to be overriden in derived class.
@@ -672,21 +670,21 @@ public:
     ///@brief Construct a fractal that will not be drawn to the screen. Used to save a image.
     ///@param width Image width.
     ///@param height Image height.
-    Fractal( int width, int height );
+    Fractal(int width, int height);
 
     ///@brief Construct a fractal that will be drawn to the screen.
     ///@param Window Window to draw the fractal.
-    Fractal( sf::RenderWindow *Window );
+    Fractal(sf::RenderWindow *Window);
 
     ~Fractal();
 
     ///@brief Draws the fractal into the screen.
     ///@param Window Window to draw the fractal.
-    void Show( sf::RenderWindow *Window );
+    void Show(sf::RenderWindow *Window);
 
     ///@brief Resizes the fractal.
     ///@param Window Window to draw the fractal.
-    void Resize( sf::RenderWindow *Window );
+    void Resize(sf::RenderWindow *Window);
 
     ///@brief Resize to specified size.
     ///@param width New width.
@@ -709,7 +707,7 @@ public:
     // Thread control.
     ///@brief Calculate drawing limits of each thread and launches them.
     ///@param myRender Array of RenderFractal.
-    template<class MT> inline void TRender( MT* myRender );
+    template<class MT> inline void TRender(MT* myRender);
 
     ///@brief Return a pointer to the watchdog.
     ///@return A pointer to the watchdog.
@@ -731,13 +729,13 @@ public:
     virtual void PreDrawMaps();                              ///< Perform necessary operations before drawing the maps.
     virtual void PostRender();                               ///< Perform necessary operations after the rendering is finished.
     virtual void PreRestartRender();                         ///< Perform necessary operations before restarting.
-    virtual void HandleEvents( sf::Event *Event );           ///< SFML event handler.
+    virtual void HandleEvents(sf::Event *Event);             ///< SFML event handler.
 
     ///@brief Verifies watchdog status.
     ///@return true if there is an active thread. false if not.
     virtual bool IsRendering();
     virtual void SpecialSaveRoutine(string filename);              ///< Perform operation after saving.
-    virtual void SetFormula( FormulaOpt formula );                 ///< Sets user formula.
+    virtual void SetFormula(FormulaOpt formula);                   ///< Sets user formula.
     virtual void CopyOptFromPanel();                               ///< Copy options from the option panel.
     virtual void MoreIter();                                       ///< Increases the number of iterations.
     virtual void LessIter();                                       ///< Decreases interations.
@@ -747,34 +745,34 @@ public:
     ///@brief Get value of X number in the plane at selected pixel.
     ///@param Pixel_X Pixel to inspect.
     ///@return Numerical value corresponding to the pixel position.
-    double GetX( int Pixel_X );
+    double GetX(int Pixel_X);
 
     ///@brief Get value of Y number in the plane at selected pixel.
     ///@param Pixel_Y Pixel to inspect.
     ///@return Numerical value corresponding to the pixel position.
-    double GetY( int Pixel_Y );
+    double GetY(int Pixel_Y);
 
     ///@brief Gets pixel corresponding to the specified numerical position.
     ///@param xNum Numerical position.
     ///@return Pixel corresponding to number.
-    int GetPixelX( double xNum );
+    int GetPixelX(double xNum);
 
     ///@brief Gets pixel corresponding to the specified numerical position.
     ///@param yNum Numerical position.
     ///@return Pixel corresponding to number.
-    int GetPixelY( double yNum );
+    int GetPixelY(double yNum);
 
     ///@brief Sets fractal options.
     ///@param opt Fractal options.
     ///@param keepSize If true doesn't copy new resolution.
-    void SetOptions( Options opt, bool keepSize = false );
+    void SetOptions(Options opt, bool keepSize = false);
 
     ///@brief Gets fractal options.
     ///@return a Options struct with the fractal options.
     Options GetOptions();
 
     ///@brief Forces the fractal to adquire a "rendered" status.
-    void SetRendered( bool mode );
+    void SetRendered(bool mode);
 
     ///@brief Gets the type of the fractal.
     FRACTAL_TYPE GetType();
@@ -791,70 +789,70 @@ public:
 
     // Save image.
     sf::Image GetRenderedImage();
-    void RenderBMP( string filename );
-    void PrepareSnapshot( bool mode );
+    void RenderBMP(string filename);
+    void PrepareSnapshot(bool mode);
 
     // Color styles.
-    void SetESTStyle( GAUSS_STYLES _estStyle );
-    GAUSS_STYLES GetESTSyle();
-    void SetGradStyle( GRAD_STYLES _gradStyle );
+    void SetGaussianColorStyle(GAUSS_STYLES _gaussianStyle);
+    GAUSS_STYLES GetGaussianColorStyle();
+    void SetGradStyle(GRAD_STYLES _gradStyle);
     GRAD_STYLES GetGradStyle();
 
     // Color operations.
-    void SetInt( int intensidad, COLOR col );
-    void SetMed( double med, COLOR col );
-    void SetDes( double des, COLOR col );
-    int GetInt( COLOR col );
-    double GetMed( COLOR col );
-    double GetDes( COLOR col );
-    void SetExtColorMode( bool modo );
-    void SetFractalSetColorMode( bool modo );
-    void SetFractalSetColor( sf::Color color );
+    void SetGaussianColorIntensity(int intensity, COLOR col);
+    void SetGaussianColorMean(double med, COLOR col);
+    void SetGaussianColorStdDev(double des, COLOR col);
+    int GetGaussianColorIntensity(COLOR col);
+    double GetGaussianColorMean(COLOR col);
+    double GetGaussianColorStdDev(COLOR col);
+    void SetExtColorMode(bool mode);
+    void SetFractalSetColorMode(bool mode);
+    void SetFractalSetColor(sf::Color color);
     sf::Color GetSetColor();
     bool GetExtColorMode();
     bool GetSetColorMode();
     void ChangeVarGradient();
-    void SetPaletteSize( int size );
+    void SetPaletteSize(int size);
     int GetPaletteSize();
     wxGradient* GetGradient();
     COLOR_MODE GetColorMode();
-    void SetGradient( wxGradient grad );
-    void SetGradientSize( unsigned int size );
-    void SetPaletteMode( COLOR_MODE mode );
-    void SetRelativeColor( bool mode );
+    void SetGradient(wxGradient grad);
+    void SetGradientSize(unsigned int size);
+    void SetPaletteMode(COLOR_MODE mode);
+    void SetRelativeColor(bool mode);
     bool GetRelativeColorMode();
     void SetVarGradient(int n);
 
     // Algorithm.
     ALGORITHM GetCurrentAlg();
     vector<ALGORITHM> GetAvailableAlg();
-    void SetAlgorithm( ALGORITHM _alg );
+    void SetAlgorithm(ALGORITHM _alg);
 
     // Julia mode operations.
     bool IsJuliaVariety();
-    void SetJuliaMode( bool mode );
-    void SetK( double _real, double _imaginary );
+    void SetJuliaMode(bool mode);
+    void SetK(double _real, double _imaginary);
     double GetKReal();
     double GetKImaginary();
 
     // Orbit mode operations.
-    void SetOrbitMode( bool mode );
-    void SetOrbitPoint( double x, double y );
+    void SetOrbitMode(bool mode);
+    void SetOrbitPoint(double x, double y);
     bool HasOrbit();
     void SetOrbitChange();
 
     // Orbit trap operations.
-    void SetOrbitTrapMode( bool mode );
+    void SetOrbitTrapMode(bool mode);
     bool HasOrbitTrapMode();
     bool OrbitTrapActivated();
 
     // SmoothRender.
-    void SetSmoothRender( bool mode );
+    void SetSmoothRender(bool mode);
     bool HasSmoothRenderMode();
     bool SmoothRenderActivated();
 
     // Menu operations.
-    void ChangeIterations( int number );
+    void ChangeIterations(int number);
     unsigned int GetIterations();
 
     // Option panel.
@@ -863,12 +861,12 @@ public:
 
     // Command console.
     virtual wxString AskInfo();
-    virtual wxString AskInfo( double real, double imag, int iter = 0 );
-    virtual wxString SaveOrbit( double real, double imag, int iter, wxString filepath );
-    wxString Command( wxString commandText );
-    wxString SetBoundaries( double iMinRe, double iMaxRe, double iMinIm, double iMaxIm );
+    virtual wxString AskInfo(double real, double imag, int iter = 0);
+    virtual wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
+    wxString Command(wxString commandText);
+    wxString SetBoundaries(double iMinRe, double iMaxRe, double iMinIm, double iMaxIm);
     wxString CommandRedraw();
-    wxString SetThreadNumber( int num );
+    wxString SetThreadNumber(int num);
     wxString GetThreadNumber();
 };
 
@@ -906,7 +904,7 @@ public:
     void AdjustPosition(Fractal *target, double numX, double numY);
 };
 
-template<class MT> inline void Fractal::TRender( MT* myRender )
+template<class MT> inline void Fractal::TRender(MT* myRender)
 {
     watchdog.Reset();
     // If the image has been moved divides the rendering area so threads will draw the missing part.
@@ -918,10 +916,12 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
             {
                 myRender[i].SetOpt(this->GetOptions());
                 myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+
                 if(orbitTrapMode || smoothRender)
                     myRender[i].SetSpecialRenderMode(true);
                 else
                     myRender[i].SetSpecialRenderMode(false);
+
                 myRender[i].SetK(kReal, kImaginary);
             }
 
@@ -939,13 +939,11 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
-                        myRender[i].SetLimits(0, Step, xMoved, screenHeight+yMoved);
-                    }
+                        myRender[i].SetLimits(0, Step, xMoved, screenHeight + yMoved);
                 }
 
                 // Second thread pack.
-                Div = static_cast<int>(floor(abs(yMoved)/(double)(threadNumber-localThreadN)));
+                Div = static_cast<int>(floor(abs(yMoved)/(double)(threadNumber - localThreadN)));
                 Step = Div;
                 int start = screenHeight+yMoved;
                 for(unsigned int i=localThreadN; i<threadNumber; i++)
@@ -957,9 +955,7 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
-                    }
                 }
             }
             else if(xMoved > 0 && yMoved > 0)
@@ -976,9 +972,7 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(0, Step, screenWidth, yMoved);
-                    }
                 }
 
                 // Second thread pack.
@@ -993,9 +987,7 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(0, start + Step, xMoved, screenHeight);
-                    }
                 }
             }
             else if(xMoved < 0 && yMoved < 0)
@@ -1012,9 +1004,7 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
-                        myRender[i].SetLimits(screenWidth+xMoved, Step, screenWidth, screenHeight+yMoved);
-                    }
+                        myRender[i].SetLimits(screenWidth+xMoved, Step, screenWidth, screenHeight + yMoved);
                 }
 
                 // Second thread pack.
@@ -1030,9 +1020,7 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
-                    }
                 }
             }
             else if(xMoved < 0 && yMoved > 0)
@@ -1049,14 +1037,12 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(0, Step, screenWidth, yMoved);
-                    }
                 }
 
                 // Second thread pack.
                 int start = yMoved;
-                Div = static_cast<int>(floor((screenHeight-yMoved)/(double)(threadNumber-localThreadN)));
+                Div = static_cast<int>(floor((screenHeight-yMoved)/(double)(threadNumber - localThreadN)));
                 Step = Div;
                 for(unsigned int i=localThreadN; i<threadNumber; i++)
                 {
@@ -1066,20 +1052,16 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(screenWidth+xMoved, start + Step, screenWidth, screenHeight);
-                    }
                 }
             }
 
             for(unsigned int i=0; i<threadNumber; i++)
-            {
                 myRender[i].Launch();
-            }
         }
         else if(xMoved)
         {
-            int Div = static_cast<int>(floor(screenHeight/(double)threadNumber));
+            int Div = static_cast<int>(floor(screenHeight / (double)threadNumber));
             int Step = Div;
             if(xMoved > 0)
             {
@@ -1087,10 +1069,12 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                 {
                     myRender[i].SetOpt(this->GetOptions());
                     myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+
                     if(orbitTrapMode || smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
+
                     myRender[i].SetK(kReal, kImaginary);
 
                     if(i+2 != threadNumber)
@@ -1099,9 +1083,8 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(0, Step, xMoved, screenHeight);
-                    }
+
                     myRender[i].Launch();
                 }
             }
@@ -1111,21 +1094,22 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                 {
                     myRender[i].SetOpt(this->GetOptions());
                     myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+
                     if(orbitTrapMode || smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
+
                     myRender[i].SetK(kReal, kImaginary);
 
                     if(i+2 != threadNumber)
                     {
-                        myRender[i].SetLimits(screenWidth+xMoved, Step-Div, screenWidth, Step);
+                        myRender[i].SetLimits(screenWidth+xMoved, Step - Div, screenWidth, Step);
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(screenWidth+xMoved, Step, screenWidth, screenHeight);
-                    }
+
                     myRender[i].Launch();
                 }
             }
@@ -1134,17 +1118,19 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
         {
             if(yMoved > 0)
             {
-                int Div = static_cast<int>(floor(yMoved/(double)threadNumber));
+                int Div = static_cast<int>(floor(yMoved / (double)threadNumber));
                 int Step = Div;
 
                 for(unsigned int i=0; i<threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
                     myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+
                     if(orbitTrapMode || smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
+
                     myRender[i].SetK(kReal, kImaginary);
 
                     if(i+2 != threadNumber)
@@ -1153,25 +1139,26 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(0, Step, screenWidth, yMoved);
-                    }
+
                     myRender[i].Launch();
                 }
             }
             else
             {
-                int Div = static_cast<int>(floor(abs(yMoved)/(double)threadNumber));
+                int Div = static_cast<int>(floor(abs(yMoved) / (double)threadNumber));
                 int Step = Div;
 
                 for(unsigned int i=0; i<threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
                     myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+
                     if(orbitTrapMode || smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
+
                     myRender[i].SetK(kReal, kImaginary);
 
                     int start = screenHeight+yMoved;
@@ -1182,9 +1169,8 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                         Step += Div;
                     }
                     else
-                    {
                         myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
-                    }
+
                     myRender[i].Launch();
                 }
             }
@@ -1200,10 +1186,12 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
         {
             myRender[i].SetOpt(this->GetOptions());
             myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+
             if(orbitTrapMode || smoothRender)
                 myRender[i].SetSpecialRenderMode(true);
             else
                 myRender[i].SetSpecialRenderMode(false);
+
             myRender[i].SetK(kReal, kImaginary);
 
             if(!justLaunchThreads)
@@ -1214,9 +1202,7 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                     Step += Div;
                 }
                 else
-                {
                     myRender[i].SetLimits(0, Step, screenWidth, screenHeight);
-                }
             }
             else
             {
@@ -1226,20 +1212,15 @@ template<class MT> inline void Fractal::TRender( MT* myRender )
                     Step += Div;
                 }
                 else
-                {
                     myRender[i].SetOldHo(Step);
-                }
             }
-
             myRender[i].Launch();
         }
     }
     if(waitRoutine)
     {
         for(unsigned int i=0; i<threadNumber; i++)
-        {
             myRender[i].Wait();
-        }
     }
     watchdog.Launch();
 }

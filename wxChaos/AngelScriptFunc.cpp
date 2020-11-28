@@ -28,10 +28,8 @@ int CompileScriptFromPath(asIScriptEngine *engine, const string filePath)
 
     // Opens the script file.
     FILE *f = fopen(filePath.c_str(), "rb");
-    if( f == 0 )
-    {
+    if(f == 0)
         return -1;
-    }
     
     fseek(f, 0, SEEK_END);
     int len = ftell(f);
@@ -42,25 +40,19 @@ int CompileScriptFromPath(asIScriptEngine *engine, const string filePath)
     int c =    fread(&script[0], len, 1, f);
     fclose(f);
 
-    if( c == 0 ) 
-    {
+    if(c == 0) 
         return -1;
-    }
 
     // Creates module.
     asIScriptModule *mod = engine->GetModule(0, asGM_ALWAYS_CREATE);
     r = mod->AddScriptSection("script", &script[0], len);
-    if( r < 0 ) 
-    {
+    if(r < 0) 
         return -1;
-    }
     
     // Compiles the script.
     r = mod->Build();
-    if( r < 0 )
-    {
+    if(r < 0)
         return -1;
-    }
 
     return 0;
 }
@@ -127,9 +119,8 @@ void asPrintString(string &str)
     if(consoleText.size() == 0)
         consoleText = str;
     else
-    {
         consoleText += str;
-    }
+
     thereIsConsoleText = true;
 }
 void asPrintInt(int num)
@@ -137,9 +128,8 @@ void asPrintInt(int num)
     if(consoleText.size() == 0)
         consoleText = str_num_to_string(num);
     else
-    {
         consoleText += str_num_to_string(num);
-    }
+
     thereIsConsoleText = true;
 }
 void asPrintFloat(double num)
@@ -147,26 +137,26 @@ void asPrintFloat(double num)
     if(consoleText.size() == 0)
         consoleText = str_num_to_string(num);
     else
-    {
         consoleText += str_num_to_string(num);
-    }
+
     thereIsConsoleText = true;
 }
 void asPrintComplex(const Complex &num)
 {
     string temp = str_num_to_string(num.complexNum.real());
+
     if(num.complexNum.imag() >= 0)
         temp += "+i";
     else
         temp += "-i";
+
     temp += str_num_to_string((double)abs(num.complexNum.imag()));
 
     if(consoleText.size() == 0)
         consoleText = temp;
     else
-    {
         consoleText += temp;
-    }
+
     thereIsConsoleText = true;
 }
 
@@ -212,23 +202,25 @@ void PushScriptData(string fileName)
 }
 void MessageCallback(const asSMessageInfo *msg, void *param)
 {
-  const char *type = "ERR ";
-  if( msg->type == asMSGTYPE_WARNING ) 
-    type = "WARN";
-  else if( msg->type == asMSGTYPE_INFORMATION ) 
-    type = "INFO";
-  consoleText = "";
-  consoleText += msg->section;
-  consoleText += " (";
-  consoleText += str_num_to_string(msg->row);
-  consoleText += ", ";
-  consoleText += str_num_to_string(msg->col);
-  consoleText += ") : ";
-  consoleText += type;
-  consoleText += " : ";
-  consoleText += msg->message;
-  consoleText += "\n";
-  thereIsConsoleText = true;
+    const char *type = "ERR ";
+
+    if( msg->type == asMSGTYPE_WARNING ) 
+        type = "WARN";
+    else if( msg->type == asMSGTYPE_INFORMATION ) 
+        type = "INFO";
+
+    consoleText = "";
+    consoleText += msg->section;
+    consoleText += " (";
+    consoleText += str_num_to_string(msg->row);
+    consoleText += ", ";
+    consoleText += str_num_to_string(msg->col);
+    consoleText += ") : ";
+    consoleText += type;
+    consoleText += " : ";
+    consoleText += msg->message;
+    consoleText += "\n";
+    thereIsConsoleText = true;
 }
 void RegisterAsFunctions(asIScriptEngine *engine)
 {

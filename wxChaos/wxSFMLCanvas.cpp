@@ -6,8 +6,6 @@
     #include <wx/gtk/win_gtk.h>
 #endif
 
-
-
 // Event table.
 BEGIN_EVENT_TABLE( wxSFMLCanvas, wxControl )
     EVT_IDLE( wxSFMLCanvas::OnIdle )
@@ -16,7 +14,8 @@ BEGIN_EVENT_TABLE( wxSFMLCanvas, wxControl )
 END_EVENT_TABLE()
 
 
-wxSFMLCanvas::wxSFMLCanvas( wxWindow* Parent, wxWindowID Id, const wxPoint& Position, const wxSize& Size, long Style ) : wxControl( Parent, Id, Position, Size, Style )
+wxSFMLCanvas::wxSFMLCanvas(wxWindow* Parent, wxWindowID Id, const wxPoint& Position, const wxSize& Size, long Style) : 
+    wxControl(Parent, Id, Position, Size, Style)
 {
     #ifdef __WXGTK__
         gtk_widget_realize( m_wxwindow );
@@ -25,32 +24,22 @@ wxSFMLCanvas::wxSFMLCanvas( wxWindow* Parent, wxWindowID Id, const wxPoint& Posi
         XFlush( GDK_WINDOW_XDISPLAY( Win ) );
         sf::RenderWindow::Create( GDK_WINDOW_XWINDOW( Win ) );
     #else
-        sf::RenderWindow::Create( GetHandle() );
+        sf::RenderWindow::Create(GetHandle());
     #endif
 }
-wxSFMLCanvas::~wxSFMLCanvas()
-{
 
-}
-void wxSFMLCanvas::OnUpdate()
-{
-    // Do nothing.
-}
-void wxSFMLCanvas::OnIdle( wxIdleEvent& )
+wxSFMLCanvas::~wxSFMLCanvas() {}
+void wxSFMLCanvas::OnUpdate() {}
+void wxSFMLCanvas::OnEraseBackground(wxEraseEvent&) {}
+
+void wxSFMLCanvas::OnIdle(wxIdleEvent&)
 {
     Refresh();
 }
 
-
-void wxSFMLCanvas::OnPaint( wxPaintEvent& )
+void wxSFMLCanvas::OnPaint(wxPaintEvent&)
 {
-    wxPaintDC Dc( this );
+    wxPaintDC Dc(this);
     OnUpdate();
-
-    // Draws SFML window.
-    Display();
-}
-void wxSFMLCanvas::OnEraseBackground( wxEraseEvent& )
-{
-
+    Display();    // Draws SFML window.
 }

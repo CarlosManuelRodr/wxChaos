@@ -238,13 +238,13 @@ Fractal::Fractal(int width, int height)
     gradPaletteSize = 300;
     alg = OTHER;
     colorPaletteMode = GAUSSIAN;
-    estStyle = defaultEstStyle;
+    gaussianStyle = defaultEstStyle;
     gradStyle = defaultGradStyle;
     gradient.fromString(wxString(wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);")));
     gradient.setMin(0);
     gradient.setMax(gradPaletteSize);
 
-    estPaletteSize = paletteSize = 60;
+    gaussianPaletteSize = paletteSize = 60;
     redPalette = new sf::Uint8[paletteSize];
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
@@ -255,9 +255,9 @@ Fractal::Fractal(int width, int height)
     greenInt = 201;
     blueInt = 255;
 
-    redMed = 34;
-    greenMed = 28;
-    blueMed = 12;
+    redMean = 34;
+    greenMean = 28;
+    blueMean = 12;
 
     redStdDev = 8;
     greenStdDev = 12;
@@ -374,14 +374,14 @@ Fractal::Fractal(sf::RenderWindow *Window)
     relativeColor = false;
     gradPaletteSize = 300;
     alg = OTHER;
-    estStyle = defaultEstStyle;
+    gaussianStyle = defaultEstStyle;
     gradStyle = defaultGradStyle;
     colorPaletteMode = GAUSSIAN;
     gradient.fromString(wxString(wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);")));
     gradient.setMin(0);
     gradient.setMax(gradPaletteSize);
 
-    estPaletteSize = paletteSize = 60;
+    gaussianPaletteSize = paletteSize = 60;
     redPalette = new sf::Uint8[paletteSize];
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
@@ -392,9 +392,9 @@ Fractal::Fractal(sf::RenderWindow *Window)
     greenInt = 201;
     blueInt = 255;
 
-    redMed = 34;
-    greenMed = 28;
-    blueMed = 21;
+    redMean = 34;
+    greenMean = 28;
+    blueMean = 21;
 
     redStdDev = 8;
     greenStdDev = 12;
@@ -1269,16 +1269,16 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     colorPaletteMode = opt.colorPaletteMode;
     relativeColor = opt.relativeColor;
     gradPaletteSize = opt.gradPaletteSize;
-    estPaletteSize = opt.estPaletteSize;
+    gaussianPaletteSize = opt.gaussianPaletteSize;
     alg = opt.alg;
 
     redInt = opt.redInt;
     greenInt = opt.greenInt;
     blueInt = opt.blueInt;
 
-    redMed = opt.redMed;
-    greenMed = opt.greenMed;
-    blueMed = opt.blueMed;
+    redMean = opt.redMean;
+    greenMean = opt.greenMean;
+    blueMean = opt.blueMean;
 
     redStdDev = opt.redStdDev;
     greenStdDev = opt.greenStdDev;
@@ -1293,7 +1293,7 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     }
     else
     {
-        paletteSize = estPaletteSize;
+        paletteSize = gaussianPaletteSize;
         this->SetPaletteSize(paletteSize);
     }
 
@@ -1330,7 +1330,7 @@ Options Fractal::GetOptions()
     opt.relativeColor = relativeColor;
     opt.colorPaletteMode = colorPaletteMode;
     opt.paletteSize = paletteSize;
-    opt.estPaletteSize = estPaletteSize;
+    opt.gaussianPaletteSize = gaussianPaletteSize;
     opt.gradPaletteSize = gradPaletteSize;
     opt.panelOpt = panelOpt;
     opt.type = type;
@@ -1347,9 +1347,9 @@ Options Fractal::GetOptions()
     opt.greenInt = greenInt;
     opt.blueInt = blueInt;
 
-    opt.redMed = redMed;
-    opt.greenMed = greenMed;
-    opt.blueMed = blueMed;
+    opt.redMean = redMean;
+    opt.greenMean = greenMean;
+    opt.blueMean = blueMean;
 
     opt.redStdDev = redStdDev;
     opt.greenStdDev = greenStdDev;
@@ -1599,7 +1599,7 @@ void Fractal::PrepareSnapshot(bool mode)
 }
 
 // EST Color.
-void Fractal::SetInt(int intensidad, COLOR col)
+void Fractal::SetGaussianColorIntensity(int intensidad, COLOR col)
 {
     // Changes intensity value.
     colorPaletteMode = GAUSSIAN;
@@ -1617,25 +1617,25 @@ void Fractal::SetInt(int intensidad, COLOR col)
     }
     this->RebuildPalette();
 }
-void Fractal::SetMed(double med, COLOR col)
+void Fractal::SetGaussianColorMean(double med, COLOR col)
 {
     // Changes mean value.
     colorPaletteMode = GAUSSIAN;
     if(col == red)
     {
-        redMed = med;
+        redMean = med;
     }
     else if(col == green)
     {
-        greenMed = med;
+        greenMean = med;
     }
     else if(col == blue)
     {
-        blueMed = med;
+        blueMean = med;
     }
     this->RebuildPalette();
 }
-void Fractal::SetDes(double des, COLOR col)
+void Fractal::SetGaussianColorStdDev(double des, COLOR col)
 {
     // Changes standard deviation value.
     colorPaletteMode = GAUSSIAN;
@@ -1653,7 +1653,7 @@ void Fractal::SetDes(double des, COLOR col)
     }
     this->RebuildPalette();
 }
-int Fractal::GetInt(COLOR col)
+int Fractal::GetGaussianColorIntensity(COLOR col)
 {
     if(col == red)
     {
@@ -1669,23 +1669,23 @@ int Fractal::GetInt(COLOR col)
     }
     else return 0;
 }
-double Fractal::GetMed(COLOR col)
+double Fractal::GetGaussianColorMean(COLOR col)
 {
     if(col == red)
     {
-        return redMed;
+        return redMean;
     }
     else if(col == green)
     {
-        return greenMed;
+        return greenMean;
     }
     else if(col == blue)
     {
-        return blueMed;
+        return blueMean;
     }
     else return 0;
 }
-double Fractal::GetDes(COLOR col)
+double Fractal::GetGaussianColorStdDev(COLOR col)
 {
     if(col == red)
     {
@@ -1703,21 +1703,21 @@ double Fractal::GetDes(COLOR col)
 }
 
 // Color styles.
-void Fractal::SetESTStyle(GAUSS_STYLES _estStyle)
+void Fractal::SetGaussianColorStyle(GAUSS_STYLES _gaussianStyle)
 {
     // Changes color palette.
-    estStyle = _estStyle;
+    gaussianStyle = _gaussianStyle;
     GaussianColorPalette c;
-    c.SetStyle(estStyle);
+    c.SetStyle(gaussianStyle);
 
     // Sets parameters for new palette.
     redInt = c.redInt;
     greenInt = c.greenInt;
     blueInt = c.blueInt;
 
-    redMed = c.redMed;
-    greenMed = c.greenMed;
-    blueMed = c.blueMed;
+    redMean = c.redMean;
+    greenMean = c.greenMean;
+    blueMean = c.blueMean;
 
     redStdDev = c.redStdDev;
     greenStdDev = c.greenStdDev;
@@ -1735,9 +1735,9 @@ void Fractal::SetESTStyle(GAUSS_STYLES _estStyle)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
     }
 }
-GAUSS_STYLES Fractal::GetESTSyle()
+GAUSS_STYLES Fractal::GetGaussianColorStyle()
 {
-    return estStyle;
+    return gaussianStyle;
 }
 void Fractal::SetGradStyle(GRAD_STYLES _gradStyle)
 {
@@ -1895,15 +1895,15 @@ sf::Uint8 Fractal::CalcGradient(int colorNum, COLOR col)
     // Return color with a normal distribution.
     if(col == red)
     {
-        return static_cast<sf::Uint8>(redInt*NormalDist(colorNum, redMed, redStdDev) + redInt*NormalDist(colorNum, paletteSize+redMed, redStdDev));
+        return static_cast<sf::Uint8>(redInt*NormalDist(colorNum, redMean, redStdDev) + redInt*NormalDist(colorNum, paletteSize+redMean, redStdDev));
     }
     if(col == green)
     {
-        return static_cast<sf::Uint8>(greenInt*NormalDist(colorNum, greenMed, greenStdDev) + greenInt*NormalDist(colorNum, paletteSize+greenMed, greenStdDev));
+        return static_cast<sf::Uint8>(greenInt*NormalDist(colorNum, greenMean, greenStdDev) + greenInt*NormalDist(colorNum, paletteSize+greenMean, greenStdDev));
     }
     if(col == blue)
     {
-        return static_cast<sf::Uint8>(blueInt*NormalDist(colorNum, blueMed, blueStdDev)+blueInt*NormalDist(colorNum, paletteSize+blueMed, blueStdDev));
+        return static_cast<sf::Uint8>(blueInt*NormalDist(colorNum, blueMean, blueStdDev)+blueInt*NormalDist(colorNum, paletteSize+blueMean, blueStdDev));
     }
     return 0;
 }
@@ -2016,7 +2016,7 @@ void Fractal::SetPaletteSize(int size)
     delete[] greenPalette;
     delete[] bluePalette;
     delete[] palette;
-    estPaletteSize = paletteSize = size;
+    gaussianPaletteSize = paletteSize = size;
     redPalette = new sf::Uint8[paletteSize];
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
@@ -2054,7 +2054,7 @@ void Fractal::SetPaletteMode(COLOR_MODE mode)
     }
     else
     {
-        paletteSize = estPaletteSize;
+        paletteSize = gaussianPaletteSize;
     }
     redPalette = new sf::Uint8[paletteSize];
     greenPalette = new sf::Uint8[paletteSize];

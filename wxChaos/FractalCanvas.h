@@ -102,7 +102,7 @@ public :
     ///@param fractType Type of the fractal to be created.
     ///@param parent Parent wxWindow.
     FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FRACTAL_TYPE fractType, wxWindow* Parent, wxWindowID Id,
-                    const wxPoint& Position, const wxSize& Size, long Style = 0);
+                  const wxPoint& Position, const wxSize& Size, long Style = 0);
     ~FractalCanvas();
 
     ///@brief Changes the size of the canvas.

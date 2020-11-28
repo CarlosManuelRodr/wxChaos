@@ -2,7 +2,8 @@
 #include "StringFuncs.h"
 #include "global.h"
 
-IterDialog::IterDialog(bool *Active, Fractal *_target, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+IterDialog::IterDialog(bool *Active, Fractal *_target, wxWindow* parent, wxWindowID id, const wxString& title, 
+                       const wxPoint& pos, const wxSize& size, long style)
     : wxFrame(parent, id, title, pos, size, style)
 {
     // WX Frame.

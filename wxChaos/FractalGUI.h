@@ -42,25 +42,25 @@ protected:
 public:
     ///@brief Calculates new position for the button, but stays the same size.
     ///@param Window Pointer to window that has been resized.
-    void Resize( sf::RenderWindow *Window );
+    void Resize(sf::RenderWindow *Window);
 
     ///@brief Constructor for a button that uses a image.
     ///@param Path Path to image file.
     ///@param posX Horizontal position of the button.
     ///@param posY Vertical position of the button.
     ///@param Window Window that will hold the button.
-    Button( string Path, int posX, int posY, sf::RenderWindow *Window );
+    Button(string Path, int posX, int posY, sf::RenderWindow *Window);
 
     ///@brief Constructor for a button that uses text.
     ///@param posX Horizontal position of the button.
     ///@param posY Vertical position of the button.
     ///@param Window Window that will hold the button.
     ///@param text Text of the button.
-    Button( int posX, int posY, sf::RenderWindow *Window, string text );
+    Button(int posX, int posY, sf::RenderWindow *Window, string text);
 
     ///@brief Shows the button.
     ///@param Window Window to draw the button.
-    void Show( sf::RenderWindow *Window );
+    void Show(sf::RenderWindow *Window);
 
     /**
     * @brief Sets anchorage position for the button.
@@ -73,7 +73,7 @@ public:
     * @param Bottom Bottom anchorage.
     * @param Right Right anchorage.
     */
-    void SetAnchorage( bool Top, bool Left, bool Bottom, bool Right );
+    void SetAnchorage(bool Top, bool Left, bool Bottom, bool Right);
 
     ///@brief The user clicked the button and it changes it's colors.
     void ChangeState();
@@ -99,11 +99,11 @@ public:
     ///@param posX Horizontal position of the button.
     ///@param posY Vertical position of the button.
     ///@param Window Window that will hold the button.
-    ButtonChange( string Path1, string Path2, int posX, int posY, sf::RenderWindow *Window );
+    ButtonChange(string Path1, string Path2, int posX, int posY, sf::RenderWindow *Window);
 
     ///@brief Handle a click event.
     ///@param Event A SFML event.
-    bool HandleEvents( sf::Event Event );
+    bool HandleEvents(sf::Event Event);
 
     bool ClickEvent(wxMouseEvent& event);
 
@@ -131,11 +131,11 @@ class SelectRect
 public:
     ///@brief Constructor
     ///@param Window Window that will hold the selection rect.
-    SelectRect( sf::RenderWindow *Window );
+    SelectRect(sf::RenderWindow *Window);
 
     ///@brief Shows the selection rect.
     ///@param Window Window that will show the selection rect.
-    void Show( sf::RenderWindow *Window );
+    void Show(sf::RenderWindow *Window);
 
     ///@brief Handle a click event.
     ///@param Event A SFML event.

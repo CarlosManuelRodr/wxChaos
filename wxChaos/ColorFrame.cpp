@@ -15,13 +15,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
     case SUMMER_DAY:
         {
             redInt = 255;
-            redMed = 34;
+            redMean = 34;
             redStdDev = 8;
             greenInt = 201;
-            greenMed = 28;
+            greenMean = 28;
             greenStdDev = 12;
             blueInt = 255;
-            blueMed = 21;
+            blueMean = 21;
             blueStdDev = 9;
             paletteSize = 60;
             break;
@@ -29,13 +29,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
     case COOL_BLUE:
         {
             redInt = 252;
-            redMed = 104;
+            redMean = 104;
             redStdDev = 37;
             greenInt = 255;
-            greenMed = 96;
+            greenMean = 96;
             greenStdDev = 34;
             blueInt = 255;
-            blueMed = 73;
+            blueMean = 73;
             blueStdDev = 40;
             paletteSize = 300;
             break;
@@ -43,13 +43,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
     case HARD_RED:
         {
             redInt = 210;
-            redMed = 19;
+            redMean = 19;
             redStdDev = 14;
             greenInt = 102;
-            greenMed = 26;
+            greenMean = 26;
             greenStdDev = 10;
             blueInt = 97;
-            blueMed = 29;
+            blueMean = 29;
             blueStdDev = 10;
             paletteSize = 60;
             break;
@@ -57,13 +57,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
     case BLACK_AND_WHITE:
         {
             redInt = 200;
-            redMed = 30;
+            redMean = 30;
             redStdDev = 9;
             greenInt = 200;
-            greenMed = 30;
+            greenMean = 30;
             greenStdDev = 9;
             blueInt = 200;
-            blueMed = 30;
+            blueMean = 30;
             blueStdDev = 9;
             paletteSize = 60;
             break;
@@ -71,13 +71,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
     case PASTEL:
         {
             redInt = 205;
-            redMed = 23;
+            redMean = 23;
             redStdDev = 14;
             greenInt = 196;
-            greenMed = 26;
+            greenMean = 26;
             greenStdDev = 11;
             blueInt = 198;
-            blueMed = 38;
+            blueMean = 38;
             blueStdDev = 9;
             paletteSize = 60;
             break;
@@ -85,13 +85,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
     case PSYCH_EXPERIENCE:
         {
             redInt = 126;
-            redMed = 3;
+            redMean = 3;
             redStdDev = 11;
             greenInt = 200;
-            greenMed = 36;
+            greenMean = 36;
             greenStdDev = 9;
             blueInt = 200;
-            blueMed = 24;
+            blueMean = 24;
             blueStdDev = 12;
             paletteSize = 60;
             break;
@@ -99,13 +99,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
     case VIVID_COLORS:
         {
             redInt = 200;
-            redMed = 0;
+            redMean = 0;
             redStdDev = 10;
             greenInt = 200;
-            greenMed = 17;
+            greenMean = 17;
             greenStdDev = 10;
             blueInt = 200;
-            blueMed = 37;
+            blueMean = 37;
             blueStdDev = 10;
             paletteSize = 60;
             break;
@@ -333,7 +333,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     wxString estilosChoices[] = { wxT(summerDayTxt), wxT(coolBlueTxt), wxT(hardRed), wxT(blackWhiteTxt), wxT(pastelTxt), wxT(psychExpTxt), wxT(vividColTxt), wxT(customStyleTxt) };
     int estilosNChoices = sizeof( estilosChoices ) / sizeof( wxString );
     ESTStylesChoice = new wxChoice( stdPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, estilosNChoices, estilosChoices, 0 );
-    ESTStylesChoice->SetSelection( static_cast<int>(target->GetESTSyle()) );
+    ESTStylesChoice->SetSelection( static_cast<int>(target->GetGaussianColorStyle()) );
     sideABoxxy->Add( ESTStylesChoice, 0, wxALL|wxEXPAND, 5 );
 
     pSizeText = new wxStaticText( stdPanel, wxID_ANY, wxT(paletteSizeTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Palette size:"
@@ -352,7 +352,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     redIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(intensityTxt);
-    text += num_to_string(target->GetInt(red));
+    text += num_to_string(target->GetGaussianColorIntensity(red));
     redIntText->SetLabel(text);
     //
     redIntText->Wrap( -1 );
@@ -364,7 +364,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     redPosText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(positionTxt);
-    text += num_to_string(target->GetMed(red));
+    text += num_to_string(target->GetGaussianColorMean(red));
     redPosText->SetLabel(text);
     //
     redPosText->Wrap( -1 );
@@ -376,7 +376,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     redDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(stdDevTxt);
-    text += num_to_string(target->GetDes(red));
+    text += num_to_string(target->GetGaussianColorStdDev(red));
     redDesText->SetLabel(text);
     //
     redDesText->Wrap( -1 );
@@ -398,7 +398,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     greenIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(intensityTxt);
-    text += num_to_string(target->GetInt(green));
+    text += num_to_string(target->GetGaussianColorIntensity(green));
     greenIntText->SetLabel(text);
     //
     greenIntText->Wrap( -1 );
@@ -410,7 +410,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     greenPosText = new wxStaticText( stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(positionTxt);
-    text += num_to_string(target->GetMed(green));
+    text += num_to_string(target->GetGaussianColorMean(green));
     greenPosText->SetLabel(text);
     //
     greenPosText->Wrap( -1 );
@@ -422,7 +422,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     greenDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(stdDevTxt);
-    text += num_to_string(target->GetDes(green));
+    text += num_to_string(target->GetGaussianColorStdDev(green));
     greenDesText->SetLabel(text);
     //
     greenDesText->Wrap( -1 );
@@ -449,7 +449,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     blueIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(intensityTxt);
-    text += num_to_string(target->GetInt(blue));
+    text += num_to_string(target->GetGaussianColorIntensity(blue));
     blueIntText->SetLabel(text);
     //
     blueIntText->Wrap( -1 );
@@ -461,7 +461,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     bluePosText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(positionTxt);
-    text += num_to_string(target->GetMed(blue));
+    text += num_to_string(target->GetGaussianColorMean(blue));
     bluePosText->SetLabel(text);
     //
     bluePosText->Wrap( -1 );
@@ -473,7 +473,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     blueDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(stdDevTxt);
-    text += num_to_string(target->GetDes(blue));
+    text += num_to_string(target->GetGaussianColorStdDev(blue));
     blueDesText->SetLabel(text);
     //
     blueDesText->Wrap( -1 );
@@ -805,7 +805,7 @@ void ColorFrame::SetTarget(Fractal *_target)
     colorVarSlider->SetValue(0);
 
     gradStylesChoice->SetSelection( static_cast<int>(target->GetGradStyle()) );
-    ESTStylesChoice->SetSelection( static_cast<int>(target->GetESTSyle()) );
+    ESTStylesChoice->SetSelection( static_cast<int>(target->GetGaussianColorStyle()) );
 }
 
 // Change in parameters methods.
@@ -813,7 +813,7 @@ void ColorFrame::ChangeIntRed(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = redIntSld->GetValue();
-    target->SetInt(value, red);
+    target->SetGaussianColorIntensity(value, red);
     wxString text;
     text = wxT(intensityTxt);
     text += num_to_string(value);
@@ -823,7 +823,7 @@ void ColorFrame::ChangePosRed(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = redPosSld->GetValue();
-    target->SetMed(value, red);
+    target->SetGaussianColorMean(value, red);
     wxString text;
     text = wxT(positionTxt);
     text += num_to_string(value);
@@ -833,7 +833,7 @@ void ColorFrame::ChangeDesRed(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = redDesSld->GetValue();
-    target->SetDes(value, red);
+    target->SetGaussianColorStdDev(value, red);
     wxString text;
     text = wxT(stdDevTxt);
     text += num_to_string(value);
@@ -843,7 +843,7 @@ void ColorFrame::ChangeIntGreen(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = greenIntSld->GetValue();
-    target->SetInt(value, green);
+    target->SetGaussianColorIntensity(value, green);
     wxString text;
     text = wxT(intensityTxt);
     text += num_to_string(value);
@@ -853,7 +853,7 @@ void ColorFrame::ChangePosGreen(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = greenPosSld->GetValue();
-    target->SetMed(value, green);
+    target->SetGaussianColorMean(value, green);
     wxString text;
     text = wxT(positionTxt);
     text += num_to_string(value);
@@ -863,7 +863,7 @@ void ColorFrame::ChangeDesGreen(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = greenDesSld->GetValue();
-    target->SetDes(value, green);
+    target->SetGaussianColorStdDev(value, green);
     wxString text;
     text = wxT(stdDevTxt);
     text += num_to_string(value);
@@ -873,7 +873,7 @@ void ColorFrame::ChangeIntBlue(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = blueIntSld->GetValue();
-    target->SetInt(value, blue);
+    target->SetGaussianColorIntensity(value, blue);
     wxString text;
     text = wxT(intensityTxt);
     text += num_to_string(value);
@@ -883,7 +883,7 @@ void ColorFrame::ChangePosBlue(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = bluePosSld->GetValue();
-    target->SetMed(value, blue);
+    target->SetGaussianColorMean(value, blue);
     wxString text;
     text = wxT(positionTxt);
     text += num_to_string(value);
@@ -893,7 +893,7 @@ void ColorFrame::ChangeDesBlue(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = blueDesSld->GetValue();
-    target->SetDes(value, blue);
+    target->SetGaussianColorStdDev(value, blue);
     wxString text;
     text = wxT(stdDevTxt);
     text += num_to_string(value);
@@ -907,7 +907,7 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
 {
     // Change colors according to selection.
     estFractalColor.redInt = redIntSld->GetValue(); estFractalColor.greenInt = greenIntSld->GetValue(); estFractalColor.blueInt = blueIntSld->GetValue();
-    estFractalColor.redMed = redPosSld->GetValue(); estFractalColor.greenMed = greenPosSld->GetValue(); estFractalColor.blueMed = bluePosSld->GetValue();
+    estFractalColor.redMean = redPosSld->GetValue(); estFractalColor.greenMean = greenPosSld->GetValue(); estFractalColor.blueMean = bluePosSld->GetValue();
     estFractalColor.redStdDev = redDesSld->GetValue(); estFractalColor.greenStdDev = greenDesSld->GetValue(); estFractalColor.blueStdDev = blueDesSld->GetValue();
 
     estFractalColor.SetStyle(static_cast<GAUSS_STYLES>(ESTStylesChoice->GetCurrentSelection()));
@@ -918,26 +918,26 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
     colorVarSlider->SetRange(0, paletteSize);
     pSizeSpin->SetValue(paletteSize);
     target->SetPaletteSize(paletteSize);
-    target->SetESTStyle(static_cast<GAUSS_STYLES>(ESTStylesChoice->GetCurrentSelection()));
+    target->SetGaussianColorStyle(static_cast<GAUSS_STYLES>(ESTStylesChoice->GetCurrentSelection()));
 
     // Red
     // Intensity
     wxString text;
-    target->SetInt(estFractalColor.redInt, red);
+    target->SetGaussianColorIntensity(estFractalColor.redInt, red);
     redIntSld->SetValue(estFractalColor.redInt);
     text = wxT(intensityTxt);
     text += num_to_string(estFractalColor.redInt);
     redIntText->SetLabel(text);
 
     // Mean
-    target->SetMed(estFractalColor.redMed, red);
-    redPosSld->SetValue(estFractalColor.redMed);
+    target->SetGaussianColorMean(estFractalColor.redMean, red);
+    redPosSld->SetValue(estFractalColor.redMean);
     text = wxT(positionTxt);
-    text += num_to_string(estFractalColor.redMed);
+    text += num_to_string(estFractalColor.redMean);
     redPosText->SetLabel(text);
 
     // Standard deviation
-    target->SetDes(estFractalColor.redStdDev, red);
+    target->SetGaussianColorStdDev(estFractalColor.redStdDev, red);
     redDesSld->SetValue(estFractalColor.redStdDev);
     text = wxT(stdDevTxt);
     text += num_to_string(estFractalColor.redStdDev);
@@ -946,21 +946,21 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
 
     // Green
     // Intensity
-    target->SetInt(estFractalColor.greenInt, green);
+    target->SetGaussianColorIntensity(estFractalColor.greenInt, green);
     greenIntSld->SetValue(estFractalColor.greenInt);
     text = wxT(intensityTxt);
     text += num_to_string(estFractalColor.greenInt);
     greenIntText->SetLabel(text);
 
     // Mean
-    target->SetMed(estFractalColor.greenMed, green);
-    greenPosSld->SetValue(estFractalColor.greenMed);
+    target->SetGaussianColorMean(estFractalColor.greenMean, green);
+    greenPosSld->SetValue(estFractalColor.greenMean);
     text = wxT(positionTxt);
-    text += num_to_string(estFractalColor.greenMed);
+    text += num_to_string(estFractalColor.greenMean);
     greenPosText->SetLabel(text);
 
     // Standard deviation
-    target->SetDes(estFractalColor.greenStdDev, green);
+    target->SetGaussianColorStdDev(estFractalColor.greenStdDev, green);
     greenDesSld->SetValue(estFractalColor.greenStdDev);
     text = wxT(stdDevTxt);
     text += num_to_string(estFractalColor.greenStdDev);
@@ -968,21 +968,21 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
 
     // Blue
     // Intensity
-    target->SetInt(estFractalColor.blueInt, blue);
+    target->SetGaussianColorIntensity(estFractalColor.blueInt, blue);
     blueIntSld->SetValue(estFractalColor.blueInt);
     text = wxT(intensityTxt);
     text += num_to_string(estFractalColor.blueInt);
     blueIntText->SetLabel(text);
 
     // Mean
-    target->SetMed(estFractalColor.blueMed, blue);
-    bluePosSld->SetValue(estFractalColor.blueMed);
+    target->SetGaussianColorMean(estFractalColor.blueMean, blue);
+    bluePosSld->SetValue(estFractalColor.blueMean);
     text = wxT(positionTxt);
-    text += num_to_string(estFractalColor.blueMed);
+    text += num_to_string(estFractalColor.blueMean);
     bluePosText->SetLabel(text);
 
     // Standard deviation
-    target->SetDes(estFractalColor.blueStdDev, blue);
+    target->SetGaussianColorStdDev(estFractalColor.blueStdDev, blue);
     blueDesSld->SetValue(estFractalColor.blueStdDev);
     text = wxT(stdDevTxt);
     text += num_to_string(estFractalColor.blueStdDev);

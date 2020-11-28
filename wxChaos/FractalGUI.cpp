@@ -144,9 +144,7 @@ bool SelectRect::UnClickEvent(wxMouseEvent& event)
         select = pos;
         inSelection = false;
         if(pos.GetHeight() != 0 && pos.GetWidth() != 0)
-        {
             return true;
-        }
     }
     return false;
 }
@@ -223,14 +221,12 @@ void ScreenPointer::Render()
     texture.Create(screenWidth, screenHeight, sf::Color(255, 255, 255, 0));
     // Draw horizontal line.
     for(unsigned int i=0; i< screenWidth; i++)
-    {
         texture.SetPixel(i, y, color);
-    }
+
     // Draw vertical line.
     for(unsigned int j=0; j< screenHeight; j++)
-    {
         texture.SetPixel(x, j, color);
-    }
+
     rendered = true;
 }
 bool ScreenPointer::HandleEvents(sf::Event Event)
@@ -395,10 +391,12 @@ bool Button::HandleEvents(sf::Event Event)
                 if(Event.MouseButton.Y >= area.Top && Event.MouseButton.Y <= area.Bottom)
                 {
                     pressed = !pressed;
+
                     if(pressed)
                         output.SetColor(sf::Color(0, 255, 0, 100));
                     else
                         output.SetColor(sf::Color(255, 255, 255, 100));
+
                     return true;
                 }
             }
@@ -449,6 +447,7 @@ void Button::SetAnchorage(bool Top, bool Left, bool Bottom, bool Right)
 void Button::ChangeState()
 {
     pressed = !pressed;
+
     if(pressed)
         output.SetColor(sf::Color(0, 255, 0, 100));
     else
@@ -471,10 +470,12 @@ bool ButtonChange::HandleEvents(sf::Event Event)
                 if(Event.MouseButton.Y >= area.Top && Event.MouseButton.Y <= area.Bottom)
                 {
                     pressed = !pressed;
+
                     if(pressed)
                         output.SetImage(texture2);
                     else
                         output.SetImage(texture);
+
                     return true;
                 }
             }
@@ -491,10 +492,12 @@ bool ButtonChange::ClickEvent(wxMouseEvent& event)
             if(event.GetPosition().y >= area.Top && event.GetPosition().y <= area.Bottom)
             {
                 pressed = !pressed;
+
                 if(pressed)
                     output.SetImage(texture2);
                 else
                     output.SetImage(texture);
+
                 return true;
             }
         }

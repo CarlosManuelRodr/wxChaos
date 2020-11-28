@@ -20,29 +20,30 @@
 */
 class IterDialog : public wxFrame 
 {
-	wxPanel* panel;
-	wxTextCtrl* textCtrl;
-	wxButton* plusButton;
-	wxButton* minusButton;
-	wxButton* acceptButton;
-	wxButton* applyButton;
-		
-	unsigned int number;
-	Fractal *target;
-	wxString text;
-	bool *active;
-	
-public:
-	IterDialog( bool *Active, Fractal *_target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
-		const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 314,124 ), long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL );
-	~IterDialog();
+    wxPanel* panel;
+    wxTextCtrl* textCtrl;
+    wxButton* plusButton;
+    wxButton* minusButton;
+    wxButton* acceptButton;
+    wxButton* applyButton;
 
-	void OnPlus( wxCommandEvent& event );
-	void OnMinus( wxCommandEvent& event );
-	void OnOk( wxCommandEvent& event );
-	void OnApply( wxCommandEvent& event );
-	void SetTarget(Fractal* _target);
-	
+    unsigned int number;
+    Fractal *target;
+    wxString text;
+    bool *active;
+    
+public:
+    IterDialog(bool *Active, Fractal *_target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(314,124), 
+               long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
+
+    ~IterDialog();
+
+    void OnPlus(wxCommandEvent& event);
+    void OnMinus(wxCommandEvent& event);
+    void OnOk(wxCommandEvent& event);
+    void OnApply(wxCommandEvent& event);
+    void SetTarget(Fractal* _target);
 };
 
 #endif
