@@ -40,16 +40,15 @@ private:
     double lastReal, lastIm;
     bool* active;
 
-    void OnOk( wxCommandEvent& event );
-    void OnApply( wxCommandEvent& event );
-    void OnClose( wxCloseEvent& event );
+    void OnOk(wxCommandEvent& event);
+    void OnApply(wxCommandEvent& event);
+    void OnClose(wxCloseEvent& event);
 
 public:
     ConstDialog(bool* Active, Fractal* mTarget, wxWindow* parent, wxWindowID id = wxID_ANY, 
                 const wxString& title = wxT("Enter constant"), const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxSize(191, 209), long style = wxDEFAULT_DIALOG_STYLE);
     ~ConstDialog();
-
 };
 
 #endif //__const
