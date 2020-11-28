@@ -19,7 +19,19 @@
 #include "muParserX/mpParser.h"
 using namespace std;
 
+/****************************
+*                           *
+*    Auxiliary functions    *
+*                           *
+****************************/
+
 int Get_Cores();
+
+/****************************
+*                           *
+*      Fractal classes      *
+*                           *
+****************************/
 
 /**
 * @enum FRACTAL_TYPE
@@ -163,7 +175,7 @@ struct Options
     int gmpPrec;
     int redInt, greenInt, blueInt;
     double redMed, greenMed, blueMed;
-    double redDes, greenDes, blueDes;
+    double redStdDev, greenStdDev, blueStdDev;
     sf::Color fSetColor;
 
     int screenHeight;
@@ -552,9 +564,9 @@ protected:
     sf::Uint8* greenPalette;
     sf::Uint8* bluePalette;
     sf::Color* palette;
-    int redInt, greenInt, blueInt;          ///< Intensity parameters.
-    double redMed, greenMed, blueMed;       ///< Mean parameters.
-    double redDes, greenDes, blueDes;       ///< Standard deviation parameters.
+    int redInt, greenInt, blueInt;                ///< Intensity parameters.
+    double redMed, greenMed, blueMed;             ///< Mean parameters.
+    double redStdDev, greenStdDev, blueStdDev;    ///< Standard deviation parameters.
     bool relativeColor;
     bool colorSet;                          ///< Activates internal coloring.
     bool colorMode;                         ///< Activates external coloring.

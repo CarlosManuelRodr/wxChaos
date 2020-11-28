@@ -16,13 +16,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
         {
             redInt = 255;
             redMed = 34;
-            redDes = 8;
+            redStdDev = 8;
             greenInt = 201;
             greenMed = 28;
-            greenDes = 12;
+            greenStdDev = 12;
             blueInt = 255;
             blueMed = 21;
-            blueDes = 9;
+            blueStdDev = 9;
             paletteSize = 60;
             break;
         }
@@ -30,13 +30,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
         {
             redInt = 252;
             redMed = 104;
-            redDes = 37;
+            redStdDev = 37;
             greenInt = 255;
             greenMed = 96;
-            greenDes = 34;
+            greenStdDev = 34;
             blueInt = 255;
             blueMed = 73;
-            blueDes = 40;
+            blueStdDev = 40;
             paletteSize = 300;
             break;
         }
@@ -44,13 +44,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
         {
             redInt = 210;
             redMed = 19;
-            redDes = 14;
+            redStdDev = 14;
             greenInt = 102;
             greenMed = 26;
-            greenDes = 10;
+            greenStdDev = 10;
             blueInt = 97;
             blueMed = 29;
-            blueDes = 10;
+            blueStdDev = 10;
             paletteSize = 60;
             break;
         }
@@ -58,13 +58,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
         {
             redInt = 200;
             redMed = 30;
-            redDes = 9;
+            redStdDev = 9;
             greenInt = 200;
             greenMed = 30;
-            greenDes = 9;
+            greenStdDev = 9;
             blueInt = 200;
             blueMed = 30;
-            blueDes = 9;
+            blueStdDev = 9;
             paletteSize = 60;
             break;
         }
@@ -72,13 +72,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
         {
             redInt = 205;
             redMed = 23;
-            redDes = 14;
+            redStdDev = 14;
             greenInt = 196;
             greenMed = 26;
-            greenDes = 11;
+            greenStdDev = 11;
             blueInt = 198;
             blueMed = 38;
-            blueDes = 9;
+            blueStdDev = 9;
             paletteSize = 60;
             break;
         }
@@ -86,13 +86,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
         {
             redInt = 126;
             redMed = 3;
-            redDes = 11;
+            redStdDev = 11;
             greenInt = 200;
             greenMed = 36;
-            greenDes = 9;
+            greenStdDev = 9;
             blueInt = 200;
             blueMed = 24;
-            blueDes = 12;
+            blueStdDev = 12;
             paletteSize = 60;
             break;
         }
@@ -100,13 +100,13 @@ void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
         {
             redInt = 200;
             redMed = 0;
-            redDes = 10;
+            redStdDev = 10;
             greenInt = 200;
             greenMed = 17;
-            greenDes = 10;
+            greenStdDev = 10;
             blueInt = 200;
             blueMed = 37;
-            blueDes = 10;
+            blueStdDev = 10;
             paletteSize = 60;
             break;
         }
@@ -908,7 +908,7 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
     // Change colors according to selection.
     estFractalColor.redInt = redIntSld->GetValue(); estFractalColor.greenInt = greenIntSld->GetValue(); estFractalColor.blueInt = blueIntSld->GetValue();
     estFractalColor.redMed = redPosSld->GetValue(); estFractalColor.greenMed = greenPosSld->GetValue(); estFractalColor.blueMed = bluePosSld->GetValue();
-    estFractalColor.redDes = redDesSld->GetValue(); estFractalColor.greenDes = greenDesSld->GetValue(); estFractalColor.blueDes = blueDesSld->GetValue();
+    estFractalColor.redStdDev = redDesSld->GetValue(); estFractalColor.greenStdDev = greenDesSld->GetValue(); estFractalColor.blueStdDev = blueDesSld->GetValue();
 
     estFractalColor.SetStyle(static_cast<GAUSS_STYLES>(ESTStylesChoice->GetCurrentSelection()));
     int paletteSize = estFractalColor.paletteSize;
@@ -937,10 +937,10 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
     redPosText->SetLabel(text);
 
     // Standard deviation
-    target->SetDes(estFractalColor.redDes, red);
-    redDesSld->SetValue(estFractalColor.redDes);
+    target->SetDes(estFractalColor.redStdDev, red);
+    redDesSld->SetValue(estFractalColor.redStdDev);
     text = wxT(stdDevTxt);
-    text += num_to_string(estFractalColor.redDes);
+    text += num_to_string(estFractalColor.redStdDev);
     redDesText->SetLabel(text);
 
 
@@ -960,10 +960,10 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
     greenPosText->SetLabel(text);
 
     // Standard deviation
-    target->SetDes(estFractalColor.greenDes, green);
-    greenDesSld->SetValue(estFractalColor.greenDes);
+    target->SetDes(estFractalColor.greenStdDev, green);
+    greenDesSld->SetValue(estFractalColor.greenStdDev);
     text = wxT(stdDevTxt);
-    text += num_to_string(estFractalColor.greenDes);
+    text += num_to_string(estFractalColor.greenStdDev);
     greenDesText->SetLabel(text);
 
     // Blue
@@ -982,10 +982,10 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
     bluePosText->SetLabel(text);
 
     // Standard deviation
-    target->SetDes(estFractalColor.blueDes, blue);
-    blueDesSld->SetValue(estFractalColor.blueDes);
+    target->SetDes(estFractalColor.blueStdDev, blue);
+    blueDesSld->SetValue(estFractalColor.blueStdDev);
     text = wxT(stdDevTxt);
-    text += num_to_string(estFractalColor.blueDes);
+    text += num_to_string(estFractalColor.blueStdDev);
     blueDesText->SetLabel(text);
 }
 void ColorFrame::GradientColorChangeSelection( wxCommandEvent& event )

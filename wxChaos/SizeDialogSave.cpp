@@ -25,6 +25,7 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
         progressLabel = new wxStaticText( this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Saving..."
         progressLabel->Wrap( -1 );
         progressBoxxy->Add( progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+        progress = nullptr;
     }
     else
     {
@@ -44,11 +45,13 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     wxBoxSizer* buttonBoxxy;
     buttonBoxxy = new wxBoxSizer( wxHORIZONTAL );
 
-    if(myType != SCRIPT_FRACTAL)
+    if (myType != SCRIPT_FRACTAL)
     {
-        pauseButton = new wxButton( this, wxID_ANY, wxT(pauseTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Pause"
-        buttonBoxxy->Add( pauseButton, 0, wxALL, 5 );
+        pauseButton = new wxButton(this, wxID_ANY, wxT(pauseTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Pause"
+        buttonBoxxy->Add(pauseButton, 0, wxALL, 5);
     }
+    else
+        pauseButton = nullptr;
 
     cancelButton = new wxButton( this, wxID_ANY, wxT(cancelTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Cancel"
     buttonBoxxy->Add( cancelButton, 0, wxALL, 5 );

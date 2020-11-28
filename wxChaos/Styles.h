@@ -37,7 +37,7 @@ class GaussianColorPalette
 public:
     int redInt , greenInt, blueInt;
     double redMed, greenMed, blueMed;
-    double redDes, greenDes, blueDes;
+    double redStdDev, greenStdDev, blueStdDev;
     int paletteSize;
 
     ///@brief Empty constructor.

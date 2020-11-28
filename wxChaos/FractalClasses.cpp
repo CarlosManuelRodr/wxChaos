@@ -259,9 +259,9 @@ Fractal::Fractal(int width, int height)
     greenMed = 28;
     blueMed = 12;
 
-    redDes = 8;
-    greenDes = 12;
-    blueDes = 9;
+    redStdDev = 8;
+    greenStdDev = 12;
+    blueStdDev = 9;
 
     for(int i=0; i<paletteSize; i++)
     {
@@ -396,9 +396,9 @@ Fractal::Fractal(sf::RenderWindow *Window)
     greenMed = 28;
     blueMed = 21;
 
-    redDes = 8;
-    greenDes = 12;
-    blueDes = 9;
+    redStdDev = 8;
+    greenStdDev = 12;
+    blueStdDev = 9;
 
     for(int i=0; i<paletteSize; i++)
     {
@@ -1280,9 +1280,9 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     greenMed = opt.greenMed;
     blueMed = opt.blueMed;
 
-    redDes = opt.redDes;
-    greenDes = opt.greenDes;
-    blueDes = opt.blueDes;
+    redStdDev = opt.redStdDev;
+    greenStdDev = opt.greenStdDev;
+    blueStdDev = opt.blueStdDev;
     fSetColor = opt.fSetColor;
 
     gradient = opt.gradient;
@@ -1351,9 +1351,9 @@ Options Fractal::GetOptions()
     opt.greenMed = greenMed;
     opt.blueMed = blueMed;
 
-    opt.redDes = redDes;
-    opt.greenDes = greenDes;
-    opt.blueDes = blueDes;
+    opt.redStdDev = redStdDev;
+    opt.greenStdDev = greenStdDev;
+    opt.blueStdDev = blueStdDev;
     opt.fSetColor = fSetColor;
 
     opt.screenWidth = screenWidth;
@@ -1641,15 +1641,15 @@ void Fractal::SetDes(double des, COLOR col)
     colorPaletteMode = GAUSSIAN;
     if(col == red)
     {
-        redDes = des;
+        redStdDev = des;
     }
     else if(col == green)
     {
-        greenDes = des;
+        greenStdDev = des;
     }
     else if(col == blue)
     {
-        blueDes = des;
+        blueStdDev = des;
     }
     this->RebuildPalette();
 }
@@ -1689,15 +1689,15 @@ double Fractal::GetDes(COLOR col)
 {
     if(col == red)
     {
-        return redDes;
+        return redStdDev;
     }
     else if(col == green)
     {
-        return greenDes;
+        return greenStdDev;
     }
     else if(col == blue)
     {
-        return blueDes;
+        return blueStdDev;
     }
     else return 0;
 }
@@ -1719,9 +1719,9 @@ void Fractal::SetESTStyle(GAUSS_STYLES _estStyle)
     greenMed = c.greenMed;
     blueMed = c.blueMed;
 
-    redDes = c.redDes;
-    greenDes = c.greenDes;
-    blueDes = c.blueDes;
+    redStdDev = c.redStdDev;
+    greenStdDev = c.greenStdDev;
+    blueStdDev = c.blueStdDev;
 
     this->SetPaletteSize(c.paletteSize);
     for(int i=0; i<paletteSize; i++)
@@ -1895,15 +1895,15 @@ sf::Uint8 Fractal::CalcGradient(int colorNum, COLOR col)
     // Return color with a normal distribution.
     if(col == red)
     {
-        return static_cast<sf::Uint8>(redInt*NormalDist(colorNum, redMed, redDes) + redInt*NormalDist(colorNum, paletteSize+redMed, redDes));
+        return static_cast<sf::Uint8>(redInt*NormalDist(colorNum, redMed, redStdDev) + redInt*NormalDist(colorNum, paletteSize+redMed, redStdDev));
     }
     if(col == green)
     {
-        return static_cast<sf::Uint8>(greenInt*NormalDist(colorNum, greenMed, greenDes) + greenInt*NormalDist(colorNum, paletteSize+greenMed, greenDes));
+        return static_cast<sf::Uint8>(greenInt*NormalDist(colorNum, greenMed, greenStdDev) + greenInt*NormalDist(colorNum, paletteSize+greenMed, greenStdDev));
     }
     if(col == blue)
     {
-        return static_cast<sf::Uint8>(blueInt*NormalDist(colorNum, blueMed, blueDes)+blueInt*NormalDist(colorNum, paletteSize+blueMed, blueDes));
+        return static_cast<sf::Uint8>(blueInt*NormalDist(colorNum, blueMed, blueStdDev)+blueInt*NormalDist(colorNum, paletteSize+blueMed, blueStdDev));
     }
     return 0;
 }
