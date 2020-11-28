@@ -139,7 +139,7 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
 
 
 /////////////////////////////////////////
-////        BEGINS FRACTAL            /////
+////        BEGINS FRACTAL          /////
 /////////////////////////////////////////
 
 // Basic methods.

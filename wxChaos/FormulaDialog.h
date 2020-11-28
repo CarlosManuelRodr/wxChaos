@@ -21,16 +21,16 @@
 */
 class FuncDialog : public wxDialog
 {
-	wxPanel* mainPanel;
-	wxTextCtrl* text;
-	wxButton* closeButton;
+    wxPanel* mainPanel;
+    wxTextCtrl* text;
+    wxButton* closeButton;
 
-	void OnClose(wxCommandEvent& event);
+    void OnClose(wxCommandEvent& event);
 
 public:
-	FuncDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
-				const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 249,173 ), long style = wxDEFAULT_DIALOG_STYLE );
-	~FuncDialog();
+    FuncDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
+                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 249,173 ), long style = wxDEFAULT_DIALOG_STYLE );
+    ~FuncDialog();
 
 };
 
@@ -46,37 +46,37 @@ public:
 */
 class FormulaDialog : public wxDialog
 {
-		wxPanel* mainPanel;
-		wxTextCtrl* formulaCtrl;
-		wxStaticText* bailText;
-		wxStaticText* typeText;
-		wxTextCtrl* bailCtrl;
-		wxCheckBox* juliaCheck;
-		wxButton* acceptButton;
-		wxButton* applyButton;
-		wxButton* funcButton;
-		wxChoice* typeChoice;
-		FractalCanvas* fCanvas;
-		GAUSS_STYLES* colorStyle;
-		wxWindow* parent;
+        wxPanel* mainPanel;
+        wxTextCtrl* formulaCtrl;
+        wxStaticText* bailText;
+        wxStaticText* typeText;
+        wxTextCtrl* bailCtrl;
+        wxCheckBox* juliaCheck;
+        wxButton* acceptButton;
+        wxButton* applyButton;
+        wxButton* funcButton;
+        wxChoice* typeChoice;
+        FractalCanvas* fCanvas;
+        GAUSS_STYLES* colorStyle;
+        wxWindow* parent;
 
-		wxMenuItem* slider;
-		wxMenuItem* manual;
-		bool *active;
-		int userDefinedID, FPuserDefinedID;
+        wxMenuItem* slider;
+        wxMenuItem* manual;
+        bool *active;
+        int userDefinedID, FPuserDefinedID;
 
-		void OnAccept( wxCommandEvent& event );
-		void OnApply( wxCommandEvent& event );
-		void OnClose( wxCloseEvent& event );
-		void OnFunc( wxCommandEvent& event );
-		void OnChoice( wxCommandEvent& event );
+        void OnAccept( wxCommandEvent& event );
+        void OnApply( wxCommandEvent& event );
+        void OnClose( wxCloseEvent& event );
+        void OnFunc( wxCommandEvent& event );
+        void OnChoice( wxCommandEvent& event );
 
-	public:
+    public:
 
-		FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GAUSS_STYLES* mColorStyle, wxMenuItem* juliaSlider, wxMenuItem* juliaManual, bool *Active, FractalCanvas* _fCanvas, wxWindow* _parent,
-						wxWindowID id = wxID_ANY, const wxString& title = wxT(userFormTxt),
-						const wxPoint& pos = wxDefaultPosition, const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE );
-		~FormulaDialog();
+        FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GAUSS_STYLES* mColorStyle, wxMenuItem* juliaSlider, wxMenuItem* juliaManual, bool *Active, FractalCanvas* _fCanvas, wxWindow* _parent,
+                        wxWindowID id = wxID_ANY, const wxString& title = wxT(userFormTxt),
+                        const wxPoint& pos = wxDefaultPosition, const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE );
+        ~FormulaDialog();
 
 };
 

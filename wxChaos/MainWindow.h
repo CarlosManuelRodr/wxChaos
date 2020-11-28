@@ -137,7 +137,7 @@ class MainFrame : public wxFrame
     wxMenuItem* showOrbit;
     wxMenuItem* slider;
     wxMenuItem* manual;
-    wxMenuItem *itManual;
+    wxMenuItem* itManual;
     wxMenuItem* MoreIter;
     wxMenuItem* lessIter;
     wxMenuItem* fractOptItem;
@@ -162,7 +162,7 @@ class MainFrame : public wxFrame
     vector<wxSpinCtrl*> spinControls;
     vector<wxCheckBox*> checkBoxes;
 
-    wxBoxSizer *boxxy;  // Please, forgive my shamely use of an old meme as variable name through this project.
+    wxBoxSizer *boxxy;  // Please, forgive my shamely use of an old meme as variable names through this project.
     wxSize size;
     wxStatusBar* status;
     bool colorFrameActive;
