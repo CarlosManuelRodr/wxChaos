@@ -28,7 +28,7 @@ protected:
     sf::Font font;                ///< Font to draw some text into the button.
     sf::String buttonText;        ///< Text into the button.
     sf::Rect<double> area;        ///< Position of the button.
-    bool pressed;                ///< Status of the button.
+    bool pressed;                 ///< Status of the button.
     double screenWidth;
     double screenHeight;
     double FX, FY;

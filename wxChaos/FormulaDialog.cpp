@@ -20,7 +20,7 @@ FuncDialog::FuncDialog( wxWindow* parent, wxWindowID id, const wxString& title, 
 
     text = new wxTextCtrl( mainPanel, wxID_ANY, wxString(wxT(availableFuncTxt)) + wxT("abs(), sin(), cos(), tan(), sinh(), cosh(),\ntanh(), ln(), log(), log10(), exp(), sqrt()."),
                             wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_READONLY );    // Txt: "Available functions:\n"
-    text->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 90, false, wxEmptyString ) );
+    text->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 
     textBoxxy->Add( text, 1, wxALL|wxEXPAND, 5 );
 

@@ -116,7 +116,7 @@ void wxGradientDialog::paintStops()
     {
         // Draw triangle.
         dc.SetPen(wxPen(*wxBLACK));
-        dc.SetBrush(wxBrush(wxNullColour, wxTRANSPARENT));
+        dc.SetBrush(wxBrush(wxNullColour, wxBRUSHSTYLE_TRANSPARENT));
         wxPoint triangle[] = {wxPoint(ctr, 5), wxPoint(ctr+5, 0), wxPoint(ctr+10, 5)};
         dc.DrawPolygon(3, triangle);
 

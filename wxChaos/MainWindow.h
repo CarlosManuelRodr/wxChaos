@@ -80,7 +80,8 @@ enum IDS
     ID_FORMULA_DIALOG,
     ID_OPTPANEL,
     ID_OPEN_SCRIPT_FOLDER,
-    ID_USER_MANUAL
+    ID_USER_MANUAL,
+    ID_WELCOME_DIALOG
 };
 
 /**
@@ -161,7 +162,7 @@ class MainFrame : public wxFrame
     vector<wxSpinCtrl*> spinControls;
     vector<wxCheckBox*> checkBoxes;
 
-    wxBoxSizer *boxxy;
+    wxBoxSizer *boxxy;  // Please, forgive my shamely use of an old meme as variable name through this project.
     wxSize size;
     wxStatusBar* status;
     bool colorFrameActive;
@@ -189,12 +190,14 @@ class MainFrame : public wxFrame
     void GetScriptFractals();             ///< Creates the menu elements corresponding to the script fractals.
     void ConnectEvents();
     void CloseAll();
+    void ShowFirstUseDialog();
 
 public :
     MainFrame();
     void OnSave(wxCommandEvent &event);                    ///< Saves a picture of the viewing area.
     void OnJuliaMode(wxCommandEvent &event);               ///< Opens a windows with the Julia version of the selected fractal.
     void OnPalette(wxCommandEvent &event);                 ///< Opens a ColorFrame.
+    void OnWelcomeDialog(wxCommandEvent& event);           ///< Shows the welcome dialog.
     void OnAbout(wxCommandEvent &event);                   ///< Opens the About frame.
     void OnClose(wxCloseEvent& event);                     ///< Closes the frame.
     void OnQuit(wxCommandEvent &event);

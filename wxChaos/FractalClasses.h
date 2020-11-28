@@ -188,9 +188,9 @@ enum FORMULA_TYPE
 struct FormulaOpt
 {
     wxString userFormula;        ///< String containing the user formula.
-    FORMULA_TYPE type;        ///< Type of user formula (Complex or fixed point).
-    bool julia;                ///< Inform if the fractal is a Julia variety. Only on complex type.
-    int bailout;            ///< Bailout of the complex fractal.
+    FORMULA_TYPE type;           ///< Type of user formula (Complex or fixed point).
+    bool julia;                  ///< Inform if the fractal is a Julia variety. Only on complex type.
+    int bailout;                 ///< Bailout of the complex fractal.
 };
 
 /**
@@ -213,11 +213,11 @@ class RenderFractal : public sf::Thread
 {
 protected:
     bool** setMap;                ///< Pointer to the set map.
-    int** colorMap;    ///< Pointer to the color map.
+    int** colorMap;               ///< Pointer to the color map.
     unsigned int** auxMap;        ///< Pointer to the auxiliary map.
-    int x;        ///< Rendering x position.
-    int y;        ///< Rendering y position.
-    unsigned int threadProgress;      ///< Last progress counted. Used when the thread is paused.
+    int x;                        ///< Rendering x position.
+    int y;                        ///< Rendering y position.
+    unsigned int threadProgress;  ///< Last progress counted. Used when the thread is paused.
 
     int wo;        ///< Left render limit.
     int ho;        ///< Upper render limit.
@@ -246,9 +246,9 @@ public:
     public:
     virtual void Render() = 0;            ///< Render the fractal.
     virtual void SpecialRender() {};
-    virtual void Run();                    ///< Launches the thread.
+    virtual void Run();                   ///< Launches the thread.
     virtual void Stop();
-    RenderFractal();                    ///< Constructor.
+    RenderFractal();                      ///< Constructor.
 
     ///@brief Sets the rendering limits. This is calculated before the rendering starts by TRender.
     ///@param widthO Left rendering limit.
@@ -327,7 +327,7 @@ public:
 * stop them, reset them and relaunch them.
 * @tparam MT Must be a RenderFractal inherited class.
 */
-template<class MT> class ThreadWatchdog : public sf::Thread        // Controla el estado de las threads.
+template<class MT> class ThreadWatchdog : public sf::Thread
 {
     MT** threadList;               ///< An array with pointers to the execution threads.
     bool threadRunning;            ///< State of the threads.
@@ -552,9 +552,9 @@ protected:
     sf::Uint8* greenPalette;
     sf::Uint8* bluePalette;
     sf::Color* palette;
-    int redInt, greenInt, blueInt;          // Intensity parameters.
-    double redMed, greenMed, blueMed;       // Mean parameters.
-    double redDes, greenDes, blueDes;       // Standard deviation parameters.
+    int redInt, greenInt, blueInt;          ///< Intensity parameters.
+    double redMed, greenMed, blueMed;       ///< Mean parameters.
+    double redDes, greenDes, blueDes;       ///< Standard deviation parameters.
     bool relativeColor;
     bool colorSet;                          ///< Activates internal coloring.
     bool colorMode;                         ///< Activates external coloring.
@@ -714,22 +714,22 @@ public:
     bool IsPaused();
 
     // Métodos virtuales.
-    virtual void Render() = 0;                                        ///< Start the fractal rendering. Defined in derived class.
-    virtual void PreRender();                                        ///< Perform necessary operations before starting to render.
-    virtual void PreDrawMaps();                                        ///< Perform necessary operations before drawing the maps.
-    virtual void PostRender();                                        ///< Perform necessary operations after the rendering is finished.
-    virtual void PreRestartRender();                                ///< Perform necessary operations before restarting.
-    virtual void HandleEvents( sf::Event *Event );                    ///< SFML event handler.
+    virtual void Render() = 0;                               ///< Start the fractal rendering. Defined in derived class.
+    virtual void PreRender();                                ///< Perform necessary operations before starting to render.
+    virtual void PreDrawMaps();                              ///< Perform necessary operations before drawing the maps.
+    virtual void PostRender();                               ///< Perform necessary operations after the rendering is finished.
+    virtual void PreRestartRender();                         ///< Perform necessary operations before restarting.
+    virtual void HandleEvents( sf::Event *Event );           ///< SFML event handler.
 
     ///@brief Verifies watchdog status.
     ///@return true if there is an active thread. false if not.
     virtual bool IsRendering();
-    virtual void SpecialSaveRoutine(string filename);                ///< Perform operation after saving.
-    virtual void SetFormula( FormulaOpt formula );                    ///< Sets user formula.
-    virtual void CopyOptFromPanel();                                ///< Copy options from the option panel.
-    virtual void MoreIter();                                        ///< Increases the number of iterations.
-    virtual void LessIter();                                        ///< Decreases interations.
-    virtual void ChangeThreadNumber();                                ///< Changes the number of rendering threads.
+    virtual void SpecialSaveRoutine(string filename);              ///< Perform operation after saving.
+    virtual void SetFormula( FormulaOpt formula );                 ///< Sets user formula.
+    virtual void CopyOptFromPanel();                               ///< Copy options from the option panel.
+    virtual void MoreIter();                                       ///< Increases the number of iterations.
+    virtual void LessIter();                                       ///< Decreases interations.
+    virtual void ChangeThreadNumber();                             ///< Changes the number of rendering threads.
 
     // Communication methods.
     ///@brief Get value of X number in the plane at selected pixel.

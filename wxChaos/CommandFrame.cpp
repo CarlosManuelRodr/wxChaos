@@ -60,7 +60,7 @@ CommandFrame::CommandFrame(bool* Active, Fractal* _target, wxWindow* parent, wxW
     panelBoxxy = new wxBoxSizer(wxVERTICAL);
 
     infoText = new wxRichTextCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxSIMPLE_BORDER);
-    infoText->SetFont(wxFont(10, 74, 90, 90, false, wxT("Consolas")));
+    infoText->SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Consolas")));
 
     infoText->SetBackgroundColour( wxColour( 37, 52, 80 ) );
     panelBoxxy->Add(infoText, 7, wxEXPAND | wxALL, 5);
@@ -74,7 +74,7 @@ CommandFrame::CommandFrame(bool* Active, Fractal* _target, wxWindow* parent, wxW
 
     commandCtrl = new wxTextCtrl( mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_PROCESS_TAB);
 
-    commandCtrl->SetFont(wxFont(10, 74, 90, 90, false, wxT("Consolas")));
+    commandCtrl->SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Consolas")));
 
     commandBoxxy->Add( commandCtrl, 1, wxALL|wxEXPAND, 5 );
 

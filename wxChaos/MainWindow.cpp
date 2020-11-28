@@ -227,6 +227,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
 #endif
     keyboardGuide = new wxMenuItem(helpMenu, ID_KEYBGUIDE, wxString(wxT(menuKeybGuideTxt)), wxEmptyString, wxITEM_CHECK);
     helpMenu->Append(keyboardGuide);
+    helpMenu->Append(ID_WELCOME_DIALOG, wxT(welcomeDialogTxt));
     helpMenu->Append(ID_ABOUT, wxT(menuAboutTxt));
 
 
@@ -329,26 +330,27 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     }
     if(!opt.colorSet) fractalCanvas->GetTarget()->SetFractalSetColorMode(false);
 
-    // The wxHtmlWindow will crash on Linux if I don't put this here. Don't ask why...
-#ifdef __linux__
-    HTMLViewer *diag = new HTMLViewer(GetWxAbsPath("Resources/Tutorials/mainTut.html"), this, wxID_ANY,
-                                            wxString(wxT(menuWelcomeTxt)), wxDefaultPosition, wxSize( 550,400 ));
-#elif _WIN32
-    HTMLViewer *diag = new HTMLViewer(GetWxAbsPath("Resources\\Tutorials\\mainTut.html"), this, wxID_ANY,
-                                            wxString(wxT(menuWelcomeTxt)), wxDefaultPosition, wxSize( 550,400 ));
-#endif
-
-    if(opt.firstUse)
-    {
-        diag->Show(true);
-        fractalCanvas->ShowHelpImage();
-    }
+    if (opt.firstUse)
+        this->ShowFirstUseDialog();
 
     if(fractalType != MANDELBROT && fractalType != MANOWAR)
         juliaMode->Enable(false);
 
     this->GetScriptFractals();
     this->ConnectEvents();
+}
+void MainFrame::ShowFirstUseDialog()
+{
+#ifdef __linux__
+    HTMLViewer* diag = new HTMLViewer(GetWxAbsPath("Resources/Tutorials/mainTut.html"), this, wxID_ANY,
+        wxString(wxT(menuWelcomeTxt)), wxDefaultPosition, wxSize(550, 400));
+#elif _WIN32
+    HTMLViewer* diag = new HTMLViewer(GetWxAbsPath("Resources\\Tutorials\\mainTut.html"), this, wxID_ANY,
+        wxString(wxT(menuWelcomeTxt)), wxDefaultPosition, wxSize(550, 400));
+#endif
+
+    diag->Show(true);
+    fractalCanvas->ShowHelpImage();
 }
 void MainFrame::ConnectEvents()
 {
@@ -357,6 +359,7 @@ void MainFrame::ConnectEvents()
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(MainFrame::OnResize));
     this->Connect(ID_JULIA_MODE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnJuliaMode));
     this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::JuliaHandle));
+    this->Connect(ID_WELCOME_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnWelcomeDialog));
     this->Connect(ID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbout));
     this->Connect(ID_KEYBGUIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnKeybGuide));
     this->Connect(ID_SAVE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnSave));
@@ -450,6 +453,10 @@ void MainFrame::JuliaHandle(wxUpdateUIEvent &event)
         changeJuliaMode = false;
         fractalCanvas->SetJuliaMode(false);
     }
+}
+void MainFrame::OnWelcomeDialog(wxCommandEvent& event)
+{
+    this->ShowFirstUseDialog();
 }
 void MainFrame::OnAbout(wxCommandEvent &event)
 {

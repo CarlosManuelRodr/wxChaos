@@ -1,5 +1,5 @@
-#include "ConfigParser.h"
 #include <fstream>
+#include "ConfigParser.h"
 #include "StringFuncs.h"
 using namespace std;
 
@@ -96,6 +96,7 @@ void ConfigParser::ReplaceArg(string label, string replaceArg)
         else outText += line;
         outText += "\n";
     }
+    outText.pop_back();
     inFile.close();
 
     // Write output file.

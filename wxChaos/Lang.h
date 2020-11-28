@@ -67,6 +67,7 @@
 #define menuUserManTxt "User manual"
 #define menuKeybGuideTxt "Keyboard guide"
 #define menuAboutTxt "About"
+#define welcomeDialogTxt "Open welcome guide"
 #define menuFileTxt "File"
 #define menuFractalTxt "Fractal"
 #define menuIterationsTxt "Iterations"

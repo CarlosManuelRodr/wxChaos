@@ -70,12 +70,12 @@ void AboutDialog::CreateControls()
 
     m_AppNameStaticText = new wxStaticText( m_ContentPanel, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
     m_AppNameStaticText->SetForegroundColour(wxColour(128, 0, 0));
-    m_AppNameStaticText->SetFont(wxFont(28, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Arial Narrow")));
+    m_AppNameStaticText->SetFont(wxFont(28, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Arial Narrow")));
     itemGridBagSizer6->Add(m_AppNameStaticText, wxGBPosition(0, 0), wxGBSpan(1, 2), wxALIGN_LEFT|wxALIGN_BOTTOM|wxLEFT|wxRIGHT|wxTOP, 5);
 
     wxStaticText* itemStaticText8 = new wxStaticText( m_ContentPanel, wxID_STATIC, _("Version"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticText8->SetForegroundColour(wxColour(150, 150, 150));
-    itemStaticText8->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Arial")));
+    itemStaticText8->SetFont(wxFont(8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial")));
     itemGridBagSizer6->Add(itemStaticText8, wxGBPosition(1, 0), wxGBSpan(1, 1), wxALIGN_RIGHT|wxALIGN_TOP|wxLEFT|wxBOTTOM, 5);
 
     m_CopyrightStaticText = new wxStaticText( m_ContentPanel, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE );
@@ -83,7 +83,7 @@ void AboutDialog::CreateControls()
 
     m_VersionStaticText = new wxStaticText( m_ContentPanel, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
     m_VersionStaticText->SetForegroundColour(wxColour(150, 150, 150));
-    m_VersionStaticText->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Arial")));
+    m_VersionStaticText->SetFont(wxFont(8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial")));
     itemGridBagSizer6->Add(m_VersionStaticText, wxGBPosition(1, 1), wxGBSpan(1, 1), wxALIGN_LEFT|wxALIGN_TOP|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_BuildInfoStaticText = new wxStaticText( m_ContentPanel, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE );

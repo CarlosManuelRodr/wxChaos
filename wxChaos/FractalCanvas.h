@@ -57,10 +57,10 @@ class FractalCanvas : public wxSFMLCanvas
     Fractal *target;                    ///< Internally the methods of this class communicate with the fractal through this pointer.
     CommandFrame* commandTarget;
 
-    sf::Image keybImage;                // Texture of the info images.
+    sf::Image keybImage;                ///< Texture of the info images.
     sf::Image mouseImage;
     sf::Image helpImage;
-    sf::Sprite outKeyb;                 // Sprite of the info images.
+    sf::Sprite outKeyb;                 ///< Sprite of the info images.
     sf::Sprite outMouse;
     sf::Sprite outHelp;
 
@@ -98,7 +98,7 @@ class FractalCanvas : public wxSFMLCanvas
 public :
     ///@brief Constructor
     ///@param status Pointer to the status bar of the MainFrame.
-    ///@param pcb Pointer to struct that holds the adress of the pause button and it's status.
+    ///@param pcb Pointer to struct that holds the adress of the pause button and its status.
     ///@param fractType Type of the fractal to be created.
     ///@param parent Parent wxWindow.
     FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FRACTAL_TYPE fractType, wxWindow* Parent, wxWindowID Id,
