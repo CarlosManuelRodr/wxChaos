@@ -19,7 +19,6 @@
 #include <complex>
 #include "angelscript/include/angelscript.h"
 #include "angelscript/add_on/scriptstdstring/scriptstdstring.h"
-#include "CommandFrame.h"
 
 /**
 * @enum CATEGORY

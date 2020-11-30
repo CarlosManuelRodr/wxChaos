@@ -14,7 +14,6 @@
 #include <sstream>
 #include "StringFuncs.h"
 #include "ConfigParser.h"
-#include "CommandFrame.h"
 #include "global.h"
 using namespace std;
 
@@ -69,19 +68,20 @@ void RenderMandelbrot::Render()
                 {
                     Z_re2 = Z_re*Z_re;
                     Z_im2 = Z_im*Z_im;
+
                     if(Z_re2 + Z_im2 > 4)
                     {
                         insideSet = false;
                         break;
                     }
+
                     Z_im = 2*Z_re*Z_im + c_im;
                     Z_re = Z_re2 - Z_im2 + c_re;
                 }
 
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -115,6 +115,7 @@ void RenderMandelbrot::Render()
                         mu = (loglog2 - log(log(sqrt(Z_re2 + Z_im2))))/log2 + 1;
                         insideSet = false;
                     }
+
                     Z_im = 2*Z_re*Z_im + c_im;
                     Z_re = Z_re2 - Z_im2 + c_re;
 
@@ -123,9 +124,8 @@ void RenderMandelbrot::Render()
                 }
 
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -133,14 +133,7 @@ void RenderMandelbrot::Render()
     else if(myOpt.alg == BUDDHABROT)
     {
         sf::Mutex mutex;
-    #ifdef USE_BOOST
-        boost::random::mt19937 gen;
-        gen.seed(static_cast<unsigned int>(std::time(0)));
-        boost::random::uniform_real_distribution<> distX(minX, maxX);
-        boost::random::uniform_real_distribution<> distY(minY, maxY);
-    #else
         srand(static_cast<unsigned int>(time(NULL)));
-    #endif
 
         complex<double> z, c;
         complex<double> *cmpArray;
@@ -158,15 +151,15 @@ void RenderMandelbrot::Render()
                                     ((double(rand()) / double(RAND_MAX)) * (maxY - minY)) + minY);
             if
             (
-                (z.real() >  -1.2 && z.real() <=  -1.1 && z.imag() >  -0.1 && z.imag() < 0.1)
-            || (z.real() >  -1.1 && z.real() <=  -0.9 && z.imag() >  -0.2 && z.imag() < 0.2)
-            || (z.real() >  -0.9 && z.real() <=  -0.8 && z.imag() >  -0.1 && z.imag() < 0.1)
-            || (z.real() > -0.69 && z.real() <= -0.61 && z.imag() >  -0.2 && z.imag() < 0.2)
-            || (z.real() > -0.61 && z.real() <=  -0.5 && z.imag() > -0.37 && z.imag() < 0.37)
-            || (z.real() >  -0.5 && z.real() <= -0.39 && z.imag() > -0.48 && z.imag() < 0.48)
-            || (z.real() > -0.39 && z.real() <=  0.14 && z.imag() > -0.55 && z.imag() < 0.55)
-            || (z.real() >  0.14 && z.real() <   0.29 && z.imag() > -0.42 && z.imag() < -0.07)
-            || (z.real() >  0.14 && z.real() <   0.29 && z.imag() >  0.07 && z.imag() < 0.42)
+               (z.real() >  -1.2 && z.real() <=  -1.1 && z.imag() >  -0.1 && z.imag() < 0.1)
+                || (z.real() >  -1.1 && z.real() <=  -0.9 && z.imag() >  -0.2 && z.imag() < 0.2)
+                || (z.real() >  -0.9 && z.real() <=  -0.8 && z.imag() >  -0.1 && z.imag() < 0.1)
+                || (z.real() > -0.69 && z.real() <= -0.61 && z.imag() >  -0.2 && z.imag() < 0.2)
+                || (z.real() > -0.61 && z.real() <=  -0.5 && z.imag() > -0.37 && z.imag() < 0.37)
+                || (z.real() >  -0.5 && z.real() <= -0.39 && z.imag() > -0.48 && z.imag() < 0.48)
+                || (z.real() > -0.39 && z.real() <=  0.14 && z.imag() > -0.55 && z.imag() < 0.55)
+                || (z.real() >  0.14 && z.real() <   0.29 && z.imag() > -0.42 && z.imag() < -0.07)
+                || (z.real() >  0.14 && z.real() <   0.29 && z.imag() >  0.07 && z.imag() < 0.42)
             ) continue; // "if" taken from Wikipedia description.
 
 
@@ -245,25 +238,16 @@ void RenderMandelbrot::Render()
                 }
 
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(Z_re > 0 && Z_im > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(Z_re <= 0 && Z_im > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(Z_re <= 0 && Z_im < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -297,6 +281,7 @@ void RenderMandelbrot::Render()
                         mu = (loglog2 - log(log(sqrt(Z_re2 + Z_im2))))/log2 + 1;
                         if(n > 0) insideSet = false;
                     }
+
                     Z_im = 2*Z_re*Z_im;
                     Z_re = Z_re2 - Z_im2;
 
@@ -311,9 +296,8 @@ void RenderMandelbrot::Render()
                 }
 
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 distance1 = distance1/(n-1);
                 distance = distance/n;
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*700)));
@@ -371,9 +355,8 @@ void RenderMandelbrot::SpecialRender()
                 if(distY == 0) distY = 0.000001;
 
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(myOpt.smoothRender)
                 {
                     if(!insideSet)
@@ -382,9 +365,7 @@ void RenderMandelbrot::SpecialRender()
                         colorMap[x][y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distX) + log(1/distY)))));
                 }
                 else
-                {
                     colorMap[x][y] = static_cast<int>(iterations + log(1/distX) + log(1/distY));
-                }
             }
         }
     }
@@ -501,9 +482,8 @@ Mandelbrot::~Mandelbrot()
 void Mandelbrot::Render()
 {
     for(unsigned int i=0; i<threadNumber; i++)
-    {
         myRender[i].SetBuddhaRandomP(buddhaRandomP);
-    }
+
     this->TRender<RenderMandelbrot>(myRender);
 }
 void Mandelbrot::DrawOrbit()
@@ -534,81 +514,6 @@ void Mandelbrot::DrawOrbit()
 
     orbitDrawn = true;
 }
-wxString Mandelbrot::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Mandelbrot\nFormula: Z = Z^2 + C\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Mandelbrot::AskInfo(double real, double imag, int iter)
-{
-    // Returns info about the point.
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(0, 0);
-        z = c = complex<double>(real, imag);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(z, 2) + c;
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-wxString Mandelbrot::SaveOrbit(double real, double imag, int iter, wxString filepath)
-{
-    complex<double> z(real, imag);
-    complex<double> c = z;
-    vector< complex<double> > zVector;
-
-    for(int n=0; n<iter; n++)
-    {
-        zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4) break;
-
-        z = pow(z, 2) + c;
-    }
-    ofstream outFile;
-    string path = string(filepath.mb_str());
-    outFile.open(path.c_str());
-    for(unsigned int i=0; i<zVector.size(); i++)
-    {
-        outFile << zVector[i].real() << ", " << zVector[i].imag() << endl;
-    }
-    outFile.close();
-    return wxString(wxT("Done"));
-}
 void Mandelbrot::CopyOptFromPanel()
 {
     buddhaRandomP = *panelOpt.GetIntElement(0);
@@ -631,9 +536,10 @@ void Mandelbrot::PreDrawMaps()
         unsigned int maxColorVal = 0;
         for(int i=0; i<screenWidth; i++)
         {
-            for(int j=0; j<screenHeight; j++)
+            for (int j = 0; j < screenHeight; j++)
             {
-                if(auxMap[i][j] > maxColorVal) maxColorVal = auxMap[i][j];
+                if (auxMap[i][j] > maxColorVal)
+                    maxColorVal = auxMap[i][j];
             }
         }
         for(int i=0; i<screenWidth; i++)
@@ -646,12 +552,6 @@ void Mandelbrot::PreDrawMaps()
             }
         }
     }
-}
-void Mandelbrot::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderMandelbrot[threadNumber];
-    SetWatchdog<RenderMandelbrot>(myRender, &watchdog, threadNumber);
 }
 
 // RenderMandelbrotZN
@@ -685,9 +585,8 @@ void RenderMandelbrotZN::Render()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = i;
             }
         }
@@ -725,9 +624,8 @@ void RenderMandelbrotZN::Render()
                     distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -758,25 +656,16 @@ void RenderMandelbrotZN::Render()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(z.real() > 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = i + color1;
-                }
                 else if(z.real() <= 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = i + color2;
-                }
                 else if(z.real() <= 0 && z.imag() < 0)
-                {
                     colorMap[x][y] = i + color3;
-                }
                 else
-                {
                     colorMap[x][y] = i + color4;
-                }
             }
         }
     }
@@ -833,9 +722,8 @@ void RenderMandelbrotZN::SpecialRender()
                 if(distY == 0) distY = 0.000001;
 
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(myOpt.smoothRender)
                 {
                     if(!insideSet)
@@ -844,9 +732,7 @@ void RenderMandelbrotZN::SpecialRender()
                         colorMap[x][y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distX) + log(1/distY)))));
                 }
                 else
-                {
                     colorMap[x][y] = static_cast<int>(abs(iterations + log(1/distX) + log(1/distY)));
-                }
             }
         }
     }
@@ -873,9 +759,8 @@ void RenderMandelbrotZN::SpecialRender()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<int>(abs(4.0*(i -  log(log(z.real()*z.real()+z.imag()*z.imag()))/log2)));
             }
         }
@@ -979,87 +864,9 @@ void MandelbrotZN::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
 
     orbitDrawn = true;
-}
-wxString MandelbrotZN::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Mandelbrot\nFormula: Z = Z^n + C\nBailout: User defined\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString MandelbrotZN::AskInfo(double real, double imag, int iter)
-{
-    // Returns info about the point.
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(0, 0);
-        z = c = complex<double>(real, imag);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(z, n) + c;
-            if(z.real()*z.real() + z.imag()*z.imag() > bailout)
-            {
-                inSet = false;
-                break;
-            }
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-wxString MandelbrotZN::SaveOrbit(double real, double imag, int iter, wxString filepath)
-{
-    complex<double> z(real, imag);
-    complex<double> c = z;
-    vector< complex<double> > zVector;
-
-    for(int n=0; n<iter; n++)
-    {
-        zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4) break;
-
-        z = pow(z, n) + c;
-    }
-    ofstream outFile;
-    string path = string(filepath.mb_str());
-
-    outFile.open(path.c_str());
-    for(unsigned int i=0; i<zVector.size(); i++)
-    {
-        outFile << zVector[i].real() << ", " << zVector[i].imag() << endl;
-    }
-    outFile.close();
-    return wxString(wxT("Done"));
 }
 void MandelbrotZN::CopyOptFromPanel()
 {
@@ -1106,9 +913,8 @@ void RenderJulia::Render()
                     Z_re = Z_re2 - Z_im2 + kReal;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -1143,6 +949,7 @@ void RenderJulia::Render()
                         mu = (loglog2 - log(log(sqrt(Z_re2 + Z_im2))))/log2 + 1;
                         if(n > 0) insideSet = false;
                     }
+
                     Z_im = 2*Z_re*Z_im + kImaginary;
                     Z_re = Z_re2 - Z_im2 + kReal;
 
@@ -1150,9 +957,8 @@ void RenderJulia::Render()
                     distance = minVal(distance, gaussianIntDist(Z_re, Z_im));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -1185,25 +991,16 @@ void RenderJulia::Render()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(z.real() > 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(z.real() <= 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(z.real() <= 0 && z.imag() < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -1237,6 +1034,7 @@ void RenderJulia::Render()
                         mu = (loglog2 - log(log(sqrt(Z_re2 + Z_im2))))/log2 + 1;
                         if(n > 0) insideSet = false;
                     }
+
                     Z_im = 2*Z_re*Z_im;
                     Z_re = Z_re2 - Z_im2;
 
@@ -1250,9 +1048,8 @@ void RenderJulia::Render()
                     if(n > 0) distance += TIA(Z_re, Z_im, c_re, c_im, tia_prev_x, tia_prev_y);
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 distance1 = distance1/(n-1);
                 distance = distance/n;
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*700)));
@@ -1319,9 +1116,7 @@ void RenderJulia::SpecialRender()
                         colorMap[x][y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distX) + log(1/distY)))));
                 }
                 else
-                {
                     colorMap[x][y] = static_cast<int>(abs(iterations + log(1/distX) + log(1/distY)));
-                }
             }
         }
     }
@@ -1439,73 +1234,13 @@ void Julia::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
+
     orbitDrawn = true;
 }
 void Julia::Render()
 {
     this->TRender<RenderJulia>(myRender);
-}
-wxString Julia::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Mandelbrot\nFormula: Z = Z^2 + K\nType: Julia set\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Julia::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    text += wxT("\nJulia constant: ") + num_to_string(kReal) + wxT(" + ") + num_to_string(kImaginary) + wxT("i");
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(real, imag);
-        c = complex<double>(kReal, kImaginary);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(z, 2) + c;
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void Julia::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderJulia[threadNumber];
-    SetWatchdog<RenderJulia>(myRender, &watchdog, threadNumber);
 }
 
 // RenderJuliaZN
@@ -1542,9 +1277,8 @@ void RenderJuliaZN::Render()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = i;
             }
         }
@@ -1583,9 +1317,8 @@ void RenderJuliaZN::Render()
                     distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -1619,25 +1352,16 @@ void RenderJuliaZN::Render()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(z.real() > 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(z.real() <= 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(z.real() <= 0 && z.imag() < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -1695,9 +1419,7 @@ void RenderJuliaZN::SpecialRender()
                 if(distY == 0) distY = 0.000001;
 
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
                 if(myOpt.smoothRender)
                 {
                     out = static_cast<int>(abs(4.0*(iterations -  log(log(Z_re2+Z_im2))/log2) + 4.0*(log(1/distX) + log(1/distY))));
@@ -1708,9 +1430,7 @@ void RenderJuliaZN::SpecialRender()
                         colorMap[x][y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distX) + log(1/distY)))));
                 }
                 else
-                {
                     colorMap[x][y] = static_cast<int>(abs(iterations + log(1/distX) + log(1/distY)));
-                }
             }
         }
     }
@@ -1735,9 +1455,8 @@ void RenderJuliaZN::SpecialRender()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 out = static_cast<int>(abs(4.0*(i -  log(log(z.real()*z.real()+z.imag()*z.imag()))/log2)));
                 if(out < 0) out = 0;
                 colorMap[x][y] = out;
@@ -1843,9 +1562,8 @@ void JuliaZN::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
+
     orbitDrawn = true;
 }
 void JuliaZN::Render()
@@ -1853,69 +1571,10 @@ void JuliaZN::Render()
     for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(n, bailout);
     this->TRender<RenderJuliaZN>(myRender);
 }
-wxString JuliaZN::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Mandelbrot\nFormula: Z = Z^n + K\nType: Julia set\nBailout: User Defined\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString JuliaZN::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    text += wxT("\nJulia constant: ") + num_to_string(kReal) + wxT(" + ") + num_to_string(kImaginary) + wxT("i");
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, k;
-        z = complex<double>(real, imag);
-        k = complex<double>(kReal, kImaginary);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(z, n) + k;
-            if(z.real()*z.real() + z.imag()*z.imag() > bailout)
-            {
-                inSet = false;
-                break;
-            }
-
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
 void JuliaZN::CopyOptFromPanel()
 {
     n = *panelOpt.GetIntElement(0);
     bailout = *panelOpt.GetDoubleElement(0);
-}
-void JuliaZN::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderJuliaZN[threadNumber];
-    SetWatchdog<RenderJuliaZN>(myRender, &watchdog, threadNumber);
 }
 
 // RenderNewton
@@ -1957,17 +1616,11 @@ void RenderNewton::Render()
                 }
             }
             if(re <= 0 && im >= 0)
-            {
                 colorMap[x][y] = 1 + n;
-            }
             else if(re <= 0 && im < 0)
-            {
                 colorMap[x][y] = 17 + n;
-            }
             else
-            {
                 colorMap[x][y] = 37 + n;
-            }
         }
     }
 }
@@ -1975,7 +1628,7 @@ void RenderNewton::SpecialRender()
 {
     // Creates fractal.
     unsigned n;
-    complex<double> z, z_ant;
+    complex<double> z, z_prev;
     double distX, distY;
     double re, im;
 
@@ -1985,7 +1638,7 @@ void RenderNewton::SpecialRender()
         {
             re = minX + x*xFactor;
             im = maxY - y*yFactor;
-            z_ant = z = complex<double>(re, im);
+            z_prev = z = complex<double>(re, im);
 
             distX = abs(re);
             distY = abs(im);
@@ -1994,15 +1647,11 @@ void RenderNewton::SpecialRender()
             {
                 z = z - (pow(z, 3) - complex<double>(1, 0))/(complex<double>(2, 0)*pow(z,2));
 
-                if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                    && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-                {
+                if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
+                    && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
                     break;
-                }
                 else
-                {
-                    z_ant = z;
-                }
+                    z_prev = z;
 
                 if(myOpt.orbitTrapMode)
                 {
@@ -2011,13 +1660,9 @@ void RenderNewton::SpecialRender()
                 }
             }
             if(myOpt.orbitTrapMode)
-            {
                 colorMap[x][y] = static_cast<unsigned int>(n + log(1/distX) + log(1/distY));
-            }
             else
-            {
                 colorMap[x][y] = n;
-            }
         }
     }
 }
@@ -2095,9 +1740,7 @@ void Newton::DrawOrbit()
 
             if((anterior.real() - minStep < z.real() && anterior.real() + minStep > z.real())
                 && (anterior.imag() - minStep < z.imag() && anterior.imag() + minStep > z.imag()))
-            {
                 break;
-            }
         }
     }
 
@@ -2108,56 +1751,9 @@ void Newton::Render()
     for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(minStep);
     this->TRender<RenderNewton>(myRender);
 }
-wxString Newton::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Newton-Rhapson\nFormula: Z = Z - f(Z)/f'(Z), f(Z) = Z^3 - 1 + C\nBailout: Point movement < 0.001\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Newton::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter != 0)
-    {
-        complex<double> z;
-        complex<double> anterior;
-        const double minStep = 0.001;
-
-        z = complex<double>(real, imag);
-
-        int n;
-
-        for(n=0; n<iter; n++)
-        {
-            anterior = z;
-            z = z - (pow(z, 3) - complex<double>(1, 0))/(complex<double>(2, 0)*pow(z,2));
-
-            if((anterior.real() - minStep < z.real() && anterior.real() + minStep > z.real())
-                && (anterior.imag() - minStep < z.imag() && anterior.imag() + minStep > z.imag()))
-            {
-                break;
-            }
-        }
-
-
-        text += wxT("\nIterations: ") + num_to_string(n);
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
 void Newton::CopyOptFromPanel()
 {
     minStep = *panelOpt.GetDoubleElement(0);
-}
-void Newton::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderNewton[threadNumber];
-    SetWatchdog<RenderNewton>(myRender, &watchdog, threadNumber);
 }
 
 // RenderSinoidal
@@ -2194,9 +1790,8 @@ void RenderSinoidal::Render()
                     z = k*sin(z);
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -2233,9 +1828,8 @@ void RenderSinoidal::Render()
                     distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -2266,25 +1860,16 @@ void RenderSinoidal::Render()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(z.real() > 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(z.real() <= 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(z.real() <= 0 && z.imag() < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -2332,17 +1917,11 @@ void RenderSinoidal::SpecialRender()
                 if(!broken) iterations = n;
             }
             if(insideSet)
-            {
                 setMap[x][y] = true;
-            }
             if(myOpt.orbitTrapMode)
-            {
                 colorMap[x][y] = static_cast<unsigned int>(abs(iterations + log(1/distX) + log(1/distY)));
-            }
             else
-            {
                 colorMap[x][y] = iterations;
-            }
         }
     }
 }
@@ -2427,69 +2006,9 @@ void Sinoidal::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
+
     orbitDrawn = true;
-}
-wxString Sinoidal::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Sinoidal\nFormula: Z = c*Sin(Z) + C\nType: Julia set\nBailout: Iteration number\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Sinoidal::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    text += wxT("\nJulia constant: ") + num_to_string(kReal) + wxT(" + ") + num_to_string(kImaginary) + wxT("i");
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(real, imag);
-        c = complex<double>(kReal, kImaginary);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = c*sin(z);
-            if(z.real()*z.real() + z.imag()*z.imag() > iter)
-            {
-                inSet = false;
-                break;
-            }
-
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void Sinoidal::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderSinoidal[threadNumber];
-    SetWatchdog<RenderSinoidal>(myRender, &watchdog, threadNumber);
 }
 
 // RenderMagnet
@@ -2559,25 +2078,16 @@ void RenderMagnet::Render()
                     z = pow((pow(z, 2) + c - complex<double>(1.0, 0.0))/(complex<double>(2.0, 0.0)*z + c - complex<double>(2.0, 0.0)), 2.0);
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(z.real() > 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(z.real() <= 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(z.real() <= 0 && z.imag() < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -2653,69 +2163,9 @@ void Magnet::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
+
     orbitDrawn = true;
-}
-wxString Magnet::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Magnet\nFormula: Z = ((Z^2 + (C-1)/(2Z + (C-2)))^2 + C\nBailout: Iteration number\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Magnet::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(real, imag);
-        c = complex<double>(kReal, kImaginary);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow((pow(z, 2) + c - complex<double>(1, 0))/(complex<double>(2, 0)*z + c - complex<double>(2,0)), 2);
-            if(z.real()*z.real() + z.imag()*z.imag() > iter)
-            {
-                inSet = false;
-                break;
-            }
-
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void Magnet::ChangeThreadNumber()
-{
-    this->StopRender();
-    delete[] myRender;
-    myRender = new RenderMagnet[threadNumber];
-    SetWatchdog<RenderMagnet>(myRender, &watchdog, threadNumber);
 }
 
 // RenderMedusa
@@ -2987,65 +2437,6 @@ void Medusa::DrawOrbit()
     }
     orbitDrawn = true;
 }
-wxString Medusa::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Medusa\nFormula: Z = Z^1.5 + C\nType: Julia set\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Medusa::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    text += wxT("\nJulia constant: ") + num_to_string(kReal) + wxT(" + ") + num_to_string(kImaginary) + wxT("i\n");
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(real, imag);
-        c = complex<double>(kReal, kImaginary);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(z, 1.5) + c;
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void Medusa::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderMedusa[threadNumber];
-    SetWatchdog<RenderMedusa>(myRender, &watchdog, threadNumber);
-}
 
 // RenderManowar
 RenderManowar::RenderManowar()
@@ -3177,25 +2568,16 @@ void RenderManowar::Render()
                     man_im = temp_im;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(z_re > 0 && z_im > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(z_re <= 0 && z_im > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(z_re <= 0 && z_im < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -3253,17 +2635,12 @@ void RenderManowar::SpecialRender()
             if(distY == 0) distY = 0.000001;
 
             if(insideSet)
-            {
                 setMap[x][y] = 1;
-            }
+
             if(myOpt.orbitTrapMode)
-            {
                 colorMap[x][y] = static_cast<unsigned int>(iterations + log(1/distX) + log(1/distY));
-            }
             else
-            {
                 colorMap[x][y] = iterations;
-            }
         }
     }
 }
@@ -3345,71 +2722,9 @@ void Manowar::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
+
     orbitDrawn = true;
-}
-wxString Manowar::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Manowar\nFormula: z0 = p, m0 = p, z = z^2 + m+ c, m = z + C\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Manowar::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        complex<double> man, temp;
-        man = z = c = complex<double>(real, imag);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            temp = z;
-            z = pow(z, 2) + man + c;
-            man = temp;
-
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void Manowar::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderManowar[threadNumber];
-    SetWatchdog<RenderManowar>(myRender, &watchdog, threadNumber);
 }
 
 // RenderManowarJulia
@@ -3454,9 +2769,8 @@ void RenderManowarJulia::Render()
                     man_im = temp_im;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -3503,9 +2817,8 @@ void RenderManowarJulia::Render()
                     distance = minVal(distance, gaussianIntDist(z_re, z_im));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -3544,25 +2857,16 @@ void RenderManowarJulia::Render()
                     man_im = temp_im;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(z_re > 0 && z_im > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(z_re <= 0 && z_im > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(z_re <= 0 && z_im < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -3618,21 +2922,15 @@ void RenderManowarJulia::SpecialRender()
                 if(!broken) iterations = n;
             }
             if(insideSet)
-            {
                 setMap[x][y] = true;
-            }
 
             if(distX == 0) distX = 0.000001;
             if(distY == 0) distY = 0.000001;
 
             if(myOpt.orbitTrapMode)
-            {
                 colorMap[x][y] = static_cast<unsigned int>(iterations + log(1/distX) + log(1/distY));
-            }
             else
-            {
                 colorMap[x][y] = iterations;
-            }
         }
     }
 }
@@ -3711,73 +3009,9 @@ void ManowarJulia::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
+
     orbitDrawn = true;
-}
-wxString ManowarJulia::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Manowar\nFormula: z0 = p, m0 = p, z = z^2 + m+ c, m = z + C\nType: Julia set\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString ManowarJulia::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    text += wxT("\nJulia constant: ") + num_to_string(kReal) + wxT(" + ") + num_to_string(kImaginary) + wxT("i");
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        complex<double> man, temp;
-        man = z = complex<double>(real, imag);
-        c = complex<double>(kReal, kImaginary);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            temp = z;
-            z = pow(z, 2) + man + c;
-            man = temp;
-
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void ManowarJulia::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderManowarJulia[threadNumber];
-    SetWatchdog<RenderManowarJulia>(myRender, &watchdog, threadNumber);
 }
 
 // RenderSierpTriangle
@@ -3805,24 +3039,17 @@ void RenderSierpTriangle::Render()
                 }
 
                 if(z.imag() > 0.5)
-                {
                     z = complex<double>(2, 0)*z - complex<double>(0, 1);
-                }
                 else if(z.real() > 0.5)
-                {
                     z = complex<double>(2, 0)*z - complex<double>(1, 0);
-                }
                 else
-                {
                     z = complex<double>(2, 0)*z;
-                }
 
                 iterations = n;
             }
             if(insideSet)
-            {
                 setMap[x][y] = true;
-            }
+
             colorMap[x][y] = iterations;
         }
     }
@@ -3856,14 +3083,6 @@ void SierpTriangle::Render()
 {
     this->TRender<RenderSierpTriangle>(myRender);
 }
-wxString SierpTriangle::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Sierpinsky triangle\nType: ITS\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
 
 // RenderFixedPoint1
 RenderFixedPoint1::RenderFixedPoint1()
@@ -3873,28 +3092,24 @@ RenderFixedPoint1::RenderFixedPoint1()
 void RenderFixedPoint1::Render()
 {
     complex<double> z;
-    complex<double> z_ant;
+    complex<double> z_prev;
     unsigned n;
 
     for(y=ho; y<hf; y++)
     {
         for(x=wo; x<wf; x++)
         {
-            z_ant = z = complex<double>(minX + x*xFactor, maxY - y*yFactor);
+            z_prev = z = complex<double>(minX + x*xFactor, maxY - y*yFactor);
 
             for(n=0; n<maxIter; n++)
             {
                 z = sin(z);
 
-                if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                    && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-                {
+                if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
+                    && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
                     break;
-                }
                 else
-                {
-                    z_ant = z;
-                }
+                    z_prev = z;
             }
             if(z.real() > 0) colorMap[x][y] = 1 + n;
             else colorMap[x][y] = 30 + n;
@@ -3948,101 +3163,39 @@ void FixedPoint1::Render()
     for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(minStep);
     this->TRender<RenderFixedPoint1>(myRender);
 }
-wxString FixedPoint1::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Fixed point method\nFormula: Z = f(Z), f(Z) = sin(Z) + C\nBailout: Point movement < 0.001\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString FixedPoint1::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z;
-        complex<double> z_ant;
-        double minStep = 0.001;
-        z = complex<double>(real, imag);
-
-        int n;
-
-        for(n=0; n<iter; n++)
-        {
-            z = sin(z);
-            if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-            {
-                break;
-            }
-            else
-            {
-                z_ant = z;
-            }
-        }
-
-
-        text += wxT("\nIterations: ") + num_to_string(n);
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
 void FixedPoint1::DrawOrbit()
 {
     complex<double> z(orbitX, orbitY);
-    complex<double> z_ant;
+    complex<double> z_prev;
 
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for (unsigned n = 0; n < maxIter; n++)
     {
         zVector.push_back(z);
         z = sin(z);
 
-        if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-            && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-        {
+        if ((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
+            && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
             break;
-        }
         else
-        {
-            z_ant = z;
-        }
+            z_prev = z;
     }
 
     sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
+    if (outOfSet) color = sf::Color(255, 0, 0);
     else color = sf::Color(0, 255, 0);
 
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    for (unsigned int i = 0; i < zVector.size() - 1; i++)
     {
-        this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
+        this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i + 1].real(), zVector[i + 1].imag(), color, true);
     }
     orbitDrawn = true;
 }
 void FixedPoint1::CopyOptFromPanel()
 {
     minStep = *panelOpt.GetDoubleElement(0);
-}
-void FixedPoint1::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderFixedPoint1[threadNumber];
-    SetWatchdog<RenderFixedPoint1>(myRender, &watchdog, threadNumber);
 }
 
 // RenderFixedPoint2
@@ -4053,28 +3206,24 @@ RenderFixedPoint2::RenderFixedPoint2()
 void RenderFixedPoint2::Render()
 {
     complex<double> z;
-    complex<double> z_ant;
+    complex<double> z_prev;
     unsigned n;
 
     for(y=ho; y<hf; y++)
     {
         for(x=wo; x<wf; x++)
         {
-            z_ant = z = complex<double>(minX + x*xFactor, maxY - y*yFactor);
+            z_prev = z = complex<double>(minX + x*xFactor, maxY - y*yFactor);
 
             for(n=0; n<maxIter; n++)
             {
                 z = cos(z);
 
-                if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                    && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-                {
+                if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
+                    && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
                     break;
-                }
                 else
-                {
-                    z_ant = z;
-                }
+                    z_prev = z;
             }
             if(z.real() > 0) colorMap[x][y] = 1 + n;
             else colorMap[x][y] = 30 + n;
@@ -4128,62 +3277,10 @@ void FixedPoint2::Render()
     for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(minStep);
     this->TRender<RenderFixedPoint2>(myRender);
 }
-wxString FixedPoint2::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Fixed point method\nFormula: Z = f(Z), f(Z) = cos(Z) + C\nBailout: Point movement < 0.001\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString FixedPoint2::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z;
-        complex<double> z_ant;
-        double minStep = 0.001;
-        z = complex<double>(real, imag);
-
-        int n;
-
-        for(n=0; n<iter; n++)
-        {
-            z = cos(z);
-            if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-            {
-                break;
-            }
-            else
-            {
-                z_ant = z;
-            }
-        }
-
-
-        text += wxT("\nIterations: ") + num_to_string(n);
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
 void FixedPoint2::DrawOrbit()
 {
     complex<double> z(orbitX, orbitY);
-    complex<double> z_ant;
+    complex<double> z_prev;
     double minStep = 0.001;
     vector< complex<double> > zVector;
     bool outOfSet = false;
@@ -4193,15 +3290,11 @@ void FixedPoint2::DrawOrbit()
         zVector.push_back(z);
         z = cos(z);
 
-        if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-            && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-        {
+        if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
+            && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
             break;
-        }
         else
-        {
-            z_ant = z;
-        }
+            z_prev = z;
     }
 
     sf::Color color;
@@ -4209,20 +3302,13 @@ void FixedPoint2::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
+
     orbitDrawn = true;
 }
 void FixedPoint2::CopyOptFromPanel()
 {
     minStep = *panelOpt.GetDoubleElement(0);
-}
-void FixedPoint2::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderFixedPoint2[threadNumber];
-    SetWatchdog<RenderFixedPoint2>(myRender, &watchdog, threadNumber);
 }
 
 // RenderFixedPoint3
@@ -4233,28 +3319,24 @@ RenderFixedPoint3::RenderFixedPoint3()
 void RenderFixedPoint3::Render()
 {
     complex<double> z;
-    complex<double> z_ant;
+    complex<double> z_prev;
     unsigned n;
 
     for(y=ho; y<hf; y++)
     {
         for(x=wo; x<wf; x++)
         {
-            z_ant = z = complex<double>(minX + x*xFactor, maxY - y*yFactor);
+            z_prev = z = complex<double>(minX + x*xFactor, maxY - y*yFactor);
 
             for(n=0; n<maxIter; n++)
             {
                 z = tan(z);
 
-                if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                    && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-                {
+                if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
+                    && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
                     break;
-                }
                 else
-                {
-                    z_ant = z;
-                }
+                    z_prev = z;
             }
             if(z.real() > 0) colorMap[x][y] = 1 + n;
             else colorMap[x][y] = 30 + n;
@@ -4308,58 +3390,6 @@ void FixedPoint3::Render()
     for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(minStep);
     this->TRender<RenderFixedPoint3>(myRender);
 }
-wxString FixedPoint3::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Fixed point method\nFormula: Z = f(Z), f(Z) = tan(Z) + C\nBailout: Point movement < 0.001\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString FixedPoint3::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z;
-        complex<double> z_ant;
-        double minStep = 0.001;
-        z = complex<double>(real, imag);
-
-        int n;
-
-        for(n=0; n<iter; n++)
-        {
-            z = tan(z);
-            if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-            {
-                break;
-            }
-            else
-            {
-                z_ant = z;
-            }
-        }
-
-
-        text += wxT("\nIterations: ") + num_to_string(n);
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
 void FixedPoint3::DrawOrbit()
 {
     complex<double> z(orbitX, orbitY);
@@ -4398,12 +3428,6 @@ void FixedPoint3::CopyOptFromPanel()
 {
     minStep = *panelOpt.GetDoubleElement(0);
 }
-void FixedPoint3::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderFixedPoint3[threadNumber];
-    SetWatchdog<RenderFixedPoint3>(myRender, &watchdog, threadNumber);
-}
 
 // RenderFixedPoint4
 RenderFixedPoint4::RenderFixedPoint4()
@@ -4413,28 +3437,24 @@ RenderFixedPoint4::RenderFixedPoint4()
 void RenderFixedPoint4::Render()
 {
     complex<double> z;
-    complex<double> z_ant;
+    complex<double> z_prev;
     unsigned n;
 
     for(y=ho; y<hf; y++)
     {
         for(x=wo; x<wf; x++)
         {
-            z_ant = z = complex<double>(minX + x*xFactor, maxY - y*yFactor);
+            z_prev = z = complex<double>(minX + x*xFactor, maxY - y*yFactor);
 
             for(n=0; n<maxIter; n++)
             {
                 z = pow(z,2);
 
-                if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                    && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-                {
+                if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
+                    && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
                     break;
-                }
                 else
-                {
-                    z_ant = z;
-                }
+                    z_prev = z;
             }
             if(z.real() > 0) colorMap[x][y] = 1 + n;
             else colorMap[x][y] = 30 + n;
@@ -4488,58 +3508,6 @@ void FixedPoint4::Render()
     for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(minStep);
     this->TRender<RenderFixedPoint4>(myRender);
 }
-wxString FixedPoint4::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Fixed point method\nFormula: Z = f(Z), f(Z) = Z^2 + C\nBailout: Point movement < 0.001\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString FixedPoint4::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z;
-        complex<double> z_ant;
-        double minStep = 0.001;
-        z = complex<double>(real, imag);
-
-        int n;
-
-        for(n=0; n<iter; n++)
-        {
-            z = pow(z,2);
-            if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
-                && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-            {
-                break;
-            }
-            else
-            {
-                z_ant = z;
-            }
-        }
-
-
-        text += wxT("\nIterations: ") + num_to_string(n);
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
 void FixedPoint4::DrawOrbit()
 {
     complex<double> z(orbitX, orbitY);
@@ -4555,13 +3523,9 @@ void FixedPoint4::DrawOrbit()
 
         if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
             && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
-        {
             break;
-        }
         else
-        {
             z_ant = z;
-        }
     }
 
     sf::Color color;
@@ -4569,21 +3533,14 @@ void FixedPoint4::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
+
     orbitDrawn = true;
 }
 
 void FixedPoint4::CopyOptFromPanel()
 {
     minStep = *panelOpt.GetDoubleElement(0);
-}
-void FixedPoint4::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderFixedPoint4[threadNumber];
-    SetWatchdog<RenderFixedPoint4>(myRender, &watchdog, threadNumber);
 }
 
 // RenderTricorn
@@ -4624,9 +3581,8 @@ void RenderTricorn::Render()
                     Z_re = Z_re2 - Z_im2 + c_re;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -4668,9 +3624,8 @@ void RenderTricorn::Render()
                     distance = minVal(distance, gaussianIntDist(Z_re, Z_im));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -4706,25 +3661,16 @@ void RenderTricorn::Render()
                     Z_re = Z_re2 - Z_im2 + c_re;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(Z_re > 0 && Z_im > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(Z_re <= 0 && Z_im > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(Z_re <= 0 && Z_im < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -4808,63 +3754,6 @@ void Tricorn::DrawOrbit()
 
     orbitDrawn = true;
 }
-wxString Tricorn::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Tricorn\nFormula: Z = conj(Z)^2 + C\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Tricorn::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(0, 0);
-        z = c = complex<double>(real, imag);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(complex<double>(z.real(), -z.imag()), 2) + c;
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void Tricorn::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderTricorn[threadNumber];
-    SetWatchdog<RenderTricorn>(myRender, &watchdog, threadNumber);
-}
 
 // RenderBurningShip
 RenderBurningShip::RenderBurningShip()
@@ -4906,9 +3795,8 @@ void RenderBurningShip::Render()
                     Z_re = Z_re2 - Z_im2 + c_re;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -4951,9 +3839,8 @@ void RenderBurningShip::Render()
                     distance = minVal(distance, gaussianIntDist(Z_re, Z_im));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -4991,25 +3878,16 @@ void RenderBurningShip::Render()
                     Z_re = Z_re2 - Z_im2 + c_re;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(Z_re > 0 && Z_im > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(Z_re <= 0 && Z_im > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(Z_re <= 0 && Z_im < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -5086,68 +3964,9 @@ void BurningShip::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
 
     orbitDrawn = true;
-}
-wxString BurningShip::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Burning Ship\nFormula: Z = (abs(real(Z)) + i*abs(imag(Z)))^2 + C\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString BurningShip::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(0, 0);
-        z = c = complex<double>(real, imag);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(complex<double>(abs(z.real()), abs(z.imag())), 2) + c;
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void BurningShip::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderBurningShip[threadNumber];
-    SetWatchdog<RenderBurningShip>(myRender, &watchdog, threadNumber);
 }
 
 // RenderBurningShipJulia
@@ -5190,9 +4009,8 @@ void RenderBurningShipJulia::Render()
                     Z_re = Z_re2 - Z_im2 + c_re;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -5234,9 +4052,8 @@ void RenderBurningShipJulia::Render()
                     distance = minVal(distance, gaussianIntDist(Z_re, Z_im));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -5272,25 +4089,16 @@ void RenderBurningShipJulia::Render()
                     Z_re = Z_re2 - Z_im2 + c_re;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(Z_re > 0 && Z_im > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(Z_re <= 0 && Z_im > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(Z_re <= 0 && Z_im < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -5368,67 +4176,9 @@ void BurningShipJulia::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
-    orbitDrawn = true;
-}
-wxString BurningShipJulia::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Burning Ship\nFormula: Z = (abs(real(Z)) + i*abs(imag(Z)))^2 + K\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString BurningShipJulia::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, k;
-        z = complex<double>(real, imag);
-        k = complex<double>(kReal, kImaginary);
 
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(complex<double>(abs(z.real()), abs(z.imag())), 2) + k;
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void BurningShipJulia::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderBurningShipJulia[threadNumber];
-    SetWatchdog<RenderBurningShipJulia>(myRender, &watchdog, threadNumber);
+    orbitDrawn = true;
 }
 
 // RenderFractory
@@ -5466,9 +4216,8 @@ void RenderFractory::Render()
                     z = z*c + b/z;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -5507,9 +4256,8 @@ void RenderFractory::Render()
                     distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -5543,25 +4291,16 @@ void RenderFractory::Render()
                     z = z*c + b/z;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 if(z.real() > 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color1;
-                }
                 else if(z.real() <= 0 && z.imag() > 0)
-                {
                     colorMap[x][y] = n + color2;
-                }
                 else if(z.real() <= 0 && z.imag() < 0)
-                {
                     colorMap[x][y] = n + color3;
-                }
                 else
-                {
                     colorMap[x][y] = n + color4;
-                }
             }
         }
     }
@@ -5641,70 +4380,9 @@ void Fractory::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
 
     orbitDrawn = true;
-}
-wxString Fractory::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Fractory\nFormula:  z = c, b = c-sin(z), b = c + b/c - z, z = z*c + b/z\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Fractory::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, b, c;
-        c = complex<double>(real, imag);
-        z = c;
-        b = c - sin(c);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            b = c + b/c - z;
-            z = z*c + b/z;
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
-}
-void Fractory::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderFractory[threadNumber];
-    SetWatchdog<RenderFractory>(myRender, &watchdog, threadNumber);
 }
 
 // RenderCell
@@ -5743,9 +4421,8 @@ void RenderCell::Render()
                     z = z*c + b/z;
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }
@@ -5785,9 +4462,8 @@ void RenderCell::Render()
                     distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
@@ -5882,72 +4558,13 @@ void Cell::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
 
     orbitDrawn = true;
-}
-wxString Cell::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Cell\nFormula:  z = c, b = c-sin(z), b = b/c, z = z*c + b/z\nBailout: 2\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString Cell::AskInfo(double real, double imag, int iter)
-{
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        complex<double> z, c;
-        z = complex<double>(0, 0);
-        z = c = complex<double>(real, imag);
-
-        int i;
-        bool inSet = true;
-        for(i=0; i<iter; i++)
-        {
-            z = pow(complex<double>(z.real(), -z.imag()), 2) + c;
-            if(z.real()*z.real() + z.imag()*z.imag() > 4)
-            {
-                inSet = false;
-                break;
-            }
-        }
-        text += wxT("\nIterations: ") + num_to_string(i);
-        text += wxT("\nBelongs to set: ");
-        if(inSet) text += wxT("Yes");
-        else text += wxT("No");
-        text += wxT("\nLast iterated point: ") + num_to_string(z.real()) + wxT(" + ") + num_to_string(z.imag()) + wxT("i\n");
-    }
-    return text;
 }
 void Cell::CopyOptFromPanel()
 {
     bailout = *panelOpt.GetDoubleElement(0);
-}
-void Cell::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderCell[threadNumber];
-    SetWatchdog<RenderCell>(myRender, &watchdog, threadNumber);
 }
 
 // RenderLogisticMap
@@ -5983,9 +4600,7 @@ void RenderLogisticMap::Render()
                 if(coordX >= 0 && coordX < myOpt.screenWidth)
                 {
                     if(coordY >= 0 && coordY < myOpt.screenHeight)
-                    {
                         setMap[coordX][coordY] = 1;
-                    }
                 }
                 progress++;
             }
@@ -6011,9 +4626,7 @@ void RenderLogisticMap::Render()
             if(coordX >= 0 && coordX < myOpt.screenWidth)
             {
                 if(coordY >= 0 && coordY < myOpt.screenHeight)
-                {
                     setMap[coordX][coordY] = 1;
-                }
             }
         }
     }
@@ -6028,13 +4641,9 @@ int RenderLogisticMap::AskProgress()
     if(!stopped)
     {
         if(myOpt.alg == CHAOTIC_MAP && stabilizePoint)
-        {
             threadProgress = (100*progress)/(2*maxIter*myOpt.screenWidth);
-        }
         else
-        {
             threadProgress = (100*progress)/(maxIter*myOpt.screenWidth);
-        }
     }
     return threadProgress;
 }
@@ -6104,12 +4713,6 @@ void LogisticMap::Render()
     myRender[0].Launch();
     watchdog.Launch();
 }
-wxString LogisticMap::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Logistic map\nType: Bifurcation diagram\nRender Threads: 1\n");
-    return text;
-}
 void LogisticMap::CopyOptFromPanel()
 {
     logisticSeed = *panelOpt.GetDoubleElement(0);
@@ -6135,9 +4738,8 @@ void RenderHenonMap::Render()
             coordX = ((x-minX)/xFactor);
             coordY = ((maxY-y)/yFactor);
             if((coordX >= 0 && coordX < myOpt.screenWidth) && (coordY >= 0 && coordY < myOpt.screenHeight))
-            {
                 setMap[coordX][coordY] = 1;
-            }
+
             tempX = x;
             x = y + 1 - alpha*x*x;
             y = beta*tempX;
@@ -6154,9 +4756,8 @@ void RenderHenonMap::SetParams(double _alpha, double _beta, double _x0, double _
 int RenderHenonMap::AskProgress()
 {
     if(!stopped)
-    {
         threadProgress = 100*i/maxIter;
-    }
+
     return threadProgress;
 }
 
@@ -6238,12 +4839,6 @@ void HenonMap::Render()
     myRender[0].Launch();
     watchdog.Launch();
 }
-wxString HenonMap::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Henon Map\nType: Chaotic map\nRender Threads: 1\n");
-    return text;
-}
 void HenonMap::CopyOptFromPanel()
 {
     alpha = *panelOpt.GetDoubleElement(0);
@@ -6267,9 +4862,7 @@ void HenonMap::LessIter()
     redrawAll = true;
     int signedMaxIter = (int)maxIter;
     if(signedMaxIter - 1000 > 0)
-    {
         maxIter -= 1000;
-    }
 }
 
 // RenderDPendulum
@@ -6433,9 +5026,8 @@ void RenderDPendulum::Render()
                     if(!threadRunning) break;
 
                     if(insideSet)
-                    {
                         setMap[x][y] = true;
-                    }
+
                     colorMap[x][y] = n;
                 }
             }
@@ -6491,26 +5083,16 @@ void RenderDPendulum::Render()
                     }
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
 
                 if(th1 > 0 && th2 > 0)
-                {
                     colorMap[x][y] = color1;
-                }
                 else if(th1 <= 0 && th2 > 0)
-                {
                     colorMap[x][y] = color2;
-                }
                 else if(th1 <= 0 && th2 < 0)
-                {
                     colorMap[x][y] = color3;
-                }
                 else
-                {
                     colorMap[x][y] = color4;
-                }
             }
         }
     }
@@ -6632,18 +5214,6 @@ void DPendulum::Render()
         myRender[i].SetParams(th1Bailout, th2Bailout, th1NumBailout, th2NumBailout, dt, m1, m2, l, g, referenced, rungeKutta);
     this->TRender<RenderDPendulum>(myRender);
 }
-wxString DPendulum::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: Double pendulum\nBailout: th1, th2 > 1.5701\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString DPendulum::AskInfo(double real, double imag, int iter)
-{
-    return wxString();
-}
 void DPendulum::CopyOptFromPanel()
 {
     th1Bailout = *panelOpt.GetBoolElement(0);
@@ -6738,16 +5308,9 @@ void DPendulum::DrawOrbit()
     else color = sf::Color(255, 0, 0);
 
     for(unsigned int i=0; i<th1Vector.size()-1; i++)
-    {
         this->DrawLine(th1Vector[i], th2Vector[i], th1Vector[i+1], th2Vector[i+1], color, true);
-    }
+
     orbitDrawn = true;
-}
-void DPendulum::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderDPendulum[threadNumber];
-    SetWatchdog<RenderDPendulum>(myRender, &watchdog, threadNumber);
 }
 void DPendulum::SpecialSaveRoutine(string filename)
 {
@@ -6920,140 +5483,6 @@ void UserDefined::SetFormula(FormulaOpt formula)
     }
     if(formula.julia) juliaVariety = true;
 }
-wxString UserDefined::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: User defined\nFormula: ");
-
-#if wxCHECK_VERSION(2, 9, 0)
-      text += wxString(userFormula.userFormula);
-#else
-      text += wxString(userFormula.userFormula.c_str(), wxConvUTF8);
-#endif
-
-    if(userFormula.julia) text += wxT("\nType: Julia set");
-    text += wxT("\nBailout: ");
-    text += num_to_string(static_cast<int>(userFormula.bailout));
-    text += wxT("\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString UserDefined::AskInfo(double real, double imag, int iter)
-{
-    bool julia = userFormula.julia;
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(julia) text += wxT("\nJulia constant: ") + num_to_string(kReal) + wxT(" + ") + num_to_string(kImaginary) + wxT("i");
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\nBelongs to set: ");
-            if(setMap[indexI][indexJ]) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        mup::ParserX parser;
-        parser.SetExpr(userFormula.userFormula.wc_str());
-
-        int bailout = userFormula.bailout;
-        mup::Value zVal;
-        mup::Value cVal;
-        parser.DefineVar(_T("z"), mup::Variable(&zVal));
-        parser.DefineVar(_T("c"),  mup::Variable(&cVal));
-        parser.DefineVar(_T("Z"), mup::Variable(&zVal));
-        parser.DefineVar(_T("C"),  mup::Variable(&cVal));
-        if(julia) cVal = mup::cmplx_type(kReal, kImaginary);
-        bool inSet;
-
-        zVal = mup::cmplx_type(real, imag);
-        if(!julia) cVal = mup::cmplx_type(real, imag);
-
-        try
-        {
-            inSet = true;
-            int n;
-            for(n=0; n<iter; n++)
-            {
-                if(zVal.GetFloat()*zVal.GetFloat() + zVal.GetImag()*zVal.GetImag() > bailout*bailout)
-                {
-                    inSet = false;
-                    break;
-                }
-                zVal = parser.Eval();
-            }
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(n));
-            text += wxT("\nBelongs to set: ");
-            if(inSet) text += wxT("Yes");
-            else text += wxT("No");
-            text += wxT("\nLast iterated point: ") + num_to_string(zVal.GetFloat()) + wxT(" + ") + num_to_string(zVal.GetImag()) + wxT("i\n");
-        }
-        catch(mup::ParserError&)
-        {
-            text += wxString(wxT("\nError\n"));
-        }
-    }
-    return text;
-}
-wxString UserDefined::SaveOrbit(double real, double imag, int iter, wxString filepath)
-{
-    mup::ParserX parser;
-    parser.SetExpr(userFormula.userFormula.wc_str());
-
-    vector< complex<double> > zVector;
-    int squaredBail = userFormula.bailout*userFormula.bailout;
-    mup::Value zVal;
-    mup::Value cVal;
-    mup::Value zero = mup::cmplx_type(0, 0);
-    parser.DefineVar(_T("z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("c"),  mup::Variable(&cVal));
-    parser.DefineVar(_T("Z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("C"),  mup::Variable(&cVal));
-    if(juliaVariety) cVal = mup::cmplx_type(kReal, kImaginary);
-
-    if(!juliaVariety)
-    {
-        cVal = mup::cmplx_type(real, imag);
-        zVal = zero;
-    }
-    else zVal = mup::cmplx_type(real, imag);
-
-    try
-    {
-        for(int n=0; n<iter; n++)
-        {
-            zVector.push_back(zVal.GetComplex());
-            if(zVal.GetFloat()*zVal.GetFloat() + zVal.GetImag()*zVal.GetImag() > squaredBail)
-            {
-                break;
-            }
-            zVal = parser.Eval();
-        }
-        ofstream outFile;
-        string path = string(filepath.mb_str());
-        outFile.open(path.c_str());
-        for(unsigned int i=0; i<zVector.size(); i++)
-        {
-            outFile << zVector[i].real() << ", " << zVector[i].imag() << endl;
-        }
-        outFile.close();
-        return wxString(wxT("Done"));
-    }
-    catch(mup::ParserError& e)
-    {
-        wxString error = wxT("Error: ");
-        error += wxString(e.GetMsg());
-        return error;
-    }
-}
 void UserDefined::DrawOrbit()
 {
     bool julia = userFormula.julia;
@@ -7091,24 +5520,16 @@ void UserDefined::DrawOrbit()
         else color = sf::Color(0, 255, 0);
 
         for(unsigned int i=0; i<zVector.size()-1; i++)
-        {
             this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-        }
 
         orbitDrawn = true;
     }
     catch(mup::ParserError& e)
     {
-        wxString out = wxString(wxT("Fatal error in formula.\n")) + wxString(e.GetMsg());
+        /*wxString out = wxString(wxT("Fatal error in formula.\n")) + wxString(e.GetMsg());
         SetConsoleText(string(out.mb_str()));
-        CallConsole(this);
+        CallConsole(this);*/
     }
-}
-void UserDefined::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderUserDefined[threadNumber];
-    SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
 }
 void UserDefined::PostRender()
 {
@@ -7116,8 +5537,8 @@ void UserDefined::PostRender()
     {
         wxString out = wxString(wxT("Fatal error in formula.\n")) + myRender[0].GetErrorInfo() + wxT("\n");
         myRender[0].ClearErrorInfo();
-        SetConsoleText(string(out.mb_str()));
-        CallConsole(this);
+        /*SetConsoleText(string(out.mb_str()));
+        CallConsole(this);*/
     }
 }
 
@@ -7139,7 +5560,7 @@ void RenderFPUserDefined::Render()
 
     // Creates fractal.
     double z_y;
-    mup::Value zVal, z_antVal;
+    mup::Value zVal, z_prevVal;
     parser.DefineVar(_T("z"), mup::Variable(&zVal));
     parser.DefineVar(_T("Z"), mup::Variable(&zVal));
 
@@ -7152,21 +5573,17 @@ void RenderFPUserDefined::Render()
             z_y = maxY - y*yFactor;
             for(x=wo; x<wf; x++)
             {
-                z_antVal = zVal = mup::cmplx_type(minX + x*xFactor, z_y);
+                z_prevVal = zVal = mup::cmplx_type(minX + x*xFactor, z_y);
 
                 for(n=0; n<maxIter; n++)
                 {
                     zVal = parser.Eval();
 
-                    if((z_antVal.GetFloat() - minStep < zVal.GetFloat() && z_antVal.GetFloat() + minStep > zVal.GetFloat())
-                        && (z_antVal.GetImag() - minStep < zVal.GetImag() && z_antVal.GetImag() + minStep > zVal.GetImag()))
-                    {
+                    if((z_prevVal.GetFloat() - minStep < zVal.GetFloat() && z_prevVal.GetFloat() + minStep > zVal.GetFloat())
+                        && (z_prevVal.GetImag() - minStep < zVal.GetImag() && z_prevVal.GetImag() + minStep > zVal.GetImag()))
                         break;
-                    }
                     else
-                    {
-                        z_antVal = zVal;
-                    }
+                        z_prevVal = zVal;
                 }
                 if(zVal.GetFloat() > 0) colorMap[x][y] = 1 + n;
                 else colorMap[x][y] = 30 + n;
@@ -7259,127 +5676,6 @@ void FPUserDefined::SetFormula(FormulaOpt formula)
         myRender[i].SetFormula(formula);
     }
 }
-wxString FPUserDefined::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: User defined\nFormula: ");
-
-#if wxCHECK_VERSION(2, 9, 0)
-    text += wxString(userFormula.userFormula);
-#else
-    text += wxString(userFormula.userFormula.c_str(), wxConvUTF8);
-#endif
-
-    if(userFormula.julia) text += wxT("\nType: Julia set");
-    text += wxT("\nBailout: ");
-    text += num_to_string(static_cast<int>(userFormula.bailout));
-    text += wxT("\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\n");
-    return text;
-}
-wxString FPUserDefined::AskInfo(double real, double imag, int iter)
-{
-    bool julia = userFormula.julia;
-    wxString text = wxT("");
-    text += wxT("\nReal value: ") + num_to_string(real);
-    text += wxT("\nImaginary value: ") + num_to_string(imag);
-    if(julia) text += wxT("\nJulia constant: ") + num_to_string(kReal) + wxT(" + ") + num_to_string(kImaginary) + wxT("i");
-    if(iter == 0)
-    {
-        int indexI = (int)((real-minX)/xFactor);
-        int indexJ = (int)((imag)/yFactor);
-        if((indexI >= 0 && indexI < screenWidth) && (indexJ >= 0 && indexJ < screenHeight))
-        {
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(colorMap[indexI][indexJ]));
-            text += wxT("\n");
-        }
-    }
-    else
-    {
-        mup::ParserX parser;
-        parser.SetExpr(userFormula.userFormula.wc_str());
-
-        mup::Value zVal, z_antVal;
-        parser.DefineVar(_T("z"), mup::Variable(&zVal));
-        parser.DefineVar(_T("Z"), mup::Variable(&zVal));
-        double minStep = 0.001;
-
-        z_antVal = zVal = mup::cmplx_type(real, imag);
-        try
-        {
-            int n;
-            for(n=0; n<iter; n++)
-            {
-                zVal = parser.Eval();
-                if((z_antVal.GetFloat() - minStep < zVal.GetFloat() && z_antVal.GetFloat() + minStep > zVal.GetFloat())
-                        && (z_antVal.GetImag() - minStep < zVal.GetImag() && z_antVal.GetImag() + minStep > zVal.GetImag()))
-                {
-                    break;
-                }
-                else
-                {
-                    z_antVal = zVal;
-                }
-
-            }
-            text += wxT("\nIterations: ") + num_to_string(static_cast<int>(n));
-            text += wxT("\nLast iterated point: ") + num_to_string(zVal.GetFloat()) + wxT(" + ") + num_to_string(zVal.GetImag()) + wxT("i\n");
-        }
-        catch(mup::ParserError&)
-        {
-            text += wxT("\nError\n");
-        }
-    }
-    return text;
-}
-wxString FPUserDefined::SaveOrbit(double real, double imag, int iter, wxString filepath)
-{
-    mup::ParserX parser;
-    parser.SetExpr(userFormula.userFormula.wc_str());
-
-    vector< complex<double> > zVector;
-
-    mup::Value zVal, z_antVal;
-    parser.DefineVar(_T("z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("Z"), mup::Variable(&zVal));
-
-    z_antVal = zVal = mup::cmplx_type(real, imag);
-
-    try
-    {
-        for(int n=0; n<iter; n++)
-        {
-            zVector.push_back(zVal.GetComplex());
-            zVal = parser.Eval();
-
-            if((z_antVal.GetFloat() - minStep < zVal.GetFloat() && z_antVal.GetFloat() + minStep > zVal.GetFloat())
-                && (z_antVal.GetImag() - minStep < zVal.GetImag() && z_antVal.GetImag() + minStep > zVal.GetImag()))
-            {
-                break;
-            }
-            else
-            {
-                z_antVal = zVal;
-            }
-        }
-        ofstream outFile;
-        string path = string(filepath.mb_str());
-        outFile.open(path.c_str());
-        for(unsigned int i=0; i<zVector.size(); i++)
-        {
-            outFile << zVector[i].real() << ", " << zVector[i].imag() << endl;
-        }
-        outFile.close();
-        return wxString(wxT("Done"));
-    }
-    catch(mup::ParserError& e)
-    {
-        wxString error = wxT("Error: ");
-        error += wxString(e.GetMsg());
-        return error;
-    }
-}
 void FPUserDefined::DrawOrbit()
 {
     vector< complex<double> > zVector;
@@ -7401,28 +5697,20 @@ void FPUserDefined::DrawOrbit()
 
         sf::Color color = sf::Color(0, 255, 0);
         for(unsigned int i=0; i<zVector.size()-1; i++)
-        {
             this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-        }
 
         orbitDrawn = true;
     }
     catch(mup::ParserError& e)
     {
-        wxString out = wxString(wxT("Fatal error in formula.\n")) + wxString(e.GetMsg());
+        /*wxString out = wxString(wxT("Fatal error in formula.\n")) + wxString(e.GetMsg());
         SetConsoleText(string(out.mb_str()));
-        CallConsole(this);
+        CallConsole(this);*/
     }
 }
 void FPUserDefined::CopyOptFromPanel()
 {
     minStep = *panelOpt.GetDoubleElement(0);
-}
-void FPUserDefined::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderFPUserDefined[threadNumber];
-    SetWatchdog<RenderFPUserDefined>(myRender, &watchdog, threadNumber);
 }
 void FPUserDefined::PostRender()
 {
@@ -7430,8 +5718,8 @@ void FPUserDefined::PostRender()
     {
         wxString out = wxString(wxT("Fatal error in formula.\n")) + myRender[0].GetErrorInfo() + wxT("\n");
         myRender[0].ClearErrorInfo();
-        SetConsoleText(string(out.mb_str()));
-        CallConsole(this);
+        //SetConsoleText(string(out.mb_str()));
+        //CallConsole(this);
     }
 }
 
@@ -7652,7 +5940,7 @@ void ScriptFractal::PostRender()
     if(errorLog.size() != 0)
     {
         wxString out = wxString(wxT("Fatal error in script.\n")) + errorLog;
-        SetConsoleText(string(out.mb_str()));
+        //SetConsoleText(string(out.mb_str()));
     }
 }
 void ScriptFractal::PreRestartRender()
@@ -7668,30 +5956,6 @@ void ScriptFractal::PreRestartRender()
         }
     }
 }
-wxString ScriptFractal::AskInfo()
-{
-    wxString text = wxT("");
-    text += wxT("\nFractal: ");
-    text += wxString(myScriptData.name.c_str(), wxConvUTF8);
-    text += wxT("\nRender Threads: ");
-    text += num_to_string(static_cast<int>(threadNumber));
-    text += wxT("\nScript file: ");
-    text += wxString(path.c_str(), wxConvUTF8);
-    text += wxT("\n");
-    return text;
-}
-void ScriptFractal::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderScriptFractal[threadNumber];
-    for(unsigned int i=0; i<threadNumber; i++)
-    {
-        myRender[i].SetParams(i);
-        myRender[i].SetPath(path);
-    }
-    SetWatchdog<RenderScriptFractal>(myRender, &watchdog, threadNumber);
-}
-
 
 // FractalHandler
 FractalHandler::FractalHandler()

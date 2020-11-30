@@ -13,9 +13,11 @@
 
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
+#include <wx/statline.h>
 #include <SFML/System.hpp>
 #include "FractalClasses.h"
 #include "FractalCanvas.h"
+#include "global.h"
 
 
 /**

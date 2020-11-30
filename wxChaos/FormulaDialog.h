@@ -13,6 +13,7 @@
 
 #include <wx/wx.h>
 #include "FractalCanvas.h"
+#include "global.h"
 
 
 /**

@@ -18,7 +18,6 @@
 #include "SizeDialogSave.h"
 #include "IterDialog.h"
 #include "ConfigParser.h"
-#include "CommandFrame.h"
 #include "FormulaDialog.h"
 #include "StringFuncs.h"
 
@@ -76,7 +75,6 @@ enum IDS
     ID_ENTER_MAN_CONSTANT,
     ID_ENTER_SLD_CONSTANT,
     ID_IT_MANUAL,
-    ID_INFO_FRAME,
     ID_FORMULA_DIALOG,
     ID_OPTPANEL,
     ID_OPEN_SCRIPT_FOLDER,
@@ -116,7 +114,6 @@ class MainFrame : public wxFrame
     JuliaMode *ptr;
     ConstDialog *diag;
     IterDialog *iterDiag;
-    CommandFrame* infoFrame;
     ColorFrame *pal;
     FormulaDialog *formDialog;
     bool changeJuliaMode;
@@ -238,7 +235,6 @@ public :
     void OnManIntroConst(wxCommandEvent &event);
     void OnSldIntroConst(wxCommandEvent &event);
     void OnItManual(wxCommandEvent &event);
-    void OnCommandDialog(wxCommandEvent &event);
     void OnFormulaDialog(wxCommandEvent &event);
     void OnFractalOptions(wxCommandEvent &event);
     void OnApplyPanelOpt(wxCommandEvent& event);

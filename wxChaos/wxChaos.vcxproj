@@ -55,7 +55,6 @@
     <ClInclude Include="BinaryOps.h" />
     <ClInclude Include="BmpWriter.h" />
     <ClInclude Include="ColorFrame.h" />
-    <ClInclude Include="CommandFrame.h" />
     <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="ConstDialog.h" />
     <ClInclude Include="FormulaDialog.h" />
@@ -167,7 +166,6 @@
     <ClCompile Include="BinaryOps.cpp" />
     <ClCompile Include="BmpWriter.cpp" />
     <ClCompile Include="ColorFrame.cpp" />
-    <ClCompile Include="CommandFrame.cpp" />
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="ConstDialog.cpp" />
     <ClCompile Include="FormulaDialog.cpp" />

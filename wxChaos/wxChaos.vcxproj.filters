@@ -48,9 +48,6 @@
     <ClInclude Include="ColorFrame.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="CommandFrame.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigParser.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -372,9 +369,6 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="ColorFrame.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandFrame.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="ConfigParser.cpp">

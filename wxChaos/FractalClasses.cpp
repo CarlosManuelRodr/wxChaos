@@ -6,7 +6,7 @@
 #include "StringFuncs.h"
 #include "BinaryOps.h"
 #include "ConfigParser.h"
-#include "CommandFrame.h"
+#include "global.h"
 
 const int stdSpeed = 1;
 const GRAD_STYLES defaultGradStyle = RETRO;
@@ -1892,19 +1892,15 @@ double Fractal::NormalDist(int x, double mean, double stdDev)
 sf::Uint8 Fractal::CalcGradient(int colorNum, COLOR col)
 {
     colorNum = colorNum % paletteSize;
+
     // Return color with a normal distribution.
     if(col == red)
-    {
         return static_cast<sf::Uint8>(redInt*NormalDist(colorNum, redMean, redStdDev) + redInt*NormalDist(colorNum, paletteSize+redMean, redStdDev));
-    }
     if(col == green)
-    {
         return static_cast<sf::Uint8>(greenInt*NormalDist(colorNum, greenMean, greenStdDev) + greenInt*NormalDist(colorNum, paletteSize+greenMean, greenStdDev));
-    }
     if(col == blue)
-    {
         return static_cast<sf::Uint8>(blueInt*NormalDist(colorNum, blueMean, blueStdDev)+blueInt*NormalDist(colorNum, paletteSize+blueMean, blueStdDev));
-    }
+
     return 0;
 }
 sf::Color Fractal::CalcColor(int colorNum)
@@ -1953,9 +1949,7 @@ void Fractal::RebuildPalette()
     }
 
     for(int i=0; i<paletteSize; i++)
-    {
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
-    }
 
     if(usingRenderImage)
     {
@@ -2048,14 +2042,12 @@ void Fractal::SetPaletteMode(COLOR_MODE mode)
     delete[] greenPalette;
     delete[] bluePalette;
     delete[] palette;
+
     if(mode == GRADIENT)
-    {
         paletteSize = gradient.getMax()-gradient.getMin();
-    }
     else
-    {
         paletteSize = gaussianPaletteSize;
-    }
+
     redPalette = new sf::Uint8[paletteSize];
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
@@ -2273,205 +2265,6 @@ bool Fractal::HasOptPanel()
 PanelOptions* Fractal::GetOptPanel()
 {
     return &panelOpt;
-}
-
-// Command console methods.
-wxString Fractal::AskInfo()
-{
-    // Virtual
-    return wxString();
-}
-wxString Fractal::AskInfo(double real, double imag, int iter)
-{
-    // Virtual
-    return wxString();
-}
-wxString Fractal::Command(wxString commandText)
-{
-    wxString error1(wxT("Error: Invalid number of arguments"));
-    wxString error2(wxT("Error: Can't recognize function"));
-    wxString error3(wxT("Error: Incorrect syntax"));
-
-    // Separates function and arguments.
-    int beginParenthesis = -1, endParenthesis = -1;
-    wxString function, args;
-    vector<wxString> argVector;
-    for(unsigned int i=0; i<commandText.length(); i++)
-    {
-        if(commandText[i] == '(' && beginParenthesis == -1) beginParenthesis = i;
-        if(commandText[i] == ')') endParenthesis = i;
-    }
-    function = commandText.substr(0,beginParenthesis);
-    args = commandText.substr(beginParenthesis+1,endParenthesis-(beginParenthesis+1));
-
-    if(beginParenthesis == -1 || endParenthesis == -1)
-        return error3;
-
-    // Creates vector with argument list.
-    int init = 0;
-    wxString sub;
-    for(unsigned int i=0; i<args.length(); i++)
-    {
-        if(args[i] == ',')
-        {
-            sub = args.substr(init, i-init);
-            for(unsigned int j=0; j<sub.length(); j++)
-            {
-                // Erase white spaces.
-                if(sub[j] == ' ') sub.erase(j, 1);
-            }
-            argVector.push_back(sub);
-            init = i+1;
-        }
-        if(i == args.length()-1)
-        {
-            sub = args.substr(init, i+1-init);
-            for(unsigned int j=0; j<sub.length(); j++)
-            {
-                if(sub[j] == ' ') sub.erase(j, 1);
-            }
-            argVector.push_back(sub);
-        }
-    }
-
-
-    if(function == wxT("AskInfo") || function == wxT("askinfo"))
-    {
-        if(argVector.size() == 3)
-        {
-            wxString output(this->AskInfo(string_to_double(argVector[0]),
-                            string_to_double(argVector[1]), string_to_int(argVector[2])));
-            return output;
-        }
-        else return error1;
-    }
-    if(function == wxT("SetBoundaries") || function == wxT("setboundaries"))
-    {
-        if(argVector.size() == 4)
-        {
-            return this->SetBoundaries(string_to_double(argVector[0]), string_to_double(argVector[1]),
-                                        string_to_double(argVector[2]), string_to_double(argVector[3]));
-        }
-        else return error1;
-    }
-    if(function == wxT("Redraw") || function == wxT("redraw"))
-    {
-        if(argVector.size() == 0)
-        {
-            return this->CommandRedraw();
-        }
-    }
-    if(function == wxT("SaveOrbit") || function == wxT("saveorbit"))
-    {
-        if(argVector.size() == 4)
-        {
-            return this->SaveOrbit(string_to_double(argVector[0]), string_to_double(argVector[1]),
-                                    string_to_int(argVector[2]), argVector[3]);
-        }
-        else return error1;
-    }
-    if(function == wxT("SetThreadNumber") || function == wxT("setthreadnumber"))
-    {
-        if(argVector.size() == 1)
-        {
-            return this->SetThreadNumber(string_to_int(argVector[0]));
-        }
-        else return error1;
-    }
-    if(function == wxT("GetThreadNumber") || function == wxT("getthreadnumber"))
-    {
-        if(argVector.size() == 0)
-        {
-            return this->GetThreadNumber();
-        }
-    }
-    if(function == wxT("DrawCircle") || function == wxT("drawcircle"))
-    {
-        if(argVector.size() == 3)
-        {
-            this->DrawCircle(string_to_double(argVector[0]), string_to_double(argVector[1]),
-                                string_to_double(argVector[2]), sf::Color(0,0,0));
-            return wxString(wxT("Done"));
-        }
-        else return error1;
-    }
-    if(function == wxT("DrawLine") || function == wxT("drawline"))
-    {
-        if(argVector.size() == 4)
-        {
-            this->DrawLine(string_to_double(argVector[0]), string_to_double(argVector[1]),
-                                string_to_double(argVector[2]),string_to_double(argVector[3]) , sf::Color(0,0,0));
-            return wxString(wxT("Done"));
-        }
-        else return error1;
-    }
-    if(function == wxT("DeleteFigures") || function == wxT("deletefigures"))
-    {
-        if(argVector.size() == 0)
-        {
-            if(!orbitMode) geomFigure = false;
-            circles.clear();
-            lines.clear();
-            return wxString(wxT("Done"));
-        }
-        else return error1;
-    }
-    if(function == wxT("Abort") || function == wxT("abort"))
-    {
-        if(argVector.size() == 0)
-        {
-            if(this->StopRender())
-            {
-                rendered = true;
-                return wxString(wxT("Done"));
-            }
-            else return wxString(wxT("Nothing to abort"));
-        }
-    }
-
-    // If couldn't find a match..
-    return error2;
-}
-wxString Fractal::SetBoundaries(double iMinRe, double iMaxRe, double iMinIm, double iMaxIm)
-{
-    this->SaveZoom();
-    minX = iMinRe;
-    maxX = iMaxRe;
-    minY = iMinIm;
-    maxY = iMaxIm;
-
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
-    rendered = false;
-    magnification = 3/(maxX-minX);
-    return wxT("Done");
-}
-wxString Fractal::CommandRedraw()
-{
-    this->Redraw();
-    return wxT("Done");
-}
-wxString Fractal::SaveOrbit(double real, double imag, int iter, wxString filepath)
-{
-    return wxT("Error: Command unavailable in this fractal");
-}
-wxString Fractal::SetThreadNumber( int num )
-{
-    threadNumber = num;
-    this->StopRender();
-    watchdog.SetThreadNumber(threadNumber);
-    this->ChangeThreadNumber();
-    return wxT("Done");
-}
-wxString Fractal::GetThreadNumber()
-{
-    wxString out = wxT("This fractal is using ");
-    out += num_to_string((int)threadNumber);
-    if(threadNumber > 1)
-        out += wxT(" threads.");
-    else
-        out += wxT(" thread.");
-    return out;
 }
 
 

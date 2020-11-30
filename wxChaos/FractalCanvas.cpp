@@ -1,6 +1,7 @@
 ﻿#include "FractalCanvas.h"
 #include "StringFuncs.h"
 #include "SizeDialogSave.h"
+#include "global.h"
 
 FractalCanvas* fractalCanvasPtr = NULL;
 
@@ -11,7 +12,6 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     fractalCanvasPtr = this;
 
     statusData = status;
-    commandTarget = NULL;
     btn = pcb;
     type = fractType;
 
@@ -40,9 +40,6 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
 
     fractalHandler.SetFormula(userFormula);
     target->SetOnWxCtrl(true);
-
-    // Updates information in the command console.
-    if(consoleState) commandTarget->SetText(target->AskInfo());
 
     // Initializes GUI elements.
     selection = new SelectRect(this);
@@ -114,6 +111,7 @@ void FractalCanvas::OnUpdate()
                     btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));    // Txt: "Abort"
                 else
                     btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: "Pause"
+
                 target->DeleteSavedZooms();
             }
         }
@@ -240,15 +238,6 @@ void FractalCanvas::OnUpdate()
     {
         btn->pauseContinue->Enable(true);
     }
-    if(consoleState)
-    {
-        if(thereIsConsoleText)
-        {
-            commandTarget->PrepareOutput();
-            commandTarget->SetText(wxString(consoleText.c_str(), wxConvUTF8));
-            ClearConsoleText();
-        }
-    }
 }
 void FractalCanvas::SetWxSize(wxSize size)
 {
@@ -346,7 +335,7 @@ bool FractalCanvas::ChangeInPointer()
     }
     else return false;
 }
-Fractal *FractalCanvas::GetTarget()
+Fractal* FractalCanvas::GetTarget()
 {
     return target;
 }
@@ -358,13 +347,6 @@ void FractalCanvas::ChangeType(FRACTAL_TYPE _type)
     target = fractalHandler.GetTarget();
     fractalHandler.SetFormula(userFormula);
     target->SetOnWxCtrl(true);
-
-    // Updates command console status.
-    if(consoleState)
-    {
-        commandTarget->SetText(target->AskInfo());
-        commandTarget->SetTarget(target);
-    }
 
     // Deletes screen pointer if active.
     if(orbitMode || sliderMode)
@@ -389,13 +371,6 @@ void FractalCanvas::ChangeToScript(ScriptData _scriptData)
     fractalHandler.CreateScriptFractal(this, scriptData);
     target = fractalHandler.GetTarget();
     target->SetOnWxCtrl(true);
-
-    // Updates command console status.
-    if(consoleState)
-    {
-        commandTarget->SetText(target->AskInfo());
-        commandTarget->SetTarget(target);
-    }
 
     // Deletes screen pointer if active.
     if(orbitMode || sliderMode)
@@ -424,11 +399,10 @@ void FractalCanvas::SetKeybGuide(bool mode)
             keybGuide = true;
         }
         else
-        {
             keybGuide = false;
-        }
     }
-    else keybGuide = false;
+    else
+        keybGuide = false;
 }
 void FractalCanvas::ShowHelpImage()
 {
@@ -450,11 +424,6 @@ void FractalCanvas::Reset()
     target = fractalHandler.GetTarget();
     fractalHandler.SetFormula(userFormula);
     target->SetOnWxCtrl(true);
-
-    if(consoleState)
-    {
-        commandTarget->SetTarget(target);
-    }
     play->Reset();
 
     // Deactivates screen pointer.
@@ -502,10 +471,6 @@ void FractalCanvas::SetSliderMode(bool mode)
         }
         target->SetJuliaMode(false);
     }
-}
-void FractalCanvas::SetCommandConsole(CommandFrame* _infoTarget)
-{
-    commandTarget = _infoTarget;
 }
 void FractalCanvas::SetUserFormula(FormulaOpt _userFormula)
 {
@@ -580,9 +545,7 @@ void FractalCanvas::OnClick(wxMouseEvent &event)
     if(type != LOGISTIC && type != HENON_MAP)
     {
         if(play->ClickEvent(event))
-        {
             target->ChangeVarGradient();
-        }
     }
 
     // Mouse event.

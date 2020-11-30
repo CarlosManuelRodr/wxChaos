@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "AngelScriptFunc.h"
 #include "HTMLViewer.h"
+#include "global.h"
 #include <fstream>
 
 #ifdef _WIN32
@@ -108,15 +109,6 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
         diag->Show(true);
         introConstActive = true;
     }
-    if(opt.commandConsole)
-    {
-        infoFrameActive = true;
-        infoFrame = new CommandFrame(&infoFrameActive, fractalCanvas->GetTarget(), this);
-        fractalCanvas->SetCommandConsole(infoFrame);
-        infoFrame->Show(true);
-        if(!colorFrameActive) infoFrame->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
-        else infoFrame->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, pal->GetPosition().y+pal->GetSize().GetWidth());
-    }
     if(!opt.colorSet) fractalCanvas->GetTarget()->SetFractalSetColorMode(false);
 
     if (opt.firstUse)
@@ -187,7 +179,6 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_ENTER_MAN_CONSTANT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnManIntroConst));
     this->Connect(ID_ENTER_SLD_CONSTANT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnSldIntroConst));
     this->Connect(ID_IT_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnItManual));
-    this->Connect(ID_INFO_FRAME, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnCommandDialog));
     this->Connect(ID_FORMULA_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFormulaDialog));
     this->Connect(ID_OPTPANEL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFractalOptions));
     this->Connect(ID_USER_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnUserManual));
@@ -312,7 +303,6 @@ void MainFrame::SetUpGUI()
     fileMenu->Append(wxID_EXIT, wxT(menuQuitTxt));
 
     // Tools menu.
-    toolMenu->Append(ID_INFO_FRAME, wxT(menuConsoleTxt), wxT(menuConsoleDescriptionTxt));
 
     // Iteracions.
     itManual = new wxMenuItem(iterationsMenu, ID_IT_MANUAL, wxString(wxT(menuManualIterTxt)), wxEmptyString, wxITEM_NORMAL);
@@ -533,26 +523,6 @@ void MainFrame::OnFormulaDialog(wxCommandEvent &event)
         fractalType = USER_DEFINED;
     }
     else formDialog->SetFocus();
-}
-void MainFrame::OnCommandDialog(wxCommandEvent &event)
-{
-    if(!consoleState)
-    {
-        // Opens command dialog.
-        infoFrameActive = true;
-        infoFrame = new CommandFrame(&infoFrameActive, fractalCanvas->GetTarget(), this);
-        fractalCanvas->SetCommandConsole(infoFrame);
-        infoFrame->Show(true);
-
-
-        // Adjust position.
-        int h, w;
-        GetDesktopResolution(h, w);
-
-        if(this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
-            infoFrame->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
-    }
-    else infoFrame->SetFocus();
 }
 void MainFrame::OnRedraw(wxCommandEvent &event)
 {
@@ -1268,7 +1238,7 @@ void MainFrame::GetScriptFractals()
         {
             string errorMsg = "Compile error in file: ";
             errorMsg += filePath;
-            SetConsoleText(errorMsg);
+            // SetConsoleText(errorMsg);
             engine->Release();
             filesInFolder.erase(filesInFolder.begin()+i);
             i -= 1;

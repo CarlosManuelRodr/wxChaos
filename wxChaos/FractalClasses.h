@@ -858,16 +858,6 @@ public:
     // Option panel.
     bool HasOptPanel();
     PanelOptions* GetOptPanel();
-
-    // Command console.
-    virtual wxString AskInfo();
-    virtual wxString AskInfo(double real, double imag, int iter = 0);
-    virtual wxString SaveOrbit(double real, double imag, int iter, wxString filepath);
-    wxString Command(wxString commandText);
-    wxString SetBoundaries(double iMinRe, double iMaxRe, double iMinIm, double iMaxIm);
-    wxString CommandRedraw();
-    wxString SetThreadNumber(int num);
-    wxString GetThreadNumber();
 };
 
 /**

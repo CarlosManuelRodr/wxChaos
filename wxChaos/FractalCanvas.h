@@ -15,7 +15,6 @@
 
 #include "wxSFMLCanvas.h"
 #include "FractalTypes.h"
-#include "CommandFrame.h"
 
 /**
 * @struct PauseContinueButton
@@ -50,12 +49,11 @@ class FractalCanvas : public wxSFMLCanvas
 {
     // Fractal
     FractalHandler fractalHandler;
-    SelectRect *selection;
-    ButtonChange *play;
-    ScreenPointer *pointer;
+    SelectRect* selection;
+    ButtonChange* play;
+    ScreenPointer* pointer;
     FRACTAL_TYPE type;
-    Fractal *target;                    ///< Internally the methods of this class communicate with the fractal through this pointer.
-    CommandFrame* commandTarget;
+    Fractal* target;                    ///< Internally the methods of this class communicate with the fractal through this pointer.
 
     sf::Image keybImage;                ///< Texture of the info images.
     sf::Image mouseImage;
@@ -132,7 +130,7 @@ public :
     void ChangeToScript(ScriptData _scriptData);
 
     ///@return A pointer to the fractal.
-    Fractal *GetTarget();
+    Fractal* GetTarget();
 
     ///@brief Sets the keyboard guide mode.
     ///@param mode New mode.
@@ -151,10 +149,6 @@ public :
     ///@brief Sets the slider mode.
     ///@param mode New mode.
     void SetSliderMode(bool mode);
-
-    ///@brief Sets a pointer to the command console. Used to send information there.
-    ///@param _infoTarget Pointer to the console frame.
-    void SetCommandConsole(CommandFrame* _infoTarget);
 
     ///@brief Sets the user formula.
     ///@param _userFormula Formula specified by the user.
