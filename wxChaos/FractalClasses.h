@@ -734,7 +734,6 @@ public:
     ///@brief Verifies watchdog status.
     ///@return true if there is an active thread. false if not.
     virtual bool IsRendering();
-    virtual void SpecialSaveRoutine(string filename);              ///< Perform operation after saving.
     virtual void SetFormula(FormulaOpt formula);                   ///< Sets user formula.
     virtual void CopyOptFromPanel();                               ///< Copy options from the option panel.
     virtual void MoreIter();                                       ///< Increases the number of iterations.

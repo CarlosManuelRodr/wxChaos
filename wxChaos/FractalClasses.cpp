@@ -925,8 +925,8 @@ void Fractal::ZoomBack()
         maxY = minY+(maxX-minX)*screenHeight/screenWidth;
     }
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    xFactor = (maxX-minX)/(screenWidth-(int)1);
+    yFactor = (maxY-minY)/(screenHeight-(int)1);
 
     // If there are no changes uses previous image.
     if(imgInVector && !varGradient && imgVector.size() > 0 && !stillRendering)
@@ -1188,10 +1188,6 @@ bool Fractal::IsRendering()
     if(waitRoutine) return false;
     else return watchdog.ThreadRunning();
 }
-void Fractal::SpecialSaveRoutine(string filename)
-{
-    // Do nothing.
-}
 void Fractal::SetFormula(FormulaOpt formula)
 {
     userFormula = formula;
@@ -1307,8 +1303,8 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     colorMode = opt.colorMode;
     justLaunchThreads = opt.justLaunchThreads;
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    xFactor = (maxX-minX)/(screenWidth-(int)1);
+    yFactor = (maxY-minY)/(screenHeight-(int)1);
 
     this->CopyOptFromPanel();
 }
@@ -1480,7 +1476,8 @@ sf::Image Fractal::GetRenderedImage()
         {
             for(int j=0; j<screenHeight; j++)
             {
-                if(colorMap[i][j] > maxColorMapVal) maxColorMapVal = colorMap[i][j];
+                if(colorMap[i][j] > maxColorMapVal)
+                    maxColorMapVal = colorMap[i][j];
             }
         }
     }
@@ -1502,13 +1499,10 @@ sf::Image Fractal::GetRenderedImage()
                     // Color pixel.
                     sf::Color Color;
                     if(relativeColor)
-                    {
                         Color = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize+changeGradient);
-                    }
                     else
-                    {
                         Color = CalcColor(colorMap[i][j] + changeGradient);
-                    }
+
                     image.SetPixel(i, j, Color);
                 }
             }
@@ -1604,17 +1598,12 @@ void Fractal::SetGaussianColorIntensity(int intensidad, COLOR col)
     // Changes intensity value.
     colorPaletteMode = GAUSSIAN;
     if(col == red)
-    {
         redInt = intensidad;
-    }
     else if(col == green)
-    {
         greenInt = intensidad;
-    }
     else if(col == blue)
-    {
         blueInt = intensidad;
-    }
+
     this->RebuildPalette();
 }
 void Fractal::SetGaussianColorMean(double med, COLOR col)
@@ -1622,17 +1611,12 @@ void Fractal::SetGaussianColorMean(double med, COLOR col)
     // Changes mean value.
     colorPaletteMode = GAUSSIAN;
     if(col == red)
-    {
         redMean = med;
-    }
     else if(col == green)
-    {
         greenMean = med;
-    }
     else if(col == blue)
-    {
         blueMean = med;
-    }
+
     this->RebuildPalette();
 }
 void Fractal::SetGaussianColorStdDev(double des, COLOR col)
@@ -1640,65 +1624,43 @@ void Fractal::SetGaussianColorStdDev(double des, COLOR col)
     // Changes standard deviation value.
     colorPaletteMode = GAUSSIAN;
     if(col == red)
-    {
         redStdDev = des;
-    }
     else if(col == green)
-    {
         greenStdDev = des;
-    }
     else if(col == blue)
-    {
         blueStdDev = des;
-    }
+
     this->RebuildPalette();
 }
 int Fractal::GetGaussianColorIntensity(COLOR col)
 {
     if(col == red)
-    {
         return redInt;
-    }
     else if(col == green)
-    {
         return greenInt;
-    }
     else if(col == blue)
-    {
         return blueInt;
-    }
+
     else return 0;
 }
 double Fractal::GetGaussianColorMean(COLOR col)
 {
     if(col == red)
-    {
         return redMean;
-    }
     else if(col == green)
-    {
         return greenMean;
-    }
     else if(col == blue)
-    {
         return blueMean;
-    }
     else return 0;
 }
 double Fractal::GetGaussianColorStdDev(COLOR col)
 {
     if(col == red)
-    {
         return redStdDev;
-    }
     else if(col == green)
-    {
         return greenStdDev;
-    }
     else if(col == blue)
-    {
         return blueStdDev;
-    }
     else return 0;
 }
 
@@ -1731,9 +1693,7 @@ void Fractal::SetGaussianColorStyle(GAUSS_STYLES _gaussianStyle)
         bluePalette[i] = CalcGradient(i, blue);
     }
     for(int i=0; i<paletteSize; i++)
-    {
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
-    }
 }
 GAUSS_STYLES Fractal::GetGaussianColorStyle()
 {
@@ -1801,7 +1761,8 @@ void Fractal::RedrawMaps()
         {
             for(int j=0; j<screenHeight; j++)
             {
-                if(colorMap[i][j] > maxColorMapVal) maxColorMapVal = colorMap[i][j];
+                if(colorMap[i][j] > maxColorMapVal) 
+                    maxColorMapVal = colorMap[i][j];
             }
         }
     }
@@ -1967,7 +1928,8 @@ void Fractal::RebuildPalette()
             {
                 for(int j=0; j<screenHeight; j++)
                 {
-                    if(colorMap[i][j] > maxColorMapVal) maxColorMapVal = colorMap[i][j];
+                    if(colorMap[i][j] > maxColorMapVal)
+                        maxColorMapVal = colorMap[i][j];
                 }
             }
             if(maxColorMapVal == 0) maxColorMapVal = 1;

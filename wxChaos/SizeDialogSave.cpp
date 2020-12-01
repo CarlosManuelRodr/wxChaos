@@ -8,98 +8,61 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     // WX Dialog.
     myFractal = targetFractal;
     saveProgressAvailable = _saveProgressAvailable;
-    paused = false;
     finished = false;
     clock.Reset();
-    this->SetSizeHints( wxSize( 366,127 ), wxSize( 366,127 ) );
+    this->SetSizeHints(wxSize(366, 127), wxSize(366, 127));
 
     wxBoxSizer* mainBoxxy;
-    mainBoxxy = new wxBoxSizer( wxVERTICAL );
+    mainBoxxy = new wxBoxSizer(wxVERTICAL);
 
     wxBoxSizer* progressBoxxy;
-    progressBoxxy = new wxBoxSizer( wxVERTICAL );
+    progressBoxxy = new wxBoxSizer(wxVERTICAL);
 
     myType = myFractal->GetType();
     if(myType == SCRIPT_FRACTAL)
     {
-        progressLabel = new wxStaticText( this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Saving..."
+        progressLabel = new wxStaticText(this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
         progressLabel->Wrap( -1 );
-        progressBoxxy->Add( progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+        progressBoxxy->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
         progress = nullptr;
     }
     else
     {
-        progress = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
-        progressBoxxy->Add( progress, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5 );
+        progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
+        progressBoxxy->Add(progress, 0, wxALL|wxEXPAND, 5);
 
-        progressLabel = new wxStaticText( this, wxID_ANY, wxString(wxT(renderingDotsTxt)) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Rendering... "
-        progressLabel->Wrap( -1 );
-        progressBoxxy->Add( progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+        progressLabel = new wxStaticText(this, wxID_ANY, wxString(wxT(renderingDotsTxt)) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Rendering... "
+        progressLabel->Wrap(-1);
+        progressBoxxy->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
     }
 
-    staticLine = new wxStaticLine( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-    progressBoxxy->Add( staticLine, 0, wxEXPAND | wxALL, 5 );
+    staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
+    progressBoxxy->Add(staticLine, 0, wxEXPAND | wxALL, 5);
 
-    mainBoxxy->Add( progressBoxxy, 2, wxEXPAND, 5 );
+    mainBoxxy->Add(progressBoxxy, 2, wxEXPAND, 5);
 
     wxBoxSizer* buttonBoxxy;
-    buttonBoxxy = new wxBoxSizer( wxHORIZONTAL );
+    buttonBoxxy = new wxBoxSizer(wxHORIZONTAL);
 
-    if (myType != SCRIPT_FRACTAL)
-    {
-        pauseButton = new wxButton(this, wxID_ANY, wxT(pauseTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Pause"
-        buttonBoxxy->Add(pauseButton, 0, wxALL, 5);
-    }
-    else
-        pauseButton = nullptr;
+    cancelButton = new wxButton(this, wxID_ANY, wxT(cancelTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Cancel"
+    buttonBoxxy->Add(cancelButton, 0, wxALL, 5);
 
-    cancelButton = new wxButton( this, wxID_ANY, wxT(cancelTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Cancel"
-    buttonBoxxy->Add( cancelButton, 0, wxALL, 5 );
+    mainBoxxy->Add(buttonBoxxy, 1, wxEXPAND, 5);
 
-    mainBoxxy->Add( buttonBoxxy, 1, wxEXPAND, 5 );
-
-    this->SetSizer( mainBoxxy );
+    this->SetSizer(mainBoxxy);
     this->Layout();
-
-    this->Centre( wxBOTH );
-
-    this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( SaveProgressDiag::CalcProgress ) );
-    if(myType != SCRIPT_FRACTAL)
-    {
-        pauseButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SaveProgressDiag::OnPause ), NULL, this );
-    }
-    cancelButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SaveProgressDiag::OnCancel ), NULL, this );
+    this->Centre(wxBOTH);
+    this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(SaveProgressDiag::CalcProgress));
+    cancelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SaveProgressDiag::OnCancel), NULL, this);
 }
 SaveProgressDiag::~SaveProgressDiag()
 {
-    this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( SaveProgressDiag::CalcProgress ) );
-    if(myType != SCRIPT_FRACTAL)
-    {
-        pauseButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SaveProgressDiag::OnPause ), NULL, this );
-    }
-    cancelButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SaveProgressDiag::OnCancel ), NULL, this );
-}
-void SaveProgressDiag::OnPause(wxCommandEvent& event)
-{
-    // Pause or continue threads.
-    if(paused)
-    {
-        myFractal->GetWatchdog()->LaunchThreads();
-        myFractal->GetWatchdog()->Launch();
-        paused = false;
-        pauseButton->SetLabel(wxT(pauseTxt));    // Txt: "Pause"
-    }
-    else
-    {
-        myFractal->GetWatchdog()->Terminate();
-        myFractal->GetWatchdog()->StopThreads();
-        paused = true;
-        pauseButton->SetLabel(wxT(continueTxt));    // Txt: "Continue"
-    }
+    this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(SaveProgressDiag::CalcProgress));
+    cancelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SaveProgressDiag::OnCancel), NULL, this);
 }
 void SaveProgressDiag::OnCancel(wxCommandEvent& event)
 {
-    if(!paused) myFractal->GetWatchdog()->StopThreads();
+    myFractal->GetWatchdog()->StopThreads();
     this->Close(true);
 }
 void SaveProgressDiag::CalcProgress(wxUpdateUIEvent& event)
@@ -110,7 +73,7 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent& event)
         if(myFractal->GetType() != SCRIPT_FRACTAL)
         {
             int progressValue = myFractal->GetWatchdog()->GetThreadProgress();
-            progressLabel->SetLabel(wxString( wxT(renderingDotsTxt)) + num_to_string(progressValue) +wxT("%") );    // Txt: "Rendering... "
+            progressLabel->SetLabel(wxString(wxT(renderingDotsTxt)) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
 
             progress->SetValue(progressValue);
             if(progressValue >= 100 && !myFractal->IsRendering())
@@ -220,9 +183,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas *mFCanvas, string rutaArchivo, int 
 
     this->SetSizer(boxxy);
     this->Layout();
-
     this->Centre(wxBOTH);
-
 
     widthSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeWidth), NULL, this);
     heightSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeHeight), NULL, this);
@@ -255,6 +216,7 @@ void SizeDialogSave::OnOk(wxCommandEvent& event)
         fractalHandler.CreateScriptFractal(widthSpin->GetValue(), heightSpin->GetValue(), myScriptPath);
     else
         fractalHandler.CreateFractal(fractalType, widthSpin->GetValue(), heightSpin->GetValue());
+
     fractalHandler.SetFormula(fCanvas->GetFormula());
 
     // Copy parameters.
@@ -279,7 +241,6 @@ void SizeDialogSave::OnOk(wxCommandEvent& event)
             fractalHandler.GetTarget()->RenderBMP(path);
         }
     }
-    fractalHandler.GetTarget()->SpecialSaveRoutine(path);
 
     // Cleanup and close dialog.
     diag->Destroy();

@@ -10,7 +10,7 @@
 #pragma once
 #ifndef __sizeDiag
 #define __sizeDiag
-
+#pragma once
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
@@ -18,7 +18,6 @@
 #include "FractalClasses.h"
 #include "FractalCanvas.h"
 #include "global.h"
-
 
 /**
 * @class SaveProgressDiag
@@ -30,24 +29,21 @@ private:
     wxGauge* progress;
     wxStaticText* progressLabel;
     wxStaticLine* staticLine;
-    wxButton* pauseButton;
     wxButton* cancelButton;
     Fractal* myFractal;
     FRACTAL_TYPE myType;
 
-    bool paused;
     bool finished;
     bool saveProgressAvailable;
     sf::Clock clock;
 
     void CalcProgress(wxUpdateUIEvent& event);  ///< When the window is updates ask the threads to calculate their progress.
-    void OnPause(wxCommandEvent& event);        ///< Pause threads.
     void OnCancel(wxCommandEvent& event);       ///< Stop threads and close window.
 
 public:
     SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool _saveProgressAvailable = true, wxWindowID id = wxID_ANY, 
                      const wxString& title = wxT("Saving..."), const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxSize( 366,127 ), long style = wxDEFAULT_DIALOG_STYLE );
+                     const wxSize& size = wxSize(366, 150), long style = wxDEFAULT_DIALOG_STYLE);
     ~SaveProgressDiag();
 
     ///@brief Inform if the fractal has finished.
@@ -87,11 +83,10 @@ private:
     void OnOk(wxCommandEvent& event);             ///< Creates fractal with the parameters from the dialog and saves image.
 
 public:
-    // WTF con ruta archivo!
-    SizeDialogSave(FractalCanvas *mFCanvas, string rutaArchivo, int ext, FRACTAL_TYPE type, Fractal *target, wxWindow* parent,
-                    string scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
-                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(283,201), 
-                    long style = wxDEFAULT_DIALOG_STYLE);
+    SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int ext, FRACTAL_TYPE type, Fractal* target, wxWindow* parent,
+                   string scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
+                   const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(283, 251), 
+                   long style = wxDEFAULT_DIALOG_STYLE);
     ~SizeDialogSave();
 
 };

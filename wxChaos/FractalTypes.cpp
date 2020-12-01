@@ -873,12 +873,6 @@ void MandelbrotZN::CopyOptFromPanel()
     n = *panelOpt.GetIntElement(0);
     bailout = *panelOpt.GetDoubleElement(0);
 }
-void MandelbrotZN::ChangeThreadNumber()
-{
-    delete[] myRender;
-    myRender = new RenderMandelbrotZN[threadNumber];
-    SetWatchdog<RenderMandelbrotZN>(myRender, &watchdog, threadNumber);
-}
 
 // RenderJulia
 RenderJulia::RenderJulia()
@@ -5312,34 +5306,6 @@ void DPendulum::DrawOrbit()
 
     orbitDrawn = true;
 }
-void DPendulum::SpecialSaveRoutine(string filename)
-{
-    if(check_ext(filename, "bmp"))
-    {
-        string newFileName = replace_ext(filename, ".dpe");
-        std::ofstream dataFile;
-        dataFile.open(newFileName.c_str());
-        dataFile << "th1Bailout=" << str_bool_to_string(th1Bailout) << endl;
-        dataFile << "th1NumBailout=" << str_num_to_string(th1NumBailout) << endl;
-        dataFile << "th2Bailout=" << str_bool_to_string(th2Bailout) << endl;
-        dataFile << "th2NumBailout=" << str_num_to_string(th2NumBailout) << endl;
-        dataFile << "Mass1=" << str_num_to_string(m1) << endl;
-        dataFile << "Mass2=" << str_num_to_string(m2) << endl;
-        dataFile << "Longitude=" << str_num_to_string(l) << endl;
-        dataFile << "Gravity=" << str_num_to_string(g) << endl;
-        dataFile << "referenced=" << str_bool_to_string(referenced) << endl;
-        dataFile << "rungeKutta=" << str_bool_to_string(rungeKutta) << endl;
-        dataFile << "deltaT=" << str_num_to_string(dt) << endl;
-        dataFile << "maxIter=" << str_num_to_string((int)maxIter) << endl;
-        dataFile << "minTh1=" << str_num_to_string(minX) << endl;
-        dataFile << "maxTh1=" << str_num_to_string(maxX) << endl;
-        dataFile << "minTh2=" << str_num_to_string(minY) << endl;
-        dataFile << "maxTh2=" << str_num_to_string(maxY) << endl;
-        dataFile << "th1Factor=" << str_num_to_string(xFactor) << endl;
-        dataFile << "th2Factor=" << str_num_to_string(yFactor) << endl;
-        dataFile.close();
-    }
-}
 
 // RenderUserDefined
 RenderUserDefined::RenderUserDefined()
@@ -5385,7 +5351,8 @@ void RenderUserDefined::Render()
                     cVal = mup::cmplx_type(minX + x*xFactor, z_y);
                     zVal = zero;
                 }
-                else zVal = mup::cmplx_type(minX + x*xFactor, z_y);
+                else
+                    zVal = mup::cmplx_type(minX + x*xFactor, z_y);
 
                 insideSet = true;
                 for(n=0; n<maxIter; n++)
@@ -5398,9 +5365,8 @@ void RenderUserDefined::Render()
                     zVal = parser.Eval();
                 }
                 if(insideSet)
-                {
                     setMap[x][y] = true;
-                }
+
                 colorMap[x][y] = n;
             }
         }

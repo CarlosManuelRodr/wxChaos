@@ -20,6 +20,7 @@
 */
 class RenderMandelbrot : public RenderFractal
 {
+private:
     double c_im;
     double c_re;
     double Z_re;
@@ -28,19 +29,17 @@ class RenderMandelbrot : public RenderFractal
     double Z_im2;
     int buddhaRandomP;
     int bd;
-
     bool insideSet;
 
 public:
+    RenderMandelbrot();
     void Render();
     void SpecialRender();
+    int AskProgress();
 
     ///@brief Number of random points that will launch in Buddhabrot mode.
     ///@param n Number of points.
     void SetBuddhaRandomP(int n);
-    RenderMandelbrot();
-
-    int AskProgress();
 };
 
 /**
@@ -49,6 +48,7 @@ public:
 */
 class Mandelbrot : public Fractal
 {
+private:
     RenderMandelbrot* myRender;
     int buddhaRandomP;
 public:
@@ -69,7 +69,6 @@ public:
 class RenderMandelbrotZN : public RenderFractal
 {
 private:
-
     double c_im;
     double c_re;
     double Z_re;
@@ -78,7 +77,6 @@ private:
     double Z_im2;
     int n;
     double bailout;
-
     bool insideSet;
 
 public:
@@ -95,6 +93,7 @@ public:
 */
 class MandelbrotZN : public Fractal
 {
+private:
     int n;
     double bailout;
     RenderMandelbrotZN* myRender;
@@ -102,7 +101,6 @@ public:
     void Render();
     void DrawOrbit();
     void CopyOptFromPanel();
-    void ChangeThreadNumber();
     MandelbrotZN(sf::RenderWindow* Window);
     MandelbrotZN(int width, int height);
     ~MandelbrotZN();
@@ -199,7 +197,6 @@ private:
     double d;
     double re2, im2;
     double minStep;
-
     double re_ant, im_ant;
 public:
     RenderNewton();
@@ -214,6 +211,7 @@ public:
 */
 class Newton : public Fractal
 {
+private:
     RenderNewton* myRender;
     double minStep;
 public:
@@ -243,6 +241,7 @@ public:
 */
 class Sinoidal : public Fractal
 {
+private:
     RenderSinoidal* myRender;
 public:
     void Render();
@@ -270,6 +269,7 @@ public:
 
 class Magnet : public Fractal
 {
+private:
     RenderMagnet* myRender;
 public:
     void Render();
@@ -297,6 +297,7 @@ public:
 */
 class Manowar : public Fractal
 {
+private:
     RenderManowar* myRender;
 public:
     void Render();
@@ -324,6 +325,7 @@ public:
 */
 class ManowarJulia : public Fractal
 {
+private:
     RenderManowarJulia* myRender;
 public:
     void Render();
@@ -351,12 +353,13 @@ public:
 */
 class Medusa : public Fractal
 {
+private:
     RenderMedusa* myRender;
 public:
-    void Render();
     Medusa(sf::RenderWindow* Window);
     Medusa(int width, int height);
     ~Medusa();
+    void Render();
     void DrawOrbit();
 };
 
@@ -377,12 +380,12 @@ public:
 */
 class SierpTriangle : public Fractal
 {
+private:
     RenderSierpTriangle *myRender;
-
 public:
-    void Render();
     SierpTriangle(sf::RenderWindow* Window);
     SierpTriangle(int width, int height);
+    void Render();
 };
 
 // FixedPoint1 z = sin(z)
@@ -392,6 +395,7 @@ public:
 */
 class RenderFixedPoint1 : public RenderFractal
 {
+private:
     double minStep;
 public:
     RenderFixedPoint1();
@@ -405,6 +409,7 @@ public:
 */
 class FixedPoint1 : public Fractal
 {
+private:
     RenderFixedPoint1* myRender;
     double minStep;
 public:
@@ -423,6 +428,7 @@ public:
 */
 class RenderFixedPoint2 : public RenderFractal
 {
+private:
     double minStep;
 public:
     RenderFixedPoint2();
@@ -436,6 +442,7 @@ public:
 */
 class FixedPoint2 : public Fractal
 {
+private:
     RenderFixedPoint2* myRender;
     double minStep;
 public:
@@ -454,6 +461,7 @@ public:
 */
 class RenderFixedPoint3 : public RenderFractal
 {
+private:
     double minStep;
 public:
     RenderFixedPoint3();
@@ -467,6 +475,7 @@ public:
 */
 class FixedPoint3 : public Fractal
 {
+private:
     RenderFixedPoint3* myRender;
     double minStep;
 public:
@@ -485,6 +494,7 @@ public:
 */
 class RenderFixedPoint4 : public RenderFractal
 {
+private:
     double minStep;
 public:
     RenderFixedPoint4();
@@ -498,6 +508,7 @@ public:
 */
 class FixedPoint4 : public Fractal
 {
+private:
     RenderFixedPoint4* myRender;
     double minStep;
 public:
@@ -526,6 +537,7 @@ public:
 */
 class Tricorn : public Fractal
 {
+private:
     RenderTricorn* myRender;
 public:
     Tricorn(sf::RenderWindow* Window);
@@ -552,6 +564,7 @@ public:
 */
 class BurningShip : public Fractal
 {
+private:
     RenderBurningShip* myRender;
 public:
     BurningShip(sf::RenderWindow* Window);
@@ -578,6 +591,7 @@ public:
 */
 class BurningShipJulia : public Fractal
 {
+private:
     RenderBurningShipJulia *myRender;
 public:
     BurningShipJulia(sf::RenderWindow* Window);
@@ -605,6 +619,7 @@ public:
 */
 class Fractory : public Fractal
 {
+private:
     RenderFractory *myRender;
 public:
     Fractory(sf::RenderWindow* Window);
@@ -620,6 +635,7 @@ public:
 */
 class RenderCell : public RenderFractal
 {
+private:
     double bailout;
 public:
     RenderCell();
@@ -633,7 +649,8 @@ public:
 */
 class Cell : public Fractal
 {
-    RenderCell *myRender;
+private:
+    RenderCell* myRender;
     double bailout;
 public:
     Cell(sf::RenderWindow* Window);
@@ -651,10 +668,10 @@ public:
 
 class RenderLogisticMap : public RenderFractal
 {
+private:
     double seed;
     bool stabilizePoint;
     double progress;
-
 public:
     RenderLogisticMap();
     void Render();
@@ -668,10 +685,10 @@ public:
 */
 class LogisticMap : public Fractal
 {
-    RenderLogisticMap *myRender;
+private:
+    RenderLogisticMap* myRender;
     double logisticSeed;
     bool stabilizePoint;
-
 public:
     void Render();
     LogisticMap(sf::RenderWindow* Window);
@@ -686,6 +703,7 @@ public:
 
 class RenderHenonMap : public RenderFractal
 {
+private:
     double alpha, beta;
     double x0, y0;
     int i;
@@ -703,6 +721,7 @@ public:
 
 class HenonMap : public Fractal
 {
+private:
     RenderHenonMap *myRender;
     double alpha, beta;
     double x0, y0;
@@ -722,12 +741,12 @@ public:
 */
 class RenderDPendulum : public RenderFractal
 {
+private:
     bool th1Bailout, th2Bailout;
     double th1NumBailout, th2NumBailout;
     double m1, m2, l, g;
     double dt;
     bool referenced, rungeKutta;
-
 public:
     RenderDPendulum();
     void Render();
@@ -741,6 +760,7 @@ public:
 */
 class DPendulum : public Fractal
 {
+private:
     bool th1Bailout, th2Bailout;
     double th1NumBailout, th2NumBailout;
     double m1, m2, l, g;
@@ -757,7 +777,6 @@ public:
     void CopyOptFromPanel();
     void MoreIter();
     void LessIter();
-    void SpecialSaveRoutine(string filename);
 };
 
 /**
@@ -766,14 +785,14 @@ public:
 */
 class RenderUserDefined : public RenderFractal
 {
+private:
     int bailout;
     bool julia;
     wxString errorInfo;
     wxString parserFormula;
-
 public:
     RenderUserDefined();
-    void SetFormula( FormulaOpt formula );
+    void SetFormula(FormulaOpt formula);
     void Render();
     wxString GetErrorInfo();
     void ClearErrorInfo();
