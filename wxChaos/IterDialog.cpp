@@ -18,46 +18,46 @@ IterDialog::IterDialog(bool *Active, Fractal *_target, wxWindow* parent, wxWindo
     target = _target;
     this->SetSizeHints(wxSize(314,124), wxSize(314,124));
 
-    wxBoxSizer* boxxy;
-    boxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer;
+    sizer = new wxBoxSizer(wxVERTICAL);
 
     panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* subBoxxy;
-    subBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* subSizer;
+    subSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBoxSizer* textBoxxy;
-    textBoxxy = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT(iterationsTxt)), wxHORIZONTAL);    // Txt: "Iterations"
+    wxStaticBoxSizer* textSizer;
+    textSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT(iterationsTxt)), wxHORIZONTAL);    // Txt: "Iterations"
 
     number = target->GetIterations();
     text = num_to_string((int)number);
     textCtrl = new wxTextCtrl(panel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
-    textBoxxy->Add(textCtrl, 0, wxALL, 5);
+    textSizer->Add(textCtrl, 0, wxALL, 5);
 
     plusButton = new wxButton(panel, wxID_ANY, wxT("+"), wxDefaultPosition, wxDefaultSize, 0);
-    textBoxxy->Add(plusButton, 0, wxALL, 5);
+    textSizer->Add(plusButton, 0, wxALL, 5);
 
     minusButton = new wxButton(panel, wxID_ANY, wxT("-"), wxDefaultPosition, wxDefaultSize, 0);
-    textBoxxy->Add(minusButton, 0, wxALL, 5);
+    textSizer->Add(minusButton, 0, wxALL, 5);
 
-    subBoxxy->Add(textBoxxy, 1, wxEXPAND, 5);
+    subSizer->Add(textSizer, 1, wxEXPAND, 5);
 
-    wxBoxSizer* buttonBoxxy;
-    buttonBoxxy = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* buttonSizer;
+    buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
     acceptButton = new wxButton(panel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
-    buttonBoxxy->Add(acceptButton, 0, wxALL, 5);
+    buttonSizer->Add(acceptButton, 0, wxALL, 5);
 
     applyButton = new wxButton(panel, wxID_ANY, wxT(applyTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
-    buttonBoxxy->Add(applyButton, 0, wxALL, 5);
+    buttonSizer->Add(applyButton, 0, wxALL, 5);
 
-    subBoxxy->Add(buttonBoxxy, 0, 0, 5);
+    subSizer->Add(buttonSizer, 0, 0, 5);
 
-    panel->SetSizer(subBoxxy);
+    panel->SetSizer(subSizer);
     panel->Layout();
-    subBoxxy->Fit(panel);
-    boxxy->Add(panel, 1, wxEXPAND | wxALL, 0);
+    subSizer->Fit(panel);
+    sizer->Add(panel, 1, wxEXPAND | wxALL, 0);
 
-    this->SetSizer(boxxy);
+    this->SetSizer(sizer);
     this->Layout();
 
     this->Centre(wxBOTH);

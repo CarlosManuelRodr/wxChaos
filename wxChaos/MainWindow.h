@@ -142,8 +142,8 @@ class MainFrame : public wxFrame
     wxMenu *typeComplex, *typeNumMet, *typePhysics, *typeOther;
     wxScrolledWindow* optionPanel;
     wxStaticBitmap* propBitmap;
-    wxBoxSizer* fractalBoxxy;
-    wxBoxSizer* optionBoxxy;
+    wxBoxSizer* fractalSizer;
+    wxBoxSizer* optionSizer;
     PauseContinueButton pauseBtn;
 
     // Menu items from user scripts.
@@ -159,7 +159,7 @@ class MainFrame : public wxFrame
     vector<wxSpinCtrl*> spinControls;
     vector<wxCheckBox*> checkBoxes;
 
-    wxBoxSizer *boxxy;  // Please, forgive my shamely use of an old meme as variable names through this project.
+    wxBoxSizer *sizer;
     wxSize size;
     wxStatusBar* status;
     bool colorFrameActive;

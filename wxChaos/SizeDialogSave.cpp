@@ -12,44 +12,44 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     clock.Reset();
     this->SetSizeHints(wxSize(366, 127), wxSize(366, 127));
 
-    wxBoxSizer* mainBoxxy;
-    mainBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* mainSizer;
+    mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxBoxSizer* progressBoxxy;
-    progressBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* progressSizer;
+    progressSizer = new wxBoxSizer(wxVERTICAL);
 
     myType = myFractal->GetType();
     if(myType == SCRIPT_FRACTAL)
     {
         progressLabel = new wxStaticText(this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
         progressLabel->Wrap( -1 );
-        progressBoxxy->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+        progressSizer->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
         progress = nullptr;
     }
     else
     {
         progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
-        progressBoxxy->Add(progress, 0, wxALL|wxEXPAND, 5);
+        progressSizer->Add(progress, 0, wxALL|wxEXPAND, 5);
 
         progressLabel = new wxStaticText(this, wxID_ANY, wxString(wxT(renderingDotsTxt)) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Rendering... "
         progressLabel->Wrap(-1);
-        progressBoxxy->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+        progressSizer->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
     }
 
     staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
-    progressBoxxy->Add(staticLine, 0, wxEXPAND | wxALL, 5);
+    progressSizer->Add(staticLine, 0, wxEXPAND | wxALL, 5);
 
-    mainBoxxy->Add(progressBoxxy, 2, wxEXPAND, 5);
+    mainSizer->Add(progressSizer, 2, wxEXPAND, 5);
 
-    wxBoxSizer* buttonBoxxy;
-    buttonBoxxy = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* buttonSizer;
+    buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
     cancelButton = new wxButton(this, wxID_ANY, wxT(cancelTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Cancel"
-    buttonBoxxy->Add(cancelButton, 0, wxALL, 5);
+    buttonSizer->Add(cancelButton, 0, wxALL, 5);
 
-    mainBoxxy->Add(buttonBoxxy, 1, wxEXPAND, 5);
+    mainSizer->Add(buttonSizer, 1, wxEXPAND, 5);
 
-    this->SetSizer(mainBoxxy);
+    this->SetSizer(mainSizer);
     this->Layout();
     this->Centre(wxBOTH);
     this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(SaveProgressDiag::CalcProgress));
@@ -114,15 +114,15 @@ SizeDialogSave::SizeDialogSave(FractalCanvas *mFCanvas, string rutaArchivo, int 
 
     this->SetSizeHints(wxSize(283,201), wxSize(283,201));
 
-    wxBoxSizer* boxxy;
-    boxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer;
+    sizer = new wxBoxSizer(wxVERTICAL);
 
     mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* panelBoxxy;
-    panelBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* panelSizer;
+    panelSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxBoxSizer* sizeBoxxy;
-    sizeBoxxy = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizeSizer;
+    sizeSizer = new wxBoxSizer(wxHORIZONTAL);
 
     wxBoxSizer* bSizer6;
     bSizer6 = new wxBoxSizer(wxVERTICAL);
@@ -139,7 +139,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas *mFCanvas, string rutaArchivo, int 
     bSizer6->Add(widthSpin, 0, wxALL, 5);
     widthSpin->SetValue(opt.screenWidth);
 
-    sizeBoxxy->Add(bSizer6, 1, wxEXPAND, 5);
+    sizeSizer->Add(bSizer6, 1, wxEXPAND, 5);
 
     wxBoxSizer* bSizer8;
     bSizer8 = new wxBoxSizer(wxVERTICAL);
@@ -156,32 +156,32 @@ SizeDialogSave::SizeDialogSave(FractalCanvas *mFCanvas, string rutaArchivo, int 
     bSizer8->Add(heightSpin, 0, wxALL, 5);
     heightSpin->SetValue(opt.screenHeight);
 
-    sizeBoxxy->Add(bSizer8, 1, wxEXPAND, 5);
+    sizeSizer->Add(bSizer8, 1, wxEXPAND, 5);
 
-    panelBoxxy->Add(sizeBoxxy, 1, wxEXPAND, 5);
+    panelSizer->Add(sizeSizer, 1, wxEXPAND, 5);
 
-    wxBoxSizer* okBoxxy;
-    okBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* okSizer;
+    okSizer = new wxBoxSizer(wxVERTICAL);
 
     iterationsText = new wxStaticText(mainPanel, wxID_ANY, wxT(iterationsTxt), wxDefaultPosition, wxDefaultSize, 0);        // Txt: "Iterations"
     iterationsText->Wrap(-1);
-    okBoxxy->Add(iterationsText, 0, wxALL, 5);
+    okSizer->Add(iterationsText, 0, wxALL, 5);
 
     iterationsSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000000, 1);
-    okBoxxy->Add(iterationsSpin, 0, wxALL, 5);
+    okSizer->Add(iterationsSpin, 0, wxALL, 5);
     iterationsSpin->SetValue(opt.maxIter);
 
     okButton = new wxButton(mainPanel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
-    okBoxxy->Add(okButton, 0, wxALL, 5);
+    okSizer->Add(okButton, 0, wxALL, 5);
 
-    panelBoxxy->Add(okBoxxy, 1, wxEXPAND, 5);
+    panelSizer->Add(okSizer, 1, wxEXPAND, 5);
 
-    mainPanel->SetSizer(panelBoxxy);
+    mainPanel->SetSizer(panelSizer);
     mainPanel->Layout();
-    panelBoxxy->Fit(mainPanel);
-    boxxy->Add(mainPanel, 1, wxEXPAND | wxALL, 0);
+    panelSizer->Fit(mainPanel);
+    sizer->Add(mainPanel, 1, wxEXPAND | wxALL, 0);
 
-    this->SetSizer(boxxy);
+    this->SetSizer(sizer);
     this->Layout();
     this->Centre(wxBOTH);
 

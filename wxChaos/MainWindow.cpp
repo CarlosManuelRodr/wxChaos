@@ -346,37 +346,37 @@ void MainFrame::SetUpGUI()
     menubar->Append(helpMenu, wxT(menuHelpTxt));
     this->SetMenuBar(menubar);
 
-    boxxy = new wxBoxSizer(wxHORIZONTAL);
+    sizer = new wxBoxSizer(wxHORIZONTAL);
 
-    fractalBoxxy = new wxBoxSizer(wxVERTICAL);
+    fractalSizer = new wxBoxSizer(wxVERTICAL);
 
-    boxxy->Add(fractalBoxxy, 7, wxEXPAND, 5);
+    sizer->Add(fractalSizer, 7, wxEXPAND, 5);
 
-    wxBoxSizer* panelBoxxy;
-    panelBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* panelSizer;
+    panelSizer = new wxBoxSizer(wxVERTICAL);
 
     // Option panel.
     optionPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
     optionPanel->SetScrollRate(5, 5);
     optionPanel->Hide();
     showOptPanel = false;
-    optionBoxxy = new wxBoxSizer(wxVERTICAL);
+    optionSizer = new wxBoxSizer(wxVERTICAL);
 
     propBitmap = new wxStaticBitmap(optionPanel, wxID_ANY, wxBitmap(GetWxAbsPath("Resources/prop.png"), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
-    optionBoxxy->Add(propBitmap, 0, wxALL, 0);
+    optionSizer->Add(propBitmap, 0, wxALL, 0);
 
-    optionPanel->SetSizer(optionBoxxy);
+    optionPanel->SetSizer(optionSizer);
     optionPanel->Layout();
-    optionBoxxy->Fit(optionPanel);
-    panelBoxxy->Add(optionPanel, 1, wxEXPAND | wxALL, 1);
+    optionSizer->Fit(optionPanel);
+    panelSizer->Add(optionPanel, 1, wxEXPAND | wxALL, 1);
 
-    boxxy->Add(panelBoxxy, 2, wxEXPAND, 5);
-    this->SetSizer(boxxy);
+    sizer->Add(panelSizer, 2, wxEXPAND, 5);
+    this->SetSizer(sizer);
     this->Layout();
     this->Centre(wxVERTICAL);
     statusData.status = status = this->CreateStatusBar(1, wxST_SIZEGRIP, wxID_ANY);
 
-    size = fractalBoxxy->GetSize();
+    size = fractalSizer->GetSize();
 
     // Creates fractalCanvas.
     colorStyle = opt.colorStyleGaussian;
@@ -397,7 +397,7 @@ void MainFrame::SetUpGUI()
     fractalCanvas->GetTarget()->SetExtColorMode(opt.colorFractal);
     fractalCanvas->GetTarget()->SetFractalSetColorMode(opt.colorSet);
 
-    fractalBoxxy->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
+    fractalSizer->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
 }
 
 void MainFrame::OnClose(wxCloseEvent& event)
@@ -471,7 +471,7 @@ void MainFrame::OnAbout(wxCommandEvent &event)
 void MainFrame::OnSave(wxCommandEvent &event)
 {
     // Saves the fractal image.
-    wxFileDialog * saveFileDialog = new wxFileDialog(this, wxT(menuSelectFileTxt), wxT(""),
+    wxFileDialog* saveFileDialog = new wxFileDialog(this, wxT(menuSelectFileTxt), wxT(""),
                                     wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
     wxString fileName;
     if(saveFileDialog->ShowModal() == wxID_OK)
@@ -1068,7 +1068,7 @@ void MainFrame::UpdateOptPanel()
                     labels.push_back(new wxStaticText( optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     labelIndex = labels.size()-1;
                     labels[labelIndex]->Wrap( -1 );
-                    optionBoxxy->Add( labels[labelIndex], 0, wxALL, 5 );
+                    optionSizer->Add( labels[labelIndex], 0, wxALL, 5 );
                     foundLabels.push_back(i);
                 }
                 break;
@@ -1077,11 +1077,11 @@ void MainFrame::UpdateOptPanel()
                     labels.push_back(new wxStaticText( optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     labelIndex = labels.size()-1;
                     labels[labelIndex]->Wrap( -1 );
-                    optionBoxxy->Add( labels[labelIndex], 0, wxALL, 5 );
+                    optionSizer->Add( labels[labelIndex], 0, wxALL, 5 );
 
                     textControls.push_back(new wxTextCtrl( optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     index = textControls.size()-1;
-                    optionBoxxy->Add( textControls[index], 0, wxALL|wxEXPAND, 5 );
+                    optionSizer->Add( textControls[index], 0, wxALL|wxEXPAND, 5 );
                     foundTextControls.push_back(i);
                 }
                 break;
@@ -1090,11 +1090,11 @@ void MainFrame::UpdateOptPanel()
                     labels.push_back(new wxStaticText( optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     labelIndex = labels.size()-1;
                     labels[labelIndex]->Wrap( -1 );
-                    optionBoxxy->Add( labels[labelIndex], 0, wxALL, 5 );
+                    optionSizer->Add( labels[labelIndex], 0, wxALL, 5 );
 
                     spinControls.push_back(new wxSpinCtrl( optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 ));
                     index = spinControls.size()-1;
-                    optionBoxxy->Add( spinControls[index], 0, wxALL|wxEXPAND, 5 );
+                    optionSizer->Add( spinControls[index], 0, wxALL|wxEXPAND, 5 );
                     foundSpinControls.push_back(i);
                 }
                 break;
@@ -1106,7 +1106,8 @@ void MainFrame::UpdateOptPanel()
                         checkBoxes[index]->SetValue(true);
                     else
                         checkBoxes[index]->SetValue(false);
-                    optionBoxxy->Add( checkBoxes[index], 0, wxALL|wxEXPAND, 5 );
+
+                    optionSizer->Add( checkBoxes[index], 0, wxALL|wxEXPAND, 5 );
                     foundCheckBoxes.push_back(i);
                 }
                 break;
@@ -1115,9 +1116,9 @@ void MainFrame::UpdateOptPanel()
 
         // Creates button to apply options.
         panelButton = new wxButton( optionPanel, wxID_ANY, wxT(menuApplyTxt), wxDefaultPosition, wxDefaultSize, 0 );
-        optionBoxxy->Add( panelButton, 0, wxALL, 5 );
+        optionSizer->Add( panelButton, 0, wxALL, 5 );
         panelButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrame::OnApplyPanelOpt ), NULL, this );
-        optionBoxxy->Layout();
+        optionSizer->Layout();
         optionPanel->SetScrollbars(20, 20, 0, 50);
     }
     else
@@ -1125,36 +1126,30 @@ void MainFrame::UpdateOptPanel()
         fractOptItem->Check(false);
         fractOptItem->Enable(false);
         if(showOptPanel)
-        {
             this->DeleteOptPanel();
-        }
     }
 }
 void MainFrame::DeleteOptPanel()
 {
     // Deletes panel elements.
     for(unsigned int i=0; i<labels.size(); i++)
-    {
         labels[i]->Destroy();
-    }
+
     labels.clear();
     foundLabels.clear();
     for(unsigned int i=0; i<textControls.size(); i++)
-    {
         textControls[i]->Destroy();
-    }
+
     textControls.clear();
     foundTextControls.clear();
     for(unsigned int i=0; i<spinControls.size(); i++)
-    {
         spinControls[i]->Destroy();
-    }
+
     spinControls.clear();
     foundSpinControls.clear();
     for(unsigned int i=0; i<checkBoxes.size(); i++)
-    {
         checkBoxes[i]->Destroy();
-    }
+
     checkBoxes.clear();
     foundCheckBoxes.clear();
 
@@ -1187,7 +1182,7 @@ void MainFrame::GetScriptFractals()
     char text[FILENAME_MAX];
     while(fg.getNextFile(text))
     {
-        if(check_ext(text, "ans"))
+        if(check_ext(text, "as"))
             filesInFolder.push_back(text);
     }
 

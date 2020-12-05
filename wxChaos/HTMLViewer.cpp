@@ -16,28 +16,28 @@ HTMLViewer::HTMLViewer( wxString htmlFile, wxWindow* parent, wxWindowID id, cons
 #endif
     this->SetIcon(icon);
 
-    wxBoxSizer* mainBoxxy;
-    mainBoxxy = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* mainSizer;
+    mainSizer = new wxBoxSizer( wxVERTICAL );
 
-    wxBoxSizer* textBoxxy;
-    textBoxxy = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* textSizer;
+    textSizer = new wxBoxSizer( wxVERTICAL );
 
     htmlView = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO );
-    textBoxxy->Add( htmlView, 1, wxALL|wxEXPAND, 5 );
+    textSizer->Add( htmlView, 1, wxALL|wxEXPAND, 5 );
 
     htmlView->LoadPage(htmlFile);
 
-    mainBoxxy->Add( textBoxxy, 9, wxEXPAND, 5 );
+    mainSizer->Add( textSizer, 9, wxEXPAND, 5 );
 
-    wxBoxSizer* buttonBoxxy;
-    buttonBoxxy = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* buttonSizer;
+    buttonSizer = new wxBoxSizer( wxVERTICAL );
 
     CloseButton = new wxButton( this, wxID_ANY, wxT(closeTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Close"
-    buttonBoxxy->Add( CloseButton, 0, wxALL, 5 );
+    buttonSizer->Add( CloseButton, 0, wxALL, 5 );
 
-    mainBoxxy->Add( buttonBoxxy, 0, wxEXPAND, 5 );
+    mainSizer->Add( buttonSizer, 0, wxEXPAND, 5 );
 
-    this->SetSizer( mainBoxxy );
+    this->SetSizer( mainSizer );
     this->Layout();
 
     this->Centre( wxBOTH );

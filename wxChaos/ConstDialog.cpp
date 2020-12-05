@@ -11,60 +11,60 @@ ConstDialog::ConstDialog(bool *Active, Fractal *mTarget, wxWindow* parent, wxWin
 
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
     
-    wxBoxSizer* mainBoxxy;
-    mainBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* mainSizer;
+    mainSizer = new wxBoxSizer(wxVERTICAL);
     
     dumbPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* boxxy;
-    boxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer;
+    sizer = new wxBoxSizer(wxVERTICAL);
     
-    wxStaticBoxSizer* realBoxxy;
-    realBoxxy = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(realValTxt)), wxVERTICAL);    // Txt: "Real value"
+    wxStaticBoxSizer* realSizer;
+    realSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(realValTxt)), wxVERTICAL);    // Txt: "Real value"
     
     lastReal = target->GetKReal();
     text = num_to_string(target->GetKReal());
     realText = new wxTextCtrl(dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
-    realBoxxy->Add(realText, 0, wxALL|wxEXPAND, 5);
+    realSizer->Add(realText, 0, wxALL|wxEXPAND, 5);
     
-    boxxy->Add(realBoxxy, 2, wxEXPAND, 5);
+    sizer->Add(realSizer, 2, wxEXPAND, 5);
     
-    wxStaticBoxSizer* imBoxxy;
-    imBoxxy = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(imagValTxt)), wxVERTICAL);    // Txt: "Imaginary value"
+    wxStaticBoxSizer* imSizer;
+    imSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(imagValTxt)), wxVERTICAL);    // Txt: "Imaginary value"
     
     lastIm = target->GetKImaginary();
     text = num_to_string(target->GetKImaginary());
     imText = new wxTextCtrl(dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
-    imBoxxy->Add(imText, 0, wxALL|wxEXPAND, 5);
+    imSizer->Add(imText, 0, wxALL|wxEXPAND, 5);
     
-    boxxy->Add(imBoxxy, 2, wxEXPAND, 5);
+    sizer->Add(imSizer, 2, wxEXPAND, 5);
     
-    wxBoxSizer* buttonBoxxy;
-    buttonBoxxy = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* buttonSizer;
+    buttonSizer = new wxBoxSizer(wxHORIZONTAL);
     
-    wxBoxSizer* okBoxxy;
-    okBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* okSizer;
+    okSizer = new wxBoxSizer(wxVERTICAL);
     
     okButton = new wxButton(dumbPanel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
-    okBoxxy->Add(okButton, 0, wxALL, 5);
+    okSizer->Add(okButton, 0, wxALL, 5);
     
-    buttonBoxxy->Add(okBoxxy, 1, wxEXPAND, 5);
+    buttonSizer->Add(okSizer, 1, wxEXPAND, 5);
     
-    wxBoxSizer* applyBoxxy;
-    applyBoxxy = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* applySizer;
+    applySizer = new wxBoxSizer(wxVERTICAL);
     
     applyButton = new wxButton(dumbPanel, wxID_ANY, wxT(applyTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
-    applyBoxxy->Add(applyButton, 0, wxALL, 5);
+    applySizer->Add(applyButton, 0, wxALL, 5);
     
-    buttonBoxxy->Add(applyBoxxy, 1, wxEXPAND, 5);
+    buttonSizer->Add(applySizer, 1, wxEXPAND, 5);
     
-    boxxy->Add(buttonBoxxy, 1, wxEXPAND, 5);
+    sizer->Add(buttonSizer, 1, wxEXPAND, 5);
     
-    dumbPanel->SetSizer(boxxy);
+    dumbPanel->SetSizer(sizer);
     dumbPanel->Layout();
-    boxxy->Fit(dumbPanel);
-    mainBoxxy->Add(dumbPanel, 1, wxEXPAND | wxALL, 0);
+    sizer->Fit(dumbPanel);
+    mainSizer->Add(dumbPanel, 1, wxEXPAND | wxALL, 0);
     
-    this->SetSizer(mainBoxxy);
+    this->SetSizer(mainSizer);
     this->Layout();
     
     this->Centre(wxBOTH);

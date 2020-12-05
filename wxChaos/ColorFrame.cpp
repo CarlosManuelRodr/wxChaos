@@ -166,23 +166,23 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
 
     this->SetSizeHints( wxSize( -1,-1 ), wxSize( -1,-1 ) );
 
-    wxBoxSizer* boxxy;
-    boxxy = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* sizer;
+    sizer = new wxBoxSizer( wxVERTICAL );
 
     mPanel = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
     mPanel->SetScrollRate( 5, 5 );
-    wxBoxSizer* mainBoxxy;
-    mainBoxxy = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer* mainSizer;
+    mainSizer = new wxBoxSizer( wxHORIZONTAL );
 
-    wxBoxSizer* setBoxxy;
-    setBoxxy = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* setSizer;
+    setSizer = new wxBoxSizer( wxVERTICAL );
 
     colorOptBitmap = new wxStaticBitmap( mPanel, wxID_ANY, wxBitmap( GetWxAbsPath("Resources/color_opt.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
-    setBoxxy->Add( colorOptBitmap, 0, wxALL, 0 );
+    setSizer->Add( colorOptBitmap, 0, wxALL, 0 );
 
     algorithmText = new wxStaticText( mPanel, wxID_ANY, wxT(colorAlgTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Color algorithm"
     algorithmText->Wrap( -1 );
-    setBoxxy->Add( algorithmText, 0, wxALL, 5 );
+    setSizer->Add( algorithmText, 0, wxALL, 5 );
 
     // AlgorithmChoice.
     escapeTimeIndex = -1;
@@ -195,15 +195,15 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     convergenceTestIndex = -1;
     algorithmChoice = new wxChoice( mPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize );
 
-    setBoxxy->Add( algorithmChoice, 0, wxALL|wxEXPAND, 5 );
+    setSizer->Add( algorithmChoice, 0, wxALL|wxEXPAND, 5 );
 
     optionsText = new wxStaticText( mPanel, wxID_ANY, wxT(colorOptTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Options"
     optionsText->Wrap( -1 );
-    setBoxxy->Add( optionsText, 0, wxALL, 5 );
+    setSizer->Add( optionsText, 0, wxALL, 5 );
 
     //
     relativeCheck = new wxCheckBox( mPanel, wxID_ANY, wxT(relColorTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: " Relative colors"
-    setBoxxy->Add( relativeCheck, 0, wxALL, 5 );
+    setSizer->Add( relativeCheck, 0, wxALL, 5 );
     if(target->GetRelativeColorMode()) relativeCheck->SetValue(true);
     else relativeCheck->SetValue(false);
     //
@@ -213,14 +213,14 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     if(target->GetExtColorMode()) colorFractal->SetValue(true);
     else colorFractal->SetValue(false);
     //
-    setBoxxy->Add( colorFractal, 0, wxALL, 5 );
+    setSizer->Add( colorFractal, 0, wxALL, 5 );
 
     colorSet = new wxCheckBox( mPanel, wxID_ANY, wxT(intColorTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: " Color set (internal color)"
     //
     if(target->GetSetColorMode()) colorSet->SetValue(true);
     else colorSet->SetValue(false);
     //
-    setBoxxy->Add( colorSet, 0, wxALL, 5 );
+    setSizer->Add( colorSet, 0, wxALL, 5 );
 
     orbitTrap = new wxCheckBox( mPanel, wxID_ANY, wxT(orbitTrapTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: " Orbit traps"
     //
@@ -230,7 +230,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     else orbitTrap->SetValue(false);
     //
 
-    setBoxxy->Add( orbitTrap, 0, wxALL, 5 );
+    setSizer->Add( orbitTrap, 0, wxALL, 5 );
 
     smoothRender = new wxCheckBox( mPanel, wxID_ANY, wxT(smoothRenTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: " Smooth render"
     //
@@ -239,115 +239,115 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     if(target->SmoothRenderActivated()) smoothRender->SetValue(true);
     else smoothRender->SetValue(false);
     //
-    setBoxxy->Add( smoothRender, 0, wxALL, 5 );
+    setSizer->Add( smoothRender, 0, wxALL, 5 );
 
     colorVarText = new wxStaticText( mPanel, wxID_ANY, wxT(colorVarTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Color variation"
     colorVarText->Wrap( -1 );
-    setBoxxy->Add( colorVarText, 0, wxALL, 5 );
+    setSizer->Add( colorVarText, 0, wxALL, 5 );
 
     colorVarSlider = new wxSlider( mPanel, wxID_ANY, 0, 0, 300, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    setBoxxy->Add( colorVarSlider, 0, wxALL|wxEXPAND, 5 );
+    setSizer->Add( colorVarSlider, 0, wxALL|wxEXPAND, 5 );
 
-    wxStaticBoxSizer* colorSetBoxxy;
-    colorSetBoxxy = new wxStaticBoxSizer( new wxStaticBox( mPanel, wxID_ANY, wxT(setColorTxt) ), wxVERTICAL );    // Txt: "Set color"
+    wxStaticBoxSizer* colorSetSizer;
+    colorSetSizer = new wxStaticBoxSizer( new wxStaticBox( mPanel, wxID_ANY, wxT(setColorTxt) ), wxVERTICAL );    // Txt: "Set color"
 
     text = wxT(redColTxt);
     setColor = target->GetSetColor();
     text += num_to_string(setColor.r);
     redSetText = new wxStaticText(mPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     redSetText->Wrap( -1 );
-    colorSetBoxxy->Add( redSetText, 0, wxALL, 5 );
+    colorSetSizer->Add( redSetText, 0, wxALL, 5 );
 
     redSetSld = new wxSlider( mPanel, wxID_ANY, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    colorSetBoxxy->Add( redSetSld, 0, wxALL|wxEXPAND, 5 );
+    colorSetSizer->Add( redSetSld, 0, wxALL|wxEXPAND, 5 );
 
     text = wxT(greenColTxt);
     text += num_to_string(setColor.g);
     greenSetText = new wxStaticText(mPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     greenSetText->Wrap( -1 );
-    colorSetBoxxy->Add( greenSetText, 0, wxALL, 5 );
+    colorSetSizer->Add( greenSetText, 0, wxALL, 5 );
 
     greenSetSld = new wxSlider(mPanel, wxID_ANY, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    colorSetBoxxy->Add( greenSetSld, 0, wxALL|wxEXPAND, 5 );
+    colorSetSizer->Add( greenSetSld, 0, wxALL|wxEXPAND, 5 );
 
     text = wxT(blueColTxt);
     text += num_to_string(setColor.b);
     blueSetText = new wxStaticText( mPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0 );
     blueSetText->Wrap( -1 );
-    colorSetBoxxy->Add( blueSetText, 0, wxALL, 5 );
+    colorSetSizer->Add( blueSetText, 0, wxALL, 5 );
 
     blueSetSld = new wxSlider( mPanel, wxID_ANY, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    colorSetBoxxy->Add( blueSetSld, 0, wxALL|wxEXPAND, 5 );
+    colorSetSizer->Add( blueSetSld, 0, wxALL|wxEXPAND, 5 );
 
-    setBoxxy->Add( colorSetBoxxy, 1, wxEXPAND, 5 );
+    setSizer->Add( colorSetSizer, 1, wxEXPAND, 5 );
 
     okButton = new wxButton( mPanel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Ok"
-    setBoxxy->Add( okButton, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+    setSizer->Add( okButton, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
-    mainBoxxy->Add( setBoxxy, 1, wxEXPAND, 5 );
+    mainSizer->Add( setSizer, 1, wxEXPAND, 5 );
 
     typeNotebook = new wxNotebook( mPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
     gradientLabel = new wxPanel( typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    wxBoxSizer* gradBoxxy;
-    gradBoxxy = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* gradSizer;
+    gradSizer = new wxBoxSizer( wxVERTICAL );
 
     gradStylesLabel = new wxStaticText( gradientLabel, wxID_ANY, wxT(colorStlTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Color styles:"
     gradStylesLabel->Wrap( -1 );
-    gradBoxxy->Add( gradStylesLabel, 0, wxALL, 5 );
+    gradSizer->Add( gradStylesLabel, 0, wxALL, 5 );
 
     wxString gradStyleChoiceChoices[] = { wxT("Retro"), wxT("Hakim"), wxT("Aguamarina"), wxT(customStyleTxt) };
     int gradStyleChoiceNChoices = sizeof( gradStyleChoiceChoices ) / sizeof( wxString );
     gradStylesChoice = new wxChoice( gradientLabel, wxID_ANY, wxDefaultPosition, wxDefaultSize, gradStyleChoiceNChoices, gradStyleChoiceChoices, 0 );
     gradStylesChoice->SetSelection( static_cast<int>(target->GetGradStyle()) );
-    gradBoxxy->Add( gradStylesChoice, 0, wxALL, 5 );
+    gradSizer->Add( gradStylesChoice, 0, wxALL, 5 );
 
     gradientMap = new wxStaticBitmap( gradientLabel, wxID_ANY, PaintGradient(), wxDefaultPosition, wxDefaultSize, 0 );
-    gradBoxxy->Add( gradientMap, 0, wxALL, 5 );
+    gradSizer->Add( gradientMap, 0, wxALL, 5 );
 
     gradButton = new wxButton( gradientLabel, wxID_ANY, wxT(changeGradTxt), wxDefaultPosition, wxDefaultSize, 0 );
-    gradBoxxy->Add( gradButton, 0, wxALL, 5 );
+    gradSizer->Add( gradButton, 0, wxALL, 5 );
 
     gradPalText = new wxStaticText( gradientLabel, wxID_ANY, wxT(paletteSizeTxt), wxDefaultPosition, wxDefaultSize, 0 );
     gradPalText->Wrap( -1 );
-    gradBoxxy->Add( gradPalText, 0, wxALL, 5 );
+    gradSizer->Add( gradPalText, 0, wxALL, 5 );
 
     gradPalSize = new wxSpinCtrl( gradientLabel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 20000, 300 );
-    gradBoxxy->Add( gradPalSize, 0, wxALL, 5 );
+    gradSizer->Add( gradPalSize, 0, wxALL, 5 );
     gradPalSize->SetValue(target->GetGradient()->getMax() - target->GetGradient()->getMin());
 
-    gradientLabel->SetSizer( gradBoxxy );
+    gradientLabel->SetSizer( gradSizer );
     gradientLabel->Layout();
-    gradBoxxy->Fit( gradientLabel );
+    gradSizer->Fit( gradientLabel );
     typeNotebook->AddPage( gradientLabel, wxT(useGradTxt), false );
     stdPanel = new wxPanel( typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    wxBoxSizer* colorBoxxy;
-    colorBoxxy = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer* colorSizer;
+    colorSizer = new wxBoxSizer( wxHORIZONTAL );
 
-    wxBoxSizer* sideABoxxy;
-    sideABoxxy = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* sideASizer;
+    sideASizer = new wxBoxSizer( wxVERTICAL );
 
     estilosLabel = new wxStaticText( stdPanel, wxID_ANY, wxT(colorStlTxt), wxDefaultPosition, wxDefaultSize, 0 );
     estilosLabel->Wrap( -1 );
-    sideABoxxy->Add( estilosLabel, 0, wxALL, 5 );
+    sideASizer->Add( estilosLabel, 0, wxALL, 5 );
 
     wxString estilosChoices[] = { wxT(summerDayTxt), wxT(coolBlueTxt), wxT(hardRed), wxT(blackWhiteTxt), wxT(pastelTxt), wxT(psychExpTxt), wxT(vividColTxt), wxT(customStyleTxt) };
     int estilosNChoices = sizeof( estilosChoices ) / sizeof( wxString );
     ESTStylesChoice = new wxChoice( stdPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, estilosNChoices, estilosChoices, 0 );
     ESTStylesChoice->SetSelection( static_cast<int>(target->GetGaussianColorStyle()) );
-    sideABoxxy->Add( ESTStylesChoice, 0, wxALL|wxEXPAND, 5 );
+    sideASizer->Add( ESTStylesChoice, 0, wxALL|wxEXPAND, 5 );
 
     pSizeText = new wxStaticText( stdPanel, wxID_ANY, wxT(paletteSizeTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Palette size:"
     pSizeText->Wrap( -1 );
-    sideABoxxy->Add( pSizeText, 0, wxALL, 5 );
+    sideASizer->Add( pSizeText, 0, wxALL, 5 );
 
     pSizeSpin = new wxSpinCtrl( stdPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000, 60 );
-    sideABoxxy->Add( pSizeSpin, 0, wxALL, 5 );
+    sideASizer->Add( pSizeSpin, 0, wxALL, 5 );
 
-    wxStaticBoxSizer* boxxyred;
-    boxxyred = new wxStaticBoxSizer( new wxStaticBox( stdPanel, wxID_ANY, wxT(redTxt) ), wxVERTICAL );    // Txt: "Red"
+    wxStaticBoxSizer* sizerred;
+    sizerred = new wxStaticBoxSizer( new wxStaticBox( stdPanel, wxID_ANY, wxT(redTxt) ), wxVERTICAL );    // Txt: "Red"
 
-    wxBoxSizer* subBoxxyred;
-    subBoxxyred = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* subSizerred;
+    subSizerred = new wxBoxSizer( wxVERTICAL );
 
     //
     redIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -356,10 +356,10 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     redIntText->SetLabel(text);
     //
     redIntText->Wrap( -1 );
-    subBoxxyred->Add( redIntText, 0, wxALL, 5 );
+    subSizerred->Add( redIntText, 0, wxALL, 5 );
 
     redIntSld = new wxSlider( stdPanel, wxID_ANY, 200, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxyred->Add( redIntSld, 0, wxALL|wxEXPAND, 5 );
+    subSizerred->Add( redIntSld, 0, wxALL|wxEXPAND, 5 );
 
     //
     redPosText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -368,10 +368,10 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     redPosText->SetLabel(text);
     //
     redPosText->Wrap( -1 );
-    subBoxxyred->Add( redPosText, 0, wxALL, 5 );
+    subSizerred->Add( redPosText, 0, wxALL, 5 );
 
     redPosSld = new wxSlider( stdPanel, wxID_ANY, 0, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxyred->Add( redPosSld, 0, wxALL|wxEXPAND, 5 );
+    subSizerred->Add( redPosSld, 0, wxALL|wxEXPAND, 5 );
 
     //
     redDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -380,20 +380,20 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     redDesText->SetLabel(text);
     //
     redDesText->Wrap( -1 );
-    subBoxxyred->Add( redDesText, 0, wxALL, 5 );
+    subSizerred->Add( redDesText, 0, wxALL, 5 );
 
     redDesSld = new wxSlider( stdPanel, wxID_ANY, 10, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxyred->Add( redDesSld, 0, wxALL|wxEXPAND, 5 );
+    subSizerred->Add( redDesSld, 0, wxALL|wxEXPAND, 5 );
 
-    boxxyred->Add( subBoxxyred, 1, wxEXPAND, 5 );
+    sizerred->Add( subSizerred, 1, wxEXPAND, 5 );
 
-    sideABoxxy->Add( boxxyred, 1, wxEXPAND, 5 );
+    sideASizer->Add( sizerred, 1, wxEXPAND, 5 );
 
-    wxStaticBoxSizer* boxxygreen;
-    boxxygreen = new wxStaticBoxSizer( new wxStaticBox( stdPanel, wxID_ANY, wxT(greenTxt) ), wxVERTICAL );    // Txt: "Green"
+    wxStaticBoxSizer* sizergreen;
+    sizergreen = new wxStaticBoxSizer( new wxStaticBox( stdPanel, wxID_ANY, wxT(greenTxt) ), wxVERTICAL );    // Txt: "Green"
 
-    wxBoxSizer* subBoxxygreen;
-    subBoxxygreen = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* subSizergreen;
+    subSizergreen = new wxBoxSizer( wxVERTICAL );
 
     //
     greenIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -402,10 +402,10 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     greenIntText->SetLabel(text);
     //
     greenIntText->Wrap( -1 );
-    subBoxxygreen->Add( greenIntText, 0, wxALL, 5 );
+    subSizergreen->Add( greenIntText, 0, wxALL, 5 );
 
     greenIntSld = new wxSlider( stdPanel, wxID_ANY, 200, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxygreen->Add( greenIntSld, 0, wxALL|wxEXPAND, 5 );
+    subSizergreen->Add( greenIntSld, 0, wxALL|wxEXPAND, 5 );
 
     //
     greenPosText = new wxStaticText( stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -414,10 +414,10 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     greenPosText->SetLabel(text);
     //
     greenPosText->Wrap( -1 );
-    subBoxxygreen->Add( greenPosText, 0, wxALL, 5 );
+    subSizergreen->Add( greenPosText, 0, wxALL, 5 );
 
     greenPosSld = new wxSlider( stdPanel, wxID_ANY, 17, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxygreen->Add( greenPosSld, 0, wxALL|wxEXPAND, 5 );
+    subSizergreen->Add( greenPosSld, 0, wxALL|wxEXPAND, 5 );
 
     //
     greenDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -426,25 +426,25 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     greenDesText->SetLabel(text);
     //
     greenDesText->Wrap( -1 );
-    subBoxxygreen->Add( greenDesText, 0, wxALL, 5 );
+    subSizergreen->Add( greenDesText, 0, wxALL, 5 );
 
     greenDesSld = new wxSlider( stdPanel, wxID_ANY, 10, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxygreen->Add( greenDesSld, 0, wxALL|wxEXPAND, 5 );
+    subSizergreen->Add( greenDesSld, 0, wxALL|wxEXPAND, 5 );
 
-    boxxygreen->Add( subBoxxygreen, 1, wxEXPAND, 5 );
+    sizergreen->Add( subSizergreen, 1, wxEXPAND, 5 );
 
-    sideABoxxy->Add( boxxygreen, 1, wxEXPAND, 5 );
+    sideASizer->Add( sizergreen, 1, wxEXPAND, 5 );
 
-    colorBoxxy->Add( sideABoxxy, 1, wxEXPAND, 5 );
+    colorSizer->Add( sideASizer, 1, wxEXPAND, 5 );
 
     wxBoxSizer* bSizer13;
     bSizer13 = new wxBoxSizer( wxVERTICAL );
 
-    wxStaticBoxSizer* boxxyblue;
-    boxxyblue = new wxStaticBoxSizer( new wxStaticBox( stdPanel, wxID_ANY, wxT(blueTxt) ), wxVERTICAL );    // Txt: "Blue"
+    wxStaticBoxSizer* sizerblue;
+    sizerblue = new wxStaticBoxSizer( new wxStaticBox( stdPanel, wxID_ANY, wxT(blueTxt) ), wxVERTICAL );    // Txt: "Blue"
 
-    wxBoxSizer* subBoxxyblue;
-    subBoxxyblue = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* subSizerblue;
+    subSizerblue = new wxBoxSizer( wxVERTICAL );
 
     //
     blueIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -453,10 +453,10 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     blueIntText->SetLabel(text);
     //
     blueIntText->Wrap( -1 );
-    subBoxxyblue->Add( blueIntText, 0, wxALL, 5 );
+    subSizerblue->Add( blueIntText, 0, wxALL, 5 );
 
     blueIntSld = new wxSlider( stdPanel, wxID_ANY, 200, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxyblue->Add( blueIntSld, 0, wxALL|wxEXPAND, 5 );
+    subSizerblue->Add( blueIntSld, 0, wxALL|wxEXPAND, 5 );
 
     //
     bluePosText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -465,10 +465,10 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     bluePosText->SetLabel(text);
     //
     bluePosText->Wrap( -1 );
-    subBoxxyblue->Add( bluePosText, 0, wxALL, 5 );
+    subSizerblue->Add( bluePosText, 0, wxALL, 5 );
 
     bluePosSld = new wxSlider( stdPanel, wxID_ANY, 37, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxyblue->Add( bluePosSld, 0, wxALL|wxEXPAND, 5 );
+    subSizerblue->Add( bluePosSld, 0, wxALL|wxEXPAND, 5 );
 
     //
     blueDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -477,30 +477,30 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     blueDesText->SetLabel(text);
     //
     blueDesText->Wrap( -1 );
-    subBoxxyblue->Add( blueDesText, 0, wxALL, 5 );
+    subSizerblue->Add( blueDesText, 0, wxALL, 5 );
 
     blueDesSld = new wxSlider( stdPanel, wxID_ANY, 10, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    subBoxxyblue->Add( blueDesSld, 0, wxALL|wxEXPAND, 5 );
+    subSizerblue->Add( blueDesSld, 0, wxALL|wxEXPAND, 5 );
 
-    boxxyblue->Add( subBoxxyblue, 1, wxEXPAND, 5 );
+    sizerblue->Add( subSizerblue, 1, wxEXPAND, 5 );
 
-    bSizer13->Add( boxxyblue, 1, wxEXPAND, 5 );
+    bSizer13->Add( sizerblue, 1, wxEXPAND, 5 );
 
-    colorBoxxy->Add( bSizer13, 1, wxEXPAND, 5 );
+    colorSizer->Add( bSizer13, 1, wxEXPAND, 5 );
 
-    stdPanel->SetSizer( colorBoxxy );
+    stdPanel->SetSizer( colorSizer );
     stdPanel->Layout();
-    colorBoxxy->Fit( stdPanel );
+    colorSizer->Fit( stdPanel );
     typeNotebook->AddPage( stdPanel, wxT(stdColorTxt), true );    // Txt: "STD Color"
 
-    mainBoxxy->Add( typeNotebook, 2, wxEXPAND | wxALL, 5 );
+    mainSizer->Add( typeNotebook, 2, wxEXPAND | wxALL, 5 );
 
-    mPanel->SetSizer( mainBoxxy );
+    mPanel->SetSizer( mainSizer );
     mPanel->Layout();
-    mainBoxxy->Fit( mPanel );
-    boxxy->Add( mPanel, 1, wxEXPAND | wxALL, 0 );
+    mainSizer->Fit( mPanel );
+    sizer->Add( mPanel, 1, wxEXPAND | wxALL, 0 );
 
-    this->SetSizer( boxxy );
+    this->SetSizer( sizer );
     this->Layout();
 
     this->Centre( wxBOTH );
