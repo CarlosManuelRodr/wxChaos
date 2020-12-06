@@ -12,10 +12,10 @@
 #include <wx/string.h>
 
 /**
-* @enum GAUSS_STYLES
+* @enum GaussianColorStyles
 * @brief Enum of EST styles.
 */
-enum GAUSS_STYLES
+enum GaussianColorStyles
 {
     SUMMER_DAY,
     COOL_BLUE,
@@ -35,7 +35,7 @@ enum GAUSS_STYLES
 class GaussianColorPalette
 {
 public:
-    int redInt , greenInt, blueInt;
+    int redInt, greenInt, blueInt;
     double redMean, greenMean, blueMean;
     double redStdDev, greenStdDev, blueStdDev;
     int paletteSize;
@@ -45,14 +45,14 @@ public:
 
     ///@brief Assigns parameters according to the style selected.
     ///@param style Style selected.
-    void SetStyle(GAUSS_STYLES style);
+    void SetStyle(GaussianColorStyles style);
 };
 
 /**
-* @enum GRAD_STYLES
+* @enum GradientColorStyles
 * @brief Enum of gradient styles.
 */
-enum GRAD_STYLES
+enum GradientColorStyles
 {
     RETRO,
     HAKIM,
@@ -75,7 +75,7 @@ public:
 
     ///@brief Assign wxString parameter according to the style selected.
     ///@param style Style selected.
-    void SetStyle(GRAD_STYLES style);
+    void SetStyle(GradientColorStyles style);
 };
 
 #endif

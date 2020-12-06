@@ -9,8 +9,8 @@
 #include "global.h"
 
 const int stdSpeed = 1;
-const GRAD_STYLES defaultGradStyle = RETRO;
-const GAUSS_STYLES defaultEstStyle = SUMMER_DAY;
+const GradientColorStyles defaultGradStyle = RETRO;
+const GaussianColorStyles defaultEstStyle = SUMMER_DAY;
 
 
 inline double CalcSquaredDist(const double x1, const double y1, const double x2, const double y2)
@@ -236,8 +236,8 @@ Fractal::Fractal(int width, int height)
     // Creates default color palette.
     relativeColor = false;
     gradPaletteSize = 300;
-    alg = OTHER;
-    colorPaletteMode = GAUSSIAN;
+    alg = RenderingAlgorithm::Other;
+    colorPaletteMode = ColorMode::Gaussian;
     gaussianStyle = defaultEstStyle;
     gradStyle = defaultGradStyle;
     gradient.fromString(wxString(wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);")));
@@ -265,9 +265,9 @@ Fractal::Fractal(int width, int height)
 
     for(int i=0; i<paletteSize; i++)
     {
-        redPalette[i] = CalcGradient(i, red);
-        greenPalette[i] = CalcGradient(i, green);
-        bluePalette[i] = CalcGradient(i, blue);
+        redPalette[i] = CalcGradient(i, Color::Red);
+        greenPalette[i] = CalcGradient(i, Color::Green);
+        bluePalette[i] = CalcGradient(i, Color::Blue);
     }
     for(int i=0; i<paletteSize; i++)
     {
@@ -373,10 +373,10 @@ Fractal::Fractal(sf::RenderWindow *Window)
     // Creates default color palette.
     relativeColor = false;
     gradPaletteSize = 300;
-    alg = OTHER;
+    alg = RenderingAlgorithm::Other;
     gaussianStyle = defaultEstStyle;
     gradStyle = defaultGradStyle;
-    colorPaletteMode = GAUSSIAN;
+    colorPaletteMode = ColorMode::Gaussian;
     gradient.fromString(wxString(wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);")));
     gradient.setMin(0);
     gradient.setMax(gradPaletteSize);
@@ -402,9 +402,9 @@ Fractal::Fractal(sf::RenderWindow *Window)
 
     for(int i=0; i<paletteSize; i++)
     {
-        redPalette[i] = CalcGradient(i, red);
-        greenPalette[i] = CalcGradient(i, green);
-        bluePalette[i] = CalcGradient(i, blue);
+        redPalette[i] = CalcGradient(i, Color::Red);
+        greenPalette[i] = CalcGradient(i, Color::Green);
+        bluePalette[i] = CalcGradient(i, Color::Blue);
     }
     for(int i=0; i<paletteSize; i++)
     {
@@ -761,17 +761,17 @@ void Fractal::Move()
     if(rendered)
     {
         // If any movement button is pressed move the image and accelerate the movement.
-        if(movement[LEFT])
+        if(movement[Direction::Left])
             xVel += stdSpeed;
-        if(movement[RIGHT])
+        if(movement[Direction::Right])
             xVel -= stdSpeed;
-        if(movement[UP])
+        if(movement[Direction::Up])
             yVel += stdSpeed;
-        if(movement[DOWN])
+        if(movement[Direction::Down])
             yVel -= stdSpeed;
 
         // If isn't pressed slow down the image.
-        if(!movement[LEFT] && !movement[RIGHT] && !movement[UP] && !movement[DOWN])
+        if(!movement[Direction::Left] && !movement[Direction::Right] && !movement[Direction::Up] && !movement[Direction::Down])
         {
             if(xVel > 0) xVel -= stdSpeed;
             if(xVel < 0) xVel += stdSpeed;
@@ -1282,7 +1282,7 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     fSetColor = opt.fSetColor;
 
     gradient = opt.gradient;
-    if(colorPaletteMode == GRADIENT)
+    if(colorPaletteMode == ColorMode::Gradient)
     {
         paletteSize = gradPaletteSize;
         this->SetGradientSize(paletteSize);
@@ -1392,59 +1392,59 @@ void Fractal::SetOnWxCtrl(bool mode)
 {
     onWxCtrl = mode;
 }
-void Fractal::SetMovement(DIRECTION dir)
+void Fractal::SetMovement(Direction dir)
 {
     switch(dir)
     {
-    case UP:
+    case Direction::Up:
         {
             yVel -= stdSpeed;
-            movement[UP] = true;
+            movement[Direction::Up] = true;
             break;
         }
-    case DOWN:
+    case Direction::Down:
         {
             yVel += stdSpeed;
-            movement[DOWN] = true;
+            movement[Direction::Down] = true;
             break;
         }
-    case LEFT:
+    case Direction::Left:
         {
             xVel -= stdSpeed;
-            movement[LEFT] = true;
+            movement[Direction::Left] = true;
             break;
         }
-    case RIGHT:
+    case Direction::Right:
         {
             xVel += stdSpeed;
-            movement[RIGHT] = true;
+            movement[Direction::Right] = true;
             break;
         }
     default: break;
     }
 }
-void Fractal::ReleaseMovement(DIRECTION dir)
+void Fractal::ReleaseMovement(Direction dir)
 {
     switch(dir)
     {
-    case UP:
+    case Direction::Up:
         {
-            movement[UP] = false;
+            movement[Direction::Up] = false;
             break;
         }
-    case DOWN:
+    case Direction::Down:
         {
-            movement[DOWN] = false;
+            movement[Direction::Down] = false;
             break;
         }
-    case LEFT:
+    case Direction::Left:
         {
-            movement[LEFT] = false;
+            movement[Direction::Left] = false;
             break;
         }
-    case RIGHT:
+    case Direction::Right:
         {
-            movement[RIGHT] = false;
+            movement[Direction::Right] = false;
             break;
         }
     default: break;
@@ -1593,79 +1593,79 @@ void Fractal::PrepareSnapshot(bool mode)
 }
 
 // EST Color.
-void Fractal::SetGaussianColorIntensity(int intensidad, COLOR col)
+void Fractal::SetGaussianColorIntensity(int intensidad, Color col)
 {
     // Changes intensity value.
-    colorPaletteMode = GAUSSIAN;
-    if(col == red)
+    colorPaletteMode = ColorMode::Gaussian;
+    if(col == Color::Red)
         redInt = intensidad;
-    else if(col == green)
+    else if(col == Color::Green)
         greenInt = intensidad;
-    else if(col == blue)
+    else if(col == Color::Blue)
         blueInt = intensidad;
 
     this->RebuildPalette();
 }
-void Fractal::SetGaussianColorMean(double med, COLOR col)
+void Fractal::SetGaussianColorMean(double med, Color col)
 {
     // Changes mean value.
-    colorPaletteMode = GAUSSIAN;
-    if(col == red)
+    colorPaletteMode = ColorMode::Gaussian;
+    if(col == Color::Red)
         redMean = med;
-    else if(col == green)
+    else if(col == Color::Green)
         greenMean = med;
-    else if(col == blue)
+    else if(col == Color::Blue)
         blueMean = med;
 
     this->RebuildPalette();
 }
-void Fractal::SetGaussianColorStdDev(double des, COLOR col)
+void Fractal::SetGaussianColorStdDev(double des, Color col)
 {
     // Changes standard deviation value.
-    colorPaletteMode = GAUSSIAN;
-    if(col == red)
+    colorPaletteMode = ColorMode::Gaussian;
+    if(col == Color::Red)
         redStdDev = des;
-    else if(col == green)
+    else if(col == Color::Green)
         greenStdDev = des;
-    else if(col == blue)
+    else if(col == Color::Blue)
         blueStdDev = des;
 
     this->RebuildPalette();
 }
-int Fractal::GetGaussianColorIntensity(COLOR col)
+int Fractal::GetGaussianColorIntensity(Color col)
 {
-    if(col == red)
+    if(col == Color::Red)
         return redInt;
-    else if(col == green)
+    else if(col == Color::Green)
         return greenInt;
-    else if(col == blue)
+    else if(col == Color::Blue)
         return blueInt;
 
     else return 0;
 }
-double Fractal::GetGaussianColorMean(COLOR col)
+double Fractal::GetGaussianColorMean(Color col)
 {
-    if(col == red)
+    if(col == Color::Red)
         return redMean;
-    else if(col == green)
+    else if(col == Color::Green)
         return greenMean;
-    else if(col == blue)
+    else if(col == Color::Blue)
         return blueMean;
     else return 0;
 }
-double Fractal::GetGaussianColorStdDev(COLOR col)
+double Fractal::GetGaussianColorStdDev(Color col)
 {
-    if(col == red)
+    if(col == Color::Red)
         return redStdDev;
-    else if(col == green)
+    else if(col == Color::Green)
         return greenStdDev;
-    else if(col == blue)
+    else if(col == Color::Blue)
         return blueStdDev;
     else return 0;
 }
 
 // Color styles.
-void Fractal::SetGaussianColorStyle(GAUSS_STYLES _gaussianStyle)
+void Fractal::SetGaussianColorStyle(GaussianColorStyles _gaussianStyle)
 {
     // Changes color palette.
     gaussianStyle = _gaussianStyle;
@@ -1688,22 +1688,22 @@ void Fractal::SetGaussianColorStyle(GAUSS_STYLES _gaussianStyle)
     this->SetPaletteSize(c.paletteSize);
     for(int i=0; i<paletteSize; i++)
     {
-        redPalette[i] = CalcGradient(i, red);
-        greenPalette[i] = CalcGradient(i, green);
-        bluePalette[i] = CalcGradient(i, blue);
+        redPalette[i] = CalcGradient(i, Color::Red);
+        greenPalette[i] = CalcGradient(i, Color::Green);
+        bluePalette[i] = CalcGradient(i, Color::Blue);
     }
     for(int i=0; i<paletteSize; i++)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
 }
-GAUSS_STYLES Fractal::GetGaussianColorStyle()
+GaussianColorStyles Fractal::GetGaussianColorStyle()
 {
     return gaussianStyle;
 }
-void Fractal::SetGradStyle(GRAD_STYLES _gradStyle)
+void Fractal::SetGradStyle(GradientColorStyles _gradStyle)
 {
     gradStyle = _gradStyle;
 }
-GRAD_STYLES Fractal::GetGradStyle()
+GradientColorStyles Fractal::GetGradStyle()
 {
     return gradStyle;
 }
@@ -1716,7 +1716,7 @@ wxGradient* Fractal::GetGradient()
 void Fractal::SetGradient(wxGradient grad)
 {
     // Copy gradient.
-    colorPaletteMode = GRADIENT;
+    colorPaletteMode = ColorMode::Gradient;
     gradient = grad;
     delete[] redPalette;
     delete[] greenPalette;
@@ -1732,7 +1732,7 @@ void Fractal::SetGradient(wxGradient grad)
 }
 void Fractal::SetGradientSize(unsigned int size)
 {
-    colorPaletteMode = GRADIENT;
+    colorPaletteMode = ColorMode::Gradient;
     delete[] redPalette;
     delete[] greenPalette;
     delete[] bluePalette;
@@ -1850,16 +1850,16 @@ double Fractal::NormalDist(int x, double mean, double stdDev)
 {
     return exp(-(pow(x-mean,2)/(2*pow(stdDev,2))));
 }
-sf::Uint8 Fractal::CalcGradient(int colorNum, COLOR col)
+sf::Uint8 Fractal::CalcGradient(int colorNum, Color col)
 {
     colorNum = colorNum % paletteSize;
 
     // Return color with a normal distribution.
-    if(col == red)
+    if(col == Color::Red)
         return static_cast<sf::Uint8>(redInt*NormalDist(colorNum, redMean, redStdDev) + redInt*NormalDist(colorNum, paletteSize+redMean, redStdDev));
-    if(col == green)
+    if(col == Color::Green)
         return static_cast<sf::Uint8>(greenInt*NormalDist(colorNum, greenMean, greenStdDev) + greenInt*NormalDist(colorNum, paletteSize+greenMean, greenStdDev));
-    if(col == blue)
+    if(col == Color::Blue)
         return static_cast<sf::Uint8>(blueInt*NormalDist(colorNum, blueMean, blueStdDev)+blueInt*NormalDist(colorNum, paletteSize+blueMean, blueStdDev));
 
     return 0;
@@ -1888,7 +1888,7 @@ void Fractal::RebuildPalette()
     if(this->IsRendering())
         dontDrawTempImage = true;
 
-    if(colorPaletteMode == GRADIENT)
+    if(colorPaletteMode == ColorMode::Gradient)
     {
         wxColour myWxColor;
         for(int i=0; i<paletteSize; i++)
@@ -1903,9 +1903,9 @@ void Fractal::RebuildPalette()
     {
         for(int i=0; i<paletteSize; i++)
         {
-            redPalette[i] = CalcGradient(i, red);
-            greenPalette[i] = CalcGradient(i, green);
-            bluePalette[i] = CalcGradient(i, blue);
+            redPalette[i] = CalcGradient(i, Color::Red);
+            greenPalette[i] = CalcGradient(i, Color::Green);
+            bluePalette[i] = CalcGradient(i, Color::Blue);
         }
     }
 
@@ -1997,7 +1997,7 @@ void Fractal::SetVarGradient(int n)
 }
 
 // ColorMode.
-void Fractal::SetPaletteMode(COLOR_MODE mode)
+void Fractal::SetPaletteMode(ColorMode mode)
 {
     colorPaletteMode = mode;
     delete[] redPalette;
@@ -2005,7 +2005,7 @@ void Fractal::SetPaletteMode(COLOR_MODE mode)
     delete[] bluePalette;
     delete[] palette;
 
-    if(mode == GRADIENT)
+    if(mode == ColorMode::Gradient)
         paletteSize = gradient.getMax()-gradient.getMin();
     else
         paletteSize = gaussianPaletteSize;
@@ -2017,21 +2017,21 @@ void Fractal::SetPaletteMode(COLOR_MODE mode)
     varGradientStep = paletteSize/60;
     this->RebuildPalette();
 }
-COLOR_MODE Fractal::GetColorMode()
+ColorMode Fractal::GetColorMode()
 {
     return colorPaletteMode;
 }
 
 // Algorithm.
-ALGORITHM Fractal::GetCurrentAlg()
+RenderingAlgorithm Fractal::GetCurrentAlg()
 {
     return alg;
 }
-vector<ALGORITHM> Fractal::GetAvailableAlg()
+vector<RenderingAlgorithm> Fractal::GetAvailableAlg()
 {
     return availableAlg;
 }
-void Fractal::SetAlgorithm(ALGORITHM _alg)
+void Fractal::SetAlgorithm(RenderingAlgorithm _alg)
 {
     alg = _alg;
     this->DeleteSavedZooms();
@@ -2286,7 +2286,7 @@ void RenderFractal::Run()
 }
 void RenderFractal::Stop()
 {
-    if(type != FractalType::SCRIPT_FRACTAL)
+    if(type != FractalType::ScriptFractal)
     {
         stopped = true;
 

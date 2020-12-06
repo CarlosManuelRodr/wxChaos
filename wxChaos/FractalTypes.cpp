@@ -61,7 +61,7 @@ void RenderMandelbrot::Render()
     bool insideSet;
 
     // Creates fractal.
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         unsigned n;
         for(y=ho; y<hf; y++)
@@ -95,7 +95,7 @@ void RenderMandelbrot::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         unsigned n;
         double distance, distance1;
@@ -139,7 +139,7 @@ void RenderMandelbrot::Render()
             }
         }
     }
-    else if(myOpt.alg == BUDDHABROT)
+    else if(myOpt.alg == RenderingAlgorithm::Buddhabrot)
     {
         sf::Mutex mutex;
         srand(static_cast<unsigned int>(time(nullptr)));
@@ -215,7 +215,7 @@ void RenderMandelbrot::Render()
         }
         delete[] cmpArray;
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         unsigned n;
         int color1, color2, color3, color4;
@@ -260,7 +260,7 @@ void RenderMandelbrot::Render()
             }
         }
     }
-    else if(myOpt.alg == TRIANGLE_INEQ)
+    else if(myOpt.alg == RenderingAlgorithm::TriangleInequality)
     {
         unsigned n;
         double distance, distance1;
@@ -426,7 +426,7 @@ int RenderMandelbrot::AskProgress()
 {
     if(!stopped)
     {
-        if(myOpt.alg == BUDDHABROT)
+        if(myOpt.alg == RenderingAlgorithm::Buddhabrot)
             threadProgress = static_cast<int>( 100.0*(double)(bd+1)/(double)buddhaRandomP);
         else
             threadProgress = static_cast<int>( 100.0*((double)(y+1-oldHo)/(double)(hf-oldHo)) );
@@ -446,12 +446,12 @@ Mandelbrot::Mandelbrot(sf::RenderWindow *Window):Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::MANDELBROT;
+    type = FractalType::Mandelbrot;
     hasOrbit = true;
     hasOrbitTrap = true;
     hasSmoothRender = true;
     smoothRender = true;
-    colorPaletteMode = GRADIENT;
+    colorPaletteMode = ColorMode::Gradient;
     myRender = new RenderMandelbrot[threadNumber];
     SetWatchdog<RenderMandelbrot>(myRender, &watchdog, threadNumber);
 
@@ -461,12 +461,12 @@ Mandelbrot::Mandelbrot(sf::RenderWindow *Window):Fractal(Window)
     buddhaRandomP = 1000000;
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(BUDDHABROT);
-    availableAlg.push_back(ESCAPE_ANGLE);
-    availableAlg.push_back(TRIANGLE_INEQ);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::Buddhabrot);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
 }
 Mandelbrot::Mandelbrot(int width, int height) : Fractal(width, height)
 {
@@ -484,10 +484,10 @@ Mandelbrot::Mandelbrot(int width, int height) : Fractal(width, height)
     panelOpt.LinkInt(SPIN, wxT(buddhaRandPTxt), &buddhaRandomP, wxT("1000000"));
     buddhaRandomP = 1000000;
 
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
     hasSmoothRender = true;
     hasOrbitTrap = true;
-    type = FractalType::MANDELBROT;
+    type = FractalType::Mandelbrot;
     myRender = new RenderMandelbrot[threadNumber];
     SetWatchdog<RenderMandelbrot>(myRender, &watchdog, threadNumber);
 }
@@ -538,7 +538,7 @@ void Mandelbrot::CopyOptFromPanel()
 void Mandelbrot::PreRender()
 {
     // If the algorithm is buddhabrot forces to redraw all.
-    if(alg == BUDDHABROT)
+    if(alg == RenderingAlgorithm::Buddhabrot)
     {
         xMoved = 0;
         yMoved = 0;
@@ -547,7 +547,7 @@ void Mandelbrot::PreRender()
 void Mandelbrot::PreDrawMaps()
 {
     // If buddhabrot is active, creates colorMap.
-    if(alg == BUDDHABROT)
+    if(alg == RenderingAlgorithm::Buddhabrot)
     {
         // Search for color maximum.
         unsigned int maxColorVal = 0;
@@ -586,7 +586,7 @@ void RenderMandelbrotZN::Render()
     unsigned i;
     complex<double> z, c;
     double squaredBail = bailout*bailout;
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -612,7 +612,7 @@ void RenderMandelbrotZN::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         double distance, distance1;
         double mu;
@@ -651,7 +651,7 @@ void RenderMandelbrotZN::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -810,20 +810,20 @@ MandelbrotZN::MandelbrotZN(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     // Ajusta opciones.
-    type = FractalType::MANDELBROT_ZN;
+    type = FractalType::MandelbrotZN;
     hasOrbit = true;
     hasOrbitTrap = true;
     hasSmoothRender = true;
     smoothRender = false;
-    colorPaletteMode = GAUSSIAN;
+    colorPaletteMode = ColorMode::Gaussian;
     myRender = new RenderMandelbrotZN[threadNumber];
     SetWatchdog<RenderMandelbrotZN>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 
     // Creates panel.
     panelOpt.SetForceShow(true);
@@ -850,10 +850,10 @@ MandelbrotZN::MandelbrotZN(int width, int height) : Fractal(width, height)
     n = 3;
     bailout = 2;
 
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
     hasSmoothRender = false;
     hasOrbitTrap = true;
-    type = FractalType::MANDELBROT_ZN;
+    type = FractalType::MandelbrotZN;
     myRender = new RenderMandelbrotZN[threadNumber];
     SetWatchdog<RenderMandelbrotZN>(myRender, &watchdog, threadNumber);
 }
@@ -913,7 +913,7 @@ void RenderJulia::Render()
 
     // Creates fractal.
     unsigned n;
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -943,7 +943,7 @@ void RenderJulia::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         double distance, distance1;
         double mu;
@@ -987,7 +987,7 @@ void RenderJulia::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -1028,7 +1028,7 @@ void RenderJulia::Render()
             }
         }
     }
-    else if(myOpt.alg == TRIANGLE_INEQ)
+    else if(myOpt.alg == RenderingAlgorithm::TriangleInequality)
     {
         unsigned n;
         double distance, distance1;
@@ -1199,7 +1199,7 @@ Julia::Julia(sf::RenderWindow *Window):Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::JULIA;
+    type = FractalType::Julia;
     kReal = -0.754696;
     kImaginary = -0.0524231;
     hasOrbit = true;
@@ -1207,16 +1207,16 @@ Julia::Julia(sf::RenderWindow *Window):Fractal(Window)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     smoothRender = true;
-    colorPaletteMode = GRADIENT;
+    colorPaletteMode = ColorMode::Gradient;
     myRender = new RenderJulia[threadNumber];
     SetWatchdog<RenderJulia>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
-    availableAlg.push_back(TRIANGLE_INEQ);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
 }
 Julia::Julia(int width, int height) : Fractal(width, height)
 {
@@ -1230,11 +1230,11 @@ Julia::Julia(int width, int height) : Fractal(width, height)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
     hasOrbitTrap = true;
     hasSmoothRender = true;
     juliaVariety = true;
-    type = FractalType::JULIA;
+    type = FractalType::Julia;
     myRender = new RenderJulia[threadNumber];
     SetWatchdog<RenderJulia>(myRender, &watchdog, threadNumber);
 }
@@ -1289,7 +1289,7 @@ void RenderJuliaZN::Render()
     double squaredBail = bailout*bailout;
 
     // Creates fractal.
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         complex<double> z, k;
         k = complex<double>(kReal, kImaginary);
@@ -1318,7 +1318,7 @@ void RenderJuliaZN::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         complex<double> z, k;
         k = complex<double>(kReal, kImaginary);
@@ -1358,7 +1358,7 @@ void RenderJuliaZN::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -1521,7 +1521,7 @@ JuliaZN::JuliaZN(sf::RenderWindow *Window):Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::JULIA_ZN;
+    type = FractalType::JuliaZN;
     kReal = -0.754696;
     kImaginary = -0.0524231;
     hasOrbit = true;
@@ -1529,15 +1529,15 @@ JuliaZN::JuliaZN(sf::RenderWindow *Window):Fractal(Window)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     smoothRender = false;
-    colorPaletteMode = GAUSSIAN;
+    colorPaletteMode = ColorMode::Gaussian;
     myRender = new RenderJuliaZN[threadNumber];
     SetWatchdog<RenderJuliaZN>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 
     // Creates panel.
     panelOpt.SetForceShow(true);
@@ -1557,7 +1557,7 @@ JuliaZN::JuliaZN(int width, int height) : Fractal(width, height)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
 
     // Creates panel.
     panelOpt.SetForceShow(true);
@@ -1569,7 +1569,7 @@ JuliaZN::JuliaZN(int width, int height) : Fractal(width, height)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     juliaVariety = true;
-    type = FractalType::JULIA_ZN;
+    type = FractalType::JuliaZN;
     myRender = new RenderJuliaZN[threadNumber];
     SetWatchdog<RenderJuliaZN>(myRender, &watchdog, threadNumber);
 }
@@ -1728,7 +1728,7 @@ Newton::Newton(sf::RenderWindow *Window):Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::NEWTON;
+    type = FractalType::NewtonRaphsonMethod;
     hasOrbit = true;
     hasOrbitTrap = true;
     myRender = new RenderNewton[threadNumber];
@@ -1740,8 +1740,8 @@ Newton::Newton(sf::RenderWindow *Window):Fractal(Window)
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = CONVERGENCE_TEST;
-    availableAlg.push_back(CONVERGENCE_TEST);
+    alg = RenderingAlgorithm::ConvergenceTest;
+    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 Newton::Newton(int width, int height) : Fractal(width, height)
 {
@@ -1759,7 +1759,7 @@ Newton::Newton(int width, int height) : Fractal(width, height)
     panelOpt.LinkDbl(TXTCTRL, wxT(minStepTxt), &minStep, wxT("0.001"));
     minStep = 0.001;
 
-    type = FractalType::NEWTON;
+    type = FractalType::NewtonRaphsonMethod;
     myRender = new RenderNewton[threadNumber];
     SetWatchdog<RenderNewton>(myRender, &watchdog, threadNumber);
 }
@@ -1815,7 +1815,7 @@ void RenderSinoidal::Render()
     bool insideSet;
     double c_im;
 
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -1841,7 +1841,7 @@ void RenderSinoidal::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         double distance, distance1;
         double mu;
@@ -1879,7 +1879,7 @@ void RenderSinoidal::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -1983,7 +1983,7 @@ Sinoidal::Sinoidal(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::SINOIDAL;
+    type = FractalType::Sinoidal;
     kReal = 1;
     kImaginary = 0.25;
     hasOrbit = true;
@@ -1995,10 +1995,10 @@ Sinoidal::Sinoidal(sf::RenderWindow *Window) : Fractal(Window)
     SetWatchdog<RenderSinoidal>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 Sinoidal::Sinoidal(int width, int height) : Fractal(width, height)
 {
@@ -2011,12 +2011,12 @@ Sinoidal::Sinoidal(int width, int height) : Fractal(width, height)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
     kReal = 1;
     kImaginary = 0.25;
     juliaVariety = true;
 
-    type = FractalType::SINOIDAL;
+    type = FractalType::Sinoidal;
     myRender = new RenderSinoidal[threadNumber];
     SetWatchdog<RenderSinoidal>(myRender, &watchdog, threadNumber);
 }
@@ -2070,7 +2070,7 @@ void RenderMagnet::Render()
     bool insideSet;
     double c_im;
 
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -2096,7 +2096,7 @@ void RenderMagnet::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -2150,16 +2150,16 @@ Magnet::Magnet(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::MAGNET;
+    type = FractalType::Magnetic;
     hasOrbit = true;
 
     myRender = new RenderMagnet[threadNumber];
     SetWatchdog<RenderMagnet>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 Magnet::Magnet(int width, int height) : Fractal(width, height)
 {
@@ -2172,8 +2172,8 @@ Magnet::Magnet(int width, int height) : Fractal(width, height)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    alg = ESCAPE_TIME;
-    type = FractalType::MAGNET;
+    alg = RenderingAlgorithm::EscapeTime;
+    type = FractalType::Magnetic;
     myRender = new RenderMagnet[threadNumber];
     SetWatchdog<RenderMagnet>(myRender, &watchdog, threadNumber);
 }
@@ -2226,7 +2226,7 @@ void RenderMedusa::Render()
     complex<double> z, k;
     k = complex<double>(kReal, kImaginary);
     double c_im;
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -2253,7 +2253,7 @@ void RenderMedusa::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         double distance, distance1;
         double mu;
@@ -2293,7 +2293,7 @@ void RenderMedusa::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -2411,7 +2411,7 @@ Medusa::Medusa(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::MEDUSA;
+    type = FractalType::Medusa;
     kReal = -0.2;
     kImaginary = 0;
     juliaVariety = true;
@@ -2422,10 +2422,10 @@ Medusa::Medusa(sf::RenderWindow *Window) : Fractal(Window)
     SetWatchdog<RenderMedusa>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 Medusa::Medusa(int width, int height) : Fractal(width, height)
 {
@@ -2440,9 +2440,9 @@ Medusa::Medusa(int width, int height) : Fractal(width, height)
     kReal = -0.2;
     kImaginary = 0;
     juliaVariety = true;
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
 
-    type = FractalType::MEDUSA;
+    type = FractalType::Medusa;
     myRender = new RenderMedusa[threadNumber];
     SetWatchdog<RenderMedusa>(myRender, &watchdog, threadNumber);
 }
@@ -2497,7 +2497,7 @@ void RenderManowar::Render()
     double c_re, c_im, temp_re, temp_im;
     double z_y_init;
 
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -2532,7 +2532,7 @@ void RenderManowar::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         unsigned n;
         double distance, distance1;
@@ -2579,7 +2579,7 @@ void RenderManowar::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -2702,17 +2702,17 @@ Manowar::Manowar(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::MANOWAR;
+    type = FractalType::Manowar;
     hasOrbit = true;
     hasOrbitTrap = true;
     myRender = new RenderManowar[threadNumber];
     SetWatchdog<RenderManowar>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 Manowar::Manowar(int width, int height) : Fractal(width, height)
 {
@@ -2725,9 +2725,9 @@ Manowar::Manowar(int width, int height) : Fractal(width, height)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
 
-    type = FractalType::MANOWAR;
+    type = FractalType::Manowar;
     myRender = new RenderManowar[threadNumber];
     SetWatchdog<RenderManowar>(myRender, &watchdog, threadNumber);
 }
@@ -2786,7 +2786,7 @@ void RenderManowarJulia::Render()
     double temp_re, temp_im;
     double z_y_init;
 
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -2820,7 +2820,7 @@ void RenderManowarJulia::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         unsigned n;
         double distance, distance1;
@@ -2868,7 +2868,7 @@ void RenderManowarJulia::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -2985,7 +2985,7 @@ ManowarJulia::ManowarJulia(sf::RenderWindow *Window) : Fractal(Window)
 {
     kReal = 0.0272873;
     kImaginary = -0.0432547;
-    type = FractalType::MANOWAR_JULIA;
+    type = FractalType::ManowarJulia;
     juliaVariety = true;
     hasOrbit = true;
     hasOrbitTrap = true;
@@ -2993,10 +2993,10 @@ ManowarJulia::ManowarJulia(sf::RenderWindow *Window) : Fractal(Window)
     SetWatchdog<RenderManowarJulia>(myRender, &watchdog, threadNumber);
 
     // Especify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 ManowarJulia::ManowarJulia(int width, int height) : Fractal(width, height)
 {
@@ -3012,9 +3012,9 @@ ManowarJulia::ManowarJulia(int width, int height) : Fractal(width, height)
     kImaginary = -0.0432547;
 
     juliaVariety = true;
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
 
-    type = FractalType::MANOWAR_JULIA;
+    type = FractalType::ManowarJulia;
     myRender = new RenderManowarJulia[threadNumber];
     SetWatchdog<RenderManowarJulia>(myRender, &watchdog, threadNumber);
 }
@@ -3115,12 +3115,12 @@ SierpTriangle::SierpTriangle(sf::RenderWindow *Window) : Fractal(Window)
     myRender = new RenderSierpTriangle[threadNumber];
     SetWatchdog<RenderSierpTriangle>(myRender, &watchdog, threadNumber);
 
-    type = FractalType::SIERP_TRIANGLE;
+    type = FractalType::SierpinskyTriangle;
 }
 SierpTriangle::SierpTriangle(int width, int height) : Fractal(width, height)
 {
     renderJobComp = false;
-    type = FractalType::SIERP_TRIANGLE;
+    type = FractalType::SierpinskyTriangle;
     myRender = new RenderSierpTriangle[threadNumber];
     SetWatchdog<RenderSierpTriangle>(myRender, &watchdog, threadNumber);
 }
@@ -3179,7 +3179,7 @@ FixedPoint1::FixedPoint1(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
     hasOrbit = true;
 
-    type = FractalType::FIXEDPOINT1;
+    type = FractalType::FixedPoint1;
     myRender = new RenderFixedPoint1[threadNumber];
     SetWatchdog<RenderFixedPoint1>(myRender, &watchdog, threadNumber);
 
@@ -3189,12 +3189,12 @@ FixedPoint1::FixedPoint1(sf::RenderWindow *Window):Fractal(Window)
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = CONVERGENCE_TEST;
-    availableAlg.push_back(CONVERGENCE_TEST);
+    alg = RenderingAlgorithm::ConvergenceTest;
+    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 FixedPoint1::FixedPoint1(int width, int height) : Fractal(width, height)
 {
-    type = FractalType::FIXEDPOINT1;
+    type = FractalType::FixedPoint1;
     myRender = new RenderFixedPoint1[threadNumber];
     SetWatchdog<RenderFixedPoint1>(myRender, &watchdog, threadNumber);
 }
@@ -3293,7 +3293,7 @@ FixedPoint2::FixedPoint2(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = FractalType::FIXEDPOINT2;
+    type = FractalType::FixedPoint2;
     myRender = new RenderFixedPoint2[threadNumber];
     SetWatchdog<RenderFixedPoint2>(myRender, &watchdog, threadNumber);
 
@@ -3303,12 +3303,12 @@ FixedPoint2::FixedPoint2(sf::RenderWindow *Window):Fractal(Window)
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = CONVERGENCE_TEST;
-    availableAlg.push_back(CONVERGENCE_TEST);
+    alg = RenderingAlgorithm::ConvergenceTest;
+    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 FixedPoint2::FixedPoint2(int width, int height) : Fractal(width, height)
 {
-    type = FractalType::FIXEDPOINT2;
+    type = FractalType::FixedPoint2;
     myRender = new RenderFixedPoint2[threadNumber];
     SetWatchdog<RenderFixedPoint2>(myRender, &watchdog, threadNumber);
 }
@@ -3406,7 +3406,7 @@ FixedPoint3::FixedPoint3(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
     hasOrbit = true;
 
-    type = FractalType::FIXEDPOINT3;
+    type = FractalType::FixedPoint3;
     myRender = new RenderFixedPoint3[threadNumber];
     SetWatchdog<RenderFixedPoint3>(myRender, &watchdog, threadNumber);
 
@@ -3416,12 +3416,12 @@ FixedPoint3::FixedPoint3(sf::RenderWindow *Window):Fractal(Window)
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = CONVERGENCE_TEST;
-    availableAlg.push_back(CONVERGENCE_TEST);
+    alg = RenderingAlgorithm::ConvergenceTest;
+    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 FixedPoint3::FixedPoint3(int width, int height) : Fractal(width, height)
 {
-    type = FractalType::FIXEDPOINT3;
+    type = FractalType::FixedPoint3;
     myRender = new RenderFixedPoint3[threadNumber];
     SetWatchdog<RenderFixedPoint3>(myRender, &watchdog, threadNumber);
 }
@@ -3524,7 +3524,7 @@ FixedPoint4::FixedPoint4(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
     hasOrbit = true;
 
-    type = FractalType::FIXEDPOINT4;
+    type = FractalType::FixedPoint4;
     myRender = new RenderFixedPoint4[threadNumber];
     SetWatchdog<RenderFixedPoint4>(myRender, &watchdog, threadNumber);
 
@@ -3534,12 +3534,12 @@ FixedPoint4::FixedPoint4(sf::RenderWindow *Window):Fractal(Window)
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = CONVERGENCE_TEST;
-    availableAlg.push_back(CONVERGENCE_TEST);
+    alg = RenderingAlgorithm::ConvergenceTest;
+    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 FixedPoint4::FixedPoint4(int width, int height) : Fractal(width, height)
 {
-    type = FractalType::FIXEDPOINT4;
+    type = FractalType::FixedPoint4;
     myRender = new RenderFixedPoint4[threadNumber];
     SetWatchdog<RenderFixedPoint4>(myRender, &watchdog, threadNumber);
 }
@@ -3601,7 +3601,7 @@ void RenderTricorn::Render()
     bool insideSet;
 
     // Creates fractal.
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -3632,7 +3632,7 @@ void RenderTricorn::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         unsigned n;
         double distance, distance1;
@@ -3675,7 +3675,7 @@ void RenderTricorn::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -3733,15 +3733,15 @@ Tricorn::Tricorn(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = FractalType::TRICORN;
+    type = FractalType::Tricorn;
     myRender = new RenderTricorn[threadNumber];
     SetWatchdog<RenderTricorn>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(ESCAPE_ANGLE);
-    availableAlg.push_back(GAUSSIAN_INT);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
 }
 Tricorn::Tricorn(int width, int height) : Fractal(width, height)
 {
@@ -3755,9 +3755,9 @@ Tricorn::Tricorn(int width, int height) : Fractal(width, height)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
 
-    type = FractalType::TRICORN;
+    type = FractalType::Tricorn;
     myRender = new RenderTricorn[threadNumber];
     SetWatchdog<RenderTricorn>(myRender, &watchdog, threadNumber);
 }
@@ -3813,7 +3813,7 @@ void RenderBurningShip::Render()
     bool insideSet;
 
     // Creates fractal.
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -3846,7 +3846,7 @@ void RenderBurningShip::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         unsigned n;
         double distance, distance1;
@@ -3890,7 +3890,7 @@ void RenderBurningShip::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -3951,15 +3951,15 @@ BurningShip::BurningShip(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = FractalType::BURNING_SHIP;
+    type = FractalType::BurningShip;
     myRender = new RenderBurningShip[threadNumber];
     SetWatchdog<RenderBurningShip>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 BurningShip::BurningShip(int width, int height) : Fractal(width, height)
 {
@@ -3972,9 +3972,9 @@ BurningShip::BurningShip(int width, int height) : Fractal(width, height)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
     hasOrbit = true;
-    type = FractalType::BURNING_SHIP;
+    type = FractalType::BurningShip;
     myRender = new RenderBurningShip[threadNumber];
     SetWatchdog<RenderBurningShip>(myRender, &watchdog, threadNumber);
 }
@@ -4029,7 +4029,7 @@ void RenderBurningShipJulia::Render()
     c_re = kReal;
 
     // Creates fractal.
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -4060,7 +4060,7 @@ void RenderBurningShipJulia::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         unsigned n;
         double distance, distance1;
@@ -4103,7 +4103,7 @@ void RenderBurningShipJulia::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -4162,15 +4162,15 @@ BurningShipJulia::BurningShipJulia(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = FractalType::BURNING_SHIP;
+    type = FractalType::BurningShip;
     myRender = new RenderBurningShipJulia[threadNumber];
     SetWatchdog<RenderBurningShipJulia>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, height)
 {
@@ -4184,8 +4184,8 @@ BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, heigh
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    alg = ESCAPE_TIME;
-    type = FractalType::BURNING_SHIP;
+    alg = RenderingAlgorithm::EscapeTime;
+    type = FractalType::BurningShip;
     myRender = new RenderBurningShipJulia[threadNumber];
     SetWatchdog<RenderBurningShipJulia>(myRender, &watchdog, threadNumber);
 }
@@ -4238,7 +4238,7 @@ void RenderFractory::Render()
     complex<double> z, b, c;
     double c_im;
     bool insideSet;
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -4267,7 +4267,7 @@ void RenderFractory::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         double distance, distance1;
         double mu;
@@ -4307,7 +4307,7 @@ void RenderFractory::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -4363,15 +4363,15 @@ Fractory::Fractory(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = FractalType::FRACTORY;
+    type = FractalType::Fractory;
     myRender = new RenderFractory[threadNumber];
     SetWatchdog<RenderFractory>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 Fractory::Fractory(int width, int height) : Fractal(width, height)
 {
@@ -4383,10 +4383,10 @@ Fractory::Fractory(int width, int height) : Fractal(width, height)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    alg = ESCAPE_TIME;
+    alg = RenderingAlgorithm::EscapeTime;
     hasOrbit = true;
 
-    type = FractalType::FRACTORY;
+    type = FractalType::Fractory;
     myRender = new RenderFractory[threadNumber];
     SetWatchdog<RenderFractory>(myRender, &watchdog, threadNumber);
 }
@@ -4443,7 +4443,7 @@ void RenderCell::Render()
     complex<double> z, b, c;
     double c_im;
     bool insideSet;
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         for(y=ho; y<hf; y++)
         {
@@ -4472,7 +4472,7 @@ void RenderCell::Render()
             }
         }
     }
-    else if(myOpt.alg == GAUSSIAN_INT)
+    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
         unsigned n;
         double distance, distance1;
@@ -4531,7 +4531,7 @@ Cell::Cell(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = FractalType::CELL;
+    type = FractalType::Cell;
     myRender = new RenderCell[threadNumber];
     SetWatchdog<RenderCell>(myRender, &watchdog, threadNumber);
 
@@ -4541,9 +4541,9 @@ Cell::Cell(sf::RenderWindow *Window) : Fractal(Window)
     bailout = 2;
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(GAUSSIAN_INT);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
 }
 Cell::Cell(int width, int height) : Fractal(width, height)
 {
@@ -4561,8 +4561,8 @@ Cell::Cell(int width, int height) : Fractal(width, height)
     bailout = 2;
 
     hasOrbit = true;
-    alg = ESCAPE_TIME;
-    type = FractalType::CELL;
+    alg = RenderingAlgorithm::EscapeTime;
+    type = FractalType::Cell;
     myRender = new RenderCell[threadNumber];
     SetWatchdog<RenderCell>(myRender, &watchdog, threadNumber);
 }
@@ -4623,7 +4623,7 @@ void RenderLogisticMap::Render()
     int coordX, coordY;
     progress = 0;
 
-    if(myOpt.alg == CHAOTIC_MAP)
+    if(myOpt.alg == RenderingAlgorithm::ChaoticMap)
     {
         for(int i=0; i<myOpt.screenWidth; i++)
         {
@@ -4651,7 +4651,7 @@ void RenderLogisticMap::Render()
             }
         }
     }
-    else if(myOpt.alg == LYAPUNOV)
+    else if(myOpt.alg == RenderingAlgorithm::Lyapunov)
     {
         double fPrimeSum;
         for(int i=0; i<myOpt.screenWidth; i++)
@@ -4685,7 +4685,7 @@ int RenderLogisticMap::AskProgress()
 {
     if(!stopped)
     {
-        if(myOpt.alg == CHAOTIC_MAP && stabilizePoint)
+        if(myOpt.alg == RenderingAlgorithm::ChaoticMap && stabilizePoint)
             threadProgress = (100*progress)/(2*maxIter*myOpt.screenWidth);
         else
             threadProgress = (100*progress)/(maxIter*myOpt.screenWidth);
@@ -4703,7 +4703,7 @@ LogisticMap::LogisticMap(sf::RenderWindow *Window) : Fractal(Window)
     minY = 0.24;
     maxY = 1;
 
-    type = FractalType::LOGISTIC;
+    type = FractalType::Logistic;
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
     this->SetExtColorMode(false);
@@ -4721,9 +4721,9 @@ LogisticMap::LogisticMap(sf::RenderWindow *Window) : Fractal(Window)
     SetWatchdog<RenderLogisticMap>(myRender, &watchdog, 1);
 
     // Specify algorithms.
-    alg = CHAOTIC_MAP;
-    availableAlg.push_back(CHAOTIC_MAP);
-    availableAlg.push_back(LYAPUNOV);
+    alg = RenderingAlgorithm::ChaoticMap;
+    availableAlg.push_back(RenderingAlgorithm::ChaoticMap);
+    availableAlg.push_back(RenderingAlgorithm::Lyapunov);
 }
 LogisticMap::LogisticMap(int width, int height) : Fractal(width, height)
 {
@@ -4743,9 +4743,9 @@ LogisticMap::LogisticMap(int width, int height) : Fractal(width, height)
     logisticSeed = 0.25;
     stabilizePoint = true;
     renderJobComp = false;
-    alg = CHAOTIC_MAP;
+    alg = RenderingAlgorithm::ChaoticMap;
 
-    type = FractalType::LOGISTIC;
+    type = FractalType::Logistic;
     myRender = new RenderLogisticMap[1];
     SetWatchdog<RenderLogisticMap>(myRender, &watchdog, 1);
 }
@@ -4776,7 +4776,7 @@ void RenderHenonMap::Render()
     double tempX;
     int coordX, coordY;
 
-    if(myOpt.alg == CHAOTIC_MAP)
+    if(myOpt.alg == RenderingAlgorithm::ChaoticMap)
     {
         for(i=0; i<maxIter; i++)
         {
@@ -4816,7 +4816,7 @@ HenonMap::HenonMap(sf::RenderWindow *Window) : Fractal(Window)
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
     maxIter = 20000;
 
-    type = FractalType::HENON_MAP;
+    type = FractalType::HenonMap;
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
     this->SetExtColorMode(false);
@@ -4838,13 +4838,13 @@ HenonMap::HenonMap(sf::RenderWindow *Window) : Fractal(Window)
     SetWatchdog<RenderHenonMap>(myRender, &watchdog, 1);
 
     // Specify algorithms.
-    alg = CHAOTIC_MAP;
-    availableAlg.push_back(CHAOTIC_MAP);
+    alg = RenderingAlgorithm::ChaoticMap;
+    availableAlg.push_back(RenderingAlgorithm::ChaoticMap);
 }
 HenonMap::HenonMap(int width, int height) : Fractal(width, height)
 {
-    type = FractalType::HENON_MAP;
-    alg = CHAOTIC_MAP;
+    type = FractalType::HenonMap;
+    alg = RenderingAlgorithm::ChaoticMap;
 
     threadNumber = 1;
     renderJobComp = false;
@@ -4938,7 +4938,7 @@ void RenderDPendulum::Render()
     part5 = l*2*m1+m2;
     part6 = l*m2;
 
-    if(myOpt.alg == ESCAPE_TIME)
+    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
         if(rungeKutta)
         {
@@ -5078,7 +5078,7 @@ void RenderDPendulum::Render()
             }
         }
     }
-    else if(myOpt.alg == ESCAPE_ANGLE)
+    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         int color1, color2, color3, color4;
         color1 = 1;
@@ -5172,7 +5172,7 @@ DPendulum::DPendulum(sf::RenderWindow *Window):Fractal(Window)
     maxIter = 4000;
     hasOrbit = true;
 
-    type = FractalType::DOUBLE_PENDULUM;
+    type = FractalType::DoublePendulum;
     myRender = new RenderDPendulum[threadNumber];
     SetWatchdog<RenderDPendulum>(myRender, &watchdog, threadNumber);
 
@@ -5202,9 +5202,9 @@ DPendulum::DPendulum(sf::RenderWindow *Window):Fractal(Window)
     rungeKutta = false;
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
-    availableAlg.push_back(ESCAPE_ANGLE);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 DPendulum::DPendulum(int width, int height) : Fractal(width, height)
 {
@@ -5243,8 +5243,8 @@ DPendulum::DPendulum(int width, int height) : Fractal(width, height)
     referenced = false;
     rungeKutta = false;
 
-    alg = ESCAPE_TIME;
-    type = FractalType::DOUBLE_PENDULUM;
+    alg = RenderingAlgorithm::EscapeTime;
+    type = FractalType::DoublePendulum;
     myRender = new RenderDPendulum[threadNumber];
     SetWatchdog<RenderDPendulum>(myRender, &watchdog, threadNumber);
 }
@@ -5467,18 +5467,18 @@ UserDefined::UserDefined(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::USER_DEFINED;
+    type = FractalType::UserDefined;
     hasOrbit = true;
     myRender = new RenderUserDefined[threadNumber];
     SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
 
     // Specify algorithms.
-    alg = ESCAPE_TIME;
-    availableAlg.push_back(ESCAPE_TIME);
+    alg = RenderingAlgorithm::EscapeTime;
+    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
 }
 UserDefined::UserDefined(int width, int height) : Fractal(width, height)
 {
-    type = FractalType::USER_DEFINED;
+    type = FractalType::UserDefined;
     myRender = new RenderUserDefined[threadNumber];
     SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
 }
@@ -5562,7 +5562,9 @@ void UserDefined::PostRender()
 // FixedPointUserDefined
 RenderFPUserDefined::RenderFPUserDefined()
 {
-
+    bailout = 0;
+    julia = false;
+    minStep = 0.001;
 }
 void RenderFPUserDefined::SetFormula(FormulaOpt formula)
 {
@@ -5655,7 +5657,7 @@ FPUserDefined::FPUserDefined(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FractalType::FPUSER_DEFINED;
+    type = FractalType::FixedPointUserDefined;
     hasOrbit = true;
     myRender = new RenderFPUserDefined[threadNumber];
     SetWatchdog<RenderFPUserDefined>(myRender, &watchdog, threadNumber);
@@ -5666,12 +5668,13 @@ FPUserDefined::FPUserDefined(sf::RenderWindow *Window) : Fractal(Window)
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = CONVERGENCE_TEST;
-    availableAlg.push_back(CONVERGENCE_TEST);
+    alg = RenderingAlgorithm::ConvergenceTest;
+    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 FPUserDefined::FPUserDefined(int width, int height) : Fractal(width, height)
 {
-    type = FractalType::FPUSER_DEFINED;
+    minStep = 0.001;
+    type = FractalType::FixedPointUserDefined;
     myRender = new RenderFPUserDefined[threadNumber];
     SetWatchdog<RenderFPUserDefined>(myRender, &watchdog, threadNumber);
 }
@@ -5882,7 +5885,7 @@ ScriptFractal::ScriptFractal(sf::RenderWindow *Window, ScriptData scriptData) : 
 
     path = scriptData.file;
     myScriptData = scriptData;
-    type = FractalType::SCRIPT_FRACTAL;
+    type = FractalType::ScriptFractal;
     myRender = new RenderScriptFractal[threadNumber];
     for(unsigned int i=0; i<threadNumber; i++)
     {
@@ -5908,7 +5911,7 @@ ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData) : Fra
 
     path = scriptData.file;
     myScriptData = scriptData;
-    type = FractalType::SCRIPT_FRACTAL;
+    type = FractalType::ScriptFractal;
     myRender = new RenderScriptFractal[threadNumber];
     for(unsigned int i=0; i<threadNumber; i++)
     {
@@ -5920,7 +5923,7 @@ ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData) : Fra
 ScriptFractal::ScriptFractal(int width, int height, string scriptPath) : Fractal(width, height)
 {
     path = scriptPath;
-    type = FractalType::SCRIPT_FRACTAL;
+    type = FractalType::ScriptFractal;
     myRender = new RenderScriptFractal[threadNumber];
     for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetPath(scriptPath);
     SetWatchdog<RenderScriptFractal>(myRender, &watchdog, threadNumber);
@@ -6003,7 +6006,7 @@ FractalHandler::FractalHandler()
     fpUserDefined = nullptr;
     scriptFractal = nullptr;
     target = nullptr;
-    type = FractalType::UNDEFINED;
+    type = FractalType::Undefined;
 }
 FractalHandler::~FractalHandler()
 {
@@ -6015,127 +6018,127 @@ void FractalHandler::CreateFractal(FractalType _type, sf::RenderWindow* Window)
     type = _type;
     switch(_type)
     {
-    case FractalType::MANDELBROT:
+    case FractalType::Mandelbrot:
         {
             target = mandelbrot = new Mandelbrot(Window);
             break;
         }
-    case FractalType::MANDELBROT_ZN:
+    case FractalType::MandelbrotZN:
         {
             target = mandelbrotZN = new MandelbrotZN(Window);
             break;
         }
-    case FractalType::JULIA:
+    case FractalType::Julia:
         {
             target = julia = new Julia(Window);
             break;
         }
-    case FractalType::JULIA_ZN:
+    case FractalType::JuliaZN:
         {
             target = juliaZN = new JuliaZN(Window);
             break;
         }
-    case FractalType::NEWTON:
+    case FractalType::NewtonRaphsonMethod:
         {
             target = newton = new Newton(Window);
             break;
         }
-    case FractalType::SINOIDAL:
+    case FractalType::Sinoidal:
         {
             target = sinoidal = new Sinoidal(Window);
             break;
         }
-    case FractalType::MAGNET:
+    case FractalType::Magnetic:
         {
             target = magnet = new Magnet(Window);
             break;
         }
-    case FractalType::MEDUSA:
+    case FractalType::Medusa:
         {
             target = medusa = new Medusa(Window);
             break;
         }
-    case FractalType::MANOWAR:
+    case FractalType::Manowar:
         {
             target = manowar = new Manowar(Window);
             break;
         }
-    case FractalType::MANOWAR_JULIA:
+    case FractalType::ManowarJulia:
         {
             target = manowarJulia = new ManowarJulia(Window);
             break;
         }
-    case FractalType::SIERP_TRIANGLE:
+    case FractalType::SierpinskyTriangle:
         {
             target = sierpinskyTriangle = new SierpTriangle(Window);
             break;
         }
-    case FractalType::FIXEDPOINT1:
+    case FractalType::FixedPoint1:
         {
             target = fixedPoint1 = new FixedPoint1(Window);
             break;
         }
-    case FractalType::FIXEDPOINT2:
+    case FractalType::FixedPoint2:
         {
             target = fixedPoint2 = new FixedPoint2(Window);
             break;
         }
-    case FractalType::FIXEDPOINT3:
+    case FractalType::FixedPoint3:
         {
             target = fixedPoint3 = new FixedPoint3(Window);
             break;
         }
-    case FractalType::FIXEDPOINT4:
+    case FractalType::FixedPoint4:
         {
             target = fixedPoint4 = new FixedPoint4(Window);
             break;
         }
-    case FractalType::TRICORN:
+    case FractalType::Tricorn:
         {
             target = tricorn = new Tricorn(Window);
             break;
         }
-    case FractalType::BURNING_SHIP:
+    case FractalType::BurningShip:
         {
             target = burningShip = new BurningShip(Window);
             break;
         }
-    case FractalType::BURNING_SHIP_JULIA:
+    case FractalType::BurningShipJulia:
         {
             target = burningShipJulia = new BurningShipJulia(Window);
             break;
         }
-    case FractalType::FRACTORY:
+    case FractalType::Fractory:
         {
             target = fractory = new Fractory(Window);
             break;
         }
-    case FractalType::CELL:
+    case FractalType::Cell:
         {
             target = cell = new Cell(Window);
             break;
         }
-    case FractalType::LOGISTIC:
+    case FractalType::Logistic:
         {
             target = logisticMap = new LogisticMap(Window);
             break;
         }
-    case FractalType::HENON_MAP:
+    case FractalType::HenonMap:
         {
             target = henonMap = new HenonMap(Window);
             break;
         }
-    case FractalType::DOUBLE_PENDULUM:
+    case FractalType::DoublePendulum:
         {
             target = dPendulum = new DPendulum(Window);
             break;
         }
-    case FractalType::USER_DEFINED:
+    case FractalType::UserDefined:
         {
             target = userDefined = new UserDefined(Window);
             break;
         }
-    case FractalType::FPUSER_DEFINED:
+    case FractalType::FixedPointUserDefined:
         {
             target = fpUserDefined = new FPUserDefined(Window);
             break;
@@ -6149,127 +6152,127 @@ void FractalHandler::CreateFractal(FractalType _type, int width, int height)
     type = _type;
     switch(_type)
     {
-    case FractalType::MANDELBROT:
+    case FractalType::Mandelbrot:
         {
             target = mandelbrot = new Mandelbrot(width, height);
             break;
         }
-    case FractalType::MANDELBROT_ZN:
+    case FractalType::MandelbrotZN:
         {
             target = mandelbrotZN = new MandelbrotZN(width, height);
             break;
         }
-    case FractalType::JULIA:
+    case FractalType::Julia:
         {
             target = julia = new Julia(width, height);
             break;
         }
-    case FractalType::JULIA_ZN:
+    case FractalType::JuliaZN:
         {
             target = juliaZN = new JuliaZN(width, height);
             break;
         }
-    case FractalType::NEWTON:
+    case FractalType::NewtonRaphsonMethod:
         {
             target = newton = new Newton(width, height);
             break;
         }
-    case FractalType::SINOIDAL:
+    case FractalType::Sinoidal:
         {
             target = sinoidal = new Sinoidal(width, height);
             break;
         }
-    case FractalType::MAGNET:
+    case FractalType::Magnetic:
         {
             target = magnet = new Magnet(width, height);
             break;
         }
-    case FractalType::MEDUSA:
+    case FractalType::Medusa:
         {
             target = medusa = new Medusa(width, height);
             break;
         }
-    case FractalType::MANOWAR:
+    case FractalType::Manowar:
         {
             target = manowar = new Manowar(width, height);
             break;
         }
-    case FractalType::MANOWAR_JULIA:
+    case FractalType::ManowarJulia:
         {
             target = manowarJulia = new ManowarJulia(width, height);
             break;
         }
-    case FractalType::SIERP_TRIANGLE:
+    case FractalType::SierpinskyTriangle:
         {
             target = sierpinskyTriangle = new SierpTriangle(width, height);
             break;
         }
-    case FractalType::FIXEDPOINT1:
+    case FractalType::FixedPoint1:
         {
             target = fixedPoint1 = new FixedPoint1(width, height);
             break;
         }
-    case FractalType::FIXEDPOINT2:
+    case FractalType::FixedPoint2:
         {
             target = fixedPoint2 = new FixedPoint2(width, height);
             break;
         }
-    case FractalType::FIXEDPOINT3:
+    case FractalType::FixedPoint3:
         {
             target = fixedPoint3 = new FixedPoint3(width, height);
             break;
         }
-    case FractalType::FIXEDPOINT4:
+    case FractalType::FixedPoint4:
         {
             target = fixedPoint4 = new FixedPoint4(width, height);
             break;
         }
-    case FractalType::TRICORN:
+    case FractalType::Tricorn:
         {
             target = tricorn = new Tricorn(width, height);
             break;
         }
-    case FractalType::BURNING_SHIP:
+    case FractalType::BurningShip:
         {
             target = burningShip = new BurningShip(width, height);
             break;
         }
-    case FractalType::BURNING_SHIP_JULIA:
+    case FractalType::BurningShipJulia:
         {
             target = burningShipJulia = new BurningShipJulia(width, height);
             break;
         }
-    case FractalType::FRACTORY:
+    case FractalType::Fractory:
         {
             target = fractory = new Fractory(width, height);
             break;
         }
-    case FractalType::CELL:
+    case FractalType::Cell:
         {
             target = cell = new Cell(width, height);
             break;
         }
-    case FractalType::LOGISTIC:
+    case FractalType::Logistic:
         {
             target = logisticMap = new LogisticMap(width, height);
             break;
         }
-    case FractalType::HENON_MAP:
+    case FractalType::HenonMap:
         {
             target = henonMap = new HenonMap(width, height);
             break;
         }
-    case FractalType::DOUBLE_PENDULUM:
+    case FractalType::DoublePendulum:
         {
             target = dPendulum = new DPendulum(width, height);
             break;
         }
-    case FractalType::USER_DEFINED:
+    case FractalType::UserDefined:
         {
             target = userDefined = new UserDefined(width, height);
             break;
         }
-    case FractalType::FPUSER_DEFINED:
+    case FractalType::FixedPointUserDefined:
         {
             target = fpUserDefined = new FPUserDefined(width, height);
             break;
@@ -6291,20 +6294,20 @@ void FractalHandler::CreateScriptFractal(int width, int height, string scriptPat
 }
 void FractalHandler::SetFormula(FormulaOpt formula)
 {
-    if(type == FractalType::USER_DEFINED)
+    if(type == FractalType::UserDefined)
     {
-        if(formula.type != COMPLEX_TYPE)
+        if(formula.type != FormulaType::Complex)
         {
-            formula.type = COMPLEX_TYPE;
+            formula.type = FormulaType::Complex;
             formula.userFormula = wxT("z = z^2 + c");
         }
         userDefined->SetFormula(formula);
     }
-    else if(type == FractalType::FPUSER_DEFINED)
+    else if(type == FractalType::FixedPointUserDefined)
     {
-        if(formula.type != FIXED_POINT_TYPE)
+        if(formula.type != FormulaType::FixedPoint)
         {
-            formula.type = FIXED_POINT_TYPE;
+            formula.type = FormulaType::FixedPoint;
             formula.userFormula = wxT("z = sin(z)");
         }
         fpUserDefined->SetFormula(formula);

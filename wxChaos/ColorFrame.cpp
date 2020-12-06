@@ -7,7 +7,7 @@ GaussianColorPalette::GaussianColorPalette()
 {
 
 }
-void GaussianColorPalette::SetStyle(GAUSS_STYLES style)
+void GaussianColorPalette::SetStyle(GaussianColorStyles style)
 {
     // Sets the parameters of each color style.
     switch(style)
@@ -120,7 +120,7 @@ GradientColorPalette::GradientColorPalette()
 {
 
 }
-void GradientColorPalette::SetStyle(GRAD_STYLES style)
+void GradientColorPalette::SetStyle(GradientColorStyles style)
 {
     // Sets the wxString parameter of each color style.
     switch(style)
@@ -352,7 +352,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     redIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(intensityTxt);
-    text += num_to_string(target->GetGaussianColorIntensity(red));
+    text += num_to_string(target->GetGaussianColorIntensity(Color::Red));
     redIntText->SetLabel(text);
     //
     redIntText->Wrap( -1 );
@@ -364,7 +364,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     redPosText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(positionTxt);
-    text += num_to_string(target->GetGaussianColorMean(red));
+    text += num_to_string(target->GetGaussianColorMean(Color::Red));
     redPosText->SetLabel(text);
     //
     redPosText->Wrap( -1 );
@@ -376,7 +376,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     redDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(stdDevTxt);
-    text += num_to_string(target->GetGaussianColorStdDev(red));
+    text += num_to_string(target->GetGaussianColorStdDev(Color::Red));
     redDesText->SetLabel(text);
     //
     redDesText->Wrap( -1 );
@@ -398,7 +398,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     greenIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(intensityTxt);
-    text += num_to_string(target->GetGaussianColorIntensity(green));
+    text += num_to_string(target->GetGaussianColorIntensity(Color::Green));
     greenIntText->SetLabel(text);
     //
     greenIntText->Wrap( -1 );
@@ -410,7 +410,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     greenPosText = new wxStaticText( stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(positionTxt);
-    text += num_to_string(target->GetGaussianColorMean(green));
+    text += num_to_string(target->GetGaussianColorMean(Color::Green));
     greenPosText->SetLabel(text);
     //
     greenPosText->Wrap( -1 );
@@ -422,7 +422,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     greenDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(stdDevTxt);
-    text += num_to_string(target->GetGaussianColorStdDev(green));
+    text += num_to_string(target->GetGaussianColorStdDev(Color::Green));
     greenDesText->SetLabel(text);
     //
     greenDesText->Wrap( -1 );
@@ -449,7 +449,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     blueIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(intensityTxt);
-    text += num_to_string(target->GetGaussianColorIntensity(blue));
+    text += num_to_string(target->GetGaussianColorIntensity(Color::Blue));
     blueIntText->SetLabel(text);
     //
     blueIntText->Wrap( -1 );
@@ -461,7 +461,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     bluePosText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(positionTxt);
-    text += num_to_string(target->GetGaussianColorMean(blue));
+    text += num_to_string(target->GetGaussianColorMean(Color::Blue));
     bluePosText->SetLabel(text);
     //
     bluePosText->Wrap( -1 );
@@ -473,7 +473,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     //
     blueDesText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
     text = wxT(stdDevTxt);
-    text += num_to_string(target->GetGaussianColorStdDev(blue));
+    text += num_to_string(target->GetGaussianColorStdDev(Color::Blue));
     blueDesText->SetLabel(text);
     //
     blueDesText->Wrap( -1 );
@@ -506,7 +506,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     this->Centre( wxBOTH );
 
     // Shows tab according to the color mode in the fractal.
-    if(target->GetColorMode() == GRADIENT) typeNotebook->ChangeSelection(0);
+    if(target->GetColorMode() == ColorMode::Gradient) typeNotebook->ChangeSelection(0);
     else typeNotebook->ChangeSelection(1);
 
     this->SetAlgorithmChoices();
@@ -659,54 +659,54 @@ void ColorFrame::SetAlgorithmChoices()
     {
         switch(target->GetAvailableAlg()[i])
         {
-        case ESCAPE_TIME:
+        case RenderingAlgorithm::EscapeTime:
             {
                 algorithmChoice->Append(wxT(escapeTimeTxt));    // Txt: "Escape time"
                 escapeTimeIndex = i;
             }
             break;
-        case GAUSSIAN_INT:
+        case RenderingAlgorithm::GaussianInt:
             {
                 algorithmChoice->Append(wxT(gaussianIntTxt));    // Txt: "Gaussian integer"
                 gaussIntIndex = i;
             }
             break;
-        case BUDDHABROT:
+        case RenderingAlgorithm::Buddhabrot:
             {
                 algorithmChoice->Append(wxT(buddhabrotTxt));    // Txt: "Buddhabrot"
                 buddhabrotIndex = i;
             }
             break;
-        case ESCAPE_ANGLE:
+        case RenderingAlgorithm::EscapeAngle:
             {
                 algorithmChoice->Append(wxT(escapeAngleTxt));    // Txt: "Escape angle"
                 escapeAngleIndex = i;
             }
             break;
-        case TRIANGLE_INEQ:
+        case RenderingAlgorithm::TriangleInequality:
             {
                 algorithmChoice->Append(wxT(triangIneqTxt));    // Txt: "Triangle inequality"
                 triangleIneqIndex = i;
             }
             break;
-        case CHAOTIC_MAP:
+        case RenderingAlgorithm::ChaoticMap:
             {
                 algorithmChoice->Append(wxT(chaosMapTxt));    // Txt: "Chaotic map"
                 chaoticMapIndex = i;
             }
             break;
-        case LYAPUNOV:
+        case RenderingAlgorithm::Lyapunov:
             {
                 algorithmChoice->Append(wxT(lyapTxt));    // Txt: "Lyapunov"
                 lyapunovIndex = i;
             }
             break;
-        case CONVERGENCE_TEST:
+        case RenderingAlgorithm::ConvergenceTest:
             {
                 algorithmChoice->Append(wxT(convTestTxt));    // Txt: "Convergence test"
                 convergenceTestIndex = i;
             }
-        case OTHER:
+        case RenderingAlgorithm::Other:
             break;
         };
 
@@ -769,20 +769,20 @@ void ColorFrame::SetTarget(Fractal *_target)
     escapeAngleIndex = -1;
     this->SetAlgorithmChoices();
 
-    if(target->GetCurrentAlg() == ESCAPE_TIME)
+    if(target->GetCurrentAlg() == RenderingAlgorithm::EscapeTime)
         algorithmChoice->SetSelection(escapeTimeIndex);
-    else if(target->GetCurrentAlg() == GAUSSIAN_INT)
+    else if(target->GetCurrentAlg() == RenderingAlgorithm::GaussianInt)
         algorithmChoice->SetSelection(gaussIntIndex);
-    else if(target->GetCurrentAlg() == BUDDHABROT)
+    else if(target->GetCurrentAlg() == RenderingAlgorithm::Buddhabrot)
         algorithmChoice->SetSelection(buddhabrotIndex);
-    else if(target->GetCurrentAlg() == ESCAPE_ANGLE)
+    else if(target->GetCurrentAlg() == RenderingAlgorithm::EscapeAngle)
         algorithmChoice->SetSelection(escapeAngleIndex);
-    else if(target->GetCurrentAlg() == CONVERGENCE_TEST)
+    else if(target->GetCurrentAlg() == RenderingAlgorithm::ConvergenceTest)
         algorithmChoice->SetSelection(convergenceTestIndex);
     else
         algorithmChoice->SetSelection(0);
 
-    if(target->GetColorMode() == GRADIENT) typeNotebook->ChangeSelection(0);
+    if(target->GetColorMode() == ColorMode::Gradient) typeNotebook->ChangeSelection(0);
     else typeNotebook->ChangeSelection(1);
 
     if(target->GetRelativeColorMode()) relativeCheck->SetValue(true);
@@ -813,7 +813,7 @@ void ColorFrame::ChangeIntRed(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = redIntSld->GetValue();
-    target->SetGaussianColorIntensity(value, red);
+    target->SetGaussianColorIntensity(value, Color::Red);
     wxString text;
     text = wxT(intensityTxt);
     text += num_to_string(value);
@@ -823,7 +823,7 @@ void ColorFrame::ChangePosRed(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = redPosSld->GetValue();
-    target->SetGaussianColorMean(value, red);
+    target->SetGaussianColorMean(value, Color::Red);
     wxString text;
     text = wxT(positionTxt);
     text += num_to_string(value);
@@ -833,7 +833,7 @@ void ColorFrame::ChangeDesRed(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = redDesSld->GetValue();
-    target->SetGaussianColorStdDev(value, red);
+    target->SetGaussianColorStdDev(value, Color::Red);
     wxString text;
     text = wxT(stdDevTxt);
     text += num_to_string(value);
@@ -843,7 +843,7 @@ void ColorFrame::ChangeIntGreen(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = greenIntSld->GetValue();
-    target->SetGaussianColorIntensity(value, green);
+    target->SetGaussianColorIntensity(value, Color::Green);
     wxString text;
     text = wxT(intensityTxt);
     text += num_to_string(value);
@@ -853,7 +853,7 @@ void ColorFrame::ChangePosGreen(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = greenPosSld->GetValue();
-    target->SetGaussianColorMean(value, green);
+    target->SetGaussianColorMean(value, Color::Green);
     wxString text;
     text = wxT(positionTxt);
     text += num_to_string(value);
@@ -863,7 +863,7 @@ void ColorFrame::ChangeDesGreen(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = greenDesSld->GetValue();
-    target->SetGaussianColorStdDev(value, green);
+    target->SetGaussianColorStdDev(value, Color::Green);
     wxString text;
     text = wxT(stdDevTxt);
     text += num_to_string(value);
@@ -873,7 +873,7 @@ void ColorFrame::ChangeIntBlue(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = blueIntSld->GetValue();
-    target->SetGaussianColorIntensity(value, blue);
+    target->SetGaussianColorIntensity(value, Color::Blue);
     wxString text;
     text = wxT(intensityTxt);
     text += num_to_string(value);
@@ -883,7 +883,7 @@ void ColorFrame::ChangePosBlue(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = bluePosSld->GetValue();
-    target->SetGaussianColorMean(value, blue);
+    target->SetGaussianColorMean(value, Color::Blue);
     wxString text;
     text = wxT(positionTxt);
     text += num_to_string(value);
@@ -893,7 +893,7 @@ void ColorFrame::ChangeDesBlue(wxScrollEvent& event)
 {
     ESTStylesChoice->SetSelection(CUSTOM);
     int value = blueDesSld->GetValue();
-    target->SetGaussianColorStdDev(value, blue);
+    target->SetGaussianColorStdDev(value, Color::Blue);
     wxString text;
     text = wxT(stdDevTxt);
     text += num_to_string(value);
@@ -910,7 +910,7 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
     estFractalColor.redMean = redPosSld->GetValue(); estFractalColor.greenMean = greenPosSld->GetValue(); estFractalColor.blueMean = bluePosSld->GetValue();
     estFractalColor.redStdDev = redDesSld->GetValue(); estFractalColor.greenStdDev = greenDesSld->GetValue(); estFractalColor.blueStdDev = blueDesSld->GetValue();
 
-    estFractalColor.SetStyle(static_cast<GAUSS_STYLES>(ESTStylesChoice->GetCurrentSelection()));
+    estFractalColor.SetStyle(static_cast<GaussianColorStyles>(ESTStylesChoice->GetCurrentSelection()));
     int paletteSize = estFractalColor.paletteSize;
     redPosSld->SetRange(0, paletteSize);
     greenPosSld->SetRange(0, paletteSize);
@@ -918,26 +918,26 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
     colorVarSlider->SetRange(0, paletteSize);
     pSizeSpin->SetValue(paletteSize);
     target->SetPaletteSize(paletteSize);
-    target->SetGaussianColorStyle(static_cast<GAUSS_STYLES>(ESTStylesChoice->GetCurrentSelection()));
+    target->SetGaussianColorStyle(static_cast<GaussianColorStyles>(ESTStylesChoice->GetCurrentSelection()));
 
     // Red
     // Intensity
     wxString text;
-    target->SetGaussianColorIntensity(estFractalColor.redInt, red);
+    target->SetGaussianColorIntensity(estFractalColor.redInt, Color::Red);
     redIntSld->SetValue(estFractalColor.redInt);
     text = wxT(intensityTxt);
     text += num_to_string(estFractalColor.redInt);
     redIntText->SetLabel(text);
 
     // Mean
-    target->SetGaussianColorMean(estFractalColor.redMean, red);
+    target->SetGaussianColorMean(estFractalColor.redMean, Color::Red);
     redPosSld->SetValue(estFractalColor.redMean);
     text = wxT(positionTxt);
     text += num_to_string(estFractalColor.redMean);
     redPosText->SetLabel(text);
 
     // Standard deviation
-    target->SetGaussianColorStdDev(estFractalColor.redStdDev, red);
+    target->SetGaussianColorStdDev(estFractalColor.redStdDev, Color::Red);
     redDesSld->SetValue(estFractalColor.redStdDev);
     text = wxT(stdDevTxt);
     text += num_to_string(estFractalColor.redStdDev);
@@ -946,21 +946,21 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
 
     // Green
     // Intensity
-    target->SetGaussianColorIntensity(estFractalColor.greenInt, green);
+    target->SetGaussianColorIntensity(estFractalColor.greenInt, Color::Green);
     greenIntSld->SetValue(estFractalColor.greenInt);
     text = wxT(intensityTxt);
     text += num_to_string(estFractalColor.greenInt);
     greenIntText->SetLabel(text);
 
     // Mean
-    target->SetGaussianColorMean(estFractalColor.greenMean, green);
+    target->SetGaussianColorMean(estFractalColor.greenMean, Color::Green);
     greenPosSld->SetValue(estFractalColor.greenMean);
     text = wxT(positionTxt);
     text += num_to_string(estFractalColor.greenMean);
     greenPosText->SetLabel(text);
 
     // Standard deviation
-    target->SetGaussianColorStdDev(estFractalColor.greenStdDev, green);
+    target->SetGaussianColorStdDev(estFractalColor.greenStdDev, Color::Green);
     greenDesSld->SetValue(estFractalColor.greenStdDev);
     text = wxT(stdDevTxt);
     text += num_to_string(estFractalColor.greenStdDev);
@@ -968,21 +968,21 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
 
     // Blue
     // Intensity
-    target->SetGaussianColorIntensity(estFractalColor.blueInt, blue);
+    target->SetGaussianColorIntensity(estFractalColor.blueInt, Color::Blue);
     blueIntSld->SetValue(estFractalColor.blueInt);
     text = wxT(intensityTxt);
     text += num_to_string(estFractalColor.blueInt);
     blueIntText->SetLabel(text);
 
     // Mean
-    target->SetGaussianColorMean(estFractalColor.blueMean, blue);
+    target->SetGaussianColorMean(estFractalColor.blueMean, Color::Blue);
     bluePosSld->SetValue(estFractalColor.blueMean);
     text = wxT(positionTxt);
     text += num_to_string(estFractalColor.blueMean);
     bluePosText->SetLabel(text);
 
     // Standard deviation
-    target->SetGaussianColorStdDev(estFractalColor.blueStdDev, blue);
+    target->SetGaussianColorStdDev(estFractalColor.blueStdDev, Color::Blue);
     blueDesSld->SetValue(estFractalColor.blueStdDev);
     text = wxT(stdDevTxt);
     text += num_to_string(estFractalColor.blueStdDev);
@@ -991,12 +991,12 @@ void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
 void ColorFrame::GradientColorChangeSelection( wxCommandEvent& event )
 {
     // Changes the gradStyle.
-    gradFractalColor.SetStyle(static_cast<GRAD_STYLES>(gradStylesChoice->GetCurrentSelection()));
+    gradFractalColor.SetStyle(static_cast<GradientColorStyles>(gradStylesChoice->GetCurrentSelection()));
     wxGradient myGrad;
     myGrad.setMin(0);
     myGrad.setMax(gradFractalColor.paletteSize);
     myGrad.fromString(gradFractalColor.grad);
-    target->SetGradStyle(static_cast<GRAD_STYLES>(gradStylesChoice->GetCurrentSelection()));
+    target->SetGradStyle(static_cast<GradientColorStyles>(gradStylesChoice->GetCurrentSelection()));
     target->SetGradient(myGrad);
     gradientMap->SetBitmap(PaintGradient());
     gradientMap->SetWindowStyle(wxSIMPLE_BORDER);
@@ -1015,7 +1015,7 @@ void ColorFrame::OnChangeAlgorithm( wxCommandEvent& event )
             smoothRender->Enable(true);
         else
             smoothRender->Enable(false);
-        target->SetAlgorithm(ESCAPE_TIME);
+        target->SetAlgorithm(RenderingAlgorithm::EscapeTime);
     }
     else if(selection == convergenceTestIndex)
     {
@@ -1033,33 +1033,19 @@ void ColorFrame::OnChangeAlgorithm( wxCommandEvent& event )
     }
 
     if(selection == gaussIntIndex)
-    {
-        target->SetAlgorithm(GAUSSIAN_INT);
-    }
+        target->SetAlgorithm(RenderingAlgorithm::GaussianInt);
     else if(selection == buddhabrotIndex)
-    {
-        target->SetAlgorithm(BUDDHABROT);
-    }
+        target->SetAlgorithm(RenderingAlgorithm::Buddhabrot);
     else if(selection == escapeAngleIndex)
-    {
-        target->SetAlgorithm(ESCAPE_ANGLE);
-    }
+        target->SetAlgorithm(RenderingAlgorithm::EscapeAngle);
     else if(selection == triangleIneqIndex)
-    {
-        target->SetAlgorithm(TRIANGLE_INEQ);
-    }
+        target->SetAlgorithm(RenderingAlgorithm::TriangleInequality);
     else if(selection == chaoticMapIndex)
-    {
-        target->SetAlgorithm(CHAOTIC_MAP);
-    }
+        target->SetAlgorithm(RenderingAlgorithm::ChaoticMap);
     else if(selection == lyapunovIndex)
-    {
-        target->SetAlgorithm(LYAPUNOV);
-    }
+        target->SetAlgorithm(RenderingAlgorithm::Lyapunov);
     else if(selection == convergenceTestIndex)
-    {
-        target->SetAlgorithm(CONVERGENCE_TEST);
-    }
+        target->SetAlgorithm(RenderingAlgorithm::ConvergenceTest);
 }
 
 // Option change methods.
@@ -1171,9 +1157,9 @@ void ColorFrame::OnPageChange( wxNotebookEvent& event )
     if(*active)
     {
         if(event.GetSelection() == 0)
-            target->SetPaletteMode(GRADIENT);
+            target->SetPaletteMode(ColorMode::Gradient);
         else
-            target->SetPaletteMode(GAUSSIAN);
+            target->SetPaletteMode(ColorMode::Gaussian);
         typeNotebook->ChangeSelection(event.GetSelection());
         colorVarSlider->SetRange(0, target->GetPaletteSize());
     }

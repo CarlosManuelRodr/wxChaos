@@ -19,7 +19,7 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     progressSizer = new wxBoxSizer(wxVERTICAL);
 
     myType = myFractal->GetType();
-    if(myType == FractalType::SCRIPT_FRACTAL)
+    if(myType == FractalType::ScriptFractal)
     {
         progressLabel = new wxStaticText(this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
         progressLabel->Wrap( -1 );
@@ -70,7 +70,7 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent& event)
     if(clock.GetElapsedTime() >= 0.05)
     {
         // Updates progress gauge.
-        if(myFractal->GetType() != FractalType::SCRIPT_FRACTAL)
+        if(myFractal->GetType() != FractalType::ScriptFractal)
         {
             int progressValue = myFractal->GetWatchdog()->GetThreadProgress();
             progressLabel->SetLabel(wxString(wxT(renderingDotsTxt)) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
@@ -212,7 +212,7 @@ void SizeDialogSave::ChangeHeight(wxSpinEvent& event)
 void SizeDialogSave::OnOk(wxCommandEvent& event)
 {
     // Creates fractal.
-    if(fractalType == FractalType::SCRIPT_FRACTAL)
+    if(fractalType == FractalType::ScriptFractal)
         fractalHandler.CreateScriptFractal(widthSpin->GetValue(), heightSpin->GetValue(), myScriptPath);
     else
         fractalHandler.CreateFractal(fractalType, widthSpin->GetValue(), heightSpin->GetValue());

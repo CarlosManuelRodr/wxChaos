@@ -114,7 +114,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     if (opt.firstUse)
         this->ShowFirstUseDialog();
 
-    if(fractalType != FractalType::MANDELBROT && fractalType != FractalType::MANOWAR)
+    if(fractalType != FractalType::Mandelbrot && fractalType != FractalType::Manowar)
         juliaMode->Enable(false);
 
     this->GetScriptFractals();
@@ -383,7 +383,7 @@ void MainFrame::SetUpGUI()
     fractalType = opt.type;
     fractalCanvas = new FractalCanvas(statusData, &pauseBtn, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
 
-    if (opt.mode == GAUSSIAN)
+    if (opt.mode == ColorMode::Gaussian)
         fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
     else
     {
@@ -481,7 +481,7 @@ void MainFrame::OnSave(wxCommandEvent &event)
         string path = string(fileName.mb_str());
         SizeDialogSave *diag;
 
-        if(fractalType == FractalType::SCRIPT_FRACTAL)
+        if(fractalType == FractalType::ScriptFractal)
             diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, scriptDataVect[selectedScriptIndex].file);
         else
             diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this);
@@ -520,7 +520,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent &event)
         GetDesktopResolution(h, w);
         if(this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
             formDialog->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
-        fractalType = FractalType::USER_DEFINED;
+        fractalType = FractalType::UserDefined;
     }
     else formDialog->SetFocus();
 }
@@ -529,7 +529,7 @@ void MainFrame::OnRedraw(wxCommandEvent &event)
     if(pauseBtn.state)
     {
         pauseBtn.state = false;
-        if(fractalType == FractalType::SCRIPT_FRACTAL)
+        if(fractalType == FractalType::ScriptFractal)
             pauseBtn.pauseContinue->SetItemLabel(wxT(menuAbortTxt));
         else
             pauseBtn.pauseContinue->SetItemLabel(wxT(menuPauseTxt));
@@ -540,7 +540,7 @@ void MainFrame::OnRedraw(wxCommandEvent &event)
 void MainFrame::OnReset(wxCommandEvent &event)
 {
     fractalCanvas->Reset();
-    if(fractalCanvas->GetFractalPtr()->GetColorMode() == GRADIENT)
+    if(fractalCanvas->GetFractalPtr()->GetColorMode() == ColorMode::Gradient)
     {
         wxGradient grad;
         grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
@@ -617,7 +617,7 @@ void MainFrame::OnPauseContinue(wxCommandEvent &event)
     // Pauses the rendering.
     if(pauseBtn.state)
     {
-        if(fractalType == FractalType::SCRIPT_FRACTAL)
+        if(fractalType == FractalType::ScriptFractal)
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));
         else
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));
@@ -625,7 +625,7 @@ void MainFrame::OnPauseContinue(wxCommandEvent &event)
     }
     else
     {
-        if(fractalType == FractalType::SCRIPT_FRACTAL)
+        if(fractalType == FractalType::ScriptFractal)
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuRelaunchTxt))+ wxT('\t') + wxT("P"));
         else
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuContinueTxt))+ wxT('\t') + wxT("P"));
@@ -679,7 +679,7 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent& event)
     if(pauseBtn.state)
     {
         pauseBtn.state = false;
-        if(fractalType == FractalType::SCRIPT_FRACTAL)
+        if(fractalType == FractalType::ScriptFractal)
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));
         else
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));
@@ -753,115 +753,115 @@ void MainFrame::OnUserManual(wxCommandEvent &event)
 // Changes the fractal type.
 void MainFrame::ChangeMandelbrot(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::MANDELBROT, true);
+    this->ChangeFractal(FractalType::Mandelbrot, true);
 }
 void MainFrame::ChangeMandelbrotZN(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::MANDELBROT_ZN, true);
+    this->ChangeFractal(FractalType::MandelbrotZN, true);
 }
 void MainFrame::ChangeJulia(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::JULIA, false);
+    this->ChangeFractal(FractalType::Julia, false);
 }
 void MainFrame::ChangeJuliaZN(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::JULIA_ZN, false);
+    this->ChangeFractal(FractalType::JuliaZN, false);
 }
 void MainFrame::ChangeNewton(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::NEWTON, false);
+    this->ChangeFractal(FractalType::NewtonRaphsonMethod, false);
 }
 void MainFrame::ChangeSinoidal(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::SINOIDAL, false);
+    this->ChangeFractal(FractalType::Sinoidal, false);
 }
 void MainFrame::ChangeMagnet(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::MAGNET, false);
+    this->ChangeFractal(FractalType::Magnetic, false);
 }
 void MainFrame::ChangeMedusa(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::MEDUSA, false);
+    this->ChangeFractal(FractalType::Medusa, false);
 }
 void MainFrame::ChangeManowar(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::MANOWAR, true);
+    this->ChangeFractal(FractalType::Manowar, true);
 }
 void MainFrame::ChangeManowarJulia(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::MANOWAR_JULIA, false);
+    this->ChangeFractal(FractalType::ManowarJulia, false);
 }
 void MainFrame::ChangeSierpTriangle(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::SIERP_TRIANGLE, false);
+    this->ChangeFractal(FractalType::SierpinskyTriangle, false);
 }
 void MainFrame::ChangeFixedPoint1(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::FIXEDPOINT1, false);
+    this->ChangeFractal(FractalType::FixedPoint1, false);
 }
 void MainFrame::ChangeFixedPoint2(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::FIXEDPOINT2, false);
+    this->ChangeFractal(FractalType::FixedPoint2, false);
 }
 void MainFrame::ChangeFixedPoint3(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::FIXEDPOINT3, false);
+    this->ChangeFractal(FractalType::FixedPoint3, false);
 }
 void MainFrame::ChangeFixedPoint4(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::FIXEDPOINT4, false);
+    this->ChangeFractal(FractalType::FixedPoint4, false);
 }
 void MainFrame::ChangeTricorn(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::TRICORN, false);
+    this->ChangeFractal(FractalType::Tricorn, false);
 }
 void MainFrame::ChangeBurningShip(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::BURNING_SHIP, true);
+    this->ChangeFractal(FractalType::BurningShip, true);
 }
 void MainFrame::ChangeBurningShipJulia(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::BURNING_SHIP_JULIA, false);
+    this->ChangeFractal(FractalType::BurningShipJulia, false);
 }
 void MainFrame::ChangeFractory(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::FRACTORY, false);
+    this->ChangeFractal(FractalType::Fractory, false);
 }
 void MainFrame::ChangeCell(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::CELL, false);
+    this->ChangeFractal(FractalType::Cell, false);
 }
 void MainFrame::ChangeLogistic(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::LOGISTIC, false);
+    this->ChangeFractal(FractalType::Logistic, false);
 }
 void MainFrame::ChangeHenonMap(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::HENON_MAP, false);
+    this->ChangeFractal(FractalType::HenonMap, false);
 }
 void MainFrame::ChangeDPendulum(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::DOUBLE_PENDULUM, false);
+    this->ChangeFractal(FractalType::DoublePendulum, false);
 }
 void MainFrame::ChangeUserDefined(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::USER_DEFINED, false);
+    this->ChangeFractal(FractalType::UserDefined, false);
 }
 void MainFrame::ChangeFPUserDefined(wxCommandEvent &event)
 {
-    this->ChangeFractal(FractalType::FPUSER_DEFINED, false);
+    this->ChangeFractal(FractalType::FixedPointUserDefined, false);
 }
 void MainFrame::ChangeFractal(FractalType fType, bool enableJulia)
 {
     selectedScriptIndex = -1;  // Deselect the script fractal.
-    if(fractalType != fType || fractalType == FractalType::USER_DEFINED || fractalType == FractalType::FPUSER_DEFINED)
+    if(fractalType != fType || fractalType == FractalType::UserDefined || fractalType == FractalType::FixedPointUserDefined)
     {
         Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
         fractalCanvas->ChangeType(fType);
 
-        if(fType == FractalType::MANDELBROT || fType == FractalType::JULIA) // This is because they have smooth coloring.
+        if(fType == FractalType::Mandelbrot || fType == FractalType::Julia) // This is because they have smooth coloring.
         {
-            if(opt.mode == GRADIENT)
+            if(opt.mode == ColorMode::Gradient)
                 fractalCanvas->GetFractalPtr()->SetGradient(fractOpt.gradient);
             else
                 fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
@@ -882,7 +882,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent &event)
     fractalCanvas->ChangeToScript(scriptDataVect[id]);
     fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
 
-    fractalType = FractalType::SCRIPT_FRACTAL;
+    fractalType = FractalType::ScriptFractal;
     this->UpdateMenu();
     juliaMode->Enable(false);
 }
@@ -903,9 +903,9 @@ void MainFrame::GetParserOpt()
         vector<string> colorOpt;
         colorOpt.push_back("Gradient");
         colorOpt.push_back("EST_Mode");
-        vector<COLOR_MODE> colorValues;
-        colorValues.push_back(GRADIENT);
-        colorValues.push_back(GAUSSIAN);
+        vector<ColorMode> colorValues;
+        colorValues.push_back(ColorMode::Gradient);
+        colorValues.push_back(ColorMode::Gaussian);
 
         fractalOpt.push_back("Mandelbrot");
         fractalOpt.push_back("MandelbrotZN");
@@ -932,31 +932,31 @@ void MainFrame::GetParserOpt()
         fractalOpt.push_back("Double_Pendulum");
         fractalOpt.push_back("User_Defined");
         fractalOpt.push_back("FPUser_Defined");
-        fractalValues.push_back(FractalType::MANDELBROT);
-        fractalValues.push_back(FractalType::MANDELBROT_ZN);
-        fractalValues.push_back(FractalType::JULIA);
-        fractalValues.push_back(FractalType::JULIA_ZN);
-        fractalValues.push_back(FractalType::NEWTON);
-        fractalValues.push_back(FractalType::SINOIDAL);
-        fractalValues.push_back(FractalType::MAGNET);
-        fractalValues.push_back(FractalType::MEDUSA);
-        fractalValues.push_back(FractalType::MANOWAR);
-        fractalValues.push_back(FractalType::MANOWAR_JULIA);
-        fractalValues.push_back(FractalType::SIERP_TRIANGLE);
-        fractalValues.push_back(FractalType::FIXEDPOINT1);
-        fractalValues.push_back(FractalType::FIXEDPOINT2);
-        fractalValues.push_back(FractalType::FIXEDPOINT3);
-        fractalValues.push_back(FractalType::FIXEDPOINT4);
-        fractalValues.push_back(FractalType::TRICORN);
-        fractalValues.push_back(FractalType::BURNING_SHIP);
-        fractalValues.push_back(FractalType::BURNING_SHIP_JULIA);
-        fractalValues.push_back(FractalType::FRACTORY);
-        fractalValues.push_back(FractalType::CELL);
-        fractalValues.push_back(FractalType::LOGISTIC);
-        fractalValues.push_back(FractalType::HENON_MAP);
-        fractalValues.push_back(FractalType::DOUBLE_PENDULUM);
-        fractalValues.push_back(FractalType::USER_DEFINED);
-        fractalValues.push_back(FractalType::FPUSER_DEFINED);
+        fractalValues.push_back(FractalType::Mandelbrot);
+        fractalValues.push_back(FractalType::MandelbrotZN);
+        fractalValues.push_back(FractalType::Julia);
+        fractalValues.push_back(FractalType::JuliaZN);
+        fractalValues.push_back(FractalType::NewtonRaphsonMethod);
+        fractalValues.push_back(FractalType::Sinoidal);
+        fractalValues.push_back(FractalType::Magnetic);
+        fractalValues.push_back(FractalType::Medusa);
+        fractalValues.push_back(FractalType::Manowar);
+        fractalValues.push_back(FractalType::ManowarJulia);
+        fractalValues.push_back(FractalType::SierpinskyTriangle);
+        fractalValues.push_back(FractalType::FixedPoint1);
+        fractalValues.push_back(FractalType::FixedPoint2);
+        fractalValues.push_back(FractalType::FixedPoint3);
+        fractalValues.push_back(FractalType::FixedPoint4);
+        fractalValues.push_back(FractalType::Tricorn);
+        fractalValues.push_back(FractalType::BurningShip);
+        fractalValues.push_back(FractalType::BurningShipJulia);
+        fractalValues.push_back(FractalType::Fractory);
+        fractalValues.push_back(FractalType::Cell);
+        fractalValues.push_back(FractalType::Logistic);
+        fractalValues.push_back(FractalType::HenonMap);
+        fractalValues.push_back(FractalType::DoublePendulum);
+        fractalValues.push_back(FractalType::UserDefined);
+        fractalValues.push_back(FractalType::FixedPointUserDefined);
 
         vector<string> styleOpt;
         styleOpt.push_back("Summer_Day");
@@ -966,7 +966,7 @@ void MainFrame::GetParserOpt()
         styleOpt.push_back("Pastel");
         styleOpt.push_back("Psych_Experience");
         styleOpt.push_back("Vivid_Colors");
-        vector<GAUSS_STYLES> styleValues;
+        vector<GaussianColorStyles> styleValues;
         styleValues.push_back(SUMMER_DAY);
         styleValues.push_back(COOL_BLUE);
         styleValues.push_back(HARD_RED);
@@ -975,10 +975,10 @@ void MainFrame::GetParserOpt()
         styleValues.push_back(PSYCH_EXPERIENCE);
         styleValues.push_back(VIVID_COLORS);
 
-        p.OptionToVar<COLOR_MODE>(opt.mode, "COLOR_TYPE", colorOpt, colorValues, GAUSSIAN);
-        p.OptionToVar<FractalType>(opt.type, "FRACTAL_TYPE", fractalOpt, fractalValues, FractalType::MANDELBROT);
+        p.OptionToVar<ColorMode>(opt.mode, "COLOR_TYPE", colorOpt, colorValues, ColorMode::Gaussian);
+        p.OptionToVar<FractalType>(opt.type, "FRACTAL_TYPE", fractalOpt, fractalValues, FractalType::Mandelbrot);
         p.IntArgToVar(opt.maxIterations, "DEFAULT_ITERATION", 100);
-        if(opt.mode == GRADIENT)
+        if(opt.mode == ColorMode::Gradient)
         {
             p.StringArgToVar(opt.colorStyleGrad, "COLOR_STYLE",    "rgb(0,0,0);rgb(255,255,255);");
             opt.colorStyleGaussian = SUMMER_DAY;
@@ -1013,8 +1013,8 @@ void MainFrame::GetParserOpt()
         file << "APP_VERSION=" << APP_VERSION << "\n";
         file.close();
 
-        opt.mode = GRADIENT;
-        opt.type = FractalType::MANDELBROT;
+        opt.mode = ColorMode::Gradient;
+        opt.type = FractalType::Mandelbrot;
         opt.maxIterations = 100;
         opt.paletteSize = 300;
         opt.colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);\n";
@@ -1326,7 +1326,7 @@ void MainFrame::UpdateMenu()
     slider->Check(false);
 
     // Closes formula dialog.
-    if(fractalType != FractalType::USER_DEFINED && fractalType != FractalType::FPUSER_DEFINED)
+    if(fractalType != FractalType::UserDefined && fractalType != FractalType::FixedPointUserDefined)
     {
         if(formDiagActive)
         {
@@ -1334,7 +1334,7 @@ void MainFrame::UpdateMenu()
             formDiagActive = false;
         }
     }
-    if(fractalType == FractalType::SCRIPT_FRACTAL)
+    if(fractalType == FractalType::ScriptFractal)
         pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));
     else
         pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));
@@ -1379,20 +1379,20 @@ void MainFrame::UpdateJuliaMode()
         FractalType juliaType;
         switch(fractalType)
         {
-        case FractalType::MANDELBROT:
-            juliaType = FractalType::JULIA;
+        case FractalType::Mandelbrot:
+            juliaType = FractalType::Julia;
             break;
-        case FractalType::MANDELBROT_ZN:
-            juliaType = FractalType::JULIA_ZN;
+        case FractalType::MandelbrotZN:
+            juliaType = FractalType::JuliaZN;
             break;
-        case FractalType::MANOWAR:
-            juliaType = FractalType::MANOWAR_JULIA;
+        case FractalType::Manowar:
+            juliaType = FractalType::ManowarJulia;
             break;
-        case FractalType::BURNING_SHIP:
-            juliaType = FractalType::BURNING_SHIP_JULIA;
+        case FractalType::BurningShip:
+            juliaType = FractalType::BurningShipJulia;
             break;
         default:
-            juliaType = FractalType::JULIA;
+            juliaType = FractalType::Julia;
         };
 
         ptr = new JuliaMode(fractalCanvas, juliaType, fractalCanvas->GetFractalPtr()->GetOptions(), this);

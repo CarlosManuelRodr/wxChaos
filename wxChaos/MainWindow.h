@@ -89,12 +89,12 @@ enum IDS
 
 struct ConfigParserOpt
 {
-    COLOR_MODE mode;
+    ColorMode mode;
     FractalType type;
     int maxIterations;
     int paletteSize;
     string colorStyleGrad;
-    GAUSS_STYLES colorStyleGaussian;
+    GaussianColorStyles colorStyleGaussian;
     bool constantWindow, commandConsole, juliaMode;
     bool colorPaletteWindow, colorFractal, colorSet;
     bool firstUse;
@@ -169,7 +169,7 @@ class MainFrame : public wxFrame
     bool formDiagActive;
     bool pause;
     bool showOptPanel;
-    GAUSS_STYLES colorStyle;
+    GaussianColorStyles colorStyle;
     FractalType fractalType;
     ConfigParserOpt opt;
 

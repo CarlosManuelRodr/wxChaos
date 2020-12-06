@@ -2,53 +2,53 @@
 #include "StringFuncs.h"
 
 // FuncDialog
-FuncDialog::FuncDialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-    : wxDialog( parent, id, title, pos, size, style )
+FuncDialog::FuncDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+    : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
-    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+    this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
     wxBoxSizer* mainSizer;
-    mainSizer = new wxBoxSizer( wxVERTICAL );
+    mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    mainPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxBoxSizer* panelSizer;
-    panelSizer = new wxBoxSizer( wxVERTICAL );
+    panelSizer = new wxBoxSizer(wxVERTICAL);
 
     wxBoxSizer* textSizer;
-    textSizer = new wxBoxSizer( wxVERTICAL );
+    textSizer = new wxBoxSizer(wxVERTICAL);
 
-    text = new wxTextCtrl( mainPanel, wxID_ANY, wxString(wxT(availableFuncTxt)) + wxT("abs(), sin(), cos(), tan(), sinh(), cosh(),\ntanh(), ln(), log(), log10(), exp(), sqrt()."),
-                            wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_READONLY );    // Txt: "Available functions:\n"
-    text->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+    text = new wxTextCtrl(mainPanel, wxID_ANY, wxString(wxT(availableFuncTxt)) + wxT("abs(), sin(), cos(), tan(), sinh(), cosh(),\ntanh(), ln(), log(), log10(), exp(), sqrt()."),
+                            wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_READONLY);    // Txt: "Available functions:\n"
+    text->SetFont(wxFont(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString));
 
-    textSizer->Add( text, 1, wxALL|wxEXPAND, 5 );
+    textSizer->Add(text, 1, wxALL|wxEXPAND, 5);
 
-    panelSizer->Add( textSizer, 4, wxEXPAND, 5 );
+    panelSizer->Add(textSizer, 4, wxEXPAND, 5);
 
     wxBoxSizer* buttonSizer;
-    buttonSizer = new wxBoxSizer( wxVERTICAL );
+    buttonSizer = new wxBoxSizer(wxVERTICAL);
 
-    closeButton = new wxButton( mainPanel, wxID_ANY, wxT(closeTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Close"
-    buttonSizer->Add( closeButton, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+    closeButton = new wxButton(mainPanel, wxID_ANY, wxT(closeTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Close"
+    buttonSizer->Add(closeButton, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
-    panelSizer->Add( buttonSizer, 1, wxEXPAND, 5 );
+    panelSizer->Add(buttonSizer, 1, wxEXPAND, 5);
 
-    mainPanel->SetSizer( panelSizer );
+    mainPanel->SetSizer(panelSizer);
     mainPanel->Layout();
-    panelSizer->Fit( mainPanel );
-    mainSizer->Add( mainPanel, 1, wxEXPAND | wxALL, 1 );
+    panelSizer->Fit(mainPanel);
+    mainSizer->Add(mainPanel, 1, wxEXPAND | wxALL, 1);
 
-    this->SetSizer( mainSizer );
+    this->SetSizer(mainSizer);
     this->Layout();
 
-    this->Centre( wxBOTH );
+    this->Centre(wxBOTH);
 
-    closeButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( FuncDialog::OnClose ), NULL, this );
+    closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FuncDialog::OnClose), NULL, this);
 }
 FuncDialog::~FuncDialog()
 {
-    closeButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( FuncDialog::OnClose ), NULL, this );
+    closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FuncDialog::OnClose), NULL, this);
 }
 void FuncDialog::OnClose(wxCommandEvent& event)
 {
@@ -56,7 +56,7 @@ void FuncDialog::OnClose(wxCommandEvent& event)
 }
 
 // FormulaDialog
-FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GAUSS_STYLES* mColorStyle, wxMenuItem* juliaSlider, wxMenuItem* juliaManual,
+FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GaussianColorStyles* mColorStyle, wxMenuItem* juliaSlider, wxMenuItem* juliaManual,
                                 bool *Active, FractalCanvas* _fCanvas, wxWindow* _parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
                             : wxDialog(_parent, id, title, pos, size, style)
 {
@@ -153,7 +153,7 @@ FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GAUSS_STY
 
     this->Centre(wxBOTH);
 
-    if(fCanvas->GetFormula().type == COMPLEX_TYPE)
+    if(fCanvas->GetFormula().type == FormulaType::Complex)
     {
         typeChoice->SetSelection( 0 );
         juliaCheck->Enable(true);
@@ -196,9 +196,9 @@ void FormulaDialog::OnApply(wxCommandEvent& event)
     options.julia = juliaCheck->GetValue();
 
     if(typeChoice->GetCurrentSelection() == 0)
-        options.type = COMPLEX_TYPE;
+        options.type = FormulaType::Complex;
     else
-        options.type = FIXED_POINT_TYPE;
+        options.type = FormulaType::FixedPoint;
 
     fCanvas->SetUserFormula(options);
 

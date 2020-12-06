@@ -39,83 +39,83 @@ int Get_Cores();
 */
 enum class FractalType
 {
-    MANDELBROT,
-    MANDELBROT_ZN,
-    JULIA,
-    JULIA_ZN,
-    NEWTON,
-    SINOIDAL,
-    MAGNET,
-    MEDUSA,
-    MANOWAR,
-    MANOWAR_JULIA,
-    SIERP_TRIANGLE,
-    FIXEDPOINT1,
-    FIXEDPOINT2,
-    FIXEDPOINT3,
-    FIXEDPOINT4,
-    TRICORN,
-    BURNING_SHIP,
-    BURNING_SHIP_JULIA,
-    FRACTORY,
-    CELL,
-    LOGISTIC,
-    HENON_MAP,
-    DOUBLE_PENDULUM,
-    USER_DEFINED,
-    FPUSER_DEFINED,
-    SCRIPT_FRACTAL,
-    UNDEFINED
+    Mandelbrot,
+    MandelbrotZN,
+    Julia,
+    JuliaZN,
+    NewtonRaphsonMethod,
+    Sinoidal,
+    Magnetic,
+    Medusa,
+    Manowar,
+    ManowarJulia,
+    SierpinskyTriangle,
+    FixedPoint1,
+    FixedPoint2,
+    FixedPoint3,
+    FixedPoint4,
+    Tricorn,
+    BurningShip,
+    BurningShipJulia,
+    Fractory,
+    Cell,
+    Logistic,
+    HenonMap,
+    DoublePendulum,
+    UserDefined,
+    FixedPointUserDefined,
+    ScriptFractal,
+    Undefined
 };
 
 /**
-* @enum COLOR
+* @enum Color
 * @brief Enumerates the rgb color.
 */
-enum COLOR
+enum class Color
 {
-    red,
-    green,
-    blue
+    Red,
+    Green,
+    Blue
 };
 
 /**
-* @enum ALGORITHM
+* @enum RenderingAlgorithm
 * @brief List of available render algorithms.
 */
-enum ALGORITHM
+enum class RenderingAlgorithm
 {
-    ESCAPE_TIME,
-    GAUSSIAN_INT,
-    BUDDHABROT,
-    ESCAPE_ANGLE,
-    TRIANGLE_INEQ,
-    CHAOTIC_MAP,
-    LYAPUNOV,
-    CONVERGENCE_TEST,
-    OTHER
+    EscapeTime,
+    GaussianInt,
+    Buddhabrot,
+    EscapeAngle,
+    TriangleInequality,
+    ChaoticMap,
+    Lyapunov,
+    ConvergenceTest,
+    Other
 };
 
 /**
-* @enum COLOR_MODE
+* @enum ColorMode
 * @brief List of available color modes.
 */
-enum COLOR_MODE
+enum class ColorMode
 {
-    GRADIENT,
-    GAUSSIAN
+    Gradient,
+    Gaussian
 };
 
 /**
-* @enum DIRECTION
+* @enum Direction
 * @brief Movement direction.
 */
-enum DIRECTION
+enum Direction
 {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN
+    Left = 0,
+    Right,
+    Up,
+    Down
 };
 
 /**
@@ -154,8 +154,8 @@ struct Options
     unsigned maxIter;
     int changeGradient;
     wxGradient gradient;
-    COLOR_MODE colorPaletteMode;
-    ALGORITHM alg;
+    ColorMode colorPaletteMode;
+    RenderingAlgorithm alg;
     FractalType type;
     int paletteSize;
     int gaussianPaletteSize;
@@ -182,13 +182,13 @@ struct Options
 };
 
 /**
-* @enum FORMULA_TYPE
+* @enum FormulaType
 * @brief Type of user formula.
 */
-enum FORMULA_TYPE
+enum class FormulaType
 {
-    COMPLEX_TYPE = 1,
-    FIXED_POINT_TYPE
+    Complex = 1,
+    FixedPoint
 };
 
 /**
@@ -199,7 +199,7 @@ enum FORMULA_TYPE
 struct FormulaOpt
 {
     wxString userFormula;        ///< String containing the user formula.
-    FORMULA_TYPE type;           ///< Type of user formula (Complex or fixed point).
+    FormulaType type;            ///< Type of user formula (Complex or fixed point).
     bool julia;                  ///< Inform if the fractal is a Julia variety. Only on complex type.
     int bailout;                 ///< Bailout of the complex fractal.
 };
@@ -513,7 +513,7 @@ protected:
 
     // Fractal properties.
     PanelOptions panelOpt;          ///< List of GUI elements to put into the option panel.
-    FractalType type;              ///< Type of fractal to render.
+    FractalType type;               ///< Type of fractal to render.
     double minX;                    ///< Left numeric limit of the fractal.
     double maxX;                    ///< Right numeric limit of the fractal.
     double minY;                    ///< Lower numeric limit of the fractal.
@@ -552,9 +552,9 @@ protected:
     double magnification;
 
     // Color properties.
-    ALGORITHM alg;
-    vector<ALGORITHM> availableAlg;
-    COLOR_MODE colorPaletteMode;
+    RenderingAlgorithm alg;
+    vector<RenderingAlgorithm> availableAlg;
+    ColorMode colorPaletteMode;
     wxGradient gradient;                    ///< Gradient to be used.
     sf::Color white;
     sf::Color fSetColor;                    ///< Color of points belonging to the set.
@@ -569,8 +569,8 @@ protected:
     bool relativeColor;
     bool colorSet;                          ///< Activates internal coloring.
     bool colorMode;                         ///< Activates external coloring.
-    GAUSS_STYLES gaussianStyle;             ///< Gaussian color palette to be used.
-    GRAD_STYLES gradStyle;                  ///< Grad color palette to be used.
+    GaussianColorStyles gaussianStyle;             ///< Gaussian color palette to be used.
+    GradientColorStyles gradStyle;                  ///< Grad color palette to be used.
     int paletteSize;
     int gaussianPaletteSize;
     int gradPaletteSize;
@@ -635,7 +635,7 @@ protected:
     ///@param colorNum Color parameter.
     ///@param col Channel to calculate.
     ///@return A 8 bit unsigned integer with the calculated color.
-    sf::Uint8 CalcGradient(int colorNum, COLOR col);
+    sf::Uint8 CalcGradient(int colorNum, Color col);
 
     ///@brief Looks into the color palette for the corresponding color.
     ///@param colorNum Color parameter.
@@ -784,8 +784,8 @@ public:
     void SetFractalPropChanged();
     bool GetChangeFractalProp();
     void SetOnWxCtrl(bool mode);
-    void SetMovement(DIRECTION dir);
-    void ReleaseMovement(DIRECTION dir);
+    void SetMovement(Direction dir);
+    void ReleaseMovement(Direction dir);
 
     // Save image.
     sf::Image GetRenderedImage();
@@ -793,18 +793,18 @@ public:
     void PrepareSnapshot(bool mode);
 
     // Color styles.
-    void SetGaussianColorStyle(GAUSS_STYLES _gaussianStyle);
-    GAUSS_STYLES GetGaussianColorStyle();
-    void SetGradStyle(GRAD_STYLES _gradStyle);
-    GRAD_STYLES GetGradStyle();
+    void SetGaussianColorStyle(GaussianColorStyles _gaussianStyle);
+    GaussianColorStyles GetGaussianColorStyle();
+    void SetGradStyle(GradientColorStyles _gradStyle);
+    GradientColorStyles GetGradStyle();
 
     // Color operations.
-    void SetGaussianColorIntensity(int intensity, COLOR col);
-    void SetGaussianColorMean(double med, COLOR col);
-    void SetGaussianColorStdDev(double des, COLOR col);
-    int GetGaussianColorIntensity(COLOR col);
-    double GetGaussianColorMean(COLOR col);
-    double GetGaussianColorStdDev(COLOR col);
+    void SetGaussianColorIntensity(int intensity, Color col);
+    void SetGaussianColorMean(double med, Color col);
+    void SetGaussianColorStdDev(double des, Color col);
+    int GetGaussianColorIntensity(Color col);
+    double GetGaussianColorMean(Color col);
+    double GetGaussianColorStdDev(Color col);
     void SetExtColorMode(bool mode);
     void SetFractalSetColorMode(bool mode);
     void SetFractalSetColor(sf::Color color);
@@ -815,18 +815,18 @@ public:
     void SetPaletteSize(int size);
     int GetPaletteSize();
     wxGradient* GetGradient();
-    COLOR_MODE GetColorMode();
+    ColorMode GetColorMode();
     void SetGradient(wxGradient grad);
     void SetGradientSize(unsigned int size);
-    void SetPaletteMode(COLOR_MODE mode);
+    void SetPaletteMode(ColorMode mode);
     void SetRelativeColor(bool mode);
     bool GetRelativeColorMode();
     void SetVarGradient(int n);
 
     // Algorithm.
-    ALGORITHM GetCurrentAlg();
-    vector<ALGORITHM> GetAvailableAlg();
-    void SetAlgorithm(ALGORITHM _alg);
+    RenderingAlgorithm GetCurrentAlg();
+    vector<RenderingAlgorithm> GetAvailableAlg();
+    void SetAlgorithm(RenderingAlgorithm _alg);
 
     // Julia mode operations.
     bool IsJuliaVariety();

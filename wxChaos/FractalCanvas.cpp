@@ -32,7 +32,7 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     userFormula.bailout = 2;
     userFormula.julia = false;
     userFormula.userFormula = wxT("z = z^2 + c");
-    userFormula.type = COMPLEX_TYPE;
+    userFormula.type = FormulaType::Complex;
 
     // Create fractal.
     fractalHandler.CreateFractal(fractType, this);
@@ -107,7 +107,7 @@ void FractalCanvas::OnUpdate()
             if(btn->state)
             {
                 btn->state = false;
-                if(type == FractalType::SCRIPT_FRACTAL)
+                if(type == FractalType::ScriptFractal)
                     btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));    // Txt: "Abort"
                 else
                     btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: "Pause"
@@ -161,7 +161,7 @@ void FractalCanvas::OnUpdate()
                 if(btn->state)
                 {
                     btn->state = false;
-                    if(type == FractalType::SCRIPT_FRACTAL)
+                    if(type == FractalType::ScriptFractal)
                         btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));    // Txt: "Abort"
                     else
                         btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: "Pause"
@@ -169,7 +169,7 @@ void FractalCanvas::OnUpdate()
                 else
                 {
                     btn->state = true;
-                    if(type == FractalType::SCRIPT_FRACTAL)
+                    if(type == FractalType::ScriptFractal)
                         btn->pauseContinue->SetItemLabel(wxString(wxT(menuRelaunchTxt))+ wxT('\t') + wxT("P"));    // Txt: "Relaunch script"
                     else
                         btn->pauseContinue->SetItemLabel(wxString(wxT(menuContinueTxt))+ wxT('\t') + wxT("P"));    // Txt: "Continue"
@@ -194,16 +194,16 @@ void FractalCanvas::OnUpdate()
     if(!target->IsRendering())
     {
         selection->Show(this);
-        if(type != FractalType::LOGISTIC && type != FractalType::HENON_MAP) play->Show(this);
+        if(type != FractalType::Logistic && type != FractalType::HenonMap)
+            play->Show(this);
+
         if(btn->pauseContinue->IsEnabled() && !target->IsPaused())
-        {
             btn->pauseContinue->Enable(false);
-        }
 
         if(btn->state && !target->IsPaused())
         {
             btn->state = false;
-            if(type == FractalType::SCRIPT_FRACTAL)
+            if(type == FractalType::ScriptFractal)
                 btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));    // Txt: "Abort"
             else
                 btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: "Pause"
@@ -217,7 +217,8 @@ void FractalCanvas::OnUpdate()
         if(helpImageMode)
         {
             this->Draw(outHelp);
-            if(!keybGuide) this->Draw(outKeyb);
+            if(!keybGuide)
+                this->Draw(outKeyb);
         }
 
         if(juliaMode || orbitMode || sliderMode) pointer->Show(this);
@@ -234,7 +235,7 @@ void FractalCanvas::OnUpdate()
         }
 #endif
     }
-    else if(!btn->pauseContinue->IsEnabled() && type != FractalType::SIERP_TRIANGLE) // Triangle and Logistic don't use threads so they cannot be paused.
+    else if(!btn->pauseContinue->IsEnabled() && type != FractalType::SierpinskyTriangle) // Triangle and Logistic don't use threads so they cannot be paused.
     {
         btn->pauseContinue->Enable(true);
     }
@@ -253,9 +254,7 @@ void FractalCanvas::SetWxSize(wxSize size)
             keybGuide = true;
         }
         else
-        {
             keybGuide = false;
-        }
     }
     if(helpImageMode)
     {
@@ -274,20 +273,20 @@ void FractalCanvas::SetJuliaMode(bool mode)
         FRACTAL_TYPE juliaType;
         switch(type)
         {
-        case MANDELBROT:
-            juliaType = JULIA;
+        case Mandelbrot:
+            juliaType = Julia;
             break;
-        case MANDELBROT_ZN:
-            juliaType = JULIA_ZN;
+        case MandelbrotZN:
+            juliaType = JuliaZN;
             break;
-        case MANOWAR:
-            juliaType = MANOWAR_JULIA;
+        case Manowar:
+            juliaType = ManowarJulia;
             break;
-        case BURNING_SHIP:
-            juliaType = BURNING_SHIP_JULIA;
+        case BurningShip:
+            juliaType = BurningShipJulia;
             break;
         default:
-            juliaType = JULIA;
+            juliaType = Julia;
         };
 
         juliaHandler.CreateFractal(juliaType, this->GetWidth()/3, this->GetHeight()/3);
@@ -366,7 +365,7 @@ void FractalCanvas::ChangeType(FractalType _type)
 void FractalCanvas::ChangeToScript(ScriptData _scriptData)
 {
     // Deletes old fractal and creates a new one.
-    type = FractalType::SCRIPT_FRACTAL;
+    type = FractalType::ScriptFractal;
     scriptData = _scriptData;
     fractalHandler.CreateScriptFractal(this, scriptData);
     target = fractalHandler.GetFractalPtr();
@@ -416,7 +415,7 @@ void FractalCanvas::Reset()
     if(target->IsRendering())
         target->StopRender();
 
-    if(type == FractalType::SCRIPT_FRACTAL)
+    if(type == FractalType::ScriptFractal)
         fractalHandler.CreateScriptFractal(this, scriptData);
     else
         fractalHandler.CreateFractal(type, this);
@@ -442,7 +441,8 @@ void FractalCanvas::SetOrbitMode(bool mode)
     if(orbitMode)
     {
         target->SetOrbitMode(true);
-        if(pointer == NULL) pointer = new ScreenPointer(this);
+        if(pointer == NULL) 
+            pointer = new ScreenPointer(this);
     }
     else
     {
@@ -494,9 +494,7 @@ void FractalCanvas::OnResize(wxSizeEvent &event)
             keybGuide = true;
         }
         else
-        {
             keybGuide = false;
-        }
     }
     if(helpImageMode)
     {
@@ -537,12 +535,10 @@ void FractalCanvas::OnClick(wxMouseEvent &event)
     }
     // Selection event.
     else if(!target->IsRendering() && !target->IsMoving())
-    {
         selection->ClickEvent(event);
-    }
 
     // Play button event.
-    if(type != FractalType::LOGISTIC && type != FractalType::HENON_MAP)
+    if(type != FractalType::Logistic && type != FractalType::HenonMap)
     {
         if(play->ClickEvent(event))
             target->ChangeVarGradient();
@@ -551,7 +547,8 @@ void FractalCanvas::OnClick(wxMouseEvent &event)
     // Mouse event.
     if(helpImageMode)
     {
-        if(event.ButtonDown(wxMOUSE_BTN_LEFT)) helpImageMode = false;
+        if(event.ButtonDown(wxMOUSE_BTN_LEFT))
+            helpImageMode = false;
     }
 
     if(event.ButtonDown(wxMOUSE_BTN_RIGHT))
@@ -560,7 +557,7 @@ void FractalCanvas::OnClick(wxMouseEvent &event)
         if(btn->state && !target->IsPaused())
         {
             btn->state = false;
-            if(type == FractalType::SCRIPT_FRACTAL)
+            if(type == FractalType::ScriptFractal)
                 btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));    // Txt: "Abort"
             else
                 btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: "Pause"
@@ -583,7 +580,7 @@ void FractalCanvas::OnUnClick(wxMouseEvent &event)
                 if(btn->state)
                 {
                     btn->state = false;
-                    if(type == FractalType::SCRIPT_FRACTAL)
+                    if(type == FractalType::ScriptFractal)
                         btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));    // Txt: "Abort"
                     else
                         btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: "Pause"
@@ -619,28 +616,26 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent &event)
     else
     {
         if(!target->IsRendering() && !target->IsMoving())
-        {
             selection->MoveEvent(event);
-        }
     }
 
     // Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
     wxString text;
-    if(type == FractalType::LOGISTIC)
+    if(type == FractalType::Logistic)
     {
         text = wxT("a: ");
         text += num_to_string(target->GetX(event.GetPosition().x));
         text += wxT("   x: ");
         text += num_to_string(target->GetY(event.GetPosition().y));
     }
-    else if(type == FractalType::DOUBLE_PENDULUM)
+    else if(type == FractalType::DoublePendulum)
     {
         text = wxT("θ2: ");
         text += num_to_string(target->GetX(event.GetPosition().x));
         text += wxT("   θ1: ");
         text += num_to_string(target->GetY(event.GetPosition().y));
     }
-    else if(type == FractalType::SIERP_TRIANGLE || type == FractalType::HENON_MAP || type == FractalType::SCRIPT_FRACTAL)
+    else if(type == FractalType::SierpinskyTriangle || type == FractalType::HenonMap || type == FractalType::ScriptFractal)
     {
         text = wxT("x: ");
         text += num_to_string(target->GetX(event.GetPosition().x));
@@ -662,44 +657,37 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     {
     case WXK_UP:
         {
-            target->SetMovement(UP);
+            target->SetMovement(Direction::Up);
             break;
         }
     case WXK_DOWN:
         {
-            target->SetMovement(DOWN);
+            target->SetMovement(Direction::Down);
             break;
         }
     case WXK_LEFT:
         {
-            target->SetMovement(LEFT);
+            target->SetMovement(Direction::Left);
             break;
         }
     case WXK_RIGHT:
         {
-            target->SetMovement(RIGHT);
+            target->SetMovement(Direction::Right);
             break;
         }
     default: break;
     }
 
     wxChar key = event.GetUnicodeKey();
+
     if(key == wxT('W'))
-    {
-        target->SetMovement(UP);
-    }
+        target->SetMovement(Direction::Up);
     else if(key == wxT('S'))
-    {
-        target->SetMovement(DOWN);
-    }
+        target->SetMovement(Direction::Down);
     else if(key == wxT('A'))
-    {
-        target->SetMovement(LEFT);
-    }
+        target->SetMovement(Direction::Left);
     else if(key == wxT('D'))
-    {
-        target->SetMovement(RIGHT);
-    }
+        target->SetMovement(Direction::Right);
 }
 void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 {
@@ -707,22 +695,22 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
     {
     case WXK_UP:
         {
-            target->ReleaseMovement(UP);
+            target->ReleaseMovement(Direction::Up);
             break;
         }
     case WXK_DOWN:
         {
-            target->ReleaseMovement(DOWN);
+            target->ReleaseMovement(Direction::Down);
             break;
         }
     case WXK_LEFT:
         {
-            target->ReleaseMovement(LEFT);
+            target->ReleaseMovement(Direction::Left);
             break;
         }
     case WXK_RIGHT:
         {
-            target->ReleaseMovement(RIGHT);
+            target->ReleaseMovement(Direction::Right);
             break;
         }
     default: break;
@@ -730,19 +718,11 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 
     wxChar key = event.GetUnicodeKey();
     if(key == wxT('W'))
-    {
-        target->ReleaseMovement(UP);
-    }
+        target->ReleaseMovement(Direction::Up);
     else if(key == wxT('S'))
-    {
-        target->ReleaseMovement(DOWN);
-    }
+        target->ReleaseMovement(Direction::Down);
     else if(key == wxT('A'))
-    {
-        target->ReleaseMovement(LEFT);
-    }
+        target->ReleaseMovement(Direction::Left);
     else if(key == wxT('D'))
-    {
-        target->ReleaseMovement(RIGHT);
-    }
+        target->ReleaseMovement(Direction::Right);
 }
