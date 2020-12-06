@@ -26,7 +26,7 @@ class JuliaMode : public sf::Thread
     SelectRect *selection;
     Options myJuliaOpt;
     ButtonChange *play;
-    FRACTAL_TYPE type;
+    FractalType type;
     wxWindow *parent;
 
     sf::Event event;
@@ -41,7 +41,7 @@ public:
     ///@param fractalType Type of Julia fractal to be created.
     ///@param juliaOpt Options to copy from the parent fractal.
     ///@param _parent Parent wxWidget window.
-    JuliaMode(FractalCanvas *ptr, FRACTAL_TYPE fractalType, Options juliaOpt, wxWindow *_parent = NULL);
+    JuliaMode(FractalCanvas *ptr, FractalType fractalType, Options juliaOpt, wxWindow *_parent = NULL);
     ~JuliaMode();
     void Close();
 

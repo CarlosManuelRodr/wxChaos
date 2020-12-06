@@ -90,7 +90,7 @@ enum IDS
 struct ConfigParserOpt
 {
     COLOR_MODE mode;
-    FRACTAL_TYPE type;
+    FractalType type;
     int maxIterations;
     int paletteSize;
     string colorStyleGrad;
@@ -170,7 +170,7 @@ class MainFrame : public wxFrame
     bool pause;
     bool showOptPanel;
     GAUSS_STYLES colorStyle;
-    FRACTAL_TYPE fractalType;
+    FractalType fractalType;
     ConfigParserOpt opt;
 
     void SetUpGUI();                      ///< Create the main window.
@@ -180,7 +180,7 @@ class MainFrame : public wxFrame
     ///@brief Changes the fractal type.
     ///@param fType Type of the fractal.
     ///@param enableJulia Enables a Julia version of this type.
-    void ChangeFractal(FRACTAL_TYPE fType, bool enableJulia);
+    void ChangeFractal(FractalType fType, bool enableJulia);
     void GetParserOpt();                  ///< Gets parameters from the config.ini file.
     void DeleteOptPanel();                ///< Deletes all the elements in the option panel.
     void GetScriptFractals();             ///< Creates the menu elements corresponding to the script fractals.

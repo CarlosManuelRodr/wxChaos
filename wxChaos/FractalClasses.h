@@ -34,10 +34,10 @@ int Get_Cores();
 ****************************/
 
 /**
-* @enum FRACTAL_TYPE
+* @enum FractalType
 * @brief Enumerates the list of available fractals.
 */
-enum FRACTAL_TYPE
+enum class FractalType
 {
     MANDELBROT,
     MANDELBROT_ZN,
@@ -64,7 +64,8 @@ enum FRACTAL_TYPE
     DOUBLE_PENDULUM,
     USER_DEFINED,
     FPUSER_DEFINED,
-    SCRIPT_FRACTAL
+    SCRIPT_FRACTAL,
+    UNDEFINED
 };
 
 /**
@@ -155,7 +156,7 @@ struct Options
     wxGradient gradient;
     COLOR_MODE colorPaletteMode;
     ALGORITHM alg;
-    FRACTAL_TYPE type;
+    FractalType type;
     int paletteSize;
     int gaussianPaletteSize;
     int gradPaletteSize;
@@ -240,7 +241,7 @@ protected:
     bool specialRenderMode;     ///< Controls the rendering modes.
     Options myOpt;              ///< A copy of the parameters found in the Fractal class.
 
-    FRACTAL_TYPE type;
+    FractalType type;
     double xFactor;
     double yFactor;
     double minX;
@@ -512,7 +513,7 @@ protected:
 
     // Fractal properties.
     PanelOptions panelOpt;          ///< List of GUI elements to put into the option panel.
-    FRACTAL_TYPE type;              ///< Type of fractal to render.
+    FractalType type;              ///< Type of fractal to render.
     double minX;                    ///< Left numeric limit of the fractal.
     double maxX;                    ///< Right numeric limit of the fractal.
     double minY;                    ///< Lower numeric limit of the fractal.
@@ -774,7 +775,7 @@ public:
     void SetRendered(bool mode);
 
     ///@brief Gets the type of the fractal.
-    FRACTAL_TYPE GetType();
+    FractalType GetType();
 
     ///@brief Returns a pointer to the set map.
     bool **GetSetMap();

@@ -47,10 +47,19 @@ inline double TIA(double z_re, double z_im, double c_re, double c_im, double tia
 // RenderMandelbrot
 RenderMandelbrot::RenderMandelbrot()
 {
-
+    buddhaRandomP = 0;
+    bd = 0;
 }
 void RenderMandelbrot::Render()
 {
+    double c_im;
+    double c_re;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
+
     // Creates fractal.
     if(myOpt.alg == ESCAPE_TIME)
     {
@@ -133,7 +142,7 @@ void RenderMandelbrot::Render()
     else if(myOpt.alg == BUDDHABROT)
     {
         sf::Mutex mutex;
-        srand(static_cast<unsigned int>(time(NULL)));
+        srand(static_cast<unsigned int>(time(nullptr)));
 
         complex<double> z, c;
         complex<double> *cmpArray;
@@ -307,6 +316,14 @@ void RenderMandelbrot::Render()
 }
 void RenderMandelbrot::SpecialRender()
 {
+    double c_im;
+    double c_re;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
+
     if(myOpt.orbitTrapMode)
     {
         // Creates fractal.
@@ -429,7 +446,7 @@ Mandelbrot::Mandelbrot(sf::RenderWindow *Window):Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = MANDELBROT;
+    type = FractalType::MANDELBROT;
     hasOrbit = true;
     hasOrbitTrap = true;
     hasSmoothRender = true;
@@ -470,7 +487,7 @@ Mandelbrot::Mandelbrot(int width, int height) : Fractal(width, height)
     alg = ESCAPE_TIME;
     hasSmoothRender = true;
     hasOrbitTrap = true;
-    type = MANDELBROT;
+    type = FractalType::MANDELBROT;
     myRender = new RenderMandelbrot[threadNumber];
     SetWatchdog<RenderMandelbrot>(myRender, &watchdog, threadNumber);
 }
@@ -557,10 +574,14 @@ void Mandelbrot::PreDrawMaps()
 // RenderMandelbrotZN
 RenderMandelbrotZN::RenderMandelbrotZN()
 {
-
+    n = 0;
+    bailout = 0;
 }
 void RenderMandelbrotZN::Render()
 {
+    double c_im;
+    bool insideSet;
+
     // Creates fractal.
     unsigned i;
     complex<double> z, c;
@@ -672,6 +693,10 @@ void RenderMandelbrotZN::Render()
 }
 void RenderMandelbrotZN::SpecialRender()
 {
+    double c_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
     double squaredBail = bailout*bailout;
     double log2 = log(2.0);
     unsigned i;
@@ -785,7 +810,7 @@ MandelbrotZN::MandelbrotZN(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     // Ajusta opciones.
-    type = MANDELBROT_ZN;
+    type = FractalType::MANDELBROT_ZN;
     hasOrbit = true;
     hasOrbitTrap = true;
     hasSmoothRender = true;
@@ -828,7 +853,7 @@ MandelbrotZN::MandelbrotZN(int width, int height) : Fractal(width, height)
     alg = ESCAPE_TIME;
     hasSmoothRender = false;
     hasOrbitTrap = true;
-    type = MANDELBROT_ZN;
+    type = FractalType::MANDELBROT_ZN;
     myRender = new RenderMandelbrotZN[threadNumber];
     SetWatchdog<RenderMandelbrotZN>(myRender, &watchdog, threadNumber);
 }
@@ -875,12 +900,17 @@ void MandelbrotZN::CopyOptFromPanel()
 }
 
 // RenderJulia
-RenderJulia::RenderJulia()
-{
-
-}
+RenderJulia::RenderJulia() {}
 void RenderJulia::Render()
 {
+    double c_im;
+    double c_re;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
+
     // Creates fractal.
     unsigned n;
     if(myOpt.alg == ESCAPE_TIME)
@@ -1053,6 +1083,14 @@ void RenderJulia::Render()
 }
 void RenderJulia::SpecialRender()
 {
+    double c_im;
+    double c_re;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
+
     double log2 = log(2.0);
     if(myOpt.orbitTrapMode)
     {
@@ -1161,7 +1199,7 @@ Julia::Julia(sf::RenderWindow *Window):Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = JULIA;
+    type = FractalType::JULIA;
     kReal = -0.754696;
     kImaginary = -0.0524231;
     hasOrbit = true;
@@ -1196,7 +1234,7 @@ Julia::Julia(int width, int height) : Fractal(width, height)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     juliaVariety = true;
-    type = JULIA;
+    type = FractalType::JULIA;
     myRender = new RenderJulia[threadNumber];
     SetWatchdog<RenderJulia>(myRender, &watchdog, threadNumber);
 }
@@ -1240,10 +1278,13 @@ void Julia::Render()
 // RenderJuliaZN
 RenderJuliaZN::RenderJuliaZN()
 {
-
+    n = 0;
+    bailout = 0;
 }
 void RenderJuliaZN::Render()
 {
+    double c_im;
+    bool insideSet;
     unsigned i;
     double squaredBail = bailout*bailout;
 
@@ -1362,6 +1403,10 @@ void RenderJuliaZN::Render()
 }
 void RenderJuliaZN::SpecialRender()
 {
+    double Z_re2;
+    double Z_im2;
+    double c_im;
+    bool insideSet;
     complex<double> z, k;
     k = complex<double>(kReal, kImaginary);
     double squaredBail = bailout*bailout;
@@ -1476,7 +1521,7 @@ JuliaZN::JuliaZN(sf::RenderWindow *Window):Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = JULIA_ZN;
+    type = FractalType::JULIA_ZN;
     kReal = -0.754696;
     kImaginary = -0.0524231;
     hasOrbit = true;
@@ -1524,7 +1569,7 @@ JuliaZN::JuliaZN(int width, int height) : Fractal(width, height)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     juliaVariety = true;
-    type = JULIA_ZN;
+    type = FractalType::JULIA_ZN;
     myRender = new RenderJuliaZN[threadNumber];
     SetWatchdog<RenderJuliaZN>(myRender, &watchdog, threadNumber);
 }
@@ -1578,14 +1623,20 @@ RenderNewton::RenderNewton()
 }
 void RenderNewton::Render()
 {
+    double re, im;
+    double tmp;
+    double d;
+    double re2, im2;
+    double prev_re, prev_im;
+
     // Creates fractal.
     unsigned n;
     for(y=ho; y<hf; y++)
     {
         for(x=wo; x<wf; x++)
         {
-            re_ant = re = minX + x*xFactor;
-            im_ant = im = maxY - y*yFactor;
+            prev_re = re = minX + x*xFactor;
+            prev_im = im = maxY - y*yFactor;
 
             for(n=0; n<maxIter; n++)
             {
@@ -1599,14 +1650,14 @@ void RenderNewton::Render()
                 re = (2.0/3.0)*re + (re2 - im2)/d;
                 im = (2.0/3.0)*im - 2.0*tmp*im/d;
 
-                if((re_ant - minStep < re && re_ant + minStep > re) && (im_ant - minStep < im && im_ant + minStep > im))
+                if((prev_re - minStep < re && prev_re + minStep > re) && (prev_im - minStep < im && prev_im + minStep > im))
                 {
                     break;
                 }
                 else
                 {
-                    re_ant = re;
-                    im_ant = im;
+                    prev_re = re;
+                    prev_im = im;
                 }
             }
             if(re <= 0 && im >= 0)
@@ -1677,7 +1728,7 @@ Newton::Newton(sf::RenderWindow *Window):Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = NEWTON;
+    type = FractalType::NEWTON;
     hasOrbit = true;
     hasOrbitTrap = true;
     myRender = new RenderNewton[threadNumber];
@@ -1708,7 +1759,7 @@ Newton::Newton(int width, int height) : Fractal(width, height)
     panelOpt.LinkDbl(TXTCTRL, wxT(minStepTxt), &minStep, wxT("0.001"));
     minStep = 0.001;
 
-    type = NEWTON;
+    type = FractalType::NEWTON;
     myRender = new RenderNewton[threadNumber];
     SetWatchdog<RenderNewton>(myRender, &watchdog, threadNumber);
 }
@@ -1932,7 +1983,7 @@ Sinoidal::Sinoidal(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = SINOIDAL;
+    type = FractalType::SINOIDAL;
     kReal = 1;
     kImaginary = 0.25;
     hasOrbit = true;
@@ -1965,7 +2016,7 @@ Sinoidal::Sinoidal(int width, int height) : Fractal(width, height)
     kImaginary = 0.25;
     juliaVariety = true;
 
-    type = SINOIDAL;
+    type = FractalType::SINOIDAL;
     myRender = new RenderSinoidal[threadNumber];
     SetWatchdog<RenderSinoidal>(myRender, &watchdog, threadNumber);
 }
@@ -2099,7 +2150,7 @@ Magnet::Magnet(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = MAGNET;
+    type = FractalType::MAGNET;
     hasOrbit = true;
 
     myRender = new RenderMagnet[threadNumber];
@@ -2122,7 +2173,7 @@ Magnet::Magnet(int width, int height) : Fractal(width, height)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     alg = ESCAPE_TIME;
-    type = MAGNET;
+    type = FractalType::MAGNET;
     myRender = new RenderMagnet[threadNumber];
     SetWatchdog<RenderMagnet>(myRender, &watchdog, threadNumber);
 }
@@ -2360,7 +2411,7 @@ Medusa::Medusa(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = MEDUSA;
+    type = FractalType::MEDUSA;
     kReal = -0.2;
     kImaginary = 0;
     juliaVariety = true;
@@ -2391,7 +2442,7 @@ Medusa::Medusa(int width, int height) : Fractal(width, height)
     juliaVariety = true;
     alg = ESCAPE_TIME;
 
-    type = MEDUSA;
+    type = FractalType::MEDUSA;
     myRender = new RenderMedusa[threadNumber];
     SetWatchdog<RenderMedusa>(myRender, &watchdog, threadNumber);
 }
@@ -2651,7 +2702,7 @@ Manowar::Manowar(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = MANOWAR;
+    type = FractalType::MANOWAR;
     hasOrbit = true;
     hasOrbitTrap = true;
     myRender = new RenderManowar[threadNumber];
@@ -2676,7 +2727,7 @@ Manowar::Manowar(int width, int height) : Fractal(width, height)
 
     alg = ESCAPE_TIME;
 
-    type = MANOWAR;
+    type = FractalType::MANOWAR;
     myRender = new RenderManowar[threadNumber];
     SetWatchdog<RenderManowar>(myRender, &watchdog, threadNumber);
 }
@@ -2934,7 +2985,7 @@ ManowarJulia::ManowarJulia(sf::RenderWindow *Window) : Fractal(Window)
 {
     kReal = 0.0272873;
     kImaginary = -0.0432547;
-    type = MANOWAR_JULIA;
+    type = FractalType::MANOWAR_JULIA;
     juliaVariety = true;
     hasOrbit = true;
     hasOrbitTrap = true;
@@ -2963,7 +3014,7 @@ ManowarJulia::ManowarJulia(int width, int height) : Fractal(width, height)
     juliaVariety = true;
     alg = ESCAPE_TIME;
 
-    type = MANOWAR_JULIA;
+    type = FractalType::MANOWAR_JULIA;
     myRender = new RenderManowarJulia[threadNumber];
     SetWatchdog<RenderManowarJulia>(myRender, &watchdog, threadNumber);
 }
@@ -3064,12 +3115,12 @@ SierpTriangle::SierpTriangle(sf::RenderWindow *Window) : Fractal(Window)
     myRender = new RenderSierpTriangle[threadNumber];
     SetWatchdog<RenderSierpTriangle>(myRender, &watchdog, threadNumber);
 
-    type = SIERP_TRIANGLE;
+    type = FractalType::SIERP_TRIANGLE;
 }
 SierpTriangle::SierpTriangle(int width, int height) : Fractal(width, height)
 {
     renderJobComp = false;
-    type = SIERP_TRIANGLE;
+    type = FractalType::SIERP_TRIANGLE;
     myRender = new RenderSierpTriangle[threadNumber];
     SetWatchdog<RenderSierpTriangle>(myRender, &watchdog, threadNumber);
 }
@@ -3128,7 +3179,7 @@ FixedPoint1::FixedPoint1(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
     hasOrbit = true;
 
-    type = FIXEDPOINT1;
+    type = FractalType::FIXEDPOINT1;
     myRender = new RenderFixedPoint1[threadNumber];
     SetWatchdog<RenderFixedPoint1>(myRender, &watchdog, threadNumber);
 
@@ -3143,7 +3194,7 @@ FixedPoint1::FixedPoint1(sf::RenderWindow *Window):Fractal(Window)
 }
 FixedPoint1::FixedPoint1(int width, int height) : Fractal(width, height)
 {
-    type = FIXEDPOINT1;
+    type = FractalType::FIXEDPOINT1;
     myRender = new RenderFixedPoint1[threadNumber];
     SetWatchdog<RenderFixedPoint1>(myRender, &watchdog, threadNumber);
 }
@@ -3242,7 +3293,7 @@ FixedPoint2::FixedPoint2(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = FIXEDPOINT2;
+    type = FractalType::FIXEDPOINT2;
     myRender = new RenderFixedPoint2[threadNumber];
     SetWatchdog<RenderFixedPoint2>(myRender, &watchdog, threadNumber);
 
@@ -3257,7 +3308,7 @@ FixedPoint2::FixedPoint2(sf::RenderWindow *Window):Fractal(Window)
 }
 FixedPoint2::FixedPoint2(int width, int height) : Fractal(width, height)
 {
-    type = FIXEDPOINT2;
+    type = FractalType::FIXEDPOINT2;
     myRender = new RenderFixedPoint2[threadNumber];
     SetWatchdog<RenderFixedPoint2>(myRender, &watchdog, threadNumber);
 }
@@ -3355,7 +3406,7 @@ FixedPoint3::FixedPoint3(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
     hasOrbit = true;
 
-    type = FIXEDPOINT3;
+    type = FractalType::FIXEDPOINT3;
     myRender = new RenderFixedPoint3[threadNumber];
     SetWatchdog<RenderFixedPoint3>(myRender, &watchdog, threadNumber);
 
@@ -3370,7 +3421,7 @@ FixedPoint3::FixedPoint3(sf::RenderWindow *Window):Fractal(Window)
 }
 FixedPoint3::FixedPoint3(int width, int height) : Fractal(width, height)
 {
-    type = FIXEDPOINT3;
+    type = FractalType::FIXEDPOINT3;
     myRender = new RenderFixedPoint3[threadNumber];
     SetWatchdog<RenderFixedPoint3>(myRender, &watchdog, threadNumber);
 }
@@ -3473,7 +3524,7 @@ FixedPoint4::FixedPoint4(sf::RenderWindow *Window):Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
     hasOrbit = true;
 
-    type = FIXEDPOINT4;
+    type = FractalType::FIXEDPOINT4;
     myRender = new RenderFixedPoint4[threadNumber];
     SetWatchdog<RenderFixedPoint4>(myRender, &watchdog, threadNumber);
 
@@ -3488,7 +3539,7 @@ FixedPoint4::FixedPoint4(sf::RenderWindow *Window):Fractal(Window)
 }
 FixedPoint4::FixedPoint4(int width, int height) : Fractal(width, height)
 {
-    type = FIXEDPOINT4;
+    type = FractalType::FIXEDPOINT4;
     myRender = new RenderFixedPoint4[threadNumber];
     SetWatchdog<RenderFixedPoint4>(myRender, &watchdog, threadNumber);
 }
@@ -3682,7 +3733,7 @@ Tricorn::Tricorn(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = TRICORN;
+    type = FractalType::TRICORN;
     myRender = new RenderTricorn[threadNumber];
     SetWatchdog<RenderTricorn>(myRender, &watchdog, threadNumber);
 
@@ -3706,7 +3757,7 @@ Tricorn::Tricorn(int width, int height) : Fractal(width, height)
     hasOrbit = true;
     alg = ESCAPE_TIME;
 
-    type = TRICORN;
+    type = FractalType::TRICORN;
     myRender = new RenderTricorn[threadNumber];
     SetWatchdog<RenderTricorn>(myRender, &watchdog, threadNumber);
 }
@@ -3900,7 +3951,7 @@ BurningShip::BurningShip(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = BURNING_SHIP;
+    type = FractalType::BURNING_SHIP;
     myRender = new RenderBurningShip[threadNumber];
     SetWatchdog<RenderBurningShip>(myRender, &watchdog, threadNumber);
 
@@ -3923,7 +3974,7 @@ BurningShip::BurningShip(int width, int height) : Fractal(width, height)
 
     alg = ESCAPE_TIME;
     hasOrbit = true;
-    type = BURNING_SHIP;
+    type = FractalType::BURNING_SHIP;
     myRender = new RenderBurningShip[threadNumber];
     SetWatchdog<RenderBurningShip>(myRender, &watchdog, threadNumber);
 }
@@ -4111,7 +4162,7 @@ BurningShipJulia::BurningShipJulia(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = BURNING_SHIP;
+    type = FractalType::BURNING_SHIP;
     myRender = new RenderBurningShipJulia[threadNumber];
     SetWatchdog<RenderBurningShipJulia>(myRender, &watchdog, threadNumber);
 
@@ -4134,7 +4185,7 @@ BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, heigh
     yFactor = (maxY-minY)/(screenHeight-1);
 
     alg = ESCAPE_TIME;
-    type = BURNING_SHIP;
+    type = FractalType::BURNING_SHIP;
     myRender = new RenderBurningShipJulia[threadNumber];
     SetWatchdog<RenderBurningShipJulia>(myRender, &watchdog, threadNumber);
 }
@@ -4312,7 +4363,7 @@ Fractory::Fractory(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = FRACTORY;
+    type = FractalType::FRACTORY;
     myRender = new RenderFractory[threadNumber];
     SetWatchdog<RenderFractory>(myRender, &watchdog, threadNumber);
 
@@ -4335,7 +4386,7 @@ Fractory::Fractory(int width, int height) : Fractal(width, height)
     alg = ESCAPE_TIME;
     hasOrbit = true;
 
-    type = FRACTORY;
+    type = FractalType::FRACTORY;
     myRender = new RenderFractory[threadNumber];
     SetWatchdog<RenderFractory>(myRender, &watchdog, threadNumber);
 }
@@ -4480,7 +4531,7 @@ Cell::Cell(sf::RenderWindow *Window) : Fractal(Window)
     yFactor = (maxY-minY)/(screenHeight-1);
 
     hasOrbit = true;
-    type = CELL;
+    type = FractalType::CELL;
     myRender = new RenderCell[threadNumber];
     SetWatchdog<RenderCell>(myRender, &watchdog, threadNumber);
 
@@ -4511,7 +4562,7 @@ Cell::Cell(int width, int height) : Fractal(width, height)
 
     hasOrbit = true;
     alg = ESCAPE_TIME;
-    type = CELL;
+    type = FractalType::CELL;
     myRender = new RenderCell[threadNumber];
     SetWatchdog<RenderCell>(myRender, &watchdog, threadNumber);
 }
@@ -4652,7 +4703,7 @@ LogisticMap::LogisticMap(sf::RenderWindow *Window) : Fractal(Window)
     minY = 0.24;
     maxY = 1;
 
-    type = LOGISTIC;
+    type = FractalType::LOGISTIC;
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
     this->SetExtColorMode(false);
@@ -4694,7 +4745,7 @@ LogisticMap::LogisticMap(int width, int height) : Fractal(width, height)
     renderJobComp = false;
     alg = CHAOTIC_MAP;
 
-    type = LOGISTIC;
+    type = FractalType::LOGISTIC;
     myRender = new RenderLogisticMap[1];
     SetWatchdog<RenderLogisticMap>(myRender, &watchdog, 1);
 }
@@ -4765,7 +4816,7 @@ HenonMap::HenonMap(sf::RenderWindow *Window) : Fractal(Window)
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
     maxIter = 20000;
 
-    type = HENON_MAP;
+    type = FractalType::HENON_MAP;
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
     this->SetExtColorMode(false);
@@ -4792,7 +4843,7 @@ HenonMap::HenonMap(sf::RenderWindow *Window) : Fractal(Window)
 }
 HenonMap::HenonMap(int width, int height) : Fractal(width, height)
 {
-    type = HENON_MAP;
+    type = FractalType::HENON_MAP;
     alg = CHAOTIC_MAP;
 
     threadNumber = 1;
@@ -5121,7 +5172,7 @@ DPendulum::DPendulum(sf::RenderWindow *Window):Fractal(Window)
     maxIter = 4000;
     hasOrbit = true;
 
-    type = DOUBLE_PENDULUM;
+    type = FractalType::DOUBLE_PENDULUM;
     myRender = new RenderDPendulum[threadNumber];
     SetWatchdog<RenderDPendulum>(myRender, &watchdog, threadNumber);
 
@@ -5193,7 +5244,7 @@ DPendulum::DPendulum(int width, int height) : Fractal(width, height)
     rungeKutta = false;
 
     alg = ESCAPE_TIME;
-    type = DOUBLE_PENDULUM;
+    type = FractalType::DOUBLE_PENDULUM;
     myRender = new RenderDPendulum[threadNumber];
     SetWatchdog<RenderDPendulum>(myRender, &watchdog, threadNumber);
 }
@@ -5416,7 +5467,7 @@ UserDefined::UserDefined(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = USER_DEFINED;
+    type = FractalType::USER_DEFINED;
     hasOrbit = true;
     myRender = new RenderUserDefined[threadNumber];
     SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
@@ -5427,7 +5478,7 @@ UserDefined::UserDefined(sf::RenderWindow *Window) : Fractal(Window)
 }
 UserDefined::UserDefined(int width, int height) : Fractal(width, height)
 {
-    type = USER_DEFINED;
+    type = FractalType::USER_DEFINED;
     myRender = new RenderUserDefined[threadNumber];
     SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
 }
@@ -5604,7 +5655,7 @@ FPUserDefined::FPUserDefined(sf::RenderWindow *Window) : Fractal(Window)
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
 
-    type = FPUSER_DEFINED;
+    type = FractalType::FPUSER_DEFINED;
     hasOrbit = true;
     myRender = new RenderFPUserDefined[threadNumber];
     SetWatchdog<RenderFPUserDefined>(myRender, &watchdog, threadNumber);
@@ -5620,7 +5671,7 @@ FPUserDefined::FPUserDefined(sf::RenderWindow *Window) : Fractal(Window)
 }
 FPUserDefined::FPUserDefined(int width, int height) : Fractal(width, height)
 {
-    type = FPUSER_DEFINED;
+    type = FractalType::FPUSER_DEFINED;
     myRender = new RenderFPUserDefined[threadNumber];
     SetWatchdog<RenderFPUserDefined>(myRender, &watchdog, threadNumber);
 }
@@ -5711,6 +5762,7 @@ void RenderScriptFractal::Render()
     // Creates script engine.
     engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
     engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
+    engine->SetEngineProperty(asEP_AUTO_GARBAGE_COLLECT, false);
     engine->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, true);
     if( engine == 0 )
     {
@@ -5747,7 +5799,7 @@ void RenderScriptFractal::Render()
     if( r < 0 )
     {
         engine->Release();
-        engine = NULL;
+        engine = nullptr;
         errorInfo = wxT("Compile error.");
         return;
     }
@@ -5768,8 +5820,8 @@ void RenderScriptFractal::Render()
         errorInfo = wxT("The function 'Render' was not found.");
         ctx->Release();
         engine->Release();
-        engine = NULL;
-        ctx = NULL;
+        engine = nullptr;
+        ctx = nullptr;
         return;
     }
 
@@ -5805,9 +5857,7 @@ bool RenderScriptFractal::IsThereError()
 void RenderScriptFractal::PreTerminate()
 {
     if(!hasEnded)
-    {
         ctx->Abort();
-    }
 }
 void RenderScriptFractal::SetParams(int _threadIndex)
 {
@@ -5832,7 +5882,7 @@ ScriptFractal::ScriptFractal(sf::RenderWindow *Window, ScriptData scriptData) : 
 
     path = scriptData.file;
     myScriptData = scriptData;
-    type = SCRIPT_FRACTAL;
+    type = FractalType::SCRIPT_FRACTAL;
     myRender = new RenderScriptFractal[threadNumber];
     for(unsigned int i=0; i<threadNumber; i++)
     {
@@ -5858,7 +5908,7 @@ ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData) : Fra
 
     path = scriptData.file;
     myScriptData = scriptData;
-    type = SCRIPT_FRACTAL;
+    type = FractalType::SCRIPT_FRACTAL;
     myRender = new RenderScriptFractal[threadNumber];
     for(unsigned int i=0; i<threadNumber; i++)
     {
@@ -5870,7 +5920,7 @@ ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData) : Fra
 ScriptFractal::ScriptFractal(int width, int height, string scriptPath) : Fractal(width, height)
 {
     path = scriptPath;
-    type = SCRIPT_FRACTAL;
+    type = FractalType::SCRIPT_FRACTAL;
     myRender = new RenderScriptFractal[threadNumber];
     for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetPath(scriptPath);
     SetWatchdog<RenderScriptFractal>(myRender, &watchdog, threadNumber);
@@ -5926,164 +5976,166 @@ void ScriptFractal::PreRestartRender()
 // FractalHandler
 FractalHandler::FractalHandler()
 {
-    mandelbrot = NULL;
-    mandelbrotZN = NULL;
-    julia = NULL;
-    juliaZN = NULL;
-    newton = NULL;
-    sinoidal = NULL;
-    magnet = NULL;
-    triangulo = NULL;
-    medusa = NULL;
-    manowar = NULL;
-    manowarJulia = NULL;
-    fixedPoint1 = NULL;
-    fixedPoint2 = NULL;
-    fixedPoint3 = NULL;
-    fixedPoint4 = NULL;
-    tricorn = NULL;
-    burningShip = NULL;
-    burningShipJulia = NULL;
-    fractory = NULL;
-    cell = NULL;
-    logisticMap = NULL;
-    henonMap = NULL;
-    dPendulum = NULL;
-    userDefined = NULL;
-    fpUserDefined = NULL;
-    scriptFractal = NULL;
+    mandelbrot = nullptr;
+    mandelbrotZN = nullptr;
+    julia = nullptr;
+    juliaZN = nullptr;
+    newton = nullptr;
+    sinoidal = nullptr;
+    magnet = nullptr;
+    sierpinskyTriangle = nullptr;
+    medusa = nullptr;
+    manowar = nullptr;
+    manowarJulia = nullptr;
+    fixedPoint1 = nullptr;
+    fixedPoint2 = nullptr;
+    fixedPoint3 = nullptr;
+    fixedPoint4 = nullptr;
+    tricorn = nullptr;
+    burningShip = nullptr;
+    burningShipJulia = nullptr;
+    fractory = nullptr;
+    cell = nullptr;
+    logisticMap = nullptr;
+    henonMap = nullptr;
+    dPendulum = nullptr;
+    userDefined = nullptr;
+    fpUserDefined = nullptr;
+    scriptFractal = nullptr;
+    target = nullptr;
+    type = FractalType::UNDEFINED;
 }
 FractalHandler::~FractalHandler()
 {
     this->DeleteFractal();
 }
-void FractalHandler::CreateFractal(FRACTAL_TYPE _type, sf::RenderWindow *Window)
+void FractalHandler::CreateFractal(FractalType _type, sf::RenderWindow* Window)
 {
     this->DeleteFractal();
     type = _type;
     switch(_type)
     {
-    case MANDELBROT:
+    case FractalType::MANDELBROT:
         {
             target = mandelbrot = new Mandelbrot(Window);
             break;
         }
-    case MANDELBROT_ZN:
+    case FractalType::MANDELBROT_ZN:
         {
             target = mandelbrotZN = new MandelbrotZN(Window);
             break;
         }
-    case JULIA:
+    case FractalType::JULIA:
         {
             target = julia = new Julia(Window);
             break;
         }
-    case JULIA_ZN:
+    case FractalType::JULIA_ZN:
         {
             target = juliaZN = new JuliaZN(Window);
             break;
         }
-    case NEWTON:
+    case FractalType::NEWTON:
         {
             target = newton = new Newton(Window);
             break;
         }
-    case SINOIDAL:
+    case FractalType::SINOIDAL:
         {
             target = sinoidal = new Sinoidal(Window);
             break;
         }
-    case MAGNET:
+    case FractalType::MAGNET:
         {
             target = magnet = new Magnet(Window);
             break;
         }
-    case MEDUSA:
+    case FractalType::MEDUSA:
         {
             target = medusa = new Medusa(Window);
             break;
         }
-    case MANOWAR:
+    case FractalType::MANOWAR:
         {
             target = manowar = new Manowar(Window);
             break;
         }
-    case MANOWAR_JULIA:
+    case FractalType::MANOWAR_JULIA:
         {
             target = manowarJulia = new ManowarJulia(Window);
             break;
         }
-    case SIERP_TRIANGLE:
+    case FractalType::SIERP_TRIANGLE:
         {
-            target = triangulo = new SierpTriangle(Window);
+            target = sierpinskyTriangle = new SierpTriangle(Window);
             break;
         }
-    case FIXEDPOINT1:
+    case FractalType::FIXEDPOINT1:
         {
             target = fixedPoint1 = new FixedPoint1(Window);
             break;
         }
-    case FIXEDPOINT2:
+    case FractalType::FIXEDPOINT2:
         {
             target = fixedPoint2 = new FixedPoint2(Window);
             break;
         }
-    case FIXEDPOINT3:
+    case FractalType::FIXEDPOINT3:
         {
             target = fixedPoint3 = new FixedPoint3(Window);
             break;
         }
-    case FIXEDPOINT4:
+    case FractalType::FIXEDPOINT4:
         {
             target = fixedPoint4 = new FixedPoint4(Window);
             break;
         }
-    case TRICORN:
+    case FractalType::TRICORN:
         {
             target = tricorn = new Tricorn(Window);
             break;
         }
-    case BURNING_SHIP:
+    case FractalType::BURNING_SHIP:
         {
             target = burningShip = new BurningShip(Window);
             break;
         }
-    case BURNING_SHIP_JULIA:
+    case FractalType::BURNING_SHIP_JULIA:
         {
             target = burningShipJulia = new BurningShipJulia(Window);
             break;
         }
-    case FRACTORY:
+    case FractalType::FRACTORY:
         {
             target = fractory = new Fractory(Window);
             break;
         }
-    case CELL:
+    case FractalType::CELL:
         {
             target = cell = new Cell(Window);
             break;
         }
-    case LOGISTIC:
+    case FractalType::LOGISTIC:
         {
             target = logisticMap = new LogisticMap(Window);
             break;
         }
-    case HENON_MAP:
+    case FractalType::HENON_MAP:
         {
             target = henonMap = new HenonMap(Window);
             break;
         }
-    case DOUBLE_PENDULUM:
+    case FractalType::DOUBLE_PENDULUM:
         {
             target = dPendulum = new DPendulum(Window);
             break;
         }
-    case USER_DEFINED:
+    case FractalType::USER_DEFINED:
         {
             target = userDefined = new UserDefined(Window);
             break;
         }
-    case FPUSER_DEFINED:
+    case FractalType::FPUSER_DEFINED:
         {
             target = fpUserDefined = new FPUserDefined(Window);
             break;
@@ -6091,133 +6143,133 @@ void FractalHandler::CreateFractal(FRACTAL_TYPE _type, sf::RenderWindow *Window)
     default: break;
     }
 }
-void FractalHandler::CreateFractal(FRACTAL_TYPE _type, int width, int height)
+void FractalHandler::CreateFractal(FractalType _type, int width, int height)
 {
     this->DeleteFractal();
     type = _type;
     switch(_type)
     {
-    case MANDELBROT:
+    case FractalType::MANDELBROT:
         {
             target = mandelbrot = new Mandelbrot(width, height);
             break;
         }
-    case MANDELBROT_ZN:
+    case FractalType::MANDELBROT_ZN:
         {
             target = mandelbrotZN = new MandelbrotZN(width, height);
             break;
         }
-    case JULIA:
+    case FractalType::JULIA:
         {
             target = julia = new Julia(width, height);
             break;
         }
-    case JULIA_ZN:
+    case FractalType::JULIA_ZN:
         {
             target = juliaZN = new JuliaZN(width, height);
             break;
         }
-    case NEWTON:
+    case FractalType::NEWTON:
         {
             target = newton = new Newton(width, height);
             break;
         }
-    case SINOIDAL:
+    case FractalType::SINOIDAL:
         {
             target = sinoidal = new Sinoidal(width, height);
             break;
         }
-    case MAGNET:
+    case FractalType::MAGNET:
         {
             target = magnet = new Magnet(width, height);
             break;
         }
-    case MEDUSA:
+    case FractalType::MEDUSA:
         {
             target = medusa = new Medusa(width, height);
             break;
         }
-    case MANOWAR:
+    case FractalType::MANOWAR:
         {
             target = manowar = new Manowar(width, height);
             break;
         }
-    case MANOWAR_JULIA:
+    case FractalType::MANOWAR_JULIA:
         {
             target = manowarJulia = new ManowarJulia(width, height);
             break;
         }
-    case SIERP_TRIANGLE:
+    case FractalType::SIERP_TRIANGLE:
         {
-            target = triangulo = new SierpTriangle(width, height);
+            target = sierpinskyTriangle = new SierpTriangle(width, height);
             break;
         }
-    case FIXEDPOINT1:
+    case FractalType::FIXEDPOINT1:
         {
             target = fixedPoint1 = new FixedPoint1(width, height);
             break;
         }
-    case FIXEDPOINT2:
+    case FractalType::FIXEDPOINT2:
         {
             target = fixedPoint2 = new FixedPoint2(width, height);
             break;
         }
-    case FIXEDPOINT3:
+    case FractalType::FIXEDPOINT3:
         {
             target = fixedPoint3 = new FixedPoint3(width, height);
             break;
         }
-    case FIXEDPOINT4:
+    case FractalType::FIXEDPOINT4:
         {
             target = fixedPoint4 = new FixedPoint4(width, height);
             break;
         }
-    case TRICORN:
+    case FractalType::TRICORN:
         {
             target = tricorn = new Tricorn(width, height);
             break;
         }
-    case BURNING_SHIP:
+    case FractalType::BURNING_SHIP:
         {
             target = burningShip = new BurningShip(width, height);
             break;
         }
-    case BURNING_SHIP_JULIA:
+    case FractalType::BURNING_SHIP_JULIA:
         {
             target = burningShipJulia = new BurningShipJulia(width, height);
             break;
         }
-    case FRACTORY:
+    case FractalType::FRACTORY:
         {
             target = fractory = new Fractory(width, height);
             break;
         }
-    case CELL:
+    case FractalType::CELL:
         {
             target = cell = new Cell(width, height);
             break;
         }
-    case LOGISTIC:
+    case FractalType::LOGISTIC:
         {
             target = logisticMap = new LogisticMap(width, height);
             break;
         }
-    case HENON_MAP:
+    case FractalType::HENON_MAP:
         {
             target = henonMap = new HenonMap(width, height);
             break;
         }
-    case DOUBLE_PENDULUM:
+    case FractalType::DOUBLE_PENDULUM:
         {
             target = dPendulum = new DPendulum(width, height);
             break;
         }
-    case USER_DEFINED:
+    case FractalType::USER_DEFINED:
         {
             target = userDefined = new UserDefined(width, height);
             break;
         }
-    case FPUSER_DEFINED:
+    case FractalType::FPUSER_DEFINED:
         {
             target = fpUserDefined = new FPUserDefined(width, height);
             break;
@@ -6225,7 +6277,7 @@ void FractalHandler::CreateFractal(FRACTAL_TYPE _type, int width, int height)
     default: break;
     }
 }
-void FractalHandler::CreateScriptFractal(sf::RenderWindow *Window, ScriptData scriptData)
+void FractalHandler::CreateScriptFractal(sf::RenderWindow* Window, ScriptData scriptData)
 {
     target = scriptFractal = new ScriptFractal(Window, scriptData);
 }
@@ -6239,7 +6291,7 @@ void FractalHandler::CreateScriptFractal(int width, int height, string scriptPat
 }
 void FractalHandler::SetFormula(FormulaOpt formula)
 {
-    if(type == USER_DEFINED)
+    if(type == FractalType::USER_DEFINED)
     {
         if(formula.type != COMPLEX_TYPE)
         {
@@ -6248,7 +6300,7 @@ void FractalHandler::SetFormula(FormulaOpt formula)
         }
         userDefined->SetFormula(formula);
     }
-    else if(type == FPUSER_DEFINED)
+    else if(type == FractalType::FPUSER_DEFINED)
     {
         if(formula.type != FIXED_POINT_TYPE)
         {
@@ -6260,143 +6312,143 @@ void FractalHandler::SetFormula(FormulaOpt formula)
 }
 void FractalHandler::DeleteFractal()
 {
-    target = NULL;
-    if(mandelbrot != NULL)
+    target = nullptr;
+    if(mandelbrot != nullptr)
     {
         delete mandelbrot;
-        mandelbrot = NULL;
+        mandelbrot = nullptr;
     }
-    if(mandelbrotZN != NULL)
+    if(mandelbrotZN != nullptr)
     {
         delete mandelbrotZN;
-        mandelbrotZN = NULL;
+        mandelbrotZN = nullptr;
     }
-    if(julia != NULL)
+    if(julia != nullptr)
     {
         delete julia;
-        julia = NULL;
+        julia = nullptr;
     }
-    if(juliaZN != NULL)
+    if(juliaZN != nullptr)
     {
         delete juliaZN;
-        juliaZN = NULL;
+        juliaZN = nullptr;
     }
-    if(newton != NULL)
+    if(newton != nullptr)
     {
         delete newton;
-        newton = NULL;
+        newton = nullptr;
     }
-    if(sinoidal != NULL)
+    if(sinoidal != nullptr)
     {
         delete sinoidal;
-        sinoidal = NULL;
+        sinoidal = nullptr;
     }
-    if(magnet != NULL)
+    if(magnet != nullptr)
     {
         delete magnet;
-        magnet = NULL;
+        magnet = nullptr;
     }
-    if(medusa != NULL)
+    if(medusa != nullptr)
     {
         delete medusa;
-        medusa = NULL;
+        medusa = nullptr;
     }
-    if(manowar != NULL)
+    if(manowar != nullptr)
     {
         delete manowar;
-        manowar = NULL;
+        manowar = nullptr;
     }
-    if(manowarJulia != NULL)
+    if(manowarJulia != nullptr)
     {
         delete manowarJulia;
-        manowarJulia = NULL;
+        manowarJulia = nullptr;
     }
-    if(triangulo != NULL)
+    if(sierpinskyTriangle != nullptr)
     {
-        delete triangulo;
-        triangulo = NULL;
+        delete sierpinskyTriangle;
+        sierpinskyTriangle = nullptr;
     }
-    if(fixedPoint1 != NULL)
+    if(fixedPoint1 != nullptr)
     {
         delete fixedPoint1;
-        fixedPoint1 = NULL;
+        fixedPoint1 = nullptr;
     }
-    if(fixedPoint2 != NULL)
+    if(fixedPoint2 != nullptr)
     {
         delete fixedPoint2;
-        fixedPoint2 = NULL;
+        fixedPoint2 = nullptr;
     }
-    if(fixedPoint3 != NULL)
+    if(fixedPoint3 != nullptr)
     {
         delete fixedPoint3;
-        fixedPoint3 = NULL;
+        fixedPoint3 = nullptr;
     }
-    if(fixedPoint4 != NULL)
+    if(fixedPoint4 != nullptr)
     {
         delete fixedPoint4;
-        fixedPoint4 = NULL;
+        fixedPoint4 = nullptr;
     }
-    if(tricorn != NULL)
+    if(tricorn != nullptr)
     {
         delete tricorn;
-        tricorn = NULL;
+        tricorn = nullptr;
     }
-    if(burningShip != NULL)
+    if(burningShip != nullptr)
     {
         delete burningShip;
-        burningShip = NULL;
+        burningShip = nullptr;
     }
-    if(burningShipJulia != NULL)
+    if(burningShipJulia != nullptr)
     {
         delete burningShipJulia;
-        burningShipJulia = NULL;
+        burningShipJulia = nullptr;
     }
-    if(fractory != NULL)
+    if(fractory != nullptr)
     {
         delete fractory;
-        fractory = NULL;
+        fractory = nullptr;
     }
-    if(cell != NULL)
+    if(cell != nullptr)
     {
         delete cell;
-        cell = NULL;
+        cell = nullptr;
     }
-    if(logisticMap != NULL)
+    if(logisticMap != nullptr)
     {
         delete logisticMap;
-        logisticMap = NULL;
+        logisticMap = nullptr;
     }
-    if(henonMap != NULL)
+    if(henonMap != nullptr)
     {
         delete henonMap;
-        henonMap = NULL;
+        henonMap = nullptr;
     }
-    if(dPendulum != NULL)
+    if(dPendulum != nullptr)
     {
         delete dPendulum;
-        dPendulum = NULL;
+        dPendulum = nullptr;
     }
-    if(userDefined != NULL)
+    if(userDefined != nullptr)
     {
         delete userDefined;
-        userDefined = NULL;
+        userDefined = nullptr;
     }
-    if(fpUserDefined != NULL)
+    if(fpUserDefined != nullptr)
     {
         delete fpUserDefined;
-        fpUserDefined = NULL;
+        fpUserDefined = nullptr;
     }
-    if(scriptFractal != NULL)
+    if(scriptFractal != nullptr)
     {
         delete scriptFractal;
-        scriptFractal = NULL;
+        scriptFractal = nullptr;
     }
 }
-Fractal* FractalHandler::GetTarget()
+Fractal* FractalHandler::GetFractalPtr()
 {
     return target;
 }
-FRACTAL_TYPE FractalHandler::GetType()
+FractalType FractalHandler::GetType()
 {
     return type;
 }

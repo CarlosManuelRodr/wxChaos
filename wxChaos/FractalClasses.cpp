@@ -1365,7 +1365,7 @@ void Fractal::SetRendered(bool mode)
 {
     rendered = mode;
 }
-FRACTAL_TYPE Fractal::GetType()
+FractalType Fractal::GetType()
 {
     return type;
 }
@@ -2286,7 +2286,7 @@ void RenderFractal::Run()
 }
 void RenderFractal::Stop()
 {
-    if(type != SCRIPT_FRACTAL)
+    if(type != FractalType::SCRIPT_FRACTAL)
     {
         stopped = true;
 

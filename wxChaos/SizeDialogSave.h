@@ -31,7 +31,7 @@ private:
     wxStaticLine* staticLine;
     wxButton* cancelButton;
     Fractal* myFractal;
-    FRACTAL_TYPE myType;
+    FractalType myType;
 
     bool finished;
     bool saveProgressAvailable;
@@ -72,7 +72,7 @@ private:
     FractalHandler fractalHandler;
     FractalCanvas* fCanvas;
     Options opt;
-    FRACTAL_TYPE fractalType;
+    FractalType fractalType;
     string path;
     string myScriptPath;
     double screenRatio;
@@ -83,7 +83,7 @@ private:
     void OnOk(wxCommandEvent& event);             ///< Creates fractal with the parameters from the dialog and saves image.
 
 public:
-    SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int ext, FRACTAL_TYPE type, Fractal* target, wxWindow* parent,
+    SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int ext, FractalType type, Fractal* target, wxWindow* parent,
                    string scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(283, 251), 
                    long style = wxDEFAULT_DIALOG_STYLE);

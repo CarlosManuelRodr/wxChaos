@@ -19,7 +19,7 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     progressSizer = new wxBoxSizer(wxVERTICAL);
 
     myType = myFractal->GetType();
-    if(myType == SCRIPT_FRACTAL)
+    if(myType == FractalType::SCRIPT_FRACTAL)
     {
         progressLabel = new wxStaticText(this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
         progressLabel->Wrap( -1 );
@@ -70,7 +70,7 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent& event)
     if(clock.GetElapsedTime() >= 0.05)
     {
         // Updates progress gauge.
-        if(myFractal->GetType() != SCRIPT_FRACTAL)
+        if(myFractal->GetType() != FractalType::SCRIPT_FRACTAL)
         {
             int progressValue = myFractal->GetWatchdog()->GetThreadProgress();
             progressLabel->SetLabel(wxString(wxT(renderingDotsTxt)) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
@@ -99,7 +99,7 @@ bool SaveProgressDiag::IsFinished()
 }
 
 // SizeDialogSave
-SizeDialogSave::SizeDialogSave(FractalCanvas *mFCanvas, string rutaArchivo, int ext, FRACTAL_TYPE type, Fractal *target, wxWindow* parent,
+SizeDialogSave::SizeDialogSave(FractalCanvas *mFCanvas, string rutaArchivo, int ext, FractalType type, Fractal *target, wxWindow* parent,
                                 string scriptPath, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
@@ -212,7 +212,7 @@ void SizeDialogSave::ChangeHeight(wxSpinEvent& event)
 void SizeDialogSave::OnOk(wxCommandEvent& event)
 {
     // Creates fractal.
-    if(fractalType == SCRIPT_FRACTAL)
+    if(fractalType == FractalType::SCRIPT_FRACTAL)
         fractalHandler.CreateScriptFractal(widthSpin->GetValue(), heightSpin->GetValue(), myScriptPath);
     else
         fractalHandler.CreateFractal(fractalType, widthSpin->GetValue(), heightSpin->GetValue());
@@ -221,24 +221,24 @@ void SizeDialogSave::OnOk(wxCommandEvent& event)
 
     // Copy parameters.
     opt.maxIter = iterationsSpin->GetValue();
-    fractalHandler.GetTarget()->SetOptions(opt);
+    fractalHandler.GetFractalPtr()->SetOptions(opt);
 
     // Saves image according to extension.
-    SaveProgressDiag* diag = new SaveProgressDiag(fractalHandler.GetTarget(), this);
-    fractalHandler.GetTarget()->Render();
+    SaveProgressDiag* diag = new SaveProgressDiag(fractalHandler.GetFractalPtr(), this);
+    fractalHandler.GetFractalPtr()->Render();
     diag->ShowModal();
     if(diag->IsFinished())
     {
         if(extension == 0 || extension == 1)  // PNG or JPG
         {
-            fractalHandler.GetTarget()->SetRendered(true);
-            sf::Image out = fractalHandler.GetTarget()->GetRenderedImage();
+            fractalHandler.GetFractalPtr()->SetRendered(true);
+            sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
             out.SaveToFile(path);
         }
         else  // BMP
         {
-            fractalHandler.GetTarget()->SetRendered(true);
-            fractalHandler.GetTarget()->RenderBMP(path);
+            fractalHandler.GetFractalPtr()->SetRendered(true);
+            fractalHandler.GetFractalPtr()->RenderBMP(path);
         }
     }
 

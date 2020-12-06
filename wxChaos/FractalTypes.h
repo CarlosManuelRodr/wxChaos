@@ -21,18 +21,12 @@
 class RenderMandelbrot : public RenderFractal
 {
 private:
-    double c_im;
-    double c_re;
-    double Z_re;
-    double Z_im;
-    double Z_re2;
-    double Z_im2;
     int buddhaRandomP;
     int bd;
-    bool insideSet;
 
 public:
     RenderMandelbrot();
+
     void Render();
     void SpecialRender();
     int AskProgress();
@@ -52,14 +46,15 @@ private:
     RenderMandelbrot* myRender;
     int buddhaRandomP;
 public:
+    Mandelbrot(sf::RenderWindow* Window);
+    Mandelbrot(int width, int height);
+    ~Mandelbrot();
+
     void Render();     ///< Launch threads.
     void DrawOrbit();
     void CopyOptFromPanel();
     void PreRender();
     void PreDrawMaps();
-    Mandelbrot(sf::RenderWindow* Window);
-    Mandelbrot(int width, int height);
-    ~Mandelbrot();
 };
 
 /**
@@ -69,21 +64,15 @@ public:
 class RenderMandelbrotZN : public RenderFractal
 {
 private:
-    double c_im;
-    double c_re;
-    double Z_re;
-    double Z_im;
-    double Z_re2;
-    double Z_im2;
     int n;
     double bailout;
-    bool insideSet;
 
 public:
+    RenderMandelbrotZN();
+
     void Render();
     void SpecialRender();
     void SetParams(int _n, double _bailout);
-    RenderMandelbrotZN();
 };
 
 
@@ -98,12 +87,13 @@ private:
     double bailout;
     RenderMandelbrotZN* myRender;
 public:
-    void Render();
-    void DrawOrbit();
-    void CopyOptFromPanel();
     MandelbrotZN(sf::RenderWindow* Window);
     MandelbrotZN(int width, int height);
     ~MandelbrotZN();
+
+    void Render();
+    void DrawOrbit();
+    void CopyOptFromPanel();
 };
 
 /**
@@ -112,19 +102,10 @@ public:
 */
 class RenderJulia : public RenderFractal
 {
-private:
-    double c_im;
-    double c_re;
-    double Z_re;
-    double Z_im;
-    double Z_re2;
-    double Z_im2;
-    bool insideSet;
-
 public:
+    RenderJulia();
     void Render();
     void SpecialRender();
-    RenderJulia();
 };
 
 /**
@@ -135,9 +116,10 @@ class Julia: public Fractal
 {
     RenderJulia* myRender;
 public:
-    Julia(sf::RenderWindow *Window);
+    Julia(sf::RenderWindow* Window);
     Julia(int width, int height);
     ~Julia();
+
     void Render();
     void DrawOrbit();
 };
@@ -149,20 +131,13 @@ public:
 class RenderJuliaZN : public RenderFractal
 {
 private:
-    double c_im;
-    double c_re;
-    double Z_re;
-    double Z_im;
-    double Z_re2;
-    double Z_im2;
     int n;
     double bailout;
-    bool insideSet;
-
 public:
+    RenderJuliaZN();
+
     void Render();
     void SpecialRender();
-    RenderJuliaZN();
     void SetParams(int _n, double _bailout);
 };
 
@@ -180,6 +155,7 @@ public:
     JuliaZN(sf::RenderWindow *Window);
     JuliaZN(int width, int height);
     ~JuliaZN();
+
     void CopyOptFromPanel();
     void Render();
     void DrawOrbit();
@@ -192,14 +168,10 @@ public:
 class RenderNewton : public RenderFractal
 {
 private:
-    double re, im;
-    double tmp;
-    double d;
-    double re2, im2;
     double minStep;
-    double re_ant, im_ant;
 public:
     RenderNewton();
+
     void Render();
     void SpecialRender();
     void SetParams(double _minStep);
@@ -215,10 +187,11 @@ private:
     RenderNewton* myRender;
     double minStep;
 public:
-    void Render();
     Newton(sf::RenderWindow *Window);
     Newton(int width, int height);
     ~Newton();
+
+    void Render();
     void DrawOrbit();
     void CopyOptFromPanel();
 };
@@ -231,6 +204,7 @@ class RenderSinoidal : public RenderFractal
 {
 public:
     RenderSinoidal();
+
     void Render();
     void SpecialRender();
 };
@@ -244,10 +218,11 @@ class Sinoidal : public Fractal
 private:
     RenderSinoidal* myRender;
 public:
-    void Render();
     Sinoidal(sf::RenderWindow* Window);
     Sinoidal(int width, int height);
     ~Sinoidal();
+
+    void Render();
     void DrawOrbit();
 };
 
@@ -272,10 +247,11 @@ class Magnet : public Fractal
 private:
     RenderMagnet* myRender;
 public:
-    void Render();
     Magnet(sf::RenderWindow* Window);
     Magnet(int width, int height);
     ~Magnet();
+
+    void Render();
     void DrawOrbit();
 };
 
@@ -300,10 +276,11 @@ class Manowar : public Fractal
 private:
     RenderManowar* myRender;
 public:
-    void Render();
     Manowar(sf::RenderWindow* Window);
     Manowar(int width, int height);
     ~Manowar();
+
+    void Render();
     void DrawOrbit();
 };
 
@@ -315,6 +292,7 @@ class RenderManowarJulia : public RenderFractal
 {
 public:
     RenderManowarJulia();
+
     void Render();
     void SpecialRender();
 };
@@ -328,10 +306,11 @@ class ManowarJulia : public Fractal
 private:
     RenderManowarJulia* myRender;
 public:
-    void Render();
     ManowarJulia(sf::RenderWindow* Window);
     ManowarJulia(int width, int height);
     ~ManowarJulia();
+
+    void Render();
     void DrawOrbit();
 };
 
@@ -343,6 +322,7 @@ class RenderMedusa : public RenderFractal
 {
 public:
     RenderMedusa();
+
     void Render();
     void SpecialRender();
 };
@@ -359,6 +339,7 @@ public:
     Medusa(sf::RenderWindow* Window);
     Medusa(int width, int height);
     ~Medusa();
+
     void Render();
     void DrawOrbit();
 };
@@ -381,10 +362,11 @@ public:
 class SierpTriangle : public Fractal
 {
 private:
-    RenderSierpTriangle *myRender;
+    RenderSierpTriangle* myRender;
 public:
     SierpTriangle(sf::RenderWindow* Window);
     SierpTriangle(int width, int height);
+
     void Render();
 };
 
@@ -399,6 +381,7 @@ private:
     double minStep;
 public:
     RenderFixedPoint1();
+
     void Render();
     void SetParams(double _minStep);
 };
@@ -413,10 +396,11 @@ private:
     RenderFixedPoint1* myRender;
     double minStep;
 public:
-    void Render();
     FixedPoint1(sf::RenderWindow* Window);
     FixedPoint1(int width, int height);
     ~FixedPoint1();
+
+    void Render();
     void DrawOrbit();
     void CopyOptFromPanel();
 };
@@ -432,6 +416,7 @@ private:
     double minStep;
 public:
     RenderFixedPoint2();
+
     void Render();
     void SetParams(double _minStep);
 };
@@ -446,10 +431,11 @@ private:
     RenderFixedPoint2* myRender;
     double minStep;
 public:
-    void Render();
     FixedPoint2(sf::RenderWindow* Window);
     FixedPoint2(int width, int height);
     ~FixedPoint2();
+
+    void Render();
     void DrawOrbit();
     void CopyOptFromPanel();
 };
@@ -465,6 +451,7 @@ private:
     double minStep;
 public:
     RenderFixedPoint3();
+
     void Render();
     void SetParams(double _minStep);
 };
@@ -479,10 +466,11 @@ private:
     RenderFixedPoint3* myRender;
     double minStep;
 public:
-    void Render();
     FixedPoint3(sf::RenderWindow* Window);
     FixedPoint3(int width, int height);
     ~FixedPoint3();
+
+    void Render();
     void DrawOrbit();
     void CopyOptFromPanel();
 };
@@ -498,6 +486,7 @@ private:
     double minStep;
 public:
     RenderFixedPoint4();
+
     void Render();
     void SetParams(double _minStep);
 };
@@ -512,10 +501,11 @@ private:
     RenderFixedPoint4* myRender;
     double minStep;
 public:
-    void Render();
     FixedPoint4(sf::RenderWindow* Window);
     FixedPoint4(int width, int height);
     ~FixedPoint4();
+
+    void Render();
     void DrawOrbit();
     void CopyOptFromPanel();
 };
@@ -543,6 +533,7 @@ public:
     Tricorn(sf::RenderWindow* Window);
     Tricorn(int width, int height);
     ~Tricorn();
+
     void Render();
     void DrawOrbit();
 };
@@ -570,6 +561,7 @@ public:
     BurningShip(sf::RenderWindow* Window);
     BurningShip(int width, int height);
     ~BurningShip();
+
     void Render();
     void DrawOrbit();
 };
@@ -597,6 +589,7 @@ public:
     BurningShipJulia(sf::RenderWindow* Window);
     BurningShipJulia(int width, int height);
     ~BurningShipJulia();
+
     void Render();
     void DrawOrbit();
 };
@@ -625,6 +618,7 @@ public:
     Fractory(sf::RenderWindow* Window);
     Fractory(int width, int height);
     ~Fractory();
+
     void Render();
     void DrawOrbit();
 };
@@ -639,6 +633,7 @@ private:
     double bailout;
 public:
     RenderCell();
+
     void Render();
     void SetParams(double _bailout);
 };
@@ -656,6 +651,7 @@ public:
     Cell(sf::RenderWindow* Window);
     Cell(int width, int height);
     ~Cell();
+
     void Render();
     void DrawOrbit();
     void CopyOptFromPanel();
@@ -674,6 +670,7 @@ private:
     double progress;
 public:
     RenderLogisticMap();
+
     void Render();
     void SetParams(double _seed, bool _stabilizePoint);
     int AskProgress();
@@ -690,9 +687,10 @@ private:
     double logisticSeed;
     bool stabilizePoint;
 public:
-    void Render();
     LogisticMap(sf::RenderWindow* Window);
     LogisticMap(int width, int height);
+
+    void Render();
     void CopyOptFromPanel();
 };
 
@@ -709,6 +707,7 @@ private:
     int i;
 public:
     RenderHenonMap();
+
     void Render();
     void SetParams(double _alpha, double _beta, double _x0, double _y0);
     int AskProgress();
@@ -729,6 +728,7 @@ public:
     HenonMap(sf::RenderWindow *Window);
     HenonMap(int width, int height);
     ~HenonMap();
+
     void Render();
     void CopyOptFromPanel();
     void MoreIter();
@@ -769,10 +769,11 @@ private:
     bool rungeKutta;
     RenderDPendulum *myRender;
 public:
-    void Render();
-    DPendulum(sf::RenderWindow *Window);
+    DPendulum(sf::RenderWindow* Window);
     DPendulum(int width, int height);
     ~DPendulum();
+
+    void Render();
     void DrawOrbit();
     void CopyOptFromPanel();
     void MoreIter();
@@ -792,6 +793,7 @@ private:
     wxString parserFormula;
 public:
     RenderUserDefined();
+
     void SetFormula(FormulaOpt formula);
     void Render();
     wxString GetErrorInfo();
@@ -805,11 +807,13 @@ public:
 */
 class UserDefined : public Fractal
 {
+private:
     RenderUserDefined* myRender;
 public:
     UserDefined(sf::RenderWindow* Window);
     UserDefined(int width, int height);
     ~UserDefined();
+
     void Render();
     void SetFormula(FormulaOpt formula);        ///< Sets user formula.
     void DrawOrbit();
@@ -822,14 +826,15 @@ public:
 */
 class RenderFPUserDefined : public RenderFractal
 {
+private:
     int bailout;
     bool julia;
     double minStep;
     wxString errorInfo;
     wxString parserFormula;
-
 public:
     RenderFPUserDefined();
+
     void SetFormula(FormulaOpt formula);
     void Render();
     void SetParams(double _minStep);
@@ -844,12 +849,14 @@ public:
 */
 class FPUserDefined : public Fractal
 {
+private:
     RenderFPUserDefined* myRender;
     double minStep;
 public:
     FPUserDefined(sf::RenderWindow* Window);
     FPUserDefined(int width, int height);
     ~FPUserDefined();
+
     void Render();
     void SetFormula(FormulaOpt formula);        ///< Sets user formula.
     void DrawOrbit();
@@ -863,17 +870,18 @@ public:
 */
 class RenderScriptFractal : public RenderFractal
 {
-    asIScriptEngine *engine;
-    asIScriptContext *ctx;
+private:
+    asIScriptEngine* engine;
+    asIScriptContext* ctx;
     string path;
     wxString errorInfo;
     int threadIndex;
     bool hasEnded;
-
 public:
-    void Render();
     RenderScriptFractal();
     ~RenderScriptFractal();
+
+    void Render();
     void SetPath(string scriptPath);
     wxString GetErrorInfo();
     void ClearErrorInfo();
@@ -890,15 +898,16 @@ class ScriptFractal : public Fractal
 {
     string path;
     ScriptData myScriptData;
-    RenderScriptFractal *myRender;
+    RenderScriptFractal* myRender;
 public:
-    void Render();
-    ScriptFractal(sf::RenderWindow *Window, ScriptData scriptData);
+    ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
     ScriptFractal(int width, int height, ScriptData scriptData);
     ScriptFractal(int width, int height, string scriptPath);
+    ~ScriptFractal();
+
+    void Render();
     void PostRender();
     void PreRestartRender();
-    ~ScriptFractal();
 };
 
 /**
@@ -917,7 +926,7 @@ class FractalHandler
     Medusa* medusa;
     Manowar* manowar;
     ManowarJulia* manowarJulia;
-    SierpTriangle* triangulo;
+    SierpTriangle* sierpinskyTriangle;
     FixedPoint1* fixedPoint1;
     FixedPoint2* fixedPoint2;
     FixedPoint3* fixedPoint3;
@@ -935,20 +944,21 @@ class FractalHandler
     ScriptFractal* scriptFractal;
 
     Fractal* target;
-    FRACTAL_TYPE type;
+    FractalType type;
 
 public:
     FractalHandler();
     ~FractalHandler();
-    void CreateFractal(FRACTAL_TYPE _type, sf::RenderWindow *Window);
-    void CreateFractal(FRACTAL_TYPE _type, int width, int height);
-    void CreateScriptFractal(sf::RenderWindow *Window, ScriptData scriptData);
+
+    void CreateFractal(FractalType _type, sf::RenderWindow* Window);
+    void CreateFractal(FractalType _type, int width, int height);
+    void CreateScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, string scriptPath);
     void SetFormula(FormulaOpt formula);
     void DeleteFractal();
-    Fractal* GetTarget();
-    FRACTAL_TYPE GetType();
+    Fractal* GetFractalPtr();
+    FractalType GetType();
 };
 
 #endif

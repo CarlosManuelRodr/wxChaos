@@ -4,7 +4,7 @@
 
 bool juliaModeState;
 
-JuliaMode::JuliaMode(FractalCanvas *ptr, FRACTAL_TYPE fractalType, Options juliaOpt, wxWindow *_parent)
+JuliaMode::JuliaMode(FractalCanvas *ptr, FractalType fractalType, Options juliaOpt, wxWindow *_parent)
 {
     parent = _parent;
     myJuliaOpt = juliaOpt;
@@ -26,7 +26,7 @@ void JuliaMode::Handle_Event()
         // Window closed.
         if(event.Type == sf::Event::Closed)
         {
-            juliaFractal.GetTarget()->StopRender();
+            juliaFractal.GetFractalPtr()->StopRender();
             juliaModeState = false;
         }
         if(event.Type == sf::Event::Resized)
@@ -37,7 +37,7 @@ void JuliaMode::Handle_Event()
                 sf::View View(sf::FloatRect(0, 0, window->GetWidth(), window->GetHeight()));
                 window->SetView(View);
                 window->ConvertCoords(window->GetInput().GetMouseX(), window->GetInput().GetMouseY());
-                juliaFractal.GetTarget()->Resize(window);
+                juliaFractal.GetFractalPtr()->Resize(window);
                 play->Resize(window);
                 resizing = true;
             }
@@ -46,11 +46,11 @@ void JuliaMode::Handle_Event()
         // GUI events.
         if(selection->HandleEvents(event))
         {
-            juliaFractal.GetTarget()->Resize(selection->GetSeleccion());
+            juliaFractal.GetFractalPtr()->Resize(selection->GetSeleccion());
         }
         if(play->HandleEvents(event))
         {
-            juliaFractal.GetTarget()->ChangeVarGradient();
+            juliaFractal.GetFractalPtr()->ChangeVarGradient();
         }
 
         // Keyboad events.
@@ -67,29 +67,29 @@ void JuliaMode::Handle_Event()
                     int ext = openFileDialog->GetFilterIndex();
                     string path = string(fileName.mb_str());
 
-                    SizeDialogSave *diag = new SizeDialogSave(NULL, path, ext, type, juliaFractal.GetTarget(), parent);
+                    SizeDialogSave *diag = new SizeDialogSave(NULL, path, ext, type, juliaFractal.GetFractalPtr(), parent);
                     diag->Show(true);
                 }
                 openFileDialog->Destroy();
             }
             if(event.Key.Code == sf::Key::F5)  // Redraw fractal.
             {
-                juliaFractal.GetTarget()->Redraw();
+                juliaFractal.GetFractalPtr()->Redraw();
             }
         }
 
-        juliaFractal.GetTarget()->HandleEvents(&event);
+        juliaFractal.GetFractalPtr()->HandleEvents(&event);
     }
     resizing = false;
     if(target->ChangeInPointer())
     {
-        juliaFractal.GetTarget()->SetK(target->GetKReal(), target->GetKImaginary());
+        juliaFractal.GetFractalPtr()->SetK(target->GetKReal(), target->GetKImaginary());
     }
 
     // Updates window.
     window->Clear();
-    juliaFractal.GetTarget()->Move(window->GetInput());
-    juliaFractal.GetTarget()->Show(window);
+    juliaFractal.GetFractalPtr()->Move(window->GetInput());
+    juliaFractal.GetFractalPtr()->Show(window);
     selection->Show(window);
     play->Show(window);
     window->Display();
@@ -105,8 +105,8 @@ void JuliaMode::Run()
     window->SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
 
     juliaFractal.CreateFractal(type, window);
-    juliaFractal.GetTarget()->SetOptions(myJuliaOpt, true);
-    juliaFractal.GetTarget()->SetJuliaMode(true);
+    juliaFractal.GetFractalPtr()->SetOptions(myJuliaOpt, true);
+    juliaFractal.GetFractalPtr()->SetJuliaMode(true);
 
     selection = new SelectRect(window);
     play = new ButtonChange("Resources/Play.tga", "Resources/Stop.tga", 0, 450, window);
@@ -125,6 +125,6 @@ void JuliaMode::Run()
 }
 void JuliaMode::Close()
 {
-    juliaFractal.GetTarget()->StopRender();
+    juliaFractal.GetFractalPtr()->StopRender();
     window->Close();
 }

@@ -52,7 +52,7 @@ class FractalCanvas : public wxSFMLCanvas
     SelectRect* selection;
     ButtonChange* play;
     ScreenPointer* pointer;
-    FRACTAL_TYPE type;
+    FractalType type;
     Fractal* target;                    ///< Internally the methods of this class communicate with the fractal through this pointer.
 
     sf::Image keybImage;                ///< Texture of the info images.
@@ -99,7 +99,7 @@ public :
     ///@param pcb Pointer to struct that holds the adress of the pause button and its status.
     ///@param fractType Type of the fractal to be created.
     ///@param parent Parent wxWindow.
-    FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FRACTAL_TYPE fractType, wxWindow* Parent, wxWindowID Id,
+    FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FractalType fractType, wxWindow* Parent, wxWindowID Id,
                   const wxPoint& Position, const wxSize& Size, long Style = 0);
     ~FractalCanvas();
 
@@ -123,14 +123,14 @@ public :
 
     ///@brief Changes the fractal type.
     ///@param _type New fractal type.
-    void ChangeType(FRACTAL_TYPE _type);
+    void ChangeType(FractalType _type);
 
     ///@brief Like ChangeType but used when a script fractal selected.
     ///@param _scriptData Script parameters.
     void ChangeToScript(ScriptData _scriptData);
 
     ///@return A pointer to the fractal.
-    Fractal* GetTarget();
+    Fractal* GetFractalPtr();
 
     ///@brief Sets the keyboard guide mode.
     ///@param mode New mode.
