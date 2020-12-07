@@ -152,22 +152,22 @@ public:
 };
 
 /**
-* @enum PANELOPT_TYPE
+* @enum PanelOptionType
 * @brief Type of option panel element.
 */
 
-enum PANELOPT_TYPE
+enum class PanelOptionType
 {
-    LABEL, TXTCTRL, SPIN, CHECKBOX
+    Label, TextCtrl, Spin, CheckBox
 };
 
 /**
-* @enum LINKTO
+* @enum LinkTo
 * @brief Type of variable that the option panel element will be linked to.
 */
-enum LINKTO
+enum class LinkTo
 {
-    TOINT, TODOUBLE, TOBOOL
+    ToInt, ToDouble, ToBool
 };
 
 
@@ -181,10 +181,10 @@ enum LINKTO
 */
 class PanelOptions
 {
-    vector<PANELOPT_TYPE> type;        ///< Type of widget to draw.
+    vector<PanelOptionType> type;      ///< Type of widget to draw.
     vector<wxString> label;            ///< String elements of label widgets.
     vector<wxString> defaults;         ///< Default text values to start the widgets.
-    vector<LINKTO> linkTo;             ///< Type of variable to link.
+    vector<LinkTo> linkTo;             ///< Type of variable to link.
     vector<int*> intTarget;            ///< Int's adresses.
     vector<double*> dblTarget;         ///< Double's adresses.
     vector<bool*> boolTarget;          ///< Bool's adresses.
@@ -199,21 +199,21 @@ public:
     ///@param labelText Text of the label.
     ///@param linkInt Adress of the integer that will be linked.
     ///@param Default value of the widget.
-    void LinkInt(PANELOPT_TYPE pType, wxString labelTxt, int* linkInt, wxString defaultVal);
+    void LinkInt(PanelOptionType pType, wxString labelTxt, int* linkInt, wxString defaultVal);
 
     ///@brief Sets a widget element that will be linked to a double.
     ///@param pType Type of widget.
     ///@param labelText Text of the label.
     ///@param linkDbl Adress of the double that will be linked.
     ///@param Default value of the widget.
-    void LinkDbl(PANELOPT_TYPE pType, wxString labelTxt, double* linkDbl, wxString defaultVal);
+    void LinkDbl(PanelOptionType pType, wxString labelTxt, double* linkDbl, wxString defaultVal);
 
     ///@brief Sets a widget element that will be linked to a bool.
     ///@param pType Type of widget.
     ///@param labelText Text of the label.
     ///@param linkBool Adress of the bool that will be linked.
     ///@param Default value of the widget.
-    void LinkBool(PANELOPT_TYPE pType, wxString labelTxt, bool* linkBool, wxString defaultVal);
+    void LinkBool(PanelOptionType pType, wxString labelTxt, bool* linkBool, wxString defaultVal);
 
     ///@brief Gets the number of widgets declared.
     ///@return An integer with the number of widgets.
@@ -221,7 +221,7 @@ public:
 
     ///@brief Get the linking type at the specified index.
     ///@param index Index of widget to look.
-    LINKTO GetLinkType(int index);
+    LinkTo GetLinkType(int index);
 
     ///@brief Get the label element at the specified index.
     ///@param index Index of widget to look.
@@ -245,7 +245,7 @@ public:
 
     ///@brief Get the widget type at the specified index.
     ///@param index Index of widget to look.
-    PANELOPT_TYPE GetPanelOptType(int index);
+    PanelOptionType GetPanelOptType(int index);
 
     ///@brief Sets force show mode.
     ///@param mode New mode.

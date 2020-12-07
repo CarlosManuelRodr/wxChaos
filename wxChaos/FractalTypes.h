@@ -871,8 +871,7 @@ public:
 class RenderScriptFractal : public RenderFractal
 {
 private:
-    asIScriptEngine* engine;
-    asIScriptContext* ctx;
+    AngelscriptRenderEngine* renderEngine;
     string path;
     wxString errorInfo;
     int threadIndex;

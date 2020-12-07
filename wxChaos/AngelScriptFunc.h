@@ -21,15 +21,15 @@
 #include "angelscript/add_on/scriptstdstring/scriptstdstring.h"
 
 /**
-* @enum CATEGORY
+* @enum ScriptCategory
 * @brief Category of the script fractal.
 */
-enum CATEGORY
+enum class ScriptCategory
 {
-    CAT_COMPLEX,
-    CAT_NUMMET,
-    CAT_PHYSIC,
-    CAT_OTHER
+    Complex,
+    NumMet,
+    Physic,
+    Other
 };
 
 /**
@@ -43,7 +43,7 @@ struct ScriptData
 {
     std::string file;
     std::string name;
-    CATEGORY cat;
+    ScriptCategory cat;
     double minX, maxX, minY;
     int defaultIter;
     bool juliaVariety;
@@ -54,10 +54,10 @@ struct ScriptData
 
 // Variables accesible from the scripts.
 extern std::vector<ScriptData> scriptDataVect;
-extern bool **globalSetMap;
-extern int **globalColorMap;
+extern bool** asSetMap;
+extern int** asColorMap;
 extern std::string name;
-extern CATEGORY cat;
+extern ScriptCategory cat;
 extern double minX, maxX, minY;
 extern int defaultIter;
 extern bool minXSet, maxXSet, minYSet, juliaVarietySet, asRedrawAlways, extColor;
@@ -67,11 +67,11 @@ extern bool noSetMap;
 ///@brief Compiles angelscript file.
 ///@param engine Pointer to the angelscript engine which will hold the script.
 ///@param filepath Path to the script.
-int CompileScriptFromPath(asIScriptEngine *engine, const std::string filePath);
+int CompileScriptFromPath(asIScriptEngine* engine, const std::string filePath);
 
 ///@brief Register the functions used by the scripts.
 ///@param engine Pointer to the angelscript engine which will hold the script.
-void RegisterAsFunctions(asIScriptEngine *engine);
+void RegisterAsFunctions(asIScriptEngine* engine);
 
 void ClearConsoleText();   ///< Clears the variable used to send text to the console.
 
@@ -101,31 +101,31 @@ void MessageCallback(const asSMessageInfo *msg, void *param);
 struct Complex
 {
     Complex();
-    Complex(const Complex &other);
-    Complex(const std::complex<double> &other);
+    Complex(const Complex& other);
+    Complex(const std::complex<double>& other);
     Complex(double r, double i = 0);
 
     // Assignment operator.
-    Complex &operator=(const Complex &other);
+    Complex &operator=(const Complex& other);
 
     // Compound assigment operators.
-    Complex &operator+=(const Complex &other);
-    Complex &operator-=(const Complex &other);
-    Complex &operator*=(const Complex &other);
-    Complex &operator/=(const Complex &other);
+    Complex &operator+=(const Complex& other);
+    Complex &operator-=(const Complex& other);
+    Complex &operator*=(const Complex& other);
+    Complex &operator/=(const Complex& other);
 
     double norm() const;
     double squaredNorm() const;
 
     // Comparison.
-    bool operator==(const Complex &other) const;
-    bool operator!=(const Complex &other) const;
+    bool operator==(const Complex& other) const;
+    bool operator!=(const Complex& other) const;
 
     // Math operators.
-    Complex operator+(const Complex &other) const;
-    Complex operator-(const Complex &other) const;
-    Complex operator*(const Complex &other) const;
-    Complex operator/(const Complex &other) const;
+    Complex operator+(const Complex& other) const;
+    Complex operator-(const Complex& other) const;
+    Complex operator*(const Complex& other) const;
+    Complex operator/(const Complex& other) const;
 
     // Complex values.
     std::complex<double> complexNum;
@@ -133,14 +133,31 @@ struct Complex
     double imag();
 };
 
-void asPrintComplex(const Complex &num);
+void asPrintComplex(const Complex& num);
 
 ///@brief Register the real number functions in the script engine.
 ///@param engine Pointer to the angelscript engine which will hold the script.
-void RegisterScriptMathReal(asIScriptEngine *engine);
+void RegisterScriptMathReal(asIScriptEngine* engine);
 
 ///@brief Register the complex number class in the script engine.
 ///@param engine Pointer to the angelscript engine which will hold the script.
-void RegisterScriptMathComplex(asIScriptEngine *engine);
+void RegisterScriptMathComplex(asIScriptEngine* engine);
+
+
+class AngelscriptRenderEngine
+{
+private:
+    asIScriptEngine* engine;
+    asIScriptContext* ctx;
+    wxString errorInfo;
+public:
+    AngelscriptRenderEngine();
+    ~AngelscriptRenderEngine();
+
+    bool RegisterGlobalVariable(const char* declaration, void* pointer);
+    bool CompileFromPath(std::string path);
+    bool Execute();
+    void Abort();
+};
 
 #endif

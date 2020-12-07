@@ -457,7 +457,7 @@ Mandelbrot::Mandelbrot(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(false);
-    panelOpt.LinkInt(SPIN, wxT(buddhaRandPTxt), &buddhaRandomP, wxT("1000000"));
+    panelOpt.LinkInt(PanelOptionType::Spin, wxT(buddhaRandPTxt), &buddhaRandomP, wxT("1000000"));
     buddhaRandomP = 1000000;
 
     // Specify algorithms.
@@ -481,7 +481,7 @@ Mandelbrot::Mandelbrot(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(false);
-    panelOpt.LinkInt(SPIN, wxT(buddhaRandPTxt), &buddhaRandomP, wxT("1000000"));
+    panelOpt.LinkInt(PanelOptionType::Spin, wxT(buddhaRandPTxt), &buddhaRandomP, wxT("1000000"));
     buddhaRandomP = 1000000;
 
     alg = RenderingAlgorithm::EscapeTime;
@@ -525,9 +525,7 @@ void Mandelbrot::DrawOrbit()
     else color = sf::Color(0, 255, 0);
 
     for(unsigned int i=0; i<zVector.size()-1; i++)
-    {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
-    }
 
     orbitDrawn = true;
 }
@@ -827,8 +825,8 @@ MandelbrotZN::MandelbrotZN(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkInt(SPIN, wxT("n: "), &n, wxT("3"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("3"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
     n = 3;
     bailout = 2;
 }
@@ -845,8 +843,8 @@ MandelbrotZN::MandelbrotZN(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkInt(SPIN, wxT("n: "), &n, wxT("3"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("3"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
     n = 3;
     bailout = 2;
 
@@ -1541,8 +1539,8 @@ JuliaZN::JuliaZN(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkInt(SPIN, wxT("n: "), &n, wxT("2"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
     n = 2;
     bailout = 2;
 }
@@ -1561,8 +1559,8 @@ JuliaZN::JuliaZN(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkInt(SPIN, wxT("n: "), &n, wxT("2"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
     n = 2;
     bailout = 2;
 
@@ -1736,7 +1734,7 @@ Newton::Newton(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
@@ -1756,7 +1754,7 @@ Newton::Newton(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     type = FractalType::NewtonRaphsonMethod;
@@ -3185,7 +3183,7 @@ FixedPoint1::FixedPoint1(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
@@ -3299,7 +3297,7 @@ FixedPoint2::FixedPoint2(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
@@ -3412,7 +3410,7 @@ FixedPoint3::FixedPoint3(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
@@ -3530,7 +3528,7 @@ FixedPoint4::FixedPoint4(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
@@ -4537,7 +4535,7 @@ Cell::Cell(sf::RenderWindow *Window) : Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
     bailout = 2;
 
     // Specify algorithms.
@@ -4557,7 +4555,7 @@ Cell::Cell(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
     bailout = 2;
 
     hasOrbit = true;
@@ -4712,8 +4710,8 @@ LogisticMap::LogisticMap(sf::RenderWindow *Window) : Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(seedTxt), &logisticSeed, wxT("0.25"));
-    panelOpt.LinkBool(CHECKBOX, wxT(stabilizeTxt), &stabilizePoint, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(seedTxt), &logisticSeed, wxT("0.25"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(stabilizeTxt), &stabilizePoint, wxT("true"));
     logisticSeed = 0.25;
     stabilizePoint = true;
 
@@ -4738,8 +4736,8 @@ LogisticMap::LogisticMap(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(seedTxt), &logisticSeed, wxT("0.25"));
-    panelOpt.LinkBool(CHECKBOX, wxT(stabilizeTxt), &stabilizePoint, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(seedTxt), &logisticSeed, wxT("0.25"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(stabilizeTxt), &stabilizePoint, wxT("true"));
     logisticSeed = 0.25;
     stabilizePoint = true;
     renderJobComp = false;
@@ -4825,10 +4823,10 @@ HenonMap::HenonMap(sf::RenderWindow *Window) : Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(alphaTxt), &alpha, wxT("1.4"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(betaTxt), &beta, wxT("0.3"));
-    panelOpt.LinkDbl(TXTCTRL, wxT("X0: "), &x0, wxT("0.5"));
-    panelOpt.LinkDbl(TXTCTRL, wxT("Y0: "), &y0, wxT("0.2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(alphaTxt), &alpha, wxT("1.4"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(betaTxt), &beta, wxT("0.3"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("X0: "), &x0, wxT("0.5"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Y0: "), &y0, wxT("0.2"));
     alpha = 1.4;
     beta = 0.3;
     x0 = 0.5;
@@ -4858,10 +4856,10 @@ HenonMap::HenonMap(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT(alphaTxt), &alpha, wxT("1.4"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(betaTxt), &beta, wxT("0.3"));
-    panelOpt.LinkDbl(TXTCTRL, wxT("X0: "), &x0, wxT("0.5"));
-    panelOpt.LinkDbl(TXTCTRL, wxT("Y0: "), &y0, wxT("0.2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(alphaTxt), &alpha, wxT("1.4"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(betaTxt), &beta, wxT("0.3"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("X0: "), &x0, wxT("0.5"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Y0: "), &y0, wxT("0.2"));
     alpha = 1.4;
     beta = 0.3;
     x0 = 0.5;
@@ -5178,17 +5176,17 @@ DPendulum::DPendulum(sf::RenderWindow *Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkBool(CHECKBOX, wxT(th1BailoutTxt), &th1Bailout, wxT("true"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(valueTxt), &th1NumBailout, wxT("3.14159"));
-    panelOpt.LinkBool(CHECKBOX, wxT(th2BailoutTxt), &th2Bailout, wxT("true"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(valueTxt), &th2NumBailout, wxT("3.14159"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(deltaTTxt), &dt, wxT("0.005"));
-    panelOpt.LinkDbl(TXTCTRL, wxT("m1: "), &m1, wxT("10"));
-    panelOpt.LinkDbl(TXTCTRL, wxT("m2: "), &m2, wxT("10"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(longitudeTxt), &l, wxT("20"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(gravityTxt), &g, wxT("9.81"));
-    panelOpt.LinkBool(CHECKBOX, wxT(relAnglesTxt), &referenced, wxT("false"));
-    panelOpt.LinkBool(CHECKBOX, wxT(" Runge-Kutta"), &rungeKutta, wxT("false"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(th1BailoutTxt), &th1Bailout, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(valueTxt), &th1NumBailout, wxT("3.14159"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(th2BailoutTxt), &th2Bailout, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(valueTxt), &th2NumBailout, wxT("3.14159"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(deltaTTxt), &dt, wxT("0.005"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m1: "), &m1, wxT("10"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m2: "), &m2, wxT("10"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(longitudeTxt), &l, wxT("20"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(gravityTxt), &g, wxT("9.81"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(relAnglesTxt), &referenced, wxT("false"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Runge-Kutta"), &rungeKutta, wxT("false"));
     th1Bailout = true;
     th2Bailout = true;
     th1NumBailout = 3.14159;
@@ -5220,17 +5218,17 @@ DPendulum::DPendulum(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkBool(CHECKBOX, wxT(th1BailoutTxt), &th1Bailout, wxT("true"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(valueTxt), &th1NumBailout, wxT("3.14159"));
-    panelOpt.LinkBool(CHECKBOX, wxT(th2BailoutTxt), &th2Bailout, wxT("true"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(valueTxt), &th2NumBailout, wxT("3.14159"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(deltaTTxt), &dt, wxT("0.005"));
-    panelOpt.LinkDbl(TXTCTRL, wxT("m1: "), &m1, wxT("10"));
-    panelOpt.LinkDbl(TXTCTRL, wxT("m2: "), &m2, wxT("10"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(longitudeTxt), &l, wxT("20"));
-    panelOpt.LinkDbl(TXTCTRL, wxT(gravityTxt), &g, wxT("9.81"));
-    panelOpt.LinkBool(CHECKBOX, wxT(relAnglesTxt), &referenced, wxT("false"));
-    panelOpt.LinkBool(CHECKBOX, wxT(" Runge-Kutta"), &rungeKutta, wxT("false"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(th1BailoutTxt), &th1Bailout, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(valueTxt), &th1NumBailout, wxT("3.14159"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(th2BailoutTxt), &th2Bailout, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(valueTxt), &th2NumBailout, wxT("3.14159"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(deltaTTxt), &dt, wxT("0.005"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m1: "), &m1, wxT("10"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m2: "), &m2, wxT("10"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(longitudeTxt), &l, wxT("20"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(gravityTxt), &g, wxT("9.81"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(relAnglesTxt), &referenced, wxT("false"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Runge-Kutta"), &rungeKutta, wxT("false"));
     th1Bailout = true;
     th2Bailout = true;
     th1NumBailout = 3.14159;
@@ -5664,7 +5662,7 @@ FPUserDefined::FPUserDefined(sf::RenderWindow *Window) : Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(TXTCTRL, wxT("Min step: "), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
@@ -5685,20 +5683,20 @@ FPUserDefined::~FPUserDefined()
 }
 void FPUserDefined::Render()
 {
-    for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(minStep);
+    for(unsigned int i=0; i<threadNumber; i++)
+        myRender[i].SetParams(minStep);
+
     this->TRender<RenderFPUserDefined>(myRender);
 }
 void FPUserDefined::SetFormula(FormulaOpt formula)
 {
     userFormula = formula;
     for(unsigned int i=0; i<threadNumber; i++)
-    {
         myRender[i].SetFormula(formula);
-    }
 }
 void FPUserDefined::DrawOrbit()
 {
-    vector< complex<double> > zVector;
+    vector<complex<double>> zVector;
     mup::ParserX parser;
     parser.SetExpr(userFormula.userFormula.wc_str());
 
@@ -5746,6 +5744,7 @@ void FPUserDefined::PostRender()
 // RenderScriptFractal
 RenderScriptFractal::RenderScriptFractal()
 {
+    renderEngine = nullptr;
     threadIndex = 0;
     hasEnded = true;
 }
@@ -5759,90 +5758,38 @@ void RenderScriptFractal::SetPath(string scriptPath)
 }
 void RenderScriptFractal::Render()
 {
-    int r;
     hasEnded = false;
 
     // Creates script engine.
-    engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-    engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
-    engine->SetEngineProperty(asEP_AUTO_GARBAGE_COLLECT, false);
-    engine->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, true);
-    if( engine == 0 )
-    {
-        errorInfo = wxT("Failed to create script engine.");
-        return;
-    }
+    renderEngine = new AngelscriptRenderEngine();;
 
-    // Configures script engine.
-    RegisterStdString(engine);
-    RegisterScriptMathReal(engine);
-    RegisterScriptMathComplex(engine);
-    RegisterAsFunctions(engine);
+    // Register global variables
+    renderEngine->RegisterGlobalVariable("double minX", &minX);
+    renderEngine->RegisterGlobalVariable("double maxX", &maxX);
+    renderEngine->RegisterGlobalVariable("double minY", &minY);
+    renderEngine->RegisterGlobalVariable("double maxY", &maxY);
+    renderEngine->RegisterGlobalVariable("double xFactor", &xFactor);
+    renderEngine->RegisterGlobalVariable("double yFactor", &yFactor);
+    renderEngine->RegisterGlobalVariable("double kReal", &kReal);
+    renderEngine->RegisterGlobalVariable("double kImaginary", &kImaginary);
+    renderEngine->RegisterGlobalVariable("int ho", &ho);
+    renderEngine->RegisterGlobalVariable("int hf", &hf);
+    renderEngine->RegisterGlobalVariable("int wo", &wo);
+    renderEngine->RegisterGlobalVariable("int wf", &wf);
+    renderEngine->RegisterGlobalVariable("double maxIter", &maxIter);
+    renderEngine->RegisterGlobalVariable("int threadIndex", &threadIndex);
+    renderEngine->RegisterGlobalVariable("int screenWidth", &myOpt.screenWidth);
+    renderEngine->RegisterGlobalVariable("int screenHeight", &myOpt.screenHeight);
+    renderEngine->RegisterGlobalVariable("int paletteSize", &myOpt.paletteSize);
 
-    r = engine->RegisterGlobalProperty("double minX", &minX); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("double maxX", &maxX); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("double minY", &minY); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("double maxY", &maxY); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("double xFactor", &xFactor); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("double yFactor", &yFactor); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("double kReal", &kReal); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("double kImaginary", &kImaginary); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("int ho", &ho); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("int hf", &hf); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("int wo", &wo); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("int wf", &wf); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("double maxIter", &maxIter); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("int threadIndex", &threadIndex); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("int screenWidth", &myOpt.screenWidth); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("int screenHeight", &myOpt.screenHeight); assert( r >= 0 );
-    r = engine->RegisterGlobalProperty("int paletteSize", &myOpt.paletteSize); assert( r >= 0 );
+    // Compile and execute the script code.
+    renderEngine->CompileFromPath(path);
+    renderEngine->Execute();
 
-    // Compile the script code.
-    r = CompileScriptFromPath(engine, path);
-    if( r < 0 )
-    {
-        engine->Release();
-        engine = nullptr;
-        errorInfo = wxT("Compile error.");
-        return;
-    }
-
-    // Create a context that will execute the script.
-    ctx = engine->CreateContext();
-    if( ctx == 0 )
-    {
-        errorInfo = wxT("Failed to create the context.");
-        engine->Release();
-        return;
-    }
-
-    // Find the function for the function we want to execute.
-    asIScriptFunction *renderFunc = engine->GetModule(0)->GetFunctionByDecl("void Render()");
-    if( renderFunc == 0 )
-    {
-        errorInfo = wxT("The function 'Render' was not found.");
-        ctx->Release();
-        engine->Release();
-        engine = nullptr;
-        ctx = nullptr;
-        return;
-    }
-
-    // Prepare the script context with the function we wish to execute.
-    r = ctx->Prepare(renderFunc);
-    if( r < 0 )
-    {
-        errorInfo = wxT("Failed to prepare the context.");
-        ctx->Release();
-        engine->Release();
-        return;
-    }
-    ctx->Execute();
-
-    ctx->Release();
-    engine->Release();
-    asThreadCleanup();
     hasEnded = true;
+
+    delete renderEngine;
+    renderEngine = nullptr;
 }
 wxString RenderScriptFractal::GetErrorInfo()
 {
@@ -5854,13 +5801,15 @@ void RenderScriptFractal::ClearErrorInfo()
 }
 bool RenderScriptFractal::IsThereError()
 {
-    if(errorInfo.size() == 0) return false;
-    else return true;
+    if(errorInfo.size() == 0)
+        return false;
+    else
+        return true;
 }
 void RenderScriptFractal::PreTerminate()
 {
     if(!hasEnded)
-        ctx->Abort();
+        renderEngine->Abort();
 }
 void RenderScriptFractal::SetParams(int _threadIndex)
 {
@@ -5868,7 +5817,7 @@ void RenderScriptFractal::SetParams(int _threadIndex)
 }
 
 // ScriptFractal
-ScriptFractal::ScriptFractal(sf::RenderWindow *Window, ScriptData scriptData) : Fractal(Window)
+ScriptFractal::ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData) : Fractal(Window)
 {
     // Adjust the scale.
     minX = scriptData.minX;
@@ -5925,7 +5874,8 @@ ScriptFractal::ScriptFractal(int width, int height, string scriptPath) : Fractal
     path = scriptPath;
     type = FractalType::ScriptFractal;
     myRender = new RenderScriptFractal[threadNumber];
-    for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetPath(scriptPath);
+    for(unsigned int i=0; i<threadNumber; i++)
+        myRender[i].SetPath(scriptPath);
     SetWatchdog<RenderScriptFractal>(myRender, &watchdog, threadNumber);
 }
 ScriptFractal::~ScriptFractal()
@@ -5935,8 +5885,8 @@ ScriptFractal::~ScriptFractal()
 }
 void ScriptFractal::Render()
 {
-    globalSetMap = setMap;
-    globalColorMap = colorMap;
+    asSetMap = setMap;
+    asColorMap = colorMap;
     asPrepareMultithread();
     this->TRender<RenderScriptFractal>(myRender);
     asUnprepareMultithread();

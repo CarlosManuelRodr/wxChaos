@@ -7,10 +7,10 @@ using namespace std;
 
 // Variables accesible from the scripts.
 vector<ScriptData> scriptDataVect;
-bool **globalSetMap;
-int **globalColorMap;
+bool **asSetMap;
+int **asColorMap;
 string name;
-CATEGORY cat;
+ScriptCategory cat;
 double minX, maxX, minY;
 int defaultIter;
 bool defaultIterSet = false;
@@ -65,13 +65,13 @@ void asSetFractalName(string &str)
 void asSetCategory(string &str)
 {
     if(str == "Complex")
-        cat = CAT_COMPLEX;
+        cat = ScriptCategory::Complex;
     else if(str == "NumMet")
-        cat = CAT_NUMMET;
+        cat = ScriptCategory::NumMet;
     else if(str == "Physic")
-        cat = CAT_PHYSIC;
+        cat = ScriptCategory::Physic;
     else
-        cat = CAT_OTHER;
+        cat = ScriptCategory::Other;
 }
 void asSetMinX(double _minX)
 {
@@ -111,8 +111,8 @@ void asNoSetMap(bool mode)
 }
 void asSetPoint(int x, int y, bool setVal, int colorVal)
 {
-    globalSetMap[x][y] = setVal;
-    globalColorMap[x][y] = colorVal;
+    asSetMap[x][y] = setVal;
+    asColorMap[x][y] = colorVal;
 }
 void asPrintString(string &str)
 {
@@ -484,4 +484,109 @@ void RegisterScriptMathComplex(asIScriptEngine *engine)
     r = engine->RegisterGlobalFunction("complex exp(const complex &in)", asFUNCTIONPR(cpxExp, (const Complex &), Complex), asCALL_CDECL); assert( r >= 0 );
     r = engine->RegisterGlobalFunction("complex log(const complex &in)", asFUNCTIONPR(cpxLog, (const Complex &), Complex), asCALL_CDECL); assert( r >= 0 );
     r = engine->RegisterGlobalFunction("complex log10(const complex &in)", asFUNCTIONPR(cpxLog10, (const Complex &), Complex), asCALL_CDECL); assert( r >= 0 );
+}
+
+
+AngelscriptRenderEngine::AngelscriptRenderEngine()
+{
+    // Creates script engine.
+    engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
+    engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
+    engine->SetEngineProperty(asEP_AUTO_GARBAGE_COLLECT, false);
+    engine->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, true);
+    if (engine == 0)
+    {
+        errorInfo = wxT("Failed to create script engine.");
+        return;
+    }
+
+    // Configures script engine.
+    RegisterStdString(engine);
+    RegisterScriptMathReal(engine);
+    RegisterScriptMathComplex(engine);
+    RegisterAsFunctions(engine);
+
+    ctx = nullptr;
+}
+AngelscriptRenderEngine::~AngelscriptRenderEngine()
+{
+    if (engine != nullptr)
+    {
+        engine->Release();
+        engine = nullptr;
+    }
+}
+
+bool AngelscriptRenderEngine::RegisterGlobalVariable(const char* declaration, void* pointer)
+{
+    const int r = engine->RegisterGlobalProperty(declaration, pointer);
+    if (r < 0)
+    {
+        engine->Release();
+        engine = nullptr;
+        errorInfo = wxT("Error while registering global variable.");
+        return false;
+    }
+
+    return true;
+}
+bool AngelscriptRenderEngine::CompileFromPath(string path)
+{
+    // Compile the script code.
+    const int r = CompileScriptFromPath(engine, path);
+    if (r < 0)
+    {
+        engine->Release();
+        engine = nullptr;
+        errorInfo = wxT("Compile error.");
+        return false;
+    }
+    return true;
+}
+bool AngelscriptRenderEngine::Execute()
+{
+    // Create a context that will execute the script.
+    ctx = engine->CreateContext();
+    if (ctx == 0)
+    {
+        errorInfo = wxT("Failed to create the context.");
+        engine->Release();
+        return false;
+    }
+
+    // Find the function for the function we want to execute.
+    asIScriptFunction* renderFunc = engine->GetModule(0)->GetFunctionByDecl("void Render()");
+    if (renderFunc == 0)
+    {
+        errorInfo = wxT("The function 'Render' was not found.");
+        ctx->Release();
+        engine->Release();
+        engine = nullptr;
+        ctx = nullptr;
+        return false;
+    }
+
+    // Prepare the script context with the function we wish to execute.
+    int r = ctx->Prepare(renderFunc);
+    if (r < 0)
+    {
+        errorInfo = wxT("Failed to prepare the context.");
+        ctx->Release();
+        engine->Release();
+        return false;
+    }
+    ctx->Execute();
+
+    ctx->Release();
+    engine->Release();
+    engine = nullptr;
+    ctx = nullptr;
+    asThreadCleanup();
+
+    return true;
+}
+void AngelscriptRenderEngine::Abort()
+{
+    if (ctx != nullptr)
+        ctx->Abort();
 }

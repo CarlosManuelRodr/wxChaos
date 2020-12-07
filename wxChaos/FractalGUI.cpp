@@ -333,8 +333,8 @@ Button::Button(string Path, int posX, int posY, sf::RenderWindow *Window)
     output.SetColor(sf::Color(255, 255, 255, 170));
     area.Top = posY;
     area.Left = posX;
-    area.Right = texture.GetWidth() + posX;
-    area.Bottom = texture.GetHeight() + posY;
+    area.Right = texture.GetWidth() + (unsigned)posX;
+    area.Bottom = texture.GetHeight() + (unsigned)posY;
     pressed = false;
     anchorage = false;
 
@@ -429,7 +429,7 @@ void Button::Resize(sf::RenderWindow *Window)
         {
             area.Right = Window->GetWidth();
             area.Left = area.Right - buttonWidth;
-            area.Top = Window->GetHeight() - buttonHeight;
+            area.Top = Window->GetHeight() - (unsigned)buttonHeight;
             area.Bottom = Window->GetHeight();
             output.SetPosition(static_cast<float>(area.Left), static_cast<float>(area.Top));
             if(thereIsText) buttonText.SetPosition(static_cast<float>(area.Left+10), static_cast<float>(area.Top+1));
@@ -515,27 +515,27 @@ PanelOptions::PanelOptions()
 {
     forceShow = false;
 }
-void PanelOptions::LinkInt(PANELOPT_TYPE pType, wxString labelTxt, int* linkInt, wxString defaultVal)
+void PanelOptions::LinkInt(PanelOptionType pType, wxString labelTxt, int* linkInt, wxString defaultVal)
 {
     type.push_back(pType);
     label.push_back(labelTxt);
-    linkTo.push_back(TOINT);
+    linkTo.push_back(LinkTo::ToInt);
     intTarget.push_back(linkInt);
     defaults.push_back(defaultVal);
 }
-void PanelOptions::LinkDbl(PANELOPT_TYPE pType, wxString labelTxt, double* linkDbl, wxString defaultVal)
+void PanelOptions::LinkDbl(PanelOptionType pType, wxString labelTxt, double* linkDbl, wxString defaultVal)
 {
     type.push_back(pType);
     label.push_back(labelTxt);
-    linkTo.push_back(TODOUBLE);
+    linkTo.push_back(LinkTo::ToDouble);
     dblTarget.push_back(linkDbl);
     defaults.push_back(defaultVal);
 }
-void PanelOptions::LinkBool(PANELOPT_TYPE pType, wxString labelTxt, bool* linkBool, wxString defaultVal)
+void PanelOptions::LinkBool(PanelOptionType pType, wxString labelTxt, bool* linkBool, wxString defaultVal)
 {
     type.push_back(pType);
     label.push_back(labelTxt);
-    linkTo.push_back(TOBOOL);
+    linkTo.push_back(LinkTo::ToBool);
     boolTarget.push_back(linkBool);
     defaults.push_back(defaultVal);
 }
@@ -543,7 +543,7 @@ int PanelOptions::GetElementsSize()
 {
     return label.size();
 }
-LINKTO PanelOptions::GetLinkType(int index)
+LinkTo PanelOptions::GetLinkType(int index)
 {
     return linkTo.at(index);
 }
@@ -563,7 +563,7 @@ bool* PanelOptions::GetBoolElement(int index)
 {
     return boolTarget.at(index);
 }
-PANELOPT_TYPE PanelOptions::GetPanelOptType(int index)
+PanelOptionType PanelOptions::GetPanelOptType(int index)
 {
     return type.at(index);
 }

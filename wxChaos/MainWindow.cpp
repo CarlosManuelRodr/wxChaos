@@ -9,7 +9,7 @@
 #endif
 
 const unsigned int SCRIPT_ID_INDEX = 8510;
-MainFrame* mainFramePtr = NULL;
+MainFrame* mainFramePtr = nullptr;
 
 /**
 * @brief Gets the desktop resolution. Used to adjust menu position.
@@ -109,7 +109,8 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
         diag->Show(true);
         introConstActive = true;
     }
-    if(!opt.colorSet) fractalCanvas->GetFractalPtr()->SetFractalSetColorMode(false);
+    if(!opt.colorSet)
+        fractalCanvas->GetFractalPtr()->SetFractalSetColorMode(false);
 
     if (opt.firstUse)
         this->ShowFirstUseDialog();
@@ -485,6 +486,7 @@ void MainFrame::OnSave(wxCommandEvent &event)
             diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, scriptDataVect[selectedScriptIndex].file);
         else
             diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this);
+
         diag->Show(true);
     }
     saveFileDialog->Destroy();
@@ -504,7 +506,8 @@ void MainFrame::OnPalette(wxCommandEvent &event)
         if(this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
             pal->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
     }
-    else pal->SetFocus();
+    else
+        pal->SetFocus();
 }
 void MainFrame::OnFormulaDialog(wxCommandEvent &event)
 {
@@ -967,25 +970,25 @@ void MainFrame::GetParserOpt()
         styleOpt.push_back("Psych_Experience");
         styleOpt.push_back("Vivid_Colors");
         vector<GaussianColorStyles> styleValues;
-        styleValues.push_back(SUMMER_DAY);
-        styleValues.push_back(COOL_BLUE);
-        styleValues.push_back(HARD_RED);
-        styleValues.push_back(BLACK_AND_WHITE);
-        styleValues.push_back(PASTEL);
-        styleValues.push_back(PSYCH_EXPERIENCE);
-        styleValues.push_back(VIVID_COLORS);
+        styleValues.push_back(GaussianColorStyles::SummerDay);
+        styleValues.push_back(GaussianColorStyles::CoolBlue);
+        styleValues.push_back(GaussianColorStyles::HardRed);
+        styleValues.push_back(GaussianColorStyles::BlackAndWhite);
+        styleValues.push_back(GaussianColorStyles::Pastel);
+        styleValues.push_back(GaussianColorStyles::PsychExperience);
+        styleValues.push_back(GaussianColorStyles::VividColors);
 
         p.OptionToVar<ColorMode>(opt.mode, "COLOR_TYPE", colorOpt, colorValues, ColorMode::Gaussian);
         p.OptionToVar<FractalType>(opt.type, "FRACTAL_TYPE", fractalOpt, fractalValues, FractalType::Mandelbrot);
         p.IntArgToVar(opt.maxIterations, "DEFAULT_ITERATION", 100);
         if(opt.mode == ColorMode::Gradient)
         {
-            p.StringArgToVar(opt.colorStyleGrad, "COLOR_STYLE",    "rgb(0,0,0);rgb(255,255,255);");
-            opt.colorStyleGaussian = SUMMER_DAY;
+            p.StringArgToVar(opt.colorStyleGrad, "COLOR_STYLE", "rgb(0,0,0);rgb(255,255,255);");
+            opt.colorStyleGaussian = SummerDay;
         }
         else
         {
-            p.OptionToVar(opt.colorStyleGaussian, "COLOR_STYLE", styleOpt, styleValues, SUMMER_DAY);
+            p.OptionToVar(opt.colorStyleGaussian, "COLOR_STYLE", styleOpt, styleValues, SummerDay);
             opt.colorStyleGrad = "rgb(0,0,0);rgb(255,255,255);";
         }
 
@@ -997,7 +1000,6 @@ void MainFrame::GetParserOpt()
         p.BoolArgToVar(opt.colorFractal, "COLOR_FRACTAL", false);
         p.BoolArgToVar(opt.colorSet, "COLOR_SET", false);
         p.BoolArgToVar(opt.firstUse, "FIRST_USE", false);
-
         p.ReplaceArg("FIRST_USE", "False");
     }
     else
@@ -1018,7 +1020,7 @@ void MainFrame::GetParserOpt()
         opt.maxIterations = 100;
         opt.paletteSize = 300;
         opt.colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);\n";
-        opt.colorStyleGaussian = SUMMER_DAY;
+        opt.colorStyleGaussian = GaussianColorStyles::SummerDay;
         opt.constantWindow = false;
         opt.commandConsole = false;
         opt.juliaMode = false;
@@ -1050,64 +1052,63 @@ void MainFrame::UpdateOptPanel()
             wxSize windowSize = this->GetSize();
             if(!this->IsMaximized())
                 this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
+
             this->GetSizer()->Layout();
             showOptPanel = true;
         }
         else
-        {
             fractOptItem->Check(false);
-        }
 
         // Creates elements from each kind.
         for(int i=0; i<pOptions->GetElementsSize(); i++)
         {
             switch(pOptions->GetPanelOptType(i))
             {
-            case LABEL:
+            case PanelOptionType::Label:
                 {
-                    labels.push_back(new wxStaticText( optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    labels.push_back(new wxStaticText(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap( -1 );
-                    optionSizer->Add( labels[labelIndex], 0, wxALL, 5 );
+                    labels[labelIndex]->Wrap(-1);
+                    optionSizer->Add(labels[labelIndex], 0, wxALL, 5);
                     foundLabels.push_back(i);
                 }
                 break;
-            case TXTCTRL:
+            case PanelOptionType::TextCtrl:
                 {
-                    labels.push_back(new wxStaticText( optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    labels.push_back(new wxStaticText(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap( -1 );
-                    optionSizer->Add( labels[labelIndex], 0, wxALL, 5 );
+                    labels[labelIndex]->Wrap(-1);
+                    optionSizer->Add(labels[labelIndex], 0, wxALL, 5);
 
-                    textControls.push_back(new wxTextCtrl( optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    textControls.push_back(new wxTextCtrl(optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     index = textControls.size()-1;
-                    optionSizer->Add( textControls[index], 0, wxALL|wxEXPAND, 5 );
+                    optionSizer->Add(textControls[index], 0, wxALL|wxEXPAND, 5);
                     foundTextControls.push_back(i);
                 }
                 break;
-            case SPIN:
+            case PanelOptionType::Spin:
                 {
-                    labels.push_back(new wxStaticText( optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    labels.push_back(new wxStaticText(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap( -1 );
-                    optionSizer->Add( labels[labelIndex], 0, wxALL, 5 );
+                    labels[labelIndex]->Wrap(-1);
+                    optionSizer->Add(labels[labelIndex], 0, wxALL, 5);
 
-                    spinControls.push_back(new wxSpinCtrl( optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 ));
+                    spinControls.push_back(new wxSpinCtrl(optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 ));
                     index = spinControls.size()-1;
-                    optionSizer->Add( spinControls[index], 0, wxALL|wxEXPAND, 5 );
+                    optionSizer->Add(spinControls[index], 0, wxALL|wxEXPAND, 5);
                     foundSpinControls.push_back(i);
                 }
                 break;
-            case CHECKBOX:
+            case PanelOptionType::CheckBox:
                 {
-                    checkBoxes.push_back(new wxCheckBox( optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    checkBoxes.push_back(new wxCheckBox(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     index = checkBoxes.size()-1;
                     if(pOptions->GetDefault(i) == wxT("true"))
                         checkBoxes[index]->SetValue(true);
                     else
                         checkBoxes[index]->SetValue(false);
 
-                    optionSizer->Add( checkBoxes[index], 0, wxALL|wxEXPAND, 5 );
+                    optionSizer->Add(checkBoxes[index], 0, wxALL|wxEXPAND, 5);
                     foundCheckBoxes.push_back(i);
                 }
                 break;
@@ -1115,9 +1116,9 @@ void MainFrame::UpdateOptPanel()
         }
 
         // Creates button to apply options.
-        panelButton = new wxButton( optionPanel, wxID_ANY, wxT(menuApplyTxt), wxDefaultPosition, wxDefaultSize, 0 );
-        optionSizer->Add( panelButton, 0, wxALL, 5 );
-        panelButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrame::OnApplyPanelOpt ), NULL, this );
+        panelButton = new wxButton(optionPanel, wxID_ANY, wxT(menuApplyTxt), wxDefaultPosition, wxDefaultSize, 0);
+        optionSizer->Add(panelButton, 0, wxALL, 5);
+        panelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnApplyPanelOpt), NULL, this);
         optionSizer->Layout();
         optionPanel->SetScrollbars(20, 20, 0, 50);
     }
@@ -1191,7 +1192,10 @@ void MainFrame::GetScriptFractals()
     {
         int r;
         asIScriptEngine *engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-        if(engine == NULL) break;
+
+        if(engine == nullptr)
+            break;
+
         engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
 
         // Configure the script engine.
@@ -1279,11 +1283,11 @@ void MainFrame::GetScriptFractals()
         PushScriptData(filePath);
 
         scriptItems.push_back(new wxMenuItem(formula, SCRIPT_ID_INDEX+i, wxString(scriptDataVect[i].name.c_str(), wxConvUTF8) , wxEmptyString, wxITEM_NORMAL));
-        if(scriptDataVect[i].cat == CAT_COMPLEX)
+        if(scriptDataVect[i].cat == ScriptCategory::Complex)
             typeComplex->Append(scriptItems[i]);
-        else if(scriptDataVect[i].cat == CAT_NUMMET)
+        else if(scriptDataVect[i].cat == ScriptCategory::NumMet)
             typeNumMet->Append(scriptItems[i]);
-        else if(scriptDataVect[i].cat == CAT_PHYSIC)
+        else if(scriptDataVect[i].cat == ScriptCategory::Physic)
             typePhysics->Append(scriptItems[i]);
         else
             typeOther->Append(scriptItems[i]);
@@ -1406,11 +1410,11 @@ void MainFrame::ReloadScripts()
     // Remove current menu entries.
     for(unsigned int i=0; i<scriptDataVect.size(); i++)
     {
-        if(scriptDataVect[i].cat == CAT_COMPLEX)
+        if(scriptDataVect[i].cat == ScriptCategory::Complex)
             typeComplex->Remove(scriptItems[i]);
-        else if(scriptDataVect[i].cat == CAT_NUMMET)
+        else if(scriptDataVect[i].cat == ScriptCategory::NumMet)
             typeNumMet->Remove(scriptItems[i]);
-        else if(scriptDataVect[i].cat == CAT_PHYSIC)
+        else if(scriptDataVect[i].cat == ScriptCategory::Physic)
             typePhysics->Remove(scriptItems[i]);
         else
             typeOther->Remove(scriptItems[i]);

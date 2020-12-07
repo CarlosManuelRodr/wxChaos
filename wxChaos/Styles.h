@@ -13,18 +13,18 @@
 
 /**
 * @enum GaussianColorStyles
-* @brief Enum of EST styles.
+* @brief Enum of Gaussian color styles.
 */
 enum GaussianColorStyles
 {
-    SUMMER_DAY,
-    COOL_BLUE,
-    HARD_RED,
-    BLACK_AND_WHITE,
-    PASTEL,
-    PSYCH_EXPERIENCE,
-    VIVID_COLORS,
-    CUSTOM
+    SummerDay,
+    CoolBlue,
+    HardRed,
+    BlackAndWhite,
+    Pastel,
+    PsychExperience,
+    VividColors,
+    Custom
 };
 
 
@@ -54,10 +54,10 @@ public:
 */
 enum GradientColorStyles
 {
-    RETRO,
-    HAKIM,
-    AGUAMARINA,
-    GRAD_CUSTOM
+    Retro,
+    Hakim,
+    Aguamarina,
+    CustomGradient
 };
 
 /**

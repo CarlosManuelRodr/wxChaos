@@ -393,9 +393,7 @@ template<class MT> inline void SetWatchdog(MT* myRender, ThreadWatchdog<RenderFr
 {
     watchdog->SetThreadNumber(threadNumber);
     for(unsigned int i=0; i<threadNumber; i++)
-    {
         watchdog->SetThread(&myRender[i]);
-    }
 }
 
 template<class MT> ThreadWatchdog<MT>::ThreadWatchdog()
@@ -406,7 +404,8 @@ template<class MT> ThreadWatchdog<MT>::ThreadWatchdog()
 }
 template<class MT> ThreadWatchdog<MT>::~ThreadWatchdog()
 {
-    if(threadList != NULL) delete[] threadList;
+    if(threadList != NULL)
+        delete[] threadList;
 }
 template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(int nThreads)
 {
@@ -430,9 +429,8 @@ template<class MT> void ThreadWatchdog<MT>::Run()
 #endif
     // Wait for every thread to finish and change status.
     for(unsigned int i=0; i<threadCounter; i++)
-    {
         threadList[i]->Wait();
-    }
+
     threadRunning = false;
 #ifdef _WIN32
     SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
@@ -441,9 +439,8 @@ template<class MT> void ThreadWatchdog<MT>::Run()
 template<class MT> void ThreadWatchdog<MT>::Reset()
 {
     for(unsigned int i=0; i<threadCounter; i++)
-    {
         threadList[i]->Reset();
-    }
+
     threadRunning = true;
 }
 template<class MT> bool ThreadWatchdog<MT>::ThreadRunning()
@@ -455,9 +452,7 @@ template<class MT> void ThreadWatchdog<MT>::LaunchThreads()
     // Launches all the threads.
     threadRunning = true;
     for(unsigned int i=0; i<threadCounter; i++)
-    {
         threadList[i]->Launch();
-    }
 }
 template<class MT> void ThreadWatchdog<MT>::StopThreads()
 {
@@ -470,9 +465,7 @@ template<class MT> void ThreadWatchdog<MT>::StopThreads()
     for(unsigned int i=0; i<threadCounter; i++)
     {
         while(threadList[i]->IsRunning())
-        {
             threadList[i]->Wait();
-        }
     }
 
     threadRunning = false;
@@ -485,15 +478,16 @@ template<class MT> int ThreadWatchdog<MT>::GetThreadProgress()
 {
     int progress = 0;
     for(unsigned int i=0; i<threadCounter; i++)
-    {
         progress += threadList[i]->AskProgress();
-    }
+
     return (double)progress/(double)threadCounter;
 }
 template<class MT> MT* ThreadWatchdog<MT>::GetThread(unsigned int nThread)
 {
-    if(nThread >= 0 && nThread < threadCounter) return threadList[nThread];
-    else return NULL;
+    if(nThread >= 0 && nThread < threadCounter)
+        return threadList[nThread];
+    else
+        return NULL;
 }
 
 /**
@@ -567,10 +561,10 @@ protected:
     double redMean, greenMean, blueMean;          ///< Mean parameters.
     double redStdDev, greenStdDev, blueStdDev;    ///< Standard deviation parameters.
     bool relativeColor;
-    bool colorSet;                          ///< Activates internal coloring.
-    bool colorMode;                         ///< Activates external coloring.
-    GaussianColorStyles gaussianStyle;             ///< Gaussian color palette to be used.
-    GradientColorStyles gradStyle;                  ///< Grad color palette to be used.
+    bool colorSet;                                ///< Activates internal coloring.
+    bool colorMode;                               ///< Activates external coloring.
+    GaussianColorStyles gaussianStyle;            ///< Gaussian color palette to be used.
+    GradientColorStyles gradStyle;                ///< Grad color palette to be used.
     int paletteSize;
     int gaussianPaletteSize;
     int gradPaletteSize;
@@ -699,11 +693,11 @@ public:
     ///@param scale Selection area.
     void Resize( sf::Rect<int> scale );
 
-    void Move();                        ///< Moves the fractal image.
+    void Move();                ///< Moves the fractal image.
     void Move(const sf::Input& input);
     void ZoomBack();            ///< Does a zoomback in the selection area.
     void DeleteSavedZooms();    ///< If some image property image has changed deletes saved zoom images.
-    void Redraw();                ///< Redraws the fractal.
+    void Redraw();              ///< Redraws the fractal.
 
     // Thread control.
     ///@brief Calculate drawing limits of each thread and launches them.
@@ -778,7 +772,7 @@ public:
     FractalType GetType();
 
     ///@brief Returns a pointer to the set map.
-    bool **GetSetMap();
+    bool** GetSetMap();
 
     bool IsMoving();
     void SetFractalPropChanged();
@@ -794,11 +788,14 @@ public:
 
     // Color styles.
     void SetGaussianColorStyle(GaussianColorStyles _gaussianStyle);
-    GaussianColorStyles GetGaussianColorStyle();
     void SetGradStyle(GradientColorStyles _gradStyle);
+    GaussianColorStyles GetGaussianColorStyle();
     GradientColorStyles GetGradStyle();
 
     // Color operations.
+    sf::Color GetSetColor();
+    wxGradient* GetGradient();
+    ColorMode GetColorMode();
     void SetGaussianColorIntensity(int intensity, Color col);
     void SetGaussianColorMean(double med, Color col);
     void SetGaussianColorStdDev(double des, Color col);
@@ -808,14 +805,11 @@ public:
     void SetExtColorMode(bool mode);
     void SetFractalSetColorMode(bool mode);
     void SetFractalSetColor(sf::Color color);
-    sf::Color GetSetColor();
     bool GetExtColorMode();
     bool GetSetColorMode();
     void ChangeVarGradient();
     void SetPaletteSize(int size);
     int GetPaletteSize();
-    wxGradient* GetGradient();
-    ColorMode GetColorMode();
     void SetGradient(wxGradient grad);
     void SetGradientSize(unsigned int size);
     void SetPaletteMode(ColorMode mode);

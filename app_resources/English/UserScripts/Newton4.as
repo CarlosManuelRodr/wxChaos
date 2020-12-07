@@ -8,6 +8,7 @@ void SetParams()
     NoSetMap(true);
 }
 
+void Render()
 {
     complex z, z_prev, temp;
     double c_im;
