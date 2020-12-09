@@ -28,12 +28,12 @@ class IterDialog : public wxFrame
     wxButton* applyButton;
 
     unsigned int number;
-    Fractal *target;
+    Fractal* target;
     wxString text;
-    bool *active;
+    bool* active;
     
 public:
-    IterDialog(bool *Active, Fractal *_target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
+    IterDialog(bool* Active, Fractal* _target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(314,124), 
                long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
 

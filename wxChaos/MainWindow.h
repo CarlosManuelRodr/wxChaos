@@ -110,24 +110,24 @@ struct ConfigParserOpt
 */
 class MainFrame : public wxFrame
 {
-    FractalCanvas *fractalCanvas;
-    JuliaMode *ptr;
-    ConstDialog *diag;
-    IterDialog *iterDiag;
-    ColorFrame *pal;
-    FormulaDialog *formDialog;
+    FractalCanvas* fractalCanvas;
+    JuliaMode* juliaModePtr;
+    ConstDialog* diag;
+    IterDialog* iterDiag;
+    ColorFrame* pal;
+    FormulaDialog* formDialog;
     bool changeJuliaMode;
     bool changeKeybGuide;
     MainWindowStatus statusData;
 
     // WX
-    wxMenuBar *menubar;
-    wxMenu *fileMenu;
-    wxMenu *fractalMenu;
-    wxMenu *iterationsMenu;
-    wxMenu *toolMenu;
-    wxMenu *colorMenu;
-    wxMenu *helpMenu;
+    wxMenuBar* menubar;
+    wxMenu* fileMenu;
+    wxMenu* fractalMenu;
+    wxMenu* iterationsMenu;
+    wxMenu* toolMenu;
+    wxMenu* colorMenu;
+    wxMenu* helpMenu;
     wxMenu* formula;
     wxMenuItem* juliaMode;
     wxMenuItem* keyboardGuide;
@@ -147,6 +147,7 @@ class MainFrame : public wxFrame
     PauseContinueButton pauseBtn;
 
     // Menu items from user scripts.
+    vector<ScriptData> loadedScripts;
     vector<wxMenuItem*> scriptItems;
     int selectedScriptIndex;
 
@@ -159,7 +160,7 @@ class MainFrame : public wxFrame
     vector<wxSpinCtrl*> spinControls;
     vector<wxCheckBox*> checkBoxes;
 
-    wxBoxSizer *sizer;
+    wxBoxSizer* sizer;
     wxSize size;
     wxStatusBar* status;
     bool colorFrameActive;
@@ -187,6 +188,8 @@ class MainFrame : public wxFrame
     void ConnectEvents();
     void CloseAll();
     void ShowFirstUseDialog();
+    void AddScriptMenuElement(const ScriptData& scriptData, int index);
+    void RemoveScriptMenuElements();
 
 public :
     MainFrame();

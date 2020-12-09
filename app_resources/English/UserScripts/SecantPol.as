@@ -1,7 +1,7 @@
 /* Categorias de script: Complex, NumMet, Physic, Other.
 */
 
-void SetParams()
+void Configure()
 {
     SetFractalName("Secant method z^3 - 1 = 0");
     SetCategory("NumMet");

@@ -1,6 +1,8 @@
+#include <wx/wx.h>
+#include "global.h"
 #include "ColorFrame.h"
 #include "StringFuncs.h"
-#include "global.h"
+#include "Filesystem.h"
 
 
 GaussianColorPalette::GaussianColorPalette()

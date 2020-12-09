@@ -1,4 +1,4 @@
-void SetParams()
+void Configure()
 {
     SetFractalName("Gauss map");
     SetCategory("Other");

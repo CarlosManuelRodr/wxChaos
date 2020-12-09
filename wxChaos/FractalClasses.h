@@ -652,7 +652,7 @@ protected:
     ///@brief Draws a simple line. Used in orbit mode.
     void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
     void DrawCircle(double x_center, double y_center, double radius, sf::Color color = sf::Color(0, 0, 0));
-    void DrawGeom(sf::RenderWindow *Window);
+    void DrawGeom(sf::RenderWindow* Window);
 
     ///@brief By default it doesn't do anything. Has to be overriden in derived class.
     virtual void DrawOrbit() {}
@@ -669,17 +669,17 @@ public:
 
     ///@brief Construct a fractal that will be drawn to the screen.
     ///@param Window Window to draw the fractal.
-    Fractal(sf::RenderWindow *Window);
+    Fractal(sf::RenderWindow* Window);
 
     ~Fractal();
 
     ///@brief Draws the fractal into the screen.
     ///@param Window Window to draw the fractal.
-    void Show(sf::RenderWindow *Window);
+    void Show(sf::RenderWindow* Window);
 
     ///@brief Resizes the fractal.
     ///@param Window Window to draw the fractal.
-    void Resize(sf::RenderWindow *Window);
+    void Resize(sf::RenderWindow* Window);
 
     ///@brief Resize to specified size.
     ///@param width New width.
@@ -691,7 +691,7 @@ public:
 
     ///@brief Resizes the viewing area fo the fractal.
     ///@param scale Selection area.
-    void Resize( sf::Rect<int> scale );
+    void Resize(sf::Rect<int> scale);
 
     void Move();                ///< Moves the fractal image.
     void Move(const sf::Input& input);
@@ -724,7 +724,7 @@ public:
     virtual void PreDrawMaps();                              ///< Perform necessary operations before drawing the maps.
     virtual void PostRender();                               ///< Perform necessary operations after the rendering is finished.
     virtual void PreRestartRender();                         ///< Perform necessary operations before restarting.
-    virtual void HandleEvents(sf::Event *Event);             ///< SFML event handler.
+    virtual void HandleEvents(sf::Event* Event);             ///< SFML event handler.
 
     ///@brief Verifies watchdog status.
     ///@return true if there is an active thread. false if not.
@@ -873,9 +873,9 @@ class ScreenPointer
     void Render();
 
 public:
-    ScreenPointer(sf::RenderWindow *Window);
-    void Show(sf::RenderWindow *Window);
-    void Resize(sf::RenderWindow *Window);
+    ScreenPointer(sf::RenderWindow* Window);
+    void Show(sf::RenderWindow* Window);
+    void Resize(sf::RenderWindow* Window);
     bool HandleEvents(sf::Event Event);
 
     // WX events.
@@ -883,9 +883,9 @@ public:
     void UnClickEvent(wxMouseEvent& event);
     bool MoveEvent(wxMouseEvent& event);
 
-    double GetX(Fractal *target);
-    double GetY(Fractal *target);
-    void AdjustPosition(Fractal *target, double numX, double numY);
+    double GetX(Fractal* target);
+    double GetY(Fractal* target);
+    void AdjustPosition(Fractal* target, double numX, double numY);
 };
 
 template<class MT> inline void Fractal::TRender(MT* myRender)

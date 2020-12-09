@@ -2,7 +2,7 @@
 // Author: José Ramón Palacios Barreda.
 // Email: palacios_barreda@hotmail.com
 
-void SetParams()
+void Configure()
 {
     SetFractalName("Cut-Billiard");
     SetCategory("Other");

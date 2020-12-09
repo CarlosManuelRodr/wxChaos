@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="About.h" />
-    <ClInclude Include="AngelScriptFunc.h" />
+    <ClInclude Include="AngelscriptEngine.h" />
     <ClInclude Include="angelscript\add_on\scriptarray\scriptarray.h" />
     <ClInclude Include="angelscript\add_on\scriptstdstring\scriptstdstring.h" />
     <ClInclude Include="angelscript\angelscript.h" />
@@ -57,6 +57,7 @@
     <ClInclude Include="ColorFrame.h" />
     <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="ConstDialog.h" />
+    <ClInclude Include="Filesystem.h" />
     <ClInclude Include="FormulaDialog.h" />
     <ClInclude Include="FractalCanvas.h" />
     <ClInclude Include="FractalClasses.h" />
@@ -121,7 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="About.cpp" />
-    <ClCompile Include="AngelScriptFunc.cpp" />
+    <ClCompile Include="AngelscriptEngine.cpp" />
     <ClCompile Include="angelscript\add_on\scriptarray\scriptarray.cpp" />
     <ClCompile Include="angelscript\add_on\scriptstdstring\scriptstdstring.cpp" />
     <ClCompile Include="angelscript\add_on\scriptstdstring\scriptstdstring_utils.cpp" />
@@ -168,12 +169,12 @@
     <ClCompile Include="ColorFrame.cpp" />
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="ConstDialog.cpp" />
+    <ClCompile Include="Filesystem.cpp" />
     <ClCompile Include="FormulaDialog.cpp" />
     <ClCompile Include="FractalCanvas.cpp" />
     <ClCompile Include="FractalClasses.cpp" />
     <ClCompile Include="FractalGUI.cpp" />
     <ClCompile Include="FractalTypes.cpp" />
-    <ClCompile Include="global.cpp" />
     <ClCompile Include="gradient.cpp" />
     <ClCompile Include="gradientdlg.cpp" />
     <ClCompile Include="HTMLViewer.cpp" />

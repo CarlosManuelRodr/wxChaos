@@ -1,7 +1,7 @@
 #include "MainWindow.h"
-#include "AngelScriptFunc.h"
+#include "AngelscriptEngine.h"
 #include "HTMLViewer.h"
-#include "global.h"
+#include "Filesystem.h"
 #include <fstream>
 
 #ifdef _WIN32
@@ -416,8 +416,8 @@ void MainFrame::CloseAll()
     {
         juliaMode->Check(false);
 #ifdef _WIN32
-        ptr->Terminate();
-        delete ptr;
+        juliaModePtr->Terminate();
+        delete juliaModePtr;
 #endif
         juliaModeState = false;
         changeJuliaMode = false;
@@ -440,10 +440,10 @@ void MainFrame::JuliaHandle(wxUpdateUIEvent &event)
     if(changeJuliaMode && !juliaModeState)
     {
         juliaMode->Check(false);
-        ptr->Close();
-        ptr->Wait();
+        juliaModePtr->Close();
+        juliaModePtr->Wait();
 
-        delete ptr;
+        delete juliaModePtr;
         juliaModeState = false;
         changeJuliaMode = false;
         fractalCanvas->SetJuliaMode(false);
@@ -483,7 +483,7 @@ void MainFrame::OnSave(wxCommandEvent &event)
         SizeDialogSave *diag;
 
         if(fractalType == FractalType::ScriptFractal)
-            diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, scriptDataVect[selectedScriptIndex].file);
+            diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, loadedScripts[selectedScriptIndex].file);
         else
             diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this);
 
@@ -880,9 +880,12 @@ void MainFrame::ChangeScriptItem(wxCommandEvent &event)
 {
     unsigned int id = static_cast<unsigned int>(event.GetId() - SCRIPT_ID_INDEX);
     selectedScriptIndex = id;
-    if(fractalCanvas->GetFractalPtr()->GetWatchdog()->ThreadRunning()) fractalCanvas->GetFractalPtr()->PauseContinue();
+
+    if(fractalCanvas->GetFractalPtr()->GetWatchdog()->ThreadRunning())
+        fractalCanvas->GetFractalPtr()->PauseContinue();
+
     Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
-    fractalCanvas->ChangeToScript(scriptDataVect[id]);
+    fractalCanvas->ChangeToScript(loadedScripts[id]);
     fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
 
     fractalType = FractalType::ScriptFractal;
@@ -1161,11 +1164,54 @@ void MainFrame::DeleteOptPanel()
     {
         optionPanel->Hide();
         wxSize windowSize = this->GetSize();
+
         if(!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()-175, windowSize.GetHeight());
+
         this->GetSizer()->Layout();
         showOptPanel = false;
     }
+}
+void MainFrame::AddScriptMenuElement(const ScriptData& scriptData, int index)
+{
+    loadedScripts.push_back(scriptData);
+    scriptItems.push_back(new wxMenuItem(formula, SCRIPT_ID_INDEX + index, wxString(scriptData.name.c_str(), wxConvUTF8),
+        wxEmptyString, wxITEM_NORMAL));
+
+    if (scriptData.scriptCategory == ScriptCategory::Complex)
+        typeComplex->Append(scriptItems[index]);
+    else if (scriptData.scriptCategory == ScriptCategory::NumMet)
+        typeNumMet->Append(scriptItems[index]);
+    else if (scriptData.scriptCategory == ScriptCategory::Physic)
+        typePhysics->Append(scriptItems[index]);
+    else
+        typeOther->Append(scriptItems[index]);
+
+    this->Connect(SCRIPT_ID_INDEX + index, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
+}
+void MainFrame::RemoveScriptMenuElements()
+{
+    // Remove current menu entries.
+    for (unsigned int i = 0; i < loadedScripts.size(); i++)
+    {
+        if (loadedScripts[i].scriptCategory == ScriptCategory::Complex)
+            typeComplex->Remove(scriptItems[i]);
+        else if (loadedScripts[i].scriptCategory == ScriptCategory::NumMet)
+            typeNumMet->Remove(scriptItems[i]);
+        else if (loadedScripts[i].scriptCategory == ScriptCategory::Physic)
+            typePhysics->Remove(scriptItems[i]);
+        else
+            typeOther->Remove(scriptItems[i]);
+    }
+    loadedScripts.clear();
+
+    // Disconnect events and delete menu items.
+    for (unsigned int i = 0; i < scriptItems.size(); i++)
+    {
+        this->Disconnect(SCRIPT_ID_INDEX + i, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
+        delete scriptItems[i];
+    }
+    scriptItems.clear();
 }
 void MainFrame::GetScriptFractals()
 {
@@ -1188,122 +1234,50 @@ void MainFrame::GetScriptFractals()
     }
 
     // Gets script parameters.
-    for(unsigned int i=0; i<filesInFolder.size(); i++)
+    for (unsigned int i = 0; i < filesInFolder.size(); i++)
     {
-        int r;
-        asIScriptEngine *engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-
-        if(engine == nullptr)
-            break;
-
-        engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
-
-        // Configure the script engine.
-        RegisterStdString(engine);
-        RegisterScriptMathComplex(engine);
-        RegisterScriptMathReal(engine);
-        RegisterAsFunctions(engine);
-
-        // Register this to avoid compiler complains.
-        int intVar;
-        double dblVar;
-        engine->RegisterGlobalProperty("double minX", &dblVar);
-        engine->RegisterGlobalProperty("double maxX", &dblVar);
-        engine->RegisterGlobalProperty("double minY", &dblVar);
-        engine->RegisterGlobalProperty("double maxY", &dblVar);
-        engine->RegisterGlobalProperty("double xFactor", &dblVar);
-        engine->RegisterGlobalProperty("double yFactor", &dblVar);
-        engine->RegisterGlobalProperty("double kReal", &dblVar);
-        engine->RegisterGlobalProperty("double kImaginary", &dblVar);
-        engine->RegisterGlobalProperty("int ho", &intVar);
-        engine->RegisterGlobalProperty("int hf", &intVar);
-        engine->RegisterGlobalProperty("int wo", &intVar);
-        engine->RegisterGlobalProperty("int wf", &intVar);
-        engine->RegisterGlobalProperty("int maxIter", &intVar);
-        engine->RegisterGlobalProperty("int threadIndex", &intVar);
-        engine->RegisterGlobalProperty("int screenWidth", &intVar);
-        engine->RegisterGlobalProperty("int screenHeight", &intVar);
-        engine->RegisterGlobalProperty("int paletteSize", &intVar);
+        AngelscriptConfigurationEngine configEngine;
 
         string filePath = GetWorkingDirectory();
-    #ifdef _WIN32
+#ifdef _WIN32
         filePath += "\\UserScripts\\";
-    #elif __linux__
+#elif __linux__
         filePath += "/UserScripts/";
-    #endif
+#endif
         filePath += filesInFolder[i];
-        r = CompileScriptFromPath(engine, filePath);
-        if( r < 0 )
+
+        if (!configEngine.CompileFromPath(filePath))
         {
-            string errorMsg = "Compile error in file: ";
-            errorMsg += filePath;
-            // SetConsoleText(errorMsg);
-            engine->Release();
-            filesInFolder.erase(filesInFolder.begin()+i);
+            filesInFolder.erase(filesInFolder.begin() + i);
             i -= 1;
             continue;
         }
 
-        asIScriptContext *ctx = engine->CreateContext();
-        if( ctx == 0 )
+        if (configEngine.Execute())
         {
-            engine->Release();
-            filesInFolder.erase(filesInFolder.begin()+i);
-            i -= 1;
-            continue;
+            const ScriptData scriptData = configEngine.GetScriptData();
+            AddScriptMenuElement(scriptData, i);
         }
-
-
-        // Find the function for the function we want to execute.
-        asIScriptFunction *renderFunc = engine->GetModule(0)->GetFunctionByDecl("void SetParams()");
-        if( renderFunc == 0 )
-        {
-            ctx->Release();
-            engine->Release();
-            filesInFolder.erase(filesInFolder.begin()+i);
-            i -= 1;
-            continue;
-        }
-
-        // Prepare the script context with the function we wish to execute.
-        r = ctx->Prepare(renderFunc);
-        if( r < 0 )
-        {
-            ctx->Release();
-            engine->Release();
-            filesInFolder.erase(filesInFolder.begin()+i);
-            i -= 1;
-            continue;
-        }
-
-        // Execute the function.
-        r = ctx->Execute();
-        ctx->Release();
-        engine->Release();
-        PushScriptData(filePath);
-
-        scriptItems.push_back(new wxMenuItem(formula, SCRIPT_ID_INDEX+i, wxString(scriptDataVect[i].name.c_str(), wxConvUTF8) , wxEmptyString, wxITEM_NORMAL));
-        if(scriptDataVect[i].cat == ScriptCategory::Complex)
-            typeComplex->Append(scriptItems[i]);
-        else if(scriptDataVect[i].cat == ScriptCategory::NumMet)
-            typeNumMet->Append(scriptItems[i]);
-        else if(scriptDataVect[i].cat == ScriptCategory::Physic)
-            typePhysics->Append(scriptItems[i]);
         else
-            typeOther->Append(scriptItems[i]);
-
-        this->Connect(SCRIPT_ID_INDEX+i, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
+        {
+            filesInFolder.erase(filesInFolder.begin() + i);
+            i -= 1;
+        }
     }
 }
 void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
-    if(colorFrameActive) pal->SetTarget(fractalCanvas->GetFractalPtr());
-    if(iterDiagActive) iterDiag->SetTarget(fractalCanvas->GetFractalPtr());
+    if(colorFrameActive)
+        pal->SetTarget(fractalCanvas->GetFractalPtr());
+    if(iterDiagActive)
+        iterDiag->SetTarget(fractalCanvas->GetFractalPtr());
 
     showOrbit->Check(false);
-    if(fractalCanvas->GetFractalPtr()->HasOrbit()) showOrbit->Enable(true);
-    else showOrbit->Enable(false);
+    if(fractalCanvas->GetFractalPtr()->HasOrbit())
+        showOrbit->Enable(true);
+    else
+        showOrbit->Enable(false);
 
     MoreIter->Enable(true);
     lessIter->Enable(true);
@@ -1338,6 +1312,7 @@ void MainFrame::UpdateMenu()
             formDiagActive = false;
         }
     }
+
     if(fractalType == FractalType::ScriptFractal)
         pauseBtn.pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));
     else
@@ -1348,8 +1323,8 @@ void MainFrame::UpdateMenu()
     {
         juliaMode->Check(false);
 #ifdef _WIN32
-        ptr->Terminate();
-        delete ptr;
+        juliaModePtr->Terminate();
+        delete juliaModePtr;
 #endif
         juliaModeState = false;
         changeJuliaMode = false;
@@ -1364,9 +1339,9 @@ void MainFrame::UpdateJuliaMode()
     {
         juliaMode->Check(false);
 #ifdef _WIN32
-        ptr->Close();
-        ptr->Wait();
-        delete ptr;
+        juliaModePtr->Close();
+        juliaModePtr->Wait();
+        delete juliaModePtr;
 #endif
         juliaModeState = false;
         changeJuliaMode = false;
@@ -1399,8 +1374,8 @@ void MainFrame::UpdateJuliaMode()
             juliaType = FractalType::Julia;
         };
 
-        ptr = new JuliaMode(fractalCanvas, juliaType, fractalCanvas->GetFractalPtr()->GetOptions(), this);
-        ptr->Launch();
+        juliaModePtr = new JuliaMode(fractalCanvas, juliaType, fractalCanvas->GetFractalPtr()->GetOptions(), this);
+        juliaModePtr->Launch();
 #endif
         fractalCanvas->SetJuliaMode(true);
     }
@@ -1408,26 +1383,7 @@ void MainFrame::UpdateJuliaMode()
 void MainFrame::ReloadScripts()
 {
     // Remove current menu entries.
-    for(unsigned int i=0; i<scriptDataVect.size(); i++)
-    {
-        if(scriptDataVect[i].cat == ScriptCategory::Complex)
-            typeComplex->Remove(scriptItems[i]);
-        else if(scriptDataVect[i].cat == ScriptCategory::NumMet)
-            typeNumMet->Remove(scriptItems[i]);
-        else if(scriptDataVect[i].cat == ScriptCategory::Physic)
-            typePhysics->Remove(scriptItems[i]);
-        else
-            typeOther->Remove(scriptItems[i]);
-    }
-    scriptDataVect.clear();
-
-    // Disconnect events and delete menu items.
-    for(unsigned int i=0; i<scriptItems.size(); i++)
-    {
-        this->Disconnect(SCRIPT_ID_INDEX+i, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
-        delete scriptItems[i];
-    }
-    scriptItems.clear();
+    this->RemoveScriptMenuElements();
 
     // Get new scripts.
     this->GetScriptFractals();
@@ -1441,8 +1397,8 @@ class MainApp : public wxApp
 {
     virtual bool OnInit()
     {
-       MainFrame *Main = new MainFrame;
-       Main->Show();
+       MainFrame* main = new MainFrame;
+       main->Show();
        return true;
     }
 };

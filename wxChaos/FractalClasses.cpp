@@ -6,6 +6,7 @@
 #include "StringFuncs.h"
 #include "BinaryOps.h"
 #include "ConfigParser.h"
+#include "Filesystem.h"
 #include "global.h"
 
 const int stdSpeed = 1;

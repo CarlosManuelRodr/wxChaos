@@ -12,7 +12,7 @@
 #define _fractalTypes
 
 #include "FractalClasses.h"
-#include "AngelScriptFunc.h"
+#include "AngelscriptEngine.h"
 
 /**
 * @class RenderMandelbrot

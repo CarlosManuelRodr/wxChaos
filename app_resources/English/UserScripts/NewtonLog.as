@@ -1,7 +1,7 @@
 /* Categorias de script: Complex, NumMet, Physic, Other.
 */
 
-void SetParams()
+void Configure()
 {
     SetFractalName("Newton log(z) - z = 0");
     SetCategory("NumMet");

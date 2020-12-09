@@ -1,7 +1,7 @@
 /* Categorias de script: Complex, NumMet, Physic, Other.
 */
 
-void SetParams()
+void Configure()
 {
     SetFractalName("Newton z^8+15z^4-16 = 0");
     SetCategory("NumMet");

@@ -1,7 +1,7 @@
 /* Categorias de script: Complex, NumMet, Physic, Other.
 */
 
-void SetParams()
+void Configure()
 {
     SetFractalName("Newton sin(z) - z = 0");
     SetCategory("NumMet");

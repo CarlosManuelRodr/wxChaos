@@ -1,4 +1,4 @@
-void SetParams()
+void Configure()
 {
     SetFractalName("Pawn");
     SetCategory("Complex");

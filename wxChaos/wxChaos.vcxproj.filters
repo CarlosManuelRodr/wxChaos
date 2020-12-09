@@ -36,9 +36,6 @@
     <ClInclude Include="About.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="AngelScriptFunc.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="BinaryOps.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -354,12 +351,15 @@
     <ClInclude Include="muParserX\utGeneric.h">
       <Filter>muParserX</Filter>
     </ClInclude>
+    <ClInclude Include="AngelscriptEngine.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Filesystem.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="About.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
-    <ClCompile Include="AngelScriptFunc.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="BinaryOps.cpp">
@@ -390,9 +390,6 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="FractalTypes.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
-    <ClCompile Include="global.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="gradient.cpp">
@@ -649,6 +646,12 @@
     </ClCompile>
     <ClCompile Include="muParserX\mpVariable.cpp">
       <Filter>muParserX</Filter>
+    </ClCompile>
+    <ClCompile Include="AngelscriptEngine.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Filesystem.cpp">
+      <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

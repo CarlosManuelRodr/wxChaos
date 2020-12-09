@@ -22,13 +22,13 @@
 class HTMLViewer : public wxDialog
 {
     wxHtmlWindow* htmlView;
-    wxButton* CloseButton;
+    wxButton* closeButton;
 
-    void OnClose( wxCommandEvent& event );
+    void OnClose(wxCommandEvent& event);
 
 public:
-    HTMLViewer( wxString htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxSize( 849,591 ), long style = wxDEFAULT_DIALOG_STYLE );
+    HTMLViewer(wxString htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(849, 591), long style = wxDEFAULT_DIALOG_STYLE);
     ~HTMLViewer();
 };
 

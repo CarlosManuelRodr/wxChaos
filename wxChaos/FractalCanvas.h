@@ -51,7 +51,7 @@ class FractalCanvas : public wxSFMLCanvas
     FractalHandler fractalHandler;
     SelectRect* selection;
     ButtonChange* play;
-    ScreenPointer* pointer;
+    ScreenPointer* screenPointer;
     FractalType type;
     Fractal* target;                    ///< Internally the methods of this class communicate with the fractal through this pointer.
 
@@ -158,13 +158,13 @@ public :
     FormulaOpt GetFormula();
 
     ///@brief Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
-    void OnMoveMouse(wxMouseEvent &event);
+    void OnMoveMouse(wxMouseEvent& event);
 
-    void OnClick(wxMouseEvent &event);
-    void OnUnClick(wxMouseEvent &event);
+    void OnClick(wxMouseEvent& event);
+    void OnUnClick(wxMouseEvent& event);
 
     ///@brief Resizes the frame.
-    void OnResize(wxSizeEvent &event);
+    void OnResize(wxSizeEvent& event);
 
     void OnKeyDown(wxKeyEvent& event);
     void OnKeyUp(wxKeyEvent& event);

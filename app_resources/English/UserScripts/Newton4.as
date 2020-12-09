@@ -1,4 +1,4 @@
-void SetParams()
+void Configure()
 {
     SetFractalName("Newton z^4 - 1 = 0");
     SetCategory("NumMet");
