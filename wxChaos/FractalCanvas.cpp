@@ -46,14 +46,14 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     // Initializes GUI elements.
     selection = new SelectRect(this);
 
-    play = new ButtonChange(GetAbsPath("Resources/Play.tga"), GetAbsPath("Resources/Stop.tga"), 0, 500, this);
+    play = new ButtonChange(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources","Stop.tga" }), 0, 500, this);
     play->SetAnchorage(false, true, true, false);
     play->Resize(this);
 
     screenPointer = new ScreenPointer(this);
-    keybImage.LoadFromFile(GetAbsPath("Resources/keyboard.png"));
-    mouseImage.LoadFromFile(GetAbsPath("Resources/mouse.png"));
-    helpImage.LoadFromFile(GetAbsPath("Resources/HelpImage.png"));
+    keybImage.LoadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
+    mouseImage.LoadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
+    helpImage.LoadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
     outKeyb.SetImage(keybImage);
     outMouse.SetImage(mouseImage);
     outHelp.SetImage(helpImage);
@@ -112,9 +112,9 @@ void FractalCanvas::OnUpdate()
             {
                 btn->state = false;
                 if(type == FractalType::ScriptFractal)
-                    btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));    // Txt: "Abort"
+                    btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt)) + wxT('\t') + wxT("P"));    // Txt: "Abort"
                 else
-                    btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: "Pause"
+                    btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt)) + wxT('\t') + wxT("P"));    // Txt: "Pause"
 
                 target->DeleteSavedZooms();
             }

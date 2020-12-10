@@ -18,137 +18,40 @@ using namespace std;
 #include <pwd.h>
 #endif
 
-bool usingLocalDirect = false;
-
-void ConfigureDirectory()
-{
-#ifdef _WIN32
-    if (!FORCE_APP_DIRECT)
-    {
-        // Gets the user directory.
-        string folderPath;
-        char path[MAX_PATH];
-        SHGetFolderPathA(NULL, CSIDL_PROFILE, NULL, 0, path);
-        folderPath = path;
-        folderPath += "/wxChaos/";
-        FileGetter fg(folderPath.c_str());
-
-        bool found = false;
-        char text[FILENAME_MAX];
-        while (fg.getNextFile(text))
-        {
-            if (string(text) == "config.ini")
-                found = true;
-        }
-        if (SETUP_VERSION && !found)
-        {
-            // To Reimplement
-        }
-        else if (found)
-            usingLocalDirect = false;
-    }
-#elif __linux__
-    if (SETUP_VERSION) usingLocalDirect = false;
-    // Gets the user directory.
-    string folderPath = GetWorkingDirectory();
-    FileGetter fg(folderPath.c_str());
-
-    bool found = false;
-    char text[FILENAME_MAX];
-    while (fg.getNextFile(text))
-    {
-        if (string(text) == "config.ini") found = true;
-    }
-    if (found)
-    {
-        string version;
-        ConfigParser p(folderPath + string("/config.ini"));
-        p.StringArgToVar(version, "APP_VERSION", "1.0.0");
-        if (version != APP_VERSION) found = false;
-    }
-    if (!found)
-    {
-        int r;
-        r = system("mkdir ~/.config/wxChaos"); assert(r >= 0);
-        r = system("cp -r /opt/extras.ubuntu.com/wxChaos/Doc ~/.config/wxChaos"); assert(r >= 0);
-        r = system("cp -r /opt/extras.ubuntu.com/wxChaos/Resources ~/.config/wxChaos"); assert(r >= 0);
-        r = system("cp -r /opt/extras.ubuntu.com/wxChaos/ScriptSamples ~/.config/wxChaos"); assert(r >= 0);
-        r = system("cp -r /opt/extras.ubuntu.com/wxChaos/UserScripts ~/.config/wxChaos"); assert(r >= 0);
-        r = system("cp /opt/extras.ubuntu.com/wxChaos/config.ini ~/.config/wxChaos"); assert(r >= 0);
-    }
-#endif
-}
-
-string GetWorkingDirectory(const bool opt)
+string GetWorkingDirectory()
 {
     string folderPath = "";
-    if (SETUP_VERSION && !opt)
-    {
-        if (usingLocalDirect)
-        {
 #ifdef _WIN32
-            // Gets the current directory.
-            char cCurrentPath[FILENAME_MAX];
-            _getcwd(cCurrentPath, sizeof(cCurrentPath));
-            cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
-            folderPath += cCurrentPath;
+    // Gets the current directory.
+    char cCurrentPath[FILENAME_MAX];
+    _getcwd(cCurrentPath, sizeof(cCurrentPath));
+    cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
+    folderPath += cCurrentPath;
 #elif __linux__
-            char cCurrentPath[FILENAME_MAX];
+    char cCurrentPath[FILENAME_MAX];
 
-            if (!getcwd(cCurrentPath, sizeof(cCurrentPath))) {
-                return string("");
-            }
-            cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
-            folderPath += cCurrentPath;
-#endif
-        }
-        else
-        {
-#ifdef _WIN32
-            // Gets the user directory.
-            char path[MAX_PATH];
-            SHGetFolderPathA(NULL, CSIDL_PROFILE, NULL, 0, path);
-            folderPath = path;
-            folderPath += "\\wxChaos";
-#elif __linux__
-            struct passwd* pw = getpwuid(getuid());
-            const char* homedir = pw->pw_dir;
-            folderPath = string(homedir);
-            folderPath += "/.config/wxChaos";
-#endif
-        }
+    if (!getcwd(cCurrentPath, sizeof(cCurrentPath))) {
+        return string("");
     }
-    else
-    {
-#ifdef _WIN32
-        // Gets the current directory.
-        char cCurrentPath[FILENAME_MAX];
-        _getcwd(cCurrentPath, sizeof(cCurrentPath));
-        cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
-        folderPath += cCurrentPath;
-#elif __linux__
-        char cCurrentPath[FILENAME_MAX];
-
-        if (!getcwd(cCurrentPath, sizeof(cCurrentPath))) {
-            return string("");
-        }
-        cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
-        folderPath += cCurrentPath;
+    cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
+    folderPath += cCurrentPath;
 #endif
-    }
     return folderPath;
 }
 
-string GetAbsPath(std::string relPath)
+string GetAbsPath(std::vector<std::string> pathList)
 {
-    string temp = GetWorkingDirectory();
+    string path = GetWorkingDirectory();
+    for (string element : pathList)
+    {
 #ifdef __linux__
-    temp += "/";
+        path += "/";
 #elif _WIN32
-    temp += "\\";
+        path += "\\";
 #endif
-    temp += relPath;
-    return temp;
+        path += element;
+    }
+    return path;
 }
 wxString GetWxAbsPath(vector<string> pathList)
 {
@@ -164,13 +67,55 @@ wxString GetWxAbsPath(vector<string> pathList)
     }
     return wxString(path.c_str(), wxConvUTF8);
 }
+bool GetFileExtension(const string filename, const string ext)
+{
+    for (unsigned int i = 0; i < filename.length(); i++)
+    {
+        if (filename[i] == '.' && i + 1 != filename.length())
+        {
+            if (filename.substr(i + 1, filename.size() - 1 - i) == ext)
+                return true;
+        }
+    }
+    return false;
+}
+vector<string> FindFilesWithExtension(string path, string ext)
+{
+    FileGetter fg(path.c_str());
+
+    // Fills vector with script files.
+    vector<string> filesInDirectory;
+    string filename;
+    while (fg.GetNextFile(filename))
+    {
+        if (GetFileExtension(filename, "as"))
+            filesInDirectory.push_back(filename);
+    }
+
+    return filesInDirectory;
+}
+std::vector<wxString> FindFilesWithExtension(wxString path, std::string ext)
+{
+    FileGetter fg(path.ToStdString());
+
+    // Fills vector with script files.
+    vector<wxString> filesInDirectory;
+    string filename;
+    while (fg.GetNextFile(filename))
+    {
+        if (GetFileExtension(filename, "as"))
+            filesInDirectory.push_back(wxString(filename));
+    }
+
+    return filesInDirectory;
+}
 
 // FileGetter
-FileGetter::FileGetter(const char* folder)
+FileGetter::FileGetter(string folder)
 {
 #ifdef _WIN32
     chk = -1;
-    sprintf_s(folderstar, "%s\\*.*", folder);
+    sprintf_s(folderstar, "%s\\*.*", folder.c_str());
     hfind = FindFirstFileA(folderstar, &found);
     FindNextFileA(hfind, &found);
 #elif __linux__
@@ -188,12 +133,13 @@ FileGetter::FileGetter(const char* folder)
     i = 0;
 #endif
 }
-int FileGetter::getNextFile(char* fname)
+int FileGetter::GetNextFile(string& fname)
 {
 #ifdef _WIN32
     chk = FindNextFileA(hfind, &found);
     if (chk)
-        strcpy(fname, found.cFileName);
+        fname = found.cFileName;
+
     return chk;
 #elif __linux__
     if (i < files.size())

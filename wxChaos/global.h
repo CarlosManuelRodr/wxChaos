@@ -20,11 +20,7 @@
 
 // ===================
 // Begin app parameters.
-const char APP_VERSION[] = "1.1.0";
-
-#define SETUP_VERSION false
-#define FORCE_APP_DIRECT true
-
+const char APP_VERSION[] = "1.2.0";
 #define wxcLANG_ENGLISH
 //#define wxcLANG_SPANISH
 
@@ -32,22 +28,8 @@ const char APP_VERSION[] = "1.1.0";
 // ===================
 
 // ===================
-// Various config fixes.
-#ifndef USE_BOOST
-#ifdef _WIN32
-#undef SETUP_VERSION
-#undef FORCE_APP_DIRECT
-#define SETUP_VERSION false
-#define FORCE_APP_DIRECT true
-#endif
-#endif
+// Set up language
 
-#ifdef BUILD_SETUP
-#undef SETUP_VERSION
-#define SETUP_VERSION true
-#undef FORCE_APP_DIRECT
-#define FORCE_APP_DIRECT false
-#endif
 
 #ifdef USE_LANG_ENGLISH
 #undef wxcLANG_SPANISH

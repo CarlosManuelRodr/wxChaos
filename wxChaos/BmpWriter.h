@@ -12,9 +12,7 @@
 #define __bmpWriter
 
 #include <fstream>
-typedef short unsigned int uint16;
-typedef unsigned int uint32;
-typedef int int32;
+#include <cstdint>
 
 /**
 * @struct BMPHeader
@@ -22,11 +20,11 @@ typedef int int32;
 */
 struct BMPHeader
 {
-    uint16 identifier;
-    uint32 size;
-    uint16 appSpecific1;
-    uint16 appSpecific2;
-    uint32 bitmapData;
+    uint16_t identifier;
+    uint32_t size;
+    uint16_t appSpecific1;
+    uint16_t appSpecific2;
+    uint32_t bitmapData;
 };
 
 /**
@@ -35,17 +33,17 @@ struct BMPHeader
 */
 struct DIBHeader
 {
-    uint32 headerSize;
-    int32 width;
-    int32 height;
-    uint16 nPlanes;
-    uint16 colorDepth;
-    uint32 compression;
-    uint32 bmpBytes;
-    int32 hRes;
-    int32 vRes;
-    uint32 nColors;
-    uint32 nImpColors;
+    uint32_t headerSize;
+    int32_t width;
+    int32_t height;
+    uint16_t nPlanes;
+    uint16_t colorDepth;
+    uint32_t compression;
+    uint32_t bmpBytes;
+    int32_t hRes;
+    int32_t vRes;
+    uint32_t nColors;
+    uint32_t nImpColors;
 };
 
 /**
@@ -54,7 +52,7 @@ struct DIBHeader
 */
 struct BMPPixel
 {
-    char r, g, b;    
+    uint8_t r, g, b;
 };
 
 /**

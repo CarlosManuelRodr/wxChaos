@@ -19,6 +19,8 @@
 #include "IterDialog.h"
 #include "ConfigParser.h"
 #include "FormulaDialog.h"
+#include "ScriptEditor.h"
+#include "ZoomRecorder.h"
 #include "StringFuncs.h"
 
 #ifdef _WIN32
@@ -78,7 +80,9 @@ enum IDS
     ID_FORMULA_DIALOG,
     ID_OPTPANEL,
     ID_USER_MANUAL,
-    ID_WELCOME_DIALOG
+    ID_WELCOME_DIALOG,
+    ID_SCRIPT_EDITOR,
+    ID_ZOOM_RECORDER
 };
 
 /**
@@ -115,9 +119,21 @@ class MainFrame : public wxFrame
     IterDialog* iterDiag;
     ColorFrame* pal;
     FormulaDialog* formDialog;
+    ScriptEditor* scriptEditor;
+    ZoomRecorder* zoomRecorder;
+    
+    MainWindowStatus statusData;
     bool changeJuliaMode;
     bool changeKeybGuide;
-    MainWindowStatus statusData;
+    bool colorFrameActive;
+    bool introConstActive;
+    bool iterDiagActive;
+    bool infoFrameActive;
+    bool formDiagActive;
+    bool zoomRecorderActive;
+    bool scriptEditorActive;
+    bool pause;
+    bool showOptPanel;
 
     // WX
     wxMenuBar* menubar;
@@ -144,6 +160,9 @@ class MainFrame : public wxFrame
     wxBoxSizer* fractalSizer;
     wxBoxSizer* optionSizer;
     PauseContinueButton pauseBtn;
+    wxBoxSizer* sizer;
+    wxSize size;
+    wxStatusBar* status;
 
     // Menu items from user scripts.
     vector<ScriptData> loadedScripts;
@@ -159,16 +178,7 @@ class MainFrame : public wxFrame
     vector<wxSpinCtrl*> spinControls;
     vector<wxCheckBox*> checkBoxes;
 
-    wxBoxSizer* sizer;
-    wxSize size;
-    wxStatusBar* status;
-    bool colorFrameActive;
-    bool introConstActive;
-    bool iterDiagActive;
-    bool infoFrameActive;
-    bool formDiagActive;
-    bool pause;
-    bool showOptPanel;
+    // Configuration.
     GaussianColorStyles colorStyle;
     FractalType fractalType;
     ConfigParserOpt opt;
@@ -241,6 +251,8 @@ public :
     void OnFractalOptions(wxCommandEvent& event);
     void OnApplyPanelOpt(wxCommandEvent& event);
     void OnUserManual(wxCommandEvent& event);
+    void OnScriptEditor(wxCommandEvent& event);
+    void OnZoomRecorder(wxCommandEvent& event);
 
     void ReloadScripts();  ///< Search again for script fractals.
 };

@@ -66,12 +66,9 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     wxImage::AddHandler(new wxPNGHandler);
     wxImage::AddHandler(new wxICOHandler);
 
-    // Prepare directories.
-    ConfigureDirectory();
-
     // WX.
     mainFramePtr = this;
-    this->SetSizeHints(wxSize( 300,300 ), wxDefaultSize);
+    this->SetSizeHints(wxSize(300, 300), wxDefaultSize);
 
     wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
@@ -86,6 +83,8 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     iterDiagActive = false;
     infoFrameActive = false;
     formDiagActive = false;
+    zoomRecorderActive = false;
+    scriptEditorActive = false;
     pause = false;
     selectedScriptIndex = -1;
 
@@ -127,7 +126,7 @@ void MainFrame::ShowFirstUseDialog()
 }
 void MainFrame::ConnectEvents()
 {
-    this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainFrame::OnClose));
+    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainFrame::OnClose));
     this->Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnQuit));
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(MainFrame::OnResize));
     this->Connect(ID_JULIA_MODE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnJuliaMode));
@@ -174,9 +173,8 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_FORMULA_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFormulaDialog));
     this->Connect(ID_OPTPANEL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFractalOptions));
     this->Connect(ID_USER_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnUserManual));
-#ifdef __linux__
-    this->Connect(ID_OPEN_SCRIPT_FOLDER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnOpenScriptFolder));
-#endif
+    this->Connect(ID_SCRIPT_EDITOR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnScriptEditor));
+    this->Connect(ID_ZOOM_RECORDER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnZoomRecorder));
 }
 
 void MainFrame::SetUpGUI()
@@ -190,7 +188,7 @@ void MainFrame::SetUpGUI()
     colorMenu = new wxMenu();
     helpMenu = new wxMenu();
     formula = new wxMenu();
-    pal = NULL;
+    pal = nullptr;
 
     // Formulas.
     wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinoidal, *magnet;
@@ -295,6 +293,8 @@ void MainFrame::SetUpGUI()
     fileMenu->Append(wxID_EXIT, wxT(menuQuitTxt));
 
     // Tools menu.
+    toolMenu->Append(ID_SCRIPT_EDITOR, wxT("Script editor"), wxT("Create new fractals with an scripting language."));
+    toolMenu->Append(ID_ZOOM_RECORDER, wxT("Zoom recorder"), wxT("Record a video zoom."));
 
     // Iteracions.
     itManual = new wxMenuItem(iterationsMenu, ID_IT_MANUAL, wxString(wxT(menuManualIterTxt)), wxEmptyString, wxITEM_NORMAL);
@@ -463,7 +463,7 @@ void MainFrame::OnSave(wxCommandEvent &event)
         fileName = saveFileDialog->GetPath();
         int ext = saveFileDialog->GetFilterIndex();
         string path = string(fileName.mb_str());
-        SizeDialogSave *diag;
+        SizeDialogSave* diag;
 
         if(fractalType == FractalType::ScriptFractal)
             diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, loadedScripts[selectedScriptIndex].file);
@@ -509,7 +509,8 @@ void MainFrame::OnFormulaDialog(wxCommandEvent &event)
 
         fractalType = FractalType::UserDefined;
     }
-    else formDialog->SetFocus();
+    else
+        formDialog->SetFocus();
 }
 void MainFrame::OnRedraw(wxCommandEvent &event)
 {
@@ -631,6 +632,7 @@ void MainFrame::OnFractalOptions(wxCommandEvent &event)
         wxSize windowSize = this->GetSize();
         if(!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
+
         this->GetSizer()->Layout();
         showOptPanel = true;
     }
@@ -680,36 +682,41 @@ void MainFrame::OnUserManual(wxCommandEvent &event)
 {
     // Open pdf.
 #ifdef _WIN32
-    string filePath = GetWorkingDirectory(FORCE_APP_DIRECT);
-    filePath += "/Doc/User_Manual.pdf";
-
-    #ifdef UNICODE
-        ShellExecute( NULL, _T("open"), std::wstring(filePath.begin(), filePath.end()).c_str(), _T(""), _T("C:\\"), SW_SHOWNORMAL);
-    #else
-        ShellExecute( NULL, "open", filePath.c_str(), "", "C:\\", SW_SHOWNORMAL);
-    #endif
+    string filePath = GetAbsPath({ "Doc", "User_Manual.pdf" });
+    ShellExecute(NULL, _T("open"), std::wstring(filePath.begin(), filePath.end()).c_str(), _T(""), _T("C:\\"), SW_SHOWNORMAL);
 #elif __linux__
-    string filePath, pdfViewer;
-    string desktop = exec("ps -o pid= -C plasma-desktop > /dev/null && echo \"kde running\" || echo \"kde not running\" ");
-
-    if(desktop == "kde running")
+    // Implement with XDG_Open
+#endif
+}
+void MainFrame::OnScriptEditor(wxCommandEvent& event)
+{
+    if (!scriptEditorActive)
     {
-        pdfViewer = filePath = "okular ";
+        scriptEditor = new ScriptEditor(&scriptEditorActive, this);
+        scriptEditor->Show(true);
+        scriptEditorActive = true;
     }
     else
     {
-        pdfViewer = filePath = "evince ";
+        scriptEditor->Show(false);
+        scriptEditorActive = false;
+        delete scriptEditor;
     }
-
-    filePath += GetAbsPath("Doc/User_Manual.pdf");
-    if(system(filePath.c_str()))
+}
+void MainFrame::OnZoomRecorder(wxCommandEvent& event)
+{
+    if (!zoomRecorderActive)
     {
-        wxString error = wxT("Error: ");
-        error += wxString(pdfViewer.c_str(), wxConvUTF8);
-        error += wxT(menuUsrManualError);
-        wxLogError(error);
+        zoomRecorder = new ZoomRecorder(&zoomRecorderActive, this);
+        zoomRecorder->Show(true);
+        zoomRecorderActive = true;
     }
-#endif
+    else
+    {
+        zoomRecorder->Show(false);
+        zoomRecorderActive = false;
+        delete zoomRecorder;
+    }
 }
 
 
@@ -1177,40 +1184,18 @@ void MainFrame::RemoveScriptMenuElements()
 }
 void MainFrame::GetScriptFractals()
 {
-    // Gets the current directory.
-    string path = GetWorkingDirectory();
-#ifdef _WIN32
-    path += "\\UserScripts";
-#elif __linux__
-    path += "/UserScripts";
-#endif
-    FileGetter fg(path.c_str());
-
-    // Fills vector with script files.
-    vector<string> filesInFolder;
-    char text[FILENAME_MAX];
-    while(fg.getNextFile(text))
-    {
-        if(check_ext(text, "as"))
-            filesInFolder.push_back(text);
-    }
+    vector<string> scriptFiles = FindFilesWithExtension(GetAbsPath({ "UserScripts" }), "as");
 
     // Gets script parameters.
-    for (unsigned int i = 0; i < filesInFolder.size(); i++)
+    for (unsigned int i = 0; i < scriptFiles.size(); i++)
     {
         AngelscriptConfigurationEngine configEngine;
 
-        string filePath = GetWorkingDirectory();
-#ifdef _WIN32
-        filePath += "\\UserScripts\\";
-#elif __linux__
-        filePath += "/UserScripts/";
-#endif
-        filePath += filesInFolder[i];
+        const string filePath = GetAbsPath({ "UserScripts", scriptFiles[i] });
 
         if (!configEngine.CompileFromPath(filePath))
         {
-            filesInFolder.erase(filesInFolder.begin() + i);
+            scriptFiles.erase(scriptFiles.begin() + i);
             i -= 1;
             continue;
         }
@@ -1222,7 +1207,7 @@ void MainFrame::GetScriptFractals()
         }
         else
         {
-            filesInFolder.erase(filesInFolder.begin() + i);
+            scriptFiles.erase(scriptFiles.begin() + i);
             i -= 1;
         }
     }

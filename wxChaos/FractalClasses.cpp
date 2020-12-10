@@ -300,7 +300,7 @@ Fractal::Fractal(sf::RenderWindow *Window)
     output.SetImage(image);
     tempSprite.SetImage(tempImage);
     outGeom.SetImage(geomImage);
-    font.LoadFromFile(GetAbsPath("Resources/PublicSans-Regular.otf"));
+    font.LoadFromFile(GetAbsPath({ "Resources", "PublicSans-Regular.otf" }));
     text.SetFont(font);
 
     // Set fractal properties.

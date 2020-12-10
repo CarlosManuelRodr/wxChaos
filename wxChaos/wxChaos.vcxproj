@@ -115,10 +115,12 @@
     <ClInclude Include="muParserX\mpVariable.h" />
     <ClInclude Include="muParserX\suSortPred.h" />
     <ClInclude Include="muParserX\utGeneric.h" />
+    <ClInclude Include="ScriptEditor.h" />
     <ClInclude Include="SizeDialogSave.h" />
     <ClInclude Include="StringFuncs.h" />
     <ClInclude Include="Styles.h" />
     <ClInclude Include="wxSFMLCanvas.h" />
+    <ClInclude Include="ZoomRecorder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="About.cpp" />
@@ -216,9 +218,11 @@
     <ClCompile Include="muParserX\mpValue.cpp" />
     <ClCompile Include="muParserX\mpValueCache.cpp" />
     <ClCompile Include="muParserX\mpVariable.cpp" />
+    <ClCompile Include="ScriptEditor.cpp" />
     <ClCompile Include="SizeDialogSave.cpp" />
     <ClCompile Include="StringFuncs.cpp" />
     <ClCompile Include="wxSFMLCanvas.cpp" />
+    <ClCompile Include="ZoomRecorder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="angelscript\src\as_callfunc_arm_gcc.S" />
@@ -291,7 +295,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>wxmsw31u_core.lib;wxbase31u.lib;wxbase31u_xml.lib;wxmsw31u_adv.lib;wxmsw31u_richtext.lib;wxmsw31u_html.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxmsw31u_core.lib;wxbase31u.lib;wxbase31u_xml.lib;wxmsw31u_adv.lib;wxmsw31u_richtext.lib;wxmsw31u_html.lib;wxmsw31u_stc.lib;wxscintilla.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -310,7 +314,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>wxmsw31ud_core.lib;wxbase31ud.lib;wxbase31ud_xml.lib;wxmsw31ud_adv.lib;wxmsw31ud_richtext.lib;wxmsw31ud_html.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-main-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxmsw31ud_core.lib;wxbase31ud.lib;wxbase31ud_xml.lib;wxmsw31ud_adv.lib;wxmsw31ud_richtext.lib;wxmsw31ud_html.lib;wxmsw31ud_stc.lib;wxscintillad.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-main-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

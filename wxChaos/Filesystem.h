@@ -4,16 +4,14 @@
 #include <wx/string.h>
 
 #ifdef _WIN32
-    #include <WTypes.h>
-#elif __linux__
-    #include <vector>
+#include <WTypes.h>
 #endif
 
-void ConfigureDirectory();
-
-std::string GetWorkingDirectory(bool opt = false);
-std::string GetAbsPath(std::string relPath);
+std::string GetWorkingDirectory();
+std::string GetAbsPath(std::vector<std::string> pathList);
 wxString GetWxAbsPath(std::vector<std::string> pathList);
+std::vector<std::string> FindFilesWithExtension(std::string path, std::string ext);
+std::vector<wxString> FindFilesWithExtension(wxString path, std::string ext);
 
 /**
 * @class FileGetter
@@ -33,6 +31,6 @@ class FileGetter
 
 public:
     ///@param folder Folder to scan.
-    FileGetter(const char* folder);
-    int getNextFile(char* fname);
+    FileGetter(std::string folder);
+    int GetNextFile(std::string& fname);
 };
