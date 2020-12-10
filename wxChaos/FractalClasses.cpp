@@ -15,10 +15,14 @@ const GaussianColorStyles defaultEstStyle = GaussianColorStyles::SummerDay;
 
 
 inline double CalcSquaredDist(const double x1, const double y1, const double x2, const double y2)
-{ return ((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); }
+{
+    return ((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+}
 
 inline double CalcDist(const double x1, const double y1, const double x2, const double y2)
-{ return sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); }
+{
+    return sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+}
 
 int Get_Cores()
 {
@@ -48,17 +52,17 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
     // Horizontal displacement.
     if(moveX > 0)
     {
-        int desp = moveX;
+        int displacement = moveX;
         int iterations;
 
         for(unsigned int i=0; i<matrixHeight; i++)
         {
-            iterations = matrixWidth - desp;
+            iterations = matrixWidth - displacement;
             for(int j=matrixWidth-1; j>=0; j--)
             {
                 if(iterations > 0)
                 {
-                    matrix[i][j] = matrix[i][j-desp];
+                    matrix[i][j] = matrix[i][j-displacement];
                     iterations--;
                 }
                 else
@@ -68,17 +72,17 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
     }
     else if(moveX < 0)
     {
-        int desp = -moveX;
+        int displacement = -moveX;
         int iterations;
 
         for(unsigned int i=0; i<matrixHeight; i++)
         {
-            iterations = matrixWidth - desp;
+            iterations = matrixWidth - displacement;
             for(unsigned int j=0; j<matrixWidth; j++)
             {
                 if(iterations > 0)
                 {
-                    matrix[i][j] = matrix[i][j+desp];
+                    matrix[i][j] = matrix[i][j+displacement];
                     iterations--;
                 }
                 else
@@ -90,17 +94,17 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
     // Vertical displacement.
     if(moveY > 0)
     {
-        int desp = moveY;
+        int displacement = moveY;
         int iterations;
 
         for(unsigned int j=0; j<matrixWidth; j++)
         {
-            iterations = matrixHeight - desp;
+            iterations = matrixHeight - displacement;
             for(int i=matrixHeight-1; i>=0; i--)
             {
                 if(iterations > 0)
                 {
-                    matrix[i][j] = matrix[i-desp][j];
+                    matrix[i][j] = matrix[i-displacement][j];
                     iterations--;
                 }
                 else
@@ -112,17 +116,17 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
     }
     else if(moveY < 0)
     {
-        int desp = -moveY;
+        int displacement = -moveY;
         int iterations;
 
         for(unsigned int j=0; j<matrixWidth; j++)
         {
-            iterations = matrixHeight - desp;
+            iterations = matrixHeight - displacement;
             for(unsigned int i=0; i<matrixHeight; i++)
             {
                 if(iterations > 0)
                 {
-                    matrix[i][j] = matrix[i+desp][j];
+                    matrix[i][j] = matrix[i+displacement][j];
                     iterations--;
                 }
                 else
@@ -588,16 +592,16 @@ void Fractal::Resize(sf::RenderWindow *Window)
         delete[] setMap[i];
         delete[] colorMap[i];
         delete[] auxMap[i];
-        setMap[i] = NULL;
-        colorMap[i] = NULL;
-        auxMap[i] = NULL;
+        setMap[i] = nullptr;
+        colorMap[i] = nullptr;
+        auxMap[i] = nullptr;
     }
     delete[] setMap;
     delete[] colorMap;
     delete[] auxMap;
-    setMap = NULL;
-    colorMap = NULL;
-    auxMap = NULL;
+    setMap = nullptr;
+    colorMap = nullptr;
+    auxMap = nullptr;
 
     // Copy window properties.
     screenHeight = Window->GetHeight();
@@ -1197,9 +1201,7 @@ void Fractal::LessIter()
     redrawAll = true;
     int signedMaxIter = (int)maxIter;
     if(signedMaxIter - 20 > 0)
-    {
         maxIter -= 20;
-    }
 }
 void Fractal::ChangeThreadNumber()
 {
@@ -1279,7 +1281,8 @@ void Fractal::SetOptions(Options opt, bool keepSize)
         this->SetPaletteSize(paletteSize);
     }
 
-    if(hasSmoothRender) smoothRender = opt.smoothRender;
+    if(hasSmoothRender)
+        smoothRender = opt.smoothRender;
 
     kReal = opt.kReal;
     kImaginary = opt.kImaginary;
@@ -1289,8 +1292,8 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     colorMode = opt.colorMode;
     justLaunchThreads = opt.justLaunchThreads;
 
-    xFactor = (maxX-minX)/(screenWidth-(int)1);
-    yFactor = (maxY-minY)/(screenHeight-(int)1);
+    xFactor = (maxX-minX)/(screenWidth-1);
+    yFactor = (maxY-minY)/(screenHeight-1);
 
     this->CopyOptFromPanel();
 }
@@ -1361,8 +1364,10 @@ bool** Fractal::GetSetMap()
 }
 bool Fractal::IsMoving()
 {
-    if(xVel == 0 && yVel == 0) return false;
-    else return true;
+    if(xVel == 0 && yVel == 0)
+        return false;
+    else
+        return true;
 }
 void Fractal::SetFractalPropChanged()
 {
@@ -1467,7 +1472,8 @@ sf::Image Fractal::GetRenderedImage()
             }
         }
     }
-    if(maxColorMapVal == 0) maxColorMapVal = 1;
+    if(maxColorMapVal == 0)
+        maxColorMapVal = 1;
 
     for(int i=0; i<screenWidth; i++)
     {
@@ -1579,16 +1585,16 @@ void Fractal::PrepareSnapshot(bool mode)
 }
 
 // EST Color.
-void Fractal::SetGaussianColorIntensity(int intensidad, Color col)
+void Fractal::SetGaussianColorIntensity(int intensity, Color col)
 {
     // Changes intensity value.
     colorPaletteMode = ColorMode::Gaussian;
     if(col == Color::Red)
-        redInt = intensidad;
+        redInt = intensity;
     else if(col == Color::Green)
-        greenInt = intensidad;
+        greenInt = intensity;
     else if(col == Color::Blue)
-        blueInt = intensidad;
+        blueInt = intensity;
 
     this->RebuildPalette();
 }
@@ -2214,8 +2220,10 @@ bool Fractal::SmoothRenderActivated()
 // Option panel.
 bool Fractal::HasOptPanel()
 {
-    if(panelOpt.GetElementsSize() > 0) return true;
-    else return false;
+    if(panelOpt.GetElementsSize() > 0)
+        return true;
+    else
+        return false;
 }
 PanelOptions* Fractal::GetOptPanel()
 {
@@ -2230,12 +2238,22 @@ PanelOptions* Fractal::GetOptPanel()
 // RenderFractal
 RenderFractal::RenderFractal()
 {
+    setMap = nullptr;
+    colorMap = nullptr;
+    auxMap = nullptr;
+    x = y =  0;
+    threadProgress = 0;
+    wo = ho = wf = hf = oldHo = 0;
+
     specialRenderMode = false;
     stopped = false;
-    auxMap = NULL;
-    threadProgress = 0;
-    x = 0;
-    y = 0;
+    threadRunning = false;
+
+    type = FractalType::Undefined;
+    xFactor = 0.0;
+    yFactor = 0.0;
+    minX = maxX = minY = maxY = maxIter = 0.0;
+    kReal = kImaginary = 0.0;
 }
 void RenderFractal::SetOpt(Options opt)
 {

@@ -1,10 +1,9 @@
 #include "About.h"
 #include <wx/mstream.h>
 
-IMPLEMENT_DYNAMIC_CLASS( AboutDialog, wxDialog )
+IMPLEMENT_DYNAMIC_CLASS(AboutDialog, wxDialog)
 
-
-BEGIN_EVENT_TABLE( AboutDialog, wxDialog )
+BEGIN_EVENT_TABLE(AboutDialog, wxDialog)
 
 END_EVENT_TABLE()
 
@@ -14,21 +13,20 @@ AboutDialog::AboutDialog()
 {
     Init();
 }
-AboutDialog::AboutDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+AboutDialog::AboutDialog(wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style)
 {
     Init();
     Create(parent, id, caption, pos, size, style);
 }
-bool AboutDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+bool AboutDialog::Create(wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style)
 {
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
-    wxDialog::Create( parent, id, caption, pos, size, style );
+    wxDialog::Create(parent, id, caption, pos, size, style);
 
     CreateControls();
     if (GetSizer())
-    {
         GetSizer()->SetSizeHints(this);
-    }
+
     Centre();
     return true;
 }
@@ -38,12 +36,12 @@ AboutDialog::~AboutDialog()
 }
 void AboutDialog::Init()
 {
-    m_ContentPanel = NULL;
-    m_HeaderStaticBitmap = NULL;
-    m_AppNameStaticText = NULL;
-    m_CopyrightStaticText = NULL;
-    m_VersionStaticText = NULL;
-    m_BuildInfoStaticText = NULL;
+    m_ContentPanel = nullptr;
+    m_HeaderStaticBitmap = nullptr;
+    m_AppNameStaticText = nullptr;
+    m_CopyrightStaticText = nullptr;
+    m_VersionStaticText = nullptr;
+    m_BuildInfoStaticText = nullptr;
 }
 void AboutDialog::CreateControls()
 {    
@@ -134,7 +132,7 @@ wxString AboutDialog::GetBuildInfo(wxBuildInfoFormat format)
         wxbuild << _T("-ANSI");
 #endif // wxUSE_UNICODE
     }
-	wxbuild << _(" build");
+    wxbuild << _(" build");
     return wxbuild;
 }
 void AboutDialog::SetHeaderBitmap(const wxBitmap & value)
@@ -143,27 +141,27 @@ void AboutDialog::SetHeaderBitmap(const wxBitmap & value)
 }
 void AboutDialog::ApplyInfo()
 {
-	wxASSERT_MSG(m_HeaderStaticBitmap->GetBitmap().IsOk(), _("Header bitmap for About box is empty"));
-	SetTitle(wxString::Format(wxT("%s %s"), _("About"), m_AppName.GetData()));
+    wxASSERT_MSG(m_HeaderStaticBitmap->GetBitmap().IsOk(), _("Header bitmap for About box is empty"));
+    SetTitle(wxString::Format(wxT("%s %s"), _("About"), m_AppName.GetData()));
     m_AppNameStaticText->SetLabel(m_AppName);
     m_VersionStaticText->SetLabel(m_Version);
     m_CopyrightStaticText->SetLabel(m_Copyright);
-	wxString buildInfo;
-	if(m_CustomBuildInfo.IsEmpty())
-	{
-		buildInfo = AboutDialog::GetBuildInfo(wxBUILDINFO_LONG);
-	}
-	else
-	{
-		buildInfo = m_CustomBuildInfo;
-	}
-	m_BuildInfoStaticText->SetLabel(buildInfo);
-	int labelWidth = m_HeaderStaticBitmap->GetSize().GetWidth() - 20;
-	m_VersionStaticText->Wrap(labelWidth);
-	m_CopyrightStaticText->Wrap(labelWidth);
-	m_BuildInfoStaticText->Wrap(labelWidth);
-	m_ContentPanel->Layout();
-	m_ContentPanel->GetSizer()->Fit(m_ContentPanel);
+    wxString buildInfo;
+    if(m_CustomBuildInfo.IsEmpty())
+    {
+        buildInfo = AboutDialog::GetBuildInfo(wxBUILDINFO_LONG);
+    }
+    else
+    {
+        buildInfo = m_CustomBuildInfo;
+    }
+    m_BuildInfoStaticText->SetLabel(buildInfo);
+    int labelWidth = m_HeaderStaticBitmap->GetSize().GetWidth() - 20;
+    m_VersionStaticText->Wrap(labelWidth);
+    m_CopyrightStaticText->Wrap(labelWidth);
+    m_BuildInfoStaticText->Wrap(labelWidth);
+    m_ContentPanel->Layout();
+    m_ContentPanel->GetSizer()->Fit(m_ContentPanel);
     GetSizer()->Fit(this);
-	Centre();
+    Centre();
 }

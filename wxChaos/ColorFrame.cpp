@@ -7,7 +7,16 @@
 
 GaussianColorPalette::GaussianColorPalette()
 {
-
+    redInt = -1;
+    redMean = -1;
+    redStdDev = -1;
+    greenInt = -1;
+    greenMean = -1;
+    greenStdDev = -1;
+    blueInt = -1;
+    blueMean = -1;
+    blueStdDev = -1;
+    paletteSize = -1;
 }
 void GaussianColorPalette::SetStyle(GaussianColorStyles style)
 {
@@ -114,13 +123,12 @@ void GaussianColorPalette::SetStyle(GaussianColorStyles style)
         }
     case GaussianColorStyles::Custom:
             break;
-
     };
 }
 
 GradientColorPalette::GradientColorPalette()
 {
-
+    paletteSize = -1;
 }
 void GradientColorPalette::SetStyle(GradientColorStyles style)
 {
@@ -150,16 +158,12 @@ void GradientColorPalette::SetStyle(GradientColorStyles style)
     };
 }
 
-ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
+ColorFrame::ColorFrame(bool* _active, Fractal* _target, wxWindow* parent,
     wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long windowStyle)
     : wxFrame(parent, id, title, pos, size, windowStyle)
 {
     // Constructs the ColorFrame. Gets color values from the target fractal so the frame parameters match the fractal parameters.
-#ifdef __linux__
-    wxIcon icon(GetWxAbsPath("Resources/icon.ico"), wxBITMAP_TYPE_ICO);
-#elif _WIN32
-    wxIcon icon(GetWxAbsPath("Resources\\icon.ico"), wxBITMAP_TYPE_ICO);
-#endif
+    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     wxString text;
@@ -168,18 +172,14 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
 
     this->SetSizeHints(wxSize(-1,-1), wxSize(-1,-1));
 
-    wxBoxSizer* sizer;
-    sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
     mPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL);
     mPanel->SetScrollRate(5, 5);
-    wxBoxSizer* mainSizer;
-    mainSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* setSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxBoxSizer* setSizer;
-    setSizer = new wxBoxSizer(wxVERTICAL);
-
-    colorOptBitmap = new wxStaticBitmap(mPanel, wxID_ANY, wxBitmap( GetWxAbsPath("Resources/color_opt.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0);
+    colorOptBitmap = new wxStaticBitmap(mPanel, wxID_ANY, wxBitmap(GetWxAbsPath({ "Resources","color_opt.png" }), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
     setSizer->Add(colorOptBitmap, 0, wxALL, 0);
 
     algorithmText = new wxStaticText(mPanel, wxID_ANY, wxT(colorAlgTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Color algorithm"
@@ -266,8 +266,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     colorVarSlider = new wxSlider(mPanel, wxID_ANY, 0, 0, 300, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
     setSizer->Add(colorVarSlider, 0, wxALL|wxEXPAND, 5);
 
-    wxStaticBoxSizer* colorSetSizer;
-    colorSetSizer = new wxStaticBoxSizer(new wxStaticBox(mPanel, wxID_ANY, wxT(setColorTxt)), wxVERTICAL);    // Txt: "Set color"
+    wxStaticBoxSizer* colorSetSizer = new wxStaticBoxSizer(new wxStaticBox(mPanel, wxID_ANY, wxT(setColorTxt)), wxVERTICAL);    // Txt: "Set color"
 
     text = wxT(redColTxt);
     setColor = target->GetSetColor();
@@ -306,8 +305,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
 
     typeNotebook = new wxNotebook(mPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
     gradientLabel = new wxPanel(typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* gradSizer;
-    gradSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* gradSizer = new wxBoxSizer(wxVERTICAL);
 
     gradStylesLabel = new wxStaticText(gradientLabel, wxID_ANY, wxT(colorStlTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Color styles:"
     gradStylesLabel->Wrap(-1);
@@ -338,11 +336,9 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     gradSizer->Fit(gradientLabel);
     typeNotebook->AddPage(gradientLabel, wxT(useGradTxt), false);
     stdPanel = new wxPanel(typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* colorSizer;
-    colorSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* colorSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    wxBoxSizer* sideASizer;
-    sideASizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sideASizer = new wxBoxSizer(wxVERTICAL);
 
     stylesLabel = new wxStaticText(stdPanel, wxID_ANY, wxT(colorStlTxt), wxDefaultPosition, wxDefaultSize, 0);
     stylesLabel->Wrap(-1);
@@ -361,11 +357,9 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     pSizeSpin = new wxSpinCtrl(stdPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000, 60);
     sideASizer->Add(pSizeSpin, 0, wxALL, 5);
 
-    wxStaticBoxSizer* sizerred;
-    sizerred = new wxStaticBoxSizer(new wxStaticBox( stdPanel, wxID_ANY, wxT(redTxt) ), wxVERTICAL);    // Txt: "Red"
+    wxStaticBoxSizer* sizerred = new wxStaticBoxSizer(new wxStaticBox( stdPanel, wxID_ANY, wxT(redTxt) ), wxVERTICAL);    // Txt: "Red"
 
-    wxBoxSizer* subSizerred;
-    subSizerred = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* subSizerred = new wxBoxSizer(wxVERTICAL);
 
     //
     redIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -407,11 +401,8 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
 
     sideASizer->Add(sizerred, 1, wxEXPAND, 5);
 
-    wxStaticBoxSizer* sizergreen;
-    sizergreen = new wxStaticBoxSizer(new wxStaticBox(stdPanel, wxID_ANY, wxT(greenTxt)), wxVERTICAL);    // Txt: "Green"
-
-    wxBoxSizer* subSizergreen;
-    subSizergreen = new wxBoxSizer(wxVERTICAL);
+    wxStaticBoxSizer* sizergreen = new wxStaticBoxSizer(new wxStaticBox(stdPanel, wxID_ANY, wxT(greenTxt)), wxVERTICAL);    // Txt: "Green"
+    wxBoxSizer* subSizergreen = new wxBoxSizer(wxVERTICAL);
 
     //
     greenIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -448,21 +439,13 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
 
     greenStdDevSld = new wxSlider(stdPanel, wxID_ANY, 10, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
     subSizergreen->Add(greenStdDevSld, 0, wxALL|wxEXPAND, 5);
-
     sizergreen->Add(subSizergreen, 1, wxEXPAND, 5);
-
     sideASizer->Add(sizergreen, 1, wxEXPAND, 5);
-
     colorSizer->Add(sideASizer, 1, wxEXPAND, 5);
 
-    wxBoxSizer* bSizer13;
-    bSizer13 = new wxBoxSizer(wxVERTICAL);
-
-    wxStaticBoxSizer* sizerblue;
-    sizerblue = new wxStaticBoxSizer(new wxStaticBox( stdPanel, wxID_ANY, wxT(blueTxt) ), wxVERTICAL);    // Txt: "Blue"
-
-    wxBoxSizer* subSizerblue;
-    subSizerblue = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* bSizer13 = new wxBoxSizer(wxVERTICAL);
+    wxStaticBoxSizer* sizerblue = new wxStaticBoxSizer(new wxStaticBox(stdPanel, wxID_ANY, wxT(blueTxt)), wxVERTICAL);    // Txt: "Blue"
+    wxBoxSizer* subSizerblue = new wxBoxSizer(wxVERTICAL);
 
     //
     blueIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
@@ -501,9 +484,7 @@ ColorFrame::ColorFrame(bool *_active, Fractal *_target, wxWindow* parent,
     subSizerblue->Add(blueStdDevSld, 0, wxALL|wxEXPAND, 5);
 
     sizerblue->Add(subSizerblue, 1, wxEXPAND, 5);
-
     bSizer13->Add(sizerblue, 1, wxEXPAND, 5);
-
     colorSizer->Add(bSizer13, 1, wxEXPAND, 5);
 
     stdPanel->SetSizer(colorSizer);
@@ -538,137 +519,137 @@ ColorFrame::~ColorFrame()
 
 void ColorFrame::ConnectEvents()
 {
-    this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( ColorFrame::OnClose ) );
-    gradStylesChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ColorFrame::GradientColorChangeSelection ), NULL, this );
-    algorithmChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ColorFrame::OnChangeAlgorithm ), NULL, this );
-    relativeCheck->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ColorFrame::OnRelativeColor ), NULL, this );
-    gradPalSize->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ColorFrame::OnGradPaletteSize ), NULL, this );
-    typeNotebook->Connect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler( ColorFrame::OnPageChange ), NULL, this );
-    colorFractal->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ColorFrame::OnColorFractal ), NULL, this );
-    colorSet->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ColorFrame::OnColorSet ), NULL, this );
-    orbitTrap->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ColorFrame::OnOrbitTrap ), NULL, this );
-    smoothRender->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ColorFrame::OnSmoothRender ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    redSetSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::OnSetRed ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    greenSetSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::OnSetGreen ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    blueSetSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::OnSetBlue ), NULL, this );
-    okButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ColorFrame::OnOk ), NULL, this );
-    gradButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ColorFrame::OnGrad ), NULL, this );
-    gaussianStylesChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ColorFrame::GaussianColorChangeSelection ), NULL, this );
-    pSizeSpin->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ColorFrame::OnPaletteSize ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redIntSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeRedIntensity ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redMeanSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeRedMean ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    redStdDevSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeRedStdDev ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenIntSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeGreenIntensity ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenMeanSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeGreenMean ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    greenStdDevSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeGreenStdDev ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueIntSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeBlueIntensity ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueMeanSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeBlueMean ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    blueStdDevSld->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::ChangeBlueStdDev ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
-    colorVarSlider->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ColorFrame::OnColorVar ), NULL, this );
+    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(ColorFrame::OnClose));
+    gradStylesChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(ColorFrame::GradientColorChangeSelection), nullptr, this);
+    algorithmChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(ColorFrame::OnChangeAlgorithm), nullptr, this);
+    relativeCheck->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnRelativeColor), nullptr, this);
+    gradPalSize->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ColorFrame::OnGradPaletteSize), nullptr, this);
+    typeNotebook->Connect(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(ColorFrame::OnPageChange), nullptr, this);
+    colorFractal->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnColorFractal), nullptr, this);
+    colorSet->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnColorSet), nullptr, this);
+    orbitTrap->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnOrbitTrap), nullptr, this);
+    smoothRender->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnSmoothRender), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    redSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    greenSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    blueSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
+    okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ColorFrame::OnOk), nullptr, this);
+    gradButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ColorFrame::OnGrad), nullptr, this);
+    gaussianStylesChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(ColorFrame::GaussianColorChangeSelection), nullptr, this);
+    pSizeSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ColorFrame::OnPaletteSize), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redIntSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redMeanSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    redStdDevSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenIntSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenMeanSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    greenStdDevSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueIntSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueMeanSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    blueStdDevSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    colorVarSlider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
 }
 void ColorFrame::SetAlgorithmChoices()
 {
@@ -770,15 +751,23 @@ void ColorFrame::SetTarget(Fractal *_target)
     target = _target;
     pSizeSpin->SetValue(target->GetPaletteSize());
 
-    if(target->HasOrbitTrapMode()) orbitTrap->Enable(true);
-    else orbitTrap->Enable(false);
-    if(target->OrbitTrapActivated()) orbitTrap->SetValue(true);
-    else orbitTrap->SetValue(false);
+    if(target->HasOrbitTrapMode())
+        orbitTrap->Enable(true);
+    else
+        orbitTrap->Enable(false);
+    if(target->OrbitTrapActivated())
+        orbitTrap->SetValue(true);
+    else
+        orbitTrap->SetValue(false);
 
-    if(target->SmoothRenderActivated()) smoothRender->SetValue(true);
-    else smoothRender->SetValue(false);
-    if(target->HasSmoothRenderMode()) smoothRender->Enable(true);
-    else smoothRender->Enable(false);
+    if(target->SmoothRenderActivated())
+        smoothRender->SetValue(true);
+    else
+        smoothRender->SetValue(false);
+    if(target->HasSmoothRenderMode())
+        smoothRender->Enable(true);
+    else
+        smoothRender->Enable(false);
 
     algorithmChoice->Clear();
     escapeTimeIndex = -1;
@@ -827,7 +816,6 @@ void ColorFrame::SetTarget(Fractal *_target)
     redSetSld->SetValue(0);
     greenSetSld->SetValue(0);
     blueSetSld->SetValue(0);
-
     colorVarSlider->SetValue(0);
 
     gradStylesChoice->SetSelection( static_cast<int>(target->GetGradStyle()) );
@@ -1186,6 +1174,7 @@ void ColorFrame::OnPageChange(wxNotebookEvent& event)
             target->SetPaletteMode(ColorMode::Gradient);
         else
             target->SetPaletteMode(ColorMode::Gaussian);
+
         typeNotebook->ChangeSelection(event.GetSelection());
         colorVarSlider->SetRange(0, target->GetPaletteSize());
     }
@@ -1193,7 +1182,9 @@ void ColorFrame::OnPageChange(wxNotebookEvent& event)
 void ColorFrame::OnGradPaletteSize(wxSpinEvent& event)
 {
     int size = gradPalSize->GetValue();
-    if(size > 0) target->SetGradientSize(size);
+    if(size > 0)
+        target->SetGradientSize(size);
+
     gradientMap->SetBitmap(this->PaintGradient());
     colorVarSlider->SetRange(0,size);
 }

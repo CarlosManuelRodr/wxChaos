@@ -37,7 +37,7 @@
 enum IDS
 {
     ID_SAVE = 1,
-    ID_PALETA,
+    ID_PALETTE,
     ID_MANDELBROT,
     ID_MANDELBROT_ZN,
     ID_JULIA,
@@ -77,7 +77,6 @@ enum IDS
     ID_IT_MANUAL,
     ID_FORMULA_DIALOG,
     ID_OPTPANEL,
-    ID_OPEN_SCRIPT_FOLDER,
     ID_USER_MANUAL,
     ID_WELCOME_DIALOG
 };
@@ -193,56 +192,55 @@ class MainFrame : public wxFrame
 
 public :
     MainFrame();
-    void OnSave(wxCommandEvent &event);                    ///< Saves a picture of the viewing area.
-    void OnJuliaMode(wxCommandEvent &event);               ///< Opens a windows with the Julia version of the selected fractal.
-    void OnPalette(wxCommandEvent &event);                 ///< Opens a ColorFrame.
+    void OnSave(wxCommandEvent& event);                    ///< Saves a picture of the viewing area.
+    void OnJuliaMode(wxCommandEvent& event);               ///< Opens a windows with the Julia version of the selected fractal.
+    void OnPalette(wxCommandEvent& event);                 ///< Opens a ColorFrame.
     void OnWelcomeDialog(wxCommandEvent& event);           ///< Shows the welcome dialog.
-    void OnAbout(wxCommandEvent &event);                   ///< Opens the About frame.
+    void OnAbout(wxCommandEvent& event);                   ///< Opens the About frame.
     void OnClose(wxCloseEvent& event);                     ///< Closes the frame.
-    void OnQuit(wxCommandEvent &event);
-    void OnResize(wxSizeEvent &event);                     ///< Resizes the frame.
-    void JuliaHandle(wxUpdateUIEvent &event);              ///< Keeps track of the Julia window.
-    void ChangeMandelbrot(wxCommandEvent &event);
-    void ChangeMandelbrotZN(wxCommandEvent &event);
-    void ChangeJulia(wxCommandEvent &event);
-    void ChangeJuliaZN(wxCommandEvent &event);
-    void ChangeNewton(wxCommandEvent &event);
-    void ChangeSinoidal(wxCommandEvent &event);
-    void ChangeMagnet(wxCommandEvent &event);
-    void ChangeMedusa(wxCommandEvent &event);
-    void ChangeManowar(wxCommandEvent &event);
-    void ChangeManowarJulia(wxCommandEvent &event);
-    void ChangeSierpTriangle(wxCommandEvent &event);
-    void ChangeFixedPoint1(wxCommandEvent &event);
-    void ChangeFixedPoint2(wxCommandEvent &event);
-    void ChangeFixedPoint3(wxCommandEvent &event);
-    void ChangeFixedPoint4(wxCommandEvent &event);
-    void ChangeTricorn(wxCommandEvent &event);
-    void ChangeBurningShip(wxCommandEvent &event);
-    void ChangeBurningShipJulia(wxCommandEvent &event);
-    void ChangeFractory(wxCommandEvent &event);
-    void ChangeCell(wxCommandEvent &event);
-    void ChangeLogistic(wxCommandEvent &event);
-    void ChangeHenonMap(wxCommandEvent &event);
-    void ChangeDPendulum(wxCommandEvent &event);
-    void ChangeUserDefined(wxCommandEvent &event);
-    void ChangeFPUserDefined(wxCommandEvent &event);
-    void ChangeScriptItem(wxCommandEvent &event);
-    void OnKeybGuide(wxCommandEvent &event);
-    void OnPauseContinue(wxCommandEvent &event);
-    void OnRedraw(wxCommandEvent &event);
-    void OnReset(wxCommandEvent &event);
-    void OnMoreIt(wxCommandEvent &event);
-    void OnLessIt(wxCommandEvent &event);
-    void OnShowOrbit(wxCommandEvent &event);
-    void OnManIntroConst(wxCommandEvent &event);
-    void OnSldIntroConst(wxCommandEvent &event);
-    void OnItManual(wxCommandEvent &event);
-    void OnFormulaDialog(wxCommandEvent &event);
-    void OnFractalOptions(wxCommandEvent &event);
+    void OnQuit(wxCommandEvent& event);
+    void OnResize(wxSizeEvent& event);                     ///< Resizes the frame.
+    void JuliaHandle(wxUpdateUIEvent& event);              ///< Keeps track of the Julia window.
+    void ChangeMandelbrot(wxCommandEvent& event);
+    void ChangeMandelbrotZN(wxCommandEvent& event);
+    void ChangeJulia(wxCommandEvent& event);
+    void ChangeJuliaZN(wxCommandEvent& event);
+    void ChangeNewton(wxCommandEvent& event);
+    void ChangeSinoidal(wxCommandEvent& event);
+    void ChangeMagnet(wxCommandEvent& event);
+    void ChangeMedusa(wxCommandEvent& event);
+    void ChangeManowar(wxCommandEvent& event);
+    void ChangeManowarJulia(wxCommandEvent& event);
+    void ChangeSierpTriangle(wxCommandEvent& event);
+    void ChangeFixedPoint1(wxCommandEvent& event);
+    void ChangeFixedPoint2(wxCommandEvent& event);
+    void ChangeFixedPoint3(wxCommandEvent& event);
+    void ChangeFixedPoint4(wxCommandEvent& event);
+    void ChangeTricorn(wxCommandEvent& event);
+    void ChangeBurningShip(wxCommandEvent& event);
+    void ChangeBurningShipJulia(wxCommandEvent& event);
+    void ChangeFractory(wxCommandEvent& event);
+    void ChangeCell(wxCommandEvent& event);
+    void ChangeLogistic(wxCommandEvent& event);
+    void ChangeHenonMap(wxCommandEvent& event);
+    void ChangeDPendulum(wxCommandEvent& event);
+    void ChangeUserDefined(wxCommandEvent& event);
+    void ChangeFPUserDefined(wxCommandEvent& event);
+    void ChangeScriptItem(wxCommandEvent& event);
+    void OnKeybGuide(wxCommandEvent& event);
+    void OnPauseContinue(wxCommandEvent& event);
+    void OnRedraw(wxCommandEvent& event);
+    void OnReset(wxCommandEvent& event);
+    void OnMoreIt(wxCommandEvent& event);
+    void OnLessIt(wxCommandEvent& event);
+    void OnShowOrbit(wxCommandEvent& event);
+    void OnManIntroConst(wxCommandEvent& event);
+    void OnSldIntroConst(wxCommandEvent& event);
+    void OnItManual(wxCommandEvent& event);
+    void OnFormulaDialog(wxCommandEvent& event);
+    void OnFractalOptions(wxCommandEvent& event);
     void OnApplyPanelOpt(wxCommandEvent& event);
-    void OnOpenScriptFolder(wxCommandEvent& event);
-    void OnUserManual(wxCommandEvent &event);
+    void OnUserManual(wxCommandEvent& event);
 
     void ReloadScripts();  ///< Search again for script fractals.
 };

@@ -49,14 +49,14 @@ public:
     ///@param posX Horizontal position of the button.
     ///@param posY Vertical position of the button.
     ///@param Window Window that will hold the button.
-    Button(string Path, int posX, int posY, sf::RenderWindow *Window);
+    Button(string Path, int posX, int posY, sf::RenderWindow* Window);
 
     ///@brief Constructor for a button that uses text.
     ///@param posX Horizontal position of the button.
     ///@param posY Vertical position of the button.
     ///@param Window Window that will hold the button.
     ///@param text Text of the button.
-    Button(int posX, int posY, sf::RenderWindow *Window, string text);
+    Button(int posX, int posY, sf::RenderWindow* Window, string text);
 
     ///@brief Shows the button.
     ///@param Window Window to draw the button.
@@ -99,7 +99,7 @@ public:
     ///@param posX Horizontal position of the button.
     ///@param posY Vertical position of the button.
     ///@param Window Window that will hold the button.
-    ButtonChange(string Path1, string Path2, int posX, int posY, sf::RenderWindow *Window);
+    ButtonChange(string Path1, string Path2, int posX, int posY, sf::RenderWindow* Window);
 
     ///@brief Handle a click event.
     ///@param Event A SFML event.
@@ -131,11 +131,11 @@ class SelectRect
 public:
     ///@brief Constructor
     ///@param Window Window that will hold the selection rect.
-    SelectRect(sf::RenderWindow *Window);
+    SelectRect(sf::RenderWindow* Window);
 
     ///@brief Shows the selection rect.
     ///@param Window Window that will show the selection rect.
-    void Show(sf::RenderWindow *Window);
+    void Show(sf::RenderWindow* Window);
 
     ///@brief Handle a click event.
     ///@param Event A SFML event.

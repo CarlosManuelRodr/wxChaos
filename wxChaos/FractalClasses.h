@@ -297,7 +297,7 @@ public:
     ///@param outSetMap Pointer to Set map.
     ///@param outColorMap Pointer to the color map.
     ///@param outAux Pointer to the auxiliar map.
-    void SetRenderOut(bool** outSetMap, int** outColorMap, unsigned int** outAux = NULL);
+    void SetRenderOut(bool** outSetMap, int** outColorMap, unsigned int** outAux = nullptr);
 
     ///@brief Sets the K constant.
     ///@param re Real parameter.
@@ -400,16 +400,16 @@ template<class MT> ThreadWatchdog<MT>::ThreadWatchdog()
 {
     threadCounter = 0;
     threadRunning = false;
-    threadList = NULL;
+    threadList = nullptr;
 }
 template<class MT> ThreadWatchdog<MT>::~ThreadWatchdog()
 {
-    if(threadList != NULL)
+    if(threadList != nullptr)
         delete[] threadList;
 }
 template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(int nThreads)
 {
-    if(threadList != NULL)
+    if(threadList != nullptr)
     {
         delete[] threadList;
         threadCounter = 0;
@@ -487,7 +487,7 @@ template<class MT> MT* ThreadWatchdog<MT>::GetThread(unsigned int nThread)
     if(nThread >= 0 && nThread < threadCounter)
         return threadList[nThread];
     else
-        return NULL;
+        return nullptr;
 }
 
 /**

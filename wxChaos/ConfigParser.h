@@ -27,11 +27,11 @@ using namespace std;
 
 class ConfigParser
 {
+private:
     vector<string> labels;   ///< Vector that contains all the labels found.
     vector<string> args;     ///< Vector that contains all the arguments found.
     bool fileOpened;         ///< Status of the opened file.
     string filename;
-
 public:
     ///@brief Constructor
     ///@param filename File to analyze.

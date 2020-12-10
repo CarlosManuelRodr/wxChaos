@@ -9,11 +9,7 @@ HTMLViewer::HTMLViewer(wxString htmlFile, wxWindow* parent, wxWindowID id, const
 {
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
-#ifdef __linux__
-    wxIcon icon(GetWxAbsPath("Resources/icon.ico"), wxBITMAP_TYPE_ICO);
-#elif _WIN32
-    wxIcon icon(GetWxAbsPath("Resources\\icon.ico"), wxBITMAP_TYPE_ICO);
-#endif
+    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);

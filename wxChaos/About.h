@@ -36,15 +36,15 @@ class AboutDialog: public wxDialog
 public:
     // Constructors
     AboutDialog();
-    AboutDialog( wxWindow* parent, 
+    AboutDialog(wxWindow* parent, 
         wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME, 
         const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE, 
         const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION, 
         const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE, 
-        long style = SYMBOL_ABOUTDIALOG_STYLE );
+        long style = SYMBOL_ABOUTDIALOG_STYLE);
 
     // Creation
-    bool Create( wxWindow* parent, 
+    bool Create(wxWindow* parent, 
         wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME, 
         const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE, 
         const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION, 
@@ -60,23 +60,44 @@ public:
     // Creates the controls and sizers
     void CreateControls();
 
-    wxString GetAppName() const { return m_AppName ; }
-    void SetAppName(wxString value) { m_AppName = value ; }
-
-    wxString GetVersion() const { return m_Version ; }
-    void SetVersion(wxString value) { m_Version = value ; }
-
-    wxString GetCopyright() const { return m_Copyright ; }
-    void SetCopyright(wxString value) { m_Copyright = value ; }
-
-    wxString GetCustomBuildInfo() const { return m_CustomBuildInfo ; }
-    void SetCustomBuildInfo(wxString value) { m_CustomBuildInfo = value ; }
+    wxString GetAppName() const
+    {
+        return m_AppName;
+    }
+    void SetAppName(wxString value)
+    {
+        m_AppName = value;
+    }
+    wxString GetVersion() const
+    {
+        return m_Version;
+    }
+    void SetVersion(wxString value)
+    {
+        m_Version = value;
+    }
+    wxString GetCopyright() const
+    {
+        return m_Copyright;
+    }
+    void SetCopyright(wxString value)
+    {
+        m_Copyright = value;
+    }
+    wxString GetCustomBuildInfo() const
+    {
+        return m_CustomBuildInfo;
+    }
+    void SetCustomBuildInfo(wxString value)
+    {
+        m_CustomBuildInfo = value;
+    }
 
     // Retrieves bitmap resources
-    wxBitmap GetBitmapResource( const wxString& name );
+    wxBitmap GetBitmapResource(const wxString& name);
 
     // Retrieves icon resources
-    wxIcon GetIconResource( const wxString& name );
+    wxIcon GetIconResource(const wxString& name);
 
     //helper functions
     enum wxBuildInfoFormat 
@@ -102,8 +123,10 @@ private:
     wxString m_Version;
     wxString m_Copyright;
     wxString m_CustomBuildInfo;
+
     /// Control identifiers
-    enum {
+    enum
+    {
         ID_ABOUTDIALOG = 10000,
         ID_ContentPanel = 10001
     };

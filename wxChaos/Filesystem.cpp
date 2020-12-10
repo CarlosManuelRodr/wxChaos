@@ -37,13 +37,15 @@ void ConfigureDirectory()
         char text[FILENAME_MAX];
         while (fg.getNextFile(text))
         {
-            if (string(text) == "config.ini") found = true;
+            if (string(text) == "config.ini")
+                found = true;
         }
         if (SETUP_VERSION && !found)
         {
             // To Reimplement
         }
-        else if (found) usingLocalDirect = false;
+        else if (found)
+            usingLocalDirect = false;
     }
 #elif __linux__
     if (SETUP_VERSION) usingLocalDirect = false;
@@ -148,22 +150,26 @@ string GetAbsPath(std::string relPath)
     temp += relPath;
     return temp;
 }
-wxString GetWxAbsPath(std::string relPath)
+wxString GetWxAbsPath(vector<string> pathList)
 {
-    string temp = GetWorkingDirectory();
+    string path = GetWorkingDirectory();
+    for (string element : pathList)
+    {
 #ifdef __linux__
-    temp += "/";
+        path += "/";
 #elif _WIN32
-    temp += "\\";
+        path += "\\";
 #endif
-    temp += relPath;
-    return wxString(temp.c_str(), wxConvUTF8);
+        path += element;
+    }
+    return wxString(path.c_str(), wxConvUTF8);
 }
 
 // FileGetter
 FileGetter::FileGetter(const char* folder)
 {
 #ifdef _WIN32
+    chk = -1;
     sprintf_s(folderstar, "%s\\*.*", folder);
     hfind = FindFirstFileA(folderstar, &found);
     FindNextFileA(hfind, &found);
@@ -196,6 +202,7 @@ int FileGetter::getNextFile(char* fname)
         i++;
         return 1;
     }
-    else return 0;
+    else
+        return 0;
 #endif
 }

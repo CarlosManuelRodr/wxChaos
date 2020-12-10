@@ -5,6 +5,9 @@
 // SelectRect
 SelectRect::SelectRect(sf::RenderWindow *Window)
 {
+    x = y = -1;
+    xSelect = ySelect = -1;
+
     inSelection = false;
 
     pos.Top = 0;
@@ -16,7 +19,7 @@ SelectRect::SelectRect(sf::RenderWindow *Window)
     texture.Create(500, 500, color);
     output.SetImage(texture);
 }
-void SelectRect::Show(sf::RenderWindow *Window)
+void SelectRect::Show(sf::RenderWindow* Window)
 {
     if(inSelection)
     {
@@ -310,23 +313,26 @@ void ScreenPointer::Resize(sf::RenderWindow *Window)
     Size.Bottom = screenHeight;
     output.SetSubRect(Size);
 }
-double ScreenPointer::GetX(Fractal *target)
+double ScreenPointer::GetX(Fractal* target)
 {
     return target->GetX(x);
 }
-double ScreenPointer::GetY(Fractal *target)
+double ScreenPointer::GetY(Fractal* target)
 {
     return target->GetY(y);
 }
-void ScreenPointer::AdjustPosition(Fractal *target, double numX, double numY)
+void ScreenPointer::AdjustPosition(Fractal* target, double numX, double numY)
 {
     x = target->GetPixelX(numX);
     y = target->GetPixelY(numY);
 }
 
 // Button
-Button::Button(string Path, int posX, int posY, sf::RenderWindow *Window)
+Button::Button(string Path, int posX, int posY, sf::RenderWindow* Window)
 {
+    buttonHeight = buttonWidth = -1;
+    thereIsText = false;
+
     texture.LoadFromFile(Path.c_str());
     output.SetImage(texture);
     output.SetPosition(static_cast<float>(posX), static_cast<float>(posY));
@@ -404,7 +410,7 @@ bool Button::HandleEvents(sf::Event Event)
     }
     return false;
 }
-void Button::Resize(sf::RenderWindow *Window)
+void Button::Resize(sf::RenderWindow* Window)
 {
     if(!anchorage)
     {

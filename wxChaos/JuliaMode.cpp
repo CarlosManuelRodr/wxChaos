@@ -4,7 +4,7 @@
 
 bool juliaModeState;
 
-JuliaMode::JuliaMode(FractalCanvas *ptr, FractalType fractalType, Options juliaOpt, wxWindow *_parent)
+JuliaMode::JuliaMode(FractalCanvas* ptr, FractalType fractalType, Options juliaOpt, wxWindow* _parent)
 {
     parent = _parent;
     myJuliaOpt = juliaOpt;

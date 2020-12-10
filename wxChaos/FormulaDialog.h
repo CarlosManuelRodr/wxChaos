@@ -31,10 +31,9 @@ private:
 
 public:
     FuncDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 249,173 ), 
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(249, 173), 
                long style = wxDEFAULT_DIALOG_STYLE);
     ~FuncDialog();
-
 };
 
 #ifdef _WIN32
@@ -66,7 +65,7 @@ private:
 
     wxMenuItem* slider;
     wxMenuItem* manual;
-    bool *active;
+    bool* active;
     int userDefinedID, FPuserDefinedID;
 
     void OnAccept(wxCommandEvent& event);
@@ -77,9 +76,9 @@ private:
 
 public:
     FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GaussianColorStyles* mColorStyle, wxMenuItem* juliaSlider, 
-                    wxMenuItem* juliaManual, bool *Active, FractalCanvas* _fCanvas, wxWindow* _parent,
-                    wxWindowID id = wxID_ANY, const wxString& title = wxT(userFormTxt), const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
+                  wxMenuItem* juliaManual, bool* Active, FractalCanvas* _fCanvas, wxWindow* _parent,
+                  wxWindowID id = wxID_ANY, const wxString& title = wxT(userFormTxt), const wxPoint& pos = wxDefaultPosition,
+                  const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
     ~FormulaDialog();
 };
 

@@ -23,7 +23,6 @@ class RenderMandelbrot : public RenderFractal
 private:
     int buddhaRandomP;
     int bd;
-
 public:
     RenderMandelbrot();
 
@@ -66,7 +65,6 @@ class RenderMandelbrotZN : public RenderFractal
 private:
     int n;
     double bailout;
-
 public:
     RenderMandelbrotZN();
 
@@ -150,7 +148,6 @@ class JuliaZN: public Fractal
     RenderJuliaZN* myRender;
     int n;
     double bailout;
-
 public:
     JuliaZN(sf::RenderWindow *Window);
     JuliaZN(int width, int height);
@@ -721,7 +718,7 @@ public:
 class HenonMap : public Fractal
 {
 private:
-    RenderHenonMap *myRender;
+    RenderHenonMap* myRender;
     double alpha, beta;
     double x0, y0;
 public:
@@ -767,7 +764,7 @@ private:
     double dt;
     bool referenced;
     bool rungeKutta;
-    RenderDPendulum *myRender;
+    RenderDPendulum* myRender;
 public:
     DPendulum(sf::RenderWindow* Window);
     DPendulum(int width, int height);

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <wx/string.h>
 
 #ifdef _WIN32
@@ -12,7 +13,7 @@ void ConfigureDirectory();
 
 std::string GetWorkingDirectory(bool opt = false);
 std::string GetAbsPath(std::string relPath);
-wxString GetWxAbsPath(std::string relPath);
+wxString GetWxAbsPath(std::vector<std::string> pathList);
 
 /**
 * @class FileGetter

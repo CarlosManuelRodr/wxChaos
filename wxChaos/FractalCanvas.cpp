@@ -4,10 +4,11 @@
 #include "Filesystem.h"
 #include "global.h"
 
-FractalCanvas* fractalCanvasPtr = NULL;
+FractalCanvas* fractalCanvasPtr = nullptr;
 
 // Fractal Canvas
-FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FractalType fractType, wxWindow* Parent, wxWindowID Id, const wxPoint& Position, const wxSize& Size, long Style)
+FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FractalType fractType, wxWindow* Parent, 
+                             wxWindowID Id, const wxPoint& Position, const wxSize& Size, long Style)
     : wxSFMLCanvas(Parent, Id, Position, Size, Style)
 {
     fractalCanvasPtr = this;
@@ -61,8 +62,8 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     outHelp.SetColor(sf::Color(255, 255, 255, 220));
 
     this->SetFocus();
-
     this->SetFramerateLimit(31);
+
     this->Connect(wxEVT_MOTION, wxMouseEventHandler(FractalCanvas::OnMoveMouse));
     this->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(FractalCanvas::OnClick));
     this->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(FractalCanvas::OnClick));
@@ -94,7 +95,9 @@ void FractalCanvas::OnUpdate()
 
             target->Resize(this);
             play->Resize(this);
-            if(screenPointer != NULL) screenPointer->Resize(this);
+
+            if(screenPointer != nullptr)
+                screenPointer->Resize(this);
 
             if(keybGuide && keybGuideMode)
             {
@@ -186,8 +189,12 @@ void FractalCanvas::OnUpdate()
 
     // Clears the screen and draw GUI elements and fractal.
     this->Clear();
-    if(orbitMode) target->SetOrbitPoint(kReal, kImaginary);
-    if(sliderMode && pointerChange) target->SetK(kReal, kImaginary);
+
+    if(orbitMode)
+        target->SetOrbitPoint(kReal, kImaginary);
+    if(sliderMode && pointerChange)
+        target->SetK(kReal, kImaginary);
+
     target->Move();
     target->Show(this);
 
@@ -269,7 +276,8 @@ void FractalCanvas::SetJuliaMode(bool mode)
     if(mode)
     {
         juliaMode = true;
-        if(screenPointer == NULL) screenPointer = new ScreenPointer(this);
+        if(screenPointer == nullptr)
+            screenPointer = new ScreenPointer(this);
 #ifdef __linux__
         FRACTAL_TYPE juliaType;
         switch(type)
@@ -288,6 +296,7 @@ void FractalCanvas::SetJuliaMode(bool mode)
             break;
         default:
             juliaType = Julia;
+            break;
         };
 
         juliaHandler.CreateFractal(juliaType, this->GetWidth()/3, this->GetHeight()/3);
@@ -304,10 +313,10 @@ void FractalCanvas::SetJuliaMode(bool mode)
     else
     {
         juliaMode = false;
-        if(screenPointer != NULL && !orbitMode && !sliderMode)
+        if(screenPointer != nullptr && !orbitMode && !sliderMode)
         {
             delete screenPointer;
-            screenPointer = NULL;
+            screenPointer = nullptr;
         }
 #ifdef __linux__
         juliaHandler.DeleteFractal();
@@ -318,13 +327,15 @@ double FractalCanvas::GetKReal()
 {
     if(!onUpdate)
         return kReal;
-    else return prevKReal;
+    else
+        return prevKReal;
 }
 double FractalCanvas::GetKImaginary()
 {
     if(!onUpdate)
         return kImaginary;
-    else return prevKImag;
+    else
+        return prevKImag;
 }
 bool FractalCanvas::ChangeInPointer()
 {
@@ -333,7 +344,8 @@ bool FractalCanvas::ChangeInPointer()
         pointerChange = false;
         return true;
     }
-    else return false;
+    else
+        return false;
 }
 Fractal* FractalCanvas::GetFractalPtr()
 {
@@ -381,8 +393,10 @@ void FractalCanvas::ChangeToScript(ScriptData _scriptData)
         sliderMode = false;
         if(!juliaMode)
         {
-            if(screenPointer != NULL) delete screenPointer;
-            screenPointer = NULL;
+            if(screenPointer != nullptr)
+                delete screenPointer;
+
+            screenPointer = nullptr;
         }
     }
 
@@ -409,7 +423,7 @@ void FractalCanvas::SetKeybGuide(bool mode)
 void FractalCanvas::ShowHelpImage()
 {
     outKeyb.SetPosition(this->GetWidth() - keybImage.GetWidth(), this->GetHeight() - keybImage.GetHeight());
-    outHelp.SetPosition((this->GetWidth()-helpImage.GetWidth())/2, (this->GetHeight()-helpImage.GetHeight())/2);
+    outHelp.SetPosition((this->GetWidth() - helpImage.GetWidth())/2, (this->GetHeight() - helpImage.GetHeight())/2);
     helpImageMode = true;
 }
 void FractalCanvas::Reset()
@@ -432,10 +446,10 @@ void FractalCanvas::Reset()
     juliaMode = false;
     orbitMode = false;
     sliderMode = false;
-    if(screenPointer != NULL)
+    if(screenPointer != nullptr)
     {
         delete screenPointer;
-        screenPointer = NULL;
+        screenPointer = nullptr;
     }
 }
 void FractalCanvas::SetOrbitMode(bool mode)
@@ -444,16 +458,16 @@ void FractalCanvas::SetOrbitMode(bool mode)
     if(orbitMode)
     {
         target->SetOrbitMode(true);
-        if(screenPointer == NULL) 
+        if(screenPointer == nullptr)
             screenPointer = new ScreenPointer(this);
     }
     else
     {
         target->SetOrbitMode(false);
-        if(screenPointer != NULL && !juliaMode && !sliderMode)
+        if(screenPointer != nullptr && !juliaMode && !sliderMode)
         {
             delete screenPointer;
-            screenPointer = NULL;
+            screenPointer = nullptr;
         }
     }
 }
@@ -462,15 +476,16 @@ void FractalCanvas::SetSliderMode(bool mode)
     sliderMode = mode;
     if(sliderMode)
     {
-        if(screenPointer == NULL) screenPointer = new ScreenPointer(this);
+        if(screenPointer == nullptr)
+            screenPointer = new ScreenPointer(this);
         target->SetJuliaMode(true);
     }
     else
     {
-        if(screenPointer != NULL && !juliaMode && !orbitMode)
+        if(screenPointer != nullptr && !juliaMode && !orbitMode)
         {
             delete screenPointer;
-            screenPointer = NULL;
+            screenPointer = nullptr;
         }
         target->SetJuliaMode(false);
     }
@@ -502,7 +517,7 @@ void FractalCanvas::OnResize(wxSizeEvent &event)
     if(helpImageMode)
     {
         outKeyb.SetPosition(this->GetWidth() - 120, this->GetHeight() - 80);
-        outHelp.SetPosition((this->GetWidth()-helpImage.GetWidth())/2, (this->GetHeight()-helpImage.GetHeight())/2);
+        outHelp.SetPosition((this->GetWidth() - helpImage.GetWidth())/2, (this->GetHeight() - helpImage.GetHeight())/2);
     }
 
 #ifdef __linux__
@@ -528,7 +543,10 @@ void FractalCanvas::OnClick(wxMouseEvent &event)
             kReal = screenPointer->GetX(target);
             kImaginary = screenPointer->GetY(target);
             pointerChange = true;
-            if(orbitMode) target->SetOrbitChange();
+
+            if(orbitMode)
+                target->SetOrbitChange();
+
             onUpdate = false;
 
 #ifdef __linux__
@@ -571,9 +589,7 @@ void FractalCanvas::OnUnClick(wxMouseEvent &event)
 {
     // Selection event.
     if(juliaMode || orbitMode || sliderMode)
-    {
         screenPointer->UnClickEvent(event);
-    }
     else
     {
         if(!target->IsRendering() && !target->IsMoving())
@@ -608,11 +624,15 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent &event)
             kReal = screenPointer->GetX(target);
             kImaginary = screenPointer->GetY(target);
             pointerChange = true;
-            if(orbitMode) target->SetOrbitChange();
+
+            if(orbitMode)
+                target->SetOrbitChange();
+
             onUpdate = false;
 
 #ifdef __linux__
-            if(juliaMode) juliaHandler.GetTarget()->SetK(kReal, kImaginary);
+            if(juliaMode)
+                juliaHandler.GetTarget()->SetK(kReal, kImaginary);
 #endif
         }
     }
