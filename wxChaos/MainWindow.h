@@ -261,6 +261,6 @@ public :
     void ReloadScripts();  ///< Search again for script fractals.
 };
 
-extern MainFrame* mainFramePtr;  ///< Pointer to the MainFrame. Used by the command console.
+extern MainFrame* mainFramePtr;  ///< Pointer to the MainFrame.
 
 #endif

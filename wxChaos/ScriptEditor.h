@@ -67,13 +67,14 @@ private:
     int currentScriptIndex;
 
     void SetUpLexer();
-    void LocateUserScripts();
+    void FetchUserScripts();
     void LoadScript(unsigned index);
     void ConsoleSetText(wxString text);
     void ConsoleSetWelcomeText();
     void ConsolePrepareInput(wxString command);
     void ConsolePrepareOutput();
     void SetBlackPreview();
+    int GetScriptIndex(wxString scriptName);
 
     void OnSelectScript(wxCommandEvent& event);
     void OnSaveChanges(wxCommandEvent& event);
@@ -85,7 +86,6 @@ private:
     void OnRunScript(wxCommandEvent& event);
     void OnHelp(wxCommandEvent& event);
 public:
-
     ScriptEditor(bool* active, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Script editor"),
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1069, 600),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);

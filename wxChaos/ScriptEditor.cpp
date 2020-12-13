@@ -1,9 +1,32 @@
 #include <chrono>
+#include <fstream>
 #include "ScriptEditor.h"
 #include "Filesystem.h"
 #include "FractalTypes.h"
 #include "global.h"
+#include "MainWindow.h"
 using namespace std;
+
+const string newScriptTemplate = R""""(void Configure()
+{
+    SetFractalName("New script");
+    SetCategory("Other");
+}
+
+void Render()
+{
+    // Example: Draw color gradient
+    int color;
+    if(threadIndex == 0)
+    {
+        for(int y=0; y<screenHeight; y++)
+        {
+            color = (float(y)/screenHeight)*paletteSize;
+            for(int x=0; x<screenWidth; x++)
+                SetPoint(x, y, false, color);
+        }
+    }
+})"""";
 
 ScriptNameDialog::ScriptNameDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
@@ -233,7 +256,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, wxWindowID id, const 
     this->Layout();
     this->Centre(wxBOTH);
 
-    this->LocateUserScripts();
+    this->FetchUserScripts();
     this->SetBlackPreview();
 
     // Connect Events
@@ -281,7 +304,7 @@ void ScriptEditor::SetUpLexer()
     // wxSTC_C_WORD items.
     codeEditor->SetKeyWords(0, wxT("void bool int char complex float double"));
 }
-void ScriptEditor::LocateUserScripts()
+void ScriptEditor::FetchUserScripts()
 {
     scriptsListBox->Clear();
     loadedScripts = GetAllUserScripts();
@@ -304,40 +327,21 @@ void ScriptEditor::LoadScript(unsigned index)
         currentScriptIndex = index;
     }
 }
-void ScriptEditor::ConsoleSetText(wxString text)
-{
-    console->MoveEnd();
-    console->BeginTextColour(wxColour(255, 255, 255));
-    console->WriteText(text);
-    console->ShowPosition(console->GetCaretPosition());
-    console->EndTextColour();
-}
-void ScriptEditor::ConsoleSetWelcomeText()
-{
-    console->BeginTextColour(wxColour(255, 255, 255));
-    console->WriteText(wxT("wxChaos "));
-    console->WriteText(wxString::FromUTF8(APP_VERSION));
-    console->WriteText(wxT(" Console\n=====================\n"));
-    console->EndTextColour();
-}
-void ScriptEditor::ConsolePrepareInput(wxString command)
-{
-    console->BeginTextColour(wxColour(15, 181, 57));
-    console->WriteText(wxString("\nInput << ") << command << wxT("\n"));
-    console->EndTextColour();
-}
-void ScriptEditor::ConsolePrepareOutput()
-{
-    console->BeginTextColour(wxColour(172, 181, 15));
-    console->WriteText(wxT("Output >> \n"));
-    console->EndTextColour();
-}
 void ScriptEditor::SetBlackPreview()
 {
     wxBitmap black(250, 166);
     wxMemoryDC dc(black);
     dc.SetBackground(*wxBLACK_BRUSH);
     renderPreviewBitmap->SetBitmap(black);
+}
+int ScriptEditor::GetScriptIndex(wxString scriptName)
+{
+    for (unsigned i = 0; i < scriptsListBox->GetCount(); i++)
+    {
+        if (scriptsListBox->GetString(i) == GetFileBaseName(scriptName))
+            return i;
+    }
+    return -1;
 }
 
 void ScriptEditor::OnSelectScript(wxCommandEvent& event)
@@ -348,22 +352,42 @@ void ScriptEditor::OnSelectScript(wxCommandEvent& event)
 void ScriptEditor::OnSaveChanges(wxCommandEvent& event)
 {
     saveChangesButton->Enable(false);
+    int saveIndex = scriptsListBox->GetSelection();
+    codeEditor->SaveFile(loadedScripts[saveIndex].file);
 }
 void ScriptEditor::OnNewScript(wxCommandEvent& event)
 {
-    ScriptNameDialog* nameDialog = new ScriptNameDialog(this);
+    ScriptNameDialog nameDialog(this);
 
-    if (nameDialog->ShowModal())
+    if (nameDialog.ShowModal())
     {
+        const string scriptFileName = nameDialog.GetScriptName().ToStdString() + ".as";
+        const string newFilePath = GetAbsPath({"UserScripts", scriptFileName });
+        ofstream ofs(newFilePath, std::ofstream::out);
+        ofs << newScriptTemplate;
+        ofs.close();
 
+        this->FetchUserScripts();
+        this->SetBlackPreview();
+        const int newScriptIndex = this->GetScriptIndex(scriptFileName);
+        this->LoadScript(newScriptIndex);
+        scriptsListBox->SetSelection(newScriptIndex);
     }
 }
 void ScriptEditor::OnDeleteScript(wxCommandEvent& event)
 {
-
+    wxMessageDialog messageDialog(this, "This operation cannot be undone. Are you sure you want to continue?",
+                                  wxMessageBoxCaptionStr, wxYES | wxNO);
+    if (messageDialog.ShowModal() == wxID_YES)
+    {
+        int deleteIndex = scriptsListBox->GetSelection();
+        FSDeleteFile(loadedScripts[deleteIndex].file);
+        this->FetchUserScripts();
+    }
 }
 void ScriptEditor::OnClose(wxCommandEvent& event)
 {
+    mainFramePtr->ReloadScripts();
     this->Show(false);
     *isActive = false;
     this->Destroy();
@@ -417,4 +441,33 @@ void ScriptEditor::OnRunScript(wxCommandEvent& event)
 void ScriptEditor::OnHelp(wxCommandEvent& event)
 {
 
+}
+
+void ScriptEditor::ConsoleSetText(wxString text)
+{
+    console->MoveEnd();
+    console->BeginTextColour(wxColour(255, 255, 255));
+    console->WriteText(text);
+    console->ShowPosition(console->GetCaretPosition());
+    console->EndTextColour();
+}
+void ScriptEditor::ConsoleSetWelcomeText()
+{
+    console->BeginTextColour(wxColour(255, 255, 255));
+    console->WriteText(wxT("wxChaos "));
+    console->WriteText(wxString::FromUTF8(APP_VERSION));
+    console->WriteText(wxT(" Console\n=====================\n"));
+    console->EndTextColour();
+}
+void ScriptEditor::ConsolePrepareInput(wxString command)
+{
+    console->BeginTextColour(wxColour(15, 181, 57));
+    console->WriteText(wxString("\nInput << ") << command << wxT("\n"));
+    console->EndTextColour();
+}
+void ScriptEditor::ConsolePrepareOutput()
+{
+    console->BeginTextColour(wxColour(172, 181, 15));
+    console->WriteText(wxT("Output >> \n"));
+    console->EndTextColour();
 }
