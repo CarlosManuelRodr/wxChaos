@@ -11,9 +11,7 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
 
     panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxBoxSizer* panelSizer = new wxBoxSizer(wxHORIZONTAL);
-
     wxBoxSizer* previewAndButtonsSizer = new wxBoxSizer(wxVERTICAL);
-
     wxStaticBoxSizer* previewSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Preview")), wxVERTICAL);
 
     previewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY, 
@@ -30,19 +28,13 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
     saveButton = new wxButton(panel, wxID_ANY, wxT("Save video"), wxDefaultPosition, wxDefaultSize, 0);
-
     saveButton->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR));
     buttonSizer->Add(saveButton, 0, wxALL, 5);
 
     cancelButton = new wxButton(panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);
-
     cancelButton->SetBitmap(wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR));
     buttonSizer->Add(cancelButton, 0, wxALL, 5);
-
-
     previewAndButtonsSizer->Add(buttonSizer, 0, 0, 5);
-
-
     panelSizer->Add(previewAndButtonsSizer, 0, wxEXPAND, 5);
 
     wxStaticBoxSizer* optionsSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Options")), wxVERTICAL);
@@ -70,8 +62,6 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
     secondsText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Seconds"), wxDefaultPosition, wxDefaultSize, 0);
     secondsText->Wrap(-1);
     videoDurationSizer->Add(secondsText, 0, wxALL, 5);
-
-
     optionsSizer->Add(videoDurationSizer, 0, wxLEFT, 5);
 
     framerateText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Framerate:"), wxDefaultPosition, wxDefaultSize, 0);
@@ -86,7 +76,6 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
     framesPerSecondText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Frames Per Second"), wxDefaultPosition, wxDefaultSize, 0);
     framesPerSecondText->Wrap(-1);
     framerateSize->Add(framesPerSecondText, 0, wxALL, 5);
-
     optionsSizer->Add(framerateSize, 0, wxEXPAND, 5);
 
     resolutionText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Resolution:"), wxDefaultPosition, wxDefaultSize, 0);
@@ -109,7 +98,6 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
     panel->Layout();
     panelSizer->Fit(panel);
     mainSizer->Add(panel, 1, wxEXPAND | wxALL, 1);
-
 
     this->SetSizer(mainSizer);
     this->Layout();

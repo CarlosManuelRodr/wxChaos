@@ -22,6 +22,7 @@
 #include "ScriptEditor.h"
 #include "ZoomRecorder.h"
 #include "StringFuncs.h"
+#include "DimensionFrame.h"
 
 #ifdef _WIN32
 #include <WTypes.h>
@@ -82,7 +83,8 @@ enum IDS
     ID_USER_MANUAL,
     ID_WELCOME_DIALOG,
     ID_SCRIPT_EDITOR,
-    ID_ZOOM_RECORDER
+    ID_ZOOM_RECORDER,
+    ID_DIMENSION_CALCULATOR
 };
 
 /**
@@ -121,6 +123,7 @@ class MainFrame : public wxFrame
     FormulaDialog* formDialog;
     ScriptEditor* scriptEditor;
     ZoomRecorder* zoomRecorder;
+    DimensionFrame* dimensionCalculator;
     
     MainWindowStatus statusData;
     bool changeJuliaMode;
@@ -253,6 +256,7 @@ public :
     void OnUserManual(wxCommandEvent& event);
     void OnScriptEditor(wxCommandEvent& event);
     void OnZoomRecorder(wxCommandEvent& event);
+    void OnDimensionCalculator(wxCommandEvent& event);
 
     void ReloadScripts();  ///< Search again for script fractals.
 };

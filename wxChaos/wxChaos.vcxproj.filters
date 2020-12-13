@@ -31,6 +31,9 @@
     <Filter Include="angelscript\add_on\scriptstdstring">
       <UniqueIdentifier>{6953c51b-668f-408d-935f-366a0fd3cbe0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="wxMathPlot">
+      <UniqueIdentifier>{8362407f-06b2-4c0d-8b65-f230b504f1f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="About.h">
@@ -363,6 +366,12 @@
     <ClInclude Include="ScriptEditor.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="wxMathPlot\mathplot.h">
+      <Filter>wxMathPlot</Filter>
+    </ClInclude>
+    <ClInclude Include="DimensionFrame.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="About.cpp">
@@ -663,6 +672,12 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="ScriptEditor.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="wxMathPlot\mathplot.cpp">
+      <Filter>wxMathPlot</Filter>
+    </ClCompile>
+    <ClCompile Include="DimensionFrame.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

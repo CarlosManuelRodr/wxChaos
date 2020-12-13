@@ -29,8 +29,16 @@ enum class ScriptCategory
     Complex,
     NumMet,
     Physic,
-    Other
+    Other,
+    Undefined
 };
+
+enum class ScriptDataType
+{
+    Standard,
+    Error
+};
+
 
 /**
 * @struct ScriptData
@@ -50,6 +58,9 @@ struct ScriptData
     bool redrawAlways;
     bool extColor;
     bool noSetMap;
+    bool isValid;
+
+    ScriptData(ScriptDataType type = ScriptDataType::Standard);
 };
 
 // Variables accesible from the scripts.
@@ -62,6 +73,12 @@ extern int defaultIter;
 extern bool minXSet, maxXSet, minYSet, juliaVarietySet, asRedrawAlways, extColor;
 extern bool defaultIterSet;
 extern bool noSetMap;
+
+///@brief Return a vector of paramters and paths of the valid (no syntax errors) user scripts.
+std::vector<ScriptData> GetValidUserScripts();
+
+///@brief Return a vector of paramters and paths of all user scripts.
+std::vector<ScriptData> GetAllUserScripts();
 
 ///@brief Compiles angelscript file.
 ///@param engine Pointer to the angelscript engine which will hold the script.
@@ -142,6 +159,12 @@ void RegisterScriptMathComplex(asIScriptEngine* engine);
 ///@param engine Pointer to the angelscript engine which will hold the script.
 void RegisterWxChaosInterface(asIScriptEngine* engine);
 
+enum class EngineStatus
+{
+    Ok,
+    Error
+};
+
 /**
 * @struct AngelscriptConfigurationEngine
 * @brief Script configurator. Used to call the Configure() function.
@@ -152,6 +175,7 @@ private:
     ScriptData configuration;
     asIScriptEngine* engine;
     asIScriptContext* ctx;
+    EngineStatus status;
     wxString errorInfo;
     std::string filePath;
 public:
@@ -161,6 +185,8 @@ public:
     bool CompileFromPath(std::string path);
     bool Execute();
     ScriptData GetScriptData();
+    EngineStatus GetStatus();
+    wxString GetErrorInfo();
 };
 
 /**
@@ -172,6 +198,7 @@ class AngelscriptRenderEngine
 private:
     asIScriptEngine* engine;
     asIScriptContext* ctx;
+    EngineStatus status;
     wxString errorInfo;
 public:
     AngelscriptRenderEngine();
@@ -181,6 +208,8 @@ public:
     bool CompileFromPath(std::string path);
     bool Execute();
     void Abort();
+    EngineStatus GetStatus();
+    wxString GetErrorInfo();
 };
 
 #endif

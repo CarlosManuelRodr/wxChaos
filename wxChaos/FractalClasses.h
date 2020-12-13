@@ -783,6 +783,7 @@ public:
 
     // Save image.
     sf::Image GetRenderedImage();
+    wxBitmap GetRenderedWxBitmap();
     void RenderBMP(string filename);
     void PrepareSnapshot(bool mode);
 

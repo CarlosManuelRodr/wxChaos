@@ -2,7 +2,8 @@
 #include "StringFuncs.h"
 #include "global.h"
 
-ConstDialog::ConstDialog(bool *Active, Fractal *mTarget, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) 
+ConstDialog::ConstDialog(bool* Active, Fractal* mTarget, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, 
+                         const wxSize& size, long style) 
     : wxDialog(parent, id, title, pos, size, style)
 {
     target = mTarget;
@@ -11,25 +12,20 @@ ConstDialog::ConstDialog(bool *Active, Fractal *mTarget, wxWindow* parent, wxWin
 
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
     
-    wxBoxSizer* mainSizer;
-    mainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     
     dumbPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* sizer;
-    sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
     
-    wxStaticBoxSizer* realSizer;
-    realSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(realValTxt)), wxVERTICAL);    // Txt: "Real value"
+    wxStaticBoxSizer* realSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(realValTxt)), wxVERTICAL);    // Txt: "Real value"
     
     lastReal = target->GetKReal();
     text = num_to_string(target->GetKReal());
     realText = new wxTextCtrl(dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     realSizer->Add(realText, 0, wxALL|wxEXPAND, 5);
-    
     sizer->Add(realSizer, 2, wxEXPAND, 5);
     
-    wxStaticBoxSizer* imSizer;
-    imSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(imagValTxt)), wxVERTICAL);    // Txt: "Imaginary value"
+    wxStaticBoxSizer* imSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(imagValTxt)), wxVERTICAL);    // Txt: "Imaginary value"
     
     lastIm = target->GetKImaginary();
     text = num_to_string(target->GetKImaginary());
@@ -38,25 +34,18 @@ ConstDialog::ConstDialog(bool *Active, Fractal *mTarget, wxWindow* parent, wxWin
     
     sizer->Add(imSizer, 2, wxEXPAND, 5);
     
-    wxBoxSizer* buttonSizer;
-    buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-    
-    wxBoxSizer* okSizer;
-    okSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* okSizer = new wxBoxSizer(wxVERTICAL);
     
     okButton = new wxButton(dumbPanel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
     okSizer->Add(okButton, 0, wxALL, 5);
-    
     buttonSizer->Add(okSizer, 1, wxEXPAND, 5);
     
-    wxBoxSizer* applySizer;
-    applySizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* applySizer = new wxBoxSizer(wxVERTICAL);
     
     applyButton = new wxButton(dumbPanel, wxID_ANY, wxT(applyTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
     applySizer->Add(applyButton, 0, wxALL, 5);
-    
     buttonSizer->Add(applySizer, 1, wxEXPAND, 5);
-    
     sizer->Add(buttonSizer, 1, wxEXPAND, 5);
     
     dumbPanel->SetSizer(sizer);

@@ -57,6 +57,7 @@
     <ClInclude Include="ColorFrame.h" />
     <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="ConstDialog.h" />
+    <ClInclude Include="DimensionFrame.h" />
     <ClInclude Include="Filesystem.h" />
     <ClInclude Include="FormulaDialog.h" />
     <ClInclude Include="FractalCanvas.h" />
@@ -119,6 +120,7 @@
     <ClInclude Include="SizeDialogSave.h" />
     <ClInclude Include="StringFuncs.h" />
     <ClInclude Include="Styles.h" />
+    <ClInclude Include="wxMathPlot\mathplot.h" />
     <ClInclude Include="wxSFMLCanvas.h" />
     <ClInclude Include="ZoomRecorder.h" />
   </ItemGroup>
@@ -171,6 +173,7 @@
     <ClCompile Include="ColorFrame.cpp" />
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="ConstDialog.cpp" />
+    <ClCompile Include="DimensionFrame.cpp" />
     <ClCompile Include="Filesystem.cpp" />
     <ClCompile Include="FormulaDialog.cpp" />
     <ClCompile Include="FractalCanvas.cpp" />
@@ -221,6 +224,7 @@
     <ClCompile Include="ScriptEditor.cpp" />
     <ClCompile Include="SizeDialogSave.cpp" />
     <ClCompile Include="StringFuncs.cpp" />
+    <ClCompile Include="wxMathPlot\mathplot.cpp" />
     <ClCompile Include="wxSFMLCanvas.cpp" />
     <ClCompile Include="ZoomRecorder.cpp" />
   </ItemGroup>

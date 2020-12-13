@@ -20,14 +20,14 @@ extern bool juliaModeState;
 */
 class JuliaMode : public sf::Thread
 {
-    sf::RenderWindow *window;
-    FractalCanvas *target;
+    sf::RenderWindow* window;
+    FractalCanvas* target;
     FractalHandler juliaFractal;
-    SelectRect *selection;
+    SelectRect* selection;
     Options myJuliaOpt;
-    ButtonChange *play;
+    ButtonChange* play;
     FractalType type;
-    wxWindow *parent;
+    wxWindow* parent;
 
     sf::Event event;
     bool resizing;
@@ -41,7 +41,7 @@ public:
     ///@param fractalType Type of Julia fractal to be created.
     ///@param juliaOpt Options to copy from the parent fractal.
     ///@param _parent Parent wxWidget window.
-    JuliaMode(FractalCanvas *ptr, FractalType fractalType, Options juliaOpt, wxWindow *_parent = NULL);
+    JuliaMode(FractalCanvas* ptr, FractalType fractalType, Options juliaOpt, wxWindow* _parent = nullptr);
     ~JuliaMode();
     void Close();
 

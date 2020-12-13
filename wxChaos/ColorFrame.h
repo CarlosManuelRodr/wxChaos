@@ -130,7 +130,8 @@ public:
     ///@param _target Pointer to the target fractal.
     ///@param parent Parent wxWindow.
     ColorFrame(bool* _active, Fractal* _target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color options"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = ColorFrameSize, long windowStyle = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL|wxRESIZE_BORDER);
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = ColorFrameSize, 
+               long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
     ~ColorFrame();
 
     ///@brief Sets the target fractal.

@@ -1505,6 +1505,25 @@ sf::Image Fractal::GetRenderedImage()
 #endif
     return image;
 }
+wxBitmap Fractal::GetRenderedWxBitmap()
+{
+    sf::Image renderedImage = this->GetRenderedImage();
+    wxBitmap output(renderedImage.GetWidth(), renderedImage.GetHeight());
+    wxMemoryDC dc(output);
+
+    for (unsigned i = 0; i < renderedImage.GetWidth(); i++)
+    {
+        for (unsigned j = 0; j < renderedImage.GetHeight(); j++)
+        {
+            const sf::Color pixel = renderedImage.GetPixel(i, j);
+            dc.SetPen(wxColour(pixel.r, pixel.g, pixel.b));
+            dc.SetBrush(wxColour(pixel.r, pixel.g, pixel.b));
+            dc.DrawPoint(i, j);
+        }
+    }
+
+    return output;
+}
 void Fractal::RenderBMP(string filename)
 {
 #ifdef _WIN32

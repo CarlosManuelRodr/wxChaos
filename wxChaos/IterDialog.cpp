@@ -41,7 +41,6 @@ IterDialog::IterDialog(bool* Active, Fractal* _target, wxWindow* parent, wxWindo
 
     applyButton = new wxButton(panel, wxID_ANY, wxT(applyTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
     buttonSizer->Add(applyButton, 0, wxALL, 5);
-
     subSizer->Add(buttonSizer, 0, 0, 5);
 
     panel->SetSizer(subSizer);

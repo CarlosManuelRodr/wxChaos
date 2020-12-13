@@ -99,7 +99,7 @@ bool SaveProgressDiag::IsFinished()
 }
 
 // SizeDialogSave
-SizeDialogSave::SizeDialogSave(FractalCanvas *mFCanvas, string rutaArchivo, int ext, FractalType type, Fractal *target, wxWindow* parent,
+SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int ext, FractalType type, Fractal* target, wxWindow* parent,
                                 string scriptPath, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {

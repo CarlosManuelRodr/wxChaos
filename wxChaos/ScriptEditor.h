@@ -13,13 +13,35 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/statbox.h>
+#include <wx/stattext.h>
 #include <wx/stc/stc.h>
 #include <wx/panel.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/statbmp.h>
 #include <wx/collpane.h>
 #include <wx/frame.h>
+#include <wx/dialog.h>
+#include <wx/textctrl.h>
+#include <vector>
+#include "AngelscriptEngine.h"
 
+class ScriptNameDialog : public wxDialog
+{
+private:
+    wxStaticText* scriptNameText;
+    wxTextCtrl* scriptNameCtrl;
+    wxStdDialogButtonSizer* buttonsSizer;
+    wxButton* buttonsSizerOK;
+    wxButton* buttonsSizerCancel;
+
+    void OnCancel(wxCommandEvent& event);
+    void OnOk(wxCommandEvent& event);
+public:
+    ScriptNameDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
+                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(494, 158), long style = wxDEFAULT_DIALOG_STYLE);
+    ~ScriptNameDialog();
+    wxString GetScriptName();
+};
 
 class ScriptEditor : public wxFrame
 {
@@ -41,8 +63,19 @@ private:
     wxStaticBitmap* renderPreviewBitmap;
     bool* isActive;
 
-    void GetUserScripts();
+    std::vector<ScriptData> loadedScripts;
+    int currentScriptIndex;
 
+    void SetUpLexer();
+    void LocateUserScripts();
+    void LoadScript(unsigned index);
+    void ConsoleSetText(wxString text);
+    void ConsoleSetWelcomeText();
+    void ConsolePrepareInput(wxString command);
+    void ConsolePrepareOutput();
+    void SetBlackPreview();
+
+    void OnSelectScript(wxCommandEvent& event);
     void OnSaveChanges(wxCommandEvent& event);
     void OnNewScript(wxCommandEvent& event);
     void OnDeleteScript(wxCommandEvent& event);

@@ -88,7 +88,6 @@ public:
                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(283, 251), 
                    long style = wxDEFAULT_DIALOG_STYLE);
     ~SizeDialogSave();
-
 };
 
 #endif

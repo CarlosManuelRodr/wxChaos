@@ -745,7 +745,7 @@ void ColorFrame::SetAlgorithmChoices()
         target->SetSmoothRender(false);
     }
 }
-void ColorFrame::SetTarget(Fractal *_target)
+void ColorFrame::SetTarget(Fractal* _target)
 {
     // Sets the new target fractal.
     target = _target;

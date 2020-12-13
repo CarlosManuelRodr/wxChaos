@@ -172,4 +172,4 @@ public :
 
 extern FractalCanvas* fractalCanvasPtr;
 
-#endif //__fCanvas
+#endif

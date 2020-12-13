@@ -897,13 +897,16 @@ class ScriptFractal : public Fractal
     RenderScriptFractal* myRender;
 public:
     ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
-    ScriptFractal(int width, int height, ScriptData scriptData);
+    ScriptFractal(int width, int height, ScriptData scriptData, int renderThreads = -1);
     ScriptFractal(int width, int height, string scriptPath);
     ~ScriptFractal();
 
     void Render();
     void PostRender();
     void PreRestartRender();
+    bool IsThereError();
+    wxString GetErrorInfo();
+    void ClearErrorInfo();
 };
 
 /**

@@ -88,4 +88,4 @@ public:
     void CloseBMP();
 };
 
-#endif  // __bmpWriter
+#endif

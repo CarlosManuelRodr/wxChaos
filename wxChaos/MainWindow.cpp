@@ -175,6 +175,7 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_USER_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnUserManual));
     this->Connect(ID_SCRIPT_EDITOR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnScriptEditor));
     this->Connect(ID_ZOOM_RECORDER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnZoomRecorder));
+    this->Connect(ID_DIMENSION_CALCULATOR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnDimensionCalculator));
 }
 
 void MainFrame::SetUpGUI()
@@ -295,6 +296,7 @@ void MainFrame::SetUpGUI()
     // Tools menu.
     toolMenu->Append(ID_SCRIPT_EDITOR, wxT("Script editor"), wxT("Create new fractals with an scripting language."));
     toolMenu->Append(ID_ZOOM_RECORDER, wxT("Zoom recorder"), wxT("Record a video zoom."));
+    toolMenu->Append(ID_DIMENSION_CALCULATOR, wxT("Dimension calculator"), wxT("Calculate fractal dimension."));
 
     // Iteracions.
     itManual = new wxMenuItem(iterationsMenu, ID_IT_MANUAL, wxString(wxT(menuManualIterTxt)), wxEmptyString, wxITEM_NORMAL);
@@ -717,6 +719,17 @@ void MainFrame::OnZoomRecorder(wxCommandEvent& event)
         zoomRecorderActive = false;
         delete zoomRecorder;
     }
+}
+void MainFrame::OnDimensionCalculator(wxCommandEvent& event)
+{
+    if (!dimFrameState)
+    {
+        dimFrameState = true;
+        dimensionCalculator = new DimensionFrame(this);
+        dimensionCalculator->Show(true);
+    }
+    else
+        dimensionCalculator->SetFocus();
 }
 
 
@@ -1184,33 +1197,9 @@ void MainFrame::RemoveScriptMenuElements()
 }
 void MainFrame::GetScriptFractals()
 {
-    vector<string> scriptFiles = FindFilesWithExtension(GetAbsPath({ "UserScripts" }), "as");
-
-    // Gets script parameters.
-    for (unsigned int i = 0; i < scriptFiles.size(); i++)
-    {
-        AngelscriptConfigurationEngine configEngine;
-
-        const string filePath = GetAbsPath({ "UserScripts", scriptFiles[i] });
-
-        if (!configEngine.CompileFromPath(filePath))
-        {
-            scriptFiles.erase(scriptFiles.begin() + i);
-            i -= 1;
-            continue;
-        }
-
-        if (configEngine.Execute())
-        {
-            const ScriptData scriptData = configEngine.GetScriptData();
-            AddScriptMenuElement(scriptData, i);
-        }
-        else
-        {
-            scriptFiles.erase(scriptFiles.begin() + i);
-            i -= 1;
-        }
-    }
+    vector<ScriptData> userScriptsData = GetValidUserScripts();
+    for (unsigned i = 0; i < userScriptsData.size(); i++)
+        AddScriptMenuElement(userScriptsData[i], i);
 }
 void MainFrame::UpdateMenu()
 {

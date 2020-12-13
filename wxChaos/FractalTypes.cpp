@@ -5761,30 +5761,51 @@ void RenderScriptFractal::Render()
     hasEnded = false;
 
     // Creates script engine.
-    renderEngine = new AngelscriptRenderEngine();;
+    renderEngine = new AngelscriptRenderEngine();
+    if (renderEngine->GetStatus() == EngineStatus::Error)
+    {
+        errorInfo = renderEngine->GetErrorInfo();
+        return;
+    }
 
     // Register global variables
-    renderEngine->RegisterGlobalVariable("double minX", &minX);
-    renderEngine->RegisterGlobalVariable("double maxX", &maxX);
-    renderEngine->RegisterGlobalVariable("double minY", &minY);
-    renderEngine->RegisterGlobalVariable("double maxY", &maxY);
-    renderEngine->RegisterGlobalVariable("double xFactor", &xFactor);
-    renderEngine->RegisterGlobalVariable("double yFactor", &yFactor);
-    renderEngine->RegisterGlobalVariable("double kReal", &kReal);
-    renderEngine->RegisterGlobalVariable("double kImaginary", &kImaginary);
-    renderEngine->RegisterGlobalVariable("int ho", &ho);
-    renderEngine->RegisterGlobalVariable("int hf", &hf);
-    renderEngine->RegisterGlobalVariable("int wo", &wo);
-    renderEngine->RegisterGlobalVariable("int wf", &wf);
-    renderEngine->RegisterGlobalVariable("double maxIter", &maxIter);
-    renderEngine->RegisterGlobalVariable("int threadIndex", &threadIndex);
-    renderEngine->RegisterGlobalVariable("int screenWidth", &myOpt.screenWidth);
-    renderEngine->RegisterGlobalVariable("int screenHeight", &myOpt.screenHeight);
-    renderEngine->RegisterGlobalVariable("int paletteSize", &myOpt.paletteSize);
+    bool isEngineOk = true;
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double minX", &minX);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double maxX", &maxX);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double minY", &minY);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double maxY", &maxY);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double xFactor", &xFactor);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double yFactor", &yFactor);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double kReal", &kReal);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double kImaginary", &kImaginary);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("int ho", &ho);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("int hf", &hf);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("int wo", &wo);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("int wf", &wf);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double maxIter", &maxIter);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("int threadIndex", &threadIndex);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("int screenWidth", &myOpt.screenWidth);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("int screenHeight", &myOpt.screenHeight);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("int paletteSize", &myOpt.paletteSize);
+
+    if (!isEngineOk)
+    {
+        errorInfo = renderEngine->GetErrorInfo();
+        return;
+    }
 
     // Compile and execute the script code.
-    renderEngine->CompileFromPath(path);
-    renderEngine->Execute();
+    if (!renderEngine->CompileFromPath(path))
+    {
+        errorInfo = renderEngine->GetErrorInfo();
+        return;
+    }
+
+    if (!renderEngine->Execute())
+    {
+        errorInfo = renderEngine->GetErrorInfo();
+        return;
+    }
 
     hasEnded = true;
 
@@ -5843,8 +5864,11 @@ ScriptFractal::ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData) : 
     }
     SetWatchdog<RenderScriptFractal>(myRender, &watchdog, threadNumber);
 }
-ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData) : Fractal(width, height)
+ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData, int renderThreads) : Fractal(width, height)
 {
+    if (renderThreads != -1)
+        threadNumber = (unsigned) renderThreads;
+
     // Adjust the scale.
     minX = scriptData.minX;
     maxX = scriptData.maxX;
@@ -5915,15 +5939,27 @@ void ScriptFractal::PostRender()
 void ScriptFractal::PreRestartRender()
 {
     // Clears all the maps.
-    for(int i=0; i<screenWidth; i++)
+    for (int i = 0; i < screenWidth; i++)
     {
-        for(int j=0; j<screenHeight; j++)
+        for (int j = 0; j < screenHeight; j++)
         {
             setMap[i][j] = false;
             colorMap[i][j] = 0;
             auxMap[i][j] = 0;
         }
     }
+}
+bool ScriptFractal::IsThereError()
+{
+    return myRender[0].IsThereError();
+}
+wxString ScriptFractal::GetErrorInfo()
+{
+    return myRender[0].GetErrorInfo();
+}
+void ScriptFractal::ClearErrorInfo()
+{
+    return myRender[0].ClearErrorInfo();
 }
 
 // FractalHandler

@@ -12,14 +12,14 @@ END_EVENT_TABLE()
 wxGradientDialog::wxGradientDialog()
 {
 }
-wxGradientDialog::wxGradientDialog(wxWindow *parent, wxGradient grad)
+wxGradientDialog::wxGradientDialog(wxWindow* parent, wxGradient grad)
 {
     Create(parent, grad);
 }
 wxGradientDialog::~wxGradientDialog()
 {
 }
-bool wxGradientDialog::Create(wxWindow *parent, wxGradient grad)
+bool wxGradientDialog::Create(wxWindow* parent, wxGradient grad)
 {
     if (!wxDialog::Create(parent, wxID_ANY, wxT(gradEditorTxt)))    // Txt: "Gradient editor"
         return false;

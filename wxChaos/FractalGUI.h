@@ -42,7 +42,7 @@ protected:
 public:
     ///@brief Calculates new position for the button, but stays the same size.
     ///@param Window Pointer to window that has been resized.
-    void Resize(sf::RenderWindow *Window);
+    void Resize(sf::RenderWindow* Window);
 
     ///@brief Constructor for a button that uses a image.
     ///@param Path Path to image file.
@@ -60,7 +60,7 @@ public:
 
     ///@brief Shows the button.
     ///@param Window Window to draw the button.
-    void Show(sf::RenderWindow *Window);
+    void Show(sf::RenderWindow* Window);
 
     /**
     * @brief Sets anchorage position for the button.

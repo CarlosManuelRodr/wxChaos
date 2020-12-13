@@ -3,7 +3,7 @@
 #include <cmath>
 
 // SelectRect
-SelectRect::SelectRect(sf::RenderWindow *Window)
+SelectRect::SelectRect(sf::RenderWindow* Window)
 {
     x = y = -1;
     xSelect = ySelect = -1;
@@ -199,7 +199,7 @@ sf::Rect<int> SelectRect::GetSeleccion()
 }
 
 // ScreenPointer
-ScreenPointer::ScreenPointer(sf::RenderWindow *Window)
+ScreenPointer::ScreenPointer(sf::RenderWindow* Window)
 {
     screenWidth = Window->GetWidth();
     screenHeight = Window->GetHeight();
@@ -214,7 +214,7 @@ ScreenPointer::ScreenPointer(sf::RenderWindow *Window)
     rendered = true;
     inSelection = false;
 }
-void ScreenPointer::Show(sf::RenderWindow *Window)
+void ScreenPointer::Show(sf::RenderWindow* Window)
 {
     if(!rendered) this->Render();
     Window->Draw(output);
@@ -297,7 +297,7 @@ bool ScreenPointer::MoveEvent(wxMouseEvent& event)
     }
     return false;
 }
-void ScreenPointer::Resize(sf::RenderWindow *Window)
+void ScreenPointer::Resize(sf::RenderWindow* Window)
 {
     screenWidth = Window->GetWidth();
     screenHeight = Window->GetHeight();
@@ -351,7 +351,7 @@ Button::Button(string Path, int posX, int posY, sf::RenderWindow* Window)
     FX = area.Left/screenWidth;
     anchorType = 0;
 }
-Button::Button(int posX, int posY, sf::RenderWindow *Window, string text)
+Button::Button(int posX, int posY, sf::RenderWindow* Window, string text)
 {
     texture.LoadFromFile("Resources/Button.tga");
     font.LoadFromFile("DiavloFont.otf");
@@ -461,7 +461,7 @@ void Button::ChangeState()
 }
 
 // ButtonChange
-ButtonChange::ButtonChange(string Path1, string Path2, int posX, int posY, sf::RenderWindow *Window) : Button(Path1, posX, posY, Window)
+ButtonChange::ButtonChange(string Path1, string Path2, int posX, int posY, sf::RenderWindow* Window) : Button(Path1, posX, posY, Window)
 {
     texture2.LoadFromFile(Path2.c_str());
 }

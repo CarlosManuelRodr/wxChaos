@@ -1,8 +1,9 @@
-#include "AngelscriptEngine.h"
-#include "StringFuncs.h"
 #include <fstream>
 #include <cmath>
 #include <assert.h>
+#include "AngelscriptEngine.h"
+#include "StringFuncs.h"
+#include "Filesystem.h"
 using namespace std;
 
 // Variables accesible from the scripts.
@@ -20,6 +21,80 @@ bool asRedrawAlways = false;
 bool extColor = true;
 bool noSetMap = false;
 string consoleText;
+
+ScriptData::ScriptData(ScriptDataType type)
+{
+    file = "";
+    name = "";
+    scriptCategory = ScriptCategory::Undefined;
+    minX = maxX = minY = 0.0;
+    defaultIter = 0;
+    juliaVariety = false;
+    redrawAlways = false;
+    extColor = false;
+    noSetMap = false;
+
+    if (type == ScriptDataType::Standard)
+        isValid = true;
+    else
+        isValid = false;
+}
+
+vector<ScriptData> GetValidUserScripts()
+{
+    vector<ScriptData> output;
+    vector<string> scriptFiles = FindFilesWithExtension(GetAbsPath({ "UserScripts" }), "as");
+
+    // Gets script parameters.
+    for (unsigned int i = 0; i < scriptFiles.size(); i++)
+    {
+        AngelscriptConfigurationEngine configEngine;
+        const string filePath = GetAbsPath({ "UserScripts", scriptFiles[i] });
+
+        if (!configEngine.CompileFromPath(filePath))
+            continue;
+
+        if (configEngine.Execute())
+        {
+            const ScriptData scriptData = configEngine.GetScriptData();
+            output.push_back(scriptData);
+        }
+    }
+    return output;
+}
+vector<ScriptData> GetAllUserScripts()
+{
+    vector<ScriptData> output;
+    vector<string> scriptFiles = FindFilesWithExtension(GetAbsPath({ "UserScripts" }), "as");
+
+    // Gets script parameters.
+    for (unsigned int i = 0; i < scriptFiles.size(); i++)
+    {
+        AngelscriptConfigurationEngine configEngine;
+        const string filePath = GetAbsPath({ "UserScripts", scriptFiles[i] });
+
+        if (!configEngine.CompileFromPath(filePath))
+        {
+            ScriptData errorScript = ScriptData(ScriptDataType::Error);
+            errorScript.file = filePath;
+            output.push_back(errorScript);
+            continue;
+        }
+
+        if (configEngine.Execute())
+        {
+            const ScriptData scriptData = configEngine.GetScriptData();
+            output.push_back(scriptData);
+        }
+        else
+        {
+            ScriptData errorScript = ScriptData(ScriptDataType::Error);
+            errorScript.file = filePath;
+            output.push_back(errorScript);
+        }
+    }
+    return output;
+}
 
 int CompileScriptFromPath(asIScriptEngine *engine, const string filePath)
 {
@@ -492,8 +567,11 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
     if (engine == 0)
     {
         errorInfo = wxT("Failed to create script engine.");
+        status = EngineStatus::Error;
         return;
     }
+    else
+        status = EngineStatus::Ok;
 
     engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
 
@@ -546,6 +624,7 @@ bool AngelscriptConfigurationEngine::CompileFromPath(std::string path)
         engine->Release();
         engine = nullptr;
         errorInfo = wxT("Compile error in file: " + path);
+        status = EngineStatus::Error;
         return false;
     }
     return true;
@@ -556,6 +635,8 @@ bool AngelscriptConfigurationEngine::Execute()
     asIScriptContext* ctx = engine->CreateContext();
     if (ctx == 0)
     {
+        errorInfo = wxT("Error creating script context.");
+        status = EngineStatus::Error;
         engine->Release();
         engine = nullptr;
         return false;
@@ -566,6 +647,8 @@ bool AngelscriptConfigurationEngine::Execute()
     asIScriptFunction* renderFunc = engine->GetModule(0)->GetFunctionByDecl("void Configure()");
     if (renderFunc == 0)
     {
+        errorInfo = wxT("Couldn't find the Configure() function.");
+        status = EngineStatus::Error;
         ctx->Release();
         engine->Release();
         engine = nullptr;
@@ -576,6 +659,8 @@ bool AngelscriptConfigurationEngine::Execute()
     r = ctx->Prepare(renderFunc);
     if (r < 0)
     {
+        errorInfo = wxT("Error while preparing the script context.");
+        status = EngineStatus::Error;
         ctx->Release();
         engine->Release();
         engine = nullptr;
@@ -594,6 +679,20 @@ ScriptData AngelscriptConfigurationEngine::GetScriptData()
 {
     return configuration;
 }
+EngineStatus AngelscriptConfigurationEngine::GetStatus()
+{
+    return status;
+}
+wxString AngelscriptConfigurationEngine::GetErrorInfo()
+{
+    if (thereIsConsoleText)
+    {
+        thereIsConsoleText = false;
+        return errorInfo + consoleText;
+    }
+    else
+        return errorInfo;
+}
 
 // AngelscriptRenderEngine implementation.
 AngelscriptRenderEngine::AngelscriptRenderEngine()
@@ -605,9 +704,12 @@ AngelscriptRenderEngine::AngelscriptRenderEngine()
     engine->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, true);
     if (engine == 0)
     {
-        errorInfo = wxT("Failed to create script engine.");
+        errorInfo = wxT("Failed to create Angelscript engine.");
+        status = EngineStatus::Error;
         return;
     }
+    else
+        status = EngineStatus::Ok;
 
     // Configures script engine.
     RegisterStdString(engine);
@@ -634,6 +736,7 @@ bool AngelscriptRenderEngine::RegisterGlobalVariable(const char* declaration, vo
         engine->Release();
         engine = nullptr;
         errorInfo = wxT("Error while registering global variable.");
+        status = EngineStatus::Error;
         return false;
     }
 
@@ -648,6 +751,7 @@ bool AngelscriptRenderEngine::CompileFromPath(string path)
         engine->Release();
         engine = nullptr;
         errorInfo = wxT("Compile error.");
+        status = EngineStatus::Error;
         return false;
     }
     return true;
@@ -660,6 +764,7 @@ bool AngelscriptRenderEngine::Execute()
     {
         errorInfo = wxT("Failed to create the context.");
         engine->Release();
+        status = EngineStatus::Error;
         return false;
     }
 
@@ -670,6 +775,7 @@ bool AngelscriptRenderEngine::Execute()
         errorInfo = wxT("The function 'Render' was not found.");
         ctx->Release();
         engine->Release();
+        status = EngineStatus::Error;
         engine = nullptr;
         ctx = nullptr;
         return false;
@@ -680,6 +786,7 @@ bool AngelscriptRenderEngine::Execute()
     if (r < 0)
     {
         errorInfo = wxT("Failed to prepare the context.");
+        status = EngineStatus::Error;
         ctx->Release();
         engine->Release();
         return false;
@@ -698,4 +805,18 @@ void AngelscriptRenderEngine::Abort()
 {
     if (ctx != nullptr)
         ctx->Abort();
+}
+EngineStatus AngelscriptRenderEngine::GetStatus()
+{
+    return status;
+}
+wxString AngelscriptRenderEngine::GetErrorInfo()
+{
+    if (thereIsConsoleText)
+    {
+        thereIsConsoleText = false;
+        return errorInfo + consoleText;
+    }
+    else
+        return errorInfo;
 }
