@@ -28,7 +28,8 @@ void Render()
     }
 })"""";
 
-ScriptNameDialog::ScriptNameDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+ScriptNameDialog::ScriptNameDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, 
+                                   const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
     this->SetSizeHints(wxSize(494, 158), wxDefaultSize);

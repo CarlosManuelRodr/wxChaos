@@ -7,6 +7,9 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
     isActive = active;
     this->SetSizeHints(wxSize(628, 374), wxSize(894, 578));
 
+    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    this->SetIcon(icon);
+
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
     panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);

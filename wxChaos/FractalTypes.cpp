@@ -435,7 +435,7 @@ int RenderMandelbrot::AskProgress()
 }
 
 // Mandelbrot
-Mandelbrot::Mandelbrot(sf::RenderWindow *Window):Fractal(Window)
+Mandelbrot::Mandelbrot(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -2.45296;
@@ -796,7 +796,7 @@ void RenderMandelbrotZN::SetParams(int _n, double _bailout)
 }
 
 // MandelbrotZN
-MandelbrotZN::MandelbrotZN(sf::RenderWindow *Window):Fractal(Window)
+MandelbrotZN::MandelbrotZN(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -1.87078;
@@ -1186,7 +1186,7 @@ void RenderJulia::SpecialRender()
 }
 
 // Julia
-Julia::Julia(sf::RenderWindow *Window):Fractal(Window)
+Julia::Julia(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -1.77437;
@@ -1508,7 +1508,7 @@ void RenderJuliaZN::SetParams(int _n, double _bailout)
 }
 
 // JuliaZN
-JuliaZN::JuliaZN(sf::RenderWindow *Window):Fractal(Window)
+JuliaZN::JuliaZN(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -1.77437;
@@ -1715,7 +1715,7 @@ void RenderNewton::SetParams(double _minStep)
 }
 
 // Newton
-Newton::Newton(sf::RenderWindow *Window):Fractal(Window)
+Newton::Newton(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -1.5721;
@@ -1970,7 +1970,7 @@ void RenderSinoidal::SpecialRender()
 }
 
 // Sinoidal
-Sinoidal::Sinoidal(sf::RenderWindow *Window) : Fractal(Window)
+Sinoidal::Sinoidal(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = -8;
@@ -2137,7 +2137,7 @@ void RenderMagnet::Render()
 }
 
 // Magnet
-Magnet::Magnet(sf::RenderWindow *Window) : Fractal(Window)
+Magnet::Magnet(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = -1.8;
@@ -2399,7 +2399,7 @@ void RenderMedusa::SpecialRender()
 }
 
 // Medusa
-Medusa::Medusa(sf::RenderWindow *Window) : Fractal(Window)
+Medusa::Medusa(sf::RenderWindow* Window) : Fractal(Window)
 {
     minX = -1.1342;
     maxX = 1.7251;
@@ -2689,7 +2689,7 @@ void RenderManowar::SpecialRender()
 }
 
 // Manowar
-Manowar::Manowar(sf::RenderWindow *Window) : Fractal(Window)
+Manowar::Manowar(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = -0.4795;
@@ -2979,7 +2979,7 @@ void RenderManowarJulia::SpecialRender()
 }
 
 // ManowarJulia
-ManowarJulia::ManowarJulia(sf::RenderWindow *Window) : Fractal(Window)
+ManowarJulia::ManowarJulia(sf::RenderWindow* Window) : Fractal(Window)
 {
     kReal = 0.0272873;
     kImaginary = -0.0432547;
@@ -3099,7 +3099,7 @@ void RenderSierpTriangle::Render()
 }
 
 // SierpTriangle
-SierpTriangle::SierpTriangle(sf::RenderWindow *Window) : Fractal(Window)
+SierpTriangle::SierpTriangle(sf::RenderWindow* Window) : Fractal(Window)
 {
     //Ajusta la escala
     minX = -0.5;
@@ -3165,7 +3165,7 @@ void RenderFixedPoint1::SetParams(double _minStep)
 }
 
 // FixedPoint1
-FixedPoint1::FixedPoint1(sf::RenderWindow *Window):Fractal(Window)
+FixedPoint1::FixedPoint1(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -6.15385;
@@ -3279,7 +3279,7 @@ void RenderFixedPoint2::SetParams(double _minStep)
 }
 
 // FixedPoint2
-FixedPoint2::FixedPoint2(sf::RenderWindow *Window):Fractal(Window)
+FixedPoint2::FixedPoint2(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -5.88462;
@@ -3392,7 +3392,7 @@ void RenderFixedPoint3::SetParams(double _minStep)
 }
 
 // FixedPoint3
-FixedPoint3::FixedPoint3(sf::RenderWindow *Window):Fractal(Window)
+FixedPoint3::FixedPoint3(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -3.76339;
@@ -3510,7 +3510,7 @@ void RenderFixedPoint4::SetParams(double _minStep)
 }
 
 // FixedPoint4
-FixedPoint4::FixedPoint4(sf::RenderWindow *Window):Fractal(Window)
+FixedPoint4::FixedPoint4(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -1.8713;
@@ -3720,7 +3720,7 @@ void RenderTricorn::Render()
 }
 
 // Tricorn
-Tricorn::Tricorn(sf::RenderWindow *Window) : Fractal(Window)
+Tricorn::Tricorn(sf::RenderWindow* Window) : Fractal(Window)
 {
     minX = -3;
     maxX = 3;
@@ -3937,7 +3937,7 @@ void RenderBurningShip::Render()
 }
 
 // BurningShip
-BurningShip::BurningShip(sf::RenderWindow *Window) : Fractal(Window)
+BurningShip::BurningShip(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = -2.36;
@@ -4148,7 +4148,7 @@ void RenderBurningShipJulia::Render()
 }
 
 // BurningShipJulia
-BurningShipJulia::BurningShipJulia(sf::RenderWindow *Window) : Fractal(Window)
+BurningShipJulia::BurningShipJulia(sf::RenderWindow* Window) : Fractal(Window)
 {
     minX = -2.77051;
     maxX = 2.77682;
@@ -4350,7 +4350,7 @@ void RenderFractory::Render()
 }
 
 // Fractory
-Fractory::Fractory(sf::RenderWindow *Window) : Fractal(Window)
+Fractory::Fractory(sf::RenderWindow* Window) : Fractal(Window)
 {
     minX = 0.837154;
     maxX = 1.14419;
@@ -4518,7 +4518,7 @@ void RenderCell::SetParams(double _bailout)
 }
 
 // Cell
-Cell::Cell(sf::RenderWindow *Window) : Fractal(Window)
+Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
 {
     minX = -1.95533;
     maxX = 1.91967;
@@ -4693,7 +4693,7 @@ int RenderLogisticMap::AskProgress()
 
 
 // LogisticMap
-LogisticMap::LogisticMap(sf::RenderWindow *Window) : Fractal(Window)
+LogisticMap::LogisticMap(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = 2.8;
@@ -4805,7 +4805,7 @@ int RenderHenonMap::AskProgress()
 }
 
 // HenonMap
-HenonMap::HenonMap(sf::RenderWindow *Window) : Fractal(Window)
+HenonMap::HenonMap(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = -1.5;
@@ -5157,7 +5157,7 @@ void RenderDPendulum::SetParams(bool th1B, bool th2B, double th1NB, double th2NB
 }
 
 // DPendulum
-DPendulum::DPendulum(sf::RenderWindow *Window):Fractal(Window)
+DPendulum::DPendulum(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
     minX = -5.57488;
@@ -5449,12 +5449,11 @@ void RenderUserDefined::ClearErrorInfo()
 }
 bool RenderUserDefined::IsThereError()
 {
-    if(errorInfo.size() == 0) return false;
-    else return true;
+    return !(errorInfo.size() == 0);
 }
 
 // UserDefined
-UserDefined::UserDefined(sf::RenderWindow *Window) : Fractal(Window)
+UserDefined::UserDefined(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = -2.5;
@@ -5492,11 +5491,11 @@ void UserDefined::Render()
 void UserDefined::SetFormula(FormulaOpt formula)
 {
     userFormula = formula;
-    for(unsigned int i=0; i<threadNumber; i++)
-    {
+    for(unsigned int i = 0; i < threadNumber; i++)
         myRender[i].SetFormula(formula);
-    }
-    if(formula.julia) juliaVariety = true;
+
+    if(formula.julia)
+        juliaVariety = true;
 }
 void UserDefined::DrawOrbit()
 {
@@ -5539,11 +5538,9 @@ void UserDefined::DrawOrbit()
 
         orbitDrawn = true;
     }
-    catch(mup::ParserError& e)
+    catch (mup::ParserError&)
     {
-        /*wxString out = wxString(wxT("Fatal error in formula.\n")) + wxString(e.GetMsg());
-        SetConsoleText(string(out.mb_str()));
-        CallConsole(this);*/
+        return;
     }
 }
 void UserDefined::PostRender()
@@ -5552,8 +5549,8 @@ void UserDefined::PostRender()
     {
         wxString out = wxString(wxT("Fatal error in formula.\n")) + myRender[0].GetErrorInfo() + wxT("\n");
         myRender[0].ClearErrorInfo();
-        /*SetConsoleText(string(out.mb_str()));
-        CallConsole(this);*/
+        wxMessageDialog errorDialog(NULL, out, wxT("Error"), wxOK | wxICON_ERROR);
+        errorDialog.ShowModal();
     }
 }
 
@@ -5639,12 +5636,11 @@ void RenderFPUserDefined::ClearErrorInfo()
 }
 bool RenderFPUserDefined::IsThereError()
 {
-    if(errorInfo.size() == 0) return false;
-    else return true;
+    return !(errorInfo.size() == 0);
 }
 
 // FixedPointUserDefined
-FPUserDefined::FPUserDefined(sf::RenderWindow *Window) : Fractal(Window)
+FPUserDefined::FPUserDefined(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = -1.8713;
@@ -5719,11 +5715,9 @@ void FPUserDefined::DrawOrbit()
 
         orbitDrawn = true;
     }
-    catch(mup::ParserError& e)
+    catch(mup::ParserError&)
     {
-        /*wxString out = wxString(wxT("Fatal error in formula.\n")) + wxString(e.GetMsg());
-        SetConsoleText(string(out.mb_str()));
-        CallConsole(this);*/
+        return;
     }
 }
 void FPUserDefined::CopyOptFromPanel()
@@ -5736,8 +5730,8 @@ void FPUserDefined::PostRender()
     {
         wxString out = wxString(wxT("Fatal error in formula.\n")) + myRender[0].GetErrorInfo() + wxT("\n");
         myRender[0].ClearErrorInfo();
-        //SetConsoleText(string(out.mb_str()));
-        //CallConsole(this);
+        wxMessageDialog errorDialog(NULL, out, wxT("Error"), wxOK | wxICON_ERROR);
+        errorDialog.ShowModal();
     }
 }
 
@@ -5864,7 +5858,8 @@ ScriptFractal::ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData) : 
     }
     SetWatchdog<RenderScriptFractal>(myRender, &watchdog, threadNumber);
 }
-ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData, int renderThreads) : Fractal(width, height)
+ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData, int renderThreads) 
+    : Fractal(width, height)
 {
     if (renderThreads != -1)
         threadNumber = (unsigned) renderThreads;
@@ -5933,7 +5928,8 @@ void ScriptFractal::PostRender()
     if(errorLog.size() != 0)
     {
         wxString out = wxString(wxT("Fatal error in script.\n")) + errorLog;
-        //SetConsoleText(string(out.mb_str()));
+        wxMessageDialog errorDialog(NULL, out, wxT("Error"), wxOK | wxICON_ERROR);
+        errorDialog.ShowModal();
     }
 }
 void ScriptFractal::PreRestartRender()
