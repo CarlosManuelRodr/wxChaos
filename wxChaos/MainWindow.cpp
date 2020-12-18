@@ -83,7 +83,6 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     iterDiagActive = false;
     infoFrameActive = false;
     formDiagActive = false;
-    zoomRecorderActive = false;
     scriptEditorActive = false;
     pause = false;
     selectedScriptIndex = -1;
@@ -707,18 +706,8 @@ void MainFrame::OnScriptEditor(wxCommandEvent& event)
 }
 void MainFrame::OnZoomRecorder(wxCommandEvent& event)
 {
-    if (!zoomRecorderActive)
-    {
-        zoomRecorder = new ZoomRecorder(&zoomRecorderActive, this);
-        zoomRecorder->Show(true);
-        zoomRecorderActive = true;
-    }
-    else
-    {
-        zoomRecorder->Show(false);
-        zoomRecorderActive = false;
-        delete zoomRecorder;
-    }
+    ZoomRecorder zoomRecorder(fractalCanvas, this);
+    zoomRecorder.ShowModal();
 }
 void MainFrame::OnDimensionCalculator(wxCommandEvent& event)
 {

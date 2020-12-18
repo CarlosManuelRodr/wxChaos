@@ -122,7 +122,6 @@ class MainFrame : public wxFrame
     ColorFrame* pal;
     FormulaDialog* formDialog;
     ScriptEditor* scriptEditor;
-    ZoomRecorder* zoomRecorder;
     DimensionFrame* dimensionCalculator;
     
     MainWindowStatus statusData;
@@ -133,7 +132,6 @@ class MainFrame : public wxFrame
     bool iterDiagActive;
     bool infoFrameActive;
     bool formDiagActive;
-    bool zoomRecorderActive;
     bool scriptEditorActive;
     bool pause;
     bool showOptPanel;

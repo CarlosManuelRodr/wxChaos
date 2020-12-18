@@ -1,10 +1,10 @@
 #include "ZoomRecorder.h"
 #include "Filesystem.h"
 
-ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, 
-                           const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
+ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID id,
+                           const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+    : wxDialog(parent, id, title, pos, size, style)
 {
-    isActive = active;
     this->SetSizeHints(wxSize(628, 374), wxSize(894, 578));
 
     wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
@@ -22,7 +22,12 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
                                        wxDefaultPosition, wxDefaultSize, 0);
     previewSizer->Add(previewBitmap, 0, wxALL | wxEXPAND, 5);
 
-    previewSlider = new wxSlider(previewSizer->GetStaticBox(), wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
+    previewFrameText = new wxStaticText(previewSizer->GetStaticBox(), wxID_ANY, wxT("Frame:"), wxDefaultPosition, wxDefaultSize, 0);
+    previewFrameText->Wrap(-1);
+    previewSizer->Add(previewFrameText, 0, wxALL, 5);
+
+    previewSlider = new wxSlider(previewSizer->GetStaticBox(), wxID_ANY, 0, 0, 1800, wxDefaultPosition, wxDefaultSize, 
+                                 wxSL_AUTOTICKS | wxSL_BOTTOM | wxSL_HORIZONTAL | wxSL_LABELS);
     previewSizer->Add(previewSlider, 0, wxALL | wxEXPAND, 5);
 
 
@@ -37,6 +42,11 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
     cancelButton = new wxButton(panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);
     cancelButton->SetBitmap(wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR));
     buttonSizer->Add(cancelButton, 0, wxALL, 5);
+
+    helpButton = new wxButton(panel, wxID_ANY, wxT("Instructions"), wxDefaultPosition, wxDefaultSize, 0);
+    helpButton->SetBitmap(wxArtProvider::GetBitmap(wxART_QUESTION, wxART_TOOLBAR));
+    buttonSizer->Add(helpButton, 0, wxALL, 5);
+
     previewAndButtonsSizer->Add(buttonSizer, 0, 0, 5);
     panelSizer->Add(previewAndButtonsSizer, 0, wxEXPAND, 5);
 
@@ -119,12 +129,11 @@ ZoomRecorder::ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id, const 
     previewSlider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
     saveButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnSaveVideo), NULL, this);
     cancelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnCancel), NULL, this);
+    helpButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnShowInstructions), NULL, this);
 }
 
 ZoomRecorder::~ZoomRecorder()
 {
-    *isActive = false;
-
     // Disconnect Events
     previewSlider->Disconnect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
     previewSlider->Disconnect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
@@ -137,6 +146,7 @@ ZoomRecorder::~ZoomRecorder()
     previewSlider->Disconnect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
     saveButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnSaveVideo), NULL, this);
     cancelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnCancel), NULL, this);
+    helpButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnShowInstructions), NULL, this);
 }
 
 void ZoomRecorder::OnScrollPreview(wxScrollEvent& event)
@@ -148,6 +158,10 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent& event)
 
 }
 void ZoomRecorder::OnCancel(wxCommandEvent& event)
+{
+
+}
+void ZoomRecorder::OnShowInstructions(wxCommandEvent& event)
 {
 
 }

@@ -427,15 +427,15 @@ int RenderMandelbrot::AskProgress()
     if(!stopped)
     {
         if(myOpt.alg == RenderingAlgorithm::Buddhabrot)
-            threadProgress = static_cast<int>( 100.0*(double)(bd+1)/(double)buddhaRandomP);
+            threadProgress = static_cast<int>(100.0*(double)(bd+1)/(double)buddhaRandomP);
         else
-            threadProgress = static_cast<int>( 100.0*((double)(y+1-oldHo)/(double)(hf-oldHo)) );
+            threadProgress = static_cast<int>(100.0*((double)(y+1-oldHo)/(double)(hf-oldHo)));
     }
     return threadProgress;
 }
 
 // Mandelbrot
-Mandelbrot::Mandelbrot(sf::RenderWindow* Window):Fractal(Window)
+Mandelbrot::Mandelbrot(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
     minX = -2.45296;

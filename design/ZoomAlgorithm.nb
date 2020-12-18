@@ -1,0 +1,152 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      5710,        144]
+NotebookOptionsPosition[      5228,        127]
+NotebookOutlinePosition[      5628,        143]
+CellTagsIndexPosition[      5585,        140]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"originalLo", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0"}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"originalHi", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"15", ",", "10"}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Graphics", "[", "\[IndentingNewLine]", 
+    RowBox[{"{", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"EdgeForm", "[", "Dashed", "]"}], ",", "White", ",", 
+      RowBox[{"Rectangle", "[", 
+       RowBox[{"originalLo", ",", "originalHi"}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Rectangle", "[", 
+       RowBox[{
+        RowBox[{"lo", "*", "t"}], ",", 
+        RowBox[{"originalHi", "-", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"originalHi", "-", "hi"}], ")"}], "t"}]}]}], "]"}]}], 
+     "\[IndentingNewLine]", "}"}], "\[IndentingNewLine]", "]"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"t", ",", "1"}], "}"}], ",", "0", ",", "1"}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"lo", ",", 
+       RowBox[{"{", 
+        RowBox[{"5", ",", "5"}], "}"}]}], "}"}], ",", "Locator"}], "}"}], ",",
+    "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"hi", ",", 
+       RowBox[{"{", 
+        RowBox[{"9", ",", "7"}], "}"}]}], "}"}], ",", "Locator"}], "}"}]}], 
+  "\[IndentingNewLine]", "]"}]}], "Input",
+ CellChangeTimes->{{3.817071950604596*^9, 3.8170719778723383`*^9}, {
+  3.817072009194845*^9, 3.8170721033580246`*^9}, {3.8170725492423472`*^9, 
+  3.8170725699745684`*^9}, {3.8170726352865143`*^9, 3.8170726483480844`*^9}, {
+  3.8170730015270567`*^9, 3.817073056507141*^9}, {3.81707315451609*^9, 
+  3.81707320052857*^9}, {3.8170732549179926`*^9, 3.8170732886276407`*^9}, {
+  3.8170733633892107`*^9, 3.8170733678164515`*^9}},
+ CellLabel->"In[14]:=",ExpressionUUID->"4df12d24-722c-4326-b563-bb1a01903aea"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`hi$$ = {9.059999999999999, 
+    7.4}, $CellContext`lo$$ = {5.96, 5.4}, $CellContext`t$$ = 0.874, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"sin t\[IAcute]tulo\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`t$$], 1}, 0, 1}, {{
+       Hold[$CellContext`lo$$], {5, 5}}, Automatic}, {{
+       Hold[$CellContext`hi$$], {9, 7}}, Automatic}}, Typeset`size$$ = {
+    190., {62., 66.89600000000002}}, Typeset`update$$ = 0, Typeset`initDone$$,
+     Typeset`skipInitDone$$ = True}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`hi$$ = {9, 7}, $CellContext`lo$$ = {5, 
+         5}, $CellContext`t$$ = 1}, "ControllerVariables" :> {}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> Graphics[{
+         EdgeForm[Dashed], White, 
+         Rectangle[$CellContext`originalLo, $CellContext`originalHi], 
+         Rectangle[$CellContext`lo$$ $CellContext`t$$, \
+$CellContext`originalHi - ($CellContext`originalHi - $CellContext`hi$$) \
+$CellContext`t$$]}], 
+      "Specifications" :> {{{$CellContext`t$$, 1}, 0, 
+         1}, {{$CellContext`lo$$, {5, 5}}, Automatic, ControlType -> 
+         Locator}, {{$CellContext`hi$$, {9, 7}}, Automatic, ControlType -> 
+         Locator}}, "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{461., {152., 158.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.817071978508355*^9, {3.817072016177968*^9, 3.8170720403786764`*^9}, 
+   3.81707210379904*^9, 3.8170725706771097`*^9, 3.817072648898*^9, 
+   3.8170730606010933`*^9, 3.8170731044376493`*^9, {3.8170731710559053`*^9, 
+   3.817073175059092*^9}, {3.8170732840396395`*^9, 3.8170732890343556`*^9}, {
+   3.8170733685811195`*^9, 3.8170733980488777`*^9}},
+ CellLabel->"Out[16]=",ExpressionUUID->"dfcfe9c6-8d6a-480b-b733-9695f9858c68"]
+}, Open  ]]
+},
+WindowSize->{571, 418},
+WindowMargins->{{189, Automatic}, {17, Automatic}},
+FrontEndVersion->"12.1 para Microsoft Windows (64-bit) (June 19, 2020)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"d7480b42-94ad-4e71-b234-4aeda6768a8a"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 2061, 52, 262, "Input",ExpressionUUID->"4df12d24-722c-4326-b563-bb1a01903aea"],
+Cell[2644, 76, 2568, 48, 329, "Output",ExpressionUUID->"dfcfe9c6-8d6a-480b-b733-9695f9858c68"]
+}, Open  ]]
+}
+]
+*)
+

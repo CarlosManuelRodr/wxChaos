@@ -21,15 +21,20 @@
 #include <wx/panel.h>
 #include <wx/frame.h>
 
+#include "FractalClasses.h"
+#include "FractalCanvas.h"
 
-class ZoomRecorder : public wxFrame
+
+class ZoomRecorder : public wxDialog
 {
 private:
     wxPanel* panel;
     wxStaticBitmap* previewBitmap;
+    wxStaticText* previewFrameText;
     wxSlider* previewSlider;
     wxButton* saveButton;
     wxButton* cancelButton;
+    wxButton* helpButton;
     wxStaticText* videoDurationText;
     wxSpinCtrl* minutesSpinCtrl;
     wxStaticText* minutesText;
@@ -41,13 +46,13 @@ private:
     wxStaticText* resolutionText;
     wxChoice* resolutionChoice;
     wxCheckBox* rotateCheckbox;
-    bool* isActive;
 
     void OnScrollPreview(wxScrollEvent& event);
     void OnSaveVideo(wxCommandEvent& event);
     void OnCancel(wxCommandEvent& event);
+    void OnShowInstructions(wxCommandEvent& event);
 public:
-    ZoomRecorder(bool* active, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Zoom recorder"),
+    ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Zoom recorder"),
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(707, 427), 
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ZoomRecorder();

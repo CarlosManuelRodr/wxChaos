@@ -77,7 +77,6 @@ FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GaussianC
     panelSizer->Add(formulaSizer, 3, wxEXPAND, 5);
 
     wxStaticBoxSizer* optionSizer = new wxStaticBoxSizer(new wxStaticBox(mainPanel, wxID_ANY, wxT(optionsTxt)), wxHORIZONTAL);
-
     wxBoxSizer* bailoutSizer = new wxBoxSizer(wxVERTICAL);
 
     bailText = new wxStaticText(mainPanel, wxID_ANY, wxT(bailValueTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Bailout value"
@@ -129,7 +128,6 @@ FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GaussianC
 
     this->SetSizer(sizer);
     this->Layout();
-
     this->Centre(wxBOTH);
 
     if(fCanvas->GetFormula().type == FormulaType::Complex)

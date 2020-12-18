@@ -351,6 +351,10 @@ Fractal* FractalCanvas::GetFractalPtr()
 {
     return target;
 }
+FractalType FractalCanvas::GetFractalType()
+{
+    return type;
+}
 void FractalCanvas::ChangeType(FractalType _type)
 {
     // Deletes old fractal and creates a new one.

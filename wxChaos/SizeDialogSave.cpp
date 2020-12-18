@@ -99,7 +99,7 @@ bool SaveProgressDiag::IsFinished()
 }
 
 // SizeDialogSave
-SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int ext, FractalType type, Fractal* target, wxWindow* parent,
+SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
                                 string scriptPath, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
@@ -107,25 +107,19 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int 
     extension = ext;
     fCanvas = mFCanvas;
     opt = target->GetOptions();
-    path = rutaArchivo;
+    path = filePath;
     myScriptPath = scriptPath;
     screenRatio = (double)opt.screenWidth/(double)opt.screenHeight;
     fractalType = type;
 
     this->SetSizeHints(wxSize(283,201), wxSize(283,201));
 
-    wxBoxSizer* sizer;
-    sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
     mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* panelSizer;
-    panelSizer = new wxBoxSizer(wxVERTICAL);
-
-    wxBoxSizer* sizeSizer;
-    sizeSizer = new wxBoxSizer(wxHORIZONTAL);
-
-    wxBoxSizer* bSizer6;
-    bSizer6 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* panelSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizeSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* bSizer6 = new wxBoxSizer(wxVERTICAL);
 
     selectText = new wxStaticText(mainPanel, wxID_ANY, wxT(selectSizeTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Select image size"
     selectText->Wrap(-1);
@@ -138,11 +132,9 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int 
     widthSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
     bSizer6->Add(widthSpin, 0, wxALL, 5);
     widthSpin->SetValue(opt.screenWidth);
-
     sizeSizer->Add(bSizer6, 1, wxEXPAND, 5);
 
-    wxBoxSizer* bSizer8;
-    bSizer8 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* bSizer8 = new wxBoxSizer(wxVERTICAL);
 
     dumbText = new wxStaticText(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     dumbText->Wrap(-1);
@@ -157,11 +149,9 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int 
     heightSpin->SetValue(opt.screenHeight);
 
     sizeSizer->Add(bSizer8, 1, wxEXPAND, 5);
-
     panelSizer->Add(sizeSizer, 1, wxEXPAND, 5);
 
-    wxBoxSizer* okSizer;
-    okSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* okSizer = new wxBoxSizer(wxVERTICAL);
 
     iterationsText = new wxStaticText(mainPanel, wxID_ANY, wxT(iterationsTxt), wxDefaultPosition, wxDefaultSize, 0);        // Txt: "Iterations"
     iterationsText->Wrap(-1);
@@ -173,7 +163,6 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string rutaArchivo, int 
 
     okButton = new wxButton(mainPanel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
     okSizer->Add(okButton, 0, wxALL, 5);
-
     panelSizer->Add(okSizer, 1, wxEXPAND, 5);
 
     mainPanel->SetSizer(panelSizer);

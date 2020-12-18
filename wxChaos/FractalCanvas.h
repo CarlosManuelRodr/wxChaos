@@ -132,6 +132,9 @@ public :
     ///@return A pointer to the fractal.
     Fractal* GetFractalPtr();
 
+    ///@return The type of the current fractal.
+    FractalType GetFractalType();
+
     ///@brief Sets the keyboard guide mode.
     ///@param mode New mode.
     void SetKeybGuide(bool mode);
@@ -156,6 +159,8 @@ public :
 
     ///@return Formula in the user defined fractal.
     FormulaOpt GetFormula();
+
+    ///// Event processor /////
 
     ///@brief Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
     void OnMoveMouse(wxMouseEvent& event);
