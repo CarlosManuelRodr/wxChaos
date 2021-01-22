@@ -207,11 +207,6 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, wxWindowID id, const 
 
     runButton->SetBitmap(wxBitmap(GetWxAbsPath({ "Resources", "play.png" }), wxBITMAP_TYPE_ANY));
     debugButtonsSizer->Add(runButton, 0, wxALL | wxEXPAND, 5);
-
-    helpButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, wxT("Help"), wxDefaultPosition, wxDefaultSize, 0);
-
-    helpButton->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_FOLDER, wxART_TOOLBAR));
-    debugButtonsSizer->Add(helpButton, 0, wxALL | wxEXPAND, 5);
     debugElementsSizer->Add(debugButtonsSizer, 0, wxEXPAND, 5);
 
     wxStaticBoxSizer* consoleSizer = new wxStaticBoxSizer(new wxStaticBox(debugPanel, wxID_ANY, wxT("Console")), wxVERTICAL);
@@ -269,7 +264,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, wxWindowID id, const 
     codeEditor->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(ScriptEditor::OnCodeChange), NULL, this);
     validateButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnValidateScript), NULL, this);
     runButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnRunScript), NULL, this);
-    helpButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnHelp), NULL, this);
+    debugCollapsiblePane->Connect(wxEVT_COLLAPSIBLEPANE_CHANGED, wxCollapsiblePaneEventHandler(ScriptEditor::OnDebugPanel), NULL, this);
 }
 
 ScriptEditor::~ScriptEditor()
@@ -285,7 +280,7 @@ ScriptEditor::~ScriptEditor()
     codeEditor->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(ScriptEditor::OnCodeChange), NULL, this);
     validateButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnValidateScript), NULL, this);
     runButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnRunScript), NULL, this);
-    helpButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnHelp), NULL, this);
+    debugCollapsiblePane->Disconnect(wxEVT_COLLAPSIBLEPANE_CHANGED, wxCollapsiblePaneEventHandler(ScriptEditor::OnDebugPanel), NULL, this);
 }
 
 void ScriptEditor::SetUpLexer()
@@ -439,9 +434,10 @@ void ScriptEditor::OnRunScript(wxCommandEvent& event)
     else
         this->ConsoleSetText(wxString("Time ellapsed: ") << elapsed.count() << wxT(" milliseconds"));
 }
-void ScriptEditor::OnHelp(wxCommandEvent& event)
+void ScriptEditor::OnDebugPanel(wxCollapsiblePaneEvent& event)
 {
-
+    this->Layout();
+    this->Update();
 }
 
 void ScriptEditor::ConsoleSetText(wxString text)

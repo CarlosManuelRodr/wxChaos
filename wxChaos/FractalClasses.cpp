@@ -136,6 +136,83 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
     }
 }
 
+// Vector2Double implementation
+Vector2Double::Vector2Double()
+{
+    x = y = 0.0;
+}
+Vector2Double::Vector2Double(double _x, double _y)
+{
+    x = _x;
+    y = _y;
+}
+Vector2Double::Vector2Double(const Vector2Int& v)
+{
+    x = static_cast<double>(v.x);
+    y = static_cast<double>(v.y);
+}
+
+Vector2Double Vector2Double::operator-() const
+{
+    return Vector2Double(-x, -y);
+}
+Vector2Double& Vector2Double::operator+=(const Vector2Double& v)
+{
+    x += v.x;
+    y += v.y;
+    return *this;
+}
+Vector2Double& Vector2Double::operator*=(const double t)
+{
+    x *= t;
+    y *= t;
+    return *this;
+}
+Vector2Double& Vector2Double::operator/=(const double t)
+{
+    return *this *= 1.0 / t;
+}
+
+double Vector2Double::Length() const
+{
+    return sqrt(this->SquaredLength());
+}
+double Vector2Double::SquaredLength() const
+{
+    return x * x + y * y;
+}
+
+
+// Rect implementation
+Rect::Rect()
+{
+    left = top = right = bottom = 0.0;
+}
+Rect::Rect(double _left, double _bottom, double _right, double _top)
+{
+    left = _left;
+    bottom = _bottom;
+    right = _right;
+    top = _top;
+}
+Vector2Double Rect::GetLowerBound()
+{
+    return Vector2Double(left, bottom);
+}
+Vector2Double Rect::GetHigherBound()
+{
+    return Vector2Double(right, top);
+}
+void Rect::SetLowerBound(Vector2Double lb)
+{
+    left = lb.x;
+    bottom = lb.y;
+}
+void Rect::SetHigherBound(Vector2Double hb)
+{
+    right = hb.x;
+    top = hb.y;
+}
 
 /////////////////////////////////////////
 ////        BEGINS FRACTAL          /////
@@ -187,7 +264,6 @@ Fractal::Fractal(int width, int height)
     posY = 0;
     xMoved = 0;
     yMoved = 0;
-
 
     // Set fractal properties.
     this->SetDefaultOpt();
@@ -270,8 +346,10 @@ Fractal::Fractal(int width, int height)
     }
     for(int i=0; i<paletteSize; i++)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
+
+    this->SetOutermostZoom();
 }
-Fractal::Fractal(sf::RenderWindow *Window)
+Fractal::Fractal(sf::RenderWindow* Window)
 {
     this->SetDefaultOpt();
 
@@ -405,6 +483,8 @@ Fractal::Fractal(sf::RenderWindow *Window)
     }
     for(int i=0; i<paletteSize; i++)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
+
+    this->SetOutermostZoom();
 }
 Fractal::~Fractal()
 {
@@ -635,6 +715,8 @@ void Fractal::Resize(sf::RenderWindow *Window)
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
+    this->SetOutermostZoom();
+
     rendered = false;
     rendering = false;
     geomImage.Create(screenWidth, screenHeight, transparent);
@@ -655,7 +737,7 @@ void Fractal::Resize(sf::RenderWindow *Window)
     output.SetSubRect(Size);
     outGeom.SetSubRect(Size);
 }
-void Fractal::Resize(sf::Rect<int> scale)
+void Fractal::SetAreaOfView(sf::Rect<int> pixelCoordinates)
 {
     if(paused)
     {
@@ -675,9 +757,9 @@ void Fractal::Resize(sf::Rect<int> scale)
     double FX = (maxX - minX)/screenWidth;
     double FY = (maxY - minY)/screenHeight;
 
-    maxX = minX + (scale.Right)*FX;
-    minX = minX + scale.Left*FX;
-    minY = maxY - (scale.Bottom)*FY;
+    maxX = minX + (pixelCoordinates.Right)*FX;
+    minX = minX + pixelCoordinates.Left*FX;
+    minY = maxY - (pixelCoordinates.Bottom)*FY;
 
     maxY = minY + (maxX-minX)*screenHeight/screenWidth;
     xFactor = (maxX-minX)/(screenWidth-1);
@@ -688,17 +770,34 @@ void Fractal::Resize(sf::Rect<int> scale)
 
     tempImage = image;
     tempSprite.SetImage(tempImage);
-    int newHeight = scale.Bottom - (scale.Right-scale.Left)*screenHeight/screenWidth;
-    int resize1 = screenWidth*screenWidth/(scale.GetWidth());
-    int resize2 = screenHeight*screenHeight/((scale.Bottom - newHeight));
+    int newHeight = pixelCoordinates.Bottom - (pixelCoordinates.Right-pixelCoordinates.Left)*screenHeight/screenWidth;
+    int resize1 = screenWidth*screenWidth/(pixelCoordinates.GetWidth());
+    int resize2 = screenHeight*screenHeight/((pixelCoordinates.Bottom - newHeight));
     tempSprite.Resize(resize1, resize2);
-    tempSprite.SetCenter(scale.Left, newHeight);
+    tempSprite.SetCenter(pixelCoordinates.Left, newHeight);
 
     posY = posX = 0;
     yVel = xVel = 0;
     yMoved = xMoved = 0;
 
     orbitDrawn = false;
+}
+void Fractal::SetAreaOfView(Rect worldCoordinates)
+{
+    minX = worldCoordinates.left;
+    maxX = worldCoordinates.right;
+    minY = worldCoordinates.bottom;
+    maxY = worldCoordinates.top;
+
+    xFactor = (maxX - minX) / (screenWidth - 1);
+    yFactor = (maxY - minY) / (screenHeight - 1);
+
+    rendered = false;
+    rendering = false;
+
+    posY = posX = 0;
+    yVel = xVel = 0;
+    yMoved = xMoved = 0;
 }
 void Fractal::Resize(int width, int height)
 {
@@ -880,6 +979,18 @@ void Fractal::SaveZoom()
     zoom[2].push_back(minY);
     zoom[3].push_back(maxY);
 }
+void Fractal::SetOutermostZoom()
+{
+    outermostZoom = Rect(minX, minY, maxX, maxY);
+}
+Rect Fractal::GetOutermostZoom()
+{
+    return outermostZoom;
+}
+Rect Fractal::GetCurrentZoom()
+{
+    return Rect(minX, minY, maxX, maxY);
+}
 void Fractal::ZoomBack()
 {
     bool stillRendering = this->StopRender();
@@ -912,10 +1023,11 @@ void Fractal::ZoomBack()
         maxX += scaleX;
         minY -= scaleY;
         maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+        this->SetOutermostZoom();
     }
 
-    xFactor = (maxX-minX)/(screenWidth-(int)1);
-    yFactor = (maxY-minY)/(screenHeight-(int)1);
+    xFactor = (maxX - minX)/(screenWidth - 1);
+    yFactor = (maxY - minY)/(screenHeight - 1);
 
     // If there are no changes uses previous image.
     if(imgInVector && !varGradient && imgVector.size() > 0 && !stillRendering)
@@ -974,7 +1086,7 @@ void Fractal::PrepareRender()
         redrawAll = false;
     }
 }
-void Fractal::DrawMaps(sf::RenderWindow *Window)
+void Fractal::DrawMaps(sf::RenderWindow* Window)
 {
     this->PreDrawMaps();
 
@@ -1189,19 +1301,30 @@ void Fractal::MoreIter()
 {
     changeFractalIter = true;
     this->DeleteSavedZooms();
-    if(paused) dontDrawTempImage = true;
+
+    if(paused)
+        dontDrawTempImage = true;
+
     redrawAll = true;
-    maxIter += 20;
+    maxIter += 100;
+
+    rendered = false;
 }
 void Fractal::LessIter()
 {
     changeFractalIter = true;
     this->DeleteSavedZooms();
-    if(paused) dontDrawTempImage = true;
+
+    if(paused) 
+        dontDrawTempImage = true;
+
     redrawAll = true;
     int signedMaxIter = (int)maxIter;
-    if(signedMaxIter - 20 > 0)
-        maxIter -= 20;
+
+    if(signedMaxIter - 100 > 0)
+        maxIter -= 100;
+
+    rendered = false;
 }
 void Fractal::ChangeThreadNumber()
 {
@@ -2358,23 +2481,23 @@ int RenderFractal::AskProgress()
 
     return threadProgress;
 }
-Coord RenderFractal::GetCoords()
+Vector2Int RenderFractal::GetCoords()
 {
-    Coord pos;
+    Vector2Int pos;
     pos.x = 0;
     pos.y = ho;
     return pos;
 }
-Coord RenderFractal::GetStartPoints()
+Vector2Int RenderFractal::GetStartPoints()
 {
-    Coord pos;
+    Vector2Int pos;
     pos.x = wo;
     pos.y = ho;
     return pos;
 }
-Coord RenderFractal::GetEndPoints()
+Vector2Int RenderFractal::GetEndPoints()
 {
-    Coord pos;
+    Vector2Int pos;
     pos.x = wf;
     pos.y = hf;
     return pos;

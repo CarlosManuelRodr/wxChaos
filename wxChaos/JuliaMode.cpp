@@ -46,7 +46,7 @@ void JuliaMode::Handle_Event()
         // GUI events.
         if(selection->HandleEvents(event))
         {
-            juliaFractal.GetFractalPtr()->Resize(selection->GetSeleccion());
+            juliaFractal.GetFractalPtr()->SetAreaOfView(selection->GetSeleccion());
         }
         if(play->HandleEvents(event))
         {

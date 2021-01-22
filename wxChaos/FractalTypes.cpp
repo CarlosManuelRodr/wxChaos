@@ -442,6 +442,7 @@ Mandelbrot::Mandelbrot(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 1.1624;
     minY = -1.169;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -475,6 +476,7 @@ Mandelbrot::Mandelbrot(int width, int height) : Fractal(width, height)
     maxX = 0.55;
     minY = -1.12;
     maxY = minY+(maxX-minX);
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -803,6 +805,7 @@ MandelbrotZN::MandelbrotZN(sf::RenderWindow* Window):Fractal(Window)
     maxX = 1.74458;
     minY = -1.169;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -837,6 +840,7 @@ MandelbrotZN::MandelbrotZN(int width, int height) : Fractal(width, height)
     maxX = 1.25;
     minY = -1.3;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -1193,6 +1197,7 @@ Julia::Julia(sf::RenderWindow* Window):Fractal(Window)
     maxX = 1.6912;
     minY = -1.06769;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -1222,8 +1227,8 @@ Julia::Julia(int width, int height) : Fractal(width, height)
     minX = -1.77437;
     maxX = 1.6912;
     minY = -1.06769;
-
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -1515,6 +1520,7 @@ JuliaZN::JuliaZN(sf::RenderWindow* Window):Fractal(Window)
     maxX = 1.6912;
     minY = -1.06769;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -1551,6 +1557,7 @@ JuliaZN::JuliaZN(int width, int height) : Fractal(width, height)
     maxX = 1.6912;
     minY = -1.06769;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -1722,6 +1729,7 @@ Newton::Newton(sf::RenderWindow* Window):Fractal(Window)
     maxX = 1.4086;
     minY = -1;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -1748,6 +1756,7 @@ Newton::Newton(int width, int height) : Fractal(width, height)
     maxX = 1.4086;
     minY = -1;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -1977,6 +1986,7 @@ Sinoidal::Sinoidal(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 4;
     minY = -4.12;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -2005,6 +2015,7 @@ Sinoidal::Sinoidal(int width, int height) : Fractal(width, height)
     maxX = 4;
     minY = -4.5;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -2144,6 +2155,7 @@ Magnet::Magnet(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 4.4;
     minY = -2.2;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -2166,6 +2178,7 @@ Magnet::Magnet(int width, int height) : Fractal(width, height)
     maxX = 3.35;
     minY = -2.2;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -2405,6 +2418,7 @@ Medusa::Medusa(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 1.7251;
     minY = -0.90215;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -2431,6 +2445,7 @@ Medusa::Medusa(int width, int height) : Fractal(width, height)
     maxX = 1.7251;
     minY = -0.90215;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -2696,6 +2711,7 @@ Manowar::Manowar(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 0.26108;
     minY = -0.2375;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -2719,6 +2735,7 @@ Manowar::Manowar(int width, int height) : Fractal(width, height)
     maxX = 0.11;
     minY = -0.15;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -2981,6 +2998,12 @@ void RenderManowarJulia::SpecialRender()
 // ManowarJulia
 ManowarJulia::ManowarJulia(sf::RenderWindow* Window) : Fractal(Window)
 {
+    minX = -2.0;
+    maxX = 1.0;
+    minY = -1.2;
+    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    this->SetOutermostZoom();
+
     kReal = 0.0272873;
     kImaginary = -0.0432547;
     type = FractalType::ManowarJulia;
@@ -3005,6 +3028,7 @@ ManowarJulia::ManowarJulia(int width, int height) : Fractal(width, height)
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
+    this->SetOutermostZoom();
 
     kReal = 0.0272873;
     kImaginary = -0.0432547;
@@ -3101,11 +3125,11 @@ void RenderSierpTriangle::Render()
 // SierpTriangle
 SierpTriangle::SierpTriangle(sf::RenderWindow* Window) : Fractal(Window)
 {
-    //Ajusta la escala
     minX = -0.5;
     maxX = 1.5;
     minY = -0.2;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -3117,6 +3141,12 @@ SierpTriangle::SierpTriangle(sf::RenderWindow* Window) : Fractal(Window)
 }
 SierpTriangle::SierpTriangle(int width, int height) : Fractal(width, height)
 {
+    minX = -0.5;
+    maxX = 1.5;
+    minY = -0.2;
+    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    this->SetOutermostZoom();
+
     renderJobComp = false;
     type = FractalType::SierpinskyTriangle;
     myRender = new RenderSierpTriangle[threadNumber];
@@ -3130,7 +3160,7 @@ void SierpTriangle::Render()
 // RenderFixedPoint1
 RenderFixedPoint1::RenderFixedPoint1()
 {
-
+    minStep = 0.01;
 }
 void RenderFixedPoint1::Render()
 {
@@ -3172,6 +3202,7 @@ FixedPoint1::FixedPoint1(sf::RenderWindow* Window):Fractal(Window)
     maxX = 5.84615;
     minY = -4;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -3192,6 +3223,13 @@ FixedPoint1::FixedPoint1(sf::RenderWindow* Window):Fractal(Window)
 }
 FixedPoint1::FixedPoint1(int width, int height) : Fractal(width, height)
 {
+    minStep = 0.01;
+    minX = -6.15385;
+    maxX = 5.84615;
+    minY = -4;
+    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    this->SetOutermostZoom();
+
     type = FractalType::FixedPoint1;
     myRender = new RenderFixedPoint1[threadNumber];
     SetWatchdog<RenderFixedPoint1>(myRender, &watchdog, threadNumber);
@@ -3244,7 +3282,7 @@ void FixedPoint1::CopyOptFromPanel()
 // RenderFixedPoint2
 RenderFixedPoint2::RenderFixedPoint2()
 {
-
+    minStep = 0.01;
 }
 void RenderFixedPoint2::Render()
 {
@@ -3286,6 +3324,7 @@ FixedPoint2::FixedPoint2(sf::RenderWindow* Window):Fractal(Window)
     maxX = 6.11538;
     minY = -4;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -3306,6 +3345,13 @@ FixedPoint2::FixedPoint2(sf::RenderWindow* Window):Fractal(Window)
 }
 FixedPoint2::FixedPoint2(int width, int height) : Fractal(width, height)
 {
+    // Adjust the scale.
+    minX = -5.88462;
+    maxX = 6.11538;
+    minY = -4;
+    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    this->SetOutermostZoom();
+
     type = FractalType::FixedPoint2;
     myRender = new RenderFixedPoint2[threadNumber];
     SetWatchdog<RenderFixedPoint2>(myRender, &watchdog, threadNumber);
@@ -3357,7 +3403,7 @@ void FixedPoint2::CopyOptFromPanel()
 // RenderFixedPoint3
 RenderFixedPoint3::RenderFixedPoint3()
 {
-
+    minStep = 0.01;
 }
 void RenderFixedPoint3::Render()
 {
@@ -3399,6 +3445,7 @@ FixedPoint3::FixedPoint3(sf::RenderWindow* Window):Fractal(Window)
     maxX = 3.59018;
     minY = -2.39204;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -3419,6 +3466,13 @@ FixedPoint3::FixedPoint3(sf::RenderWindow* Window):Fractal(Window)
 }
 FixedPoint3::FixedPoint3(int width, int height) : Fractal(width, height)
 {
+    // Adjust the scale.
+    minX = -3.76339;
+    maxX = 3.59018;
+    minY = -2.39204;
+    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    this->SetOutermostZoom();
+
     type = FractalType::FixedPoint3;
     myRender = new RenderFixedPoint3[threadNumber];
     SetWatchdog<RenderFixedPoint3>(myRender, &watchdog, threadNumber);
@@ -3475,7 +3529,7 @@ void FixedPoint3::CopyOptFromPanel()
 // RenderFixedPoint4
 RenderFixedPoint4::RenderFixedPoint4()
 {
-
+    minStep = 0.01;
 }
 void RenderFixedPoint4::Render()
 {
@@ -3517,6 +3571,7 @@ FixedPoint4::FixedPoint4(sf::RenderWindow* Window):Fractal(Window)
     maxX = 1.82101;
     minY = -1.22781;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -3537,6 +3592,13 @@ FixedPoint4::FixedPoint4(sf::RenderWindow* Window):Fractal(Window)
 }
 FixedPoint4::FixedPoint4(int width, int height) : Fractal(width, height)
 {
+    // Adjust the scale.
+    minX = -1.8713;
+    maxX = 1.82101;
+    minY = -1.22781;
+    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    this->SetOutermostZoom();
+
     type = FractalType::FixedPoint4;
     myRender = new RenderFixedPoint4[threadNumber];
     SetWatchdog<RenderFixedPoint4>(myRender, &watchdog, threadNumber);
@@ -3726,6 +3788,7 @@ Tricorn::Tricorn(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 3;
     minY = -1.94;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -3748,6 +3811,7 @@ Tricorn::Tricorn(int width, int height) : Fractal(width, height)
     maxX = 2.5;
     minY = -2.5;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -3944,6 +4008,7 @@ BurningShip::BurningShip(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 1.79;
     minY = -1.94;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -3966,6 +4031,7 @@ BurningShip::BurningShip(int width, int height) : Fractal(width, height)
     maxX = 1.79;
     minY = -1.94;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -4155,6 +4221,7 @@ BurningShipJulia::BurningShipJulia(sf::RenderWindow* Window) : Fractal(Window)
     minY = -1.75939;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
     juliaVariety = true;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -4176,6 +4243,7 @@ BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, heigh
     maxX = 2.77682;
     minY = -1.75939;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
     juliaVariety = true;
     hasOrbit = true;
 
@@ -4356,6 +4424,7 @@ Fractory::Fractory(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 1.14419;
     minY = -0.102209;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -4377,6 +4446,7 @@ Fractory::Fractory(int width, int height) : Fractal(width, height)
     maxX = 1.14419;
     minY = -0.102209;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -4431,7 +4501,7 @@ void Fractory::DrawOrbit()
 // RenderCell
 RenderCell::RenderCell()
 {
-
+    bailout = 1.0;
 }
 void RenderCell::Render()
 {
@@ -4524,6 +4594,7 @@ Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 1.91967;
     minY = -1.2495;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -4549,6 +4620,7 @@ Cell::Cell(int width, int height) : Fractal(width, height)
     maxX = 1.3;
     minY = -1.2495;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -4613,7 +4685,9 @@ void Cell::CopyOptFromPanel()
 // RenderLogisticMap
 RenderLogisticMap::RenderLogisticMap()
 {
-
+    progress = 0;
+    seed = 0.0;
+    stabilizePoint = false;
 }
 void RenderLogisticMap::Render()
 {
@@ -4700,6 +4774,7 @@ LogisticMap::LogisticMap(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 4;
     minY = 0.24;
     maxY = 1;
+    this->SetOutermostZoom();
 
     type = FractalType::Logistic;
     xFactor = (maxX-minX)/(screenWidth-1);
@@ -4730,6 +4805,7 @@ LogisticMap::LogisticMap(int width, int height) : Fractal(width, height)
     maxX = 4;
     minY = 0.24;
     maxY = 1;
+    this->SetOutermostZoom();
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
     threadNumber = 1;
@@ -4765,7 +4841,8 @@ void LogisticMap::CopyOptFromPanel()
 // RenderHenonMap
 RenderHenonMap::RenderHenonMap()
 {
-
+    i = 0;
+    alpha = beta = x0 = y0 = 0.0;
 }
 void RenderHenonMap::Render()
 {
@@ -4812,6 +4889,7 @@ HenonMap::HenonMap(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 1.5;
     minY = -0.96;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
     maxIter = 20000;
 
     type = FractalType::HenonMap;
@@ -4850,6 +4928,7 @@ HenonMap::HenonMap(int width, int height) : Fractal(width, height)
     maxX = 1.5;
     minY = -0.4;
     maxY = 0.4;
+    this->SetOutermostZoom();
     maxIter = 20000;
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -5164,6 +5243,7 @@ DPendulum::DPendulum(sf::RenderWindow* Window):Fractal(Window)
     maxX = 5.43961;
     minY = -3.57502;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -5211,6 +5291,7 @@ DPendulum::DPendulum(int width, int height) : Fractal(width, height)
     maxX = 3.5;
     minY = -3.5;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -5359,7 +5440,8 @@ void DPendulum::DrawOrbit()
 // RenderUserDefined
 RenderUserDefined::RenderUserDefined()
 {
-
+    bailout = 1;
+    julia = false;
 }
 void RenderUserDefined::SetFormula(FormulaOpt formula)
 {
@@ -5460,6 +5542,7 @@ UserDefined::UserDefined(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 2.5;
     minY = -1.5;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -5475,6 +5558,13 @@ UserDefined::UserDefined(sf::RenderWindow* Window) : Fractal(Window)
 }
 UserDefined::UserDefined(int width, int height) : Fractal(width, height)
 {
+    // Adjust the scale.
+    minX = -2.5;
+    maxX = 2.5;
+    minY = -1.5;
+    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    this->SetOutermostZoom();
+
     type = FractalType::UserDefined;
     myRender = new RenderUserDefined[threadNumber];
     SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
@@ -5647,6 +5737,7 @@ FPUserDefined::FPUserDefined(sf::RenderWindow* Window) : Fractal(Window)
     maxX = 1.82101;
     minY = -1.22781;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
 
     xFactor = (maxX-minX)/(screenWidth-1);
     yFactor = (maxY-minY)/(screenHeight-1);
@@ -5667,6 +5758,13 @@ FPUserDefined::FPUserDefined(sf::RenderWindow* Window) : Fractal(Window)
 }
 FPUserDefined::FPUserDefined(int width, int height) : Fractal(width, height)
 {
+    // Adjust the scale.
+    minX = -1.8713;
+    maxX = 1.82101;
+    minY = -1.22781;
+    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    this->SetOutermostZoom();
+
     minStep = 0.001;
     type = FractalType::FixedPointUserDefined;
     myRender = new RenderFPUserDefined[threadNumber];
@@ -5839,6 +5937,8 @@ ScriptFractal::ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData) : 
     maxX = scriptData.maxX;
     minY = scriptData.minY;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
+
     maxIter = scriptData.defaultIter;
     juliaVariety = scriptData.juliaVariety;
     redrawAlways = scriptData.redrawAlways;
@@ -5869,6 +5969,8 @@ ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData, int r
     maxX = scriptData.maxX;
     minY = scriptData.minY;
     maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    this->SetOutermostZoom();
+
     maxIter = scriptData.defaultIter;
     juliaVariety = scriptData.juliaVariety;
     redrawAlways = scriptData.redrawAlways;
@@ -5891,6 +5993,17 @@ ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData, int r
 ScriptFractal::ScriptFractal(int width, int height, string scriptPath) : Fractal(width, height)
 {
     path = scriptPath;
+    AngelscriptConfigurationEngine configEngine;
+    if (configEngine.CompileFromPath(path) && configEngine.Execute())
+    {
+        ScriptData params = configEngine.GetScriptData();
+        minX = params.minX;
+        maxX = params.maxX;
+        minY = params.minY;
+        maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+        this->SetOutermostZoom();
+    }
+
     type = FractalType::ScriptFractal;
     myRender = new RenderScriptFractal[threadNumber];
     for(unsigned int i=0; i<threadNumber; i++)
@@ -5956,6 +6069,10 @@ wxString ScriptFractal::GetErrorInfo()
 void ScriptFractal::ClearErrorInfo()
 {
     return myRender[0].ClearErrorInfo();
+}
+string ScriptFractal::GetPath()
+{
+    return path;
 }
 
 // FractalHandler

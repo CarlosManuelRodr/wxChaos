@@ -24,6 +24,7 @@ std::string GetAbsPath(std::vector<std::string> pathList);
 wxString GetWxAbsPath(std::vector<std::string> pathList);
 std::vector<std::string> FindFilesWithExtension(std::string path, std::string ext);
 std::vector<wxString> FindFilesWithExtension(wxString path, std::string ext);
+std::string FileNameJoin(std::vector<std::string> pathList);
 
 /**
 * @class FileGetter

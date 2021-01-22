@@ -58,7 +58,6 @@ private:
     wxPanel* debugPanel;
     wxButton* validateButton;
     wxButton* runButton;
-    wxButton* helpButton;
     wxRichTextCtrl* console;
     wxStaticBitmap* renderPreviewBitmap;
     bool* isActive;
@@ -84,7 +83,7 @@ private:
     void OnCodeChange(wxKeyEvent& event);
     void OnValidateScript(wxCommandEvent& event);
     void OnRunScript(wxCommandEvent& event);
-    void OnHelp(wxCommandEvent& event);
+    void OnDebugPanel(wxCollapsiblePaneEvent& event);
 public:
     ScriptEditor(bool* active, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Script editor"),
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1069, 600),

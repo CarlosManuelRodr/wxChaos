@@ -94,7 +94,7 @@ bool DimCalculator::IsRunning()
 }
 
 // ImagePanel
-ImagePanel::ImagePanel(wxWindow* parent, int id, int _size) : wxPanel(parent, id)
+ImagePanel::ImagePanel(wxWindow* parent, int id, int _size) : wxPanel(parent, id, wxDefaultPosition, wxSize(_size, _size))
 {
     map = nullptr;
     size = _size;

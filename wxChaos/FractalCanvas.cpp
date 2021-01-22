@@ -46,7 +46,7 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     // Initializes GUI elements.
     selection = new SelectRect(this);
 
-    play = new ButtonChange(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources","Stop.tga" }), 0, 500, this);
+    play = new ButtonChange(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 500, this);
     play->SetAnchorage(false, true, true, false);
     play->Resize(this);
 
@@ -502,7 +502,7 @@ FormulaOpt FractalCanvas::GetFormula()
 {
     return userFormula;
 }
-void FractalCanvas::OnResize(wxSizeEvent &event)
+void FractalCanvas::OnResize(wxSizeEvent& event)
 {
     wSize = event.GetSize();
 
@@ -533,7 +533,7 @@ void FractalCanvas::OnResize(wxSizeEvent &event)
 #endif
 }
 
-void FractalCanvas::OnClick(wxMouseEvent &event)
+void FractalCanvas::OnClick(wxMouseEvent& event)
 {
     // Pointer event.
     if(juliaMode || orbitMode || sliderMode)
@@ -589,7 +589,7 @@ void FractalCanvas::OnClick(wxMouseEvent &event)
         }
     }
 }
-void FractalCanvas::OnUnClick(wxMouseEvent &event)
+void FractalCanvas::OnUnClick(wxMouseEvent& event)
 {
     // Selection event.
     if(juliaMode || orbitMode || sliderMode)
@@ -604,12 +604,12 @@ void FractalCanvas::OnUnClick(wxMouseEvent &event)
                 {
                     btn->state = false;
                     if(type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt))+ wxT('\t') + wxT("P"));    // Txt: "Abort"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt)) + wxT('\t') + wxT("P"));    // Txt: "Abort"
                     else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt))+ wxT('\t') + wxT("P"));    // Txt: "Pause"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt)) + wxT('\t') + wxT("P"));    // Txt: "Pause"
                     target->DeleteSavedZooms();
                 }
-                target->Resize(selection->GetSeleccion());
+                target->SetAreaOfView(selection->GetSeleccion());
             }
         }
     }

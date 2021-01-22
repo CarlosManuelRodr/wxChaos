@@ -120,7 +120,7 @@ class SelectRect
 {
     sf::Rect<int> pos;                    ///< Current selection rect.
     sf::Rect<int> select;                 ///< Final selection rect.
-    sf::Image texture;                            
+    sf::Image texture;
     sf::Sprite output;
     int x, y;
     int xSelect, ySelect;

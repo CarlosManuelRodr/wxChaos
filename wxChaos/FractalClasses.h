@@ -205,12 +205,77 @@ struct FormulaOpt
 };
 
 /**
-* @struct Coord
+* @struct Vector2Int
 * @brief Stores x and y coordinates.
 */
-struct Coord
+struct Vector2Int
 {
     int x, y;
+};
+
+/**
+* @struct Vector2Double
+* @brief Stores x and y coordinates. This variant comes with vector arithmetic operators.
+*/
+
+struct Vector2Double
+{
+    double x, y;
+
+    Vector2Double();
+    Vector2Double(double _x, double _y);
+    Vector2Double(const Vector2Int& v);
+
+    Vector2Double operator-() const;
+    Vector2Double& operator+=(const Vector2Double& v);
+
+    Vector2Double& operator*=(const double t);
+    Vector2Double& operator/=(const double t);
+
+    double Length() const;
+    double SquaredLength() const;
+};
+
+inline Vector2Double operator+(const Vector2Double& u, const Vector2Double& v)
+{
+    return Vector2Double(u.x + v.x, u.y + v.y);
+}
+inline Vector2Double operator-(const Vector2Double& u, const Vector2Double& v)
+{
+    return Vector2Double(u.x - v.x, u.y - v.y);
+}
+inline Vector2Double operator*(const Vector2Double& u, const Vector2Double& v)
+{
+    return Vector2Double(u.x * v.x, u.y * v.y);
+}
+inline Vector2Double operator*(double t, const Vector2Double& v)
+{
+    return Vector2Double(t * v.x, t * v.y);
+}
+inline Vector2Double operator*(const Vector2Double& v, double t)
+{
+    return t * v;
+}
+inline Vector2Double operator/(Vector2Double v, double t)
+{
+    return (1.0 / t) * v;
+}
+
+
+/**
+* @struct Rect
+* @brief Stores rectangle coordinates.
+*/
+struct Rect
+{
+    double left, bottom, right, top;
+
+    Rect();
+    Rect(double _left, double _bottom, double _right, double _top);
+    Vector2Double GetLowerBound();
+    Vector2Double GetHigherBound();
+    void SetLowerBound(Vector2Double lb);
+    void SetHigherBound(Vector2Double hb);
 };
 
 /**
@@ -254,7 +319,6 @@ protected:
     double kImaginary;
 
 public:
-    public:
     virtual void Render() = 0;            ///< Render the fractal.
     virtual void SpecialRender() {};
     virtual void Run();                   ///< Launches the thread.
@@ -310,17 +374,17 @@ public:
     ///@brief To be overriden in case that a special behaviour is needed before terminanting the thread.
     virtual void PreTerminate();
 
-    ///@brief Gets the coordinates where the rendering was paused.
+    ///@brief Gets the pixel coordinates where the rendering was paused.
     ///@return A struct with the coordinates.
-    Coord GetCoords();
+    Vector2Int GetCoords();
 
-    ///@brief Get the coordinateds where the rendering was started.
+    ///@brief Get the pixel coordinates where the rendering was started.
     ///@return A struct with the coordinates.
-    Coord GetStartPoints();
+    Vector2Int GetStartPoints();
 
-    ///@brief Get the coordinateds where the rendering has to end.
+    ///@brief Get the pixel coordinates where the rendering has to end.
     ///@return A struct with the coordinates.
-    Coord GetEndPoints();
+    Vector2Int GetEndPoints();
 
     bool IsRunning();
 
@@ -539,6 +603,7 @@ protected:
     sf::Sprite tempSprite;          ///< tempImage sprite.
 
     vector<double> zoom[4];         ///< Saves the performed zooms.
+    Rect outermostZoom;
     int screenWidth;
     int screenHeight;
     int backScreenWidth;
@@ -594,9 +659,9 @@ protected:
     bool renderJobComp;                     ///< Fractal compatible with renderJobs.
     bool changeFractalProp;
     bool onWxCtrl;
-    vector<Coord> endPoints;
-    vector<Coord> startPoints;
-    vector<Coord> pausePoints;
+    vector<Vector2Int> endPoints;
+    vector<Vector2Int> startPoints;
+    vector<Vector2Int> pausePoints;
 
     // Julia Mode variables.
     bool juliaMode;
@@ -624,6 +689,9 @@ protected:
     // Internal methods.
     ///@brief Saves the rendering area limits to be able to do a zoomback later.
     void SaveZoom();
+
+    ///@brief Called in child class after constructor.
+    void SetOutermostZoom();
 
     ///@brief Calculate a EST color in the specified channel.
     ///@param colorNum Color parameter.
@@ -681,7 +749,7 @@ public:
     ///@param Window Window to draw the fractal.
     void Resize(sf::RenderWindow* Window);
 
-    ///@brief Resize to specified size.
+    ///@brief SetAreaOfView to specified size.
     ///@param width New width.
     ///@param height New height.
     void Resize(int width, int height);
@@ -689,9 +757,13 @@ public:
     ///@brief Perform some adjustements needed before the rendering starts.
     void PrepareRender();
 
-    ///@brief Resizes the viewing area fo the fractal.
-    ///@param scale Selection area.
-    void Resize(sf::Rect<int> scale);
+    ///@brief Resizes the viewing area of the fractal.
+    ///@param pixelCoordinates Selection area in pixel coordinates.
+    void SetAreaOfView(sf::Rect<int> pixelCoordinates);
+
+    ///@brief Resizes the viewing area of the fractal.
+    ///@param worldCoordinates Selection area in world coordinates.
+    void SetAreaOfView(Rect worldCoordinates);
 
     void Move();                ///< Moves the fractal image.
     void Move(const sf::Input& input);
@@ -767,6 +839,12 @@ public:
 
     ///@brief Forces the fractal to adquire a "rendered" status.
     void SetRendered(bool mode);
+
+    ///@brief Return the farthest zoom viewed by the user.
+    Rect GetOutermostZoom();
+
+    ///@brief Return the current zoom rect.
+    Rect GetCurrentZoom();
 
     ///@brief Gets the type of the fractal.
     FractalType GetType();

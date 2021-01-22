@@ -200,6 +200,23 @@ std::vector<wxString> FindFilesWithExtension(wxString path, std::string ext)
 
     return filesInDirectory;
 }
+std::string FileNameJoin(std::vector<std::string> pathList)
+{
+    string path = "";
+    for (unsigned i = 0; i < pathList.size(); i++)
+    {
+        if (i != 0)
+        {
+#ifdef __linux__
+            path += "/";
+#elif _WIN32
+            path += "\\";
+#endif
+        }
+        path += pathList[i];
+    }
+    return path;
+}
 
 // FileGetter
 FileGetter::FileGetter(string folder)

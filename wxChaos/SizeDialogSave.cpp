@@ -3,7 +3,8 @@
 
 // SaveProgressDiag
 SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool _saveProgressAvailable, wxWindowID id,
-                                   const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+                                   const wxString& title, const wxPoint& pos, const wxSize& size, long style) 
+    : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
     myFractal = targetFractal;
@@ -22,7 +23,7 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     if(myType == FractalType::ScriptFractal)
     {
         progressLabel = new wxStaticText(this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
-        progressLabel->Wrap( -1 );
+        progressLabel->Wrap(-1);
         progressSizer->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
         progress = nullptr;
     }

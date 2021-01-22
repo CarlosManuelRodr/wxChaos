@@ -20,11 +20,13 @@
 #include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/frame.h>
-
 #include "FractalClasses.h"
 #include "FractalCanvas.h"
 
-
+/**
+* @class ZoomRecorder
+* @brief Creates a dialog to preview and select the zoom recorder parameters.
+*/
 class ZoomRecorder : public wxDialog
 {
 private:
@@ -34,7 +36,6 @@ private:
     wxSlider* previewSlider;
     wxButton* saveButton;
     wxButton* cancelButton;
-    wxButton* helpButton;
     wxStaticText* videoDurationText;
     wxSpinCtrl* minutesSpinCtrl;
     wxStaticText* minutesText;
@@ -43,17 +44,33 @@ private:
     wxStaticText* framerateText;
     wxSpinCtrl* framerateSpinCtrl;
     wxStaticText* framesPerSecondText;
-    wxStaticText* resolutionText;
-    wxChoice* resolutionChoice;
     wxCheckBox* rotateCheckbox;
+    wxStaticText* zoomSpeedText;
+    wxSpinCtrl* zoomSpeedCtrl;
+    wxStaticText* colorRotateSpeedText;
+    wxSpinCtrlDouble* colorSpeedCtrl;
+
+    FractalCanvas* fractalCanvasPtr;
+    FractalHandler fractalHandler;
+
+    Rect outermostZoom, innermostZoom;
 
     void OnScrollPreview(wxScrollEvent& event);
     void OnSaveVideo(wxCommandEvent& event);
     void OnCancel(wxCommandEvent& event);
-    void OnShowInstructions(wxCommandEvent& event);
+    void OnUpdateTotalFrames(wxSpinEvent& event);
+    void OnColorRotate(wxCommandEvent& event);
+    void OnChangeSpeed(wxSpinEvent& event);
+    void OnChangeSpeedDbl(wxSpinDoubleEvent& event);
+
+    void CreateFractalHandler();
+    void RenderPreview(int zoom, int zoomSpeed = 1, double colorSpeed = -1.0);
+    void RenderPreview();
+    void UpdateTotalFrames();
+    int CalculateTotalFrames();
 public:
     ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Zoom recorder"),
-                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(707, 427), 
+                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(600, 400),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ZoomRecorder();
 };

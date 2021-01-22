@@ -869,7 +869,7 @@ class RenderScriptFractal : public RenderFractal
 {
 private:
     AngelscriptRenderEngine* renderEngine;
-    string path;
+    std::string path;
     wxString errorInfo;
     int threadIndex;
     bool hasEnded;
@@ -878,7 +878,7 @@ public:
     ~RenderScriptFractal();
 
     void Render();
-    void SetPath(string scriptPath);
+    void SetPath(std::string scriptPath);
     wxString GetErrorInfo();
     void ClearErrorInfo();
     void PreTerminate();
@@ -892,13 +892,14 @@ public:
 */
 class ScriptFractal : public Fractal
 {
-    string path;
+private:
+    std::string path;
     ScriptData myScriptData;
     RenderScriptFractal* myRender;
 public:
     ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
     ScriptFractal(int width, int height, ScriptData scriptData, int renderThreads = -1);
-    ScriptFractal(int width, int height, string scriptPath);
+    ScriptFractal(int width, int height, std::string scriptPath);
     ~ScriptFractal();
 
     void Render();
@@ -907,6 +908,7 @@ public:
     bool IsThereError();
     wxString GetErrorInfo();
     void ClearErrorInfo();
+    std::string GetPath();
 };
 
 /**
