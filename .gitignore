@@ -1,6 +1,3 @@
-# Mathematica output
-/ProcessedDataset/
-
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -18,8 +15,6 @@ $RECYCLE.BIN/
 *.msp
 
 # Windows executable
-*.exe
-*.lib
 *.dll
 *.obj
 
@@ -67,7 +62,6 @@ Temporary Items
 *.pdb
 *.iobj
 *.ipdb
-*.lib
 *.tlog
 *.idb
 
@@ -94,3 +88,5 @@ Temporary Items
 **/build/msw/vc_mswd
 **/build/msw/vc_mswu
 **/build/msw/vc_mswud
+**/libs/SFML_1.6/lib
+**/libs/wxMSW-3.1.4/lib/vc_lib/*.lib
