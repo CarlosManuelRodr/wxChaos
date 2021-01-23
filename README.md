@@ -17,6 +17,12 @@ Screenshot
 ==========
 ![Screenshot](images/screenshot.png?raw=true "Screenshot")
 
+![ScriptEditor](images/ScriptEditor.png?raw=true "ScriptEditor")
+
+![Dimension](images/Dimension.png?raw=true "Dimension")
+
+![ZoomRecorder](images/ZoomRecorder.png?raw=true "ZoomRecorder")
+
 
 Showcase
 ========

@@ -90,3 +90,4 @@ Temporary Items
 **/build/msw/vc_mswud
 **/libs/SFML_1.6/lib
 **/libs/wxMSW-3.1.4/lib/vc_lib/*.lib
+/bin/
