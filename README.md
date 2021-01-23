@@ -41,17 +41,6 @@ Examples of images generated with wxChaos.
 ![Example3](images/example3.jpg?raw=true "Example 3")
 ![Example4](images/example4.jpg?raw=true "Example 4")
 
-Build Instructions
-========
-
-Windows
---------
-You'll need to have installed WxWidgets on your system first.
-If you want to make the setup version use the Unicode Setup build and use the NSIS script provided.
-
-To compile use the MSVC++ project file.
-
-
 License
 ========
 wxChaos is licensed under the GNU General Public License version 3.0 (GPLv3).
