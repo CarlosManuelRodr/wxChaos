@@ -6,21 +6,29 @@ Features
 ========
 * Many fractals and algorithms preimplemented.
 * Quick preview of Julia fractals.
+* Zoom recorder.
 * User formulas.
+* Fractal dimension calculator.
 * Create any types of fractals through an scripting language.
 
 Download
 ========
-* [Windows Installer](https://github.com/cmrm/wxChaos/releases/download/v1.0.3/wxChaos-1.0.3.exe)
+* [Windows portable app](https://github.com/CarlosManuelRodr/wxChaos/releases/tag/v1.2.0-beta)
 
 Screenshot
 ==========
+Main window
+
 ![Screenshot](images/screenshot.png?raw=true "Screenshot")
+
+Script editor
 
 ![ScriptEditor](images/ScriptEditor.png?raw=true "ScriptEditor")
 
+Fractal dimension calculator
 ![Dimension](images/Dimension.png?raw=true "Dimension")
 
+Zoom recorder
 ![ZoomRecorder](images/ZoomRecorder.png?raw=true "ZoomRecorder")
 
 
@@ -36,20 +44,6 @@ Examples of images generated with wxChaos.
 Build Instructions
 ========
 
-Linux
---------
-
-To build you'll need the following libraries:
-
-* [wxGtk](https://www.wxwidgets.org/)
-* [SFML](http://www.sfml-dev.org/) (Version 1.6)
-
-On Debian based distros: "sudo apt-get install libwxgtk2.8-dev  libsfml-dev"
-
-To install use make && make install.
-If you want to use the app without installing it you can build the no_setup version with "make no_setup".
-You can build a package with the "build-pkg" script.
-
 Windows
 --------
 You'll need to have installed WxWidgets on your system first.
@@ -57,15 +51,12 @@ If you want to make the setup version use the Unicode Setup build and use the NS
 
 To compile use the MSVC++ project file.
 
-Warning
-=======
-This project was developed when I was still learning to code. The code is messy, ugly and uses outdated libraries. Please consider using another well mantained fractal program.
 
-Copyright
+License
 ========
 wxChaos is licensed under the GNU General Public License version 3.0 (GPLv3).
 
 Bugs
 ========
 All bugs must be reported at:
-https://github.com/cmrm/wxChaos/issues
+https://github.com/CarlosManuelRodr/wxChaos/issues
