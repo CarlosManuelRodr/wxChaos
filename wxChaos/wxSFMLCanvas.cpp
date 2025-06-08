@@ -1,4 +1,5 @@
 #include "wxSFMLCanvas.h"
+#include "SFMLCompat.h"
 
 #ifdef __WXGTK__
     #include <gdk/gdkx.h>
@@ -41,5 +42,5 @@ void wxSFMLCanvas::OnPaint(wxPaintEvent&)
 {
     wxPaintDC Dc(this);
     OnUpdate();
-    Display();    // Draws SFML window.
+    display();    // Draws SFML window.
 }

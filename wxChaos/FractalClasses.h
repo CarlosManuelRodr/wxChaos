@@ -766,7 +766,6 @@ public:
     void SetAreaOfView(Rect worldCoordinates);
 
     void Move();                ///< Moves the fractal image.
-    void Move(const sf::Input& input);
     void ZoomBack();            ///< Does a zoomback in the selection area.
     void DeleteSavedZooms();    ///< If some image property image has changed deletes saved zoom images.
     void Redraw();              ///< Redraws the fractal.

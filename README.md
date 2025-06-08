@@ -49,3 +49,20 @@ Bugs
 ========
 All bugs must be reported at:
 https://github.com/CarlosManuelRodr/wxChaos/issues
+
+Build
+=====
+This project now uses [vcpkg](https://github.com/microsoft/vcpkg) and CMake. Dependencies are automatically resolved (SFML 2.6.2 and wxWidgets).
+
+```bash
+# bootstrap vcpkg
+git clone https://github.com/microsoft/vcpkg.git
+./vcpkg/bootstrap-vcpkg.sh
+
+# install dependencies
+./vcpkg/vcpkg install
+
+# configure and build
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake --build build
+```

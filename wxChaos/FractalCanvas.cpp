@@ -51,9 +51,9 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     play->Resize(this);
 
     screenPointer = new ScreenPointer(this);
-    keybImage.LoadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
-    mouseImage.LoadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
-    helpImage.LoadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
+    keybImage.loadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
+    mouseImage.loadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
+    helpImage.loadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
     outKeyb.SetImage(keybImage);
     outMouse.SetImage(mouseImage);
     outHelp.SetImage(helpImage);
@@ -62,7 +62,7 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     outHelp.SetColor(sf::Color(255, 255, 255, 220));
 
     this->SetFocus();
-    this->SetFramerateLimit(31);
+    this->setFramerateLimit(31);
 
     this->Connect(wxEVT_MOTION, wxMouseEventHandler(FractalCanvas::OnMoveMouse));
     this->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(FractalCanvas::OnClick));
@@ -86,12 +86,13 @@ FractalCanvas::~FractalCanvas()
 void FractalCanvas::OnUpdate()
 {
     // Handles SFML events.
-    while(this->GetEvent(event))
+    while(this->pollEvent(event))
     {
         // Size change event.
-        if(event.Type == sf::Event::Resized)
+        if(event.type == sf::Event::Resized)
         {
-            this->ConvertCoords(this->GetInput().GetMouseX(), this->GetInput().GetMouseY());
+            auto pos = sf::Mouse::getPosition(*this);
+            this->mapPixelToCoords(pos);
 
             target->Resize(this);
             play->Resize(this);
@@ -101,10 +102,10 @@ void FractalCanvas::OnUpdate()
 
             if(keybGuide && keybGuideMode)
             {
-                if(this->GetHeight() > 300 || this->GetWidth() > 300)
+                if(this->getSize().y > 300 || this->getSize().x > 300)
                 {
-                    outKeyb.SetPosition(this->GetWidth() - 120, this->GetHeight() - 80);
-                    outMouse.SetPosition(this->GetWidth() - 90, 0);
+                    outKeyb.SetPosition(this->getSize().x - 120, this->getSize().y - 80);
+                    outMouse.SetPosition(this->getSize().x - 90, 0);
                 }
             }
 
@@ -123,23 +124,23 @@ void FractalCanvas::OnUpdate()
         target->HandleEvents(&event);
 
         // Keyboard event.
-        if(event.Type == sf::Event::KeyPressed)
+        if(event.type == sf::Event::KeyPressed)
         {
             if(!target->IsRendering())
             {
-                if(event.Key.Code == sf::Key::F1)  // Open or close slider.
+                if(event.key.code == sf::Keyboard::F1)  // Open or close slider.
                 {
                     bool modo = !statusData.slider->IsChecked();
                     this->SetSliderMode(modo);
                     statusData.slider->Check(modo);
                 }
-                if(event.Key.Code == sf::Key::F2)  // Shows or hides fractal orbit.
+                if(event.key.code == sf::Keyboard::F2)  // Shows or hides fractal orbit.
                 {
                     bool modo = !statusData.showOrbit->IsChecked();
                     this->SetOrbitMode(modo);
                     statusData.showOrbit->Check(modo);
                 }
-                if(event.Key.Code == sf::Key::F4)  // Saves image.
+                if(event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
                     wxFileDialog * openFileDialog = new wxFileDialog(this, wxT(menuSelectFileTxt), wxT(""),
                                                     wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
@@ -156,11 +157,11 @@ void FractalCanvas::OnUpdate()
                     openFileDialog->Destroy();
                 }
             }
-            if(event.Key.Code == sf::Key::F5)  // Redraw canvas.
+            if(event.key.code == sf::Keyboard::F5)  // Redraw canvas.
             {
                 target->Redraw();
             }
-            if(event.Key.Code == sf::Key::P)  // Pause shortcut.
+            if(event.key.code == sf::Keyboard::P)  // Pause shortcut.
             {
                 if(btn->state)
                 {
@@ -185,10 +186,10 @@ void FractalCanvas::OnUpdate()
 
     // This is here because the binding between SFML and wxWidgets makes SFML to handle incorrectly a resolution change.
     sf::View View(sf::FloatRect(0, 0, wSize.GetX(), wSize.GetY()));
-    this->SetView(View);
+    this->setView(View);
 
     // Clears the screen and draw GUI elements and fractal.
-    this->Clear();
+    this->clear();
 
     if(orbitMode)
         target->SetOrbitPoint(kReal, kImaginary);
@@ -219,14 +220,14 @@ void FractalCanvas::OnUpdate()
 
         if(keybGuide && keybGuideMode)
         {
-            this->Draw(outKeyb);
-            this->Draw(outMouse);
+            this->draw(outKeyb);
+            this->draw(outMouse);
         }
         if(helpImageMode)
         {
-            this->Draw(outHelp);
+            this->draw(outHelp);
             if(!keybGuide)
-                this->Draw(outKeyb);
+                this->draw(outKeyb);
         }
 
         if(juliaMode || orbitMode || sliderMode) screenPointer->Show(this);
@@ -239,7 +240,7 @@ void FractalCanvas::OnUpdate()
                 juliaImage = juliaHandler.GetTarget()->GetRenderedImage();
                 pointerChange = false;
             }
-            this->Draw(outJulia);
+            this->draw(outJulia);
         }
 #endif
     }
@@ -255,10 +256,10 @@ void FractalCanvas::SetWxSize(wxSize size)
     // Adjust position of the keyboard guide.
     if(keybGuideMode)
     {
-        if(this->GetHeight() > 300 || this->GetWidth() > 300)
+        if(this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyb.SetPosition(this->GetWidth() - 120, this->GetHeight() - 80);
-            outMouse.SetPosition(this->GetWidth() - 90, 0);
+            outKeyb.SetPosition(this->getSize().x - 120, this->getSize().y - 80);
+            outMouse.SetPosition(this->getSize().x - 90, 0);
             keybGuide = true;
         }
         else
@@ -266,8 +267,8 @@ void FractalCanvas::SetWxSize(wxSize size)
     }
     if(helpImageMode)
     {
-        outKeyb.SetPosition(this->GetWidth() - 120, this->GetHeight() - 80);
-        outHelp.SetPosition((this->GetWidth()-helpImage.GetWidth())/2, (this->GetHeight()-helpImage.GetHeight())/2);
+        outKeyb.SetPosition(this->getSize().x - 120, this->getSize().y - 80);
+        outHelp.SetPosition((this->getSize().x-helpImage.getSize().x)/2, (this->getSize().y-helpImage.getSize().y)/2);
     }
 }
 void FractalCanvas::SetJuliaMode(bool mode)
@@ -299,12 +300,12 @@ void FractalCanvas::SetJuliaMode(bool mode)
             break;
         };
 
-        juliaHandler.CreateFractal(juliaType, this->GetWidth()/3, this->GetHeight()/3);
+        juliaHandler.CreateFractal(juliaType, this->getSize().x/3, this->getSize().y/3);
         juliaHandler.GetTarget()->SetOptions(target->GetOptions(), true);
         juliaHandler.GetTarget()->SetK(kReal, kImaginary);
-        juliaImage.Create(this->GetWidth()/3, this->GetHeight()/3);
+        juliaImage.create(this->getSize().x/3, this->getSize().y/3);
         outJulia.SetImage(juliaImage);
-        outJulia.SetPosition(this->GetWidth()-this->GetWidth()/3, this->GetHeight()-this->GetHeight()/3);
+        outJulia.SetPosition(this->getSize().x-this->getSize().x/3, this->getSize().y-this->getSize().y/3);
         pointerChange = true;
 
 #endif
@@ -412,10 +413,10 @@ void FractalCanvas::SetKeybGuide(bool mode)
     if(keybGuideMode)
     {
         // Adjust position of the keyboard guide.
-        if(this->GetHeight() > 300 || this->GetWidth() > 300)
+        if(this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyb.SetPosition(this->GetWidth() - keybImage.GetWidth(), this->GetHeight() - keybImage.GetHeight());
-            outMouse.SetPosition(this->GetWidth() - mouseImage.GetWidth(), 0);
+            outKeyb.SetPosition(this->getSize().x - keybImage.getSize().x, this->getSize().y - keybImage.getSize().y);
+            outMouse.SetPosition(this->getSize().x - mouseImage.getSize().x, 0);
             keybGuide = true;
         }
         else
@@ -426,8 +427,8 @@ void FractalCanvas::SetKeybGuide(bool mode)
 }
 void FractalCanvas::ShowHelpImage()
 {
-    outKeyb.SetPosition(this->GetWidth() - keybImage.GetWidth(), this->GetHeight() - keybImage.GetHeight());
-    outHelp.SetPosition((this->GetWidth() - helpImage.GetWidth())/2, (this->GetHeight() - helpImage.GetHeight())/2);
+    outKeyb.SetPosition(this->getSize().x - keybImage.getSize().x, this->getSize().y - keybImage.getSize().y);
+    outHelp.SetPosition((this->getSize().x - helpImage.getSize().x)/2, (this->getSize().y - helpImage.getSize().y)/2);
     helpImageMode = true;
 }
 void FractalCanvas::Reset()
@@ -509,10 +510,10 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
     // Adjust position of the keyboard guide.
     if(keybGuideMode)
     {
-        if(this->GetHeight() > 300 || this->GetWidth() > 300)
+        if(this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyb.SetPosition(this->GetWidth() - 120, this->GetHeight() - 80);
-            outMouse.SetPosition(this->GetWidth() - 90, 0);
+            outKeyb.SetPosition(this->getSize().x - 120, this->getSize().y - 80);
+            outMouse.SetPosition(this->getSize().x - 90, 0);
             keybGuide = true;
         }
         else
@@ -520,14 +521,14 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
     }
     if(helpImageMode)
     {
-        outKeyb.SetPosition(this->GetWidth() - 120, this->GetHeight() - 80);
-        outHelp.SetPosition((this->GetWidth() - helpImage.GetWidth())/2, (this->GetHeight() - helpImage.GetHeight())/2);
+        outKeyb.SetPosition(this->getSize().x - 120, this->getSize().y - 80);
+        outHelp.SetPosition((this->getSize().x - helpImage.getSize().x)/2, (this->getSize().y - helpImage.getSize().y)/2);
     }
 
 #ifdef __linux__
     if(juliaMode)
     {
-        outJulia.SetPosition(wSize.GetWidth()-juliaImage.GetWidth(), wSize.GetHeight()-juliaImage.GetHeight());
+        outJulia.SetPosition(wSize.getSize().x-juliaImage.getSize().x, wSize.getSize().y-juliaImage.getSize().y);
         pointerChange = true;
     }
 #endif

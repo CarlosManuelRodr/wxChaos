@@ -233,7 +233,7 @@ Fractal::Fractal(int width, int height)
     white = sf::Color(255, 255, 255);
     fSetColor = sf::Color(0, 0, 0);
     transparent = sf::Color(255, 255, 255, 0);
-    image.Create(screenWidth, screenHeight, white);
+    image.create(screenWidth, screenHeight, white);
 
     // Allocates memory for the maps.
     setMap = new bool*[screenWidth];
@@ -357,8 +357,8 @@ Fractal::Fractal(sf::RenderWindow* Window)
     threadNumber = Get_Cores();
 
     // Copy window properties.
-    screenHeight = Window->GetHeight();
-    backScreenWidth = screenWidth = Window->GetWidth();
+    screenHeight = Window->getSize().y;
+    backScreenWidth = screenWidth = Window->getSize().x;
 
     // Set position and velocities.
     xVel = 0;
@@ -372,13 +372,13 @@ Fractal::Fractal(sf::RenderWindow* Window)
     white = sf::Color(255, 255, 255);
     fSetColor = sf::Color(0, 0, 0);
     transparent = sf::Color(255, 255, 255, 0);
-    image.Create(screenWidth, screenHeight, white);
+    image.create(screenWidth, screenHeight, white);
     tempImage = image;
-    geomImage.Create(screenWidth, screenHeight, transparent);
+    geomImage.create(screenWidth, screenHeight, transparent);
     output.SetImage(image);
     tempSprite.SetImage(tempImage);
     outGeom.SetImage(geomImage);
-    font.LoadFromFile(GetAbsPath({ "Resources", "PublicSans-Regular.otf" }));
+    font.loadFromFile(GetAbsPath({ "Resources", "PublicSans-Regular.otf" }));
     text.SetFont(font);
 
     // Set fractal properties.
@@ -596,7 +596,7 @@ void Fractal::Show(sf::RenderWindow *Window)
                             else
                                 Color = CalcColor(colorMap[i][j] + changeGradient);
 
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
                     }
                 }
@@ -606,19 +606,19 @@ void Fractal::Show(sf::RenderWindow *Window)
     }
 
     if(!dontDrawTempImage && colorMode)
-        Window->Draw(tempSprite);
+        Window->draw(tempSprite);
 
-    Window->Draw(output);
+    Window->draw(output);
 
     if(orbitMode && !this->IsRendering())
     {
         if (!orbitDrawn)
         {
             orbitLines.clear();
-            geomImage.Create(screenWidth, screenHeight, transparent);
+            geomImage.create(screenWidth, screenHeight, transparent);
             this->DrawOrbit();
         }
-        Window->Draw(outGeom);
+        Window->draw(outGeom);
     }
     if (geomFigure && !this->IsRendering())
         this->DrawGeom(Window);
@@ -640,7 +640,7 @@ void Fractal::Show(sf::RenderWindow *Window)
             }
 
             // Creates support layer.
-            base.Create(148 + (12*digits), 35, sf::Color(0, 0, 0, 100));
+            base.create(148 + (12*digits), 35, sf::Color(0, 0, 0, 100));
             baseSprite.SetPosition(0, 0);
             baseSprite.SetImage(base);
             baseSprite.Resize(static_cast<float>(148 + (12*digits)), static_cast<float>(35));
@@ -656,8 +656,8 @@ void Fractal::Show(sf::RenderWindow *Window)
             text.SetPosition(0, 0);
             changeFractalIter = false;
         }
-        Window->Draw(baseSprite);
-        Window->Draw(text);
+        Window->draw(baseSprite);
+        Window->draw(text);
     }
 }
 void Fractal::Resize(sf::RenderWindow *Window)
@@ -684,8 +684,8 @@ void Fractal::Resize(sf::RenderWindow *Window)
     auxMap = nullptr;
 
     // Copy window properties.
-    screenHeight = Window->GetHeight();
-    backScreenWidth = screenWidth = Window->GetWidth();
+    screenHeight = Window->getSize().y;
+    backScreenWidth = screenWidth = Window->getSize().x;
     dontDrawTempImage = true;
     tempSprite.SetSubRect(sf::Rect<int>(0,0,screenWidth, screenHeight));
 
@@ -719,7 +719,7 @@ void Fractal::Resize(sf::RenderWindow *Window)
 
     rendered = false;
     rendering = false;
-    geomImage.Create(screenWidth, screenHeight, transparent);
+    geomImage.create(screenWidth, screenHeight, transparent);
     imgVector.clear();
     imgInVector = false;
     orbitDrawn = false;
@@ -771,7 +771,7 @@ void Fractal::SetAreaOfView(sf::Rect<int> pixelCoordinates)
     tempImage = image;
     tempSprite.SetImage(tempImage);
     int newHeight = pixelCoordinates.Bottom - (pixelCoordinates.Right-pixelCoordinates.Left)*screenHeight/screenWidth;
-    int resize1 = screenWidth*screenWidth/(pixelCoordinates.GetWidth());
+    int resize1 = screenWidth*screenWidth/(pixelCoordinates.getSize().x);
     int resize2 = screenHeight*screenHeight/((pixelCoordinates.Bottom - newHeight));
     tempSprite.Resize(resize1, resize2);
     tempSprite.SetCenter(pixelCoordinates.Left, newHeight);
@@ -861,69 +861,6 @@ void Fractal::Move()
 
         // If isn't pressed slow down the image.
         if(!movement[Direction::Left] && !movement[Direction::Right] && !movement[Direction::Up] && !movement[Direction::Down])
-        {
-            if(xVel > 0) xVel -= stdSpeed;
-            if(xVel < 0) xVel += stdSpeed;
-            if(yVel > 0) yVel -= stdSpeed;
-            if(yVel < 0) yVel += stdSpeed;
-        }
-
-        // Updates the coordinates.
-        if(xVel != 0 || yVel != 0)
-        {
-            double FX = (maxX - minX)/screenWidth;
-            double FY = (maxY - minY)/screenHeight;
-
-            minX -= xVel*FX;
-            maxX -= xVel*FX;
-            minY += yVel*FY;
-            maxY += yVel*FY;
-
-            posX += xVel;
-            posY += yVel;
-
-            // A new render is needed.
-            //rendered = false;
-            moving = true;
-            dontDrawTempImage = true;
-        }
-        else if(posX != 0 || posY != 0)
-        {
-            if(paused && !pausing)
-            {
-                rendering = false;
-                rendered = false;
-                paused = false;
-                xMoved = 0;
-                yMoved = 0;
-                moving = false;
-            }
-            // If the image has stopped saves the total amount of movement.
-            else
-            {
-                xMoved = posX;
-                yMoved = posY;
-                posX = 0;
-                posY = 0;
-            }
-        }
-    }
-}
-void Fractal::Move(const sf::Input& input)
-{
-    if(rendered)
-    {
-        // If any movement button is pressed move the image and accelerate the movement.
-        if(input.IsKeyDown(sf::Key::Left) || input.IsKeyDown(sf::Key::A))
-            xVel += stdSpeed;
-        else if(input.IsKeyDown(sf::Key::Right) || input.IsKeyDown(sf::Key::D))
-            xVel -= stdSpeed;
-        else if(input.IsKeyDown(sf::Key::Up) || input.IsKeyDown(sf::Key::W))
-            yVel += stdSpeed;
-        else if(input.IsKeyDown(sf::Key::Down) || input.IsKeyDown(sf::Key::S))
-            yVel -= stdSpeed;
-        // If isn't pressed slow down the image.
-        else
         {
             if(xVel > 0) xVel -= stdSpeed;
             if(xVel < 0) xVel += stdSpeed;
@@ -1092,11 +1029,11 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
 
     // Draw maps on the screen.
     if(zoomingBack || dontDrawTempImage || !colorMode)
-        image.Create(screenWidth, screenHeight, white);
+        image.create(screenWidth, screenHeight, white);
     else
     {
-        image.Create(screenWidth, screenHeight, transparent);
-        Window->Draw(tempSprite);
+        image.create(screenWidth, screenHeight, transparent);
+        Window->draw(tempSprite);
     }
     output.SetPosition(0, 0);
     if(relativeColor)
@@ -1120,7 +1057,7 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
             for(int j=0; j<screenHeight; j++)
             {
                 if(setMap[i][j] == true && colorSet)
-                    image.SetPixel(i, j, fSetColor);
+                    image.setPixel(i, j, fSetColor);
                 else
                 {
                     if(colorMode)
@@ -1129,12 +1066,12 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
                         if(colorMap[i][j] >= 0)
                         {
                             sf::Color Color = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize + changeGradient);
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
                         else if(zoomingBack || dontDrawTempImage)
                         {
                             sf::Color Color = CalcColor(changeGradient);
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
                     }
                 }
@@ -1148,7 +1085,7 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
             for(int j=0; j<screenHeight; j++)
             {
                 if(setMap[i][j] == true && colorSet)
-                    image.SetPixel(i, j, fSetColor);
+                    image.setPixel(i, j, fSetColor);
                 else
                 {
                     if(colorMode)
@@ -1157,12 +1094,12 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
                         if(colorMap[i][j] >= 0)
                         {
                             sf::Color Color = CalcColor(colorMap[i][j] + changeGradient);
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
                         else if(zoomingBack || dontDrawTempImage)
                         {
                             sf::Color Color = CalcColor(changeGradient);
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
                     }
                 }
@@ -1170,10 +1107,10 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
         }
     }
 
-    Window->Draw(output);
+    Window->draw(output);
 
     if(!juliaMode)
-        Window->Display();
+        Window->display();
 }
 void Fractal::Redraw()
 {
@@ -1256,16 +1193,16 @@ void Fractal::HandleEvents(sf::Event *Event)
 {
     if(!this->IsRendering())
     {
-        if(Event->Type == sf::Event::KeyPressed)
+        if(Event->type == sf::Event::KeyPressed)
         {
-            switch(Event->Key.Code)
+            switch(Event->key.code)
             {
-            case sf::Key::L:
+            case sf::Keyboard::L:
                 {
                     this->MoreIter();
                     break;
                 }
-            case sf::Key::K:
+            case sf::Keyboard::K:
                 {
                     this->LessIter();
                     break;
@@ -1580,7 +1517,7 @@ sf::Image Fractal::GetRenderedImage()
     }
     this->PreDrawMaps();
 
-    image.Create(screenWidth, screenHeight, white);
+    image.create(screenWidth, screenHeight, white);
 
     maxColorMapVal = 0;
     if(relativeColor)
@@ -1603,7 +1540,7 @@ sf::Image Fractal::GetRenderedImage()
         for(int j=0; j<screenHeight; j++)
         {
             if(setMap[i][j] == true && colorSet)
-                image.SetPixel(i, j, fSetColor);
+                image.setPixel(i, j, fSetColor);
             else
             {
                 if(colorMode)
@@ -1615,7 +1552,7 @@ sf::Image Fractal::GetRenderedImage()
                     else
                         Color = CalcColor(colorMap[i][j] + changeGradient);
 
-                    image.SetPixel(i, j, Color);
+                    image.setPixel(i, j, Color);
                 }
             }
         }
@@ -1631,12 +1568,12 @@ sf::Image Fractal::GetRenderedImage()
 wxBitmap Fractal::GetRenderedWxBitmap()
 {
     sf::Image renderedImage = this->GetRenderedImage();
-    wxBitmap output(renderedImage.GetWidth(), renderedImage.GetHeight());
+    wxBitmap output(renderedImage.getSize().x, renderedImage.getSize().y);
     wxMemoryDC dc(output);
 
-    for (unsigned i = 0; i < renderedImage.GetWidth(); i++)
+    for (unsigned i = 0; i < renderedImage.getSize().x; i++)
     {
-        for (unsigned j = 0; j < renderedImage.GetHeight(); j++)
+        for (unsigned j = 0; j < renderedImage.getSize().y; j++)
         {
             const sf::Color pixel = renderedImage.GetPixel(i, j);
             dc.SetPen(wxColour(pixel.r, pixel.g, pixel.b));
@@ -1911,7 +1848,7 @@ void Fractal::RedrawMaps()
         for(int j=0; j<screenHeight; j++)
         {
             if(setMap[i][j] == true && colorSet)
-                image.SetPixel(i, j, fSetColor);
+                image.setPixel(i, j, fSetColor);
             else if(colorMode)
             {
                 // Color pixel.
@@ -1920,10 +1857,10 @@ void Fractal::RedrawMaps()
                     Color = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize + changeGradient);
                 else
                     Color = CalcColor(colorMap[i][j] + changeGradient);
-                image.SetPixel(i, j, Color);
+                image.setPixel(i, j, Color);
             }
             else
-                image.SetPixel(i, j, white);
+                image.setPixel(i, j, white);
         }
     }
 }
@@ -2080,7 +2017,7 @@ void Fractal::RebuildPalette()
                     if(setMap[i][j] == false || !colorSet)
                     {
                         sf::Color Color = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize + changeGradient);
-                        image.SetPixel(i, j, Color);
+                        image.setPixel(i, j, Color);
                     }
                 }
             }
@@ -2094,7 +2031,7 @@ void Fractal::RebuildPalette()
                     if(setMap[i][j] == false || !colorSet)
                     {
                         sf::Color Color = CalcColor(colorMap[i][j] + changeGradient);
-                        image.SetPixel(i, j, Color);
+                        image.setPixel(i, j, Color);
                     }
                 }
             }
@@ -2263,7 +2200,7 @@ void Fractal::DrawGeom(sf::RenderWindow *Window)
         float x2 = (lines[i].x2-minX)/xFactor;
         float y2 = (maxY-lines[i].y2)/yFactor;
         sf::Shape line = sf::Shape::Line(x1, y1, x2, y2, 2, lines[i].color);
-        Window->Draw(line);
+        Window->draw(line);
     }
 
     // Draw orbit lines.
@@ -2274,7 +2211,7 @@ void Fractal::DrawGeom(sf::RenderWindow *Window)
         float x2 = (orbitLines[i].x2-minX)/xFactor;
         float y2 = (maxY-orbitLines[i].y2)/yFactor;
         sf::Shape line = sf::Shape::Line(x1, y1, x2, y2, 2, orbitLines[i].color);
-        Window->Draw(line);
+        Window->draw(line);
     }
 
     // Draw circles.
@@ -2287,7 +2224,7 @@ void Fractal::DrawGeom(sf::RenderWindow *Window)
         sf::Shape circle = sf::Shape::Circle(x0, y0, r, circles[i].color, 2, sf::Color(0,0,0));
         circle.EnableFill(false);
         circle.EnableOutline(true);
-        Window->Draw(circle);
+        Window->draw(circle);
     }
 }
 
