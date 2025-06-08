@@ -65,6 +65,9 @@ Temporary Items
 *.tlog
 *.idb
 
+# Visual studio files
+*.pch
+
 
 # Other
 *.dat
@@ -89,5 +92,14 @@ Temporary Items
 **/build/msw/vc_mswu
 **/build/msw/vc_mswud
 **/libs/SFML_1.6/lib
+**/libs/SFML_1.6/build/vc2019/
 **/libs/wxMSW-3.1.4/lib/vc_lib/*.lib
-/bin/
+**/libs/wxMSW-3.1.4/build/msw/vc_mswu/
+**/libs/wxMSW-3.1.4/build/msw/vc_mswud/
+**/libs/wxMSW-3.1.4/build/msw/vc_mswuddll/
+**/libs/wxMSW-3.1.4/build/msw/vc_mswudll/
+**/libs/wxMSW-3.1.4/build/msw/vc_x64_mswu/
+**/libs/wxMSW-3.1.4/build/msw/vc_x64_mswud/
+**/libs/wxMSW-3.1.4/lib/vc_dll/
+**/libs/wxMSW-3.1.4/lib/vc_lib/
+**/libs/wxMSW-3.1.4/lib/vc_x64_lib/
