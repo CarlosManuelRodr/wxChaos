@@ -21,22 +21,22 @@ JuliaMode::~JuliaMode()
 }
 void JuliaMode::Handle_Event()
 {
-    while(window->GetEvent(event))
+    while(window->pollEvent(event))
     {
         // Window closed.
-        if(event.Type == sf::Event::Closed)
+        if(event.type == sf::Event::Closed)
         {
             juliaFractal.GetFractalPtr()->StopRender();
             juliaModeState = false;
         }
-        if(event.Type == sf::Event::Resized)
+        if(event.type == sf::Event::Resized)
         {
             // Ignore subsequent resize events.
             if(!resizing)
             {
-                sf::View View(sf::FloatRect(0, 0, window->GetWidth(), window->GetHeight()));
-                window->SetView(View);
-                window->ConvertCoords(window->GetInput().GetMouseX(), window->GetInput().GetMouseY());
+                sf::View view(sf::FloatRect(0, 0, window->getSize().x, window->getSize().y));
+                window->setView(view);
+                window->mapPixelToCoords(sf::Mouse::getPosition(*window));
                 juliaFractal.GetFractalPtr()->Resize(window);
                 play->Resize(window);
                 resizing = true;
@@ -54,9 +54,9 @@ void JuliaMode::Handle_Event()
         }
 
         // Keyboad events.
-        if(event.Type == sf::Event::KeyPressed)
+        if(event.type == sf::Event::KeyPressed)
         {
-            if(event.Key.Code == sf::Key::F4)
+            if(event.key.code == sf::Key::F4)
             {
                 wxFileDialog * openFileDialog = new wxFileDialog(NULL, wxT(menuSelectFileTxt), wxT(""), wxT("fractal.png"), 
                                                     wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);    // Txt: "Select a file name"
@@ -72,7 +72,7 @@ void JuliaMode::Handle_Event()
                 }
                 openFileDialog->Destroy();
             }
-            if(event.Key.Code == sf::Key::F5)  // Redraw fractal.
+            if(event.key.code == sf::Key::F5)  // Redraw fractal.
             {
                 juliaFractal.GetFractalPtr()->Redraw();
             }
@@ -87,22 +87,23 @@ void JuliaMode::Handle_Event()
     }
 
     // Updates window.
-    window->Clear();
-    juliaFractal.GetFractalPtr()->Move(window->GetInput());
+    window->clear();
+    juliaFractal.GetFractalPtr()->Move();
     juliaFractal.GetFractalPtr()->Show(window);
     selection->Show(window);
     play->Show(window);
-    window->Display();
+    window->display();
 }
 void JuliaMode::Run()
 {
     // The window must be created in the same thread that will execute it.
     window = new sf::RenderWindow(sf::VideoMode(640, 480, 32), menuJuliaModeTxt);    // Txt: "Julia mode"
-    window->SetPosition(parent->GetPosition().x+parent->GetSize().GetWidth()+5, parent->GetPosition().y);
-    window->SetFramerateLimit(30);
+    window->setPosition(parent->GetPosition().x + parent->GetSize().GetWidth() + 5,
+                        parent->GetPosition().y);
+    window->setFramerateLimit(30);
     sf::Image icon;
-    icon.LoadFromFile("Resources/iconPNG.png");
-    window->SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
+    icon.loadFromFile("Resources/iconPNG.png");
+    window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     juliaFractal.CreateFractal(type, window);
     juliaFractal.GetFractalPtr()->SetOptions(myJuliaOpt, true);
@@ -115,7 +116,7 @@ void JuliaMode::Run()
 #ifdef _WIN32
     SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
 #endif
-    while(window->IsOpened())
+    while(window->isOpen())
     {
         Handle_Event();
     }

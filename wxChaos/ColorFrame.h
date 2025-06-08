@@ -15,6 +15,7 @@
 #include <wx/spinctrl.h>
 #include <wx/notebook.h>
 #include <SFML/Graphics/Color.hpp>
+#include "SFMLCompat.h"
 #include "FractalClasses.h"
 #include "Styles.h"
 #include "gradientdlg.h"

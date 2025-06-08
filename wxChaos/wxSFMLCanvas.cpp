@@ -41,5 +41,5 @@ void wxSFMLCanvas::OnPaint(wxPaintEvent&)
 {
     wxPaintDC Dc(this);
     OnUpdate();
-    Display();    // Draws SFML window.
+    display();    // Draws SFML window.
 }

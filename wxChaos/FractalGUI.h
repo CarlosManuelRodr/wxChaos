@@ -14,6 +14,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <wx/wx.h>
+#include "SFMLCompat.h"
 using namespace std;
 
 /**
@@ -26,7 +27,7 @@ protected:
     sf::Image texture;            ///< Button texture.
     sf::Sprite output;            ///< Button sprite.
     sf::Font font;                ///< Font to draw some text into the button.
-    sf::String buttonText;        ///< Text into the button.
+    sf::Text buttonText;        ///< Text into the button.
     sf::Rect<double> area;        ///< Position of the button.
     bool pressed;                 ///< Status of the button.
     double screenWidth;

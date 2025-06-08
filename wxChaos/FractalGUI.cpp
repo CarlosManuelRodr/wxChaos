@@ -17,7 +17,7 @@ SelectRect::SelectRect(sf::RenderWindow* Window)
 
     color = sf::Color(0, 0, 255, 100);
     texture.Create(500, 500, color);
-    output.SetImage(texture);
+    output.setTexture(texture);
 }
 void SelectRect::Show(sf::RenderWindow* Window)
 {
@@ -43,7 +43,7 @@ void SelectRect::Show(sf::RenderWindow* Window)
                 }
 
                 output.SetPosition(static_cast<float>(pos.Left), static_cast<float>(pos.Top));
-                Window->Draw(output);
+                Window->draw(output);
             }
         }
     }
@@ -51,28 +51,28 @@ void SelectRect::Show(sf::RenderWindow* Window)
 bool SelectRect::HandleEvents(sf::Event Event)
 {
     // Clicking event.
-    if(Event.Type == sf::Event::MouseButtonPressed)
+    if(event.type == sf::Event::MouseButtonPressed)
     {
-        if(Event.MouseButton.Button == sf::Mouse::Left)
+        if(event.mouseButton.button == sf::Mouse::Left)
         {
-            pos.Top = Event.MouseButton.Y;
-            pos.Left = Event.MouseButton.X;
+            pos.Top = event.mouseButton.y;
+            pos.Left = event.mouseButton.x;
 
-            pos.Right = Event.MouseButton.X;
-            pos.Bottom = Event.MouseButton.Y;
+            pos.Right = event.mouseButton.x;
+            pos.Bottom = event.mouseButton.y;
 
-            xSelect = Event.MouseButton.X;
-            ySelect = Event.MouseButton.Y;
+            xSelect = event.mouseButton.x;
+            ySelect = event.mouseButton.y;
 
             inSelection = true;
         }
     }
 
     // Mouse movement event.
-    if(Event.Type == sf::Event::MouseMoved && inSelection)
+    if(event.type == sf::Event::MouseMoved && inSelection)
     {
-        x = Event.MouseMove.X;
-        y = Event.MouseMove.Y;
+        x = event.mouseMove.x;
+        y = event.mouseMove.y;
 
         if(x >= xSelect && y >= ySelect)
         {
@@ -110,9 +110,9 @@ bool SelectRect::HandleEvents(sf::Event Event)
     }
 
     // Rectangle selected.
-    if(Event.Type == sf::Event::MouseButtonReleased)
+    if(event.type == sf::Event::MouseButtonReleased)
     {
-        if(Event.MouseButton.Button == sf::Mouse::Left)
+        if(event.mouseButton.button == sf::Mouse::Left)
         {
             select = pos;
             inSelection = false;
@@ -208,7 +208,7 @@ ScreenPointer::ScreenPointer(sf::RenderWindow* Window)
 
     color = sf::Color(0, 0, 0);
     texture.Create(screenWidth, screenHeight, sf::Color(255, 255, 255, 255));
-    output.SetImage(texture);
+    output.setTexture(texture);
 
     this->Render();
     rendered = true;
@@ -217,7 +217,7 @@ ScreenPointer::ScreenPointer(sf::RenderWindow* Window)
 void ScreenPointer::Show(sf::RenderWindow* Window)
 {
     if(!rendered) this->Render();
-    Window->Draw(output);
+    Window->draw(output);
 }
 void ScreenPointer::Render()
 {
@@ -234,29 +234,29 @@ void ScreenPointer::Render()
 }
 bool ScreenPointer::HandleEvents(sf::Event Event)
 {
-    if(Event.Type == sf::Event::MouseButtonPressed)
+    if(event.type == sf::Event::MouseButtonPressed)
     {
-        if(Event.MouseButton.Button == sf::Mouse::Left)
+        if(event.mouseButton.button == sf::Mouse::Left)
         {
-            y = Event.MouseButton.Y;
-            x = Event.MouseButton.X;
+            y = event.mouseButton.y;
+            x = event.mouseButton.x;
             rendered = false;
             inSelection = true;
         }
     }
 
     // Movement while on click.
-    if(Event.Type == sf::Event::MouseMoved && inSelection)
+    if(event.type == sf::Event::MouseMoved && inSelection)
     {
-        x = Event.MouseMove.X;
-        y = Event.MouseMove.Y;
+        x = event.mouseMove.x;
+        y = event.mouseMove.y;
         rendered = false;
         return true;
     }
 
-    if(Event.Type == sf::Event::MouseButtonReleased)
+    if(event.type == sf::Event::MouseButtonReleased)
     {
-        if(Event.MouseButton.Button == sf::Mouse::Left)
+        if(event.mouseButton.button == sf::Mouse::Left)
         {
             inSelection = false;
             return true;
@@ -334,9 +334,9 @@ Button::Button(string Path, int posX, int posY, sf::RenderWindow* Window)
     thereIsText = false;
 
     texture.LoadFromFile(Path.c_str());
-    output.SetImage(texture);
+    output.setTexture(texture);
     output.SetPosition(static_cast<float>(posX), static_cast<float>(posY));
-    output.SetColor(sf::Color(255, 255, 255, 170));
+    output.setColor(sf::Color(255, 255, 255, 170));
     area.Top = posY;
     area.Left = posX;
     area.Right = texture.GetWidth() + (unsigned)posX;
@@ -355,13 +355,13 @@ Button::Button(int posX, int posY, sf::RenderWindow* Window, string text)
 {
     texture.LoadFromFile("Resources/Button.tga");
     font.LoadFromFile("DiavloFont.otf");
-    buttonText.SetFont(font);
-    buttonText.SetSize(15);
-    buttonText.SetPosition(static_cast<float>(posX+10), static_cast<float>(posY+1));
-    buttonText.SetText(text);
-    output.SetImage(texture);
+    buttonText.setFont(font);
+    buttonText.setCharacterSize(15);
+    buttonText.setPosition(static_cast<float>(posX+10), static_cast<float>(posY+1));
+    buttonText.setString(text);
+    output.setTexture(texture);
     output.SetPosition(static_cast<float>(posX), static_cast<float>(posY));
-    output.SetColor(sf::Color(255, 255, 255, 170));
+    output.setColor(sf::Color(255, 255, 255, 170));
     area.Top = posY;
     area.Left = posX;
     pressed = false;
@@ -383,25 +383,25 @@ Button::Button(int posX, int posY, sf::RenderWindow* Window, string text)
 }
 void Button::Show(sf::RenderWindow *Window)
 {
-    Window->Draw(output);
-    if(thereIsText) Window->Draw(buttonText);
+    Window->draw(output);
+    if(thereIsText) Window->draw(buttonText);
 }
 bool Button::HandleEvents(sf::Event Event)
 {
-    if(Event.Type == sf::Event::MouseButtonPressed)
+    if(event.type == sf::Event::MouseButtonPressed)
     {
-        if(Event.MouseButton.Button == sf::Mouse::Left)
+        if(event.mouseButton.button == sf::Mouse::Left)
         {
-            if(Event.MouseButton.X >= area.Left && Event.MouseButton.X <= area.Right)
+            if(event.mouseButton.x >= area.Left && event.mouseButton.x <= area.Right)
             {
-                if(Event.MouseButton.Y >= area.Top && Event.MouseButton.Y <= area.Bottom)
+                if(event.mouseButton.y >= area.Top && event.mouseButton.y <= area.Bottom)
                 {
                     pressed = !pressed;
 
                     if(pressed)
-                        output.SetColor(sf::Color(0, 255, 0, 100));
+                        output.setColor(sf::Color(0, 255, 0, 100));
                     else
-                        output.SetColor(sf::Color(255, 255, 255, 100));
+                        output.setColor(sf::Color(255, 255, 255, 100));
 
                     return true;
                 }
@@ -419,7 +419,7 @@ void Button::Resize(sf::RenderWindow* Window)
         area.Left = FX*Window->GetWidth();
         area.Right = area.Left + texture.GetWidth() + FX*texture.GetWidth();
         output.SetPosition(static_cast<float>(area.Left), static_cast<float>(area.Top));
-        if(thereIsText) buttonText.SetPosition(static_cast<float>(area.Left+10), static_cast<float>(area.Top+1));
+        if(thereIsText) buttonText.setPosition(static_cast<float>(area.Left+10), static_cast<float>(area.Top+1));
     }
     else
     {
@@ -429,7 +429,7 @@ void Button::Resize(sf::RenderWindow* Window)
             area.Top = Window->GetHeight() - texture.GetHeight();
             area.Bottom = Window->GetHeight();
             output.SetPosition(0.0, static_cast<float>(area.Top));
-            if(thereIsText) buttonText.SetPosition(10.0, static_cast<float>(area.Top+1));
+            if(thereIsText) buttonText.setPosition(10.0f, static_cast<float>(area.Top+1));
         }
         if(anchorType == 3)
         {
@@ -438,7 +438,7 @@ void Button::Resize(sf::RenderWindow* Window)
             area.Top = Window->GetHeight() - (unsigned)buttonHeight;
             area.Bottom = Window->GetHeight();
             output.SetPosition(static_cast<float>(area.Left), static_cast<float>(area.Top));
-            if(thereIsText) buttonText.SetPosition(static_cast<float>(area.Left+10), static_cast<float>(area.Top+1));
+            if(thereIsText) buttonText.setPosition(static_cast<float>(area.Left+10), static_cast<float>(area.Top+1));
         }
     }
 }
@@ -455,9 +455,9 @@ void Button::ChangeState()
     pressed = !pressed;
 
     if(pressed)
-        output.SetColor(sf::Color(0, 255, 0, 100));
+        output.setColor(sf::Color(0, 255, 0, 100));
     else
-        output.SetColor(sf::Color(255, 255, 255, 100));
+        output.setColor(sf::Color(255, 255, 255, 100));
 }
 
 // ButtonChange
@@ -467,20 +467,20 @@ ButtonChange::ButtonChange(string Path1, string Path2, int posX, int posY, sf::R
 }
 bool ButtonChange::HandleEvents(sf::Event Event)
 {
-    if(Event.Type == sf::Event::MouseButtonPressed)
+    if(event.type == sf::Event::MouseButtonPressed)
     {
-        if(Event.MouseButton.Button == sf::Mouse::Left)
+        if(event.mouseButton.button == sf::Mouse::Left)
         {
-            if(Event.MouseButton.X >= area.Left && Event.MouseButton.X <= area.Right)
+            if(event.mouseButton.x >= area.Left && event.mouseButton.x <= area.Right)
             {
-                if(Event.MouseButton.Y >= area.Top && Event.MouseButton.Y <= area.Bottom)
+                if(event.mouseButton.y >= area.Top && event.mouseButton.y <= area.Bottom)
                 {
                     pressed = !pressed;
 
                     if(pressed)
-                        output.SetImage(texture2);
+                        output.setTexture(texture2);
                     else
-                        output.SetImage(texture);
+                        output.setTexture(texture);
 
                     return true;
                 }
@@ -500,9 +500,9 @@ bool ButtonChange::ClickEvent(wxMouseEvent& event)
                 pressed = !pressed;
 
                 if(pressed)
-                    output.SetImage(texture2);
+                    output.setTexture(texture2);
                 else
-                    output.SetImage(texture);
+                    output.setTexture(texture);
 
                 return true;
             }
@@ -513,7 +513,7 @@ bool ButtonChange::ClickEvent(wxMouseEvent& event)
 void ButtonChange::Reset()
 {
     pressed = false;
-    output.SetImage(texture);
+    output.setTexture(texture);
 }
 
 // PanelOptions

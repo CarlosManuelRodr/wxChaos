@@ -54,9 +54,9 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     keybImage.LoadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
     mouseImage.LoadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
     helpImage.LoadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
-    outKeyb.SetImage(keybImage);
-    outMouse.SetImage(mouseImage);
-    outHelp.SetImage(helpImage);
+    outKeyb.setTexture(keybImage);
+    outMouse.setTexture(mouseImage);
+    outHelp.setTexture(helpImage);
     outKeyb.SetColor(sf::Color(255, 255, 255, 220));
     outMouse.SetColor(sf::Color(255, 255, 255, 220));
     outHelp.SetColor(sf::Color(255, 255, 255, 220));
@@ -86,7 +86,7 @@ FractalCanvas::~FractalCanvas()
 void FractalCanvas::OnUpdate()
 {
     // Handles SFML events.
-    while(this->GetEvent(event))
+    while(this->pollEvent(event))
     {
         // Size change event.
         if(event.Type == sf::Event::Resized)
@@ -127,19 +127,19 @@ void FractalCanvas::OnUpdate()
         {
             if(!target->IsRendering())
             {
-                if(event.Key.Code == sf::Key::F1)  // Open or close slider.
+                if(event.key.code == sf::Key::F1)  // Open or close slider.
                 {
                     bool modo = !statusData.slider->IsChecked();
                     this->SetSliderMode(modo);
                     statusData.slider->Check(modo);
                 }
-                if(event.Key.Code == sf::Key::F2)  // Shows or hides fractal orbit.
+                if(event.key.code == sf::Key::F2)  // Shows or hides fractal orbit.
                 {
                     bool modo = !statusData.showOrbit->IsChecked();
                     this->SetOrbitMode(modo);
                     statusData.showOrbit->Check(modo);
                 }
-                if(event.Key.Code == sf::Key::F4)  // Saves image.
+                if(event.key.code == sf::Key::F4)  // Saves image.
                 {
                     wxFileDialog * openFileDialog = new wxFileDialog(this, wxT(menuSelectFileTxt), wxT(""),
                                                     wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
@@ -156,11 +156,11 @@ void FractalCanvas::OnUpdate()
                     openFileDialog->Destroy();
                 }
             }
-            if(event.Key.Code == sf::Key::F5)  // Redraw canvas.
+            if(event.key.code == sf::Key::F5)  // Redraw canvas.
             {
                 target->Redraw();
             }
-            if(event.Key.Code == sf::Key::P)  // Pause shortcut.
+            if(event.key.code == sf::Key::P)  // Pause shortcut.
             {
                 if(btn->state)
                 {
@@ -219,14 +219,14 @@ void FractalCanvas::OnUpdate()
 
         if(keybGuide && keybGuideMode)
         {
-            this->Draw(outKeyb);
-            this->Draw(outMouse);
+            this->draw(outKeyb);
+            this->draw(outMouse);
         }
         if(helpImageMode)
         {
-            this->Draw(outHelp);
+            this->draw(outHelp);
             if(!keybGuide)
-                this->Draw(outKeyb);
+                this->draw(outKeyb);
         }
 
         if(juliaMode || orbitMode || sliderMode) screenPointer->Show(this);
@@ -239,7 +239,7 @@ void FractalCanvas::OnUpdate()
                 juliaImage = juliaHandler.GetTarget()->GetRenderedImage();
                 pointerChange = false;
             }
-            this->Draw(outJulia);
+            this->draw(outJulia);
         }
 #endif
     }
@@ -303,7 +303,7 @@ void FractalCanvas::SetJuliaMode(bool mode)
         juliaHandler.GetTarget()->SetOptions(target->GetOptions(), true);
         juliaHandler.GetTarget()->SetK(kReal, kImaginary);
         juliaImage.Create(this->GetWidth()/3, this->GetHeight()/3);
-        outJulia.SetImage(juliaImage);
+        outJulia.setTexture(juliaImage);
         outJulia.SetPosition(this->GetWidth()-this->GetWidth()/3, this->GetHeight()-this->GetHeight()/3);
         pointerChange = true;
 

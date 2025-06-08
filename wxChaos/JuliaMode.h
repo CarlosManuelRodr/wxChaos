@@ -9,6 +9,7 @@
 
 #pragma once
 #include <SFML/System.hpp>
+#include "SFMLCompat.h"
 #include "FractalCanvas.h"
 #include "FractalTypes.h"
 

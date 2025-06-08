@@ -13,6 +13,7 @@
 
 #include <wx/wx.h>
 #include <SFML/Graphics.hpp>
+#include "SFMLCompat.h"
 
 /**
 * @class wxSFMLCanvas

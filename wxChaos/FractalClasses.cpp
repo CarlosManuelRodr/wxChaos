@@ -606,9 +606,9 @@ void Fractal::Show(sf::RenderWindow *Window)
     }
 
     if(!dontDrawTempImage && colorMode)
-        Window->Draw(tempSprite);
+        Window->draw(tempSprite);
 
-    Window->Draw(output);
+    Window->draw(output);
 
     if(orbitMode && !this->IsRendering())
     {
@@ -618,7 +618,7 @@ void Fractal::Show(sf::RenderWindow *Window)
             geomImage.Create(screenWidth, screenHeight, transparent);
             this->DrawOrbit();
         }
-        Window->Draw(outGeom);
+        Window->draw(outGeom);
     }
     if (geomFigure && !this->IsRendering())
         this->DrawGeom(Window);
@@ -656,8 +656,8 @@ void Fractal::Show(sf::RenderWindow *Window)
             text.SetPosition(0, 0);
             changeFractalIter = false;
         }
-        Window->Draw(baseSprite);
-        Window->Draw(text);
+        Window->draw(baseSprite);
+        Window->draw(text);
     }
 }
 void Fractal::Resize(sf::RenderWindow *Window)
@@ -1096,7 +1096,7 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
     else
     {
         image.Create(screenWidth, screenHeight, transparent);
-        Window->Draw(tempSprite);
+        Window->draw(tempSprite);
     }
     output.SetPosition(0, 0);
     if(relativeColor)
@@ -1170,10 +1170,10 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
         }
     }
 
-    Window->Draw(output);
+    Window->draw(output);
 
     if(!juliaMode)
-        Window->Display();
+        Window->display();
 }
 void Fractal::Redraw()
 {
@@ -1256,9 +1256,9 @@ void Fractal::HandleEvents(sf::Event *Event)
 {
     if(!this->IsRendering())
     {
-        if(Event->Type == sf::Event::KeyPressed)
+        if(event->type == sf::Event::KeyPressed)
         {
-            switch(Event->Key.Code)
+            switch(event->key.code)
             {
             case sf::Key::L:
                 {
@@ -1276,7 +1276,7 @@ void Fractal::HandleEvents(sf::Event *Event)
         }
     }
 
-    if(!onWxCtrl && Event->Type == sf::Event::MouseButtonPressed)
+    if(!onWxCtrl && event->type == sf::Event::MouseButtonPressed)
     {
         if(Event->MouseButton.Button == sf::Mouse::Right)
         {
@@ -2263,7 +2263,7 @@ void Fractal::DrawGeom(sf::RenderWindow *Window)
         float x2 = (lines[i].x2-minX)/xFactor;
         float y2 = (maxY-lines[i].y2)/yFactor;
         sf::Shape line = sf::Shape::Line(x1, y1, x2, y2, 2, lines[i].color);
-        Window->Draw(line);
+        Window->draw(line);
     }
 
     // Draw orbit lines.
@@ -2274,7 +2274,7 @@ void Fractal::DrawGeom(sf::RenderWindow *Window)
         float x2 = (orbitLines[i].x2-minX)/xFactor;
         float y2 = (maxY-orbitLines[i].y2)/yFactor;
         sf::Shape line = sf::Shape::Line(x1, y1, x2, y2, 2, orbitLines[i].color);
-        Window->Draw(line);
+        Window->draw(line);
     }
 
     // Draw circles.
@@ -2287,7 +2287,7 @@ void Fractal::DrawGeom(sf::RenderWindow *Window)
         sf::Shape circle = sf::Shape::Circle(x0, y0, r, circles[i].color, 2, sf::Color(0,0,0));
         circle.EnableFill(false);
         circle.EnableOutline(true);
-        Window->Draw(circle);
+        Window->draw(circle);
     }
 }
 

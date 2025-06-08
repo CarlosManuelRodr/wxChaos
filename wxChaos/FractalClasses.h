@@ -597,7 +597,7 @@ protected:
     sf::Sprite output;              ///< Sprite to draw the output image.
     vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
     sf::Font font;
-    sf::String text;
+    sf::Text text;
     wxString tempText;
     sf::Image tempImage;            ///< Temporary image. Shows low res image while renering.
     sf::Sprite tempSprite;          ///< tempImage sprite.
