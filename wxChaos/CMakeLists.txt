@@ -5,11 +5,16 @@ file(GLOB_RECURSE WXCHAOS_SRC CONFIGURE_DEPENDS
 add_executable(wxChaosApp ${WXCHAOS_SRC})
 
 # Include directories
+target_include_directories(wxChaosApp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Detect the wxWidgets configuration directory that contains wx/setup.h
+file(GLOB WX_SETUP_DIR RELATIVE
+    "${wxwidgets_BINARY_DIR}/lib/wx/include" "${wxwidgets_BINARY_DIR}/lib/wx/include/*")
+
 target_include_directories(wxChaosApp PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${wxwidgets_SOURCE_DIR}/include
-    ${wxwidgets_BINARY_DIR}/lib/wx/include
-    ${SFML_SOURCE_DIR}/include
+    "${wxwidgets_SOURCE_DIR}/include"
+    "${wxwidgets_BINARY_DIR}/lib/wx/include/${WX_SETUP_DIR}"
+    "${SFML_SOURCE_DIR}/include"
 )
 
 # Link libraries
