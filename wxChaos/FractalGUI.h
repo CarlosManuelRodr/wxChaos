@@ -1,5 +1,5 @@
-/** 
-* @file FractalGUI.h 
+/**
+* @file FractalGUI.h
 * @brief This header file contains the GUI elements that are found in the FractalCanvas.
 *
 * @author Carlos Manuel Rodriguez y Martinez
@@ -23,11 +23,12 @@ using namespace std;
 class Button
 {
 protected:
-    sf::Image texture;            ///< Button texture.
+    sf::Image textureImage;       ///< Button image data.
+    sf::Texture texture;          ///< Button texture.
     sf::Sprite output;            ///< Button sprite.
     sf::Font font;                ///< Font to draw some text into the button.
-    sf::String buttonText;        ///< Text into the button.
-    sf::Rect<double> area;        ///< Position of the button.
+    sf::Text buttonText;          ///< Text into the button.
+    sf::FloatRect area;           ///< Position of the button.
     bool pressed;                 ///< Status of the button.
     double screenWidth;
     double screenHeight;
@@ -80,7 +81,11 @@ public:
 
     ///@brief Handle a click event.
     ///@param Event A SFML event.
-    virtual bool HandleEvents( sf::Event Event );
+    virtual bool HandleEvents(sf::Event Event);
+
+    // WX events.
+    virtual bool ClickEvent(wxMouseEvent& event);
+
 };
 
 
@@ -90,7 +95,8 @@ public:
 */
 class ButtonChange : public Button
 {
-    sf::Image texture2;        ///< Second button texture.
+    sf::Image textureImage2;
+    sf::Texture texture2;        ///< Second button texture.
 
 public:
     ///@brief Constructor
@@ -118,10 +124,9 @@ public:
 */
 class SelectRect
 {
-    sf::Rect<int> pos;                    ///< Current selection rect.
-    sf::Rect<int> select;                 ///< Final selection rect.
-    sf::Image texture;
-    sf::Sprite output;
+    sf::IntRect pos;                    ///< Current selection rect.
+    sf::IntRect select;                 ///< Final selection rect.
+    sf::RectangleShape output;
     int x, y;
     int xSelect, ySelect;
 
@@ -148,7 +153,7 @@ public:
 
     ///@brief Gets selection rect.
     ///@return A rectangle with the selected area.
-    sf::Rect<int> GetSeleccion();
+    sf::IntRect GetSeleccion();
 };
 
 /**

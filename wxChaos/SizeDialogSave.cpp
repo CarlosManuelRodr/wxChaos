@@ -3,14 +3,14 @@
 
 // SaveProgressDiag
 SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool _saveProgressAvailable, wxWindowID id,
-                                   const wxString& title, const wxPoint& pos, const wxSize& size, long style) 
+    const wxString& title, const wxPoint& pos, const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
     myFractal = targetFractal;
     saveProgressAvailable = _saveProgressAvailable;
     finished = false;
-    clock.Reset();
+    clock.restart();
     this->SetSizeHints(wxSize(366, 127), wxSize(366, 127));
 
     wxBoxSizer* mainSizer;
@@ -20,21 +20,21 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     progressSizer = new wxBoxSizer(wxVERTICAL);
 
     myType = myFractal->GetType();
-    if(myType == FractalType::ScriptFractal)
+    if (myType == FractalType::ScriptFractal)
     {
         progressLabel = new wxStaticText(this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
         progressLabel->Wrap(-1);
-        progressSizer->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+        progressSizer->Add(progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
         progress = nullptr;
     }
     else
     {
         progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
-        progressSizer->Add(progress, 0, wxALL|wxEXPAND, 5);
+        progressSizer->Add(progress, 0, wxALL | wxEXPAND, 5);
 
         progressLabel = new wxStaticText(this, wxID_ANY, wxString(wxT(renderingDotsTxt)) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Rendering... "
         progressLabel->Wrap(-1);
-        progressSizer->Add(progressLabel, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+        progressSizer->Add(progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
     }
 
     staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
@@ -68,16 +68,16 @@ void SaveProgressDiag::OnCancel(wxCommandEvent& event)
 }
 void SaveProgressDiag::CalcProgress(wxUpdateUIEvent& event)
 {
-    if(clock.GetElapsedTime() >= 0.05)
+    if (clock.getElapsedTime().asSeconds() >= 0.05f)
     {
         // Updates progress gauge.
-        if(myFractal->GetType() != FractalType::ScriptFractal)
+        if (myFractal->GetType() != FractalType::ScriptFractal)
         {
             int progressValue = myFractal->GetWatchdog()->GetThreadProgress();
             progressLabel->SetLabel(wxString(wxT(renderingDotsTxt)) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
 
             progress->SetValue(progressValue);
-            if(progressValue >= 100 && !myFractal->IsRendering())
+            if (progressValue >= 100 && !myFractal->IsRendering())
             {
                 finished = true;
                 this->Close(true);
@@ -85,13 +85,13 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent& event)
         }
         else
         {
-            if(!myFractal->IsRendering())
+            if (!myFractal->IsRendering())
             {
                 finished = true;
                 this->Close(true);
             }
         }
-        clock.Reset();
+        clock.restart();
     }
 }
 bool SaveProgressDiag::IsFinished()
@@ -101,7 +101,7 @@ bool SaveProgressDiag::IsFinished()
 
 // SizeDialogSave
 SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
-                                string scriptPath, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+    string scriptPath, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
@@ -110,10 +110,10 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     opt = target->GetOptions();
     path = filePath;
     myScriptPath = scriptPath;
-    screenRatio = (double)opt.screenWidth/(double)opt.screenHeight;
+    screenRatio = (double)opt.screenWidth / (double)opt.screenHeight;
     fractalType = type;
 
-    this->SetSizeHints(wxSize(283,201), wxSize(283,201));
+    this->SetSizeHints(wxSize(283, 201), wxSize(283, 201));
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -202,7 +202,7 @@ void SizeDialogSave::ChangeHeight(wxSpinEvent& event)
 void SizeDialogSave::OnOk(wxCommandEvent& event)
 {
     // Creates fractal.
-    if(fractalType == FractalType::ScriptFractal)
+    if (fractalType == FractalType::ScriptFractal)
         fractalHandler.CreateScriptFractal(widthSpin->GetValue(), heightSpin->GetValue(), myScriptPath);
     else
         fractalHandler.CreateFractal(fractalType, widthSpin->GetValue(), heightSpin->GetValue());
@@ -217,13 +217,13 @@ void SizeDialogSave::OnOk(wxCommandEvent& event)
     SaveProgressDiag* diag = new SaveProgressDiag(fractalHandler.GetFractalPtr(), this);
     fractalHandler.GetFractalPtr()->Render();
     diag->ShowModal();
-    if(diag->IsFinished())
+    if (diag->IsFinished())
     {
-        if(extension == 0 || extension == 1)  // PNG or JPG
+        if (extension == 0 || extension == 1)  // PNG or JPG
         {
             fractalHandler.GetFractalPtr()->SetRendered(true);
             sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
-            out.SaveToFile(path);
+            out.saveToFile(path);
         }
         else  // BMP
         {

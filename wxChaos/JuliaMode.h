@@ -1,5 +1,5 @@
-/** 
-* @file JuliaMode.h 
+/**
+* @file JuliaMode.h
 * @brief Defines the Julia mode option.
 *
 * @author Carlos Manuel Rodriguez y Martinez
@@ -16,10 +16,11 @@ extern bool juliaModeState;
 
 /**
 * @class JuliaMode
-* @brief Creates a thread that handles the execution of a Julia fractal.
+* @brief Creates and manages a window for displaying a Julia fractal variant.
 */
-class JuliaMode : public sf::Thread
+class JuliaMode
 {
+private:
     sf::RenderWindow* window;
     FractalCanvas* target;
     FractalHandler juliaFractal;
@@ -30,10 +31,14 @@ class JuliaMode : public sf::Thread
     wxWindow* parent;
 
     sf::Event event;
-    bool resizing;
 
-    ///@brief Handles it's own events.
+    sf::Thread m_thread; // Thread for the rendering loop
+
+    ///@brief Handles the window's events.
     void Handle_Event();
+
+    ///@brief The main loop for the Julia window thread.
+    void Run();
 
 public:
     ///@brief Constructor
@@ -43,8 +48,16 @@ public:
     ///@param _parent Parent wxWidget window.
     JuliaMode(FractalCanvas* ptr, FractalType fractalType, Options juliaOpt, wxWindow* _parent = nullptr);
     ~JuliaMode();
-    void Close();
 
-    ///@brief Start the thread execution.
-    virtual void Run();
+    ///@brief Launches the thread.
+    void Launch();
+
+    ///@brief Waits for the thread to finish.
+    void Wait();
+
+    ///@brief Forcibly terminates the thread.
+    void Terminate();
+
+    ///@brief Signals the window to close.
+    void Close();
 };

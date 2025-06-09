@@ -266,15 +266,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)libs\wxMSW-3.1.4\include;$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib\mswu;$(SolutionDir)libs\wxMSW-3.1.4\contrib\include;$(SolutionDir)libs\SFML_1.6\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib;$(SolutionDir)libs\wxMSW-3.1.4\contrib\lib;$(SolutionDir)libs\SFML_1.6\lib\vc2008;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\wxMSW-3.1.4\include;$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib\mswu;$(SolutionDir)libs\wxMSW-3.1.4\contrib\include;$(SolutionDir)libs\SFML-2.6.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib;$(SolutionDir)libs\wxMSW-3.1.4\contrib\lib;$(SolutionDir)libs\SFML-2.6.2\lib\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
     <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='wx3 Unicode Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)libs\wxMSW-3.1.4\include;$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib\mswud;$(SolutionDir)libs\wxMSW-3.1.4\contrib\include;$(SolutionDir)libs\SFML_1.6\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib;$(SolutionDir)libs\wxMSW-3.1.4\contrib\lib;$(SolutionDir)libs\SFML_1.6\lib\vc2008;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\wxMSW-3.1.4\include;$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib\mswud;$(SolutionDir)libs\wxMSW-3.1.4\contrib\include;$(SolutionDir)libs\SFML-2.6.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\wxMSW-3.1.4\lib\vc_lib;$(SolutionDir)libs\wxMSW-3.1.4\contrib\lib;$(SolutionDir)libs\SFML-2.6.2\lib\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\win32_$(Configuration)\</OutDir>
     <IntDir>..\obj\Win32_$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -284,7 +284,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>WIN32;__WXMSW__;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;__WXMSW__;NDEBUG;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;SFML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -299,7 +299,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>wxmsw31u_core.lib;wxbase31u.lib;wxbase31u_xml.lib;wxmsw31u_adv.lib;wxmsw31u_richtext.lib;wxmsw31u_html.lib;wxmsw31u_stc.lib;wxscintilla.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxmsw31u_core.lib;wxbase31u.lib;wxbase31u_xml.lib;wxmsw31u_adv.lib;wxmsw31u_richtext.lib;wxmsw31u_html.lib;wxmsw31u_stc.lib;wxscintilla.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-main.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -312,13 +312,13 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;__WXMSW__;__WXDEBUG__;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;__WXMSW__;__WXDEBUG__;_WINDOWS;NOPCH;_CRT_SECURE_NO_WARNINGS;SFML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>wxmsw31ud_core.lib;wxbase31ud.lib;wxbase31ud_xml.lib;wxmsw31ud_adv.lib;wxmsw31ud_richtext.lib;wxmsw31ud_html.lib;wxmsw31ud_stc.lib;wxscintillad.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-main-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxmsw31ud_core.lib;wxbase31ud.lib;wxbase31ud_xml.lib;wxmsw31ud_adv.lib;wxmsw31ud_richtext.lib;wxmsw31ud_html.lib;wxmsw31ud_stc.lib;wxscintillad.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-main-d.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

@@ -16,12 +16,12 @@ const GaussianColorStyles defaultEstStyle = GaussianColorStyles::SummerDay;
 
 inline double CalcSquaredDist(const double x1, const double y1, const double x2, const double y2)
 {
-    return ((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+    return ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
 inline double CalcDist(const double x1, const double y1, const double x2, const double y2)
 {
-    return sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+    return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
 int Get_Cores()
@@ -33,7 +33,7 @@ int Get_Cores()
     return sysinfo.dwNumberOfProcessors;
 #endif
 
-#ifdef linux
+#ifdef __linux__
     return sysconf(_SC_NPROCESSORS_ONLN);
 #endif
     return 1;
@@ -50,19 +50,19 @@ int Get_Cores()
 template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight, const int moveX, const int moveY)
 {
     // Horizontal displacement.
-    if(moveX > 0)
+    if (moveX > 0)
     {
         int displacement = moveX;
         int iterations;
 
-        for(unsigned int i=0; i<matrixHeight; i++)
+        for (unsigned int i = 0; i < matrixHeight; i++)
         {
             iterations = matrixWidth - displacement;
-            for(int j=matrixWidth-1; j>=0; j--)
+            for (int j = matrixWidth - 1; j >= 0; j--)
             {
-                if(iterations > 0)
+                if (iterations > 0)
                 {
-                    matrix[i][j] = matrix[i][j-displacement];
+                    matrix[i][j] = matrix[i][j - displacement];
                     iterations--;
                 }
                 else
@@ -70,19 +70,19 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
             }
         }
     }
-    else if(moveX < 0)
+    else if (moveX < 0)
     {
         int displacement = -moveX;
         int iterations;
 
-        for(unsigned int i=0; i<matrixHeight; i++)
+        for (unsigned int i = 0; i < matrixHeight; i++)
         {
             iterations = matrixWidth - displacement;
-            for(unsigned int j=0; j<matrixWidth; j++)
+            for (unsigned int j = 0; j < matrixWidth; j++)
             {
-                if(iterations > 0)
+                if (iterations > 0)
                 {
-                    matrix[i][j] = matrix[i][j+displacement];
+                    matrix[i][j] = matrix[i][j + displacement];
                     iterations--;
                 }
                 else
@@ -92,19 +92,19 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
     }
 
     // Vertical displacement.
-    if(moveY > 0)
+    if (moveY > 0)
     {
         int displacement = moveY;
         int iterations;
 
-        for(unsigned int j=0; j<matrixWidth; j++)
+        for (unsigned int j = 0; j < matrixWidth; j++)
         {
             iterations = matrixHeight - displacement;
-            for(int i=matrixHeight-1; i>=0; i--)
+            for (int i = matrixHeight - 1; i >= 0; i--)
             {
-                if(iterations > 0)
+                if (iterations > 0)
                 {
-                    matrix[i][j] = matrix[i-displacement][j];
+                    matrix[i][j] = matrix[i - displacement][j];
                     iterations--;
                 }
                 else
@@ -114,19 +114,19 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
             }
         }
     }
-    else if(moveY < 0)
+    else if (moveY < 0)
     {
         int displacement = -moveY;
         int iterations;
 
-        for(unsigned int j=0; j<matrixWidth; j++)
+        for (unsigned int j = 0; j < matrixWidth; j++)
         {
             iterations = matrixHeight - displacement;
-            for(unsigned int i=0; i<matrixHeight; i++)
+            for (unsigned int i = 0; i < matrixHeight; i++)
             {
-                if(iterations > 0)
+                if (iterations > 0)
                 {
-                    matrix[i][j] = matrix[i+displacement][j];
+                    matrix[i][j] = matrix[i + displacement][j];
                     iterations--;
                 }
                 else
@@ -233,13 +233,13 @@ Fractal::Fractal(int width, int height)
     white = sf::Color(255, 255, 255);
     fSetColor = sf::Color(0, 0, 0);
     transparent = sf::Color(255, 255, 255, 0);
-    image.Create(screenWidth, screenHeight, white);
+    image.create(screenWidth, screenHeight, white);
 
     // Allocates memory for the maps.
-    setMap = new bool*[screenWidth];
-    colorMap = new int*[screenWidth];
-    auxMap = new unsigned int*[screenWidth];
-    for(int i=0; i<screenWidth; i++)
+    setMap = new bool* [screenWidth];
+    colorMap = new int* [screenWidth];
+    auxMap = new unsigned int* [screenWidth];
+    for (int i = 0; i < screenWidth; i++)
     {
         setMap[i] = new bool[screenHeight];
         colorMap[i] = new int[screenHeight];
@@ -247,9 +247,9 @@ Fractal::Fractal(int width, int height)
     }
 
     // Initializes maps.
-    for(int i=0; i<screenWidth; i++)
+    for (int i = 0; i < screenWidth; i++)
     {
-        for(int j=0; j<screenHeight; j++)
+        for (int j = 0; j < screenHeight; j++)
         {
             setMap[i][j] = false;
             colorMap[i][j] = -1;
@@ -270,9 +270,9 @@ Fractal::Fractal(int width, int height)
     minX = -2.0;
     maxX = 1.0;
     minY = -1.2;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    maxY = minY + (maxX - minX) * (double)screenHeight / screenWidth;
+    xFactor = (maxX - minX) / (screenWidth - 1);
+    yFactor = (maxY - minY) / (screenHeight - 1);
     kReal = 0;
     kImaginary = 0;
     magnification = 0;
@@ -324,7 +324,7 @@ Fractal::Fractal(int width, int height)
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
     palette = new sf::Color[paletteSize];
-    varGradientStep = paletteSize/60;
+    varGradientStep = paletteSize / 60;
 
     redInt = 255;
     greenInt = 201;
@@ -338,13 +338,13 @@ Fractal::Fractal(int width, int height)
     greenStdDev = 12;
     blueStdDev = 9;
 
-    for(int i=0; i<paletteSize; i++)
+    for (int i = 0; i < paletteSize; i++)
     {
         redPalette[i] = CalcGradient(i, Color::Red);
         greenPalette[i] = CalcGradient(i, Color::Green);
         bluePalette[i] = CalcGradient(i, Color::Blue);
     }
-    for(int i=0; i<paletteSize; i++)
+    for (int i = 0; i < paletteSize; i++)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
 
     this->SetOutermostZoom();
@@ -357,8 +357,8 @@ Fractal::Fractal(sf::RenderWindow* Window)
     threadNumber = Get_Cores();
 
     // Copy window properties.
-    screenHeight = Window->GetHeight();
-    backScreenWidth = screenWidth = Window->GetWidth();
+    screenHeight = Window->getSize().y;
+    backScreenWidth = screenWidth = Window->getSize().x;
 
     // Set position and velocities.
     xVel = 0;
@@ -372,22 +372,29 @@ Fractal::Fractal(sf::RenderWindow* Window)
     white = sf::Color(255, 255, 255);
     fSetColor = sf::Color(0, 0, 0);
     transparent = sf::Color(255, 255, 255, 0);
-    image.Create(screenWidth, screenHeight, white);
+    image.create(screenWidth, screenHeight, white);
     tempImage = image;
-    geomImage.Create(screenWidth, screenHeight, transparent);
-    output.SetImage(image);
-    tempSprite.SetImage(tempImage);
-    outGeom.SetImage(geomImage);
-    font.LoadFromFile(GetAbsPath({ "Resources", "PublicSans-Regular.otf" }));
-    text.SetFont(font);
+    geomImage.create(screenWidth, screenHeight, transparent);
+
+    texture.loadFromImage(image);
+    output.setTexture(texture);
+
+    tempTexture.loadFromImage(tempImage);
+    tempSprite.setTexture(tempTexture);
+
+    geomTexture.loadFromImage(geomImage);
+    outGeom.setTexture(geomTexture);
+
+    font.loadFromFile(GetAbsPath({ "Resources", "PublicSans-Regular.otf" }));
+    text.setFont(font);
 
     // Set fractal properties.
     minX = -2.0;
     maxX = 1.0;
     minY = -1.2;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    maxY = minY + (maxX - minX) * (double)screenHeight / screenWidth;
+    xFactor = (maxX - minX) / (screenWidth - 1);
+    yFactor = (maxY - minY) / (screenHeight - 1);
     kReal = 0;
     kImaginary = 0;
     magnification = 0;
@@ -424,10 +431,10 @@ Fractal::Fractal(sf::RenderWindow* Window)
     varGradChange = false;
 
     // Allocates memory for the maps.
-    setMap = new bool*[screenWidth];
-    colorMap = new int*[screenWidth];
-    auxMap = new unsigned int*[screenWidth];
-    for(int i=0; i<screenWidth; i++)
+    setMap = new bool* [screenWidth];
+    colorMap = new int* [screenWidth];
+    auxMap = new unsigned int* [screenWidth];
+    for (int i = 0; i < screenWidth; i++)
     {
         setMap[i] = new bool[screenHeight];
         colorMap[i] = new int[screenHeight];
@@ -435,9 +442,9 @@ Fractal::Fractal(sf::RenderWindow* Window)
     }
 
     // Initializes maps.
-    for(int i=0; i<screenWidth; i++)
+    for (int i = 0; i < screenWidth; i++)
     {
-        for(int j=0; j<screenHeight; j++)
+        for (int j = 0; j < screenHeight; j++)
         {
             setMap[i][j] = false;
             colorMap[i][j] = -1;
@@ -461,7 +468,7 @@ Fractal::Fractal(sf::RenderWindow* Window)
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
     palette = new sf::Color[paletteSize];
-    varGradientStep = paletteSize/60;
+    varGradientStep = paletteSize / 60;
 
     redInt = 255;
     greenInt = 201;
@@ -475,13 +482,13 @@ Fractal::Fractal(sf::RenderWindow* Window)
     greenStdDev = 12;
     blueStdDev = 9;
 
-    for(int i=0; i<paletteSize; i++)
+    for (int i = 0; i < paletteSize; i++)
     {
         redPalette[i] = CalcGradient(i, Color::Red);
         greenPalette[i] = CalcGradient(i, Color::Green);
         bluePalette[i] = CalcGradient(i, Color::Blue);
     }
-    for(int i=0; i<paletteSize; i++)
+    for (int i = 0; i < paletteSize; i++)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
 
     this->SetOutermostZoom();
@@ -489,7 +496,7 @@ Fractal::Fractal(sf::RenderWindow* Window)
 Fractal::~Fractal()
 {
     // Cleanup.
-    for(int i=0; i< backScreenWidth; i++)
+    for (int i = 0; i < backScreenWidth; i++)
     {
         delete[] setMap[i];
         delete[] colorMap[i];
@@ -511,17 +518,17 @@ void Fractal::SetDefaultOpt()
     geomFigure = false;
     onWxCtrl = false;
 
-    for(int i=0; i<4; i++)
+    for (int i = 0; i < 4; i++)
         movement[i] = false;
 }
-void Fractal::Show(sf::RenderWindow *Window)
+void Fractal::Show(sf::RenderWindow* Window)
 {
     // If the fractal is moving uses the rendered image.
-    if(xVel != 0 || yVel != 0)
-        output.SetPosition(static_cast<float>(posX), static_cast<float>(posY));
+    if (xVel != 0 || yVel != 0)
+        output.setPosition(static_cast<float>(posX), static_cast<float>(posY));
     else
     {
-        if(moving)
+        if (moving)
         {
             MoveMatrix<bool>(setMap, screenHeight, screenWidth, yMoved, xMoved);
             MoveMatrix<int>(colorMap, screenHeight, screenWidth, yMoved, xMoved);
@@ -529,9 +536,9 @@ void Fractal::Show(sf::RenderWindow *Window)
             moving = false;
             rendered = false;
         }
-        if(!rendered)
+        if (!rendered)
         {
-            if(usingRenderImage)
+            if (usingRenderImage)
             {
                 moving = false;
                 usingRenderImage = false;
@@ -539,7 +546,7 @@ void Fractal::Show(sf::RenderWindow *Window)
                 yMoved = 0;
             }
 
-            if(!rendering)
+            if (!rendering)
             {
                 rendering = true;
                 this->PrepareRender();
@@ -553,7 +560,7 @@ void Fractal::Show(sf::RenderWindow *Window)
             this->DrawMaps(Window);
 
             // Check in the threads have finished.
-            if(!this->IsRendering())
+            if (!this->IsRendering())
             {
                 rendered = true;
                 rendering = false;
@@ -565,85 +572,88 @@ void Fractal::Show(sf::RenderWindow *Window)
         }
 
         // Pause mode.
-        if(pausing)
+        if (pausing)
         {
             this->DrawMaps(Window);
             pausing = false;
         }
 
         // Color change mode.
-        if(varGradient || varGradChange)
+        if (varGradient || varGradChange)
         {
-            if(changeGradient < paletteSize)
+            if (changeGradient < paletteSize)
                 changeGradient += varGradientStep;
             else
                 changeGradient = 0;
 
             // Redraw colors.
-            if(rendered)
+            if (rendered)
             {
-                double coef = (double)paletteSize/(double)maxColorMapVal;
-                for(int i=0; i<screenWidth; i++)
+                double coef = (double)paletteSize / (double)maxColorMapVal;
+                for (int i = 0; i < screenWidth; i++)
                 {
-                    for(int j=0; j<screenHeight; j++)
+                    for (int j = 0; j < screenHeight; j++)
                     {
-                        if(setMap[i][j] == false || !colorSet)
+                        if (setMap[i][j] == false || !colorSet)
                         {
                             // Color pixel.
                             sf::Color Color;
-                            if(relativeColor)
-                                Color = CalcColor(colorMap[i][j]*coef + changeGradient);
+                            if (relativeColor)
+                                Color = CalcColor(colorMap[i][j] * coef + changeGradient);
                             else
                                 Color = CalcColor(colorMap[i][j] + changeGradient);
 
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
                     }
                 }
+                texture.loadFromImage(image);
             }
             varGradChange = false;
         }
     }
 
-    if(!dontDrawTempImage && colorMode)
-        Window->Draw(tempSprite);
+    if (!dontDrawTempImage && colorMode)
+        Window->draw(tempSprite);
 
-    Window->Draw(output);
+    Window->draw(output);
 
-    if(orbitMode && !this->IsRendering())
+    if (orbitMode && !this->IsRendering())
     {
         if (!orbitDrawn)
         {
             orbitLines.clear();
-            geomImage.Create(screenWidth, screenHeight, transparent);
+            geomImage.create(screenWidth, screenHeight, transparent);
             this->DrawOrbit();
+            geomTexture.loadFromImage(geomImage);
         }
-        Window->Draw(outGeom);
+        Window->draw(outGeom);
     }
     if (geomFigure && !this->IsRendering())
         this->DrawGeom(Window);
 
     // Writes iteration text.
-    if(!onSnapshot && !rendering)
+    if (!onSnapshot && !rendering)
     {
         static sf::Image base;
+        static sf::Texture baseTexture;
         static sf::Sprite baseSprite;
-        if(changeFractalIter)
+        if (changeFractalIter)
         {
             // Calculate the numbers of digits in the number.
             int number = maxIter;
             int digits = 1;
-            while(number >= 10)
+            while (number >= 10)
             {
                 number /= 10;
                 digits++;
             }
 
             // Creates support layer.
-            base.Create(148 + (12*digits), 35, sf::Color(0, 0, 0, 100));
-            baseSprite.SetPosition(0, 0);
-            baseSprite.SetImage(base);
-            baseSprite.Resize(static_cast<float>(148 + (12*digits)), static_cast<float>(35));
+            base.create(148 + (12 * digits), 35, sf::Color(0, 0, 0, 100));
+            baseTexture.loadFromImage(base);
+            baseSprite.setTexture(baseTexture);
+            baseSprite.setPosition(0, 0);
 
             // Writes text.
             string temp;
@@ -651,23 +661,23 @@ void Fractal::Show(sf::RenderWindow *Window)
             oss << maxIter;
             temp = fractIterationsTxt;
             temp += oss.str();
-            text.SetText(temp);
-            text.SetSize(25);
-            text.SetPosition(0, 0);
+            text.setString(temp);
+            text.setCharacterSize(25);
+            text.setPosition(0, 0);
             changeFractalIter = false;
         }
-        Window->Draw(baseSprite);
-        Window->Draw(text);
+        Window->draw(baseSprite);
+        Window->draw(text);
     }
 }
-void Fractal::Resize(sf::RenderWindow *Window)
+void Fractal::Resize(sf::RenderWindow* Window)
 {
     // Stop threads if they are still rendering.
     this->StopRender();
     paused = false;
 
     // Frees memory.
-    for(int i=0; i< backScreenWidth; i++)
+    for (int i = 0; i < backScreenWidth; i++)
     {
         delete[] setMap[i];
         delete[] colorMap[i];
@@ -684,16 +694,16 @@ void Fractal::Resize(sf::RenderWindow *Window)
     auxMap = nullptr;
 
     // Copy window properties.
-    screenHeight = Window->GetHeight();
-    backScreenWidth = screenWidth = Window->GetWidth();
+    screenHeight = Window->getSize().y;
+    backScreenWidth = screenWidth = Window->getSize().x;
     dontDrawTempImage = true;
-    tempSprite.SetSubRect(sf::Rect<int>(0,0,screenWidth, screenHeight));
+    tempSprite.setTextureRect(sf::IntRect(0, 0, screenWidth, screenHeight));
 
     // Allocate memory.
-    setMap = new bool*[screenWidth];
-    colorMap = new int*[screenWidth];
-    auxMap = new unsigned int*[screenWidth];
-    for(int i=0; i<screenWidth; i++)
+    setMap = new bool* [screenWidth];
+    colorMap = new int* [screenWidth];
+    auxMap = new unsigned int* [screenWidth];
+    for (int i = 0; i < screenWidth; i++)
     {
         setMap[i] = new bool[screenHeight];
         colorMap[i] = new int[screenHeight];
@@ -701,9 +711,9 @@ void Fractal::Resize(sf::RenderWindow *Window)
     }
 
     // Initialize maps.
-    for(int i=0; i<screenWidth; i++)
+    for (int i = 0; i < screenWidth; i++)
     {
-        for(int j=0; j<screenHeight; j++)
+        for (int j = 0; j < screenHeight; j++)
         {
             setMap[i][j] = false;
             colorMap[i][j] = -1;
@@ -712,34 +722,35 @@ void Fractal::Resize(sf::RenderWindow *Window)
     }
 
     // Sets SFML variables and scales.
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    maxY = minY + (maxX - minX) * (double)screenHeight / screenWidth;
+    xFactor = (maxX - minX) / (screenWidth - 1);
+    yFactor = (maxY - minY) / (screenHeight - 1);
     this->SetOutermostZoom();
 
     rendered = false;
     rendering = false;
-    geomImage.Create(screenWidth, screenHeight, transparent);
+    geomImage.create(screenWidth, screenHeight, transparent);
+    geomTexture.loadFromImage(geomImage);
     imgVector.clear();
     imgInVector = false;
     orbitDrawn = false;
 
     // Fix the scales in the zoom vectors.
-    for(unsigned int i=0; i<zoom[3].size(); i++)
+    for (unsigned int i = 0; i < zoom[3].size(); i++)
     {
-        zoom[3][i] = zoom[2][i] + (zoom[1][i] - zoom[0][i])*screenHeight/screenWidth;
+        zoom[3][i] = zoom[2][i] + (zoom[1][i] - zoom[0][i]) * (double)screenHeight / screenWidth;
     }
 
     // Changes output layer properties.
-    sf::Rect<int> Size;
-    Size.Right = screenWidth;
-    Size.Bottom = screenHeight;
-    output.SetSubRect(Size);
-    outGeom.SetSubRect(Size);
+    sf::IntRect Size;
+    Size.width = screenWidth;
+    Size.height = screenHeight;
+    output.setTextureRect(Size);
+    outGeom.setTextureRect(Size);
 }
 void Fractal::SetAreaOfView(sf::Rect<int> pixelCoordinates)
 {
-    if(paused)
+    if (paused)
     {
         this->DeleteSavedZooms();
         dontDrawTempImage = true;
@@ -754,27 +765,26 @@ void Fractal::SetAreaOfView(sf::Rect<int> pixelCoordinates)
     this->SaveZoom();
 
     // Changes the scale.
-    double FX = (maxX - minX)/screenWidth;
-    double FY = (maxY - minY)/screenHeight;
+    double FX = (maxX - minX) / screenWidth;
+    double FY = (maxY - minY) / screenHeight;
 
-    maxX = minX + (pixelCoordinates.Right)*FX;
-    minX = minX + pixelCoordinates.Left*FX;
-    minY = maxY - (pixelCoordinates.Bottom)*FY;
+    maxX = minX + (pixelCoordinates.left + pixelCoordinates.width) * FX;
+    minX = minX + pixelCoordinates.left * FX;
+    minY = maxY - (pixelCoordinates.top + pixelCoordinates.height) * FY;
 
-    maxY = minY + (maxX-minX)*screenHeight/screenWidth;
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    maxY = minY + (maxX - minX) * (double)screenHeight / screenWidth;
+    xFactor = (maxX - minX) / (screenWidth - 1);
+    yFactor = (maxY - minY) / (screenHeight - 1);
 
     rendered = false;
     rendering = false;
 
     tempImage = image;
-    tempSprite.SetImage(tempImage);
-    int newHeight = pixelCoordinates.Bottom - (pixelCoordinates.Right-pixelCoordinates.Left)*screenHeight/screenWidth;
-    int resize1 = screenWidth*screenWidth/(pixelCoordinates.GetWidth());
-    int resize2 = screenHeight*screenHeight/((pixelCoordinates.Bottom - newHeight));
-    tempSprite.Resize(resize1, resize2);
-    tempSprite.SetCenter(pixelCoordinates.Left, newHeight);
+    tempTexture.loadFromImage(tempImage);
+    tempSprite.setTexture(tempTexture);
+    tempSprite.setTextureRect(pixelCoordinates);
+    tempSprite.setPosition(0, 0);
+    tempSprite.setScale((float)screenWidth / pixelCoordinates.width, (float)screenHeight / pixelCoordinates.height);
 
     posY = posX = 0;
     yVel = xVel = 0;
@@ -805,7 +815,7 @@ void Fractal::Resize(int width, int height)
     this->StopRender();
 
     // Frees memory.
-    for(int i=0; i< backScreenWidth; i++)
+    for (int i = 0; i < backScreenWidth; i++)
     {
         delete[] setMap[i];
         delete[] colorMap[i];
@@ -820,10 +830,10 @@ void Fractal::Resize(int width, int height)
     backScreenWidth = screenWidth = width;
 
     // Allocate memory.
-    setMap = new bool*[screenWidth];
-    colorMap = new int*[screenWidth];
-    auxMap = new unsigned int*[screenWidth];
-    for(int i=0; i<screenWidth; i++)
+    setMap = new bool* [screenWidth];
+    colorMap = new int* [screenWidth];
+    auxMap = new unsigned int* [screenWidth];
+    for (int i = 0; i < screenWidth; i++)
     {
         setMap[i] = new bool[screenHeight];
         colorMap[i] = new int[screenHeight];
@@ -831,9 +841,9 @@ void Fractal::Resize(int width, int height)
     }
 
     // Initialize maps.
-    for(int i=0; i<screenWidth; i++)
+    for (int i = 0; i < screenWidth; i++)
     {
-        for(int j=0; j<screenHeight; j++)
+        for (int j = 0; j < screenHeight; j++)
         {
             setMap[i][j] = false;
             colorMap[i][j] = -1;
@@ -842,42 +852,42 @@ void Fractal::Resize(int width, int height)
     }
 
     // Sets SFML variables and scales.
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    xFactor = (maxX - minX) / (screenWidth - 1);
+    yFactor = (maxY - minY) / (screenHeight - 1);
 }
 void Fractal::Move()
 {
-    if(rendered)
+    if (rendered)
     {
         // If any movement button is pressed move the image and accelerate the movement.
-        if(movement[Direction::Left])
+        if (movement[Direction::Left])
             xVel += stdSpeed;
-        if(movement[Direction::Right])
+        if (movement[Direction::Right])
             xVel -= stdSpeed;
-        if(movement[Direction::Up])
+        if (movement[Direction::Up])
             yVel += stdSpeed;
-        if(movement[Direction::Down])
+        if (movement[Direction::Down])
             yVel -= stdSpeed;
 
         // If isn't pressed slow down the image.
-        if(!movement[Direction::Left] && !movement[Direction::Right] && !movement[Direction::Up] && !movement[Direction::Down])
+        if (!movement[Direction::Left] && !movement[Direction::Right] && !movement[Direction::Up] && !movement[Direction::Down])
         {
-            if(xVel > 0) xVel -= stdSpeed;
-            if(xVel < 0) xVel += stdSpeed;
-            if(yVel > 0) yVel -= stdSpeed;
-            if(yVel < 0) yVel += stdSpeed;
+            if (xVel > 0) xVel -= stdSpeed;
+            if (xVel < 0) xVel += stdSpeed;
+            if (yVel > 0) yVel -= stdSpeed;
+            if (yVel < 0) yVel += stdSpeed;
         }
 
         // Updates the coordinates.
-        if(xVel != 0 || yVel != 0)
+        if (xVel != 0 || yVel != 0)
         {
-            double FX = (maxX - minX)/screenWidth;
-            double FY = (maxY - minY)/screenHeight;
+            double FX = (maxX - minX) / screenWidth;
+            double FY = (maxY - minY) / screenHeight;
 
-            minX -= xVel*FX;
-            maxX -= xVel*FX;
-            minY += yVel*FY;
-            maxY += yVel*FY;
+            minX -= xVel * FX;
+            maxX -= xVel * FX;
+            minY += yVel * FY;
+            maxY += yVel * FY;
 
             posX += xVel;
             posY += yVel;
@@ -887,9 +897,9 @@ void Fractal::Move()
             moving = true;
             dontDrawTempImage = true;
         }
-        else if(posX != 0 || posY != 0)
+        else if (posX != 0 || posY != 0)
         {
-            if(paused && !pausing)
+            if (paused && !pausing)
             {
                 rendering = false;
                 rendered = false;
@@ -909,38 +919,38 @@ void Fractal::Move()
         }
     }
 }
-void Fractal::Move(const sf::Input& input)
+void Fractal::MoveKeyboard()
 {
-    if(rendered)
+    if (rendered)
     {
         // If any movement button is pressed move the image and accelerate the movement.
-        if(input.IsKeyDown(sf::Key::Left) || input.IsKeyDown(sf::Key::A))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
             xVel += stdSpeed;
-        else if(input.IsKeyDown(sf::Key::Right) || input.IsKeyDown(sf::Key::D))
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
             xVel -= stdSpeed;
-        else if(input.IsKeyDown(sf::Key::Up) || input.IsKeyDown(sf::Key::W))
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
             yVel += stdSpeed;
-        else if(input.IsKeyDown(sf::Key::Down) || input.IsKeyDown(sf::Key::S))
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
             yVel -= stdSpeed;
         // If isn't pressed slow down the image.
         else
         {
-            if(xVel > 0) xVel -= stdSpeed;
-            if(xVel < 0) xVel += stdSpeed;
-            if(yVel > 0) yVel -= stdSpeed;
-            if(yVel < 0) yVel += stdSpeed;
+            if (xVel > 0) xVel -= stdSpeed;
+            if (xVel < 0) xVel += stdSpeed;
+            if (yVel > 0) yVel -= stdSpeed;
+            if (yVel < 0) yVel += stdSpeed;
         }
 
         // Updates the coordinates.
-        if(xVel != 0 || yVel != 0)
+        if (xVel != 0 || yVel != 0)
         {
-            double FX = (maxX - minX)/screenWidth;
-            double FY = (maxY - minY)/screenHeight;
+            double FX = (maxX - minX) / screenWidth;
+            double FY = (maxY - minY) / screenHeight;
 
-            minX -= xVel*FX;
-            maxX -= xVel*FX;
-            minY += yVel*FY;
-            maxY += yVel*FY;
+            minX -= xVel * FX;
+            maxX -= xVel * FX;
+            minY += yVel * FY;
+            maxY += yVel * FY;
 
             posX += xVel;
             posY += yVel;
@@ -950,9 +960,9 @@ void Fractal::Move(const sf::Input& input)
             moving = true;
             dontDrawTempImage = true;
         }
-        else if(posX != 0 || posY != 0)
+        else if (posX != 0 || posY != 0)
         {
-            if(paused && !pausing)
+            if (paused && !pausing)
             {
                 rendering = false;
                 rendered = false;
@@ -997,52 +1007,53 @@ void Fractal::ZoomBack()
 
     // Looks for previous zoom coordinates.
     bool thereIsZoom = true;
-    for(int i=0; i<4; i++)
+    for (int i = 0; i < 4; i++)
     {
-        if(zoom[i].empty())
+        if (zoom[i].empty())
             thereIsZoom = false;
     }
 
     // If they exist, use them.
-    if(thereIsZoom)
+    if (thereIsZoom)
     {
-        minX = zoom[0][zoom[0].size()-1];
-        maxX = zoom[1][zoom[1].size()-1];
-        minY = zoom[2][zoom[2].size()-1];
-        maxY = zoom[3][zoom[3].size()-1];
+        minX = zoom[0][zoom[0].size() - 1];
+        maxX = zoom[1][zoom[1].size() - 1];
+        minY = zoom[2][zoom[2].size() - 1];
+        maxY = zoom[3][zoom[3].size() - 1];
 
-        for(int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
             zoom[i].pop_back();
     }
     // If they don't, expand the drawing area.
     else
     {
-        double scaleX = abs(maxX-minX);
-        double scaleY = abs(maxY-minY);
+        double scaleX = abs(maxX - minX);
+        double scaleY = abs(maxY - minY);
         minX -= scaleX;
         maxX += scaleX;
         minY -= scaleY;
-        maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+        maxY = minY + (maxX - minX) * (double)screenHeight / screenWidth;
         this->SetOutermostZoom();
     }
 
-    xFactor = (maxX - minX)/(screenWidth - 1);
-    yFactor = (maxY - minY)/(screenHeight - 1);
+    xFactor = (maxX - minX) / (screenWidth - 1);
+    yFactor = (maxY - minY) / (screenHeight - 1);
 
     // If there are no changes uses previous image.
-    if(imgInVector && !varGradient && imgVector.size() > 0 && !stillRendering)
+    if (imgInVector && !varGradient && imgVector.size() > 0 && !stillRendering)
     {
-        image = imgVector[imgVector.size()-1];
+        image = imgVector[imgVector.size() - 1];
+        texture.loadFromImage(image);
         imgVector.pop_back();
         usingRenderImage = true;
     }
     else
     {
-        if(stillRendering && imgVector.size() > 0) imgVector.pop_back();
+        if (stillRendering && imgVector.size() > 0) imgVector.pop_back();
         rendered = false;
         zoomingBack = true;
     }
-    magnification = 3/(maxX-minX);
+    magnification = 3 / (maxX - minX);
     orbitDrawn = false;
     paused = false;
 
@@ -1055,7 +1066,7 @@ void Fractal::ZoomBack()
 }
 void Fractal::DeleteSavedZooms()
 {
-    if(imgVector.size() > 0)
+    if (imgVector.size() > 0)
     {
         imgVector.clear();
         imgInVector = false;
@@ -1067,14 +1078,14 @@ void Fractal::PrepareRender()
     usingRenderImage = false;
 
     // Checks if the movement is valid.
-    if((abs(xMoved) >= screenWidth) || (abs(yMoved) >= screenHeight)) redrawAll = true;
+    if ((abs(xMoved) >= screenWidth) || (abs(yMoved) >= screenHeight)) redrawAll = true;
 
     // Clear maps.
-    if((!xMoved && !yMoved) || redrawAll || redrawAlways)
+    if ((!xMoved && !yMoved) || redrawAll || redrawAlways)
     {
-        for(int i=0; i<screenWidth; i++)
+        for (int i = 0; i < screenWidth; i++)
         {
-            for(int j=0; j<screenHeight; j++)
+            for (int j = 0; j < screenHeight; j++)
             {
                 setMap[i][j] = false;
                 colorMap[i][j] = -1;
@@ -1091,50 +1102,50 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
     this->PreDrawMaps();
 
     // Draw maps on the screen.
-    if(zoomingBack || dontDrawTempImage || !colorMode)
-        image.Create(screenWidth, screenHeight, white);
+    if (zoomingBack || dontDrawTempImage || !colorMode)
+        image.create(screenWidth, screenHeight, white);
     else
     {
-        image.Create(screenWidth, screenHeight, transparent);
-        Window->Draw(tempSprite);
+        image.create(screenWidth, screenHeight, transparent);
+        Window->draw(tempSprite);
     }
-    output.SetPosition(0, 0);
-    if(relativeColor)
+    output.setPosition(0, 0);
+    if (relativeColor)
     {
         // Search for a color maximum value.
         maxColorMapVal = 0;
-        for(int i=0; i<screenWidth; i++)
+        for (int i = 0; i < screenWidth; i++)
         {
-            for(int j=0; j<screenHeight; j++)
+            for (int j = 0; j < screenHeight; j++)
             {
-                if(colorMap[i][j] > maxColorMapVal)
+                if (colorMap[i][j] > maxColorMapVal)
                     maxColorMapVal = colorMap[i][j];
             }
         }
 
-        if(maxColorMapVal == 0)
+        if (maxColorMapVal == 0)
             maxColorMapVal = 1;
 
-        for(int i=0; i<screenWidth; i++)
+        for (int i = 0; i < screenWidth; i++)
         {
-            for(int j=0; j<screenHeight; j++)
+            for (int j = 0; j < screenHeight; j++)
             {
-                if(setMap[i][j] == true && colorSet)
-                    image.SetPixel(i, j, fSetColor);
+                if (setMap[i][j] == true && colorSet)
+                    image.setPixel(i, j, fSetColor);
                 else
                 {
-                    if(colorMode)
+                    if (colorMode)
                     {
                         // Color pixel.
-                        if(colorMap[i][j] >= 0)
+                        if (colorMap[i][j] >= 0)
                         {
-                            sf::Color Color = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize + changeGradient);
-                            image.SetPixel(i, j, Color);
+                            sf::Color Color = CalcColor(((double)colorMap[i][j] / (double)maxColorMapVal) * paletteSize + changeGradient);
+                            image.setPixel(i, j, Color);
                         }
-                        else if(zoomingBack || dontDrawTempImage)
+                        else if (zoomingBack || dontDrawTempImage)
                         {
                             sf::Color Color = CalcColor(changeGradient);
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
                     }
                 }
@@ -1143,47 +1154,48 @@ void Fractal::DrawMaps(sf::RenderWindow* Window)
     }
     else
     {
-        for(int i=0; i<screenWidth; i++)
+        for (int i = 0; i < screenWidth; i++)
         {
-            for(int j=0; j<screenHeight; j++)
+            for (int j = 0; j < screenHeight; j++)
             {
-                if(setMap[i][j] == true && colorSet)
-                    image.SetPixel(i, j, fSetColor);
+                if (setMap[i][j] == true && colorSet)
+                    image.setPixel(i, j, fSetColor);
                 else
                 {
-                    if(colorMode)
+                    if (colorMode)
                     {
                         // Color pixel.
-                        if(colorMap[i][j] >= 0)
+                        if (colorMap[i][j] >= 0)
                         {
                             sf::Color Color = CalcColor(colorMap[i][j] + changeGradient);
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
-                        else if(zoomingBack || dontDrawTempImage)
+                        else if (zoomingBack || dontDrawTempImage)
                         {
                             sf::Color Color = CalcColor(changeGradient);
-                            image.SetPixel(i, j, Color);
+                            image.setPixel(i, j, Color);
                         }
                     }
                 }
             }
         }
     }
+    texture.loadFromImage(image);
+    Window->draw(output);
 
-    Window->Draw(output);
-
-    if(!juliaMode)
-        Window->Display();
+    if (!juliaMode)
+        Window->display();
 }
 void Fractal::Redraw()
 {
-    if(this->IsRendering())
+    if (this->IsRendering())
         dontDrawTempImage = true;
-    else if(colorMode)
+    else if (colorMode)
     {
         tempImage = image;
-        tempSprite.SetCenter(0,0);
-        tempSprite.Resize(screenWidth, screenHeight);
+        tempTexture.loadFromImage(tempImage);
+        tempSprite.setOrigin(0, 0);
+        tempSprite.setScale((float)screenWidth / tempImage.getSize().x, (float)screenHeight / tempImage.getSize().y);
     }
 
     this->StopRender();
@@ -1202,13 +1214,13 @@ ThreadWatchdog<RenderFractal>* Fractal::GetWatchdog()
 }
 void Fractal::PauseContinue()
 {
-    if(paused)
+    if (paused)
     {
         this->PreRestartRender();
         rendered = false;
         rendering = true;
         watchdog.LaunchThreads();
-        watchdog.Launch();
+        watchdog.launch();
         paused = false;
     }
     else
@@ -1221,9 +1233,9 @@ void Fractal::PauseContinue()
 }
 bool Fractal::StopRender()
 {
-    if(this->IsRendering())
+    if (this->IsRendering())
     {
-        watchdog.Terminate();
+        watchdog.terminate();
         watchdog.StopThreads();
         rendering = false;
         return true;
@@ -1252,41 +1264,41 @@ void Fractal::PreRestartRender()
 {
     // Do nothing.
 }
-void Fractal::HandleEvents(sf::Event *Event)
+void Fractal::HandleEvents(sf::Event* Event)
 {
-    if(!this->IsRendering())
+    if (!this->IsRendering())
     {
-        if(Event->Type == sf::Event::KeyPressed)
+        if (Event->type == sf::Event::KeyPressed)
         {
-            switch(Event->Key.Code)
+            switch (Event->key.code)
             {
-            case sf::Key::L:
-                {
-                    this->MoreIter();
-                    break;
-                }
-            case sf::Key::K:
-                {
-                    this->LessIter();
-                    break;
-                }
+            case sf::Keyboard::L:
+            {
+                this->MoreIter();
+                break;
+            }
+            case sf::Keyboard::K:
+            {
+                this->LessIter();
+                break;
+            }
             default:
                 break;
             }
         }
     }
 
-    if(!onWxCtrl && Event->Type == sf::Event::MouseButtonPressed)
+    if (!onWxCtrl && Event->type == sf::Event::MouseButtonPressed)
     {
-        if(Event->MouseButton.Button == sf::Mouse::Right)
+        if (Event->mouseButton.button == sf::Mouse::Right)
         {
-            if(xVel == 0 && yVel == 0) ZoomBack();
+            if (xVel == 0 && yVel == 0) ZoomBack();
         }
     }
 }
 bool Fractal::IsRendering()
 {
-    if(waitRoutine) return false;
+    if (waitRoutine) return false;
     else return watchdog.ThreadRunning();
 }
 void Fractal::SetFormula(FormulaOpt formula)
@@ -1302,7 +1314,7 @@ void Fractal::MoreIter()
     changeFractalIter = true;
     this->DeleteSavedZooms();
 
-    if(paused)
+    if (paused)
         dontDrawTempImage = true;
 
     redrawAll = true;
@@ -1315,13 +1327,13 @@ void Fractal::LessIter()
     changeFractalIter = true;
     this->DeleteSavedZooms();
 
-    if(paused) 
+    if (paused)
         dontDrawTempImage = true;
 
     redrawAll = true;
     int signedMaxIter = (int)maxIter;
 
-    if(signedMaxIter - 100 > 0)
+    if (signedMaxIter - 100 > 0)
         maxIter -= 100;
 
     rendered = false;
@@ -1334,23 +1346,23 @@ void Fractal::ChangeThreadNumber()
 // Communication methods.
 double Fractal::GetX(int Pixel_X)
 {
-    return minX + Pixel_X*xFactor;
+    return minX + Pixel_X * xFactor;
 }
 double Fractal::GetY(int Pixel_Y)
 {
-    return maxY - Pixel_Y*yFactor;
+    return maxY - Pixel_Y * yFactor;
 }
 int Fractal::GetPixelX(double xNum)
 {
-    return (xNum-minX)/xFactor;
+    return (xNum - minX) / xFactor;
 }
 int Fractal::GetPixelY(double yNum)
 {
-    return (maxY-yNum)/yFactor;
+    return (maxY - yNum) / yFactor;
 }
 void Fractal::ChangeIterations(int number)
 {
-    if(number > 0)
+    if (number > 0)
     {
         maxIter = static_cast<unsigned int>(number);
         rendered = false;
@@ -1360,7 +1372,7 @@ void Fractal::ChangeIterations(int number)
 }
 void Fractal::SetOptions(Options opt, bool keepSize)
 {
-    if(!keepSize)
+    if (!keepSize)
     {
         minX = opt.minX;
         maxX = opt.maxX;
@@ -1368,7 +1380,7 @@ void Fractal::SetOptions(Options opt, bool keepSize)
         maxY = opt.maxY;
     }
     else
-        maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+        maxY = minY + (maxX - minX) * (double)screenHeight / screenWidth;
 
     maxIter = opt.maxIter;
     panelOpt = opt.panelOpt;
@@ -1393,7 +1405,7 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     fSetColor = opt.fSetColor;
 
     gradient = opt.gradient;
-    if(colorPaletteMode == ColorMode::Gradient)
+    if (colorPaletteMode == ColorMode::Gradient)
     {
         paletteSize = gradPaletteSize;
         this->SetGradientSize(paletteSize);
@@ -1404,7 +1416,7 @@ void Fractal::SetOptions(Options opt, bool keepSize)
         this->SetPaletteSize(paletteSize);
     }
 
-    if(hasSmoothRender)
+    if (hasSmoothRender)
         smoothRender = opt.smoothRender;
 
     kReal = opt.kReal;
@@ -1415,8 +1427,8 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     colorMode = opt.colorMode;
     justLaunchThreads = opt.justLaunchThreads;
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    xFactor = (maxX - minX) / (screenWidth - 1);
+    yFactor = (maxY - minY) / (screenHeight - 1);
 
     this->CopyOptFromPanel();
 }
@@ -1487,7 +1499,7 @@ bool** Fractal::GetSetMap()
 }
 bool Fractal::IsMoving()
 {
-    if(xVel == 0 && yVel == 0)
+    if (xVel == 0 && yVel == 0)
         return false;
     else
         return true;
@@ -1508,59 +1520,59 @@ void Fractal::SetOnWxCtrl(bool mode)
 }
 void Fractal::SetMovement(Direction dir)
 {
-    switch(dir)
+    switch (dir)
     {
     case Direction::Up:
-        {
-            yVel -= stdSpeed;
-            movement[Direction::Up] = true;
-            break;
-        }
+    {
+        yVel -= stdSpeed;
+        movement[Direction::Up] = true;
+        break;
+    }
     case Direction::Down:
-        {
-            yVel += stdSpeed;
-            movement[Direction::Down] = true;
-            break;
-        }
+    {
+        yVel += stdSpeed;
+        movement[Direction::Down] = true;
+        break;
+    }
     case Direction::Left:
-        {
-            xVel -= stdSpeed;
-            movement[Direction::Left] = true;
-            break;
-        }
+    {
+        xVel -= stdSpeed;
+        movement[Direction::Left] = true;
+        break;
+    }
     case Direction::Right:
-        {
-            xVel += stdSpeed;
-            movement[Direction::Right] = true;
-            break;
-        }
+    {
+        xVel += stdSpeed;
+        movement[Direction::Right] = true;
+        break;
+    }
     default: break;
     }
 }
 void Fractal::ReleaseMovement(Direction dir)
 {
-    switch(dir)
+    switch (dir)
     {
     case Direction::Up:
-        {
-            movement[Direction::Up] = false;
-            break;
-        }
+    {
+        movement[Direction::Up] = false;
+        break;
+    }
     case Direction::Down:
-        {
-            movement[Direction::Down] = false;
-            break;
-        }
+    {
+        movement[Direction::Down] = false;
+        break;
+    }
     case Direction::Left:
-        {
-            movement[Direction::Left] = false;
-            break;
-        }
+    {
+        movement[Direction::Left] = false;
+        break;
+    }
     case Direction::Right:
-        {
-            movement[Direction::Right] = false;
-            break;
-        }
+    {
+        movement[Direction::Right] = false;
+        break;
+    }
     default: break;
     }
 }
@@ -1573,49 +1585,49 @@ sf::Image Fractal::GetRenderedImage()
 #endif
     onSnapshot = true;
     waitRoutine = true;
-    if(!rendered)
+    if (!rendered)
     {
         this->PrepareRender();
         this->Render();
     }
     this->PreDrawMaps();
 
-    image.Create(screenWidth, screenHeight, white);
+    image.create(screenWidth, screenHeight, white);
 
     maxColorMapVal = 0;
-    if(relativeColor)
+    if (relativeColor)
     {
         // Search for a color maximum value.
-        for(int i=0; i<screenWidth; i++)
+        for (int i = 0; i < screenWidth; i++)
         {
-            for(int j=0; j<screenHeight; j++)
+            for (int j = 0; j < screenHeight; j++)
             {
-                if(colorMap[i][j] > maxColorMapVal)
+                if (colorMap[i][j] > maxColorMapVal)
                     maxColorMapVal = colorMap[i][j];
             }
         }
     }
-    if(maxColorMapVal == 0)
+    if (maxColorMapVal == 0)
         maxColorMapVal = 1;
 
-    for(int i=0; i<screenWidth; i++)
+    for (int i = 0; i < screenWidth; i++)
     {
-        for(int j=0; j<screenHeight; j++)
+        for (int j = 0; j < screenHeight; j++)
         {
-            if(setMap[i][j] == true && colorSet)
-                image.SetPixel(i, j, fSetColor);
+            if (setMap[i][j] == true && colorSet)
+                image.setPixel(i, j, fSetColor);
             else
             {
-                if(colorMode)
+                if (colorMode)
                 {
                     // Color pixel.
                     sf::Color Color;
-                    if(relativeColor)
-                        Color = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize+changeGradient);
+                    if (relativeColor)
+                        Color = CalcColor(((double)colorMap[i][j] / (double)maxColorMapVal) * paletteSize + changeGradient);
                     else
                         Color = CalcColor(colorMap[i][j] + changeGradient);
 
-                    image.SetPixel(i, j, Color);
+                    image.setPixel(i, j, Color);
                 }
             }
         }
@@ -1631,20 +1643,8 @@ sf::Image Fractal::GetRenderedImage()
 wxBitmap Fractal::GetRenderedWxBitmap()
 {
     sf::Image renderedImage = this->GetRenderedImage();
-    wxBitmap output(renderedImage.GetWidth(), renderedImage.GetHeight());
-    wxMemoryDC dc(output);
-
-    for (unsigned i = 0; i < renderedImage.GetWidth(); i++)
-    {
-        for (unsigned j = 0; j < renderedImage.GetHeight(); j++)
-        {
-            const sf::Color pixel = renderedImage.GetPixel(i, j);
-            dc.SetPen(wxColour(pixel.r, pixel.g, pixel.b));
-            dc.SetBrush(wxColour(pixel.r, pixel.g, pixel.b));
-            dc.DrawPoint(i, j);
-        }
-    }
-
+    wxImage wximg(renderedImage.getSize().x, renderedImage.getSize().y, (unsigned char*)renderedImage.getPixelsPtr(), true);
+    wxBitmap output(wximg);
     return output;
 }
 void Fractal::RenderBMP(string filename)
@@ -1655,7 +1655,7 @@ void Fractal::RenderBMP(string filename)
     waitRoutine = true;
     onSnapshot = true;
     BMPWriter writer(filename.c_str(), screenWidth, screenHeight);
-    if(!rendered)
+    if (!rendered)
     {
         this->PrepareRender();
         this->Render();
@@ -1664,45 +1664,47 @@ void Fractal::RenderBMP(string filename)
     BMPPixel* data = new BMPPixel[screenWidth];
 
     maxColorMapVal = 0;
-    if(relativeColor)
+    if (relativeColor)
     {
         // Search for a color maximum value.
-        for(int i=0; i<screenWidth; i++)
+        for (int i = 0; i < screenWidth; i++)
         {
-            for(int j=0; j<screenHeight; j++)
+            for (int j = 0; j < screenHeight; j++)
             {
-                if(colorMap[i][j] > maxColorMapVal)
+                if (colorMap[i][j] > maxColorMapVal)
                     maxColorMapVal = colorMap[i][j];
             }
         }
     }
-    if(maxColorMapVal == 0)
+    if (maxColorMapVal == 0)
         maxColorMapVal = 1;
 
     // Copy maps values to BMPWriter.
-    for(int j=screenHeight-1; j>=0; j--)
+    for (int j = screenHeight - 1; j >= 0; j--)
     {
-        for(int i=0; i<screenWidth; i++)
+        for (int i = 0; i < screenWidth; i++)
         {
-            if(setMap[i][j] != 0 && colorSet)
+            if (setMap[i][j] != 0 && colorSet)
             {
                 data[i].r = 0;
                 data[i].g = 0;
                 data[i].b = 0;
             }
-            else if(colorMode)
+            else if (colorMode)
             {
-                if(relativeColor)
+                if (relativeColor)
                 {
-                    data[i].r = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize+changeGradient).r;
-                    data[i].g = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize+changeGradient).g;
-                    data[i].b = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize+changeGradient).b;
+                    sf::Color c = CalcColor(((double)colorMap[i][j] / (double)maxColorMapVal) * paletteSize + changeGradient);
+                    data[i].r = c.r;
+                    data[i].g = c.g;
+                    data[i].b = c.b;
                 }
                 else
                 {
-                    data[i].r = CalcColor(colorMap[i][j]+changeGradient).r;
-                    data[i].g = CalcColor(colorMap[i][j]+changeGradient).g;
-                    data[i].b = CalcColor(colorMap[i][j]+changeGradient).b;
+                    sf::Color c = CalcColor(colorMap[i][j] + changeGradient);
+                    data[i].r = c.r;
+                    data[i].g = c.g;
+                    data[i].b = c.b;
                 }
             }
             else
@@ -1731,11 +1733,11 @@ void Fractal::SetGaussianColorIntensity(int intensity, Color col)
 {
     // Changes intensity value.
     colorPaletteMode = ColorMode::Gaussian;
-    if(col == Color::Red)
+    if (col == Color::Red)
         redInt = intensity;
-    else if(col == Color::Green)
+    else if (col == Color::Green)
         greenInt = intensity;
-    else if(col == Color::Blue)
+    else if (col == Color::Blue)
         blueInt = intensity;
 
     this->RebuildPalette();
@@ -1744,11 +1746,11 @@ void Fractal::SetGaussianColorMean(double med, Color col)
 {
     // Changes mean value.
     colorPaletteMode = ColorMode::Gaussian;
-    if(col == Color::Red)
+    if (col == Color::Red)
         redMean = med;
-    else if(col == Color::Green)
+    else if (col == Color::Green)
         greenMean = med;
-    else if(col == Color::Blue)
+    else if (col == Color::Blue)
         blueMean = med;
 
     this->RebuildPalette();
@@ -1757,44 +1759,44 @@ void Fractal::SetGaussianColorStdDev(double des, Color col)
 {
     // Changes standard deviation value.
     colorPaletteMode = ColorMode::Gaussian;
-    if(col == Color::Red)
+    if (col == Color::Red)
         redStdDev = des;
-    else if(col == Color::Green)
+    else if (col == Color::Green)
         greenStdDev = des;
-    else if(col == Color::Blue)
+    else if (col == Color::Blue)
         blueStdDev = des;
 
     this->RebuildPalette();
 }
 int Fractal::GetGaussianColorIntensity(Color col)
 {
-    if(col == Color::Red)
+    if (col == Color::Red)
         return redInt;
-    else if(col == Color::Green)
+    else if (col == Color::Green)
         return greenInt;
-    else if(col == Color::Blue)
+    else if (col == Color::Blue)
         return blueInt;
     else
         return 0;
 }
 double Fractal::GetGaussianColorMean(Color col)
 {
-    if(col == Color::Red)
+    if (col == Color::Red)
         return redMean;
-    else if(col == Color::Green)
+    else if (col == Color::Green)
         return greenMean;
-    else if(col == Color::Blue)
+    else if (col == Color::Blue)
         return blueMean;
     else
         return 0;
 }
 double Fractal::GetGaussianColorStdDev(Color col)
 {
-    if(col == Color::Red)
+    if (col == Color::Red)
         return redStdDev;
-    else if(col == Color::Green)
+    else if (col == Color::Green)
         return greenStdDev;
-    else if(col == Color::Blue)
+    else if (col == Color::Blue)
         return blueStdDev;
     else
         return 0;
@@ -1822,13 +1824,13 @@ void Fractal::SetGaussianColorStyle(GaussianColorStyles _gaussianStyle)
     blueStdDev = c.blueStdDev;
 
     this->SetPaletteSize(c.paletteSize);
-    for(int i=0; i<paletteSize; i++)
+    for (int i = 0; i < paletteSize; i++)
     {
         redPalette[i] = CalcGradient(i, Color::Red);
         greenPalette[i] = CalcGradient(i, Color::Green);
         bluePalette[i] = CalcGradient(i, Color::Blue);
     }
-    for(int i=0; i<paletteSize; i++)
+    for (int i = 0; i < paletteSize; i++)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
 }
 GaussianColorStyles Fractal::GetGaussianColorStyle()
@@ -1858,12 +1860,12 @@ void Fractal::SetGradient(wxGradient grad)
     delete[] greenPalette;
     delete[] bluePalette;
     delete[] palette;
-    gradPaletteSize = paletteSize = gradient.getMax()-gradient.getMin();
+    gradPaletteSize = paletteSize = gradient.getMax() - gradient.getMin();
     redPalette = new sf::Uint8[paletteSize];
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
     palette = new sf::Color[paletteSize];
-    varGradientStep = paletteSize/60;
+    varGradientStep = paletteSize / 60;
     this->RebuildPalette();
 }
 void Fractal::SetGradientSize(unsigned int size)
@@ -1879,7 +1881,7 @@ void Fractal::SetGradientSize(unsigned int size)
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
     palette = new sf::Color[paletteSize];
-    varGradientStep = paletteSize/60;
+    varGradientStep = paletteSize / 60;
     this->RebuildPalette();
 }
 
@@ -1888,52 +1890,53 @@ void Fractal::RedrawMaps()
 {
     maxColorMapVal = 0;
 
-    if(this->IsRendering())
+    if (this->IsRendering())
         dontDrawTempImage = true;
 
-    if(relativeColor)
+    if (relativeColor)
     {
         // Search for color maximum.
-        for(int i=0; i<screenWidth; i++)
+        for (int i = 0; i < screenWidth; i++)
         {
-            for(int j=0; j<screenHeight; j++)
+            for (int j = 0; j < screenHeight; j++)
             {
-                if(colorMap[i][j] > maxColorMapVal) 
+                if (colorMap[i][j] > maxColorMapVal)
                     maxColorMapVal = colorMap[i][j];
             }
         }
     }
-    if(maxColorMapVal == 0)
+    if (maxColorMapVal == 0)
         maxColorMapVal = 1;
 
-    for(int i=0; i<screenWidth; i++)
+    for (int i = 0; i < screenWidth; i++)
     {
-        for(int j=0; j<screenHeight; j++)
+        for (int j = 0; j < screenHeight; j++)
         {
-            if(setMap[i][j] == true && colorSet)
-                image.SetPixel(i, j, fSetColor);
-            else if(colorMode)
+            if (setMap[i][j] == true && colorSet)
+                image.setPixel(i, j, fSetColor);
+            else if (colorMode)
             {
                 // Color pixel.
                 sf::Color Color;
-                if(relativeColor)
-                    Color = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize + changeGradient);
+                if (relativeColor)
+                    Color = CalcColor(((double)colorMap[i][j] / (double)maxColorMapVal) * paletteSize + changeGradient);
                 else
                     Color = CalcColor(colorMap[i][j] + changeGradient);
-                image.SetPixel(i, j, Color);
+                image.setPixel(i, j, Color);
             }
             else
-                image.SetPixel(i, j, white);
+                image.setPixel(i, j, white);
         }
     }
+    texture.loadFromImage(image);
 }
 void Fractal::SetExtColorMode(bool mode)
 {
     // Changes external color mode.
-    if(colorMode != mode)
+    if (colorMode != mode)
     {
         colorMode = mode;
-        if(usingRenderImage)
+        if (usingRenderImage)
             rendered = false;
         else
             this->RedrawMaps();
@@ -1943,10 +1946,10 @@ void Fractal::SetExtColorMode(bool mode)
 void Fractal::SetFractalSetColorMode(bool mode)
 {
     // Changes internal color mode.
-    if(colorSet != mode)
+    if (colorSet != mode)
     {
         colorSet = mode;
-        if(usingRenderImage)
+        if (usingRenderImage)
             rendered = false;
         else
             this->RedrawMaps();
@@ -1958,10 +1961,10 @@ void Fractal::SetFractalSetColor(sf::Color color)
     // Changes the color of the set.
     fSetColor = color;
 
-    if(this->IsRendering())
+    if (this->IsRendering())
         dontDrawTempImage = true;
 
-    if(usingRenderImage)
+    if (usingRenderImage)
     {
         rendered = false;
         dontDrawTempImage = true;
@@ -1984,25 +1987,25 @@ bool Fractal::GetSetColorMode()
 }
 double Fractal::NormalDist(int x, double mean, double stdDev)
 {
-    return exp(-(pow(x-mean,2)/(2*pow(stdDev,2))));
+    return exp(-(pow(x - mean, 2) / (2 * pow(stdDev, 2))));
 }
 sf::Uint8 Fractal::CalcGradient(int colorNum, Color col)
 {
     colorNum = colorNum % paletteSize;
 
     // Return color with a normal distribution.
-    if(col == Color::Red)
-        return static_cast<sf::Uint8>(redInt*NormalDist(colorNum, redMean, redStdDev) + redInt*NormalDist(colorNum, paletteSize+redMean, redStdDev));
-    if(col == Color::Green)
-        return static_cast<sf::Uint8>(greenInt*NormalDist(colorNum, greenMean, greenStdDev) + greenInt*NormalDist(colorNum, paletteSize+greenMean, greenStdDev));
-    if(col == Color::Blue)
-        return static_cast<sf::Uint8>(blueInt*NormalDist(colorNum, blueMean, blueStdDev)+blueInt*NormalDist(colorNum, paletteSize+blueMean, blueStdDev));
+    if (col == Color::Red)
+        return static_cast<sf::Uint8>(redInt * NormalDist(colorNum, redMean, redStdDev) + redInt * NormalDist(colorNum, paletteSize + redMean, redStdDev));
+    if (col == Color::Green)
+        return static_cast<sf::Uint8>(greenInt * NormalDist(colorNum, greenMean, greenStdDev) + greenInt * NormalDist(colorNum, paletteSize + greenMean, greenStdDev));
+    if (col == Color::Blue)
+        return static_cast<sf::Uint8>(blueInt * NormalDist(colorNum, blueMean, blueStdDev) + blueInt * NormalDist(colorNum, paletteSize + blueMean, blueStdDev));
 
     return 0;
 }
 sf::Color Fractal::CalcColor(int colorNum)
 {
-    if(colorNum <= 0)
+    if (colorNum <= 0)
         colorNum = 0;
 
     colorNum = colorNum % paletteSize;
@@ -2011,7 +2014,7 @@ sf::Color Fractal::CalcColor(int colorNum)
 void Fractal::ChangeVarGradient()
 {
     varGradient = !varGradient;
-    if(usingRenderImage)
+    if (usingRenderImage)
     {
         rendered = false;
         dontDrawTempImage = true;
@@ -2023,13 +2026,13 @@ void Fractal::RebuildPalette()
 {
     this->DeleteSavedZooms();
 
-    if(this->IsRendering())
+    if (this->IsRendering())
         dontDrawTempImage = true;
 
-    if(colorPaletteMode == ColorMode::Gradient)
+    if (colorPaletteMode == ColorMode::Gradient)
     {
         wxColour myWxColor;
-        for(int i=0; i<paletteSize; i++)
+        for (int i = 0; i < paletteSize; i++)
         {
             myWxColor = gradient.getColorAt(i);
             redPalette[i] = myWxColor.Red();
@@ -2039,7 +2042,7 @@ void Fractal::RebuildPalette()
     }
     else
     {
-        for(int i=0; i<paletteSize; i++)
+        for (int i = 0; i < paletteSize; i++)
         {
             redPalette[i] = CalcGradient(i, Color::Red);
             greenPalette[i] = CalcGradient(i, Color::Green);
@@ -2047,58 +2050,59 @@ void Fractal::RebuildPalette()
         }
     }
 
-    for(int i=0; i<paletteSize; i++)
+    for (int i = 0; i < paletteSize; i++)
         palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
 
-    if(usingRenderImage)
+    if (usingRenderImage)
     {
         rendered = false;
         dontDrawTempImage = true;
     }
-    else if(renderingToScreen)
+    else if (renderingToScreen)
     {
         // Redraw colors.
-        if(relativeColor)
+        if (relativeColor)
         {
             // Search for color maximum.
             maxColorMapVal = 0;
-            for(int i=0; i<screenWidth; i++)
+            for (int i = 0; i < screenWidth; i++)
             {
-                for(int j=0; j<screenHeight; j++)
+                for (int j = 0; j < screenHeight; j++)
                 {
-                    if(colorMap[i][j] > maxColorMapVal)
+                    if (colorMap[i][j] > maxColorMapVal)
                         maxColorMapVal = colorMap[i][j];
                 }
             }
-            if(maxColorMapVal == 0)
+            if (maxColorMapVal == 0)
                 maxColorMapVal = 1;
 
-            for(int i=0; i<screenWidth; i++)
+            for (int i = 0; i < screenWidth; i++)
             {
-                for(int j=0; j<screenHeight; j++)
+                for (int j = 0; j < screenHeight; j++)
                 {
-                    if(setMap[i][j] == false || !colorSet)
+                    if (setMap[i][j] == false || !colorSet)
                     {
-                        sf::Color Color = CalcColor(((double)colorMap[i][j]/(double)maxColorMapVal)*paletteSize + changeGradient);
-                        image.SetPixel(i, j, Color);
+                        sf::Color Color = CalcColor(((double)colorMap[i][j] / (double)maxColorMapVal) * paletteSize + changeGradient);
+                        image.setPixel(i, j, Color);
                     }
                 }
             }
         }
         else
         {
-            for(int i=0; i<screenWidth; i++)
+            for (int i = 0; i < screenWidth; i++)
             {
-                for(int j=0; j<screenHeight; j++)
+                for (int j = 0; j < screenHeight; j++)
                 {
-                    if(setMap[i][j] == false || !colorSet)
+                    if (setMap[i][j] == false || !colorSet)
                     {
                         sf::Color Color = CalcColor(colorMap[i][j] + changeGradient);
-                        image.SetPixel(i, j, Color);
+                        image.setPixel(i, j, Color);
                     }
                 }
             }
         }
+        texture.loadFromImage(image);
     }
 }
 int Fractal::GetPaletteSize()
@@ -2116,7 +2120,7 @@ void Fractal::SetPaletteSize(int size)
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
     palette = new sf::Color[paletteSize];
-    varGradientStep = paletteSize/60;
+    varGradientStep = paletteSize / 60;
     this->RebuildPalette();
 }
 void Fractal::SetVarGradient(int n)
@@ -2124,10 +2128,10 @@ void Fractal::SetVarGradient(int n)
     varGradChange = true;
     changeGradient = n % paletteSize;
 
-    if(this->IsRendering())
+    if (this->IsRendering())
         dontDrawTempImage = true;
 
-    if(usingRenderImage)
+    if (usingRenderImage)
     {
         rendered = false;
         dontDrawTempImage = true;
@@ -2144,8 +2148,8 @@ void Fractal::SetPaletteMode(ColorMode mode)
     delete[] bluePalette;
     delete[] palette;
 
-    if(mode == ColorMode::Gradient)
-        paletteSize = gradient.getMax()-gradient.getMin();
+    if (mode == ColorMode::Gradient)
+        paletteSize = gradient.getMax() - gradient.getMin();
     else
         paletteSize = gaussianPaletteSize;
 
@@ -2153,7 +2157,7 @@ void Fractal::SetPaletteMode(ColorMode mode)
     greenPalette = new sf::Uint8[paletteSize];
     bluePalette = new sf::Uint8[paletteSize];
     palette = new sf::Color[paletteSize];
-    varGradientStep = paletteSize/60;
+    varGradientStep = paletteSize / 60;
     this->RebuildPalette();
 }
 ColorMode Fractal::GetColorMode()
@@ -2194,18 +2198,18 @@ bool Fractal::GetRelativeColorMode()
 // Julia mode operations.
 void Fractal::SetK(double _real, double _imaginary)
 {
-    if(watchdog.ThreadRunning())
+    if (watchdog.ThreadRunning())
     {
-        watchdog.Terminate();
+        watchdog.terminate();
         watchdog.StopThreads();
         rendering = false;
     }
-    if(_real != kReal || _imaginary != kImaginary) rendered = false;
+    if (_real != kReal || _imaginary != kImaginary) rendered = false;
 
     kReal = _real;
     kImaginary = _imaginary;
 
-    if(imgInVector) this->DeleteSavedZooms();
+    if (imgInVector) this->DeleteSavedZooms();
 
     dontDrawTempImage = true;
 }
@@ -2236,14 +2240,14 @@ void Fractal::DrawLine(double x1, double y1, double x2, double y2, sf::Color col
     data.y2 = y2;
     data.color = color;
 
-    if(orbitLine)
+    if (orbitLine)
         orbitLines.push_back(data);
     else
         lines.push_back(data);
 
     geomFigure = true;
 }
-void Fractal::DrawCircle( double x_center, double y_center, double radius, sf::Color color )
+void Fractal::DrawCircle(double x_center, double y_center, double radius, sf::Color color)
 {
     CircleData data;
     data.x_center = x_center;
@@ -2253,48 +2257,50 @@ void Fractal::DrawCircle( double x_center, double y_center, double radius, sf::C
     circles.push_back(data);
     geomFigure = true;
 }
-void Fractal::DrawGeom(sf::RenderWindow *Window)
+void Fractal::DrawGeom(sf::RenderWindow* Window)
 {
     // Draw lines.
-    for(unsigned int i=0; i<lines.size(); i++)
+    for (unsigned int i = 0; i < lines.size(); i++)
     {
-        float x1 = (lines[i].x1-minX)/xFactor;
-        float y1 = (maxY-lines[i].y1)/yFactor;
-        float x2 = (lines[i].x2-minX)/xFactor;
-        float y2 = (maxY-lines[i].y2)/yFactor;
-        sf::Shape line = sf::Shape::Line(x1, y1, x2, y2, 2, lines[i].color);
-        Window->Draw(line);
+        float x1 = (lines[i].x1 - minX) / xFactor;
+        float y1 = (maxY - lines[i].y1) / yFactor;
+        float x2 = (lines[i].x2 - minX) / xFactor;
+        float y2 = (maxY - lines[i].y2) / yFactor;
+        sf::Vertex line[] = { sf::Vertex(sf::Vector2f(x1, y1), lines[i].color), sf::Vertex(sf::Vector2f(x2, y2), lines[i].color) };
+        Window->draw(line, 2, sf::Lines);
     }
 
     // Draw orbit lines.
-    for(unsigned int i=0; i<orbitLines.size(); i++)
+    for (unsigned int i = 0; i < orbitLines.size(); i++)
     {
-        float x1 = (orbitLines[i].x1-minX)/xFactor;
-        float y1 = (maxY-orbitLines[i].y1)/yFactor;
-        float x2 = (orbitLines[i].x2-minX)/xFactor;
-        float y2 = (maxY-orbitLines[i].y2)/yFactor;
-        sf::Shape line = sf::Shape::Line(x1, y1, x2, y2, 2, orbitLines[i].color);
-        Window->Draw(line);
+        float x1 = (orbitLines[i].x1 - minX) / xFactor;
+        float y1 = (maxY - orbitLines[i].y1) / yFactor;
+        float x2 = (orbitLines[i].x2 - minX) / xFactor;
+        float y2 = (maxY - orbitLines[i].y2) / yFactor;
+        sf::Vertex line[] = { sf::Vertex(sf::Vector2f(x1, y1), orbitLines[i].color), sf::Vertex(sf::Vector2f(x2, y2), orbitLines[i].color) };
+        Window->draw(line, 2, sf::Lines);
     }
 
     // Draw circles.
-    for(unsigned int i=0; i<circles.size(); i++)
+    for (unsigned int i = 0; i < circles.size(); i++)
     {
-        float x0 = (circles[i].x_center-minX)/xFactor;
-        float y0 = (maxY-circles[i].y_center)/yFactor;
-        float right = (circles[i].x_center + circles[i].radius-minX)/xFactor;
+        float x0 = (circles[i].x_center - minX) / xFactor;
+        float y0 = (maxY - circles[i].y_center) / yFactor;
+        float right = (circles[i].x_center + circles[i].radius - minX) / xFactor;
         float r = right - x0;
-        sf::Shape circle = sf::Shape::Circle(x0, y0, r, circles[i].color, 2, sf::Color(0,0,0));
-        circle.EnableFill(false);
-        circle.EnableOutline(true);
-        Window->Draw(circle);
+        sf::CircleShape circle(r);
+        circle.setPosition(x0 - r, y0 - r);
+        circle.setFillColor(sf::Color::Transparent);
+        circle.setOutlineColor(circles[i].color);
+        circle.setOutlineThickness(2);
+        Window->draw(circle);
     }
 }
 
 // Orbit mode operations.
 void Fractal::SetOrbitMode(bool mode)
 {
-    if(hasOrbit)
+    if (hasOrbit)
     {
         orbitMode = mode;
         orbitX = 0;
@@ -2308,7 +2314,7 @@ bool Fractal::HasOrbit()
 }
 void Fractal::SetOrbitPoint(double x, double y)
 {
-    if(!orbitDrawn)
+    if (!orbitDrawn)
     {
         orbitX = x;
         orbitY = y;
@@ -2322,10 +2328,10 @@ void Fractal::SetOrbitChange()
 // Orbit trap operations.
 void Fractal::SetOrbitTrapMode(bool mode)
 {
-    if(hasOrbitTrap)
+    if (hasOrbitTrap)
     {
         this->DeleteSavedZooms();
-        if(paused)
+        if (paused)
             dontDrawTempImage = true;
         orbitTrapMode = mode;
     }
@@ -2342,10 +2348,10 @@ bool Fractal::OrbitTrapActivated()
 // SmoothRender
 void Fractal::SetSmoothRender(bool mode)
 {
-    if(hasSmoothRender)
+    if (hasSmoothRender)
     {
         this->DeleteSavedZooms();
-        if(paused)
+        if (paused)
             dontDrawTempImage = true;
         smoothRender = mode;
     }
@@ -2362,7 +2368,7 @@ bool Fractal::SmoothRenderActivated()
 // Option panel.
 bool Fractal::HasOptPanel()
 {
-    if(panelOpt.GetElementsSize() > 0)
+    if (panelOpt.GetElementsSize() > 0)
         return true;
     else
         return false;
@@ -2378,12 +2384,12 @@ PanelOptions* Fractal::GetOptPanel()
 ///////////////////
 
 // RenderFractal
-RenderFractal::RenderFractal()
+RenderFractal::RenderFractal() 
 {
     setMap = nullptr;
     colorMap = nullptr;
     auxMap = nullptr;
-    x = y =  0;
+    x = y = 0;
     threadProgress = 0;
     wo = ho = wf = hf = oldHo = 0;
 
@@ -2424,13 +2430,13 @@ void RenderFractal::SetOldHo(int _oldHo)
 {
     oldHo = _oldHo;
 }
-void RenderFractal::Run()
+void RenderFractal::run()
 {
     y = ho;
     threadRunning = true;
     stopped = false;
 
-    if(specialRenderMode)
+    if (specialRenderMode)
         this->SpecialRender();
     else
         this->Render();
@@ -2439,11 +2445,11 @@ void RenderFractal::Run()
 }
 void RenderFractal::Stop()
 {
-    if(type != FractalType::ScriptFractal)
+    if (type != FractalType::ScriptFractal)
     {
         stopped = true;
 
-        if(y != 0)
+        if (y != 0)
             ho = y;
 
         x = wf - 1;
@@ -2476,8 +2482,8 @@ void RenderFractal::PreTerminate()
 }
 int RenderFractal::AskProgress()
 {
-    if(!stopped)
-        threadProgress = static_cast<int>( floor(100.0*((double)(y+1-oldHo)/(double)(hf-oldHo))) );
+    if (!stopped)
+        threadProgress = static_cast<int>(floor(100.0 * ((double)(y + 1 - oldHo) / (double)(hf - oldHo))));
 
     return threadProgress;
 }

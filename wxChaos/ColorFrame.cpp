@@ -670,12 +670,6 @@ void ColorFrame::SetAlgorithmChoices()
                 gaussIntIndex = i;
             }
             break;
-        case RenderingAlgorithm::Buddhabrot:
-            {
-                algorithmChoice->Append(wxT(buddhabrotTxt));    // Txt: "Buddhabrot"
-                buddhabrotIndex = i;
-            }
-            break;
         case RenderingAlgorithm::EscapeAngle:
             {
                 algorithmChoice->Append(wxT(escapeAngleTxt));    // Txt: "Escape angle"
@@ -780,8 +774,6 @@ void ColorFrame::SetTarget(Fractal* _target)
         algorithmChoice->SetSelection(escapeTimeIndex);
     else if(target->GetCurrentAlg() == RenderingAlgorithm::GaussianInt)
         algorithmChoice->SetSelection(gaussIntIndex);
-    else if(target->GetCurrentAlg() == RenderingAlgorithm::Buddhabrot)
-        algorithmChoice->SetSelection(buddhabrotIndex);
     else if(target->GetCurrentAlg() == RenderingAlgorithm::EscapeAngle)
         algorithmChoice->SetSelection(escapeAngleIndex);
     else if(target->GetCurrentAlg() == RenderingAlgorithm::ConvergenceTest)
@@ -1048,8 +1040,6 @@ void ColorFrame::OnChangeAlgorithm( wxCommandEvent& event )
 
     if(selection == gaussIntIndex)
         target->SetAlgorithm(RenderingAlgorithm::GaussianInt);
-    else if(selection == buddhabrotIndex)
-        target->SetAlgorithm(RenderingAlgorithm::Buddhabrot);
     else if(selection == escapeAngleIndex)
         target->SetAlgorithm(RenderingAlgorithm::EscapeAngle);
     else if(selection == triangleIneqIndex)

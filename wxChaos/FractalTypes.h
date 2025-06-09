@@ -655,84 +655,6 @@ public:
 };
 
 /**
-* @class RenderLogisticMap
-* @brief Render a logistic map.
-*/
-
-class RenderLogisticMap : public RenderFractal
-{
-private:
-    double seed;
-    bool stabilizePoint;
-    double progress;
-public:
-    RenderLogisticMap();
-
-    void Render();
-    void SetParams(double _seed, bool _stabilizePoint);
-    int AskProgress();
-};
-
-/**
-* @class LogisticMap
-* @brief Handles the RenderLogisticMap threads.
-*/
-class LogisticMap : public Fractal
-{
-private:
-    RenderLogisticMap* myRender;
-    double logisticSeed;
-    bool stabilizePoint;
-public:
-    LogisticMap(sf::RenderWindow* Window);
-    LogisticMap(int width, int height);
-
-    void Render();
-    void CopyOptFromPanel();
-};
-
-/**
-* @class RenderHenonMap
-* @brief Render a Henon map.
-*/
-
-class RenderHenonMap : public RenderFractal
-{
-private:
-    double alpha, beta;
-    double x0, y0;
-    int i;
-public:
-    RenderHenonMap();
-
-    void Render();
-    void SetParams(double _alpha, double _beta, double _x0, double _y0);
-    int AskProgress();
-};
-
-/**
-* @class HenonMap
-* @brief Handles the RenderHenonMap threads.
-*/
-
-class HenonMap : public Fractal
-{
-private:
-    RenderHenonMap* myRender;
-    double alpha, beta;
-    double x0, y0;
-public:
-    HenonMap(sf::RenderWindow *Window);
-    HenonMap(int width, int height);
-    ~HenonMap();
-
-    void Render();
-    void CopyOptFromPanel();
-    void MoreIter();
-    void LessIter();
-};
-
-/**
 * @class RenderDPendulum
 * @brief Threaded DPendulum rendering routines.
 */
@@ -937,8 +859,6 @@ class FractalHandler
     BurningShipJulia* burningShipJulia;
     Fractory* fractory;
     Cell* cell;
-    LogisticMap* logisticMap;
-    HenonMap* henonMap;
     DPendulum* dPendulum;
     UserDefined* userDefined;
     FPUserDefined* fpUserDefined;

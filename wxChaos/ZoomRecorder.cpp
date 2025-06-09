@@ -20,8 +20,8 @@ private:
     double zoomSpeed, colorSpeed;
     string filepath;
 public:
-    ZoomRenderer(string p_filepath, FractalCanvas* p_fcanvas, int p_width, int p_height, int p_total_frames, 
-                 double p_zoom_speed, double p_color_speed)
+    ZoomRenderer(string p_filepath, FractalCanvas* p_fcanvas, int p_width, int p_height, int p_total_frames,
+        double p_zoom_speed, double p_color_speed)
     {
         filepath = p_filepath;
         fractalCanvasPtr = p_fcanvas;
@@ -99,7 +99,7 @@ public:
             sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
             string filename = "frame_" + FixedLengthToString(currentFrame, outputFileDigits) + ".jpg";
             string fullPath = FileNameJoin({ filepath, filename });
-            out.SaveToFile(fullPath);
+            out.saveToFile(fullPath);
         }
 
         // Render video from frames.
@@ -107,7 +107,7 @@ public:
         const string fileTemplate = "frame_%0" + to_string(outputFileDigits) + "d.jpg";
         const string inputFrames = FileNameJoin({ filepath, fileTemplate });
         const string outputVideo = FileNameJoin({ filepath, "Zoom.mp4" });
-        const string renderVideoCommand = ffmpegPath + " -i " + inputFrames + 
+        const string renderVideoCommand = ffmpegPath + " -i " + inputFrames +
             " -c:v libx264 -vf fps=30 -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\" -pix_fmt yuv420p " + outputVideo;
 
         system(renderVideoCommand.c_str());
@@ -118,7 +118,7 @@ public:
 
 // ZoomRecorder implementation.
 ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID id,
-                           const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+    const wxString& title, const wxPoint& pos, const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
     // Fractal handler initialization
@@ -139,17 +139,17 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     wxBoxSizer* previewAndButtonsSizer = new wxBoxSizer(wxVERTICAL);
     wxStaticBoxSizer* previewSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Preview")), wxVERTICAL);
 
-    previewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY, 
-                                       fractalHandler.GetFractalPtr()->GetRenderedWxBitmap(),
-                                       wxDefaultPosition, wxDefaultSize, 0);
+    previewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY,
+        fractalHandler.GetFractalPtr()->GetRenderedWxBitmap(),
+        wxDefaultPosition, wxDefaultSize, 0);
     previewSizer->Add(previewBitmap, 0, wxALL | wxEXPAND, 5);
 
     previewFrameText = new wxStaticText(previewSizer->GetStaticBox(), wxID_ANY, wxT("Frame:"), wxDefaultPosition, wxDefaultSize, 0);
     previewFrameText->Wrap(-1);
     previewSizer->Add(previewFrameText, 0, wxALL, 5);
 
-    previewSlider = new wxSlider(previewSizer->GetStaticBox(), wxID_ANY, 0, 0, 1800, wxDefaultPosition, wxDefaultSize, 
-                                 wxSL_AUTOTICKS | wxSL_BOTTOM | wxSL_HORIZONTAL | wxSL_LABELS);
+    previewSlider = new wxSlider(previewSizer->GetStaticBox(), wxID_ANY, 0, 0, 1800, wxDefaultPosition, wxDefaultSize,
+        wxSL_AUTOTICKS | wxSL_BOTTOM | wxSL_HORIZONTAL | wxSL_LABELS);
     previewSizer->Add(previewSlider, 0, wxALL | wxEXPAND, 5);
     previewAndButtonsSizer->Add(previewSizer, 1, wxEXPAND, 5);
 
@@ -408,14 +408,14 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent& event)
 
     progressDialog.Show(true);
     sf::Clock clock;
-    clock.Reset();
+    clock.restart();
 
     while (renderer->IsRunning())
     {
-        if (clock.GetElapsedTime() >= 0.05)
+        if (clock.getElapsedTime().asSeconds() >= 0.05)
         {
             progressDialog.Update(renderer->GetProgress());
-            clock.Reset();
+            clock.restart();
         }
     }
 

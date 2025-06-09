@@ -139,82 +139,6 @@ void RenderMandelbrot::Render()
             }
         }
     }
-    else if(myOpt.alg == RenderingAlgorithm::Buddhabrot)
-    {
-        sf::Mutex mutex;
-        srand(static_cast<unsigned int>(time(nullptr)));
-
-        complex<double> z, c;
-        complex<double> *cmpArray;
-        cmpArray = new complex<double>[static_cast<unsigned int>(maxIter)];
-        int topIter;
-
-        for(int i=0; i<maxIter; i++) cmpArray[i] = complex<double>(0, 0);
-
-        for(bd=0; bd<buddhaRandomP; bd++)
-        {
-            bool out = false;
-
-            // By default uses LGC which isn't very good.
-            z = c = complex<double>(((double(rand()) / double(RAND_MAX)) * (maxX - minX)) + minX,
-                                    ((double(rand()) / double(RAND_MAX)) * (maxY - minY)) + minY);
-            if
-            (
-               (z.real() >  -1.2 && z.real() <=  -1.1 && z.imag() >  -0.1 && z.imag() < 0.1)
-                || (z.real() >  -1.1 && z.real() <=  -0.9 && z.imag() >  -0.2 && z.imag() < 0.2)
-                || (z.real() >  -0.9 && z.real() <=  -0.8 && z.imag() >  -0.1 && z.imag() < 0.1)
-                || (z.real() > -0.69 && z.real() <= -0.61 && z.imag() >  -0.2 && z.imag() < 0.2)
-                || (z.real() > -0.61 && z.real() <=  -0.5 && z.imag() > -0.37 && z.imag() < 0.37)
-                || (z.real() >  -0.5 && z.real() <= -0.39 && z.imag() > -0.48 && z.imag() < 0.48)
-                || (z.real() > -0.39 && z.real() <=  0.14 && z.imag() > -0.55 && z.imag() < 0.55)
-                || (z.real() >  0.14 && z.real() <   0.29 && z.imag() > -0.42 && z.imag() < -0.07)
-                || (z.real() >  0.14 && z.real() <   0.29 && z.imag() >  0.07 && z.imag() < 0.42)
-            ) continue; // "if" taken from Wikipedia description.
-
-
-            for(int i=0; i<maxIter; i++)
-            {
-                if(z.real()*z.real() + z.imag()*z.imag() > 6)
-                {
-                    out = true;
-                    topIter = i;
-                    break;
-                }
-                cmpArray[i] = z;
-                z = pow(z, 2) + c;
-            }
-            if(out)
-            {
-                for(int i=0; i<=topIter; i++)
-                {
-                    int indexI = static_cast<int>((cmpArray[i].real()-minX)/xFactor);
-                    int indexJ = static_cast<int>((maxY-cmpArray[i].imag())/yFactor);
-                    if((indexI >= 0 && indexI < myOpt.screenWidth) && (indexJ >=0 && indexJ < myOpt.screenHeight))
-                    {
-                        mutex.Lock();
-                        auxMap[indexI][indexJ]++;
-                        mutex.Unlock();
-                    }
-                }
-
-                // Takes advantage of the simmetry.
-                z = c = complex<double>(c.real(), -c.imag());
-                for(int i=0; i<maxIter; i++)
-                {
-                    z = pow(z,2) + c;
-                    int indexI = static_cast<int>((z.real()-minX)/xFactor);
-                    int indexJ = static_cast<int>((maxY-z.imag())/yFactor);
-                    if((indexI >= 0 && indexI < myOpt.screenWidth) && (indexJ >=0 && indexJ < myOpt.screenHeight))
-                    {
-                        mutex.Lock();
-                        auxMap[indexI][indexJ]++;
-                        mutex.Unlock();
-                    }
-                }
-            }
-        }
-        delete[] cmpArray;
-    }
     else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
         unsigned n;
@@ -426,10 +350,7 @@ int RenderMandelbrot::AskProgress()
 {
     if(!stopped)
     {
-        if(myOpt.alg == RenderingAlgorithm::Buddhabrot)
-            threadProgress = static_cast<int>(100.0*(double)(bd+1)/(double)buddhaRandomP);
-        else
-            threadProgress = static_cast<int>(100.0*((double)(y+1-oldHo)/(double)(hf-oldHo)));
+        threadProgress = static_cast<int>(100.0 * ((double)(y + 1 - oldHo) / (double)(hf - oldHo)));
     }
     return threadProgress;
 }
@@ -465,7 +386,6 @@ Mandelbrot::Mandelbrot(sf::RenderWindow* Window) : Fractal(Window)
     alg = RenderingAlgorithm::EscapeTime;
     availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    availableAlg.push_back(RenderingAlgorithm::Buddhabrot);
     availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
     availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
 }
@@ -537,38 +457,9 @@ void Mandelbrot::CopyOptFromPanel()
 }
 void Mandelbrot::PreRender()
 {
-    // If the algorithm is buddhabrot forces to redraw all.
-    if(alg == RenderingAlgorithm::Buddhabrot)
-    {
-        xMoved = 0;
-        yMoved = 0;
-    }
 }
 void Mandelbrot::PreDrawMaps()
 {
-    // If buddhabrot is active, creates colorMap.
-    if(alg == RenderingAlgorithm::Buddhabrot)
-    {
-        // Search for color maximum.
-        unsigned int maxColorVal = 0;
-        for(int i=0; i<screenWidth; i++)
-        {
-            for (int j = 0; j < screenHeight; j++)
-            {
-                if (auxMap[i][j] > maxColorVal)
-                    maxColorVal = auxMap[i][j];
-            }
-        }
-        for(int i=0; i<screenWidth; i++)
-        {
-            for(int j=0; j<screenHeight; j++)
-            {
-                colorMap[i][j] %= 60;
-                colorMap[i][j] /= 4;
-                colorMap[i][j] += static_cast<unsigned int>(paletteSize*(((double)auxMap[i][j])/((double)maxColorVal)));
-            }
-        }
-    }
 }
 
 // RenderMandelbrotZN
@@ -4682,311 +4573,6 @@ void Cell::CopyOptFromPanel()
     bailout = *panelOpt.GetDoubleElement(0);
 }
 
-// RenderLogisticMap
-RenderLogisticMap::RenderLogisticMap()
-{
-    progress = 0;
-    seed = 0.0;
-    stabilizePoint = false;
-}
-void RenderLogisticMap::Render()
-{
-    double a, x;
-    int coordX, coordY;
-    progress = 0;
-
-    if(myOpt.alg == RenderingAlgorithm::ChaoticMap)
-    {
-        for(int i=0; i<myOpt.screenWidth; i++)
-        {
-            a = minX + i*xFactor;
-            x = seed;
-            if(stabilizePoint)
-            {
-                for(unsigned int n=0; n< maxIter; n++)
-                {
-                    x = a*x*(1-x);
-                    progress++;
-                }
-            }
-            for(unsigned int n=0; n<maxIter; n++)
-            {
-                x = a*x*(1-x);
-                coordX = static_cast<int>((a-minX)/xFactor);
-                coordY = static_cast<int>((maxY-x)/yFactor);
-                if(coordX >= 0 && coordX < myOpt.screenWidth)
-                {
-                    if(coordY >= 0 && coordY < myOpt.screenHeight)
-                        setMap[coordX][coordY] = 1;
-                }
-                progress++;
-            }
-        }
-    }
-    else if(myOpt.alg == RenderingAlgorithm::Lyapunov)
-    {
-        double fPrimeSum;
-        for(int i=0; i<myOpt.screenWidth; i++)
-        {
-            a = minX + i*xFactor;
-            x = seed;
-            fPrimeSum = 0;
-
-            for(unsigned int n=0; n<maxIter; n++)
-            {
-                x = a*x*(1-x);
-                fPrimeSum += log(abs(a*(1 - 2*x)));
-                progress++;
-            }
-            coordX = static_cast<int>((a-minX)/xFactor);
-            coordY = static_cast<int>((maxY-(fPrimeSum/(double)maxIter))/yFactor);
-            if(coordX >= 0 && coordX < myOpt.screenWidth)
-            {
-                if(coordY >= 0 && coordY < myOpt.screenHeight)
-                    setMap[coordX][coordY] = 1;
-            }
-        }
-    }
-}
-void RenderLogisticMap::SetParams(double _seed, bool _stabilizePoint)
-{
-    seed = _seed;
-    stabilizePoint = _stabilizePoint;
-}
-int RenderLogisticMap::AskProgress()
-{
-    if(!stopped)
-    {
-        if(myOpt.alg == RenderingAlgorithm::ChaoticMap && stabilizePoint)
-            threadProgress = (100*progress)/(2*maxIter*myOpt.screenWidth);
-        else
-            threadProgress = (100*progress)/(maxIter*myOpt.screenWidth);
-    }
-    return threadProgress;
-}
-
-
-// LogisticMap
-LogisticMap::LogisticMap(sf::RenderWindow* Window) : Fractal(Window)
-{
-    // Adjust the scale.
-    minX = 2.8;
-    maxX = 4;
-    minY = 0.24;
-    maxY = 1;
-    this->SetOutermostZoom();
-
-    type = FractalType::Logistic;
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
-    this->SetExtColorMode(false);
-    redrawAlways = true;
-    threadNumber = 1;
-
-    // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(seedTxt), &logisticSeed, wxT("0.25"));
-    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(stabilizeTxt), &stabilizePoint, wxT("true"));
-    logisticSeed = 0.25;
-    stabilizePoint = true;
-
-    myRender = new RenderLogisticMap[1];
-    SetWatchdog<RenderLogisticMap>(myRender, &watchdog, 1);
-
-    // Specify algorithms.
-    alg = RenderingAlgorithm::ChaoticMap;
-    availableAlg.push_back(RenderingAlgorithm::ChaoticMap);
-    availableAlg.push_back(RenderingAlgorithm::Lyapunov);
-}
-LogisticMap::LogisticMap(int width, int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    minX = 2.8;
-    maxX = 4;
-    minY = 0.24;
-    maxY = 1;
-    this->SetOutermostZoom();
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
-    threadNumber = 1;
-
-    // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(seedTxt), &logisticSeed, wxT("0.25"));
-    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(stabilizeTxt), &stabilizePoint, wxT("true"));
-    logisticSeed = 0.25;
-    stabilizePoint = true;
-    renderJobComp = false;
-    alg = RenderingAlgorithm::ChaoticMap;
-
-    type = FractalType::Logistic;
-    myRender = new RenderLogisticMap[1];
-    SetWatchdog<RenderLogisticMap>(myRender, &watchdog, 1);
-}
-void LogisticMap::Render()
-{
-    watchdog.Reset();
-    myRender[0].SetParams(logisticSeed, stabilizePoint);
-    myRender[0].SetOpt(this->GetOptions());
-    myRender[0].SetRenderOut(setMap, colorMap, auxMap);
-    myRender[0].Launch();
-    watchdog.Launch();
-}
-void LogisticMap::CopyOptFromPanel()
-{
-    logisticSeed = *panelOpt.GetDoubleElement(0);
-    stabilizePoint = *panelOpt.GetBoolElement(0);
-}
-
-// RenderHenonMap
-RenderHenonMap::RenderHenonMap()
-{
-    i = 0;
-    alpha = beta = x0 = y0 = 0.0;
-}
-void RenderHenonMap::Render()
-{
-    double x = x0;
-    double y = y0;
-    double tempX;
-    int coordX, coordY;
-
-    if(myOpt.alg == RenderingAlgorithm::ChaoticMap)
-    {
-        for(i=0; i<maxIter; i++)
-        {
-            coordX = ((x-minX)/xFactor);
-            coordY = ((maxY-y)/yFactor);
-            if((coordX >= 0 && coordX < myOpt.screenWidth) && (coordY >= 0 && coordY < myOpt.screenHeight))
-                setMap[coordX][coordY] = 1;
-
-            tempX = x;
-            x = y + 1 - alpha*x*x;
-            y = beta*tempX;
-        }
-    }
-}
-void RenderHenonMap::SetParams(double _alpha, double _beta, double _x0, double _y0)
-{
-    alpha = _alpha;
-    beta = _beta;
-    x0 = _x0;
-    y0 = _y0;
-}
-int RenderHenonMap::AskProgress()
-{
-    if(!stopped)
-        threadProgress = 100*i/maxIter;
-
-    return threadProgress;
-}
-
-// HenonMap
-HenonMap::HenonMap(sf::RenderWindow* Window) : Fractal(Window)
-{
-    // Adjust the scale.
-    minX = -1.5;
-    maxX = 1.5;
-    minY = -0.96;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
-    this->SetOutermostZoom();
-    maxIter = 20000;
-
-    type = FractalType::HenonMap;
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
-    this->SetExtColorMode(false);
-    redrawAlways = true;
-    threadNumber = 1;
-
-    // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(alphaTxt), &alpha, wxT("1.4"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(betaTxt), &beta, wxT("0.3"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("X0: "), &x0, wxT("0.5"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Y0: "), &y0, wxT("0.2"));
-    alpha = 1.4;
-    beta = 0.3;
-    x0 = 0.5;
-    y0 = 0.2;
-
-    myRender = new RenderHenonMap[1];
-    SetWatchdog<RenderHenonMap>(myRender, &watchdog, 1);
-
-    // Specify algorithms.
-    alg = RenderingAlgorithm::ChaoticMap;
-    availableAlg.push_back(RenderingAlgorithm::ChaoticMap);
-}
-HenonMap::HenonMap(int width, int height) : Fractal(width, height)
-{
-    type = FractalType::HenonMap;
-    alg = RenderingAlgorithm::ChaoticMap;
-
-    threadNumber = 1;
-    renderJobComp = false;
-    minX = -1.5;
-    maxX = 1.5;
-    minY = -0.4;
-    maxY = 0.4;
-    this->SetOutermostZoom();
-    maxIter = 20000;
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
-
-    // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(alphaTxt), &alpha, wxT("1.4"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(betaTxt), &beta, wxT("0.3"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("X0: "), &x0, wxT("0.5"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Y0: "), &y0, wxT("0.2"));
-    alpha = 1.4;
-    beta = 0.3;
-    x0 = 0.5;
-    y0 = 0.2;
-
-    myRender = new RenderHenonMap[1];
-    SetWatchdog<RenderHenonMap>(myRender, &watchdog, 1);
-}
-HenonMap::~HenonMap()
-{
-    this->StopRender();
-    delete[] myRender;
-}
-void HenonMap::Render()
-{
-    watchdog.Reset();
-    myRender[0].SetParams(alpha, beta, x0, y0);
-    myRender[0].SetOpt(this->GetOptions());
-    myRender[0].SetRenderOut(setMap, colorMap, auxMap);
-    myRender[0].Launch();
-    watchdog.Launch();
-}
-void HenonMap::CopyOptFromPanel()
-{
-    alpha = *panelOpt.GetDoubleElement(0);
-    beta = *panelOpt.GetDoubleElement(1);
-    x0 = *panelOpt.GetDoubleElement(2);
-    y0 = *panelOpt.GetDoubleElement(3);
-}
-void HenonMap::MoreIter()
-{
-    // Increases 1000 iterations.
-    changeFractalIter = true;
-    this->DeleteSavedZooms();
-    redrawAll = true;
-    maxIter += 1000;
-}
-void HenonMap::LessIter()
-{
-    // Decreases 1000 iterations.
-    changeFractalIter = true;
-    this->DeleteSavedZooms();
-    redrawAll = true;
-    int signedMaxIter = (int)maxIter;
-    if(signedMaxIter - 1000 > 0)
-        maxIter -= 1000;
-}
-
 // RenderDPendulum
 RenderDPendulum::RenderDPendulum()
 {
@@ -6098,8 +5684,6 @@ FractalHandler::FractalHandler()
     burningShipJulia = nullptr;
     fractory = nullptr;
     cell = nullptr;
-    logisticMap = nullptr;
-    henonMap = nullptr;
     dPendulum = nullptr;
     userDefined = nullptr;
     fpUserDefined = nullptr;
@@ -6215,16 +5799,6 @@ void FractalHandler::CreateFractal(FractalType _type, sf::RenderWindow* Window)
     case FractalType::Cell:
         {
             target = cell = new Cell(Window);
-            break;
-        }
-    case FractalType::Logistic:
-        {
-            target = logisticMap = new LogisticMap(Window);
-            break;
-        }
-    case FractalType::HenonMap:
-        {
-            target = henonMap = new HenonMap(Window);
             break;
         }
     case FractalType::DoublePendulum:
@@ -6349,16 +5923,6 @@ void FractalHandler::CreateFractal(FractalType _type, int width, int height)
     case FractalType::Cell:
         {
             target = cell = new Cell(width, height);
-            break;
-        }
-    case FractalType::Logistic:
-        {
-            target = logisticMap = new LogisticMap(width, height);
-            break;
-        }
-    case FractalType::HenonMap:
-        {
-            target = henonMap = new HenonMap(width, height);
             break;
         }
     case FractalType::DoublePendulum:
@@ -6514,16 +6078,6 @@ void FractalHandler::DeleteFractal()
     {
         delete cell;
         cell = nullptr;
-    }
-    if(logisticMap != nullptr)
-    {
-        delete logisticMap;
-        logisticMap = nullptr;
-    }
-    if(henonMap != nullptr)
-    {
-        delete henonMap;
-        henonMap = nullptr;
     }
     if(dPendulum != nullptr)
     {

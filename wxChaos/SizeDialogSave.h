@@ -10,7 +10,7 @@
 #pragma once
 #ifndef __sizeDiag
 #define __sizeDiag
-#pragma once
+
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
@@ -41,9 +41,9 @@ private:
     void OnCancel(wxCommandEvent& event);       ///< Stop threads and close window.
 
 public:
-    SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool _saveProgressAvailable = true, wxWindowID id = wxID_ANY, 
-                     const wxString& title = wxT("Saving..."), const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxSize(366, 150), long style = wxDEFAULT_DIALOG_STYLE);
+    SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool _saveProgressAvailable = true, wxWindowID id = wxID_ANY,
+        const wxString& title = wxT("Saving..."), const wxPoint& pos = wxDefaultPosition,
+        const wxSize& size = wxSize(366, 150), long style = wxDEFAULT_DIALOG_STYLE);
     ~SaveProgressDiag();
 
     ///@brief Inform if the fractal has finished.
@@ -84,9 +84,9 @@ private:
 
 public:
     SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
-                   string scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
-                   const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(283, 251), 
-                   long style = wxDEFAULT_DIALOG_STYLE);
+        string scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
+        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(283, 251),
+        long style = wxDEFAULT_DIALOG_STYLE);
     ~SizeDialogSave();
 };
 

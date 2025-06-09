@@ -58,6 +58,9 @@ class FractalCanvas : public wxSFMLCanvas
     sf::Image keybImage;                ///< Texture of the info images.
     sf::Image mouseImage;
     sf::Image helpImage;
+    sf::Texture keybTexture;
+    sf::Texture mouseTexture;
+    sf::Texture helpTexture;
     sf::Sprite outKeyb;                 ///< Sprite of the info images.
     sf::Sprite outMouse;
     sf::Sprite outHelp;
@@ -66,6 +69,7 @@ class FractalCanvas : public wxSFMLCanvas
        displayed on the fractal canvas. */
 #ifdef __linux__
     sf::Image juliaImage;
+    sf::Texture juliaTexture;
     sf::Sprite outJulia;
     FractalHandler juliaHandler;
 #endif
@@ -93,14 +97,14 @@ class FractalCanvas : public wxSFMLCanvas
     MainWindowStatus statusData;
     PauseContinueButton* btn;
 
-public :
+public:
     ///@brief Constructor
     ///@param status Pointer to the status bar of the MainFrame.
     ///@param pcb Pointer to struct that holds the adress of the pause button and its status.
     ///@param fractType Type of the fractal to be created.
     ///@param parent Parent wxWindow.
     FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FractalType fractType, wxWindow* Parent, wxWindowID Id,
-                  const wxPoint& Position, const wxSize& Size, long Style = 0);
+        const wxPoint& Position, const wxSize& Size, long Style = 0);
     ~FractalCanvas();
 
     ///@brief Changes the size of the canvas.

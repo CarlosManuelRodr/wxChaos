@@ -14,18 +14,18 @@ bool dimFrameState = false;
 double GetMaxElement(const vector<double> in)
 {
     double max = -std::numeric_limits<double>::infinity();
-    for(unsigned int i=0; i<in.size(); i++)
+    for (unsigned int i = 0; i < in.size(); i++)
     {
-        if(in[i] > max) max = in[i];
+        if (in[i] > max) max = in[i];
     }
     return max;
 }
 double GetMinElement(const vector<double> in)
 {
     double min = std::numeric_limits<double>::infinity();
-    for(unsigned int i=0; i<in.size(); i++)
+    for (unsigned int i = 0; i < in.size(); i++)
     {
-        if(in[i] < min) min = in[i];
+        if (in[i] < min) min = in[i];
     }
     return min;
 }
@@ -36,7 +36,7 @@ DimCalculator::DimCalculator()
     running = false;
     N = 0;
 }
-void DimCalculator::SetMap(bool **_map, int _size, int _ho, int _hf)
+void DimCalculator::SetMap(bool** _map, int _size, int _ho, int _hf)
 {
     map = _map;
     size = _size;
@@ -52,25 +52,26 @@ void DimCalculator::Run()
     running = true;
 
     N = 0;
-    double epsilon = (double)size/(double)div;
-    int ey_init = (double)ho/epsilon;
-    int ey_end = (double)hf/epsilon;
+    double epsilon = (double)size / (double)div;
+    int ey_init = (double)ho / epsilon;
+    int ey_end = (double)hf / epsilon;
 
     // Iterate through the boxes.
-    for(int ey=ey_init; ey < ey_end; ey++)
+    for (int ey = ey_init; ey < ey_end; ey++)
     {
-        for(int ex=0; ex<div; ex++)
+        for (int ex = 0; ex < div; ex++)
         {
+            if (!running) return; // Check for termination signal
             bool found = false;
 
             // And count the elements of the map that belong to the set.
-            for(int w=ex*epsilon; w<(ex+1)*epsilon && !found; w++)
+            for (int w = ex * epsilon; w < (ex + 1) * epsilon && !found; w++)
             {
-                for(int h=ey*epsilon; h<(ey+1)*epsilon; h++)
+                for (int h = ey * epsilon; h < (ey + 1) * epsilon; h++)
                 {
-                    if(w < size && h < size)
+                    if (w < size && h < size)
                     {
-                        if(map[w][h] == true)
+                        if (map[w][h] == true)
                         {
                             found = true;
                             N++;
@@ -92,6 +93,11 @@ bool DimCalculator::IsRunning()
 {
     return running;
 }
+void DimCalculator::Terminate()
+{
+    running = false;
+}
+
 
 // ImagePanel
 ImagePanel::ImagePanel(wxWindow* parent, int id, int _size) : wxPanel(parent, id, wxDefaultPosition, wxSize(_size, _size))
@@ -101,14 +107,14 @@ ImagePanel::ImagePanel(wxWindow* parent, int id, int _size) : wxPanel(parent, id
     div = 20; // Default.
 
     // Allocates memory for the maps.
-    map = new bool*[size];
-    for(int i=0; i<size; i++)
+    map = new bool* [size];
+    for (int i = 0; i < size; i++)
         map[i] = new bool[size];
 
     // Initializes maps.
-    for(int i=0; i<size; i++)
+    for (int i = 0; i < size; i++)
     {
-        for(int j=0; j<size; j++)
+        for (int j = 0; j < size; j++)
             map[i][j] = false;
     }
 
@@ -118,7 +124,7 @@ ImagePanel::ImagePanel(wxWindow* parent, int id, int _size) : wxPanel(parent, id
 ImagePanel::~ImagePanel()
 {
     // Cleanup.
-    for(int i=0; i< size; i++)
+    for (int i = 0; i < size; i++)
     {
         delete[] map[i];
     }
@@ -128,38 +134,38 @@ void ImagePanel::OnPaint(wxPaintEvent& event)
 {
     // Draw white background.
     wxPaintDC dc(this);
-    dc.SetBrush(wxBrush(wxColour(255,255,255)));
-    dc.SetPen(wxPen(wxColour(255,255,255)));
-    dc.DrawRectangle(0,0, size, size);
+    dc.SetBrush(wxBrush(wxColour(255, 255, 255)));
+    dc.SetPen(wxPen(wxColour(255, 255, 255)));
+    dc.DrawRectangle(0, 0, size, size);
 
-    if(map != nullptr)
+    if (map != nullptr)
     {
-        double epsilon = (double)size/(double)div;
+        double epsilon = (double)size / (double)div;
         int boxes = 0;
 
         // Fill color squares.
         dc.SetPen(wxColour(50, 50, 255));
-        dc.SetBrush(wxColour(50, 50, 255));
+        dc.SetBrush(wxBrush(wxColour(50, 50, 255)));
 
         // Iterate through the boxes.
-        for(int ey=0; ey<div; ey++)
+        for (int ey = 0; ey < div; ey++)
         {
-            for(int ex=0; ex<div; ex++)
+            for (int ex = 0; ex < div; ex++)
             {
                 bool found = false;
 
                 // And count the elements of the map that belong to the set.
-                for(int w=ex*epsilon; w<(ex+1)*epsilon && !found; w++)
+                for (int w = ex * epsilon; w < (ex + 1) * epsilon && !found; w++)
                 {
-                    for(int h=ey*epsilon; h<(ey+1)*epsilon; h++)
+                    for (int h = ey * epsilon; h < (ey + 1) * epsilon; h++)
                     {
-                        if(w < size && h < size)
+                        if (w < size && h < size)
                         {
-                            if(map[w][h] == true)
+                            if (map[w][h] == true)
                             {
                                 found = true;
                                 boxes++;
-                                dc.DrawRectangle(ex*epsilon, ey*epsilon, ceil(epsilon), ceil(epsilon));
+                                dc.DrawRectangle(ex * epsilon, ey * epsilon, ceil(epsilon), ceil(epsilon));
                                 break;
                             }
                         }
@@ -171,27 +177,27 @@ void ImagePanel::OnPaint(wxPaintEvent& event)
 
         // Now draw the horizontal division lines.
         dc.SetPen(wxColour(0, 0, 0));
-        for(int ey=0; ey < div; ey++)
+        for (int ey = 0; ey < div; ey++)
         {
-            int y = ey*epsilon;
+            int y = ey * epsilon;
             dc.DrawLine(0, y, size, y);
         }
-        dc.DrawLine(0, 399, size, 399);
+        dc.DrawLine(0, size - 1, size, size - 1);
 
         // Vertical lines.
-        for(int ex=0; ex < div; ex++)
+        for (int ex = 0; ex < div; ex++)
         {
-            int x = ex*epsilon;
+            int x = ex * epsilon;
             dc.DrawLine(x, 0, x, size);
         }
-        dc.DrawLine(399, 0, 399, size);
+        dc.DrawLine(size - 1, 0, size - 1, size);
 
         // Draw fractal.
-        for(int i=0; i<size; i++)
+        for (int i = 0; i < size; i++)
         {
-            for(int j=0; j<size; j++)
+            for (int j = 0; j < size; j++)
             {
-                if(map[i][j] == true)
+                if (map[i][j] == true)
                 {
                     dc.DrawPoint(i, j);
                 }
@@ -202,30 +208,30 @@ void ImagePanel::OnPaint(wxPaintEvent& event)
         // Calculate the numbers of digits in the number.
         int number = boxes;
         int digits = 1;
-        while(number >= 10)
+        while (number >= 10)
         {
             number /= 10;
             digits++;
         }
         int extra = 0;
         digits -= 3;
-        if(digits > 0)
-            extra += 10*digits;
+        if (digits > 0)
+            extra += 10 * digits;
 
         dc.SetBrush(wxBrush(wxColour(0, 0, 0, 100)));
-        dc.SetTextForeground(wxColour(255,255,255));
-        dc.DrawRectangle(0,383, 60 + extra, 17);
+        dc.SetTextForeground(wxColour(255, 255, 255));
+        dc.DrawRectangle(0, 383, 60 + extra, 17);
         wxString outText = wxT("N = ");
         outText += num_to_string(boxes);
         dc.DrawText(outText, 5, 383);
     }
 }
-void ImagePanel::SetMap(bool **_map, int _div)
+void ImagePanel::SetMap(bool** _map, int _div)
 {
     // Copy map.
-    for(int i=0; i<size; i++)
+    for (int i = 0; i < size; i++)
     {
-        for(int j=0; j<size; j++)
+        for (int j = 0; j < size; j++)
         {
             map[i][j] = _map[i][j];
         }
@@ -235,7 +241,7 @@ void ImagePanel::SetMap(bool **_map, int _div)
 
 // ConfFractOptDialog
 ConfFractOptDialog::ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWindowID id, const wxString& title,
-                                       const wxPoint& pos, const wxSize& size, long style )
+    const wxPoint& pos, const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
     target = _target;
@@ -272,7 +278,7 @@ ConfFractOptDialog::ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWin
     wxBoxSizer* buttonBoxxy = new wxBoxSizer(wxHORIZONTAL);
 
     okButton = new wxButton(this, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);
-    buttonBoxxy->Add(okButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    buttonBoxxy->Add(okButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
     applyButton = new wxButton(this, wxID_ANY, wxT(applyTxt), wxDefaultPosition, wxDefaultSize, 0);
     buttonBoxxy->Add(applyButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
@@ -284,7 +290,7 @@ ConfFractOptDialog::ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWin
 
     this->Centre(wxBOTH);
 
-    if(!target->IsJuliaVariety())
+    if (!target->IsJuliaVariety())
     {
         kRealCtrl->Enable(false);
         kImaginaryCtrl->Enable(false);
@@ -311,60 +317,60 @@ void ConfFractOptDialog::AdjustOptPanel()
     int index, labelIndex;
 
     // If there are elements in pOptions creates panel.
-    if(pOptions->GetElementsSize() > 0)
+    if (pOptions->GetElementsSize() > 0)
     {
         // Creates elements from each kind.
-        for(int i=0; i<pOptions->GetElementsSize(); i++)
+        for (int i = 0; i < pOptions->GetElementsSize(); i++)
         {
-            switch(pOptions->GetPanelOptType(i))
+            switch (pOptions->GetPanelOptType(i))
             {
             case PanelOptionType::Label:
-                {
-                    labels.push_back(new wxStaticText( mainScroll, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap( -1 );
-                    optionsBoxxy->Add( labels[labelIndex], 0, wxALL, 5 );
-                    foundLabels.push_back(i);
-                }
-                break;
+            {
+                labels.push_back(new wxStaticText(mainScroll, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0));
+                labelIndex = labels.size() - 1;
+                labels[labelIndex]->Wrap(-1);
+                optionsBoxxy->Add(labels[labelIndex], 0, wxALL, 5);
+                foundLabels.push_back(i);
+            }
+            break;
             case PanelOptionType::TextCtrl:
-                {
-                    labels.push_back(new wxStaticText( mainScroll, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap( -1 );
-                    optionsBoxxy->Add( labels[labelIndex], 0, wxALL, 5 );
+            {
+                labels.push_back(new wxStaticText(mainScroll, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0));
+                labelIndex = labels.size() - 1;
+                labels[labelIndex]->Wrap(-1);
+                optionsBoxxy->Add(labels[labelIndex], 0, wxALL, 5);
 
-                    textControls.push_back(new wxTextCtrl( mainScroll, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    index = textControls.size()-1;
-                    optionsBoxxy->Add( textControls[index], 0, wxALL|wxEXPAND, 5 );
-                    foundTextControls.push_back(i);
-                }
-                break;
+                textControls.push_back(new wxTextCtrl(mainScroll, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0));
+                index = textControls.size() - 1;
+                optionsBoxxy->Add(textControls[index], 0, wxALL | wxEXPAND, 5);
+                foundTextControls.push_back(i);
+            }
+            break;
             case PanelOptionType::Spin:
-                {
-                    labels.push_back(new wxStaticText(mainScroll, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0));
-                    labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap( -1 );
-                    optionsBoxxy->Add( labels[labelIndex], 0, wxALL, 5 );
+            {
+                labels.push_back(new wxStaticText(mainScroll, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0));
+                labelIndex = labels.size() - 1;
+                labels[labelIndex]->Wrap(-1);
+                optionsBoxxy->Add(labels[labelIndex], 0, wxALL, 5);
 
-                    spinControls.push_back(new wxSpinCtrl(mainScroll, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0));
-                    index = spinControls.size()-1;
-                    optionsBoxxy->Add(spinControls[index], 0, wxALL | wxEXPAND, 5);
-                    foundSpinControls.push_back(i);
-                }
-                break;
+                spinControls.push_back(new wxSpinCtrl(mainScroll, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0));
+                index = spinControls.size() - 1;
+                optionsBoxxy->Add(spinControls[index], 0, wxALL | wxEXPAND, 5);
+                foundSpinControls.push_back(i);
+            }
+            break;
             case PanelOptionType::CheckBox:
-                {
-                    checkBoxes.push_back(new wxCheckBox(mainScroll, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    index = checkBoxes.size()-1;
-                    if(pOptions->GetDefault(i) == wxT("true"))
-                        checkBoxes[index]->SetValue(true);
-                    else
-                        checkBoxes[index]->SetValue(false);
-                    optionsBoxxy->Add( checkBoxes[index], 0, wxALL|wxEXPAND, 5 );
-                    foundCheckBoxes.push_back(i);
-                }
-                break;
+            {
+                checkBoxes.push_back(new wxCheckBox(mainScroll, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0));
+                index = checkBoxes.size() - 1;
+                if (pOptions->GetDefault(i) == wxT("true"))
+                    checkBoxes[index]->SetValue(true);
+                else
+                    checkBoxes[index]->SetValue(false);
+                optionsBoxxy->Add(checkBoxes[index], 0, wxALL | wxEXPAND, 5);
+                foundCheckBoxes.push_back(i);
+            }
+            break;
             };
         }
 
@@ -376,25 +382,25 @@ void ConfFractOptDialog::AdjustOptPanel()
 void ConfFractOptDialog::DeleteOptPanel()
 {
     // Deletes panel elements.
-    for(unsigned int i=0; i<labels.size(); i++)
+    for (unsigned int i = 0; i < labels.size(); i++)
     {
         labels[i]->Destroy();
     }
     labels.clear();
     foundLabels.clear();
-    for(unsigned int i=0; i<textControls.size(); i++)
+    for (unsigned int i = 0; i < textControls.size(); i++)
     {
         textControls[i]->Destroy();
     }
     textControls.clear();
     foundTextControls.clear();
-    for(unsigned int i=0; i<spinControls.size(); i++)
+    for (unsigned int i = 0; i < spinControls.size(); i++)
     {
         spinControls[i]->Destroy();
     }
     spinControls.clear();
     foundSpinControls.clear();
-    for(unsigned int i=0; i<checkBoxes.size(); i++)
+    for (unsigned int i = 0; i < checkBoxes.size(); i++)
     {
         checkBoxes[i]->Destroy();
     }
@@ -404,7 +410,7 @@ void ConfFractOptDialog::DeleteOptPanel()
 void ConfFractOptDialog::SetNewTarget(Fractal* _target)
 {
     target = _target;
-    if(target->IsJuliaVariety())
+    if (target->IsJuliaVariety())
     {
         kRealCtrl->Enable(true);
         kRealCtrl->SetValue(num_to_string(_target->GetKReal()));
@@ -426,45 +432,45 @@ void ConfFractOptDialog::OnApply(wxCommandEvent& event)
 {
     // Pass parameters to the fractal and redraws it.
     PanelOptions* pOptions = target->GetOptPanel();
-    for(unsigned int i=0; i<foundTextControls.size(); i++)
+    for (unsigned int i = 0; i < foundTextControls.size(); i++)
     {
         *pOptions->GetDoubleElement(i) = string_to_double(textControls[i]->GetValue());
     }
-    for(unsigned int i=0; i<foundSpinControls.size(); i++)
+    for (unsigned int i = 0; i < foundSpinControls.size(); i++)
     {
         *pOptions->GetIntElement(i) = spinControls[i]->GetValue();
     }
-    for(unsigned int i=0; i<foundCheckBoxes.size(); i++)
+    for (unsigned int i = 0; i < foundCheckBoxes.size(); i++)
     {
-        if(checkBoxes[i]->GetValue())
+        if (checkBoxes[i]->GetValue())
             *pOptions->GetBoolElement(i) = true;
         else
             *pOptions->GetBoolElement(i) = false;
     }
-    if(target->IsJuliaVariety())
+    if (target->IsJuliaVariety())
         target->SetK(string_to_double(kRealCtrl->GetValue()), string_to_double(kImaginaryCtrl->GetValue()));
     target->SetFractalPropChanged();
 }
 
 // LinePlotter
-LinePlotter::LinePlotter(LineParams _params) : mpFX( wxT("Fit"))
+LinePlotter::LinePlotter(LineParams _params) : mpFX(wxT("Fit"))
 {
     params = _params;
 }
 double LinePlotter::GetY(double x)
 {
-    return params.m*x + params.b;
+    return params.m * x + params.b;
 }
 
 // PlotWindow
 PlotWindow::PlotWindow(vector<double> xList, vector<double> yList, wxWindow* parent, wxWindowID id, const wxString& title,
-    const wxPoint& pos, const wxSize& size, long style) : wxFrame( parent, id, title, pos, size, style )
+    const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
 {
     wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    m_plot = new mpWindow( this, -1, wxPoint(0,0), wxSize(500,500), wxBORDER_NONE );
+    m_plot = new mpWindow(this, -1, wxPoint(0, 0), wxSize(500, 500), wxBORDER_NONE);
     mpScaleX* xaxis = new mpScaleX(wxT("Epsilon"), mpALIGN_BOTTOM, true, mpX_NORMAL);
     mpScaleY* yaxis = new mpScaleY(wxT("N"), mpALIGN_LEFT, true);
     xaxis->SetDrawOutsideMargins(false);
@@ -481,13 +487,13 @@ PlotWindow::PlotWindow(vector<double> xList, vector<double> yList, wxWindow* par
     m_plot->AddLayer(vectorLayer);
     m_plot->Fit();
 
-    wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
     topsizer->Add(m_plot, 1, wxEXPAND);
     SetAutoLayout(TRUE);
     SetSizer(topsizer);
 }
 PlotWindow::PlotWindow(LineParams params, vector<double> xList, vector<double> yList, wxWindow* parent, wxWindowID id,
-    const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame( parent, id, title, pos, size, style )
+    const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
 {
 #ifdef _WIN32
     wxIcon icon(wxT("Resources/icon.ico"), wxBITMAP_TYPE_ICO);
@@ -529,6 +535,10 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
 {
     threadNumber = Get_Cores();
     dimCalculator = new DimCalculator[threadNumber];
+    dimThreads = new sf::Thread * [threadNumber];
+    for (int i = 0; i < threadNumber; ++i)
+        dimThreads[i] = nullptr;
+
     previewSize = 400;
     target = nullptr;
     confFractOptDialog = nullptr;
@@ -536,9 +546,9 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     calculatingDimension = false;
     scriptSelected = false;
     firstRender = true;
-    clock.Reset();
+    clock.restart();
 
-    this->SetSizeHints( wxSize( 300,300 ), wxDefaultSize );
+    this->SetSizeHints(wxSize(300, 300), wxDefaultSize);
 
 #ifdef _WIN32
     wxIcon icon(wxT("Resources/icon.ico"), wxBITMAP_TYPE_ICO);
@@ -546,18 +556,18 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
 #endif
 
     wxBoxSizer* mainBoxxy = new wxBoxSizer(wxVERTICAL);
-    mainPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL);
+    mainPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
     mainPanel->SetScrollRate(5, 5);
 
     wxBoxSizer* subMainBoxxy = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* paramBoxxy = new wxBoxSizer(wxVERTICAL);
-    wxStaticBoxSizer* fractalBoxxy = new wxStaticBoxSizer(new wxStaticBox( mainPanel, wxID_ANY, wxT("Fractal")), wxHORIZONTAL);
+    wxStaticBoxSizer* fractalBoxxy = new wxStaticBoxSizer(new wxStaticBox(mainPanel, wxID_ANY, wxT("Fractal")), wxHORIZONTAL);
     wxBoxSizer* borderBoxxy = new wxBoxSizer(wxVERTICAL);
 
-    wxString fractalChoiceChoices[] = { wxT(menuHenonMapTxt), wxT(menuMandelbrotTxt), wxT(menuMandelbrotZNTxt), wxT(menuJuliaTxt), wxT(menuJuliaZNTxt), wxT(menuSineTxt), wxT(menuJellyfishTxt),
+    wxString fractalChoiceChoices[] = { wxT(menuMandelbrotTxt), wxT(menuMandelbrotZNTxt), wxT(menuJuliaTxt), wxT(menuJuliaZNTxt), wxT(menuSineTxt), wxT(menuJellyfishTxt),
                                         wxT(menuManowarTxt), wxT(menuManowarJuliaTxt), wxT(menuTricornTxt), wxT(menuBurningShipTxt), wxT(menuBurningShipJuliaTxt),
-                                        wxT(menuFractoryTxt), wxT(menuCellTxt), wxT(menuMagnetTxt), wxT(menuDoublePendulumTxt), wxT(menuLogisticTxt) };
-    int fractalChoiceNChoices = sizeof( fractalChoiceChoices ) / sizeof( wxString );
+                                        wxT(menuFractoryTxt), wxT(menuCellTxt), wxT(menuMagnetTxt), wxT(menuDoublePendulumTxt) };
+    int fractalChoiceNChoices = sizeof(fractalChoiceChoices) / sizeof(wxString);
     fractalChoice = new wxChoice(mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, fractalChoiceNChoices, fractalChoiceChoices, 0);
     borderBoxxy->Add(fractalChoice, 0, wxALL | wxEXPAND, 5);
 
@@ -579,8 +589,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     minYTxt->Wrap(-1);
     borderBoxxy->Add(minYTxt, 0, wxALL, 5);
 
-    minYCtrl = new wxTextCtrl( mainPanel, wxID_ANY, wxT("-0.4"), wxDefaultPosition, wxDefaultSize, 0);
-    borderBoxxy->Add(minYCtrl, 0, wxALL|wxEXPAND, 5);
+    minYCtrl = new wxTextCtrl(mainPanel, wxID_ANY, wxT("-0.4"), wxDefaultPosition, wxDefaultSize, 0);
+    borderBoxxy->Add(minYCtrl, 0, wxALL | wxEXPAND, 5);
 
     manualMaxYChk = new wxCheckBox(mainPanel, wxID_ANY, wxT(manualMaxYTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Manual MaxY"
     borderBoxxy->Add(manualMaxYChk, 0, wxALL, 5);
@@ -592,7 +602,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
 
     maxYCtrl = new wxTextCtrl(mainPanel, wxID_ANY, wxT("0.4"), wxDefaultPosition, wxDefaultSize, 0);
 
-    borderBoxxy->Add(maxYCtrl, 0, wxALL|wxEXPAND, 5);
+    borderBoxxy->Add(maxYCtrl, 0, wxALL | wxEXPAND, 5);
     fractalBoxxy->Add(borderBoxxy, 1, wxEXPAND, 5);
 
     wxBoxSizer* fOptBoxxy = new wxBoxSizer(wxVERTICAL);
@@ -609,33 +619,33 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     fOptBoxxy->Add(sizeTxt, 0, wxALL, 5);
 
     sizeCtrl = new wxTextCtrl(mainPanel, wxID_ANY, wxT("3000"), wxDefaultPosition, wxDefaultSize, 0);
-    fOptBoxxy->Add(sizeCtrl, 0, wxALL|wxEXPAND, 5);
+    fOptBoxxy->Add(sizeCtrl, 0, wxALL | wxEXPAND, 5);
 
     fOptButton = new wxButton(mainPanel, wxID_ANY, wxT(confFOpt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Configure fractal options"
-    fOptBoxxy->Add(fOptButton, 0, wxALL|wxEXPAND, 5);
+    fOptBoxxy->Add(fOptButton, 0, wxALL | wxEXPAND, 5);
 
-    wxStaticBoxSizer* previewBoxxy = new wxStaticBoxSizer(new wxStaticBox( mainPanel, wxID_ANY, wxT(quickPrevTxt)), wxVERTICAL);    // Txt: "Quick preview"
+    wxStaticBoxSizer* previewBoxxy = new wxStaticBoxSizer(new wxStaticBox(mainPanel, wxID_ANY, wxT(quickPrevTxt)), wxVERTICAL);    // Txt: "Quick preview"
 
     nDivTxt = new wxStaticText(mainPanel, wxID_ANY, wxT(nDivLblTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Number of divisions"
     nDivTxt->Wrap(-1);
     previewBoxxy->Add(nDivTxt, 0, wxALL, 5);
 
     nDivSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxT("20"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 200, 0);
-    previewBoxxy->Add(nDivSpin, 0, wxALL|wxEXPAND, 5);
+    previewBoxxy->Add(nDivSpin, 0, wxALL | wxEXPAND, 5);
 
     wxBoxSizer* renderPreBoxxy = new wxBoxSizer(wxVERTICAL);
 
     previewButton = new wxButton(mainPanel, wxID_ANY, wxT(renderPrevTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Render preview"
-    renderPreBoxxy->Add(previewButton, 0, wxALL|wxEXPAND, 5);
+    renderPreBoxxy->Add(previewButton, 0, wxALL | wxEXPAND, 5);
 
     savePreviewButton = new wxButton(mainPanel, wxID_ANY, wxT(savePrevTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Save preview"
-    renderPreBoxxy->Add(savePreviewButton, 0, wxALL|wxEXPAND, 5);
+    renderPreBoxxy->Add(savePreviewButton, 0, wxALL | wxEXPAND, 5);
     previewBoxxy->Add(renderPreBoxxy, 1, wxEXPAND, 5);
     fOptBoxxy->Add(previewBoxxy, 1, wxEXPAND, 5);
     fractalBoxxy->Add(fOptBoxxy, 1, wxEXPAND, 5);
     paramBoxxy->Add(fractalBoxxy, 1, wxEXPAND, 5);
 
-    wxStaticBoxSizer* dimBoxxy = new wxStaticBoxSizer(new wxStaticBox( mainPanel, wxID_ANY, wxT(boxCountTxt) ), wxVERTICAL);    // Txt: "Box-counting parameters"
+    wxStaticBoxSizer* dimBoxxy = new wxStaticBoxSizer(new wxStaticBox(mainPanel, wxID_ANY, wxT(boxCountTxt)), wxVERTICAL);    // Txt: "Box-counting parameters"
 
     divTxt = new wxStaticText(mainPanel, wxID_ANY, wxT(divLblTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Divisions"
     divTxt->Wrap(-1);
@@ -683,8 +693,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     goesToTxt->Wrap(-1);
     goesToBoxxy->Add(goesToTxt, 0, wxALL, 5);
 
-    xMaxSpin = new wxSpinCtrl(byFunctionPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 
-                              1, 1000000, 50 );
+    xMaxSpin = new wxSpinCtrl(byFunctionPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS,
+        1, 1000000, 50);
     goesToBoxxy->Add(xMaxSpin, 0, wxALL, 5);
     fSide2Boxxy->Add(goesToBoxxy, 1, wxEXPAND, 5);
     byFunctionBoxxy->Add(fSide2Boxxy, 1, wxEXPAND, 5);
@@ -721,8 +731,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     outFilePath += "/dump.csv";
 #endif
 
-    filePathCtrl = new wxTextCtrl( mainPanel, wxID_ANY, wxString(outFilePath.c_str(), wxConvUTF8), wxDefaultPosition, wxDefaultSize, 0 );
-    filePathCtrl->Enable( false );
+    filePathCtrl = new wxTextCtrl(mainPanel, wxID_ANY, wxString(outFilePath.c_str(), wxConvUTF8), wxDefaultPosition, wxDefaultSize, 0);
+    filePathCtrl->Enable(false);
 
     dumpBoxxy->Add(filePathCtrl, 0, wxALL | wxEXPAND, 5);
     dimBoxxy->Add(dumpBoxxy, 0, wxEXPAND, 5);
@@ -739,13 +749,13 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     wxBoxSizer* buttonBoxxy = new wxBoxSizer(wxHORIZONTAL);
 
     calcButton = new wxButton(mainPanel, wxID_ANY, wxT(calculateTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Calculate"
-    buttonBoxxy->Add( calcButton, 1, wxALL|wxALIGN_BOTTOM, 5 );
+    buttonBoxxy->Add(calcButton, 1, wxALL | wxALIGN_BOTTOM, 5);
 
     closeButton = new wxButton(mainPanel, wxID_ANY, wxT(closeTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Close"
     buttonBoxxy->Add(closeButton, 1, wxALL | wxALIGN_BOTTOM, 5);
 
     helpButton = new wxBitmapButton(mainPanel, wxID_ANY, wxBitmap(GetWxAbsPath({ "Resources", "help.png" }), wxBITMAP_TYPE_ANY),
-                                    wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
+        wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
     buttonBoxxy->Add(helpButton, 0, wxALIGN_BOTTOM | wxALL, 5);
 
     dimBoxxy->Add(buttonBoxxy, 1, wxEXPAND, 5);
@@ -760,16 +770,16 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     outLine = new wxStaticLine(mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
     outputBoxxy->Add(outLine, 0, wxEXPAND | wxALL, 5);
 
-    logCtrl = new wxRichTextCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 
-                                 wxTE_READONLY|wxVSCROLL|wxHSCROLL|wxNO_BORDER|wxWANTS_CHARS );
-    outputBoxxy->Add(logCtrl, 1, wxALL|wxEXPAND, 5);
+    logCtrl = new wxRichTextCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+        wxTE_READONLY | wxVSCROLL | wxHSCROLL | wxNO_BORDER | wxWANTS_CHARS);
+    outputBoxxy->Add(logCtrl, 1, wxALL | wxEXPAND, 5);
 
     progressBar = new wxGauge(mainPanel, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
-    outputBoxxy->Add( progressBar, 0, wxALL|wxEXPAND, 5);
+    outputBoxxy->Add(progressBar, 0, wxALL | wxEXPAND, 5);
 
     progressTxt = new wxStaticText(mainPanel, wxID_ANY, wxT(progStoppedTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Progress: Stopped"
     progressTxt->Wrap(-1);
-    outputBoxxy->Add(progressTxt, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+    outputBoxxy->Add(progressTxt, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
 
     subMainBoxxy->Add(outputBoxxy, 1, wxEXPAND, 5);
 
@@ -778,10 +788,10 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     subMainBoxxy->Fit(mainPanel);
     mainBoxxy->Add(mainPanel, 1, wxEXPAND | wxALL, 1);
 
-    this->SetSizer( mainBoxxy );
+    this->SetSizer(mainBoxxy);
     this->Layout();
 
-    this->Centre( wxBOTH );
+    this->Centre(wxBOTH);
 
     // Set welcome log text.
     logCtrl->WriteText(wxT(dimCalcLogTxt));    // Txt: "Dimension calculator log.\n\n"
@@ -789,7 +799,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     this->GetScriptFractals();
 
     // Set the default fractal.
-    fractalChoice->SetSelection( 0 );
+    fractalChoice->SetSelection(0);
     this->CreateFractal(previewSize);
     myOpt = target->GetOptions();
     minXCtrl->SetValue(num_to_string(myOpt.minX));
@@ -827,24 +837,31 @@ DimensionFrame::~DimensionFrame()
     savePreviewButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnSavePreview), NULL, this);
     helpButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnHelp), NULL, this);
 
-    if(calculatingDimension)
+    if (calculatingDimension)
     {
         // Stop render.
         target->StopRender();
 
         // Stop all.
-        for(int i=0; i<threadNumber; i++)
+        for (int i = 0; i < threadNumber; i++)
         {
-            if(dimCalculator[i].IsRunning())
+            if (dimCalculator[i].IsRunning())
                 dimCalculator[i].Terminate();
+            if (dimThreads[i])
+            {
+                dimThreads[i]->wait();
+                delete dimThreads[i];
+                dimThreads[i] = nullptr;
+            }
         }
         calcButton->SetLabel(wxT(calculateTxt));
         calculatingDimension = false;
     }
-    if(renderingPreview)
+    if (renderingPreview)
         target->StopRender();
 
     delete[] dimCalculator;
+    delete[] dimThreads;
     fractalHandler.DeleteFractal();
     delete confFractOptDialog;
 }
@@ -855,97 +872,87 @@ void DimensionFrame::CreateFractal(int size)
     int choice = fractalChoice->GetCurrentSelection();
 
     // Compiled fractals.
-    switch(choice)
+    switch (choice)
     {
-    case FL_HENON_MAP:
-        {
-            fractalHandler.CreateFractal(FractalType::HenonMap, size, size);
-            break;
-        }
     case FL_MANDELBROT:
-        {
-            fractalHandler.CreateFractal(FractalType::Mandelbrot, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Mandelbrot, size, size);
+        break;
+    }
     case FL_MANDELBROT_ZN:
-        {
-            fractalHandler.CreateFractal(FractalType::MandelbrotZN, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::MandelbrotZN, size, size);
+        break;
+    }
     case FL_JULIA:
-        {
-            fractalHandler.CreateFractal(FractalType::Julia, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Julia, size, size);
+        break;
+    }
     case FL_JULIA_ZN:
-        {
-            fractalHandler.CreateFractal(FractalType::JuliaZN, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::JuliaZN, size, size);
+        break;
+    }
     case FL_SINOIDAL:
-        {
-            fractalHandler.CreateFractal(FractalType::Sinoidal, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Sinoidal, size, size);
+        break;
+    }
     case FL_MEDUSA:
-        {
-            fractalHandler.CreateFractal(FractalType::Medusa, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Medusa, size, size);
+        break;
+    }
     case FL_MANOWAR:
-        {
-            fractalHandler.CreateFractal(FractalType::Manowar, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Manowar, size, size);
+        break;
+    }
     case FL_MANOWAR_JULIA:
-        {
-            fractalHandler.CreateFractal(FractalType::ManowarJulia, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::ManowarJulia, size, size);
+        break;
+    }
     case FL_TRICORN:
-        {
-            fractalHandler.CreateFractal(FractalType::Tricorn, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Tricorn, size, size);
+        break;
+    }
     case FL_BURNING_SHIP:
-        {
-            fractalHandler.CreateFractal(FractalType::BurningShip, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::BurningShip, size, size);
+        break;
+    }
     case FL_BURNING_SHIP_JULIA:
-        {
-            fractalHandler.CreateFractal(FractalType::BurningShipJulia, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::BurningShipJulia, size, size);
+        break;
+    }
     case FL_FRACTORY:
-        {
-            fractalHandler.CreateFractal(FractalType::Fractory, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Fractory, size, size);
+        break;
+    }
     case FL_CELL:
-        {
-            fractalHandler.CreateFractal(FractalType::Cell, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Cell, size, size);
+        break;
+    }
     case FL_MAGNET:
-        {
-            fractalHandler.CreateFractal(FractalType::Magnetic, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::Magnetic, size, size);
+        break;
+    }
     case FL_DOUBLE_PENDULUM:
-        {
-            fractalHandler.CreateFractal(FractalType::DoublePendulum, size, size);
-            break;
-        }
-    case FL_LOGISTIC_MAP:
-        {
-            fractalHandler.CreateFractal(FractalType::Logistic, size, size);
-            break;
-        }
+    {
+        fractalHandler.CreateFractal(FractalType::DoublePendulum, size, size);
+        break;
+    }
     }
 
     // Script fractals.
-    if(choice >= COUNT)
+    if (choice >= COUNT)
     {
         int idx = choice - COUNT;
         fractalHandler.CreateScriptFractal(size, size, loadedScripts[scriptList[idx]]);
@@ -955,12 +962,12 @@ void DimensionFrame::CreateFractal(int size)
         scriptSelected = false;
 
     target = fractalHandler.GetFractalPtr();
-    if(confFractOptDialog != nullptr)
+    if (confFractOptDialog != nullptr)
         confFractOptDialog->SetNewTarget(target);
 }
 void DimensionFrame::OnRenderPreview(wxCommandEvent& event)
 {
-    if(!renderingPreview)
+    if (!renderingPreview)
     {
         target->Resize(previewSize, previewSize);
         myOpt = target->GetOptions();
@@ -969,10 +976,10 @@ void DimensionFrame::OnRenderPreview(wxCommandEvent& event)
         myOpt.maxX = string_to_double(maxXCtrl->GetValue());
         myOpt.minY = string_to_double(minYCtrl->GetValue());
 
-        if(manualMaxYChk->GetValue())
+        if (manualMaxYChk->GetValue())
             myOpt.maxY = string_to_double(maxYCtrl->GetValue());
         else
-            myOpt.maxY = myOpt.minY+(myOpt.maxX-myOpt.minX);
+            myOpt.maxY = myOpt.minY + (myOpt.maxX - myOpt.minX);
 
         myOpt.maxIter = string_to_int(iterCtrl->GetValue());
 
@@ -985,7 +992,7 @@ void DimensionFrame::OnRenderPreview(wxCommandEvent& event)
         calcButton->Enable(false);
         savePreviewButton->Enable(false);
 
-        if(scriptSelected)
+        if (scriptSelected)
             progressBar->Enable(false);
 
         renderingPreview = true;
@@ -1000,7 +1007,7 @@ void DimensionFrame::OnRenderPreview(wxCommandEvent& event)
         calcButton->Enable(true);
         savePreviewButton->Enable(true);
 
-        if(scriptSelected)
+        if (scriptSelected)
             progressBar->Enable(true);
 
         renderingPreview = false;
@@ -1019,14 +1026,14 @@ void DimensionFrame::OnChangeFractal(wxCommandEvent& event)
 }
 void DimensionFrame::OnManualMaxY(wxCommandEvent& event)
 {
-    if(manualMaxYChk->GetValue())
+    if (manualMaxYChk->GetValue())
         maxYCtrl->Enable(true);
     else
         maxYCtrl->Enable(false);
 }
 void DimensionFrame::OnChangeDump(wxCommandEvent& event)
 {
-    if(dumpCheck->GetValue())
+    if (dumpCheck->GetValue())
         filePathCtrl->Enable(true);
     else
         filePathCtrl->Enable(false);
@@ -1038,7 +1045,7 @@ void DimensionFrame::OnClose(wxCommandEvent& event)
 }
 void DimensionFrame::OnCalculate(wxCommandEvent& event)
 {
-    if(!calculatingDimension)
+    if (!calculatingDimension)
     {
         // Create divisions vector.
         div.clear();
@@ -1051,18 +1058,18 @@ void DimensionFrame::OnCalculate(wxCommandEvent& event)
         int xMax = xMaxSpin->GetValue();
 
         bool errorStatus = false;
-        if(divNotebook->GetSelection() == 0)
+        if (divNotebook->GetSelection() == 0)
         {
             // Get div values from parser.
             try
             {
-                for(int x=xMin; x<xMax; x++)
+                for (int x = xMin; x < xMax; x++)
                 {
                     xVal = x;
                     div.push_back(parser.Eval().GetFloat());
                 }
             }
-            catch(mup::ParserError &error)
+            catch (mup::ParserError& error)
             {
                 wxString err = error.GetMsg();
                 logCtrl->WriteText(wxT(errorParserTxt));    // Txt: "Parser error: "
@@ -1075,11 +1082,11 @@ void DimensionFrame::OnCalculate(wxCommandEvent& event)
         {
             wxString listNumbers = listCtrl->GetValue();
             div = get_int_list(listNumbers);
-            if(div.size() == 0)
+            if (div.size() == 0)
                 errorStatus = true;
         }
 
-        if(!errorStatus)
+        if (!errorStatus)
         {
             // Create fractal.
             size = string_to_int(wxString(sizeCtrl->GetValue()));
@@ -1088,19 +1095,19 @@ void DimensionFrame::OnCalculate(wxCommandEvent& event)
             myOpt.maxX = string_to_double(maxXCtrl->GetValue());
             myOpt.minY = string_to_double(minYCtrl->GetValue());
 
-            if(manualMaxYChk->GetValue())
+            if (manualMaxYChk->GetValue())
                 myOpt.maxY = string_to_double(maxYCtrl->GetValue());
             else
-                myOpt.maxY = myOpt.minY+(myOpt.maxX-myOpt.minX);
+                myOpt.maxY = myOpt.minY + (myOpt.maxX - myOpt.minX);
 
             myOpt.maxIter = string_to_int(iterCtrl->GetValue());
 
             // Compare with previous options.
             Options tempOpt = target->GetOptions();
 
-            if(tempOpt.minX != myOpt.minX || tempOpt.maxX != myOpt.maxX || tempOpt.minY != myOpt.minY ||
-               tempOpt.maxY != myOpt.maxY || tempOpt.maxIter != myOpt.maxIter || tempOpt.screenWidth != size  ||
-               target->GetChangeFractalProp() || firstRender)
+            if (tempOpt.minX != myOpt.minX || tempOpt.maxX != myOpt.maxX || tempOpt.minY != myOpt.minY ||
+                tempOpt.maxY != myOpt.maxY || tempOpt.maxIter != myOpt.maxIter || tempOpt.screenWidth != size ||
+                target->GetChangeFractalProp() || firstRender)
             {
                 // If a change was made or the render fractal was just created.
                 target->Resize(size, size);
@@ -1111,22 +1118,22 @@ void DimensionFrame::OnCalculate(wxCommandEvent& event)
             }
 
             // Divide thread assignment.
-            int sizeDiv = size/threadNumber;
-            for(int i=0; i<threadNumber; i++)
+            int sizeDiv = size / threadNumber;
+            for (int i = 0; i < threadNumber; i++)
             {
-                if(i < threadNumber-1)
-                    dimCalculator[i].SetMap(target->GetSetMap(), size, i*sizeDiv, (i+1)*sizeDiv);
+                if (i < threadNumber - 1)
+                    dimCalculator[i].SetMap(target->GetSetMap(), size, i * sizeDiv, (i + 1) * sizeDiv);
                 else
-                    dimCalculator[i].SetMap(target->GetSetMap(), size, i*sizeDiv, size);
+                    dimCalculator[i].SetMap(target->GetSetMap(), size, i * sizeDiv, size);
             }
 
-            if(div.size() > 0)
+            if (div.size() > 0)
             {
                 divIndex = -1;
                 calcButton->SetLabel(wxT(stopTxt));    // Txt: "Stop"
                 previewButton->Enable(false);
                 savePreviewButton->Enable(false);
-                if(scriptSelected) progressBar->Enable(false);
+                if (scriptSelected) progressBar->Enable(false);
                 calculatingDimension = true;
             }
         }
@@ -1137,38 +1144,43 @@ void DimensionFrame::OnCalculate(wxCommandEvent& event)
         target->StopRender();
 
         // Stop all.
-        for(int i=0; i<threadNumber; i++)
+        for (int i = 0; i < threadNumber; i++)
         {
-            if(dimCalculator[i].IsRunning())
+            if (dimCalculator[i].IsRunning())
                 dimCalculator[i].Terminate();
+            if (dimThreads[i]) {
+                dimThreads[i]->wait();
+                delete dimThreads[i];
+                dimThreads[i] = nullptr;
+            }
         }
         calcButton->SetLabel(wxT(calculateTxt));    // Txt: "Calculate"
         previewButton->Enable(true);
         savePreviewButton->Enable(true);
-        if(scriptSelected) progressBar->Enable(true);
+        if (scriptSelected) progressBar->Enable(true);
         logCtrl->WriteText(wxT(calcStoppedTxt));    // Txt: "Calculation stopped\n"
         progressBar->SetValue(0);
-        progressTxt->SetLabel(wxString( wxT(calcStoppedTxt)));    // Txt: "Calculation stopped\n"
+        progressTxt->SetLabel(wxString(wxT(calcStoppedTxt)));    // Txt: "Calculation stopped\n"
         calculatingDimension = false;
         firstRender = true;
     }
 }
 void DimensionFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    if(clock.GetElapsedTime() >= 0.05)
+    if (clock.getElapsedTime().asSeconds() >= 0.05)
     {
-        if(renderingPreview)
+        if (renderingPreview)
         {
-            if(target->IsRendering())
+            if (target->IsRendering())
             {
                 // Update progress while rendering preview.
                 progress = target->GetWatchdog()->GetThreadProgress();
-                if(scriptSelected)
-                    progressTxt->SetLabel(wxString( wxT(renderingTxt)));    // Txt: "Rendering"
+                if (scriptSelected)
+                    progressTxt->SetLabel(wxString(wxT(renderingTxt)));    // Txt: "Rendering"
                 else
                 {
                     progressBar->SetValue(progress);
-                    progressTxt->SetLabel(wxString(wxT(progressLblTxt)) + num_to_string(progress) +wxT("%") );    // Txt: "Progress: "
+                    progressTxt->SetLabel(wxString(wxT(progressLblTxt)) + num_to_string(progress) + wxT("%"));    // Txt: "Progress: "
                 }
             }
             else
@@ -1177,65 +1189,74 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent& event)
                 previewImage->SetMap(target->GetSetMap(), nDivSpin->GetValue());
                 previewImage->Refresh();
                 progressBar->SetValue(0);
-                progressTxt->SetLabel(wxString( wxT(progDoneTxt)));    // Txt: "Progress: Done"
+                progressTxt->SetLabel(wxString(wxT(progDoneTxt)));    // Txt: "Progress: Done"
                 this->WriteText(wxT(doneTxt));    // Txt: "Done\n"
                 previewButton->SetLabel(wxT(renderPrevTxt));    // Txt: "Render preview"
                 calcButton->Enable(true);
                 savePreviewButton->Enable(true);
 
-                if(scriptSelected)
+                if (scriptSelected)
                     progressBar->Enable(true);
 
                 renderingPreview = false;
             }
         }
-        if(calculatingDimension)
+        if (calculatingDimension)
         {
-            if(!target->IsRendering())
+            if (!target->IsRendering())
             {
                 // Check if there are threads running.
                 bool threadRunning = false;
-                for(int i=0; i<threadNumber; i++)
+                for (int i = 0; i < threadNumber; i++)
                 {
-                    if(dimCalculator[i].IsRunning())
+                    if (dimCalculator[i].IsRunning())
                         threadRunning = true;
                 }
 
-                if(!threadRunning)
+                if (!threadRunning)
                 {
-                    if(divIndex == -1)
+                    // Clean up finished threads
+                    for (int i = 0; i < threadNumber; ++i) {
+                        if (dimThreads[i]) {
+                            delete dimThreads[i];
+                            dimThreads[i] = nullptr;
+                        }
+                    }
+
+                    if (divIndex == -1)
                     {
                         // Launch the first pack of threads.
                         this->WriteText(wxT(startBCountTxt));    // Txt: "Starting box count.\n"
                         this->WriteText(wxT(epsilonCountTxt));    // Txt: "Epsilon   |   BoxCount.\n"
-                    #ifdef _WIN32
+#ifdef _WIN32
                         this->WriteText(wxT("-------------------\n"));
-                    #elif __linux__
+#elif __linux__
                         this->WriteText(wxT("--------------------------\n"));
-                    #endif
+#endif
                         divIndex++;
-                        for(int i=0; i<threadNumber; i++)
+                        for (int i = 0; i < threadNumber; i++)
                         {
                             dimCalculator[i].SetDiv(div[divIndex]);
-                            dimCalculator[i].Launch();
+                            dimThreads[i] = new sf::Thread(&DimCalculator::Run, &dimCalculator[i]);
+                            dimThreads[i]->launch();
                         }
 
                         epsilon.clear();
                         boxCount.clear();
                     }
-                    else if(divIndex < (int)div.size()-1)
+                    else if (divIndex < (int)div.size() - 1)
                     {
                         // Update progress bar.
-                        progress = 50*(1 + (double)divIndex/(double)div.size());
+                        progress = 50 * (1 + (double)divIndex / (double)div.size());
                         progressBar->SetValue(progress);
-                        progressTxt->SetLabel(wxString(wxT(progressLblTxt)) + num_to_string(progress) + wxT("%") );    // Txt: "Progress: "
+                        progressTxt->SetLabel(wxString(wxT(progressLblTxt)) + num_to_string(progress) + wxT("%"));    // Txt: "Progress: "
 
                         // Get box count.
                         int boxNumber = 0;
-                        for(int i=0; i<threadNumber; i++)
+                        for (int i = 0; i < threadNumber; i++)
                             boxNumber += dimCalculator[i].GetBoxCount();
 
-                        epsilon.push_back((double)size/(double)div[divIndex]);
+                        epsilon.push_back((double)size / (double)div[divIndex]);
                         boxCount.push_back(boxNumber);
 
                         // Update log text.
@@ -1247,28 +1268,29 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
                         // Prepare new size and launch.
                         divIndex++;
-                        for(int i=0; i<threadNumber; i++)
+                        for (int i = 0; i < threadNumber; i++)
                         {
                             dimCalculator[i].SetDiv(div[divIndex]);
-                            dimCalculator[i].Launch();
+                            dimThreads[i] = new sf::Thread(&DimCalculator::Run, &dimCalculator[i]);
+                            dimThreads[i]->launch();
                         }
                     }
                     else
                     {
-                        if(dumpCheck->GetValue())
+                        if (dumpCheck->GetValue())
                         {
                             // Dump results to file.
                             ofstream file;
                             file.open(string(filePathCtrl->GetValue().mb_str()).c_str(), ios::out);
-                            for(unsigned int i=0; i< epsilon.size(); i++)
+                            for (unsigned int i = 0; i < epsilon.size(); i++)
                                 file << epsilon[i] << ", " << boxCount[i] << endl;
                         }
 
                         // Calculate dimension.
                         vector<double> logEpsilon, logCount;
-                        for(unsigned int i=0; i<epsilon.size(); i++)
+                        for (unsigned int i = 0; i < epsilon.size(); i++)
                         {
-                            logEpsilon.push_back(log(1.0/epsilon[i]));
+                            logEpsilon.push_back(log(1.0 / epsilon[i]));
                             logCount.push_back(log((double)boxCount[i]));
                         }
 
@@ -1276,52 +1298,52 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent& event)
                         double n, sumXY, sumX, sumY, sumXSquared;
                         sumXY = sumX = sumY = sumXSquared = 0;
                         n = static_cast<double>(epsilon.size());
-                        for(int i=0; i<n; i++)
+                        for (int i = 0; i < n; i++)
                         {
-                            sumXY += logEpsilon[i]*logCount[i];
+                            sumXY += logEpsilon[i] * logCount[i];
                             sumX += logEpsilon[i];
                             sumY += logCount[i];
                             sumXSquared += pow(logEpsilon[i], 2);
                         }
-                        double dimensionFit = (n*sumXY - sumX*sumY)/(n*sumXSquared - pow(sumX,2));
+                        double dimensionFit = (n * sumXY - sumX * sumY) / (n * sumXSquared - pow(sumX, 2));
                         this->WriteText(wxT(dimensionTxt));    // Txt: "Dimension = "
                         this->WriteText(num_to_string(dimensionFit));
                         this->WriteText(wxT("\n"));
 
                         // Least squares for b.
-                        double b = (sumY*sumXSquared - sumX*sumXY)/(n*sumXSquared - pow(sumX,2));
+                        double b = (sumY * sumXSquared - sumX * sumXY) / (n * sumXSquared - pow(sumX, 2));
 
                         // Draw Plot
-                        if(dataCheck->GetValue())
+                        if (dataCheck->GetValue())
                         {
                             vector<double> doubleCount;
-                            for(unsigned i=0; i<boxCount.size(); i++)
+                            for (unsigned i = 0; i < boxCount.size(); i++)
                             {
                                 doubleCount.push_back(static_cast<double>(boxCount[i]));
                             }
-                            PlotWindow *plot = new PlotWindow(epsilon, doubleCount, this, wxID_ANY, wxT(dataPlotTxt));    // Txt: "Data plot"
+                            PlotWindow* plot = new PlotWindow(epsilon, doubleCount, this, wxID_ANY, wxT(dataPlotTxt));    // Txt: "Data plot"
                             plot->Show(true);
                         }
 
                         // Draw fitted plot.
-                        if(dataFitCheck->GetValue())
+                        if (dataFitCheck->GetValue())
                         {
                             LineParams myLine;
                             myLine.m = dimensionFit;
                             myLine.b = b;
-                            PlotWindow *plot = new PlotWindow(myLine, logEpsilon, logCount, this, wxID_ANY, wxT(fittedPlotTxt));    // Txt: "Fitted data plot"
+                            PlotWindow* plot = new PlotWindow(myLine, logEpsilon, logCount, this, wxID_ANY, wxT(fittedPlotTxt));    // Txt: "Fitted data plot"
                             plot->Show(true);
                         }
 
                         // Update progress bar.
                         progressBar->SetValue(0);
-                        progressTxt->SetLabel(wxString( wxT(progDoneTxt)));    // Txt: "Progress: Done"
+                        progressTxt->SetLabel(wxString(wxT(progDoneTxt)));    // Txt: "Progress: Done"
                         this->WriteText(wxT(doneTxt));    // Txt: "Done\n"
 
                         calcButton->SetLabel(wxT(calculateTxt));    // Txt: "Calculate"
                         previewButton->Enable(true);
                         savePreviewButton->Enable(true);
-                        if(scriptSelected) progressBar->Enable(true);
+                        if (scriptSelected) progressBar->Enable(true);
                         calculatingDimension = false;
                     }
                 }
@@ -1329,18 +1351,18 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent& event)
             else
             {
                 // Updates progress bar while rendering.
-                progress = target->GetWatchdog()->GetThreadProgress()/2;
+                progress = target->GetWatchdog()->GetThreadProgress() / 2;
 
-                if(scriptSelected)
-                    progressTxt->SetLabel(wxString( wxT(calculatingTxt)));    // Txt: "Calculating dimension"
+                if (scriptSelected)
+                    progressTxt->SetLabel(wxString(wxT(calculatingTxt)));    // Txt: "Calculating dimension"
                 else
                 {
                     progressBar->SetValue(progress);
-                    progressTxt->SetLabel(wxString(wxT(progressLblTxt)) + num_to_string(progress) +wxT("%") );    // Txt: "Progress: "
+                    progressTxt->SetLabel(wxString(wxT(progressLblTxt)) + num_to_string(progress) + wxT("%"));    // Txt: "Progress: "
                 }
             }
         }
-        clock.Reset();
+        clock.restart();
     }
 }
 void DimensionFrame::OnDestroy(wxCloseEvent& event)
@@ -1356,10 +1378,10 @@ void DimensionFrame::WriteText(wxString txt)
 }
 void DimensionFrame::OnFractalOpt(wxCommandEvent& event)
 {
-    if(confFractOptDialog == nullptr)
+    if (confFractOptDialog == nullptr)
         confFractOptDialog = new ConfFractOptDialog(target, this);
 
-    if(confFractOptDialog->IsVisible())
+    if (confFractOptDialog->IsVisible())
         confFractOptDialog->SetFocus();
     else
         confFractOptDialog->Show(true);
@@ -1367,14 +1389,14 @@ void DimensionFrame::OnFractalOpt(wxCommandEvent& event)
     // Adjust position.
     int h, w;
     GetDesktopResolution(h, w);
-    if(this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
-        confFractOptDialog->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
+    if (this->GetPosition().x + this->GetSize().GetWidth() + 5 < w && this->GetPosition().y < h)
+        confFractOptDialog->Move(this->GetPosition().x + this->GetSize().GetWidth() + 5, this->GetPosition().y);
 }
 void DimensionFrame::OnSavePreview(wxCommandEvent& event)
 {
     wxFileDialog* openFileDialog = new wxFileDialog(this, wxT(menuSelectFileTxt), wxT(""),
-                                                    wxT("dimension_preview.bmp"), wxT("BMP file (*.bmp)|*.bmp"), wxFD_SAVE);    // Txt: "Select file name"
-    if(openFileDialog->ShowModal() == wxID_OK)
+        wxT("dimension_preview.bmp"), wxT("BMP file (*.bmp)|*.bmp"), wxFD_SAVE);    // Txt: "Select file name"
+    if (openFileDialog->ShowModal() == wxID_OK)
     {
         wxString wxFileName = openFileDialog->GetPath();
         wxString fileName = wxFileName.c_str();
@@ -1387,10 +1409,10 @@ void DimensionFrame::OnSavePreview(wxCommandEvent& event)
         myOpt.maxX = string_to_double(maxXCtrl->GetValue());
         myOpt.minY = string_to_double(minYCtrl->GetValue());
 
-        if(manualMaxYChk->GetValue())
+        if (manualMaxYChk->GetValue())
             myOpt.maxY = string_to_double(maxYCtrl->GetValue());
         else
-            myOpt.maxY = myOpt.minY+(myOpt.maxX-myOpt.minX);
+            myOpt.maxY = myOpt.minY + (myOpt.maxX - myOpt.minX);
 
         myOpt.maxIter = string_to_int(iterCtrl->GetValue());
 
@@ -1398,27 +1420,27 @@ void DimensionFrame::OnSavePreview(wxCommandEvent& event)
         target->PrepareRender();
         target->Render();
 
-        SaveProgressDiag *saveProgress = new SaveProgressDiag(target, this, false);
+        SaveProgressDiag* saveProgress = new SaveProgressDiag(target, this, false);
         saveProgress->ShowModal();
 
-        if(saveProgress->IsFinished())
+        if (saveProgress->IsFinished())
         {
             // Allocate.
-            bool **setMap, **tempSetMap, **colorMap;
+            bool** setMap, ** tempSetMap, ** colorMap;
             setMap = target->GetSetMap();
             int nDiv = nDivSpin->GetValue();
 
-            tempSetMap = new bool*[size];
-            colorMap = new bool*[size];
-            for(int i=0; i<size; i++)
+            tempSetMap = new bool* [size];
+            colorMap = new bool* [size];
+            for (int i = 0; i < size; i++)
             {
                 tempSetMap[i] = new bool[size];
                 colorMap[i] = new bool[size];
             }
             // Copy and init.
-            for(int i=0; i<size; i++)
+            for (int i = 0; i < size; i++)
             {
-                for(int j=0; j<size; j++)
+                for (int j = 0; j < size; j++)
                 {
                     tempSetMap[i][j] = setMap[i][j];
                     colorMap[i][j] = false;
@@ -1426,28 +1448,28 @@ void DimensionFrame::OnSavePreview(wxCommandEvent& event)
             }
 
             //int N = 0;
-            double epsilon = (double)size/(double)nDiv;
+            double epsilon = (double)size / (double)nDiv;
 
-            for(int ey=0; ey<nDiv; ey++)
+            for (int ey = 0; ey < nDiv; ey++)
             {
-                for(int ex=0; ex<nDiv; ex++)
+                for (int ex = 0; ex < nDiv; ex++)
                 {
                     bool found = false;
-                    for(int w=ex*epsilon; w<(ex+1)*epsilon && !found; w++)
+                    for (int w = ex * epsilon; w < (ex + 1) * epsilon && !found; w++)
                     {
-                        for(int h=ey*epsilon; h<(ey+1)*epsilon; h++)
+                        for (int h = ey * epsilon; h < (ey + 1) * epsilon; h++)
                         {
-                            if(w < size && h < size)
+                            if (w < size && h < size)
                             {
-                                if(setMap[w][h] == true)
+                                if (setMap[w][h] == true)
                                 {
                                     found = true;
                                     // Color square
-                                    for(int y=ey*epsilon; y<(ey+1)*epsilon; y++)
+                                    for (int y = ey * epsilon; y < (ey + 1) * epsilon; y++)
                                     {
-                                        for(int x=ex*epsilon; x<(ex+1)*epsilon; x++)
+                                        for (int x = ex * epsilon; x < (ex + 1) * epsilon; x++)
                                         {
-                                            if(x < size && y < size)
+                                            if (x < size && y < size)
                                                 colorMap[x][y] = true;
                                         }
                                     }
@@ -1462,43 +1484,43 @@ void DimensionFrame::OnSavePreview(wxCommandEvent& event)
             }
 
             // Horizontal lines.
-            for(int ey=0; ey < nDiv; ey++)
+            for (int ey = 0; ey < nDiv; ey++)
             {
-                int y = ey*epsilon;
-                for(int x=0; x<size; x++)
+                int y = ey * epsilon;
+                for (int x = 0; x < size; x++)
                     tempSetMap[x][y] = true;
             }
             // Last line.
-            for(int x=0; x<size; x++)
-                tempSetMap[x][size-1] = true;
+            for (int x = 0; x < size; x++)
+                tempSetMap[x][size - 1] = true;
 
             // Vertical lines
-            for(int ex=0; ex < nDiv; ex++)
+            for (int ex = 0; ex < nDiv; ex++)
             {
-                int x = ex*epsilon;
-                for(int y=0; y<size; y++)
+                int x = ex * epsilon;
+                for (int y = 0; y < size; y++)
                     tempSetMap[x][y] = true;
             }
             // Last line.
-            for(int y=0; y<size; y++)
-                tempSetMap[size-1][y] = true;
+            for (int y = 0; y < size; y++)
+                tempSetMap[size - 1][y] = true;
 
             // Write BMP.
             BMPWriter writer(fileName.mb_str(), size, size);
             BMPPixel* data = new BMPPixel[size];
 
             // Copy maps values to BMPWriter.
-            for(int j=size-1; j>=0; j--)
+            for (int j = size - 1; j >= 0; j--)
             {
-                for(int i=0; i<size; i++)
+                for (int i = 0; i < size; i++)
                 {
-                    if(tempSetMap[i][j] == true)
+                    if (tempSetMap[i][j] == true)
                     {
                         data[i].r = 0;
                         data[i].g = 0;
                         data[i].b = 0;
                     }
-                    else if(colorMap[i][j] == true)
+                    else if (colorMap[i][j] == true)
                     {
                         data[i].r = static_cast<unsigned>(0x32);
                         data[i].g = static_cast<unsigned>(0x32);
@@ -1517,7 +1539,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent& event)
             delete[] data;
 
             // Cleanup.
-            for(int i=0; i< size; i++)
+            for (int i = 0; i < size; i++)
             {
                 delete[] tempSetMap[i];
                 delete[] colorMap[i];
@@ -1534,9 +1556,9 @@ void DimensionFrame::GetScriptFractals()
     loadedScripts = GetValidUserScripts();
 
     // Gets script parameters.
-    for(unsigned int i=0; i< loadedScripts.size(); i++)
+    for (unsigned int i = 0; i < loadedScripts.size(); i++)
     {
-        if(!loadedScripts[i].noSetMap)
+        if (!loadedScripts[i].noSetMap)
         {
             scriptList.push_back(i);
             fractalChoice->Append(wxString(loadedScripts[i].name.c_str(), wxConvUTF8));
@@ -1546,7 +1568,7 @@ void DimensionFrame::GetScriptFractals()
 void DimensionFrame::OnHelp(wxCommandEvent& event)
 {
     HTMLViewer* diag = new HTMLViewer(GetWxAbsPath({ "Resources", "Tutorials", "dimTut.html" }),
-                                      this, wxID_ANY, wxString(wxT(calcDimHelpTxt)));    // Txt: "Calculate dimension help"
+        this, wxID_ANY, wxString(wxT(calcDimHelpTxt)));    // Txt: "Calculate dimension help"
     diag->ShowModal();
     diag->Destroy();
 }

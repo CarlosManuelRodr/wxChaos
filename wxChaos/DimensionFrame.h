@@ -32,8 +32,7 @@ void GetDesktopResolution(int& width, int& height);
 
 enum FractalList
 {
-    FL_HENON_MAP = 0,
-    FL_MANDELBROT,
+    FL_MANDELBROT = 0,
     FL_MANDELBROT_ZN,
     FL_JULIA,
     FL_JULIA_ZN,
@@ -48,7 +47,6 @@ enum FractalList
     FL_CELL,
     FL_MAGNET,
     FL_DOUBLE_PENDULUM,
-    FL_LOGISTIC_MAP,
     COUNT
 };
 
@@ -57,7 +55,7 @@ enum FractalList
 * @brief A multithread fractal dimension calculator.
 */
 
-class DimCalculator : public sf::Thread
+class DimCalculator
 {
     int ho, hf;            ///< Work area of the thread.
     bool** map;            ///< Fractal target.
@@ -76,9 +74,10 @@ public:
     void SetMap(bool** _map, int _size, int _ho, int _hf);
 
     void SetDiv(int _div);     ///< Set number of grid divisions.
-    void Run();                ///< Start DimCalculator thread.
+    void Run();                ///< The worker function for the thread.
     int GetBoxCount();
     bool IsRunning();
+    void Terminate(); // To signal the thread to stop
 };
 
 /**
@@ -100,7 +99,7 @@ public:
     ///@brief Sets the map of the fractal target.
     ///@param _map Pointer to fractal map.
     ///@param _div Number of grid divisions to draw.
-    void SetMap(bool **_map, int _div);
+    void SetMap(bool** _map, int _div);
 };
 
 /**
@@ -137,7 +136,7 @@ class ConfFractOptDialog : public wxDialog
 
 public:
     ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT(menuFractalOptTxt),
-                       const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(213, 361), long style = wxCAPTION);
+        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(213, 361), long style = wxCAPTION);
     ~ConfFractOptDialog();
 
     ///@brief Set new fractal target.
@@ -177,9 +176,9 @@ private:
     mpWindow* m_plot;
 public:
     PlotWindow(std::vector<double> xList, vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 390,390 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL);
+        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(390, 390), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     PlotWindow(LineParams params, vector<double> xList, vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 390,390 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL);
+        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(390, 390), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~PlotWindow();
 };
 
@@ -247,6 +246,7 @@ private:
     ImagePanel* previewImage;                   ///< Panel to show a preview of the dimension calculator.
     Options myOpt;                              ///< Fractal options.
     DimCalculator* dimCalculator;               ///< An array of DimCalculator.
+    sf::Thread** dimThreads;                    ///< An array of sf::Thread pointers.
     vector<int> div;                            ///< Vector to hold the number of divisions.
     vector<double> epsilon;                     ///< Vector to hold the epsilon values.
     vector<int> boxCount;                       ///< Vector to hold the box counting.
@@ -281,8 +281,8 @@ private:
     void WriteText(wxString txt);    ///< Writes text to the output panel.
 public:
     DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT(calcDimTxt),
-                   const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
-                   long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL);
+        const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
+        long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~DimensionFrame();
 };
 

@@ -59,8 +59,6 @@ enum class FractalType
     BurningShipJulia,
     Fractory,
     Cell,
-    Logistic,
-    HenonMap,
     DoublePendulum,
     UserDefined,
     FixedPointUserDefined,
@@ -87,7 +85,6 @@ enum class RenderingAlgorithm
 {
     EscapeTime,
     GaussianInt,
-    Buddhabrot,
     EscapeAngle,
     TriangleInequality,
     ChaoticMap,
@@ -285,7 +282,7 @@ struct Rect
 * This is an abstract class. It's derived classes have to define the Render() method.
 */
 
-class RenderFractal : public sf::Thread
+class RenderFractal
 {
 protected:
     bool** setMap;                ///< Pointer to the set map.
@@ -321,9 +318,10 @@ protected:
 public:
     virtual void Render() = 0;            ///< Render the fractal.
     virtual void SpecialRender() {};
-    virtual void Run();                   ///< Launches the thread.
     virtual void Stop();
     RenderFractal();                      ///< Constructor.
+
+    void run();                   ///< The worker function for the thread.
 
     ///@brief Sets the rendering limits. This is calculated before the rendering starts by TRender.
     ///@param widthO Left rendering limit.
@@ -405,12 +403,14 @@ public:
 template<class MT> class ThreadWatchdog : public sf::Thread
 {
     MT** threadList;               ///< An array with pointers to the execution threads.
+    sf::Thread** sfmlThreads;      ///< An array to hold the actual sf::Thread objects.
     bool threadRunning;            ///< State of the threads.
     unsigned int threadCounter;    ///< Number of threads to watch over.
-
 public:
     ThreadWatchdog();
     ~ThreadWatchdog();
+
+    virtual void run();
 
     ///@brief Changes the number of execution threads. For this it will have to delete the previous ones.
     ///@param nThreads Number of new threads.
@@ -441,9 +441,6 @@ public:
     ///@param nThread Index of the thread to return.
     ///@return A pointer to the specified thread index.
     MT* GetThread(unsigned int nThread);
-
-    ///@brief Launches the threads.
-    virtual void Run();
 };
 
 /**
@@ -453,47 +450,71 @@ public:
 * @param watchdog Pointer to the watchdog that will be used.
 * @param threadNumber Number of threads to set.
 */
-template<class MT> inline void SetWatchdog(MT* myRender, ThreadWatchdog<RenderFractal>* watchdog ,unsigned int threadNumber)
+template<class MT> inline void SetWatchdog(MT* myRender, ThreadWatchdog<RenderFractal>* watchdog, unsigned int threadNumber)
 {
     watchdog->SetThreadNumber(threadNumber);
-    for(unsigned int i=0; i<threadNumber; i++)
+    for (unsigned int i = 0; i < threadNumber; i++)
         watchdog->SetThread(&myRender[i]);
 }
 
-template<class MT> ThreadWatchdog<MT>::ThreadWatchdog()
+template<class MT> ThreadWatchdog<MT>::ThreadWatchdog() : sf::Thread(&ThreadWatchdog<MT>::run, this)
 {
     threadCounter = 0;
     threadRunning = false;
     threadList = nullptr;
+    sfmlThreads = nullptr;
 }
 template<class MT> ThreadWatchdog<MT>::~ThreadWatchdog()
 {
-    if(threadList != nullptr)
+    if (threadList != nullptr)
         delete[] threadList;
+    if (sfmlThreads != nullptr)
+    {
+        // Ensure threads are stopped and deleted
+        if (threadRunning) StopThreads();
+        delete[] sfmlThreads;
+    }
 }
 template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(int nThreads)
 {
-    if(threadList != nullptr)
+    if (threadList != nullptr)
     {
         delete[] threadList;
-        threadCounter = 0;
-        threadRunning = false;
     }
-    threadList = new MT*[nThreads];
+    if (sfmlThreads != nullptr)
+    {
+        delete[] sfmlThreads;
+    }
+    threadCounter = 0;
+    threadRunning = false;
+
+    threadList = new MT * [nThreads];
+    sfmlThreads = new sf::Thread * [nThreads]; // Allocate for sf::Thread pointers
+    for (int i = 0; i < nThreads; ++i)
+    {
+        sfmlThreads[i] = nullptr; // Initialize to null
+    }
 }
 template<class MT> void ThreadWatchdog<MT>::SetThread(MT* threadAdress)
 {
     threadList[threadCounter++] = threadAdress;
 }
-template<class MT> void ThreadWatchdog<MT>::Run()
+template<class MT> void ThreadWatchdog<MT>::run()
 {
     // We don't want to collapse our system.
 #ifdef _WIN32
     SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
 #endif
     // Wait for every thread to finish and change status.
-    for(unsigned int i=0; i<threadCounter; i++)
-        threadList[i]->Wait();
+    for (unsigned int i = 0; i < threadCounter; i++)
+    {
+        if (sfmlThreads[i])
+        {
+            sfmlThreads[i]->wait();
+            delete sfmlThreads[i]; // Clean up after it's done
+            sfmlThreads[i] = nullptr;
+        }
+    }
 
     threadRunning = false;
 #ifdef _WIN32
@@ -502,7 +523,7 @@ template<class MT> void ThreadWatchdog<MT>::Run()
 }
 template<class MT> void ThreadWatchdog<MT>::Reset()
 {
-    for(unsigned int i=0; i<threadCounter; i++)
+    for (unsigned int i = 0; i < threadCounter; i++)
         threadList[i]->Reset();
 
     threadRunning = true;
@@ -515,21 +536,29 @@ template<class MT> void ThreadWatchdog<MT>::LaunchThreads()
 {
     // Launches all the threads.
     threadRunning = true;
-    for(unsigned int i=0; i<threadCounter; i++)
-        threadList[i]->Launch();
+    for (unsigned int i = 0; i < threadCounter; i++)
+    {
+        // Create a new thread that will call the run() method of our RenderFractal object
+        sfmlThreads[i] = new sf::Thread(&RenderFractal::run, threadList[i]);
+        sfmlThreads[i]->launch();
+    }
 }
 template<class MT> void ThreadWatchdog<MT>::StopThreads()
 {
-    for(unsigned int i=0; i<threadCounter; i++)
+    for (unsigned int i = 0; i < threadCounter; i++)
     {
-        threadList[i]->PreTerminate();  // Do the necessary operations before terminating a thread.
+        threadList[i]->PreTerminate();
         threadList[i]->Stop();
     }
 
-    for(unsigned int i=0; i<threadCounter; i++)
+    for (unsigned int i = 0; i < threadCounter; i++)
     {
-        while(threadList[i]->IsRunning())
-            threadList[i]->Wait();
+        if (sfmlThreads[i])
+        {
+            sfmlThreads[i]->wait();
+            delete sfmlThreads[i];
+            sfmlThreads[i] = nullptr;
+        }
     }
 
     threadRunning = false;
@@ -541,14 +570,14 @@ template<class MT> void ThreadWatchdog<MT>::StopThreads()
 template<class MT> int ThreadWatchdog<MT>::GetThreadProgress()
 {
     int progress = 0;
-    for(unsigned int i=0; i<threadCounter; i++)
+    for (unsigned int i = 0; i < threadCounter; i++)
         progress += threadList[i]->AskProgress();
 
-    return (double)progress/(double)threadCounter;
+    return (double)progress / (double)threadCounter;
 }
 template<class MT> MT* ThreadWatchdog<MT>::GetThread(unsigned int nThread)
 {
-    if(nThread >= 0 && nThread < threadCounter)
+    if (nThread >= 0 && nThread < threadCounter)
         return threadList[nThread];
     else
         return nullptr;
@@ -594,12 +623,14 @@ protected:
     int xMoved, yMoved;             ///< Total movement of the image. Used just before redering a new area.
 
     sf::Image image;                ///< Layer where the output image is created.
+    sf::Texture texture;
     sf::Sprite output;              ///< Sprite to draw the output image.
     vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
     sf::Font font;
-    sf::String text;
+    sf::Text text;
     wxString tempText;
     sf::Image tempImage;            ///< Temporary image. Shows low res image while renering.
+    sf::Texture tempTexture;
     sf::Sprite tempSprite;          ///< tempImage sprite.
 
     vector<double> zoom[4];         ///< Saves the performed zooms.
@@ -678,6 +709,7 @@ protected:
     vector<LineData> lines, orbitLines;
     bool geomFigure;
     sf::Image geomImage;
+    sf::Texture geomTexture;
     sf::Sprite outGeom;
 
     // Effect variables.
@@ -711,7 +743,7 @@ protected:
     void RebuildPalette();
 
     ///@brief Draws the maps into the screen.
-    void DrawMaps(sf::RenderWindow *Window);
+    void DrawMaps(sf::RenderWindow* Window);
 
     ///@brief If some minor change was made like a color adjustement redraws the maps.
     void RedrawMaps();
@@ -766,7 +798,7 @@ public:
     void SetAreaOfView(Rect worldCoordinates);
 
     void Move();                ///< Moves the fractal image.
-    void Move(const sf::Input& input);
+    void MoveKeyboard();
     void ZoomBack();            ///< Does a zoomback in the selection area.
     void DeleteSavedZooms();    ///< If some image property image has changed deletes saved zoom images.
     void Redraw();              ///< Redraws the fractal.
@@ -943,7 +975,8 @@ class ScreenPointer
     int x, y;
     unsigned int screenWidth;
     unsigned int screenHeight;
-    sf::Image texture;
+    sf::Image textureImage;
+    sf::Texture texture;
     sf::Sprite output;
     sf::Color color;
     bool rendered;
@@ -971,16 +1004,16 @@ template<class MT> inline void Fractal::TRender(MT* myRender)
 {
     watchdog.Reset();
     // If the image has been moved divides the rendering area so threads will draw the missing part.
-    if(xMoved != 0 || yMoved != 0)
+    if (xMoved != 0 || yMoved != 0)
     {
-        if(xMoved && yMoved)
+        if (xMoved && yMoved)
         {
-            for(unsigned int i=0; i<threadNumber; i++)
+            for (unsigned int i = 0; i < threadNumber; i++)
             {
                 myRender[i].SetOpt(this->GetOptions());
                 myRender[i].SetRenderOut(setMap, colorMap, auxMap);
 
-                if(orbitTrapMode || smoothRender)
+                if (orbitTrapMode || smoothRender)
                     myRender[i].SetSpecialRenderMode(true);
                 else
                     myRender[i].SetSpecialRenderMode(false);
@@ -988,17 +1021,17 @@ template<class MT> inline void Fractal::TRender(MT* myRender)
                 myRender[i].SetK(kReal, kImaginary);
             }
 
-            if(xMoved > 0 && yMoved < 0)
+            if (xMoved > 0 && yMoved < 0)
             {
                 // First thread pack.
-                unsigned int localThreadN = ceil((double)threadNumber/2.0);
-                int Div = static_cast<int>(floor((screenHeight+yMoved)/(double)localThreadN));
+                unsigned int localThreadN = ceil((double)threadNumber / 2.0);
+                int Div = static_cast<int>(floor((screenHeight + yMoved) / (double)localThreadN));
                 int Step = Div;
-                for(unsigned int i=0; i<localThreadN; i++)
+                for (unsigned int i = 0; i < localThreadN; i++)
                 {
-                    if(i+2 != localThreadN)
+                    if (i + 2 != localThreadN)
                     {
-                        myRender[i].SetLimits(0, Step-Div, xMoved, Step);
+                        myRender[i].SetLimits(0, Step - Div, xMoved, Step);
                         Step += Div;
                     }
                     else
@@ -1006,32 +1039,32 @@ template<class MT> inline void Fractal::TRender(MT* myRender)
                 }
 
                 // Second thread pack.
-                Div = static_cast<int>(floor(abs(yMoved)/(double)(threadNumber - localThreadN)));
+                Div = static_cast<int>(floor(abs(yMoved) / (double)(threadNumber - localThreadN)));
                 Step = Div;
-                int start = screenHeight+yMoved;
-                for(unsigned int i=localThreadN; i<threadNumber; i++)
+                int start = screenHeight + yMoved;
+                for (unsigned int i = localThreadN; i < threadNumber; i++)
                 {
 
-                    if(i+2 != threadNumber)
+                    if (i + 2 != threadNumber)
                     {
-                        myRender[i].SetLimits(0, start + Step-Div, screenWidth, start + Step);
+                        myRender[i].SetLimits(0, start + Step - Div, screenWidth, start + Step);
                         Step += Div;
                     }
                     else
                         myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
                 }
             }
-            else if(xMoved > 0 && yMoved > 0)
+            else if (xMoved > 0 && yMoved > 0)
             {
                 // First thread pack.
-                unsigned int localThreadN = ceil((double)threadNumber/2.0);
-                int Div = static_cast<int>(floor(abs(yMoved)/(double)localThreadN));
+                unsigned int localThreadN = ceil((double)threadNumber / 2.0);
+                int Div = static_cast<int>(floor(abs(yMoved) / (double)localThreadN));
                 int Step = Div;
-                for(unsigned int i=0; i<localThreadN; i++)
+                for (unsigned int i = 0; i < localThreadN; i++)
                 {
-                    if(i+2 != localThreadN)
+                    if (i + 2 != localThreadN)
                     {
-                        myRender[i].SetLimits(0, Step-Div, screenWidth, Step);
+                        myRender[i].SetLimits(0, Step - Div, screenWidth, Step);
                         Step += Div;
                     }
                     else
@@ -1040,63 +1073,63 @@ template<class MT> inline void Fractal::TRender(MT* myRender)
 
                 // Second thread pack.
                 int start = yMoved;
-                Div = static_cast<int>(floor((screenHeight-yMoved)/(double)(threadNumber-localThreadN)));
+                Div = static_cast<int>(floor((screenHeight - yMoved) / (double)(threadNumber - localThreadN)));
                 Step = Div;
-                for(unsigned int i=localThreadN; i<threadNumber; i++)
+                for (unsigned int i = localThreadN; i < threadNumber; i++)
                 {
-                    if(i+2 != threadNumber)
+                    if (i + 2 != threadNumber)
                     {
-                        myRender[i].SetLimits(0, start + Step-Div, xMoved, start + Step);
+                        myRender[i].SetLimits(0, start + Step - Div, xMoved, start + Step);
                         Step += Div;
                     }
                     else
                         myRender[i].SetLimits(0, start + Step, xMoved, screenHeight);
                 }
             }
-            else if(xMoved < 0 && yMoved < 0)
+            else if (xMoved < 0 && yMoved < 0)
             {
                 // First thread pack.
-                unsigned int localThreadN = ceil((double)threadNumber/2.0);
-                int Div = static_cast<int>(floor((screenHeight+yMoved)/(double)localThreadN));
+                unsigned int localThreadN = ceil((double)threadNumber / 2.0);
+                int Div = static_cast<int>(floor((screenHeight + yMoved) / (double)localThreadN));
                 int Step = Div;
-                for(unsigned int i=0; i<localThreadN; i++)
+                for (unsigned int i = 0; i < localThreadN; i++)
                 {
-                    if(i+2 != localThreadN)
+                    if (i + 2 != localThreadN)
                     {
-                        myRender[i].SetLimits(screenWidth+xMoved, Step-Div, screenWidth, Step);
+                        myRender[i].SetLimits(screenWidth + xMoved, Step - Div, screenWidth, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(screenWidth+xMoved, Step, screenWidth, screenHeight + yMoved);
+                        myRender[i].SetLimits(screenWidth + xMoved, Step, screenWidth, screenHeight + yMoved);
                 }
 
                 // Second thread pack.
-                Div = static_cast<int>(floor(abs(yMoved)/(double)(threadNumber-localThreadN)));
+                Div = static_cast<int>(floor(abs(yMoved) / (double)(threadNumber - localThreadN)));
                 Step = Div;
-                int start = screenHeight+yMoved;
-                for(unsigned int i=localThreadN; i<threadNumber; i++)
+                int start = screenHeight + yMoved;
+                for (unsigned int i = localThreadN; i < threadNumber; i++)
                 {
 
-                    if(i+2 != threadNumber)
+                    if (i + 2 != threadNumber)
                     {
-                        myRender[i].SetLimits(0, start + Step-Div, screenWidth, start + Step);
+                        myRender[i].SetLimits(0, start + Step - Div, screenWidth, start + Step);
                         Step += Div;
                     }
                     else
                         myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
                 }
             }
-            else if(xMoved < 0 && yMoved > 0)
+            else if (xMoved < 0 && yMoved > 0)
             {
                 // First thread pack.
-                unsigned int localThreadN = ceil((double)threadNumber/2.0);
-                int Div = static_cast<int>(floor(abs(yMoved)/(double)localThreadN));
+                unsigned int localThreadN = ceil((double)threadNumber / 2.0);
+                int Div = static_cast<int>(floor(abs(yMoved) / (double)localThreadN));
                 int Step = Div;
-                for(unsigned int i=0; i<localThreadN; i++)
+                for (unsigned int i = 0; i < localThreadN; i++)
                 {
-                    if(i+2 != localThreadN)
+                    if (i + 2 != localThreadN)
                     {
-                        myRender[i].SetLimits(0, Step-Div, screenWidth, Step);
+                        myRender[i].SetLimits(0, Step - Div, screenWidth, Step);
                         Step += Div;
                     }
                     else
@@ -1105,106 +1138,97 @@ template<class MT> inline void Fractal::TRender(MT* myRender)
 
                 // Second thread pack.
                 int start = yMoved;
-                Div = static_cast<int>(floor((screenHeight-yMoved)/(double)(threadNumber - localThreadN)));
+                Div = static_cast<int>(floor((screenHeight - yMoved) / (double)(threadNumber - localThreadN)));
                 Step = Div;
-                for(unsigned int i=localThreadN; i<threadNumber; i++)
+                for (unsigned int i = localThreadN; i < threadNumber; i++)
                 {
-                    if(i+2 != threadNumber)
+                    if (i + 2 != threadNumber)
                     {
-                        myRender[i].SetLimits(screenWidth+xMoved, start + Step-Div, screenWidth, start + Step);
+                        myRender[i].SetLimits(screenWidth + xMoved, start + Step - Div, screenWidth, start + Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(screenWidth+xMoved, start + Step, screenWidth, screenHeight);
+                        myRender[i].SetLimits(screenWidth + xMoved, start + Step, screenWidth, screenHeight);
                 }
             }
-
-            for(unsigned int i=0; i<threadNumber; i++)
-                myRender[i].Launch();
         }
-        else if(xMoved)
+        else if (xMoved)
         {
             int Div = static_cast<int>(floor(screenHeight / (double)threadNumber));
             int Step = Div;
-            if(xMoved > 0)
+            if (xMoved > 0)
             {
-                for(unsigned int i=0; i<threadNumber; i++)
+                for (unsigned int i = 0; i < threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
                     myRender[i].SetRenderOut(setMap, colorMap, auxMap);
 
-                    if(orbitTrapMode || smoothRender)
+                    if (orbitTrapMode || smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
 
                     myRender[i].SetK(kReal, kImaginary);
 
-                    if(i+2 != threadNumber)
+                    if (i + 2 != threadNumber)
                     {
-                        myRender[i].SetLimits(0, Step-Div, xMoved, Step);
+                        myRender[i].SetLimits(0, Step - Div, xMoved, Step);
                         Step += Div;
                     }
                     else
                         myRender[i].SetLimits(0, Step, xMoved, screenHeight);
-
-                    myRender[i].Launch();
                 }
             }
             else
             {
-                for(unsigned int i=0; i<threadNumber; i++)
+                for (unsigned int i = 0; i < threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
                     myRender[i].SetRenderOut(setMap, colorMap, auxMap);
 
-                    if(orbitTrapMode || smoothRender)
+                    if (orbitTrapMode || smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
 
                     myRender[i].SetK(kReal, kImaginary);
 
-                    if(i+2 != threadNumber)
+                    if (i + 2 != threadNumber)
                     {
-                        myRender[i].SetLimits(screenWidth+xMoved, Step - Div, screenWidth, Step);
+                        myRender[i].SetLimits(screenWidth + xMoved, Step - Div, screenWidth, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(screenWidth+xMoved, Step, screenWidth, screenHeight);
-
-                    myRender[i].Launch();
+                        myRender[i].SetLimits(screenWidth + xMoved, Step, screenWidth, screenHeight);
                 }
             }
         }
-        else if(yMoved)
+        else if (yMoved)
         {
-            if(yMoved > 0)
+            if (yMoved > 0)
             {
                 int Div = static_cast<int>(floor(yMoved / (double)threadNumber));
                 int Step = Div;
 
-                for(unsigned int i=0; i<threadNumber; i++)
+                for (unsigned int i = 0; i < threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
                     myRender[i].SetRenderOut(setMap, colorMap, auxMap);
 
-                    if(orbitTrapMode || smoothRender)
+                    if (orbitTrapMode || smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
 
                     myRender[i].SetK(kReal, kImaginary);
 
-                    if(i+2 != threadNumber)
+                    if (i + 2 != threadNumber)
                     {
-                        myRender[i].SetLimits(0, Step-Div, screenWidth, Step);
+                        myRender[i].SetLimits(0, Step - Div, screenWidth, Step);
                         Step += Div;
                     }
                     else
                         myRender[i].SetLimits(0, Step, screenWidth, yMoved);
-
-                    myRender[i].Launch();
                 }
             }
             else
@@ -1212,29 +1236,27 @@ template<class MT> inline void Fractal::TRender(MT* myRender)
                 int Div = static_cast<int>(floor(abs(yMoved) / (double)threadNumber));
                 int Step = Div;
 
-                for(unsigned int i=0; i<threadNumber; i++)
+                for (unsigned int i = 0; i < threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
                     myRender[i].SetRenderOut(setMap, colorMap, auxMap);
 
-                    if(orbitTrapMode || smoothRender)
+                    if (orbitTrapMode || smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
 
                     myRender[i].SetK(kReal, kImaginary);
 
-                    int start = screenHeight+yMoved;
+                    int start = screenHeight + yMoved;
 
-                    if(i+2 != threadNumber)
+                    if (i + 2 != threadNumber)
                     {
-                        myRender[i].SetLimits(0, start + Step-Div, screenWidth, start + Step);
+                        myRender[i].SetLimits(0, start + Step - Div, screenWidth, start + Step);
                         Step += Div;
                     }
                     else
                         myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
-
-                    myRender[i].Launch();
                 }
             }
         }
@@ -1242,26 +1264,26 @@ template<class MT> inline void Fractal::TRender(MT* myRender)
     else
     {
         // Draws all the screen.
-        int Div = static_cast<int>(floor(screenHeight/(double)threadNumber));
+        int Div = static_cast<int>(floor(screenHeight / (double)threadNumber));
         int Step = Div;
 
-        for(unsigned int i=0; i<threadNumber; i++)
+        for (unsigned int i = 0; i < threadNumber; i++)
         {
             myRender[i].SetOpt(this->GetOptions());
             myRender[i].SetRenderOut(setMap, colorMap, auxMap);
 
-            if(orbitTrapMode || smoothRender)
+            if (orbitTrapMode || smoothRender)
                 myRender[i].SetSpecialRenderMode(true);
             else
                 myRender[i].SetSpecialRenderMode(false);
 
             myRender[i].SetK(kReal, kImaginary);
 
-            if(!justLaunchThreads)
+            if (!justLaunchThreads)
             {
-                if(i+2 != threadNumber)
+                if (i + 2 != threadNumber)
                 {
-                    myRender[i].SetLimits(0, Step-Div, screenWidth, Step);
+                    myRender[i].SetLimits(0, Step - Div, screenWidth, Step);
                     Step += Div;
                 }
                 else
@@ -1269,23 +1291,24 @@ template<class MT> inline void Fractal::TRender(MT* myRender)
             }
             else
             {
-                if(i+2 != threadNumber)
+                if (i + 2 != threadNumber)
                 {
-                    myRender[i].SetOldHo(Step-Div);
+                    myRender[i].SetOldHo(Step - Div);
                     Step += Div;
                 }
                 else
                     myRender[i].SetOldHo(Step);
             }
-            myRender[i].Launch();
         }
     }
-    if(waitRoutine)
+
+    watchdog.LaunchThreads();
+    watchdog.launch();
+
+    if (waitRoutine)
     {
-        for(unsigned int i=0; i<threadNumber; i++)
-            myRender[i].Wait();
+        watchdog.wait();
     }
-    watchdog.Launch();
 }
 
 #endif
