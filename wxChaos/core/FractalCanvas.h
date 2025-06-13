@@ -15,6 +15,7 @@
 
 #include "wxSFMLCanvas.h"
 #include "FractalTypes.h"
+#include "ScreenPointer.h"
 
 /**
 * @struct PauseContinueButton
