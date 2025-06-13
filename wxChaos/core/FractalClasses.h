@@ -16,7 +16,7 @@
 #include "Styles.h"
 #include "gradient.h"
 #include "FractalGUI.h"
-#include "muParserX/mpParser.h"
+#include <mpParser.h>
 using namespace std;
 
 /****************************

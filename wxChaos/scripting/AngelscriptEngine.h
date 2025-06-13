@@ -17,8 +17,8 @@
 #include <vector>
 #include <cmath>
 #include <complex>
-#include "angelscript/include/angelscript.h"
-#include "angelscript/add_on/scriptstdstring/scriptstdstring.h"
+#include <angelscript.h>
+#include <scriptstdstring.h>
 
 /**
 * @enum ScriptCategory
