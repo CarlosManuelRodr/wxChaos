@@ -55,6 +55,7 @@ target_include_directories(wxChaos PRIVATE
         wxChaos/utils
         wxChaos/scripting
         third_party/angelscript/include
+        third_party/angelscript/add_on/scriptstdstring
         third_party/muParserX
         third_party/wxMathPlot
 )
