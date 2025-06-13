@@ -18,7 +18,7 @@
 #include <wx/spinctrl.h>
 #include <wx/bmpbuttn.h>
 
-#include "wxMathPlot/mathplot.h"
+#include <mathplot.h>
 #include "FractalTypes.h"
 #include "global.h"
 

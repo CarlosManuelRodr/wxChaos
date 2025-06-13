@@ -33,10 +33,13 @@ include(${wxWidgets_USE_FILE})
 # Source Files (trimmed here for readability)
 # -------------------------------------------------------------------
 file(GLOB_RECURSE SRC_FILES
-        wxChaos/*.cpp
-        wxChaos/angelscript/**/*.cpp
-        wxChaos/muParserX/*.cpp
-        wxChaos/wxMathPlot/*.cpp
+        wxChaos/core/*.cpp
+        wxChaos/gui/*.cpp
+        wxChaos/utils/*.cpp
+        wxChaos/scripting/*.cpp
+        third_party/angelscript/**/*.cpp
+        third_party/muParserX/*.cpp
+        third_party/wxMathPlot/*.cpp
 )
 
 add_executable(wxChaos WIN32 ${SRC_FILES})
@@ -47,6 +50,14 @@ add_executable(wxChaos WIN32 ${SRC_FILES})
 target_include_directories(wxChaos PRIVATE
         ${wxWidgets_INCLUDE_DIRS}
         ${SFML_INCLUDE_DIRS}
+        wxChaos/core
+        wxChaos/gui
+        wxChaos/utils
+        wxChaos/scripting
+        third_party/angelscript/include
+        third_party/angelscript/add_on/scriptstdstring
+        third_party/muParserX
+        third_party/wxMathPlot
 )
 
 # -------------------------------------------------------------------
