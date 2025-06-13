@@ -1,6 +1,8 @@
 #pragma once
 #include "../FractalClasses.h"
 #include "../scripting/AngelscriptEngine.h"
+
+/*
 * @class RenderNewton
 * @brief Threaded Newton rendering routines.
 */

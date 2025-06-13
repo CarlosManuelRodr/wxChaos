@@ -1,6 +1,8 @@
 #pragma once
 #include "../FractalClasses.h"
 #include "../scripting/AngelscriptEngine.h"
+
+/*
 * @class RenderSierpTriangle
 * @brief Threaded SierpTriangle rendering routines.
 */

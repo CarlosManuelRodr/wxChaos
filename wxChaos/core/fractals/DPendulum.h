@@ -1,6 +1,8 @@
 #pragma once
 #include "../FractalClasses.h"
 #include "../scripting/AngelscriptEngine.h"
+
+/*
 * @class DPendulum
 * @brief Handles the RenderDPendulum threads.
 */

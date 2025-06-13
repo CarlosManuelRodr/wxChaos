@@ -1,6 +1,8 @@
 #pragma once
 #include "../FractalClasses.h"
 #include "../scripting/AngelscriptEngine.h"
+
+/*
 * @class FixedPoint3
 * @brief Handles the RenderFixedPoint3 threads.
 */

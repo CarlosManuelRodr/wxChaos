@@ -1,6 +1,8 @@
 #pragma once
 #include "../FractalClasses.h"
 #include "../scripting/AngelscriptEngine.h"
+
+/*
 * @class SierpTriangle
 * @brief Renders a Sierpinsky triangle.
 */

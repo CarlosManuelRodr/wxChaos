@@ -1,6 +1,8 @@
 #pragma once
 #include "../FractalClasses.h"
 #include "../scripting/AngelscriptEngine.h"
+
+/*
 * @class Sinoidal
 * @brief Handles the RenderSinoidal threads.
 */
