@@ -12,6 +12,7 @@
 #define __formulaDialog
 
 #include <wx/wx.h>
+#include <wx/xrc/xmlres.h>
 #include "FractalCanvas.h"
 #include "global.h"
 
