@@ -13,9 +13,9 @@
 #ifndef _fractalCanvas
 #define _fractalCanvas
 
-#include "wxSFMLCanvas.h"
+#include "../gui/wx/wxSFMLCanvas.h"
 #include "FractalTypes.h"
-#include "ScreenPointer.h"
+#include "../gui/sfml/ScreenPointer.h"
 
 /**
 * @struct PauseContinueButton

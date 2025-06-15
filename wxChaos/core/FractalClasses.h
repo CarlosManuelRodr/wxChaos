@@ -15,7 +15,7 @@
 #include <complex>
 #include "Styles.h"
 #include "gradient.h"
-#include "FractalGUI.h"
+#include "../gui/sfml/FractalGUI.h"
 #include <mpParser.h>
 using namespace std;
 

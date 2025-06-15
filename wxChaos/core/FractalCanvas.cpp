@@ -1,6 +1,6 @@
 ﻿#include "FractalCanvas.h"
 #include "StringFuncs.h"
-#include "SizeDialogSave.h"
+#include "../gui/wx/SizeDialogSave.h"
 #include "Filesystem.h"
 #include "global.h"
 
