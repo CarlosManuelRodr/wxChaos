@@ -12,6 +12,7 @@
 #define __Iter
 
 #include <wx/wx.h>
+#include <wx/xrc/xmlres.h>
 #include "FractalClasses.h"
 
 /**

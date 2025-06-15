@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+    <object class="wxFrame" name="IterDialog">
+        <size>314,124</size>
+        <style>wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL</style>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxPanel" name="panel">
+                    <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                            <object class="wxStaticBoxSizer">
+                                <label>Iterations</label>
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxTextCtrl" name="textCtrl" />
+                                    <flag>wxALL</flag>
+                                    <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="plusButton">
+                                        <label>+</label>
+                                    </object>
+                                    <flag>wxALL</flag>
+                                    <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="minusButton">
+                                        <label>-</label>
+                                    </object>
+                                    <flag>wxALL</flag>
+                                    <border>5</border>
+                                </object>
+                            </object>
+                            <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                            <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="acceptButton">
+                                        <label>Ok</label>
+                                    </object>
+                                    <flag>wxALL</flag>
+                                    <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="applyButton">
+                                        <label>Apply</label>
+                                    </object>
+                                    <flag>wxALL</flag>
+                                    <border>5</border>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+                <flag>wxEXPAND</flag>
+            </object>
+        </object>
+    </object>
+
+    <object class="wxDialog" name="ConstDialog">
+        <size>191,209</size>
+        <style>wxDEFAULT_DIALOG_STYLE</style>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxPanel" name="dumbPanel">
+                    <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                            <object class="wxStaticBoxSizer">
+                                <label>Real value</label>
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxTextCtrl" name="realText" />
+                                    <flag>wxALL|wxEXPAND</flag>
+                                    <border>5</border>
+                                </object>
+                            </object>
+                            <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                            <object class="wxStaticBoxSizer">
+                                <label>Imaginary value</label>
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxTextCtrl" name="imText" />
+                                    <flag>wxALL|wxEXPAND</flag>
+                                    <border>5</border>
+                                </object>
+                            </object>
+                            <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                            <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="okButton">
+                                        <label>Ok</label>
+                                    </object>
+                                    <flag>wxALL</flag>
+                                    <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="applyButton">
+                                        <label>Apply</label>
+                                    </object>
+                                    <flag>wxALL</flag>
+                                    <border>5</border>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+                <flag>wxEXPAND</flag>
+            </object>
+        </object>
+    </object>
+
+    <object class="wxDialog" name="FuncDialog">
+        <size>249,173</size>
+        <style>wxDEFAULT_DIALOG_STYLE</style>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxPanel" name="funcPanel">
+                    <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                            <object class="wxTextCtrl" name="text">
+                                <style>wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_READONLY</style>
+                                <value>Available functions: abs(), sin(), cos(), tan(), sinh(), cosh(),
+tanh(), ln(), log(), log10(), exp(), sqrt().</value>
+                            </object>
+                            <flag>wxALL|wxEXPAND</flag>
+                            <border>5</border>
+                        </object>
+                        <object class="sizeritem">
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="closeButton">
+                                        <label>Close</label>
+                                    </object>
+                                    <flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+                                    <border>5</border>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+                <flag>wxEXPAND</flag>
+            </object>
+        </object>
+    </object>
+
+    <object class="wxDialog" name="FormulaDialog">
+        <size>340,260</size>
+        <style>wxDEFAULT_DIALOG_STYLE</style>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxPanel" name="mainPanel">
+                    <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                            <object class="wxStaticBoxSizer">
+                                <label>Formula</label>
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxTextCtrl" name="formulaCtrl" />
+                                    <flag>wxALL|wxEXPAND</flag>
+                                    <border>5</border>
+                                </object>
+                            </object>
+                            <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                            <object class="wxStaticBoxSizer">
+                                <label>Options</label>
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <object class="sizeritem">
+                                            <object class="wxStaticText" name="bailText">
+                                                <label>Bailout value:</label>
+                                            </object>
+                                            <flag>wxALL</flag>
+                                            <border>5</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <object class="wxTextCtrl" name="bailCtrl" />
+                                            <flag>wxALL|wxEXPAND</flag>
+                                            <border>5</border>
+                                        </object>
+                                    </object>
+                                    <flag>wxEXPAND</flag>
+                                </object>
+                                <object class="sizeritem">
+                                    <object class="wxBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <object class="sizeritem">
+                                            <object class="wxStaticText" name="typeText">
+                                                <label>Fractal type:</label>
+                                            </object>
+                                            <flag>wxALL</flag>
+                                            <border>5</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <object class="wxChoice" name="typeChoice">
+                                                <content>
+                                                    <item>Complex</item>
+                                                    <item>Fixed point</item>
+                                                </content>
+                                            </object>
+                                            <flag>wxALL|wxEXPAND</flag>
+                                            <border>5</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <object class="wxCheckBox" name="juliaCheck">
+                                                <label>Julia type</label>
+                                            </object>
+                                            <flag>wxALL</flag>
+                                            <border>5</border>
+                                        </object>
+                                    </object>
+                                    <flag>wxEXPAND</flag>
+                                </object>
+                            </object>
+                            <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                            <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="acceptButton">
+                                        <label>Ok</label>
+                                    </object>
+                                    <flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+                                    <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="applyButton">
+                                        <label>Apply</label>
+                                    </object>
+                                    <flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+                                    <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                    <object class="wxButton" name="funcButton">
+                                        <label>Available functions</label>
+                                    </object>
+                                    <flag>wxALL</flag>
+                                    <border>5</border>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+                <flag>wxEXPAND</flag>
+            </object>
+        </object>
+    </object>
+</resource>

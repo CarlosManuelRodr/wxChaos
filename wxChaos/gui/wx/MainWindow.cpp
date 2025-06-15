@@ -2,6 +2,7 @@
 #include "AngelscriptEngine.h"
 #include "HTMLViewer.h"
 #include "Filesystem.h"
+#include <wx/xrc/xmlres.h>
 #include <fstream>
 
 #ifdef _WIN32
@@ -1309,6 +1310,8 @@ class MainApp : public wxApp
 {
     virtual bool OnInit()
     {
+       wxXmlResource::Get()->InitAllHandlers();
+       wxXmlResource::Get()->Load(GetWxAbsPath({ "English", "XRC", "dialogs.xrc" }));
        MainFrame* main = new MainFrame;
        main->Show();
        return true;
