@@ -1,6 +1,6 @@
 #pragma once
 #include <wx/string.h>
-#include "FormulaType.h"
+#include "types/FormulaType.h"
 
 struct FormulaOpt
 {

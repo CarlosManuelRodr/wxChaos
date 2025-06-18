@@ -28,19 +28,19 @@ using namespace std;
 int Get_Cores();
 
 // Aggregated fractal-related types
-#include "base/FractalType.h"
-#include "base/Color.h"
-#include "base/RenderingAlgorithm.h"
-#include "base/ColorMode.h"
-#include "base/Direction.h"
-#include "base/LineData.h"
-#include "base/CircleData.h"
-#include "base/Options.h"
-#include "base/FormulaType.h"
-#include "base/FormulaOpt.h"
-#include "base/Vector2Int.h"
-#include "base/Vector2Double.h"
-#include "base/Rect.h"
+#include "types/FractalType.h"
+#include "types/Color.h"
+#include "types/RenderingAlgorithm.h"
+#include "types/ColorMode.h"
+#include "types/Direction.h"
+#include "geometry/LineData.h"
+#include "geometry/CircleData.h"
+#include "geometry/Vector2Int.h"
+#include "geometry/Vector2Double.h"
+#include "geometry/Rect.h"
+#include "Options.h"
+#include "types/FormulaType.h"
+#include "FormulaOpt.h"
 
 /**
 * @class RenderFractal

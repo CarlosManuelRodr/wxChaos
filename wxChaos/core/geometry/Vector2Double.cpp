@@ -1,5 +1,5 @@
-#include "base/Vector2Double.h"
-#include "base/Vector2Int.h"
+#include "Vector2Double.h"
+#include "Vector2Int.h"
 
 Vector2Double::Vector2Double()
 {

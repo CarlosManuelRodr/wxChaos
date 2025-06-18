@@ -1,10 +1,10 @@
 #pragma once
-#include <wx/gradient.h>
-#include <SFML/Graphics.hpp>
-#include "../gui/wx/PanelOptions.h"
-#include "ColorMode.h"
-#include "RenderingAlgorithm.h"
-#include "FractalType.h"
+#include "wx/gradient.h"
+#include "SFML/Graphics.hpp"
+#include "wx/PanelOptions.h"
+#include "types/ColorMode.h"
+#include "types/RenderingAlgorithm.h"
+#include "types/FractalType.h"
 
 struct Options
 {
