@@ -19,7 +19,7 @@
 #include <wx/bmpbuttn.h>
 
 #include <mathplot.h>
-#include "FractalTypes.h"
+#include "FractalHandler.h"
 #include "global.h"
 
 extern bool dimFrameState;

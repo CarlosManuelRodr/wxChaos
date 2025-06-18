@@ -1,8 +1,8 @@
 #include "../FractalIncludes.h"
 #include "../FractalTypes.h"
 #include "../FractalClasses.h"
-#include "../scripting/AngelscriptEngine.h"
 #include "../FractalUtils.h"
+
 ManowarJulia::ManowarJulia(sf::RenderWindow* Window) : Fractal(Window)
 {
     minX = -2.0;

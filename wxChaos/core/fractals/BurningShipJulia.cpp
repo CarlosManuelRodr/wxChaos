@@ -1,8 +1,7 @@
 #include "../FractalIncludes.h"
 #include "../FractalTypes.h"
-#include "../FractalClasses.h"
-#include "../scripting/AngelscriptEngine.h"
 #include "../FractalUtils.h"
+
 BurningShipJulia::BurningShipJulia(sf::RenderWindow* Window) : Fractal(Window)
 {
     minX = -2.77051;

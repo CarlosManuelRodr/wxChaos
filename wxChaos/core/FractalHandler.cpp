@@ -1,8 +1,8 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalClasses.h"
-#include "../scripting/AngelscriptEngine.h"
-#include "../FractalUtils.h"
+#include "FractalHandler.h"
+#include "FractalTypes.h"
+#include "FractalClasses.h"
+#include "FractalUtils.h"
+
 FractalHandler::FractalHandler()
 {
     mandelbrot = nullptr;

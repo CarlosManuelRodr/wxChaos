@@ -1,5 +1,5 @@
 #pragma once
-#include "../FractalClasses.h"
+#include "FractalTypes.h"
 #include "../scripting/AngelscriptEngine.h"
 
 /*

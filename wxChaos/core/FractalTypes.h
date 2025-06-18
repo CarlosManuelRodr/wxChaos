@@ -47,4 +47,3 @@
 #include "fractals/FPUserDefined.h"
 #include "renderers/RenderScriptFractal.h"
 #include "fractals/ScriptFractal.h"
-#include "fractals/FractalHandler.h"

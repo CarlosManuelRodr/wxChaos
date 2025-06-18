@@ -1,8 +1,7 @@
 #include "../FractalIncludes.h"
 #include "../FractalTypes.h"
-#include "../FractalClasses.h"
-#include "../scripting/AngelscriptEngine.h"
 #include "../FractalUtils.h"
+
 FixedPoint1::FixedPoint1(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.

@@ -1,11 +1,8 @@
 #include <sstream>
 #include <cmath>
-#include <limits>
 #include "FractalClasses.h"
 #include "BmpWriter.h"
 #include "StringFuncs.h"
-#include "BinaryOps.h"
-#include "ConfigParser.h"
 #include "Filesystem.h"
 #include "global.h"
 

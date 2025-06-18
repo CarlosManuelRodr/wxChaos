@@ -1,6 +1,6 @@
 #include <wx/progdlg.h>
 #include <iomanip>
-#include <SFML/System.hpp>
+#include "SFML/System.hpp"
 #include <cstdlib>
 #include "ZoomRecorder.h"
 #include "Filesystem.h"

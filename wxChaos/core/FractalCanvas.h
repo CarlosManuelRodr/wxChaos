@@ -14,7 +14,7 @@
 #define _fractalCanvas
 
 #include "../gui/wx/wxSFMLCanvas.h"
-#include "FractalTypes.h"
+#include "FractalHandler.h"
 #include "../gui/sfml/ScreenPointer.h"
 
 /**

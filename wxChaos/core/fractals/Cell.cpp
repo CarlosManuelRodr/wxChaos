@@ -1,8 +1,7 @@
 #include "../FractalIncludes.h"
 #include "../FractalTypes.h"
-#include "../FractalClasses.h"
-#include "../scripting/AngelscriptEngine.h"
 #include "../FractalUtils.h"
+
 Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
 {
     minX = -1.95533;
