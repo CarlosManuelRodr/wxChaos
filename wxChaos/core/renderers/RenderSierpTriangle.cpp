@@ -1,4 +1,5 @@
 #include "RenderSierpTriangle.h"
+using namespace std;
 
 RenderSierpTriangle::RenderSierpTriangle()
 {

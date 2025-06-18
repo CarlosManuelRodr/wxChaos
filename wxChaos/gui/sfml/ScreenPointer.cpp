@@ -1,5 +1,5 @@
 #include "ScreenPointer.h"
-#include "FractalClasses.h"
+#include "Fractal.h"
 
 ScreenPointer::ScreenPointer(sf::RenderWindow* Window)
 {

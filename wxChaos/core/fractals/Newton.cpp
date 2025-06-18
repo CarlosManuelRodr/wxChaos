@@ -1,5 +1,6 @@
 #include "Newton.h"
 #include "global.h"
+using namespace std;
 
 Newton::Newton(sf::RenderWindow* Window):Fractal(Window)
 {

@@ -3,6 +3,7 @@
 #include "../gui/wx/SizeDialogSave.h"
 #include "Filesystem.h"
 #include "global.h"
+using namespace std;
 
 FractalCanvas* fractalCanvasPtr = nullptr;
 

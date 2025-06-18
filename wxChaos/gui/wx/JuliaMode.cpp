@@ -1,6 +1,7 @@
 #include "JuliaMode.h"
 #include "SizeDialogSave.h"
 #include "global.h"
+using namespace std;
 
 bool juliaModeState;
 

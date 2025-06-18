@@ -1,4 +1,5 @@
 #include "Julia.h"
+using namespace std;
 
 Julia::Julia(sf::RenderWindow* Window):Fractal(Window)
 {

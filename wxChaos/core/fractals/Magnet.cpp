@@ -1,4 +1,5 @@
 #include "Magnet.h"
+using namespace std;
 
 Magnet::Magnet(sf::RenderWindow* Window) : Fractal(Window)
 {

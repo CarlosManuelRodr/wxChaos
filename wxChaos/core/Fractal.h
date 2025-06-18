@@ -1,587 +1,29 @@
-/**
-* @file FractalClasses.h
-* @brief All the fractal drawing related classes.
-*
-* For the definition of how each fractal is rendered look into fractalTypes.h
-* @copyright GNU Public License.
-* @author Carlos Manuel Rodriguez y Martinez
-* @date 9/22/2012
-*/
-
 #pragma once
-#ifndef _FractalClasses
-#define _FractalClasses
-
+#ifndef FRACTAL_H
+#define FRACTAL_H
 #include <complex>
+#include <vector>
 #include "Styles.h"
 #include "wx/gradient.h"
 #include "../gui/sfml/FractalGUI.h"
 #include <mpParser.h>
-using namespace std;
-
-/****************************
-*                           *
-*    Auxiliary functions    *
-*                           *
-****************************/
-
-int Get_Cores();
-
-/****************************
-*                           *
-*      Fractal classes      *
-*                           *
-****************************/
-
-/**
-* @enum FractalType
-* @brief Enumerates the list of available fractals.
-*/
-enum class FractalType
-{
-    Mandelbrot,
-    MandelbrotZN,
-    Julia,
-    JuliaZN,
-    NewtonRaphsonMethod,
-    Sinoidal,
-    Magnetic,
-    Medusa,
-    Manowar,
-    ManowarJulia,
-    SierpinskyTriangle,
-    FixedPoint1,
-    FixedPoint2,
-    FixedPoint3,
-    FixedPoint4,
-    Tricorn,
-    BurningShip,
-    BurningShipJulia,
-    Fractory,
-    Cell,
-    DoublePendulum,
-    UserDefined,
-    FixedPointUserDefined,
-    ScriptFractal,
-    Undefined
-};
-
-/**
-* @enum Color
-* @brief Enumerates the rgb color.
-*/
-enum class Color
-{
-    Red,
-    Green,
-    Blue
-};
-
-/**
-* @enum RenderingAlgorithm
-* @brief List of available render algorithms.
-*/
-enum class RenderingAlgorithm
-{
-    EscapeTime,
-    GaussianInt,
-    EscapeAngle,
-    TriangleInequality,
-    ChaoticMap,
-    Lyapunov,
-    ConvergenceTest,
-    Other
-};
-
-/**
-* @enum ColorMode
-* @brief List of available color modes.
-*/
-enum class ColorMode
-{
-    Gradient,
-    Gaussian
-};
-
-/**
-* @enum Direction
-* @brief Movement direction.
-*/
-enum Direction
-{
-    Left = 0,
-    Right,
-    Up,
-    Down
-};
-
-/**
-* @struct LineData
-* @brief Parameters of line shape.
-*/
-struct LineData
-{
-    double x1, y1, x2, y2;
-    sf::Color color;
-};
-
-/**
-* @struct CircleData
-* @brief Parameters of circle shape.
-*/
-struct CircleData
-{
-    double x_center, y_center, radius;
-    sf::Color color;
-};
-
-/**
-* @struct Options
-* @brief Used to copy the parameters of the fractal.
-*/
-
-struct Options
-{
-    double minX;
-    double maxX;
-    double minY;
-    double maxY;
-    double xFactor;
-    double yFactor;
-    unsigned maxIter;
-    int changeGradient;
-    wxGradient gradient;
-    ColorMode colorPaletteMode;
-    RenderingAlgorithm alg;
-    FractalType type;
-    int paletteSize;
-    int gaussianPaletteSize;
-    int gradPaletteSize;
-    PanelOptions panelOpt;
-
-    double kReal;
-    double kImaginary;
-
-    bool orbitTrapMode;
-    bool colorSet;
-    bool colorMode;
-    bool buddhaMode;
-    bool smoothRender;
-    bool justLaunchThreads;
-    bool relativeColor;
-    int redInt, greenInt, blueInt;
-    double redMean, greenMean, blueMean;
-    double redStdDev, greenStdDev, blueStdDev;
-    sf::Color fSetColor;
-
-    int screenHeight;
-    int screenWidth;
-};
-
-/**
-* @enum FormulaType
-* @brief Type of user formula.
-*/
-enum class FormulaType
-{
-    Complex = 1,
-    FixedPoint
-};
-
-/**
-* @struct FormulaOpt
-* @brief User formula parameters.
-*/
-
-struct FormulaOpt
-{
-    wxString userFormula;        ///< String containing the user formula.
-    FormulaType type;            ///< Type of user formula (Complex or fixed point).
-    bool julia;                  ///< Inform if the fractal is a Julia variety. Only on complex type.
-    int bailout;                 ///< Bailout of the complex fractal.
-};
-
-/**
-* @struct Vector2Int
-* @brief Stores x and y coordinates.
-*/
-struct Vector2Int
-{
-    int x, y;
-};
-
-/**
-* @struct Vector2Double
-* @brief Stores x and y coordinates. This variant comes with vector arithmetic operators.
-*/
-
-struct Vector2Double
-{
-    double x, y;
-
-    Vector2Double();
-    Vector2Double(double _x, double _y);
-    Vector2Double(const Vector2Int& v);
-
-    Vector2Double operator-() const;
-    Vector2Double& operator+=(const Vector2Double& v);
-
-    Vector2Double& operator*=(const double t);
-    Vector2Double& operator/=(const double t);
-
-    double Length() const;
-    double SquaredLength() const;
-};
-
-inline Vector2Double operator+(const Vector2Double& u, const Vector2Double& v)
-{
-    return Vector2Double(u.x + v.x, u.y + v.y);
-}
-inline Vector2Double operator-(const Vector2Double& u, const Vector2Double& v)
-{
-    return Vector2Double(u.x - v.x, u.y - v.y);
-}
-inline Vector2Double operator*(const Vector2Double& u, const Vector2Double& v)
-{
-    return Vector2Double(u.x * v.x, u.y * v.y);
-}
-inline Vector2Double operator*(double t, const Vector2Double& v)
-{
-    return Vector2Double(t * v.x, t * v.y);
-}
-inline Vector2Double operator*(const Vector2Double& v, double t)
-{
-    return t * v;
-}
-inline Vector2Double operator/(Vector2Double v, double t)
-{
-    return (1.0 / t) * v;
-}
-
-
-/**
-* @struct Rect
-* @brief Stores rectangle coordinates.
-*/
-struct Rect
-{
-    double left, bottom, right, top;
-
-    Rect();
-    Rect(double _left, double _bottom, double _right, double _top);
-    Vector2Double GetLowerBound();
-    Vector2Double GetHigherBound();
-    void SetLowerBound(Vector2Double lb);
-    void SetHigherBound(Vector2Double hb);
-};
-
-/**
-* @class RenderFractal
-* @brief Handles the multithreading rendering.
-*
-* This is an abstract class. It's derived classes have to define the Render() method.
-*/
-
-class RenderFractal
-{
-protected:
-    bool** setMap;                ///< Pointer to the set map.
-    int** colorMap;               ///< Pointer to the color map.
-    unsigned int** auxMap;        ///< Pointer to the auxiliary map.
-    int x;                        ///< Rendering x position.
-    int y;                        ///< Rendering y position.
-    unsigned int threadProgress;  ///< Last progress counted. Used when the thread is paused.
-
-    int wo;        ///< Left render limit.
-    int ho;        ///< Upper render limit.
-    int wf;        ///< Right render limit.
-    int hf;        ///< Bottom render limit.
-    int oldHo;     ///< Previous upper render limit.
-
-    bool threadRunning;         ///< Flag to stop the thread.
-    bool stopped;
-    bool specialRenderMode;     ///< Controls the rendering modes.
-    Options myOpt;              ///< A copy of the parameters found in the Fractal class.
-
-    FractalType type;
-    double xFactor;
-    double yFactor;
-    double minX;
-    double maxX;
-    double minY;
-    double maxY;
-    double maxIter;
-
-    double kReal;
-    double kImaginary;
-
-public:
-    virtual void Render() = 0;            ///< Render the fractal.
-    virtual void SpecialRender() {};
-    virtual void Stop();
-    RenderFractal();                      ///< Constructor.
-
-    void run();                   ///< The worker function for the thread.
-
-    ///@brief Sets the rendering limits. This is calculated before the rendering starts by TRender.
-    ///@param widthO Left rendering limit.
-    ///@param heightO Upper rendering limit.
-    ///@param widthF Right rendering limit.
-    ///@param heightF Lower rendering limit.
-    void SetLimits(int widthO, int heightO, int widthF, int heightF);
-
-    ///@brief Sets the original lower height limit.
-    ///@param _oldHo Original lower height limit.
-    void SetOldHo(int _oldHo);
-
-    ///@brief Update limits of the rendering area before starting a renderJob.
-    ///@param heightO Start position of the renderJob.
-    void UpdateLimits(int heightO);
-
-    ///@brief Activates the special rendering mode.
-    ///@param mode New mode.
-    void SetSpecialRenderMode(bool mode);
-
-    /**
-    * @brief Sets the rendering parameters.
-    *
-    * This is actually here because not every fractal type need to be threaded, so in case of a threaded fractal
-    * you need to set the same pack of parameters that a non threaded one would find.
-    * @param opt Fractal options.
-    */
-    void SetOpt(Options opt);
-
-    ///@brief Get the rendering parameters.
-    ///@return Fractal options.
-    Options GetOpt();
-
-    ///@brief Set the adresses of the maps where the fractal will draw.
-    ///@param outSetMap Pointer to Set map.
-    ///@param outColorMap Pointer to the color map.
-    ///@param outAux Pointer to the auxiliar map.
-    void SetRenderOut(bool** outSetMap, int** outColorMap, unsigned int** outAux = nullptr);
-
-    ///@brief Sets the K constant.
-    ///@param re Real parameter.
-    ///@param im Imaginary parameter.
-    void SetK(double re, double im);
-
-    ///@brief Resets x and y positions.
-    void Reset();
-
-    ///@brief To be overriden in case that a special behaviour is needed before terminanting the thread.
-    virtual void PreTerminate();
-
-    ///@brief Gets the pixel coordinates where the rendering was paused.
-    ///@return A struct with the coordinates.
-    Vector2Int GetCoords();
-
-    ///@brief Get the pixel coordinates where the rendering was started.
-    ///@return A struct with the coordinates.
-    Vector2Int GetStartPoints();
-
-    ///@brief Get the pixel coordinates where the rendering has to end.
-    ///@return A struct with the coordinates.
-    Vector2Int GetEndPoints();
-
-    bool IsRunning();
-
-    ///@brief Ask the percentage of rendering progress,
-    ///@return A integer from 0 to 100 that is the progress.
-    virtual int AskProgress();
-};
-
-// Clases fractal y threadWatchdog
-/**
-* @class ThreadWatchdog
-* @brief Control the execution of the threads.
-*
-* The watchdog main purpose is to control the execution and flow of the threads. It provides methods to watch their status,
-* stop them, reset them and relaunch them.
-* @tparam MT Must be a RenderFractal inherited class.
-*/
-template<class MT> class ThreadWatchdog : public sf::Thread
-{
-    MT** threadList;               ///< An array with pointers to the execution threads.
-    sf::Thread** sfmlThreads;      ///< An array to hold the actual sf::Thread objects.
-    bool threadRunning;            ///< State of the threads.
-    unsigned int threadCounter;    ///< Number of threads to watch over.
-public:
-    ThreadWatchdog();
-    ~ThreadWatchdog();
-
-    virtual void run();
-
-    ///@brief Changes the number of execution threads. For this it will have to delete the previous ones.
-    ///@param nThreads Number of new threads.
-    void SetThreadNumber(int nThreads);
-
-    ///@brief Sets a new thread to watch over.
-    ///@param threadAdress Pointer to the thread to watch over.
-    void SetThread(MT* threadAdress);
-
-    ///@brief Resets the RenderFractal.
-    void Reset();
-
-    ///@brief Launch all the threads in the threadList.
-    void LaunchThreads();
-
-    ///@brief Stops all the threads in the threadList.
-    void StopThreads();
-
-    ///@brief Informs if there is a thread running.
-    ///@return true if there is a thread running. false if not.
-    bool ThreadRunning();
-
-    ///@brief Ask the RenderFractal the render progress.
-    ///@return A integer from 0 to 100 that is the progress.
-    int GetThreadProgress();
-
-    ///@brief Get the thread in the specified index.
-    ///@param nThread Index of the thread to return.
-    ///@return A pointer to the specified thread index.
-    MT* GetThread(unsigned int nThread);
-};
-
-/**
-* @brief Sets the watchdog for the specified threads.
-* @param MT Must be a RenderFractal inherited class.
-* @param myRender Array of render threads.
-* @param watchdog Pointer to the watchdog that will be used.
-* @param threadNumber Number of threads to set.
-*/
-template<class MT> inline void SetWatchdog(MT* myRender, ThreadWatchdog<RenderFractal>* watchdog, unsigned int threadNumber)
-{
-    watchdog->SetThreadNumber(threadNumber);
-    for (unsigned int i = 0; i < threadNumber; i++)
-        watchdog->SetThread(&myRender[i]);
-}
-
-template<class MT> ThreadWatchdog<MT>::ThreadWatchdog() : sf::Thread(&ThreadWatchdog<MT>::run, this)
-{
-    threadCounter = 0;
-    threadRunning = false;
-    threadList = nullptr;
-    sfmlThreads = nullptr;
-}
-template<class MT> ThreadWatchdog<MT>::~ThreadWatchdog()
-{
-    if (threadList != nullptr)
-        delete[] threadList;
-    if (sfmlThreads != nullptr)
-    {
-        // Ensure threads are stopped and deleted
-        if (threadRunning) StopThreads();
-        delete[] sfmlThreads;
-    }
-}
-template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(int nThreads)
-{
-    if (threadList != nullptr)
-    {
-        delete[] threadList;
-    }
-    if (sfmlThreads != nullptr)
-    {
-        delete[] sfmlThreads;
-    }
-    threadCounter = 0;
-    threadRunning = false;
-
-    threadList = new MT * [nThreads];
-    sfmlThreads = new sf::Thread * [nThreads]; // Allocate for sf::Thread pointers
-    for (int i = 0; i < nThreads; ++i)
-    {
-        sfmlThreads[i] = nullptr; // Initialize to null
-    }
-}
-template<class MT> void ThreadWatchdog<MT>::SetThread(MT* threadAdress)
-{
-    threadList[threadCounter++] = threadAdress;
-}
-template<class MT> void ThreadWatchdog<MT>::run()
-{
-    // We don't want to collapse our system.
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
-#endif
-    // Wait for every thread to finish and change status.
-    for (unsigned int i = 0; i < threadCounter; i++)
-    {
-        if (sfmlThreads[i])
-        {
-            sfmlThreads[i]->wait();
-            delete sfmlThreads[i]; // Clean up after it's done
-            sfmlThreads[i] = nullptr;
-        }
-    }
-
-    threadRunning = false;
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-#endif
-}
-template<class MT> void ThreadWatchdog<MT>::Reset()
-{
-    for (unsigned int i = 0; i < threadCounter; i++)
-        threadList[i]->Reset();
-
-    threadRunning = true;
-}
-template<class MT> bool ThreadWatchdog<MT>::ThreadRunning()
-{
-    return threadRunning;
-}
-template<class MT> void ThreadWatchdog<MT>::LaunchThreads()
-{
-    // Launches all the threads.
-    threadRunning = true;
-    for (unsigned int i = 0; i < threadCounter; i++)
-    {
-        // Create a new thread that will call the run() method of our RenderFractal object
-        sfmlThreads[i] = new sf::Thread(&RenderFractal::run, threadList[i]);
-        sfmlThreads[i]->launch();
-    }
-}
-template<class MT> void ThreadWatchdog<MT>::StopThreads()
-{
-    for (unsigned int i = 0; i < threadCounter; i++)
-    {
-        threadList[i]->PreTerminate();
-        threadList[i]->Stop();
-    }
-
-    for (unsigned int i = 0; i < threadCounter; i++)
-    {
-        if (sfmlThreads[i])
-        {
-            sfmlThreads[i]->wait();
-            delete sfmlThreads[i];
-            sfmlThreads[i] = nullptr;
-        }
-    }
-
-    threadRunning = false;
-
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-#endif
-}
-template<class MT> int ThreadWatchdog<MT>::GetThreadProgress()
-{
-    int progress = 0;
-    for (unsigned int i = 0; i < threadCounter; i++)
-        progress += threadList[i]->AskProgress();
-
-    return (double)progress / (double)threadCounter;
-}
-template<class MT> MT* ThreadWatchdog<MT>::GetThread(unsigned int nThread)
-{
-    if (nThread >= 0 && nThread < threadCounter)
-        return threadList[nThread];
-    else
-        return nullptr;
-}
+#include "types/FractalType.h"
+#include "types/Color.h"
+#include "types/RenderingAlgorithm.h"
+#include "types/ColorMode.h"
+#include "types/Direction.h"
+#include "types/FormulaType.h"
+#include "geometry/LineData.h"
+#include "geometry/CircleData.h"
+#include "geometry/Vector2Int.h"
+#include "geometry/Vector2Double.h"
+#include "geometry/Rect.h"
+#include "Options.h"
+#include "FormulaOpt.h"
+#include "RenderFractal.h"
+#include "ThreadWatchdog.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 
 /**
 * @class Fractal
@@ -625,7 +67,7 @@ protected:
     sf::Image image;                ///< Layer where the output image is created.
     sf::Texture texture;
     sf::Sprite output;              ///< Sprite to draw the output image.
-    vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
+    std::vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
     sf::Font font;
     sf::Text text;
     wxString tempText;
@@ -633,7 +75,7 @@ protected:
     sf::Texture tempTexture;
     sf::Sprite tempSprite;          ///< tempImage sprite.
 
-    vector<double> zoom[4];         ///< Saves the performed zooms.
+    std::vector<double> zoom[4];         ///< Saves the performed zooms.
     Rect outermostZoom;
     int screenWidth;
     int screenHeight;
@@ -643,7 +85,7 @@ protected:
 
     // Color properties.
     RenderingAlgorithm alg;
-    vector<RenderingAlgorithm> availableAlg;
+    std::vector<RenderingAlgorithm> availableAlg;
     ColorMode colorPaletteMode;
     wxGradient gradient;                    ///< Gradient to be used.
     sf::Color white;
@@ -690,9 +132,9 @@ protected:
     bool renderJobComp;                     ///< Fractal compatible with renderJobs.
     bool changeFractalProp;
     bool onWxCtrl;
-    vector<Vector2Int> endPoints;
-    vector<Vector2Int> startPoints;
-    vector<Vector2Int> pausePoints;
+    std::vector<Vector2Int> endPoints;
+    std::vector<Vector2Int> startPoints;
+    std::vector<Vector2Int> pausePoints;
 
     // Julia Mode variables.
     bool juliaMode;
@@ -705,8 +147,8 @@ protected:
     double orbitX, orbitY;
 
     // Geometry variables.
-    vector<CircleData> circles;
-    vector<LineData> lines, orbitLines;
+    std::vector<CircleData> circles;
+    std::vector<LineData> lines, orbitLines;
     bool geomFigure;
     sf::Image geomImage;
     sf::Texture geomTexture;
@@ -894,7 +336,7 @@ public:
     // Save image.
     sf::Image GetRenderedImage();
     wxBitmap GetRenderedWxBitmap();
-    void RenderBMP(string filename);
+    void RenderBMP(std::string filename);
     void PrepareSnapshot(bool mode);
 
     // Color styles.
@@ -930,7 +372,7 @@ public:
 
     // Algorithm.
     RenderingAlgorithm GetCurrentAlg();
-    vector<RenderingAlgorithm> GetAvailableAlg();
+    std::vector<RenderingAlgorithm> GetAvailableAlg();
     void SetAlgorithm(RenderingAlgorithm _alg);
 
     // Julia mode operations.

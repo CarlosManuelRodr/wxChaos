@@ -1,4 +1,5 @@
 #include "SierpTriangle.h"
+using namespace std;
 
 SierpTriangle::SierpTriangle(sf::RenderWindow* Window) : Fractal(Window)
 {

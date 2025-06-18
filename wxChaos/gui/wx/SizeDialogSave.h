@@ -15,7 +15,6 @@
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
 #include <SFML/System.hpp>
-#include "FractalClasses.h"
 #include "FractalCanvas.h"
 #include "global.h"
 
@@ -73,8 +72,8 @@ private:
     FractalCanvas* fCanvas;
     Options opt;
     FractalType fractalType;
-    string path;
-    string myScriptPath;
+    std::string path;
+    std::string myScriptPath;
     double screenRatio;
     int extension;
 
@@ -83,10 +82,10 @@ private:
     void OnOk(wxCommandEvent& event);             ///< Creates fractal with the parameters from the dialog and saves image.
 
 public:
-    SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
-        string scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(283, 251),
-        long style = wxDEFAULT_DIALOG_STYLE);
+    SizeDialogSave(FractalCanvas* mFCanvas, std::string filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
+                   std::string scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
+                   const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(283, 251),
+                   long style = wxDEFAULT_DIALOG_STYLE);
     ~SizeDialogSave();
 };
 

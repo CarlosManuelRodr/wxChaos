@@ -1,5 +1,6 @@
 #include "RenderSinoidal.h"
 #include "FractalUtils.h"
+using namespace std;
 
 RenderSinoidal::RenderSinoidal()
 {

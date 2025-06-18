@@ -1,4 +1,5 @@
 #include "ManowarJulia.h"
+using namespace std;
 
 ManowarJulia::ManowarJulia(sf::RenderWindow* Window) : Fractal(Window)
 {

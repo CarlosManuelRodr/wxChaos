@@ -1,5 +1,6 @@
 #include "ScriptFractal.h"
 #include "StringFuncs.h"
+using namespace std;
 
 ScriptFractal::ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData) : Fractal(Window)
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../FractalClasses.h"
+#include "../RenderFractal.h"
 
 /*
 * @class RenderBurningShip

@@ -8,6 +8,8 @@
 #include <Shellapi.h>
 #endif
 
+using namespace std;
+
 const unsigned int SCRIPT_ID_INDEX = 8510;
 MainFrame* mainFramePtr = nullptr;
 

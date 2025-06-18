@@ -1,5 +1,6 @@
 #include "Mandelbrot.h"
 #include "global.h"
+using namespace std;
 
 Mandelbrot::Mandelbrot(sf::RenderWindow* Window) : Fractal(Window)
 {

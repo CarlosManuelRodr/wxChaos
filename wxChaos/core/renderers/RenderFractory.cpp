@@ -1,5 +1,6 @@
 #include "RenderFractory.h"
 #include "FractalUtils.h"
+using namespace std;
 
 RenderFractory::RenderFractory()
 {

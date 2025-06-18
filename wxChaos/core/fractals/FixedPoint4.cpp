@@ -1,5 +1,6 @@
 #include "FixedPoint4.h"
 #include "global.h"
+using namespace std;
 
 FixedPoint4::FixedPoint4(sf::RenderWindow* Window):Fractal(Window)
 {

@@ -1,5 +1,6 @@
 #include "DPendulum.h"
 #include "global.h"
+using namespace std;
 
 DPendulum::DPendulum(sf::RenderWindow* Window):Fractal(Window)
 {

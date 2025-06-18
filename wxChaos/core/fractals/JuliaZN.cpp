@@ -1,5 +1,6 @@
 #include "JuliaZN.h"
 #include "global.h"
+using namespace std;
 
 JuliaZN::JuliaZN(sf::RenderWindow* Window):Fractal(Window)
 {
