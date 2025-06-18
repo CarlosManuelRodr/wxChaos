@@ -3,7 +3,7 @@
 #include <angelscript.h>
 #include <wx/string.h>
 #include "ScriptData.h"
-#include "EngineStatus.h"
+#include "types/EngineStatus.h"
 
 class AngelscriptConfigurationEngine
 {

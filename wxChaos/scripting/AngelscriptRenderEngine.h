@@ -2,7 +2,7 @@
 
 #include <angelscript.h>
 #include <wx/string.h>
-#include "EngineStatus.h"
+#include "types/EngineStatus.h"
 
 class AngelscriptRenderEngine
 {

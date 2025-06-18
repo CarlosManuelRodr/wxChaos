@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-#include "ScriptCategory.h"
-#include "ScriptDataType.h"
+#include "types/ScriptCategory.h"
+#include "types/ScriptDataType.h"
 
 struct ScriptData
 {
