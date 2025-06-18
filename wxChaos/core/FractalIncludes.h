@@ -4,5 +4,4 @@
 #include <fstream>
 #include <sstream>
 #include "StringFuncs.h"
-#include "ConfigParser.h"
 #include "global.h"

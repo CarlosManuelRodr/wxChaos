@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "JuliaZN.h"
+#include "global.h"
 
 JuliaZN::JuliaZN(sf::RenderWindow* Window):Fractal(Window)
 {

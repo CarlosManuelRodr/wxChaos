@@ -1,5 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
+#include "RenderSierpTriangle.h"
 
 RenderSierpTriangle::RenderSierpTriangle()
 {

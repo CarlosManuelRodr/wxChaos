@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "Tricorn.h"
 
 Tricorn::Tricorn(sf::RenderWindow* Window) : Fractal(Window)
 {

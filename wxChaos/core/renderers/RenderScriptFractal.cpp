@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderScriptFractal.h"
 
 RenderScriptFractal::RenderScriptFractal()
 {

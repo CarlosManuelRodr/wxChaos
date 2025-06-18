@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "Fractory.h"
 
 Fractory::Fractory(sf::RenderWindow* Window) : Fractal(Window)
 {

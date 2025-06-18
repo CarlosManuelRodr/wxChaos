@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "MandelbrotZN.h"
+#include "global.h"
 
 MandelbrotZN::MandelbrotZN(sf::RenderWindow* Window):Fractal(Window)
 {

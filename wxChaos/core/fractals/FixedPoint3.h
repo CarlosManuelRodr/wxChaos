@@ -1,5 +1,6 @@
 #pragma once
 #include "../FractalClasses.h"
+#include "../renderers/RenderFixedPoint3.h"
 
 /*
 * @class FixedPoint3

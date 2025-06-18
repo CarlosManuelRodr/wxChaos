@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "FixedPoint3.h"
+#include "global.h"
 
 FixedPoint3::FixedPoint3(sf::RenderWindow* Window):Fractal(Window)
 {

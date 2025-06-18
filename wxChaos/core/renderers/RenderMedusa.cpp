@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderMedusa.h"
+#include "FractalUtils.h"
 
 RenderMedusa::RenderMedusa()
 {

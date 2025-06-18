@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderBurningShip.h"
+#include "FractalUtils.h"
 
 RenderBurningShip::RenderBurningShip()
 {

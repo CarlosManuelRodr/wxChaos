@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "Magnet.h"
 
 Magnet::Magnet(sf::RenderWindow* Window) : Fractal(Window)
 {

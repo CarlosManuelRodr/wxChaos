@@ -1,5 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
+#include "RenderUserDefined.h"
 
 RenderUserDefined::RenderUserDefined()
 {

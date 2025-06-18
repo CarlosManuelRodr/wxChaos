@@ -1,5 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
+#include "RenderMagnet.h"
 
 RenderMagnet::RenderMagnet()
 {

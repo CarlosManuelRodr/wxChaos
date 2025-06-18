@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "Cell.h"
+#include "global.h"
 
 Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
 {

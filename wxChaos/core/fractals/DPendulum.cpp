@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "DPendulum.h"
+#include "global.h"
 
 DPendulum::DPendulum(sf::RenderWindow* Window):Fractal(Window)
 {

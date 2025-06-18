@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderFixedPoint1.h"
 
 RenderFixedPoint1::RenderFixedPoint1()
 {

@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderMandelbrotZN.h"
+#include "FractalUtils.h"
 
 RenderMandelbrotZN::RenderMandelbrotZN()
 {

@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "BurningShipJulia.h"
 
 BurningShipJulia::BurningShipJulia(sf::RenderWindow* Window) : Fractal(Window)
 {

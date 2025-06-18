@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "Sinoidal.h"
 
 Sinoidal::Sinoidal(sf::RenderWindow* Window) : Fractal(Window)
 {

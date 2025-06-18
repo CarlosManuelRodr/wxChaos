@@ -13,8 +13,8 @@
 #ifndef _fractalCanvas
 #define _fractalCanvas
 
-#include "../gui/wx/wxSFMLCanvas.h"
 #include "FractalHandler.h"
+#include "../gui/wx/wxSFMLCanvas.h"
 #include "../gui/sfml/ScreenPointer.h"
 
 /**

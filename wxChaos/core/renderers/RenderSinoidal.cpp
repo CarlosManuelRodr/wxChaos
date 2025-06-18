@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderSinoidal.h"
+#include "FractalUtils.h"
 
 RenderSinoidal::RenderSinoidal()
 {

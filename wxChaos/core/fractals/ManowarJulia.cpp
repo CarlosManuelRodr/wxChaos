@@ -1,7 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalClasses.h"
-#include "../FractalUtils.h"
+#include "ManowarJulia.h"
 
 ManowarJulia::ManowarJulia(sf::RenderWindow* Window) : Fractal(Window)
 {

@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "Newton.h"
+#include "global.h"
 
 Newton::Newton(sf::RenderWindow* Window):Fractal(Window)
 {

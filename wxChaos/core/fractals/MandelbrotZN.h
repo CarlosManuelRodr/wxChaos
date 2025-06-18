@@ -1,5 +1,6 @@
 #pragma once
 #include "../FractalClasses.h"
+#include "../renderers/RenderMandelbrotZN.h"
 
 /*
 * @class MandelbrotZN

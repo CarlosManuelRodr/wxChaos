@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderJuliaZN.h"
+#include "FractalUtils.h"
 
 RenderJuliaZN::RenderJuliaZN()
 {

@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "Manowar.h"
 
 Manowar::Manowar(sf::RenderWindow* Window) : Fractal(Window)
 {

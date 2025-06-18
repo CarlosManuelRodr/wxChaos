@@ -1,6 +1,4 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "UserDefined.h"
 
 UserDefined::UserDefined(sf::RenderWindow* Window) : Fractal(Window)
 {

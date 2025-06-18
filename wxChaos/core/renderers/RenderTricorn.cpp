@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderTricorn.h"
+#include "FractalUtils.h"
 
 RenderTricorn::RenderTricorn()
 {

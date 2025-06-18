@@ -1,6 +1,5 @@
-#include "../FractalIncludes.h"
-#include "../FractalTypes.h"
-#include "../FractalUtils.h"
+#include "RenderManowar.h"
+#include "FractalUtils.h"
 
 RenderManowar::RenderManowar()
 {
