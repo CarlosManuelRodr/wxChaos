@@ -1,8 +1,7 @@
 #include "../FractalIncludes.h"
 #include "../FractalTypes.h"
-#include "../FractalClasses.h"
-#include "../scripting/AngelscriptEngine.h"
 #include "../FractalUtils.h"
+
 RenderCell::RenderCell()
 {
     bailout = 1.0;

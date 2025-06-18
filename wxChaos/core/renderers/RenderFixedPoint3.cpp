@@ -1,8 +1,7 @@
 #include "../FractalIncludes.h"
 #include "../FractalTypes.h"
-#include "../FractalClasses.h"
-#include "../scripting/AngelscriptEngine.h"
 #include "../FractalUtils.h"
+
 RenderFixedPoint3::RenderFixedPoint3()
 {
     minStep = 0.01;
