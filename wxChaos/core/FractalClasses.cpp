@@ -5,6 +5,7 @@
 #include "StringFuncs.h"
 #include "Filesystem.h"
 #include "global.h"
+#include "SystemUtils.h"
 
 const int stdSpeed = 1;
 const GradientColorStyles defaultGradStyle = GradientColorStyles::Retro;
@@ -19,21 +20,6 @@ inline double CalcSquaredDist(const double x1, const double y1, const double x2,
 inline double CalcDist(const double x1, const double y1, const double x2, const double y2)
 {
     return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-}
-
-int Get_Cores()
-{
-#ifdef _WIN32
-    SYSTEM_INFO sysinfo;
-    GetSystemInfo(&sysinfo);
-
-    return sysinfo.dwNumberOfProcessors;
-#endif
-
-#ifdef __linux__
-    return sysconf(_SC_NPROCESSORS_ONLN);
-#endif
-    return 1;
 }
 
 /**
@@ -133,83 +119,6 @@ template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWi
     }
 }
 
-// Vector2Double implementation
-Vector2Double::Vector2Double()
-{
-    x = y = 0.0;
-}
-Vector2Double::Vector2Double(double _x, double _y)
-{
-    x = _x;
-    y = _y;
-}
-Vector2Double::Vector2Double(const Vector2Int& v)
-{
-    x = static_cast<double>(v.x);
-    y = static_cast<double>(v.y);
-}
-
-Vector2Double Vector2Double::operator-() const
-{
-    return Vector2Double(-x, -y);
-}
-Vector2Double& Vector2Double::operator+=(const Vector2Double& v)
-{
-    x += v.x;
-    y += v.y;
-    return *this;
-}
-Vector2Double& Vector2Double::operator*=(const double t)
-{
-    x *= t;
-    y *= t;
-    return *this;
-}
-Vector2Double& Vector2Double::operator/=(const double t)
-{
-    return *this *= 1.0 / t;
-}
-
-double Vector2Double::Length() const
-{
-    return sqrt(this->SquaredLength());
-}
-double Vector2Double::SquaredLength() const
-{
-    return x * x + y * y;
-}
-
-
-// Rect implementation
-Rect::Rect()
-{
-    left = top = right = bottom = 0.0;
-}
-Rect::Rect(double _left, double _bottom, double _right, double _top)
-{
-    left = _left;
-    bottom = _bottom;
-    right = _right;
-    top = _top;
-}
-Vector2Double Rect::GetLowerBound()
-{
-    return Vector2Double(left, bottom);
-}
-Vector2Double Rect::GetHigherBound()
-{
-    return Vector2Double(right, top);
-}
-void Rect::SetLowerBound(Vector2Double lb)
-{
-    left = lb.x;
-    bottom = lb.y;
-}
-void Rect::SetHigherBound(Vector2Double hb)
-{
-    right = hb.x;
-    top = hb.y;
-}
 
 /////////////////////////////////////////
 ////        BEGINS FRACTAL          /////
