@@ -1,6 +1,6 @@
 #pragma once
 #include "../RenderFractal.h"
-#include "../scripting/AngelscriptEngine.h"
+#include "../scripting/AngelscriptRenderEngine.h"
 
 /*
 * @class RenderScriptFractal

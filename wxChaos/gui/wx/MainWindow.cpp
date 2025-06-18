@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include "AngelscriptEngine.h"
+#include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
 #include "Filesystem.h"
 #include <fstream>

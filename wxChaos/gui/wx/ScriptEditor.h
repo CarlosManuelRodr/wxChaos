@@ -23,7 +23,7 @@
 #include <wx/dialog.h>
 #include <wx/textctrl.h>
 #include <vector>
-#include "AngelscriptEngine.h"
+#include "AngelscriptBindings.h"
 
 class ScriptNameDialog : public wxDialog
 {

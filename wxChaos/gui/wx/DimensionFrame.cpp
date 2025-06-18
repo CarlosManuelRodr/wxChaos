@@ -4,7 +4,7 @@
 #include "StringFuncs.h"
 #include "SizeDialogSave.h"
 #include "BmpWriter.h"
-#include "AngelscriptEngine.h"
+#include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
 #include "Filesystem.h"
 #include "global.h"

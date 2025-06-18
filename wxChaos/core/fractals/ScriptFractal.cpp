@@ -1,5 +1,7 @@
 #include "ScriptFractal.h"
 #include "StringFuncs.h"
+#include "../../scripting/AngelscriptConfigurationEngine.h"
+#include "../../scripting/AngelscriptBindings.h"
 using namespace std;
 
 ScriptFractal::ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData) : Fractal(Window)

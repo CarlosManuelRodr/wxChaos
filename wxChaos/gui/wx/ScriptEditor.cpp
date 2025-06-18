@@ -5,6 +5,7 @@
 #include "FractalTypes.h"
 #include "global.h"
 #include "MainWindow.h"
+#include "../scripting/AngelscriptConfigurationEngine.h"
 using namespace std;
 
 const string newScriptTemplate = R""""(void Configure()

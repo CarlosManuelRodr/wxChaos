@@ -1,6 +1,7 @@
 #pragma once
 #include "../Fractal.h"
 #include "../renderers/RenderScriptFractal.h"
+#include "../scripting/ScriptData.h"
 
 /*
 * @class ScriptFractal
