@@ -1,5 +1,6 @@
 #include "RenderJuliaZN.h"
 #include "FractalUtils.h"
+using namespace std;
 
 RenderJuliaZN::RenderJuliaZN()
 {

@@ -1,5 +1,6 @@
 #include "RenderManowarJulia.h"
 #include "FractalUtils.h"
+using namespace std;
 
 RenderManowarJulia::RenderManowarJulia()
 {

@@ -2,217 +2,28 @@
 #ifndef FRACTAL_H
 #define FRACTAL_H
 #include <complex>
+#include <vector>
 #include "Styles.h"
 #include "wx/gradient.h"
 #include "../gui/sfml/FractalGUI.h"
 #include <mpParser.h>
-#include "base/FractalType.h"
-#include "base/Color.h"
-#include "base/RenderingAlgorithm.h"
-#include "base/ColorMode.h"
-#include "base/Direction.h"
-#include "base/LineData.h"
-#include "base/CircleData.h"
-#include "base/Options.h"
-#include "base/FormulaType.h"
-#include "base/FormulaOpt.h"
-#include "base/Vector2Int.h"
-#include "base/Vector2Double.h"
-#include "base/Rect.h"
+#include "types/FractalType.h"
+#include "types/Color.h"
+#include "types/RenderingAlgorithm.h"
+#include "types/ColorMode.h"
+#include "types/Direction.h"
+#include "types/FormulaType.h"
+#include "geometry/LineData.h"
+#include "geometry/CircleData.h"
+#include "geometry/Vector2Int.h"
+#include "geometry/Vector2Double.h"
+#include "geometry/Rect.h"
+#include "Options.h"
+#include "FormulaOpt.h"
+#include "RenderFractal.h"
+#include "ThreadWatchdog.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-
-// Clases fractal y threadWatchdog
-/**
-* @class ThreadWatchdog
-* @brief Control the execution of the threads.
-*
-* The watchdog main purpose is to control the execution and flow of the threads. It provides methods to watch their status,
-* stop them, reset them and relaunch them.
-* @tparam MT Must be a RenderFractal inherited class.
-*/
-template<class MT> class ThreadWatchdog : public sf::Thread
-{
-    MT** threadList;               ///< An array with pointers to the execution threads.
-    sf::Thread** sfmlThreads;      ///< An array to hold the actual sf::Thread objects.
-    bool threadRunning;            ///< State of the threads.
-    unsigned int threadCounter;    ///< Number of threads to watch over.
-public:
-    ThreadWatchdog();
-    ~ThreadWatchdog();
-
-    virtual void run();
-
-    ///@brief Changes the number of execution threads. For this it will have to delete the previous ones.
-    ///@param nThreads Number of new threads.
-    void SetThreadNumber(int nThreads);
-
-    ///@brief Sets a new thread to watch over.
-    ///@param threadAdress Pointer to the thread to watch over.
-    void SetThread(MT* threadAdress);
-
-    ///@brief Resets the RenderFractal.
-    void Reset();
-
-    ///@brief Launch all the threads in the threadList.
-    void LaunchThreads();
-
-    ///@brief Stops all the threads in the threadList.
-    void StopThreads();
-
-    ///@brief Informs if there is a thread running.
-    ///@return true if there is a thread running. false if not.
-    bool ThreadRunning();
-
-    ///@brief Ask the RenderFractal the render progress.
-    ///@return A integer from 0 to 100 that is the progress.
-    int GetThreadProgress();
-
-    ///@brief Get the thread in the specified index.
-    ///@param nThread Index of the thread to return.
-    ///@return A pointer to the specified thread index.
-    MT* GetThread(unsigned int nThread);
-};
-
-/**
-* @brief Sets the watchdog for the specified threads.
-* @param MT Must be a RenderFractal inherited class.
-* @param myRender Array of render threads.
-* @param watchdog Pointer to the watchdog that will be used.
-* @param threadNumber Number of threads to set.
-*/
-template<class MT> inline void SetWatchdog(MT* myRender, ThreadWatchdog<RenderFractal>* watchdog, unsigned int threadNumber)
-{
-    watchdog->SetThreadNumber(threadNumber);
-    for (unsigned int i = 0; i < threadNumber; i++)
-        watchdog->SetThread(&myRender[i]);
-}
-
-template<class MT> ThreadWatchdog<MT>::ThreadWatchdog() : sf::Thread(&ThreadWatchdog<MT>::run, this)
-{
-    threadCounter = 0;
-    threadRunning = false;
-    threadList = nullptr;
-    sfmlThreads = nullptr;
-}
-template<class MT> ThreadWatchdog<MT>::~ThreadWatchdog()
-{
-    if (threadList != nullptr)
-        delete[] threadList;
-    if (sfmlThreads != nullptr)
-    {
-        // Ensure threads are stopped and deleted
-        if (threadRunning) StopThreads();
-        delete[] sfmlThreads;
-    }
-}
-template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(int nThreads)
-{
-    if (threadList != nullptr)
-    {
-        delete[] threadList;
-    }
-    if (sfmlThreads != nullptr)
-    {
-        delete[] sfmlThreads;
-    }
-    threadCounter = 0;
-    threadRunning = false;
-
-    threadList = new MT * [nThreads];
-    sfmlThreads = new sf::Thread * [nThreads]; // Allocate for sf::Thread pointers
-    for (int i = 0; i < nThreads; ++i)
-    {
-        sfmlThreads[i] = nullptr; // Initialize to null
-    }
-}
-template<class MT> void ThreadWatchdog<MT>::SetThread(MT* threadAdress)
-{
-    threadList[threadCounter++] = threadAdress;
-}
-template<class MT> void ThreadWatchdog<MT>::run()
-{
-    // We don't want to collapse our system.
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
-#endif
-    // Wait for every thread to finish and change status.
-    for (unsigned int i = 0; i < threadCounter; i++)
-    {
-        if (sfmlThreads[i])
-        {
-            sfmlThreads[i]->wait();
-            delete sfmlThreads[i]; // Clean up after it's done
-            sfmlThreads[i] = nullptr;
-        }
-    }
-
-    threadRunning = false;
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-#endif
-}
-template<class MT> void ThreadWatchdog<MT>::Reset()
-{
-    for (unsigned int i = 0; i < threadCounter; i++)
-        threadList[i]->Reset();
-
-    threadRunning = true;
-}
-template<class MT> bool ThreadWatchdog<MT>::ThreadRunning()
-{
-    return threadRunning;
-}
-template<class MT> void ThreadWatchdog<MT>::LaunchThreads()
-{
-    // Launches all the threads.
-    threadRunning = true;
-    for (unsigned int i = 0; i < threadCounter; i++)
-    {
-        // Create a new thread that will call the run() method of our RenderFractal object
-        sfmlThreads[i] = new sf::Thread(&RenderFractal::run, threadList[i]);
-        sfmlThreads[i]->launch();
-    }
-}
-template<class MT> void ThreadWatchdog<MT>::StopThreads()
-{
-    for (unsigned int i = 0; i < threadCounter; i++)
-    {
-        threadList[i]->PreTerminate();
-        threadList[i]->Stop();
-    }
-
-    for (unsigned int i = 0; i < threadCounter; i++)
-    {
-        if (sfmlThreads[i])
-        {
-            sfmlThreads[i]->wait();
-            delete sfmlThreads[i];
-            sfmlThreads[i] = nullptr;
-        }
-    }
-
-    threadRunning = false;
-
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-#endif
-}
-template<class MT> int ThreadWatchdog<MT>::GetThreadProgress()
-{
-    int progress = 0;
-    for (unsigned int i = 0; i < threadCounter; i++)
-        progress += threadList[i]->AskProgress();
-
-    return (double)progress / (double)threadCounter;
-}
-template<class MT> MT* ThreadWatchdog<MT>::GetThread(unsigned int nThread)
-{
-    if (nThread >= 0 && nThread < threadCounter)
-        return threadList[nThread];
-    else
-        return nullptr;
-}
 
 /**
 * @class Fractal
@@ -256,7 +67,7 @@ protected:
     sf::Image image;                ///< Layer where the output image is created.
     sf::Texture texture;
     sf::Sprite output;              ///< Sprite to draw the output image.
-    vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
+    std::vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
     sf::Font font;
     sf::Text text;
     wxString tempText;
@@ -264,7 +75,7 @@ protected:
     sf::Texture tempTexture;
     sf::Sprite tempSprite;          ///< tempImage sprite.
 
-    vector<double> zoom[4];         ///< Saves the performed zooms.
+    std::vector<double> zoom[4];         ///< Saves the performed zooms.
     Rect outermostZoom;
     int screenWidth;
     int screenHeight;
@@ -274,7 +85,7 @@ protected:
 
     // Color properties.
     RenderingAlgorithm alg;
-    vector<RenderingAlgorithm> availableAlg;
+    std::vector<RenderingAlgorithm> availableAlg;
     ColorMode colorPaletteMode;
     wxGradient gradient;                    ///< Gradient to be used.
     sf::Color white;
@@ -321,9 +132,9 @@ protected:
     bool renderJobComp;                     ///< Fractal compatible with renderJobs.
     bool changeFractalProp;
     bool onWxCtrl;
-    vector<Vector2Int> endPoints;
-    vector<Vector2Int> startPoints;
-    vector<Vector2Int> pausePoints;
+    std::vector<Vector2Int> endPoints;
+    std::vector<Vector2Int> startPoints;
+    std::vector<Vector2Int> pausePoints;
 
     // Julia Mode variables.
     bool juliaMode;
@@ -336,8 +147,8 @@ protected:
     double orbitX, orbitY;
 
     // Geometry variables.
-    vector<CircleData> circles;
-    vector<LineData> lines, orbitLines;
+    std::vector<CircleData> circles;
+    std::vector<LineData> lines, orbitLines;
     bool geomFigure;
     sf::Image geomImage;
     sf::Texture geomTexture;
@@ -525,7 +336,7 @@ public:
     // Save image.
     sf::Image GetRenderedImage();
     wxBitmap GetRenderedWxBitmap();
-    void RenderBMP(string filename);
+    void RenderBMP(std::string filename);
     void PrepareSnapshot(bool mode);
 
     // Color styles.
@@ -561,7 +372,7 @@ public:
 
     // Algorithm.
     RenderingAlgorithm GetCurrentAlg();
-    vector<RenderingAlgorithm> GetAvailableAlg();
+    std::vector<RenderingAlgorithm> GetAvailableAlg();
     void SetAlgorithm(RenderingAlgorithm _alg);
 
     // Julia mode operations.

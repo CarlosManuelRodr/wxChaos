@@ -8,6 +8,8 @@
 #include "HTMLViewer.h"
 #include "Filesystem.h"
 #include "global.h"
+#include "SystemUtils.h"
+using namespace std;
 
 bool dimFrameState = false;
 

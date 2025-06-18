@@ -1,4 +1,5 @@
 #include "RenderMagnet.h"
+using namespace std;
 
 RenderMagnet::RenderMagnet()
 {

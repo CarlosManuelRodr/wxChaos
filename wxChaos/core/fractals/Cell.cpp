@@ -1,5 +1,6 @@
 #include "Cell.h"
 #include "global.h"
+using namespace std;
 
 Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
 {

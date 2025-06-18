@@ -15,7 +15,7 @@
 #include <wx/statbox.h>
 #include <wx/panel.h>
 #include <wx/dialog.h>
-#include "FractalClasses.h"
+#include "Fractal.h"
 
 /**
 * @class ConstDialog

@@ -1,4 +1,5 @@
 #include "Medusa.h"
+using namespace std;
 
 Medusa::Medusa(sf::RenderWindow* Window) : Fractal(Window)
 {

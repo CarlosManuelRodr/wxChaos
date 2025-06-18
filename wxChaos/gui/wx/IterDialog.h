@@ -12,7 +12,7 @@
 #define __Iter
 
 #include <wx/wx.h>
-#include "FractalClasses.h"
+#include "Fractal.h"
 
 /**
 * @class IterDialog

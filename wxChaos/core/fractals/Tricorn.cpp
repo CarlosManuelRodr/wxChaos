@@ -1,4 +1,5 @@
 #include "Tricorn.h"
+using namespace std;
 
 Tricorn::Tricorn(sf::RenderWindow* Window) : Fractal(Window)
 {

@@ -1,4 +1,5 @@
 #include "Manowar.h"
+using namespace std;
 
 Manowar::Manowar(sf::RenderWindow* Window) : Fractal(Window)
 {

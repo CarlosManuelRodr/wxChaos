@@ -1,4 +1,5 @@
 #include "Sinoidal.h"
+using namespace std;
 
 Sinoidal::Sinoidal(sf::RenderWindow* Window) : Fractal(Window)
 {

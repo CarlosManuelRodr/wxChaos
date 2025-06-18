@@ -1,4 +1,5 @@
 #include "RenderNewton.h"
+using namespace std;
 
 RenderNewton::RenderNewton()
 {

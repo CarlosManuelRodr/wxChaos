@@ -1,5 +1,6 @@
 #include "RenderMedusa.h"
 #include "FractalUtils.h"
+using namespace std;
 
 RenderMedusa::RenderMedusa()
 {

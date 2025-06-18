@@ -1,4 +1,5 @@
 #include "UserDefined.h"
+using namespace std;
 
 UserDefined::UserDefined(sf::RenderWindow* Window) : Fractal(Window)
 {

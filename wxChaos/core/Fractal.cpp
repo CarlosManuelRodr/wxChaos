@@ -6,6 +6,7 @@
 #include "Filesystem.h"
 #include "global.h"
 #include "SystemUtils.h"
+using namespace std;
 
 const int stdSpeed = 1;
 const GradientColorStyles defaultGradStyle = GradientColorStyles::Retro;

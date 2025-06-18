@@ -1,4 +1,5 @@
 #include "RenderFixedPoint4.h"
+using namespace std;
 
 RenderFixedPoint4::RenderFixedPoint4()
 {

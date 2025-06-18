@@ -20,7 +20,6 @@
 #include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/frame.h>
-#include "FractalClasses.h"
 #include "FractalCanvas.h"
 
 /**

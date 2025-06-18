@@ -1,5 +1,6 @@
 #include "SizeDialogSave.h"
 #include "StringFuncs.h"
+using namespace std;
 
 // SaveProgressDiag
 SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool _saveProgressAvailable, wxWindowID id,

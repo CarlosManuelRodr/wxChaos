@@ -1,7 +1,7 @@
 #include "FractalHandler.h"
 #include "FractalTypes.h"
-#include "FractalClasses.h"
 #include "FractalUtils.h"
+using namespace std;
 
 FractalHandler::FractalHandler()
 {

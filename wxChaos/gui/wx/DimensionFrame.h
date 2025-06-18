@@ -175,9 +175,9 @@ class PlotWindow : public wxFrame
 private:
     mpWindow* m_plot;
 public:
-    PlotWindow(std::vector<double> xList, vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
+    PlotWindow(std::vector<double> xList, std::vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(390, 390), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
-    PlotWindow(LineParams params, vector<double> xList, vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
+    PlotWindow(LineParams params, std::vector<double> xList, std::vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(390, 390), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~PlotWindow();
 };
@@ -247,13 +247,13 @@ private:
     Options myOpt;                              ///< Fractal options.
     DimCalculator* dimCalculator;               ///< An array of DimCalculator.
     sf::Thread** dimThreads;                    ///< An array of sf::Thread pointers.
-    vector<int> div;                            ///< Vector to hold the number of divisions.
-    vector<double> epsilon;                     ///< Vector to hold the epsilon values.
-    vector<int> boxCount;                       ///< Vector to hold the box counting.
-    vector<ScriptData> loadedScripts;           ///< Parameters and location of user scripts.
+    std::vector<int> div;                            ///< Vector to hold the number of divisions.
+    std::vector<double> epsilon;                     ///< Vector to hold the epsilon values.
+    std::vector<int> boxCount;                       ///< Vector to hold the box counting.
+    std::vector<ScriptData> loadedScripts;           ///< Parameters and location of user scripts.
     int divIndex;                               ///< Division index.
     int threadNumber;                           ///< Number of render threads.
-    vector<int> scriptList;                     ///< List of script fractals.
+    std::vector<int> scriptList;                     ///< List of script fractals.
     bool scriptSelected;
     bool firstRender;
 

@@ -44,7 +44,7 @@ public:
     void CreateFractal(FractalType _type, int width, int height);
     void CreateScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, ScriptData scriptData);
-    void CreateScriptFractal(int width, int height, string scriptPath);
+    void CreateScriptFractal(int width, int height, std::string scriptPath);
     void SetFormula(FormulaOpt formula);
     void DeleteFractal();
     Fractal* GetFractalPtr();

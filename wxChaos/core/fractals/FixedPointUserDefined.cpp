@@ -1,4 +1,5 @@
 #include "FPUserDefined.h"
+using namespace std;
 
 FPUserDefined::FPUserDefined(sf::RenderWindow* Window) : Fractal(Window)
 {

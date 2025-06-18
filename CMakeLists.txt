@@ -42,7 +42,8 @@ file(GLOB_RECURSE SRC_FILES
         third_party/wxMathPlot/*.cpp
 )
 
-add_executable(wxChaos WIN32 ${SRC_FILES})
+add_executable(wxChaos WIN32 ${SRC_FILES}
+        wxChaos/core/ThreadWatchdog.h)
 
 # -------------------------------------------------------------------
 # Include Directories (use target-based)

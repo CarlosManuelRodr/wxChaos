@@ -96,7 +96,7 @@ struct ConfigParserOpt
     FractalType type;
     int maxIterations;
     int paletteSize;
-    string colorStyleGrad;
+    std::string colorStyleGrad;
     GaussianColorStyles colorStyleGaussian;
     bool constantWindow, commandConsole, juliaMode;
     bool colorPaletteWindow, colorFractal, colorSet;
@@ -164,18 +164,18 @@ class MainFrame : public wxFrame
     wxStatusBar* status;
 
     // Menu items from user scripts.
-    vector<ScriptData> loadedScripts;
-    vector<wxMenuItem*> scriptItems;
+    std::vector<ScriptData> loadedScripts;
+    std::vector<wxMenuItem*> scriptItems;
     int selectedScriptIndex;
 
     // Elements of the option panel.
     wxButton* panelButton;
-    vector<int> foundLabels, foundTextControls;
-    vector<int> foundSpinControls, foundCheckBoxes;
-    vector<wxStaticText*> labels;
-    vector<wxTextCtrl*> textControls;
-    vector<wxSpinCtrl*> spinControls;
-    vector<wxCheckBox*> checkBoxes;
+    std::vector<int> foundLabels, foundTextControls;
+    std::vector<int> foundSpinControls, foundCheckBoxes;
+    std::vector<wxStaticText*> labels;
+    std::vector<wxTextCtrl*> textControls;
+    std::vector<wxSpinCtrl*> spinControls;
+    std::vector<wxCheckBox*> checkBoxes;
 
     // Configuration.
     GaussianColorStyles colorStyle;

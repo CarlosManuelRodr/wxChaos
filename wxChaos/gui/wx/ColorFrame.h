@@ -15,9 +15,9 @@
 #include <wx/spinctrl.h>
 #include <wx/notebook.h>
 #include <SFML/Graphics/Color.hpp>
-#include "FractalClasses.h"
 #include "Styles.h"
 #include "gradientdlg.h"
+#include "Fractal.h"
 
 #ifdef _WIN32
 #define ColorFrameSize wxSize(672, 650)

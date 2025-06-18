@@ -1,4 +1,5 @@
 #include "BurningShip.h"
+using namespace std;
 
 BurningShip::BurningShip(sf::RenderWindow* Window) : Fractal(Window)
 {

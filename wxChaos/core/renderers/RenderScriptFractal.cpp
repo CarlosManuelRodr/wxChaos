@@ -1,4 +1,5 @@
 #include "RenderScriptFractal.h"
+using namespace std;
 
 RenderScriptFractal::RenderScriptFractal()
 {

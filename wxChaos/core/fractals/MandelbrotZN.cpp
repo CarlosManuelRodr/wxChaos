@@ -1,5 +1,6 @@
 #include "MandelbrotZN.h"
 #include "global.h"
+using namespace std;
 
 MandelbrotZN::MandelbrotZN(sf::RenderWindow* Window):Fractal(Window)
 {

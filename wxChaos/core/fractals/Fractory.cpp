@@ -1,4 +1,5 @@
 #include "Fractory.h"
+using namespace std;
 
 Fractory::Fractory(sf::RenderWindow* Window) : Fractal(Window)
 {
