@@ -1,6 +1,6 @@
 #pragma once
 #include "FractalTypes.h"
-#include "../scripting/AngelscriptEngine.h"
+#include "../scripting/ScriptData.h"
 
 /*
 * @class FractalHandler
