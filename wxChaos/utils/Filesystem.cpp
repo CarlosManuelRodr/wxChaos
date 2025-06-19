@@ -18,7 +18,7 @@ using namespace std;
 #include <sys/types.h>
 #include <dirent.h>
 #include <unistd.h>
-#include <sys/types.h>
+#include <sys/stat.h>
 #include <pwd.h>
 #endif
 
@@ -61,7 +61,8 @@ bool FileExists(std::string fileName)
 void FSCreateDirectory(std::string directory_name)
 {
 #if defined(__linux__) || defined(__APPLE__)
-    s_mkpath(arg, 0755);
+    // Create the directory if it does not exist
+    mkdir(directory_name.c_str(), 0755);
 #elif defined(_WIN32)
     std::wstring w_arg = std::wstring(directory_name.begin(), directory_name.end());
     CreateDirectory(w_arg.c_str(), NULL);
@@ -228,8 +229,7 @@ FileGetter::FileGetter(string folder)
     FindNextFileA(hfind, &found);
 #elif __linux__
     struct dirent* de = NULL;
-    DIR* d = NULL;
-    d = opendir(folder);
+    DIR* d = opendir(folder.c_str());
 
     if (d)
     {
@@ -252,7 +252,7 @@ int FileGetter::GetNextFile(string& fname)
 #elif __linux__
     if (i < files.size())
     {
-        strcpy(fname, files[i].c_str());
+        fname = files[i];
         i++;
         return 1;
     }

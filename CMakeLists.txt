@@ -39,6 +39,10 @@ add_subdirectory(
         ${CMAKE_BINARY_DIR}/angelscript-build
 )
 
+# GTK is required on Linux for wxSFMLCanvas
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTK REQUIRED gtk+-3.0)
+
 target_sources(angelscript PRIVATE
         ${CMAKE_SOURCE_DIR}/third_party/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.cpp
         ${CMAKE_SOURCE_DIR}/third_party/angelscript/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp
@@ -73,6 +77,7 @@ target_include_directories(wxChaos PRIVATE
         third_party/angelscript/sdk/add_on/scriptstdstring
         third_party/muParserX
         third_party/wxMathPlot
+        ${GTK_INCLUDE_DIRS}
 )
 
 # -------------------------------------------------------------------
@@ -80,10 +85,13 @@ target_include_directories(wxChaos PRIVATE
 # -------------------------------------------------------------------
 target_compile_definitions(wxChaos PRIVATE
         SFML_STATIC
-        WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
         $<$<CONFIG:Debug>:__WXDEBUG__>
         _HAS_STD_BYTE=0    # turns off the enum class std::byte in MSVC’s STL
 )
+
+if(WIN32)
+    target_compile_definitions(wxChaos PRIVATE WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_)
+endif()
 
 # -------------------------------------------------------------------
 # Linking
@@ -93,11 +101,14 @@ target_link_libraries(wxChaos PRIVATE
         sfml-graphics
         sfml-window
         sfml-system
-        sfml-main
         angelscript
         Threads::Threads          # pthreads
-        winmm comctl32 rpcrt4 wsock32 opengl32
+        ${GTK_LIBRARIES}
 )
+
+if(WIN32)
+    target_link_libraries(wxChaos PRIVATE sfml-main winmm comctl32 rpcrt4 wsock32 opengl32)
+endif()
 
 # -------------------------------------------------------------------
 # Optional MSVC Settings
