@@ -28,9 +28,14 @@
 #include <WTypes.h>
 #endif
 #ifdef linux
-#include<unistd.h>
-#include<X11/Xlib.h>
-#include<X11/extensions/Xrandr.h>
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/extensions/Xrandr.h>
+// X11's X.h defines a macro named 'Complex' that conflicts with the
+// ScriptCategory enumeration.  Undefine it so the enum name is usable.
+#ifdef Complex
+#undef Complex
+#endif
 #endif
 
 /**

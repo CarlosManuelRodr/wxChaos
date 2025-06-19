@@ -386,7 +386,10 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent& event)
     const int totalFrames = this->CalculateTotalFrames();
     const double zoomSpeed = zoomSpeedCtrl->GetValue();
     const double colorSpeed = colorSpeedCtrl->GetValue();
-    string selectedDirPath = selectedFile.mb_str();
+    // wxString::mb_str() returns a wxCharBuffer which cannot be implicitly
+    // converted to std::string on GCC.  Explicitly construct the std::string
+    // from the buffer.
+    std::string selectedDirPath(selectedFile.mb_str());
 
     wxProgressDialog progressDialog(wxT("Generating video..."), wxT("Please wait until the process is complete."), totalFrames, this);
     ZoomRenderer* renderer = new ZoomRenderer(selectedDirPath, fractalCanvasPtr, 2500, 1660, totalFrames, zoomSpeed, colorSpeed);
