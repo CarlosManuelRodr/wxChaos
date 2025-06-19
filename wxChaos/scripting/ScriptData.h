@@ -17,5 +17,5 @@ struct ScriptData
     bool noSetMap;
     bool isValid;
 
-    ScriptData(ScriptDataType type = ScriptDataType::Standard);
+    explicit ScriptData(ScriptDataType type = ScriptDataType::Standard);
 };

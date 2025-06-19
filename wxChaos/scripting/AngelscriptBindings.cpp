@@ -5,7 +5,6 @@
 #include <scriptstdstring.h>
 #include <cassert>
 #include <cmath>
-#include <fstream>
 
 using namespace std;
 
@@ -29,10 +28,10 @@ std::vector<ScriptData> GetValidUserScripts()
     vector<ScriptData> output;
     vector<string> scriptFiles = FindFilesWithExtension(GetAbsPath({"UserScripts"}), "as");
 
-    for (unsigned int i = 0; i < scriptFiles.size(); i++)
+    for (auto & scriptFile : scriptFiles)
     {
         AngelscriptConfigurationEngine configEngine;
-        const string filePath = GetAbsPath({"UserScripts", scriptFiles[i]});
+        const string filePath = GetAbsPath({"UserScripts", scriptFile});
 
         if (!configEngine.CompileFromPath(filePath))
             continue;
@@ -51,10 +50,10 @@ std::vector<ScriptData> GetAllUserScripts()
     vector<ScriptData> output;
     vector<string> scriptFiles = FindFilesWithExtension(GetAbsPath({"UserScripts"}), "as");
 
-    for (unsigned int i = 0; i < scriptFiles.size(); i++)
+    for (auto & scriptFile : scriptFiles)
     {
         AngelscriptConfigurationEngine configEngine;
-        const string filePath = GetAbsPath({"UserScripts", scriptFiles[i]});
+        const string filePath = GetAbsPath({"UserScripts", scriptFile});
 
         if (!configEngine.CompileFromPath(filePath))
         {
@@ -79,11 +78,11 @@ std::vector<ScriptData> GetAllUserScripts()
     return output;
 }
 
-int CompileScriptFromPath(asIScriptEngine* engine, const string filePath)
+int CompileScriptFromPath(asIScriptEngine* engine, const string& filePath)
 {
     int r;
     FILE* f = fopen(filePath.c_str(), "rb");
-    if (f == 0)
+    if (f == nullptr)
         return -1;
 
     fseek(f, 0, SEEK_END);
@@ -200,7 +199,7 @@ static void asPrintInt(int num)
 
 static void asPrintFloat(double num)
 {
-    if (consoleText.size() == 0)
+    if (consoleText.empty())
         consoleText = str_num_to_string(num);
     else
         consoleText += str_num_to_string(num);
@@ -219,7 +218,7 @@ void asPrintComplex(const Complex& num)
 
     temp += str_num_to_string((double)abs(num.complexNum.imag()));
 
-    if (consoleText.size() == 0)
+    if (consoleText.empty())
         consoleText = temp;
     else
         consoleText += temp;

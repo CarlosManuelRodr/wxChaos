@@ -14,7 +14,7 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
     else
         status = EngineStatus::Ok;
 
-    engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
+    engine->SetMessageCallback(asFUNCTION(MessageCallback), nullptr, asCALL_CDECL);
 
     RegisterStdString(engine);
     RegisterScriptMathComplex(engine);
@@ -40,8 +40,6 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
     engine->RegisterGlobalProperty("int screenWidth", &intVar);
     engine->RegisterGlobalProperty("int screenHeight", &intVar);
     engine->RegisterGlobalProperty("int paletteSize", &intVar);
-
-    ctx = nullptr;
 }
 
 AngelscriptConfigurationEngine::~AngelscriptConfigurationEngine()
@@ -53,7 +51,7 @@ AngelscriptConfigurationEngine::~AngelscriptConfigurationEngine()
     }
 }
 
-bool AngelscriptConfigurationEngine::CompileFromPath(std::string path)
+bool AngelscriptConfigurationEngine::CompileFromPath(const std::string& path)
 {
     const int r = CompileScriptFromPath(engine, path);
     filePath = path;
@@ -82,7 +80,7 @@ bool AngelscriptConfigurationEngine::Execute()
         return false;
     }
 
-    asIScriptFunction* renderFunc = engine->GetModule(0)->GetFunctionByDecl("void Configure()");
+    asIScriptFunction* renderFunc = engine->GetModule(nullptr)->GetFunctionByDecl("void Configure()");
     if (renderFunc == nullptr)
     {
         errorInfo = wxT("Couldn't find the Configure() function.");
@@ -104,7 +102,7 @@ bool AngelscriptConfigurationEngine::Execute()
         return false;
     }
 
-    r = ctx->Execute();
+    ctx->Execute();
     ctx->Release();
     engine->Release();
     engine = nullptr;

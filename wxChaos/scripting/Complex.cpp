@@ -8,7 +8,7 @@ Complex::Complex(const Complex &other)
 {
     complexNum = other.complexNum;
 }
-Complex::Complex(const std::complex<double> &other)
+Complex::Complex(const std::complex<double>& other)
 {
     complexNum = other;
 }
@@ -24,11 +24,7 @@ bool Complex::operator!=(const Complex &o) const
 {
     return !(*this == o);
 }
-Complex &Complex::operator=(const Complex &other)
-{
-    complexNum = other.complexNum;
-    return *this;
-}
+Complex &Complex::operator=(const Complex &other) = default;
 Complex &Complex::operator+=(const Complex &other)
 {
     complexNum += other.complexNum;
@@ -96,53 +92,53 @@ Complex cpxPow(const Complex &base, const Complex &exponent)
 }
 Complex cpxSqrt(const Complex &z)
 {
-    return sqrt(z.complexNum);
+    return Complex(sqrt(z.complexNum));
 }
 Complex cpxSin(const Complex &z)
 {
-    return sin(z.complexNum);
+    return Complex(sin(z.complexNum));
 }
 Complex cpxCsc(const Complex &z)
 {
-    return std::complex<double>(1,0)/sin(z.complexNum);
+    return Complex(std::complex<double>(1,0)/sin(z.complexNum));
 }
 Complex cpxCos(const Complex &z)
 {
-    return cos(z.complexNum);
+    return Complex(cos(z.complexNum));
 }
 Complex cpxSec(const Complex &z)
 {
-    return std::complex<double>(1,0)/cos(z.complexNum);
+    return Complex(std::complex<double>(1,0)/cos(z.complexNum));
 }
 Complex cpxTan(const Complex &z)
 {
-    return tan(z.complexNum);
+    return Complex(tan(z.complexNum));
 }
 Complex cpxCot(const Complex &z)
 {
-    return std::complex<double>(1,0)/tan(z.complexNum);
+    return Complex(std::complex<double>(1,0)/tan(z.complexNum));
 }
 Complex cpxSinh(const Complex &z)
 {
-    return sinh(z.complexNum);
+    return Complex(sinh(z.complexNum));
 }
 Complex cpxCosh(const Complex &z)
 {
-    return cosh(z.complexNum);
+    return Complex(cosh(z.complexNum));
 }
 Complex cpxTanh(const Complex &z)
 {
-    return tanh(z.complexNum);
+    return Complex(tanh(z.complexNum));
 }
 Complex cpxExp(const Complex &z)
 {
-    return exp(z.complexNum);
+    return Complex(exp(z.complexNum));
 }
 Complex cpxLog(const Complex &z)
 {
-    return log(z.complexNum);
+    return Complex(log(z.complexNum));
 }
 Complex cpxLog10(const Complex &z)
 {
-    return log10(z.complexNum);
+    return Complex(log10(z.complexNum));
 }

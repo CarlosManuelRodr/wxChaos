@@ -1,11 +1,12 @@
 #include "AngelscriptRenderEngine.h"
 #include "AngelscriptBindings.h"
 #include <scriptstdstring.h>
+#include <utility>
 
 AngelscriptRenderEngine::AngelscriptRenderEngine()
 {
     engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-    engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
+    engine->SetMessageCallback(asFUNCTION(MessageCallback), nullptr, asCALL_CDECL);
     engine->SetEngineProperty(asEP_AUTO_GARBAGE_COLLECT, false);
     engine->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, true);
     if (engine == nullptr)
@@ -51,7 +52,7 @@ bool AngelscriptRenderEngine::RegisterGlobalVariable(const char* declaration, vo
 
 bool AngelscriptRenderEngine::CompileFromPath(std::string path)
 {
-    const int r = CompileScriptFromPath(engine, path);
+    const int r = CompileScriptFromPath(engine, std::move(path));
     if (r < 0)
     {
         engine->Release();
@@ -74,7 +75,7 @@ bool AngelscriptRenderEngine::Execute()
         return false;
     }
 
-    asIScriptFunction* renderFunc = engine->GetModule(0)->GetFunctionByDecl("void Render()");
+    asIScriptFunction* renderFunc = engine->GetModule(nullptr)->GetFunctionByDecl("void Render()");
     if (renderFunc == nullptr)
     {
         errorInfo = wxT("The function 'Render' was not found.");

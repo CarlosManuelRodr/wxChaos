@@ -14,7 +14,7 @@ extern std::string consoleText;
 std::vector<ScriptData> GetValidUserScripts();
 std::vector<ScriptData> GetAllUserScripts();
 
-int CompileScriptFromPath(asIScriptEngine* engine, const std::string filePath);
+int CompileScriptFromPath(asIScriptEngine* engine, const std::string& filePath);
 void RegisterScriptMathReal(asIScriptEngine* engine);
 void RegisterScriptMathComplex(asIScriptEngine* engine);
 void RegisterWxChaosInterface(asIScriptEngine* engine);

@@ -6,8 +6,8 @@ struct Complex
 {
     Complex();
     Complex(const Complex& other);
-    Complex(const std::complex<double>& other);
-    Complex(double r, double i = 0);
+    explicit Complex(const std::complex<double>& other);
+    explicit Complex(double r, double i = 0);
 
     Complex &operator=(const Complex& other);
     Complex &operator+=(const Complex& other);
