@@ -10,9 +10,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Use static linking if needed
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-# -------------------------------------------------------------------
-# SFML - Modern fetch with FetchContent
-# -------------------------------------------------------------------
+# ------
+# SFML -
+# ------
 include(FetchContent)
 FetchContent_Declare(SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -21,13 +21,28 @@ FetchContent_Declare(SFML
         SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-# -------------------------------------------------------------------
-# wxWidgets - Use find_package properly
-# -------------------------------------------------------------------
+# -----------
+# wxWidgets -
+# -----------
 find_package(wxWidgets REQUIRED COMPONENTS core base adv html stc richtext xml)
 message(STATUS "wxWidgets libraries: ${wxWidgets_LIBRARIES}")
 
 include(${wxWidgets_USE_FILE})
+
+# -------------
+# AngelScript -
+# -------------
+
+find_package(Threads REQUIRED)
+add_subdirectory(
+        ${CMAKE_SOURCE_DIR}/third_party/angelscript/sdk/angelscript/projects/cmake
+        ${CMAKE_BINARY_DIR}/angelscript-build
+)
+
+target_sources(angelscript PRIVATE
+        ${CMAKE_SOURCE_DIR}/third_party/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.cpp
+        ${CMAKE_SOURCE_DIR}/third_party/angelscript/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp
+)
 
 # -------------------------------------------------------------------
 # Source Files (trimmed here for readability)
@@ -37,7 +52,6 @@ file(GLOB_RECURSE SRC_FILES
         wxChaos/gui/*.cpp
         wxChaos/utils/*.cpp
         wxChaos/scripting/*.cpp
-        third_party/angelscript/**/*.cpp
         third_party/muParserX/*.cpp
         third_party/wxMathPlot/*.cpp
 )
@@ -55,8 +69,8 @@ target_include_directories(wxChaos PRIVATE
         wxChaos/gui
         wxChaos/utils
         wxChaos/scripting
-        third_party/angelscript/include
-        third_party/angelscript/add_on/scriptstdstring
+        third_party/angelscript/sdk/angelscript/include
+        third_party/angelscript/sdk/add_on/scriptstdstring
         third_party/muParserX
         third_party/wxMathPlot
 )
@@ -80,6 +94,8 @@ target_link_libraries(wxChaos PRIVATE
         sfml-window
         sfml-system
         sfml-main
+        angelscript
+        Threads::Threads          # pthreads
         winmm comctl32 rpcrt4 wsock32 opengl32
 )
 
