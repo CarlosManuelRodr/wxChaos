@@ -84,9 +84,6 @@ FractalCanvas::~FractalCanvas()
 {
     // Cleanup.
     fractalHandler.DeleteFractal();
-#ifdef __linux__
-    juliaHandler.DeleteFractal();
-#endif
     delete play;
     delete screenPointer;
 }
@@ -242,7 +239,7 @@ void FractalCanvas::OnUpdate()
         {
             if (pointerChange)
             {
-                juliaImage = juliaHandler.GetTarget()->GetRenderedImage();
+                juliaImage = juliaHandler.GetFractalPtr()->GetRenderedImage();
                 juliaTexture.loadFromImage(juliaImage);
                 pointerChange = false;
             }
@@ -286,37 +283,6 @@ void FractalCanvas::SetJuliaMode(bool mode)
         juliaMode = true;
         if (screenPointer == nullptr)
             screenPointer = new ScreenPointer(this);
-#ifdef __linux__
-        FractalType juliaType;
-        switch (type)
-        {
-        case Mandelbrot:
-            juliaType = Julia;
-            break;
-        case MandelbrotZN:
-            juliaType = JuliaZN;
-            break;
-        case Manowar:
-            juliaType = ManowarJulia;
-            break;
-        case BurningShip:
-            juliaType = BurningShipJulia;
-            break;
-        default:
-            juliaType = Julia;
-            break;
-        };
-
-        juliaHandler.CreateFractal(juliaType, this->getSize().x / 3, this->getSize().y / 3);
-        juliaHandler.GetTarget()->SetOptions(target->GetOptions(), true);
-        juliaHandler.GetTarget()->SetK(kReal, kImaginary);
-        juliaImage.create(this->getSize().x / 3, this->getSize().y / 3);
-        juliaTexture.loadFromImage(juliaImage);
-        outJulia.setTexture(juliaTexture);
-        outJulia.setPosition(this->getSize().x - this->getSize().x / 3, this->getSize().y - this->getSize().y / 3);
-        pointerChange = true;
-
-#endif
     }
     // If deactivated, deletes it.
     else
@@ -561,10 +527,6 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
                 target->SetOrbitChange();
 
             onUpdate = false;
-
-#ifdef __linux__
-            if (juliaMode) juliaHandler.GetTarget()->SetK(kReal, kImaginary);
-#endif
         }
     }
     // Selection event.
@@ -635,11 +597,6 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
                 target->SetOrbitChange();
 
             onUpdate = false;
-
-#ifdef __linux__
-            if (juliaMode)
-                juliaHandler.GetTarget()->SetK(kReal, kImaginary);
-#endif
         }
     }
     else

@@ -394,10 +394,8 @@ void MainFrame::CloseAll()
     if(juliaModeState)
     {
         juliaMode->Check(false);
-#ifdef _WIN32
         juliaModePtr->Terminate();
         delete juliaModePtr;
-#endif
         juliaModeState = false;
         changeJuliaMode = false;
         fractalCanvas->SetJuliaMode(false);
@@ -1236,10 +1234,8 @@ void MainFrame::UpdateMenu()
     if(juliaModeState)
     {
         juliaMode->Check(false);
-#ifdef _WIN32
         juliaModePtr->Terminate();
         delete juliaModePtr;
-#endif
         juliaModeState = false;
         changeJuliaMode = false;
         fractalCanvas->SetJuliaMode(false);
@@ -1252,11 +1248,9 @@ void MainFrame::UpdateJuliaMode()
     if(juliaModeState)
     {
         juliaMode->Check(false);
-#ifdef _WIN32
         juliaModePtr->Close();
         juliaModePtr->Wait();
         delete juliaModePtr;
-#endif
         juliaModeState = false;
         changeJuliaMode = false;
         fractalCanvas->SetJuliaMode(false);
@@ -1268,7 +1262,6 @@ void MainFrame::UpdateJuliaMode()
         juliaModeState = true;
         changeJuliaMode = true;
 
-#ifdef _WIN32
         FractalType juliaType;
         switch(fractalType)
         {
@@ -1290,7 +1283,6 @@ void MainFrame::UpdateJuliaMode()
 
         juliaModePtr = new JuliaMode(fractalCanvas, juliaType, fractalCanvas->GetFractalPtr()->GetOptions(), this);
         juliaModePtr->Launch();
-#endif
         fractalCanvas->SetJuliaMode(true);
     }
 }
