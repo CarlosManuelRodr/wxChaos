@@ -1,24 +1,24 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2012 Andreas Jonsson
+   Copyright (c) 2003-2023 Andreas Jonsson
 
-   This software is provided 'as-is', without any express or implied 
-   warranty. In no event will the authors be held liable for any 
+   This software is provided 'as-is', without any express or implied
+   warranty. In no event will the authors be held liable for any
    damages arising from the use of this software.
 
-   Permission is granted to anyone to use this software for any 
-   purpose, including commercial applications, and to alter it and 
+   Permission is granted to anyone to use this software for any
+   purpose, including commercial applications, and to alter it and
    redistribute it freely, subject to the following restrictions:
 
-   1. The origin of this software must not be misrepresented; you 
+   1. The origin of this software must not be misrepresented; you
       must not claim that you wrote the original software. If you use
-      this software in a product, an acknowledgment in the product 
+      this software in a product, an acknowledgment in the product
       documentation would be appreciated but is not required.
 
-   2. Altered source versions must be plainly marked as such, and 
+   2. Altered source versions must be plainly marked as such, and
       must not be misrepresented as being the original software.
 
-   3. This notice may not be removed or altered from any source 
+   3. This notice may not be removed or altered from any source
       distribution.
 
    The original version of this library can be located at:
@@ -50,6 +50,25 @@ class asCObjectType;
 
 // TODO: Add const overload for GetAddressOfProperty
 
+// TODO: weak: Should move to its own file
+class asCLockableSharedBool : public asILockableSharedBool
+{
+public:
+	asCLockableSharedBool();
+	int AddRef() const;
+	int Release() const;
+
+	bool Get() const;
+	void Set(bool);
+
+	void Lock() const;
+	void Unlock() const;
+
+protected:
+	mutable asCAtomic refCount;
+	bool      value;
+	DECLARECRITICALSECTION(mutable lock)
+};
 
 class asCScriptObject : public asIScriptObject
 {
@@ -57,15 +76,15 @@ public:
 //===================================
 // From asIScriptObject
 //===================================
-	asIScriptEngine *GetEngine() const;
 
 	// Memory management
-	int AddRef() const;
-	int Release() const;
+	int                    AddRef() const;
+	int                    Release() const;
+	asILockableSharedBool *GetWeakRefFlag() const;
 
 	// Type info
 	int            GetTypeId() const;
-	asIObjectType *GetObjectType() const;
+	asITypeInfo   *GetObjectType() const;
 
 	// Class properties
 	asUINT      GetPropertyCount() const;
@@ -73,7 +92,13 @@ public:
 	const char *GetPropertyName(asUINT prop) const;
 	void       *GetAddressOfProperty(asUINT prop);
 
-	int         CopyFrom(asIScriptObject *other);
+	// Miscellaneous
+	asIScriptEngine *GetEngine() const;
+	int              CopyFrom(const asIScriptObject *other);
+
+	// User data
+	void *SetUserData(void *data, asPWORD type = 0);
+	void *GetUserData(asPWORD type = 0) const;
 
 //====================================
 // Internal
@@ -92,19 +117,39 @@ public:
 	void ReleaseAllHandles(asIScriptEngine *engine);
 
 	// Used for properties
-	void *AllocateObject(asCObjectType *objType, asCScriptEngine *engine, bool doInitialize);
+	void *AllocateUninitializedObject(asCObjectType *objType, asCScriptEngine *engine);
 	void FreeObject(void *ptr, asCObjectType *objType, asCScriptEngine *engine);
-	void CopyObject(void *src, void *dst, asCObjectType *objType, asCScriptEngine *engine);
+	void CopyObject(const void *src, void *dst, asCObjectType *objType, asCScriptEngine *engine);
 	void CopyHandle(asPWORD *src, asPWORD *dst, asCObjectType *objType, asCScriptEngine *engine);
+	int  CopyFromAs(const asCScriptObject *other, asCObjectType *objType);
 
 	void CallDestructor();
 
-	asCObjectType *objType;
+//=============================================
+// Properties
+//=============================================
+public:
+	// This is public to allow external code (e.g. JIT compiler) to do asOFFSET to 
+	// access the members directly without having to modify the code to add friend
+	asCObjectType* objType;
 
 protected:
 	mutable asCAtomic refCount;
-	mutable bool gcFlag;
-	bool isDestructCalled;
+	mutable asBYTE    gcFlag:1;
+	mutable asBYTE    hasRefCountReachedZero:1;
+	bool              isDestructCalled;
+
+	// Most script classes instances won't have neither the weakRefFlags nor
+	// userData so we only allocate this if requested. Even when used it is
+	// not something that will be accessed all the time so having the extra
+	// indirection will not affect the performance significantly.
+	struct SExtra
+	{
+		SExtra() : weakRefFlag(0) {};
+		asCLockableSharedBool *weakRefFlag;
+		asCArray<asPWORD>      userData;
+	};
+	mutable SExtra *extra;
 };
 
 void ScriptObject_Construct(asCObjectType *objType, asCScriptObject *self);
@@ -112,12 +157,10 @@ asCScriptObject &ScriptObject_Assignment(asCScriptObject *other, asCScriptObject
 
 void ScriptObject_ConstructUnitialized(asCObjectType *objType, asCScriptObject *self);
 
-void ScriptObject_Construct_Generic(asIScriptGeneric *gen);
-void ScriptObject_Assignment_Generic(asIScriptGeneric *gen);
-
 void RegisterScriptObject(asCScriptEngine *engine);
 
 asIScriptObject *ScriptObjectFactory(const asCObjectType *objType, asCScriptEngine *engine);
+asIScriptObject *ScriptObjectCopyFactory(const asCObjectType *objType, void *origObj, asCScriptEngine *engine);
 
 END_AS_NAMESPACE
 

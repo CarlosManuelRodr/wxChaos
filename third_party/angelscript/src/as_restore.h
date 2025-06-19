@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2012 Andreas Jonsson
+   Copyright (c) 2003-2024 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -58,22 +58,28 @@ protected:
 	asCScriptEngine *engine;
 	bool             noDebugInfo;
 	bool             error;
+	asUINT           bytesRead;
+
+	int                Error(const char *msg);
 
 	int                ReadInner();
 
-	void               ReadData(void *data, asUINT size);
+	int                ReadData(void *data, asUINT size);
 	void               ReadString(asCString *str);
-	asCScriptFunction *ReadFunction(bool &isNew, bool addToModule = true, bool addToEngine = true, bool addToGC = true);
-	void               ReadFunctionSignature(asCScriptFunction *func);
+	asCScriptFunction *ReadFunction(bool &isNew, bool addToModule = true, bool addToEngine = true, bool addToGC = true, bool *isExternal = 0);
+	void               ReadFunctionSignature(asCScriptFunction *func, asCObjectType **parentClass = 0);
 	void               ReadGlobalProperty();
 	void               ReadObjectProperty(asCObjectType *ot);
 	void               ReadDataType(asCDataType *dt);
-	asCObjectType *    ReadObjectType();
-	void               ReadObjectTypeDeclaration(asCObjectType *ot, int phase);
+	asCTypeInfo       *ReadTypeInfo();
+	void               ReadTypeDeclaration(asCTypeInfo *ot, int phase, bool *isExternal = 0);
 	void               ReadByteCode(asCScriptFunction *func);
 	asWORD             ReadEncodedUInt16();
 	asUINT             ReadEncodedUInt();
+	int                ReadEncodedInt();
 	asQWORD            ReadEncodedUInt64();
+	asUINT             SanityCheck(asUINT val, asUINT max);
+	int                SanityCheck(int val, asUINT max);
 
 	void ReadUsedTypeIds();
 	void ReadUsedFunctions();
@@ -81,7 +87,7 @@ protected:
 	void ReadUsedStringConstants();
 	void ReadUsedObjectProps();
 
-	asCObjectType *    FindObjectType(int idx);
+	asCTypeInfo *      FindType(int idx);
 	int                FindTypeId(int idx);
 	short              FindObjectPropOffset(asWORD index);
 	asCScriptFunction *FindFunction(int idx);
@@ -92,14 +98,13 @@ protected:
 	int  AdjustStackPosition(int pos);
 	int  AdjustGetOffset(int offset, asCScriptFunction *func, asDWORD programPos);
 	void CalculateStackNeeded(asCScriptFunction *func);
-	asCScriptFunction *GetCalledFunction(asCScriptFunction *func, asDWORD programPos);
 
 	// Temporary storage for persisting variable data
 	asCArray<int>                usedTypeIds;
-	asCArray<asCObjectType*>     usedTypes;
+	asCArray<asCTypeInfo*>       usedTypes;
 	asCArray<asCScriptFunction*> usedFunctions;
 	asCArray<void*>              usedGlobalProperties;
-	asCArray<int>                usedStringConstants;
+	asCArray<void*>              usedStringConstants;
 
 	asCArray<asCScriptFunction*>  savedFunctions;
 	asCArray<asCDataType>         savedDataTypes;
@@ -110,13 +115,45 @@ protected:
 
 	struct SObjProp
 	{
-		asCObjectType *objType;
-		int            offset;
+		asCObjectType     *objType;
+		asCObjectProperty *prop;
 	};
 	asCArray<SObjProp> usedObjectProperties;
 
 	asCMap<void*,bool>              existingShared;
 	asCMap<asCScriptFunction*,bool> dontTranslate;
+
+	// Helper class for adjusting offsets within initialization list buffers
+	struct SListAdjuster
+	{
+		SListAdjuster(asCReader *rd, asDWORD *bc, asCObjectType *ot);
+		void AdjustAllocMem();
+		int  AdjustOffset(int offset);
+		void SetRepeatCount(asUINT rc);
+		void SetNextType(int typeId);
+
+		struct SInfo
+		{
+			asUINT              repeatCount;
+			asSListPatternNode *startNode;
+		};
+		asCArray<SInfo> stack;
+
+		asCReader          *reader;
+		asDWORD            *allocMemBC;
+		asUINT              maxOffset;
+		asCObjectType      *patternType;
+		asUINT              repeatCount;
+		int                 lastOffset;
+		int                 nextOffset;
+		asUINT              lastAdjustedOffset;
+		asSListPatternNode *patternNode;
+		int                 nextTypeId;
+	};
+	asCArray<SListAdjuster*> listAdjusters;
+
+	// Used by FindObjectPropOffset
+	asCObjectProperty* lastCompositeProp;
 };
 
 #ifndef AS_NO_COMPILER
@@ -133,8 +170,12 @@ protected:
 	asIBinaryStream *stream;
 	asCScriptEngine *engine;
 	bool             stripDebugInfo;
+	bool             error;
+	asUINT           bytesWritten;
 
-	void WriteData(const void *data, asUINT size);
+	int              Error(const char *msg);
+
+	int  WriteData(const void *data, asUINT size);
 
 	void WriteString(asCString *str);
 	void WriteFunction(asCScriptFunction *func);
@@ -142,18 +183,18 @@ protected:
 	void WriteGlobalProperty(asCGlobalProperty *prop);
 	void WriteObjectProperty(asCObjectProperty *prop);
 	void WriteDataType(const asCDataType *dt);
-	void WriteObjectType(asCObjectType *ot);
-	void WriteObjectTypeDeclaration(asCObjectType *ot, int phase);
+	void WriteTypeInfo(asCTypeInfo *ot);
+	void WriteTypeDeclaration(asCTypeInfo *ot, int phase);
 	void WriteByteCode(asCScriptFunction *func);
 	void WriteEncodedInt64(asINT64 i);
 
 	// Helper functions for storing variable data
-	int FindObjectTypeIdx(asCObjectType*);
+	int FindTypeInfoIdx(asCTypeInfo *ti);
 	int FindTypeIdIdx(int typeId);
 	int FindFunctionIndex(asCScriptFunction *func);
 	int FindGlobalPropPtrIndex(void *);
-	int FindStringConstantIndex(int id);
-	int FindObjectPropIndex(short offset, int typeId);
+	int FindStringConstantIndex(void *str);
+	int FindObjectPropIndex(short offset, int typeId, asDWORD *bc);
 
 	void CalculateAdjustmentByPos(asCScriptFunction *func);
 	int  AdjustStackPosition(int pos);
@@ -169,26 +210,54 @@ protected:
 
 	// Temporary storage for persisting variable data
 	asCArray<int>                usedTypeIds;
-	asCArray<asCObjectType*>     usedTypes;
+	asCArray<asCTypeInfo*>       usedTypes;
 	asCArray<asCScriptFunction*> usedFunctions;
 	asCArray<void*>              usedGlobalProperties;
-	asCArray<int>                usedStringConstants;
-	asCMap<int, int>             stringIdToIndexMap;
+	asCArray<void*>              usedStringConstants;
+	asCMap<void*, int>           stringToIndexMap;
 
 	asCArray<asCScriptFunction*>  savedFunctions;
 	asCArray<asCDataType>         savedDataTypes;
 	asCArray<asCString>           savedStrings;
-	asCMap<asCStringPointer, int> stringToIdMap;
+	asCMap<asCString, int>        stringToIdMap;
 	asCArray<int>                 adjustStackByPos;
 	asCArray<int>                 adjustNegativeStackByPos;
 	asCArray<int>                 bytecodeNbrByPos;
 
 	struct SObjProp
 	{
-		asCObjectType *objType;
-		int            offset;
+		asCObjectType     *objType;
+		asCObjectProperty *prop;
 	};
 	asCArray<SObjProp>           usedObjectProperties;
+
+	// Helper class for adjusting offsets within initialization list buffers
+	struct SListAdjuster
+	{
+		SListAdjuster(asCObjectType *ot);
+		int  AdjustOffset(int offset, asCObjectType *listPatternType);
+		void SetRepeatCount(asUINT rc);
+		void SetNextType(int typeId);
+
+		struct SInfo
+		{
+			asUINT              repeatCount;
+			asSListPatternNode *startNode;
+		};
+		asCArray<SInfo> stack;
+
+		asCObjectType      *patternType;
+		asUINT              repeatCount;
+		asSListPatternNode *patternNode;
+		asUINT              entries;
+		int                 lastOffset;  // Last offset adjusted
+		int                 nextOffset;  // next expected offset to be adjusted
+		int                 nextTypeId;
+	};
+	asCArray<SListAdjuster*> listAdjusters;
+
+	// Used by FindObjectPropIndex
+	bool lastWasComposite;
 };
 
 #endif

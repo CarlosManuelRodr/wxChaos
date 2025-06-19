@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2012 Andreas Jonsson
+   Copyright (c) 2003-2016 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -38,27 +38,55 @@
 
 #include "as_config.h"
 
+#if defined(AS_DEBUG)
+
 #ifndef AS_WII
 // The Wii SDK doesn't have these, we'll survive without AS_DEBUG
 
 #ifndef _WIN32_WCE
 // Neither does WinCE
 
+#ifndef AS_PSVITA
+// Possible on PSVita, but requires SDK access
 
-#if defined(__GNUC__) || defined( AS_MARMALADE )
+#if !defined(_MSC_VER) && (defined(__GNUC__) || defined(AS_MARMALADE))
+
+#ifdef __ghs__ 
+// WIIU defines __GNUC__ but types are not defined here in 'conventional' way 
+#include <types.h>
+typedef signed char int8_t;
+typedef unsigned char uint8_t;
+typedef signed short int16_t;
+typedef unsigned short uint16_t;
+typedef signed int int32_t;
+typedef unsigned int uint32_t;
+typedef signed long long int64_t;
+typedef unsigned long long uint64_t;
+typedef float float32_t;
+typedef double float64_t;
+#else
 // Define mkdir for GNUC
 #include <sys/stat.h>
 #include <sys/types.h>
 #define _mkdir(dirname) mkdir(dirname, S_IRWXU)
+#endif
 #else
 #include <direct.h>
 #endif
+
+#endif // AS_PSVITA
+#endif // _WIN32_WCE
+#endif // AS_WII
+
+#endif // !defined(AS_DEBUG)
+
 
 
 #if defined(_MSC_VER) && defined(AS_PROFILE)
 // Currently only do profiling with MSVC++
 
 #include <mmsystem.h>
+#include <direct.h>
 #include "as_string.h"
 #include "as_map.h"
 #include "as_string_util.h"
@@ -124,7 +152,7 @@ public:
 		return time;
 	}
 
-	void End(const char *name, double beginTime)
+	void End(const char * /*name*/, double beginTime)
 	{
 		double time = GetTime();
 
@@ -164,7 +192,7 @@ protected:
 		// Write the analyzed info into a file for inspection
 		_mkdir("AS_DEBUG");
 		FILE *fp;
-		#if _MSC_VER >= 1500 
+		#if _MSC_VER >= 1500 && !defined(AS_MARMALADE)
 			fopen_s(&fp, "AS_DEBUG/profiling_summary.txt", "wt");
 		#else
 			fp = fopen("AS_DEBUG/profiling_summary.txt", "wt");
@@ -227,7 +255,7 @@ protected:
 
 END_AS_NAMESPACE
 
-#else // _MSC_VER && AS_PROFILE
+#else // !(_MSC_VER && AS_PROFILE)
 
 // Define it so nothing is done
 #define TimeIt(x) 
@@ -237,13 +265,6 @@ END_AS_NAMESPACE
 
 
 
-
-
-
-
-#endif // _WIN32_WCE
-#endif // AS_WII
-
-#endif
+#endif // defined(AS_DEBUG_H)
 
 

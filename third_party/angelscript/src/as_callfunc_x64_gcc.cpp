@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2012 Andreas Jonsson
+   Copyright (c) 2003-2023 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied
    warranty. In no event will the authors be held liable for any
@@ -34,8 +34,14 @@
  * Author: Ionut "gargltk" Leonte <ileonte@bitdefender.com>
  *
  * Initial author: niteice
+ *
+ * Added support for functor methods by Jordi Oliveras Rovira in April, 2014.
  */
 
+// Useful references for the System V AMD64 ABI:
+// http://eli.thegreenplace.net/2011/09/06/stack-frame-layout-on-x86-64/
+// http://math-atlas.sourceforge.net/devel/assembly/abi_sysV_amd64.pdf
+ 
 #include "as_config.h"
 
 #ifndef AS_MAX_PORTABILITY
@@ -43,6 +49,7 @@
 
 #include "as_scriptengine.h"
 #include "as_texts.h"
+#include "as_context.h"
 
 BEGIN_AS_NAMESPACE
 
@@ -57,20 +64,32 @@ typedef asQWORD ( *funcptr_t )( void );
 // Note to self: Always remember to inform the used registers on the clobber line, 
 // so that the gcc optimizer doesn't try to use them for other things
 
-static asQWORD __attribute__((noinline)) X64_CallFunction(const asQWORD *args, int cnt, funcptr_t func, asQWORD &retQW2, bool returnFloat) 
+static asQWORD __attribute__((noinline)) 
+#ifndef __clang__
+    // On GNUC this code doesn't work properly when optimized, so disable optimization for this function	
+    __attribute__((optimize(0)))
+#endif
+    X64_CallFunction(const asQWORD *args, int cnt, funcptr_t func, asQWORD &retQW2, bool returnFloat) 
 {
-	asQWORD   retQW1;
+	// Need to flag the variable as volatile so the compiler doesn't optimize out the variable
+	volatile asQWORD retQW1 = 0;
 
 	// Reference: http://www.x86-64.org/documentation/abi.pdf
 
 	__asm__ __volatile__ (
 
-		"  movq %0, %%rcx \n" 	// rcx = cnt
+		"  movq %0, %%rcx \n"	// rcx = cnt
 		"  movq %1, %%r10 \n"	// r10 = args
 		"  movq %2, %%r11 \n"	// r11 = func
 
 	// Backup stack pointer in R15 that is guaranteed to maintain its value over function calls
 		"  movq %%rsp, %%r15 \n"
+#if defined(__clang__) && defined(__OPTIMIZE__)
+	// Make sure the stack unwind logic knows we've backed up the stack pointer in register r15
+	// This should only be done if any optimization is done. If no optimization (-O0) is used,
+	// then the compiler already backups the rsp before entering the inline assembler code
+		" .cfi_def_cfa_register r15 \n"
+#endif
 
 	// Skip the first 128 bytes on the stack frame, called "red zone",  
 	// that might be used by the compiler to store temporary values
@@ -90,7 +109,7 @@ static asQWORD __attribute__((noinline)) X64_CallFunction(const asQWORD *args, i
 		"  jle endstack \n"
 		"  subl $1, %%esi \n"
 		"  xorl %%edx, %%edx \n"
-		"  leaq	8(, %%rsi, 8), %%rcx \n"
+		"  leaq 8(, %%rsi, 8), %%rcx \n"
 		"loopstack: \n"
 		"  movq 112(%%r10, %%rdx), %%rax \n"
 		"  pushq %%rax \n"
@@ -118,10 +137,16 @@ static asQWORD __attribute__((noinline)) X64_CallFunction(const asQWORD *args, i
 		"  movsd 56(%%rax), %%xmm7 \n"
 
 	// Call the function
-		"  call	*%%r11 \n"
+		"  call *%%r11 \n"
 
 	// Restore stack pointer
 		"  mov %%r15, %%rsp \n"
+#if defined(__clang__) && defined(__OPTIMIZE__)
+	// Inform the stack unwind logic that the stack pointer has been restored
+	// This should only be done if any optimization is done. If no optimization (-O0) is used,
+	// then the compiler already backups the rsp before entering the inline assembler code
+		" .cfi_def_cfa_register rsp \n"
+#endif
 
 	// Put return value in retQW1 and retQW2, using either RAX:RDX or XMM0:XMM1 depending on type of return value
 		"  movl %5, %%ecx \n"
@@ -137,7 +162,7 @@ static asQWORD __attribute__((noinline)) X64_CallFunction(const asQWORD *args, i
 		"  movq %%rdx, %4 \n"
 		"endcall: \n"
 
-		: : "r" ((asQWORD)cnt), "r" (args), "r" (func), "m" (retQW1), "m" (retQW2), "m" (returnFloat)
+		: : "g" ((asQWORD)cnt), "g" (args), "g" (func), "m" (retQW1), "m" (retQW2), "m" (returnFloat)
 		: "%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
 		  "%rdi", "%rsi", "%rax", "%rdx", "%rcx", "%r8", "%r9", "%r10", "%r11", "%r15");
 		
@@ -150,7 +175,7 @@ static inline bool IsVariableArgument( asCDataType type )
 	return ( type.GetTokenType() == ttQuestion ) ? true : false;
 }
 
-asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, void *obj, asDWORD *args, void *retPointer, asQWORD &retQW2)
+asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, void *obj, asDWORD *args, void *retPointer, asQWORD &retQW2, void *secondObject)
 {
 	asCScriptEngine            *engine             = context->m_engine;
 	asSSystemFunctionInterface *sysFunc            = descr->sysFuncIntf;
@@ -170,8 +195,17 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 		callConv++;
 	}
 
+#ifdef AS_NO_THISCALL_FUNCTOR_METHOD
 	// Determine the real function pointer in case of virtual method
 	if ( obj && ( callConv == ICC_VIRTUAL_THISCALL || callConv == ICC_VIRTUAL_THISCALL_RETURNINMEM ) ) 
+#else
+	if ( obj && ( callConv == ICC_VIRTUAL_THISCALL ||
+		callConv == ICC_VIRTUAL_THISCALL_RETURNINMEM ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJFIRST ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJFIRST_RETURNINMEM ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJLAST ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJLAST_RETURNINMEM) )
+#endif
 	{
 		vftable = *((funcptr_t**)obj);
 		func = vftable[FuncPtrToUInt(asFUNCTION_t(func)) >> 3];
@@ -193,6 +227,11 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 
 			break;
 		}
+#ifndef AS_NO_THISCALL_FUNCTOR_METHOD
+		case ICC_THISCALL_OBJLAST:
+		case ICC_VIRTUAL_THISCALL_OBJLAST:
+			param_post = 2;
+#endif
 		case ICC_THISCALL:
 		case ICC_VIRTUAL_THISCALL:
 		case ICC_CDECL_OBJFIRST: 
@@ -204,6 +243,11 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 
 			break;
 		}
+#ifndef AS_NO_THISCALL_FUNCTOR_METHOD
+		case ICC_THISCALL_OBJLAST_RETURNINMEM:
+		case ICC_VIRTUAL_THISCALL_OBJLAST_RETURNINMEM:
+			param_post = 2;
+#endif
 		case ICC_THISCALL_RETURNINMEM:
 		case ICC_VIRTUAL_THISCALL_RETURNINMEM:
 		case ICC_CDECL_OBJFIRST_RETURNINMEM: 
@@ -217,7 +261,33 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 
 			break;
 		}
-		case ICC_CDECL_OBJLAST: 
+#ifndef AS_NO_THISCALL_FUNCTOR_METHOD
+		case ICC_THISCALL_OBJFIRST:
+		case ICC_VIRTUAL_THISCALL_OBJFIRST:
+		{
+			paramBuffer[0] = (asPWORD)obj;
+			paramBuffer[1] = (asPWORD)secondObject;
+			argsType[0] = x64INTARG;
+			argsType[1] = x64INTARG;
+
+			argIndex = 2;
+			break;
+		}
+		case ICC_THISCALL_OBJFIRST_RETURNINMEM:
+		case ICC_VIRTUAL_THISCALL_OBJFIRST_RETURNINMEM:
+		{
+			paramBuffer[0] = (asPWORD)retPointer;
+			paramBuffer[1] = (asPWORD)obj;
+			paramBuffer[2] = (asPWORD)secondObject;
+			argsType[0] = x64INTARG;
+			argsType[1] = x64INTARG;
+			argsType[2] = x64INTARG;
+
+			argIndex = 3;
+			break;
+		}
+#endif
+		case ICC_CDECL_OBJLAST:
 			param_post = 1;
 			break;
 		case ICC_CDECL_OBJLAST_RETURNINMEM: 
@@ -280,7 +350,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 		else
 		{
 			// An object is being passed by value
-			if( (parmType.GetObjectType()->flags & COMPLEX_MASK) ||
+			if( (parmType.GetTypeInfo()->flags & COMPLEX_MASK) ||
 			    parmType.GetSizeInMemoryDWords() > 4 )
 			{
 				// Copy the address of the object
@@ -288,8 +358,8 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 				memcpy(paramBuffer + argIndex, stack_pointer, sizeof(asQWORD));
 				argIndex++;
 			}
-			else if( (parmType.GetObjectType()->flags & asOBJ_APP_CLASS_ALLINTS) ||
-			         (parmType.GetObjectType()->flags & asOBJ_APP_PRIMITIVE) )
+			else if( (parmType.GetTypeInfo()->flags & asOBJ_APP_CLASS_ALLINTS) ||
+			         (parmType.GetTypeInfo()->flags & asOBJ_APP_PRIMITIVE) )
 			{
 				// Copy the value of the object
 				if( parmType.GetSizeInMemoryDWords() > 2 )
@@ -308,8 +378,8 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 				// Delete the original memory
 				engine->CallFree(*(void**)stack_pointer);
 			}
-			else if( (parmType.GetObjectType()->flags & asOBJ_APP_CLASS_ALLFLOATS) ||
-			         (parmType.GetObjectType()->flags & asOBJ_APP_FLOAT) )
+			else if( (parmType.GetTypeInfo()->flags & asOBJ_APP_CLASS_ALLFLOATS) ||
+			         (parmType.GetTypeInfo()->flags & asOBJ_APP_FLOAT) )
 			{
 				// Copy the value of the object
 				if( parmType.GetSizeInMemoryDWords() > 2 )
@@ -335,7 +405,11 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	// For the CDECL_OBJ_LAST calling convention we need to add the object pointer as the last argument
 	if( param_post )
 	{
+#ifdef AS_NO_THISCALL_FUNCTOR_METHOD
 		paramBuffer[argIndex] = (asPWORD)obj;
+#else
+		paramBuffer[argIndex] = (asPWORD)(param_post > 1 ? secondObject : obj);
+#endif
 		argsType[argIndex] = x64INTARG;
 		argIndex++;
 	}

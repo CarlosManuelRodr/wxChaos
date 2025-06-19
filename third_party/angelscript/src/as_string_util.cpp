@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2012 Andreas Jonsson
+   Copyright (c) 2003-2017 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -78,7 +78,7 @@ double asStringScanDouble(const char *string, size_t *numScanned)
 {
 	// I decided to do my own implementation of strtod() because this function
 	// doesn't seem to be present on all systems. iOS 5 for example doesn't appear 
-	// to include the function in the standard lib. 
+	// to include the function in the standard lib.
 	
 	// Another reason is that the standard implementation of strtod() is dependent
 	// on the locale on some systems, i.e. it may use comma instead of dot for 
@@ -160,34 +160,65 @@ double asStringScanDouble(const char *string, size_t *numScanned)
 	return value;
 }
 
-asQWORD asStringScanUInt64(const char *string, int base, size_t *numScanned)
+// Converts a character to the decimal number based on the radix
+// Returns -1 if the character is not valid for the radix
+static int asCharToNbr(char ch, int radix)
 {
-	asASSERT(base == 10 || base == 16);
+	if( ch >= '0' && ch <= '9' ) return ((ch -= '0') < radix ? ch : -1);
+	if( ch >= 'A' && ch <= 'Z' ) return ((ch -= 'A'-10) < radix ? ch : -1);
+	if( ch >= 'a' && ch <= 'z' ) return ((ch -= 'a'-10) < radix ? ch : -1);
+	return -1;
+}
+
+// If base is 0 the string should be prefixed by 0x, 0d, 0o, or 0b to allow the function to automatically determine the radix
+asQWORD asStringScanUInt64(const char *string, int base, size_t *numScanned, bool *overflow)
+{
+	asASSERT(base == 10 || base == 16 || base == 0);
+
+	if (overflow)
+		*overflow = false;
 
 	const char *end = string;
+
+	static const asQWORD QWORD_MAX = (~asQWORD(0));
 
 	asQWORD res = 0;
 	if( base == 10 )
 	{
 		while( *end >= '0' && *end <= '9' )
 		{
+			if( overflow && ((res > QWORD_MAX / 10) || ((asUINT(*end - '0') > (QWORD_MAX - (QWORD_MAX / 10) * 10)) && res == QWORD_MAX / 10)) )
+				*overflow = true;
 			res *= 10;
 			res += *end++ - '0';
 		}
 	}
-	else if( base == 16 )
+	else
 	{
-		while( (*end >= '0' && *end <= '9') ||
-		       (*end >= 'a' && *end <= 'f') ||
-		       (*end >= 'A' && *end <= 'F') )
+		if( base == 0 && string[0] == '0')
 		{
-			res *= 16;
-			if( *end >= '0' && *end <= '9' )
-				res += *end++ - '0';
-			else if( *end >= 'a' && *end <= 'f' )
-				res += *end++ - 'a' + 10;
-			else if( *end >= 'A' && *end <= 'F' )
-				res += *end++ - 'A' + 10;
+			// Determine the radix from the prefix
+			switch( string[1] )
+			{
+			case 'b': case 'B': base = 2; break;
+			case 'o': case 'O': base = 8; break;
+			case 'd': case 'D': base = 10; break;
+			case 'x': case 'X': base = 16; break;
+			}
+			end += 2;
+		}
+
+		asASSERT( base );
+
+		if( base )
+		{
+			for (int nbr; (nbr = asCharToNbr(*end, base)) >= 0; end++)
+			{
+				if (overflow && ((res > QWORD_MAX / base) || ((asUINT(nbr) > (QWORD_MAX - (QWORD_MAX / base) * base)) && res == QWORD_MAX / base)) )
+					*overflow = true;
+
+				res = res * base + nbr;
+			}
 		}
 	}
 

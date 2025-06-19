@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2012 Andreas Jonsson
+   Copyright (c) 2003-2015 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied
    warranty. In no event will the authors be held liable for any
@@ -31,6 +31,8 @@
 //
 // This code was adapted from as_callfunc_x64_msvc by _Vicious_ on August 20th, 2011.
 //
+// Added support for functor methods by Jordi Oliveras Rovira in April, 2014.
+//
 
 #include <stdio.h>
 
@@ -42,23 +44,30 @@
 #include "as_callfunc.h"
 #include "as_scriptengine.h"
 #include "as_texts.h"
+#include "as_context.h"
 
 BEGIN_AS_NAMESPACE
 
-static asQWORD CallX64(const asQWORD *args, const asQWORD *floatArgs, const int paramSize, asQWORD func)
+static asQWORD __attribute__((noinline)) CallX64(const asQWORD *args, const asQWORD *floatArgs, const int paramSize, asQWORD func)
 {
-	asQWORD ret    = 0;
+	volatile asQWORD ret = 0;
 
 	__asm__ __volatile__ (
-		"# Move function param to non-scratch register\n"
-		"mov %4,%%r14 # r14 = function\n"  // Copy func into r14
+		"# Move the parameters into registers before the rsp is modified\n"
+		"mov %1, %%r10\n" // r10 = args
+		"mov %2, %%r11\n" // r11 = floatArgs
+		"xor %%r12, %%r12\n"
+		"mov %3, %%r12d\n"
+		"mov %4, %%r14\n" // r14 = func
+
+        "# Store the stack pointer in r15 since it is guaranteed not to change over a function call\n"
+        "mov %%rsp, %%r15\n"
 
 		"# Allocate space on the stack for the arguments\n"
 		"# Make room for at least 4 arguments even if there are less. When\n"
 		"# the compiler does optimizations for speed it may use these for \n"
 		"# temporary storage.\n"
-		"xor %%rdi, %%rdi\n"
-		"mov %3, %%edi\n"
+		"mov %%r12, %%rdi\n"
 		"add $32,%%edi\n"
 
 		"# Make sure the stack pointer is 16byte aligned so the\n"
@@ -71,21 +80,16 @@ static asQWORD CallX64(const asQWORD *args, const asQWORD *floatArgs, const int 
 		"sub %%rdi,%%rsp\n"
 
 		"# Jump straight to calling the function if no parameters\n"
-		"cmp $0,%3 # Compare paramSize with 0\n"
+		"cmp $0,%%r12 # Compare paramSize with 0\n"
 		"je callfunc # Jump to call funtion if (paramSize == 0)\n"
-
-		"# Move params to non-scratch registers\n"
-		"mov %1,%%rsi # rsi = pArgs\n" // Copy args into rsi
-		"mov %2,%%r11 # r11 = pFloatArgs (can be NULL)\n" // Copy floatArgs into r11
-		"mov %3,%%r12d # r12 = paramSize\n" // Copy paramSize into r12
 
 		"# Copy arguments from script stack to application stack\n"
 		"# Order is (first to last):\n"
 		"# rcx, rdx, r8, r9 & everything else goes on stack\n"
-		"movq   (%%rsi),%%rcx\n"
-		"movq  8(%%rsi),%%rdx\n"
-		"movq 16(%%rsi),%%r8\n"
-		"movq 24(%%rsi),%%r9\n"
+		"movq   (%%r10),%%rcx\n"
+		"movq  8(%%r10),%%rdx\n"
+		"movq 16(%%r10),%%r8\n"
+		"movq 24(%%r10),%%r9\n"
 
 		"# Negate the 4 params from the size to be copied\n"
 		"sub $32,%%r12d\n"
@@ -94,15 +98,15 @@ static asQWORD CallX64(const asQWORD *args, const asQWORD *floatArgs, const int 
 
 		"# Now copy all remaining params onto stack allowing space for first four\n"
 		"# params to be flushed back to the stack if required by the callee.\n"
-		"add $32,%%rsi # Position input pointer 4 args ahead\n"
+		"add $32,%%r10 # Position input pointer 4 args ahead\n"
 		"mov %%rsp,%%r13 # Put the stack pointer into r13\n"
 		"add $32,%%r13 # Leave space for first 4 args on stack\n"
 
 	"copyoverflow:\n"
-		"movq (%%rsi),%%r15 # Read param from source stack into r15\n"
-		"movq %%r15,(%%r13) # Copy param to real stack\n"
+		"movq (%%r10),%%rdi # Read param from source stack into rdi\n"
+		"movq %%rdi,(%%r13) # Copy param to real stack\n"
 		"add $8,%%r13 # Move virtual stack pointer\n"
-		"add $8,%%rsi # Move source stack pointer\n"
+		"add $8,%%r10 # Move source stack pointer\n"
 		"sub $8,%%r12d # Decrement remaining count\n"
 		"jnz copyoverflow # Continue if more params\n"
 
@@ -118,12 +122,16 @@ static asQWORD CallX64(const asQWORD *args, const asQWORD *floatArgs, const int 
 
 	"callfunc:\n"
 		"call *%%r14\n"
-		"lea  %0, %%rbx\n"     // Load the address of the ret variable into rbx
-		"movq %%rax,(%%rbx)\n" // Copy the returned value into the ret variable 
 
-		: // no output
+        "# restore stack pointer\n"
+        "mov %%r15, %%rsp\n"
+
+		"lea  %0, %%rbx\n"     // Load the address of the ret variable into rbx
+		"movq %%rax,(%%rbx)\n" // Copy the returned value into the ret variable
+
+ 		: // no output
 		: "m" (ret), "r" (args), "r" (floatArgs), "r" (paramSize), "r" (func)
-		: "rdi", "rsi", "rsp", "rbx", "r11", "%r12", "r13", "r14", "r15"
+		: "rdi", "rsi", "rsp", "rbx", "r10", "r11", "%r12", "r13", "r14", "r15"
 	);
 
 	return ret;
@@ -131,45 +139,35 @@ static asQWORD CallX64(const asQWORD *args, const asQWORD *floatArgs, const int 
 
 static asDWORD GetReturnedFloat()
 {
-	float   retval = 0.0f;
-	asDWORD ret    = 0;
+	volatile asDWORD ret = 0;
 
 	__asm__ __volatile__ (
 		"lea      %0, %%rax\n"
 		"movss    %%xmm0, (%%rax)"
 		: /* no output */
-		: "m" (retval)
+		: "m" (ret)
 		: "%rax"
 	);
 
-	// We need to avoid implicit conversions from float to unsigned - we need
-	// a bit-wise-correct-and-complete copy of the value 
-	memcpy( &ret, &retval, sizeof( ret ) );
-
-	return ( asDWORD )ret;
+	return ret;
 }
 
 static asQWORD GetReturnedDouble()
 {
-	double  retval = 0.0f;
-	asQWORD ret    = 0;
+	volatile asQWORD ret = 0;
 
 	__asm__ __volatile__ (
 		"lea     %0, %%rax\n"
 		"movlpd  %%xmm0, (%%rax)"
 		: /* no optput */
-		: "m" (retval)
+		: "m" (ret)
 		: "%rax"
 	);
-
-	// We need to avoid implicit conversions from double to unsigned long long - we need
-	// a bit-wise-correct-and-complete copy of the value 
-	memcpy( &ret, &retval, sizeof( ret ) );
 
 	return ret;
 }
 
-asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, void *obj, asDWORD *args, void *retPointer, asQWORD &/*retQW2*/)
+asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, void *obj, asDWORD *args, void *retPointer, asQWORD &/*retQW2*/, void *secondObject)
 {
 	asCScriptEngine *engine = context->m_engine;
 	asSSystemFunctionInterface *sysFunc = descr->sysFuncIntf;
@@ -193,10 +191,16 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 		allArgBuffer[paramSize++] = (asQWORD)retPointer;
 	}
 
+#ifdef AS_NO_THISCALL_FUNCTOR_METHOD
 	if( callConv == ICC_THISCALL ||
 		callConv == ICC_THISCALL_RETURNINMEM ||
-		callConv == ICC_VIRTUAL_THISCALL || 
+		callConv == ICC_VIRTUAL_THISCALL ||
 		callConv == ICC_VIRTUAL_THISCALL_RETURNINMEM )
+#else
+	// Optimization to avoid check 12 values (all ICC_ that contains THISCALL)
+	if( (callConv >= ICC_THISCALL && callConv <= ICC_VIRTUAL_THISCALL_RETURNINMEM) ||
+		(callConv >= ICC_THISCALL_OBJLAST && callConv <= ICC_VIRTUAL_THISCALL_OBJFIRST_RETURNINMEM) )
+#endif
 	{
 		// Add the object pointer as the first parameter
 		allArgBuffer[paramSize++] = (asQWORD)obj;
@@ -208,8 +212,28 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 		// Add the object pointer as the first parameter
 		allArgBuffer[paramSize++] = (asQWORD)obj;
 	}
+#ifndef AS_NO_THISCALL_FUNCTOR_METHOD
+	else if( callConv == ICC_THISCALL_OBJFIRST ||
+		callConv == ICC_THISCALL_OBJFIRST_RETURNINMEM ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJFIRST ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJFIRST_RETURNINMEM )
+	{
+		// Add the object pointer as the first parameter
+		allArgBuffer[paramSize++] = (asQWORD)secondObject;
+	}
+#endif
+
+#ifdef AS_NO_THISCALL_FUNCTOR_METHOD
 	if( callConv == ICC_VIRTUAL_THISCALL ||
 		callConv == ICC_VIRTUAL_THISCALL_RETURNINMEM )
+#else
+	if( callConv == ICC_VIRTUAL_THISCALL ||
+		callConv == ICC_VIRTUAL_THISCALL_RETURNINMEM ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJFIRST ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJFIRST_RETURNINMEM ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJLAST ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJLAST_RETURNINMEM )
+#endif
 	{
 		// Get the true function pointer from the virtual function table
 		vftable = *(void***)obj;
@@ -224,7 +248,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 		if( descr->parameterTypes[n].IsObject() && !descr->parameterTypes[n].IsObjectHandle() && !descr->parameterTypes[n].IsReference() )
 		{
 			if( descr->parameterTypes[n].GetSizeInMemoryDWords() >= AS_LARGE_OBJ_MIN_SIZE ||
-				(descr->parameterTypes[n].GetObjectType()->flags & COMPLEX_MASK) )
+				(descr->parameterTypes[n].GetTypeInfo()->flags & COMPLEX_MASK) )
 			{
 				allArgBuffer[dpos++] = *(asQWORD*)&args[spos];
 				spos += AS_PTR_SIZE;
@@ -276,7 +300,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 				// though this is only done for first 4 arguments, the rest are placed on the stack
 				if( paramSize < 4 && descr->parameterTypes[n].IsFloatType() )
 					floatArgBuffer[dpos] = args[spos];
-				
+
 				dpos++;
 				spos++;
 			}
@@ -291,6 +315,16 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 		// Add the object pointer as the last parameter
 		allArgBuffer[paramSize++] = (asQWORD)obj;
 	}
+#ifndef AS_NO_THISCALL_FUNCTOR_METHOD
+	else if( callConv == ICC_THISCALL_OBJLAST ||
+		callConv == ICC_THISCALL_OBJLAST_RETURNINMEM ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJLAST ||
+		callConv == ICC_VIRTUAL_THISCALL_OBJLAST_RETURNINMEM )
+	{
+		// Add the object pointer as the last parameter
+		allArgBuffer[paramSize++] = (asQWORD)secondObject;
+	}
+#endif
 
 	retQW = CallX64(allArgBuffer, floatArgBuffer, paramSize*8, (asPWORD)func);
 

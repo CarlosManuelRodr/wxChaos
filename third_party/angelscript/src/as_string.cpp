@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2012 Andreas Jonsson
+   Copyright (c) 2003-2017 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -31,8 +31,8 @@
 #include "as_config.h"
 
 #include <stdarg.h>		// va_list, va_start(), etc
-#include <stdlib.h>     // strtod(), strtol()
-#include <string.h> // some compilers declare memcpy() here
+#include <stdlib.h>		// strtod(), strtol()
+#include <string.h>		// some compilers declare memcpy() here
 
 #if !defined(AS_NO_MEMORY_H)
 #include <memory.h>
@@ -55,6 +55,26 @@ asCString::asCString(const asCString &str)
 
 	Assign(str.AddressOf(), str.length);
 }
+
+#ifdef AS_CAN_USE_CPP11
+asCString::asCString(asCString &&str)
+{
+	if( str.length <= 11 )
+	{
+		length = str.length;
+		memcpy(local, str.local, length);
+		local[length] = 0;
+	}
+	else
+	{
+		dynamic = str.dynamic;
+		length = str.length;
+	}
+
+	str.dynamic = 0;
+	str.length = 0;
+}
+#endif // c++11
 
 asCString::asCString(const char *str, size_t len)
 {
@@ -183,6 +203,37 @@ asCString &asCString::operator =(const asCString &str)
 	return *this;
 }
 
+#ifdef AS_CAN_USE_CPP11
+asCString &asCString::operator =(asCString &&str)
+{
+	if( this != &str )
+	{
+		if( length > 11 && dynamic )
+		{
+			asDELETEARRAY(dynamic);
+		}
+
+		if ( str.length <= 11 )
+		{
+			length = str.length;
+
+			memcpy(local, str.local, length);
+			local[length] = 0;
+		}
+		else
+		{
+			dynamic = str.dynamic;
+			length = str.length;
+		}
+
+		str.dynamic = 0;
+		str.length = 0;
+	}
+
+	return *this;
+}
+#endif // c++11
+
 asCString &asCString::operator =(char ch)
 {
 	Assign(&ch, 1);
@@ -232,20 +283,24 @@ size_t asCString::Format(const char *format, ...)
 	va_list args;
 	va_start(args, format);
 
-	char tmp[256];
-	int r = asVSNPRINTF(tmp, 255, format, args);
+	const size_t startSize = 1024;
+	char tmp[startSize];
+	int r = asVSNPRINTF(tmp, startSize-1, format, args);
 
-	if( r > 0 )
+	if( r > 0 && r < int(startSize) )
 	{
 		Assign(tmp, r);
 	}
 	else
 	{
-		size_t n = 512;
+		// TODO: For some reason this doesn't work properly on Linux. Perhaps the
+		//       problem is related to vsnprintf not keeping the state of va_arg.
+		//       Perhaps I need to rewrite this in some way to keep the state
+		size_t n = startSize*2;
 		asCString str; // Use temporary string in case the current buffer is a parameter
 		str.Allocate(n, false);
 
-		while( (r = asVSNPRINTF(str.AddressOf(), n, format, args)) < 0 )
+		while( (r = asVSNPRINTF(str.AddressOf(), n, format, args)) < 0 || r >= int(n) )
 		{
 			n *= 2;
 			str.Allocate(n, false);
@@ -273,15 +328,15 @@ const char &asCString::operator [](size_t index) const
 	return AddressOf()[index];
 }
 
-asCString asCString::SubString(size_t start, size_t length) const
+asCString asCString::SubString(size_t in_start, size_t in_length) const
 {
-	if( start >= GetLength() || length == 0 )
+	if( in_start >= GetLength() || in_length == 0 )
 		return asCString("");
 
-	if( length == (size_t)(-1) ) length = GetLength() - start;
+	if( in_length == (size_t)(-1) ) in_length = GetLength() - in_start;
 
 	asCString tmp;
-	tmp.Assign(AddressOf() + start, length);
+	tmp.Assign(AddressOf() + in_start, in_length);
 
 	return tmp;
 }
