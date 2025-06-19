@@ -91,13 +91,13 @@ int CompileScriptFromPath(asIScriptEngine* engine, const string& filePath)
 
     string script;
     script.resize(len);
-    int c = fread(&script[0], len, 1, f);
+    size_t c = fread(&script[0], len, 1, f);
     fclose(f);
 
     if (c == 0)
         return -1;
 
-    asIScriptModule* mod = engine->GetModule(0, asGM_ALWAYS_CREATE);
+    asIScriptModule* mod = engine->GetModule(nullptr, asGM_ALWAYS_CREATE);
     r = mod->AddScriptSection("script", &script[0], len);
     if (r < 0)
         return -1;
@@ -179,7 +179,7 @@ static void asSetPoint(int x, int y, bool setVal, int colorVal)
 
 static void asPrintString(string& str)
 {
-    if (consoleText.size() == 0)
+    if (consoleText.empty())
         consoleText = str;
     else
         consoleText += str;
@@ -189,7 +189,7 @@ static void asPrintString(string& str)
 
 static void asPrintInt(int num)
 {
-    if (consoleText.size() == 0)
+    if (consoleText.empty())
         consoleText = str_num_to_string(num);
     else
         consoleText += str_num_to_string(num);
