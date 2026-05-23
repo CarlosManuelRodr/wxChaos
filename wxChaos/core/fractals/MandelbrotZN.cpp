@@ -20,7 +20,6 @@ MandelbrotZN::MandelbrotZN(sf::RenderWindow* Window):Fractal(Window)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     smoothRender = false;
-    colorPaletteMode = ColorMode::Gaussian;
     myRender = new RenderMandelbrotZN[threadNumber];
     SetWatchdog<RenderMandelbrotZN>(myRender, &watchdog, threadNumber);
 

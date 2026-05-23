@@ -2,6 +2,5 @@
 
 enum class ColorMode
 {
-    Gradient,
-    Gaussian
+    Gradient
 };

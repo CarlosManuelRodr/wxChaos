@@ -416,20 +416,14 @@ void MainFrame::SetUpGUI()
     size = fractalSizer->GetSize();
 
     // Creates fractalCanvas.
-    colorStyle = opt.colorStyleGaussian;
     fractalType = opt.type;
     fractalCanvas = new FractalCanvas(statusData, &pauseBtn, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
 
-    if (opt.mode == ColorMode::Gaussian)
-        fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
-    else
-    {
-        wxGradient grad;
-        grad.setMin(0);
-        grad.setMax(opt.paletteSize);
-        grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
-        fractalCanvas->GetFractalPtr()->SetGradient(grad);
-    }
+    wxGradient grad;
+    grad.setMin(0);
+    grad.setMax(opt.paletteSize);
+    grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
+    fractalCanvas->GetFractalPtr()->SetGradient(grad);
 
     fractalCanvas->GetFractalPtr()->ChangeIterations(opt.maxIterations);
     fractalCanvas->GetFractalPtr()->SetExtColorMode(opt.colorFractal);
@@ -549,7 +543,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent &event)
     if(!formDiagActive)
     {
         formDiagActive = true;
-        formDialog = new FormulaDialog(ID_USER_DEFINED, ID_FPUSER_DEFINED, &colorStyle, slider, manual, &formDiagActive, fractalCanvas, this);
+        formDialog = new FormulaDialog(ID_USER_DEFINED, ID_FPUSER_DEFINED, slider, manual, &formDiagActive, fractalCanvas, this);
         formDialog->Show(true);
 
         // Adjust position.
@@ -580,16 +574,11 @@ void MainFrame::OnRedraw(wxCommandEvent &event)
 void MainFrame::OnReset(wxCommandEvent &event)
 {
     fractalCanvas->Reset();
-    if(fractalCanvas->GetFractalPtr()->GetColorMode() == ColorMode::Gradient)
-    {
-        wxGradient grad;
-        grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
-        grad.setMin(0);
-        grad.setMax(opt.paletteSize);
-        fractalCanvas->GetFractalPtr()->SetGradient(grad);
-    }
-    else
-        fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
+    wxGradient grad;
+    grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
+    grad.setMin(0);
+    grad.setMax(opt.paletteSize);
+    fractalCanvas->GetFractalPtr()->SetGradient(grad);
     this->UpdateMenu();
 }
 void MainFrame::OnMoreIt(wxCommandEvent &event)
@@ -894,15 +883,7 @@ void MainFrame::ChangeFractal(FractalType fType, bool enableJulia)
         Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
         fractalCanvas->ChangeType(fType);
 
-        if(fType == FractalType::Mandelbrot || fType == FractalType::Julia) // This is because they have smooth coloring.
-        {
-            if(opt.mode == ColorMode::Gradient)
-                fractalCanvas->GetFractalPtr()->SetGradient(fractOpt.gradient);
-            else
-                fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
-        }
-        else
-            fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
+        fractalCanvas->GetFractalPtr()->SetGradient(fractOpt.gradient);
 
         fractalType = fType;
         this->UpdateMenu();
@@ -919,7 +900,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
 
     Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
     fractalCanvas->ChangeToScript(loadedScripts[id]);
-    fractalCanvas->GetFractalPtr()->SetGaussianColorStyle(colorStyle);
+    fractalCanvas->GetFractalPtr()->SetGradient(fractOpt.gradient);
 
     fractalType = FractalType::ScriptFractal;
     this->UpdateMenu();
@@ -938,14 +919,6 @@ void MainFrame::GetParserOpt()
 
     if(p.FileOpened())
     {
-        // Parameters to parse.
-        vector<string> colorOpt;
-        colorOpt.push_back("Gradient");
-        colorOpt.push_back("EST_Mode");
-        vector<ColorMode> colorValues;
-        colorValues.push_back(ColorMode::Gradient);
-        colorValues.push_back(ColorMode::Gaussian);
-
         fractalOpt.push_back("Mandelbrot");
         fractalOpt.push_back("MandelbrotZN");
         fractalOpt.push_back("Julia");
@@ -995,36 +968,11 @@ void MainFrame::GetParserOpt()
         fractalValues.push_back(FractalType::UserDefined);
         fractalValues.push_back(FractalType::FixedPointUserDefined);
 
-        vector<string> styleOpt;
-        styleOpt.push_back("Summer_Day");
-        styleOpt.push_back("Cool_Blue");
-        styleOpt.push_back("Hard_Red");
-        styleOpt.push_back("Black_And_White");
-        styleOpt.push_back("Pastel");
-        styleOpt.push_back("Psych_Experience");
-        styleOpt.push_back("Vivid_Colors");
-        vector<GaussianColorStyles> styleValues;
-        styleValues.push_back(GaussianColorStyles::SummerDay);
-        styleValues.push_back(GaussianColorStyles::CoolBlue);
-        styleValues.push_back(GaussianColorStyles::HardRed);
-        styleValues.push_back(GaussianColorStyles::BlackAndWhite);
-        styleValues.push_back(GaussianColorStyles::Pastel);
-        styleValues.push_back(GaussianColorStyles::PsychExperience);
-        styleValues.push_back(GaussianColorStyles::VividColors);
-
-        p.OptionToVar<ColorMode>(opt.mode, "COLOR_TYPE", colorOpt, colorValues, ColorMode::Gaussian);
         p.OptionToVar<FractalType>(opt.type, "FRACTAL_TYPE", fractalOpt, fractalValues, FractalType::Mandelbrot);
         p.IntArgToVar(opt.maxIterations, "DEFAULT_ITERATION", 100);
-        if(opt.mode == ColorMode::Gradient)
-        {
-            p.StringArgToVar(opt.colorStyleGrad, "COLOR_STYLE", "rgb(0,0,0);rgb(255,255,255);");
-            opt.colorStyleGaussian = SummerDay;
-        }
-        else
-        {
-            p.OptionToVar(opt.colorStyleGaussian, "COLOR_STYLE", styleOpt, styleValues, SummerDay);
-            opt.colorStyleGrad = "rgb(0,0,0);rgb(255,255,255);";
-        }
+        p.StringArgToVar(opt.colorStyleGrad, "COLOR_STYLE", "rgb(0,0,0);rgb(255,255,255);");
+        if (opt.colorStyleGrad.find("rgb(") == string::npos)
+            opt.colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);";
 
         p.IntArgToVar(opt.paletteSize, "PALETTE_SIZE", 300);
         p.BoolArgToVar(opt.constantWindow, "CONSTANT_WINDOW", false);
@@ -1049,12 +997,10 @@ void MainFrame::GetParserOpt()
         file << "APP_VERSION=" << APP_VERSION << "\n";
         file.close();
 
-        opt.mode = ColorMode::Gradient;
         opt.type = FractalType::Mandelbrot;
         opt.maxIterations = 100;
         opt.paletteSize = 300;
         opt.colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);\n";
-        opt.colorStyleGaussian = GaussianColorStyles::SummerDay;
         opt.constantWindow = false;
         opt.commandConsole = false;
         opt.juliaMode = false;

@@ -95,16 +95,11 @@ protected:
     sf::Uint8* greenPalette;
     sf::Uint8* bluePalette;
     sf::Color* palette;
-    int redInt, greenInt, blueInt;                ///< Intensity parameters.
-    double redMean, greenMean, blueMean;          ///< Mean parameters.
-    double redStdDev, greenStdDev, blueStdDev;    ///< Standard deviation parameters.
     bool relativeColor;
     bool colorSet;                                ///< Activates internal coloring.
     bool colorMode;                               ///< Activates external coloring.
-    GaussianColorStyles gaussianStyle;            ///< Gaussian color palette to be used.
     GradientColorStyles gradStyle;                ///< Grad color palette to be used.
     int paletteSize;
-    int gaussianPaletteSize;
     int gradPaletteSize;
     int varGradientStep;
     int maxColorMapVal;
@@ -167,19 +162,10 @@ protected:
     ///@brief Called in child class after constructor.
     void SetOutermostZoom();
 
-    ///@brief Calculate a EST color in the specified channel.
-    ///@param colorNum Color parameter.
-    ///@param col Channel to calculate.
-    ///@return A 8 bit unsigned integer with the calculated color.
-    sf::Uint8 CalcGradient(int colorNum, Color col);
-
     ///@brief Looks into the color palette for the corresponding color.
     ///@param colorNum Color parameter.
     ///@return A struct with the color.
     sf::Color CalcColor(int colorNum);
-
-    ///@brief Calculates a normal distribution.
-    double NormalDist(int x, double mean, double stdDev);
 
     ///@brief Rebuilds the color palette in the colorPaletteMode.
     void RebuildPalette();
@@ -340,21 +326,13 @@ public:
     void PrepareSnapshot(bool mode);
 
     // Color styles.
-    void SetGaussianColorStyle(GaussianColorStyles _gaussianStyle);
     void SetGradStyle(GradientColorStyles _gradStyle);
-    GaussianColorStyles GetGaussianColorStyle();
     GradientColorStyles GetGradStyle();
 
     // Color operations.
     sf::Color GetSetColor();
     wxGradient* GetGradient();
     ColorMode GetColorMode();
-    void SetGaussianColorIntensity(int intensity, Color col);
-    void SetGaussianColorMean(double med, Color col);
-    void SetGaussianColorStdDev(double des, Color col);
-    int GetGaussianColorIntensity(Color col);
-    double GetGaussianColorMean(Color col);
-    double GetGaussianColorStdDev(Color col);
     void SetExtColorMode(bool mode);
     void SetFractalSetColorMode(bool mode);
     void SetFractalSetColor(sf::Color color);
@@ -365,7 +343,6 @@ public:
     int GetPaletteSize();
     void SetGradient(wxGradient grad);
     void SetGradientSize(unsigned int size);
-    void SetPaletteMode(ColorMode mode);
     void SetRelativeColor(bool mode);
     bool GetRelativeColorMode();
     void SetVarGradient(int n);

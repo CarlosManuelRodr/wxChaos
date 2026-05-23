@@ -22,7 +22,6 @@ JuliaZN::JuliaZN(sf::RenderWindow* Window):Fractal(Window)
     hasOrbitTrap = true;
     hasSmoothRender = true;
     smoothRender = false;
-    colorPaletteMode = ColorMode::Gaussian;
     myRender = new RenderJuliaZN[threadNumber];
     SetWatchdog<RenderJuliaZN>(myRender, &watchdog, threadNumber);
 

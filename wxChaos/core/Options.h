@@ -21,7 +21,6 @@ struct Options
     RenderingAlgorithm alg;
     FractalType type;
     int paletteSize;
-    int gaussianPaletteSize;
     int gradPaletteSize;
     PanelOptions panelOpt;
 
@@ -35,9 +34,6 @@ struct Options
     bool smoothRender;
     bool justLaunchThreads;
     bool relativeColor;
-    int redInt, greenInt, blueInt;
-    double redMean, greenMean, blueMean;
-    double redStdDev, greenStdDev, blueStdDev;
     sf::Color fSetColor;
 
     int screenHeight;

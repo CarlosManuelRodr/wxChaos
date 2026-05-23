@@ -12,43 +12,6 @@
 #include <wx/string.h>
 
 /**
-* @enum GaussianColorStyles
-* @brief Enum of Gaussian color styles.
-*/
-enum GaussianColorStyles
-{
-    SummerDay,
-    CoolBlue,
-    HardRed,
-    BlackAndWhite,
-    Pastel,
-    PsychExperience,
-    VividColors,
-    Custom
-};
-
-
-/**
-* @class GaussianColorPalette
-* @brief Class that assigns parameters according to the selected style.
-*/
-class GaussianColorPalette
-{
-public:
-    int redInt, greenInt, blueInt;
-    double redMean, greenMean, blueMean;
-    double redStdDev, greenStdDev, blueStdDev;
-    int paletteSize;
-
-    ///@brief Empty constructor.
-    GaussianColorPalette();
-
-    ///@brief Assigns parameters according to the style selected.
-    ///@param style Style selected.
-    void SetStyle(GaussianColorStyles style);
-};
-
-/**
 * @enum GradientColorStyles
 * @brief Enum of gradient styles.
 */

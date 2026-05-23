@@ -1,130 +1,7 @@
 #include <wx/wx.h>
-#include "global.h"
 #include "ColorFrame.h"
 #include "StringFuncs.h"
 #include "Filesystem.h"
-
-
-GaussianColorPalette::GaussianColorPalette()
-{
-    redInt = -1;
-    redMean = -1;
-    redStdDev = -1;
-    greenInt = -1;
-    greenMean = -1;
-    greenStdDev = -1;
-    blueInt = -1;
-    blueMean = -1;
-    blueStdDev = -1;
-    paletteSize = -1;
-}
-void GaussianColorPalette::SetStyle(GaussianColorStyles style)
-{
-    // Sets the parameters of each color style.
-    switch(style)
-    {
-    case GaussianColorStyles::SummerDay:
-        {
-            redInt = 255;
-            redMean = 34;
-            redStdDev = 8;
-            greenInt = 201;
-            greenMean = 28;
-            greenStdDev = 12;
-            blueInt = 255;
-            blueMean = 21;
-            blueStdDev = 9;
-            paletteSize = 60;
-            break;
-        }
-    case GaussianColorStyles::CoolBlue:
-        {
-            redInt = 252;
-            redMean = 104;
-            redStdDev = 37;
-            greenInt = 255;
-            greenMean = 96;
-            greenStdDev = 34;
-            blueInt = 255;
-            blueMean = 73;
-            blueStdDev = 40;
-            paletteSize = 300;
-            break;
-        }
-    case GaussianColorStyles::HardRed:
-        {
-            redInt = 210;
-            redMean = 19;
-            redStdDev = 14;
-            greenInt = 102;
-            greenMean = 26;
-            greenStdDev = 10;
-            blueInt = 97;
-            blueMean = 29;
-            blueStdDev = 10;
-            paletteSize = 60;
-            break;
-        }
-    case GaussianColorStyles::BlackAndWhite:
-        {
-            redInt = 200;
-            redMean = 30;
-            redStdDev = 9;
-            greenInt = 200;
-            greenMean = 30;
-            greenStdDev = 9;
-            blueInt = 200;
-            blueMean = 30;
-            blueStdDev = 9;
-            paletteSize = 60;
-            break;
-        }
-    case GaussianColorStyles::Pastel:
-        {
-            redInt = 205;
-            redMean = 23;
-            redStdDev = 14;
-            greenInt = 196;
-            greenMean = 26;
-            greenStdDev = 11;
-            blueInt = 198;
-            blueMean = 38;
-            blueStdDev = 9;
-            paletteSize = 60;
-            break;
-        }
-    case GaussianColorStyles::PsychExperience:
-        {
-            redInt = 126;
-            redMean = 3;
-            redStdDev = 11;
-            greenInt = 200;
-            greenMean = 36;
-            greenStdDev = 9;
-            blueInt = 200;
-            blueMean = 24;
-            blueStdDev = 12;
-            paletteSize = 60;
-            break;
-        }
-    case GaussianColorStyles::VividColors:
-        {
-            redInt = 200;
-            redMean = 0;
-            redStdDev = 10;
-            greenInt = 200;
-            greenMean = 17;
-            greenStdDev = 10;
-            blueInt = 200;
-            blueMean = 37;
-            blueStdDev = 10;
-            paletteSize = 60;
-            break;
-        }
-    case GaussianColorStyles::Custom:
-            break;
-    };
-}
 
 GradientColorPalette::GradientColorPalette()
 {
@@ -334,163 +211,7 @@ ColorFrame::ColorFrame(bool* _active, Fractal* _target, wxWindow* parent,
     gradientLabel->SetSizer(gradSizer);
     gradientLabel->Layout();
     gradSizer->Fit(gradientLabel);
-    typeNotebook->AddPage(gradientLabel, wxT("Gradient color"), false);
-    stdPanel = new wxPanel(typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* colorSizer = new wxBoxSizer(wxHORIZONTAL);
-
-    wxBoxSizer* sideASizer = new wxBoxSizer(wxVERTICAL);
-
-    stylesLabel = new wxStaticText(stdPanel, wxID_ANY, wxT("Color styles:"), wxDefaultPosition, wxDefaultSize, 0);
-    stylesLabel->Wrap(-1);
-    sideASizer->Add(stylesLabel, 0, wxALL, 5);
-
-    wxString stylesChoices[] = { wxT("Summer day"), wxT("Cool Blue"), wxT("Hard Red"), wxT("Black & White"), wxT("Pastel"), wxT("Psych Experience"), wxT("Vivid colors"), wxT("Custom") };
-    int stylesChoicesNum = sizeof(stylesChoices) / sizeof(wxString);
-    gaussianStylesChoice = new wxChoice(stdPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, stylesChoicesNum, stylesChoices, 0);
-    gaussianStylesChoice->SetSelection(static_cast<int>(target->GetGaussianColorStyle()));
-    sideASizer->Add( gaussianStylesChoice, 0, wxALL|wxEXPAND, 5 );
-
-    pSizeText = new wxStaticText(stdPanel, wxID_ANY, wxT("Palette size:"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Palette size:"
-    pSizeText->Wrap(-1);
-    sideASizer->Add(pSizeText, 0, wxALL, 5);
-
-    pSizeSpin = new wxSpinCtrl(stdPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000, 60);
-    sideASizer->Add(pSizeSpin, 0, wxALL, 5);
-
-    wxStaticBoxSizer* sizerred = new wxStaticBoxSizer(new wxStaticBox( stdPanel, wxID_ANY, wxT("Red") ), wxVERTICAL);    // Txt: "Red"
-
-    wxBoxSizer* subSizerred = new wxBoxSizer(wxVERTICAL);
-
-    //
-    redIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Intensity: ");
-    text += num_to_string(target->GetGaussianColorIntensity(Color::Red));
-    redIntText->SetLabel(text);
-    //
-    redIntText->Wrap(-1);
-    subSizerred->Add(redIntText, 0, wxALL, 5);
-
-    redIntSld = new wxSlider(stdPanel, wxID_ANY, 200, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizerred->Add(redIntSld, 0, wxALL|wxEXPAND, 5);
-
-    //
-    redMeanText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Position: ");
-    text += num_to_string(target->GetGaussianColorMean(Color::Red));
-    redMeanText->SetLabel(text);
-    //
-    redMeanText->Wrap(-1);
-    subSizerred->Add(redMeanText, 0, wxALL, 5);
-
-    redMeanSld = new wxSlider(stdPanel, wxID_ANY, 0, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizerred->Add(redMeanSld, 0, wxALL|wxEXPAND, 5);
-
-    //
-    redStdDevText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Standard deviation: ");
-    text += num_to_string(target->GetGaussianColorStdDev(Color::Red));
-    redStdDevText->SetLabel(text);
-    //
-    redStdDevText->Wrap(-1);
-    subSizerred->Add(redStdDevText, 0, wxALL, 5);
-
-    redStdDevSld = new wxSlider(stdPanel, wxID_ANY, 10, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizerred->Add(redStdDevSld, 0, wxALL|wxEXPAND, 5);
-
-    sizerred->Add(subSizerred, 1, wxEXPAND, 5);
-
-    sideASizer->Add(sizerred, 1, wxEXPAND, 5);
-
-    wxStaticBoxSizer* sizergreen = new wxStaticBoxSizer(new wxStaticBox(stdPanel, wxID_ANY, wxT("Green")), wxVERTICAL);    // Txt: "Green"
-    wxBoxSizer* subSizergreen = new wxBoxSizer(wxVERTICAL);
-
-    //
-    greenIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Intensity: ");
-    text += num_to_string(target->GetGaussianColorIntensity(Color::Green));
-    greenIntText->SetLabel(text);
-    //
-    greenIntText->Wrap(-1);
-    subSizergreen->Add(greenIntText, 0, wxALL, 5);
-
-    greenIntSld = new wxSlider(stdPanel, wxID_ANY, 200, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizergreen->Add(greenIntSld, 0, wxALL|wxEXPAND, 5);
-
-    //
-    greenMeanText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Position: ");
-    text += num_to_string(target->GetGaussianColorMean(Color::Green));
-    greenMeanText->SetLabel(text);
-    //
-    greenMeanText->Wrap(-1);
-    subSizergreen->Add(greenMeanText, 0, wxALL, 5);
-
-    greenMeanSld = new wxSlider(stdPanel, wxID_ANY, 17, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizergreen->Add(greenMeanSld, 0, wxALL|wxEXPAND, 5);
-
-    //
-    greenStdDevText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Standard deviation: ");
-    text += num_to_string(target->GetGaussianColorStdDev(Color::Green));
-    greenStdDevText->SetLabel(text);
-    //
-    greenStdDevText->Wrap(-1);
-    subSizergreen->Add(greenStdDevText, 0, wxALL, 5);
-
-    greenStdDevSld = new wxSlider(stdPanel, wxID_ANY, 10, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizergreen->Add(greenStdDevSld, 0, wxALL|wxEXPAND, 5);
-    sizergreen->Add(subSizergreen, 1, wxEXPAND, 5);
-    sideASizer->Add(sizergreen, 1, wxEXPAND, 5);
-    colorSizer->Add(sideASizer, 1, wxEXPAND, 5);
-
-    wxBoxSizer* bSizer13 = new wxBoxSizer(wxVERTICAL);
-    wxStaticBoxSizer* sizerblue = new wxStaticBoxSizer(new wxStaticBox(stdPanel, wxID_ANY, wxT("Blue")), wxVERTICAL);    // Txt: "Blue"
-    wxBoxSizer* subSizerblue = new wxBoxSizer(wxVERTICAL);
-
-    //
-    blueIntText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Intensity: ");
-    text += num_to_string(target->GetGaussianColorIntensity(Color::Blue));
-    blueIntText->SetLabel(text);
-    //
-    blueIntText->Wrap(-1);
-    subSizerblue->Add(blueIntText, 0, wxALL, 5);
-
-    blueIntSld = new wxSlider(stdPanel, wxID_ANY, 200, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizerblue->Add(blueIntSld, 0, wxALL|wxEXPAND, 5);
-
-    //
-    blueMeanText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Position: ");
-    text += num_to_string(target->GetGaussianColorMean(Color::Blue));
-    blueMeanText->SetLabel(text);
-    //
-    blueMeanText->Wrap(-1);
-    subSizerblue->Add(blueMeanText, 0, wxALL, 5);
-
-    blueMeanSld = new wxSlider(stdPanel, wxID_ANY, 37, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizerblue->Add(blueMeanSld, 0, wxALL|wxEXPAND, 5);
-
-    //
-    blueStdDevText = new wxStaticText(stdPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0);
-    text = wxT("Standard deviation: ");
-    text += num_to_string(target->GetGaussianColorStdDev(Color::Blue));
-    blueStdDevText->SetLabel(text);
-    //
-    blueStdDevText->Wrap(-1);
-    subSizerblue->Add(blueStdDevText, 0, wxALL, 5);
-
-    blueStdDevSld = new wxSlider(stdPanel, wxID_ANY, 10, 0, 60, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    subSizerblue->Add(blueStdDevSld, 0, wxALL|wxEXPAND, 5);
-
-    sizerblue->Add(subSizerblue, 1, wxEXPAND, 5);
-    bSizer13->Add(sizerblue, 1, wxEXPAND, 5);
-    colorSizer->Add(bSizer13, 1, wxEXPAND, 5);
-
-    stdPanel->SetSizer(colorSizer);
-    stdPanel->Layout();
-    colorSizer->Fit(stdPanel);
-    typeNotebook->AddPage(stdPanel, wxT("Gaussian Color"), true);    // Txt: "STD Color"
+    typeNotebook->AddPage(gradientLabel, wxT("Gradient color"), true);
 
     mainSizer->Add(typeNotebook, 2, wxEXPAND | wxALL, 5);
 
@@ -503,11 +224,7 @@ ColorFrame::ColorFrame(bool* _active, Fractal* _target, wxWindow* parent,
     this->Layout();
     this->Centre(wxBOTH);
 
-    // Shows tab according to the color mode in the fractal.
-    if(target->GetColorMode() == ColorMode::Gradient)
-        typeNotebook->ChangeSelection(0);
-    else
-        typeNotebook->ChangeSelection(1);
+    typeNotebook->ChangeSelection(0);
 
     this->SetAlgorithmChoices();
     this->ConnectEvents();
@@ -524,7 +241,6 @@ void ColorFrame::ConnectEvents()
     algorithmChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(ColorFrame::OnChangeAlgorithm), nullptr, this);
     relativeCheck->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnRelativeColor), nullptr, this);
     gradPalSize->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ColorFrame::OnGradPaletteSize), nullptr, this);
-    typeNotebook->Connect(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(ColorFrame::OnPageChange), nullptr, this);
     colorFractal->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnColorFractal), nullptr, this);
     colorSet->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnColorSet), nullptr, this);
     orbitTrap->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnOrbitTrap), nullptr, this);
@@ -558,89 +274,6 @@ void ColorFrame::ConnectEvents()
     blueSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
     okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ColorFrame::OnOk), nullptr, this);
     gradButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ColorFrame::OnGrad), nullptr, this);
-    gaussianStylesChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(ColorFrame::GaussianColorChangeSelection), nullptr, this);
-    pSizeSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ColorFrame::OnPaletteSize), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redIntSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeRedIntensity), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redMeanSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeRedMean), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    redStdDevSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeRedStdDev), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenIntSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeGreenIntensity), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenMeanSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeGreenMean), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    greenStdDevSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeGreenStdDev), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueIntSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeBlueIntensity), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueMeanSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeBlueMean), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
-    blueStdDevSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::ChangeBlueStdDev), nullptr, this);
     colorVarSlider->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
     colorVarSlider->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
     colorVarSlider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
@@ -743,7 +376,7 @@ void ColorFrame::SetTarget(Fractal* _target)
 {
     // Sets the new target fractal.
     target = _target;
-    pSizeSpin->SetValue(target->GetPaletteSize());
+    gradPalSize->SetValue(target->GetPaletteSize());
 
     if(target->HasOrbitTrapMode())
         orbitTrap->Enable(true);
@@ -781,10 +414,7 @@ void ColorFrame::SetTarget(Fractal* _target)
     else
         algorithmChoice->SetSelection(0);
 
-    if(target->GetColorMode() == ColorMode::Gradient)
-        typeNotebook->ChangeSelection(0);
-    else
-        typeNotebook->ChangeSelection(1);
+    typeNotebook->ChangeSelection(0);
 
     if(target->GetRelativeColorMode())
         relativeCheck->SetValue(true);
@@ -811,188 +441,10 @@ void ColorFrame::SetTarget(Fractal* _target)
     colorVarSlider->SetValue(0);
 
     gradStylesChoice->SetSelection( static_cast<int>(target->GetGradStyle()) );
-    gaussianStylesChoice->SetSelection( static_cast<int>(target->GetGaussianColorStyle()) );
-}
-
-// Change in parameters methods.
-void ColorFrame::ChangeRedIntensity(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(GaussianColorStyles::Custom);
-    int value = redIntSld->GetValue();
-    target->SetGaussianColorIntensity(value, Color::Red);
-    wxString text;
-    text = wxT("Intensity: ");
-    text += num_to_string(value);
-    redIntText->SetLabel(text);
-}
-void ColorFrame::ChangeRedMean(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(GaussianColorStyles::Custom);
-    int value = redMeanSld->GetValue();
-    target->SetGaussianColorMean(value, Color::Red);
-    wxString text;
-    text = wxT("Position: ");
-    text += num_to_string(value);
-    redMeanText->SetLabel(text);
-}
-void ColorFrame::ChangeRedStdDev(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(GaussianColorStyles::Custom);
-    int value = redStdDevSld->GetValue();
-    target->SetGaussianColorStdDev(value, Color::Red);
-    wxString text;
-    text = wxT("Standard deviation: ");
-    text += num_to_string(value);
-    redStdDevText->SetLabel(text);
-}
-void ColorFrame::ChangeGreenIntensity(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(GaussianColorStyles::Custom);
-    int value = greenIntSld->GetValue();
-    target->SetGaussianColorIntensity(value, Color::Green);
-    wxString text;
-    text = wxT("Intensity: ");
-    text += num_to_string(value);
-    greenIntText->SetLabel(text);
-}
-void ColorFrame::ChangeGreenMean(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(GaussianColorStyles::Custom);
-    int value = greenMeanSld->GetValue();
-    target->SetGaussianColorMean(value, Color::Green);
-    wxString text;
-    text = wxT("Position: ");
-    text += num_to_string(value);
-    greenMeanText->SetLabel(text);
-}
-void ColorFrame::ChangeGreenStdDev(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(GaussianColorStyles::Custom);
-    int value = greenStdDevSld->GetValue();
-    target->SetGaussianColorStdDev(value, Color::Green);
-    wxString text;
-    text = wxT("Standard deviation: ");
-    text += num_to_string(value);
-    greenStdDevText->SetLabel(text);
-}
-void ColorFrame::ChangeBlueIntensity(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(GaussianColorStyles::Custom);
-    int value = blueIntSld->GetValue();
-    target->SetGaussianColorIntensity(value, Color::Blue);
-    wxString text;
-    text = wxT("Intensity: ");
-    text += num_to_string(value);
-    blueIntText->SetLabel(text);
-}
-void ColorFrame::ChangeBlueMean(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(GaussianColorStyles::Custom);
-    int value = blueMeanSld->GetValue();
-    target->SetGaussianColorMean(value, Color::Blue);
-    wxString text;
-    text = wxT("Position: ");
-    text += num_to_string(value);
-    blueMeanText->SetLabel(text);
-}
-void ColorFrame::ChangeBlueStdDev(wxScrollEvent& event)
-{
-    gaussianStylesChoice->SetSelection(Custom);
-    int value = blueStdDevSld->GetValue();
-    target->SetGaussianColorStdDev(value, Color::Blue);
-    wxString text;
-    text = wxT("Standard deviation: ");
-    text += num_to_string(value);
-    blueStdDevText->SetLabel(text);
 }
 void ColorFrame::OnOk(wxCommandEvent& event)
 {
     this->Destroy();
-}
-void ColorFrame::GaussianColorChangeSelection(wxCommandEvent& event)
-{
-    // Change colors according to selection.
-    gaussianFractalColor.redInt = redIntSld->GetValue(); gaussianFractalColor.greenInt = greenIntSld->GetValue(); gaussianFractalColor.blueInt = blueIntSld->GetValue();
-    gaussianFractalColor.redMean = redMeanSld->GetValue(); gaussianFractalColor.greenMean = greenMeanSld->GetValue(); gaussianFractalColor.blueMean = blueMeanSld->GetValue();
-    gaussianFractalColor.redStdDev = redStdDevSld->GetValue(); gaussianFractalColor.greenStdDev = greenStdDevSld->GetValue(); gaussianFractalColor.blueStdDev = blueStdDevSld->GetValue();
-
-    gaussianFractalColor.SetStyle(static_cast<GaussianColorStyles>(gaussianStylesChoice->GetCurrentSelection()));
-    int paletteSize = gaussianFractalColor.paletteSize;
-    redMeanSld->SetRange(0, paletteSize);
-    greenMeanSld->SetRange(0, paletteSize);
-    blueMeanSld->SetRange(0, paletteSize);
-    colorVarSlider->SetRange(0, paletteSize);
-    pSizeSpin->SetValue(paletteSize);
-    target->SetPaletteSize(paletteSize);
-    target->SetGaussianColorStyle(static_cast<GaussianColorStyles>(gaussianStylesChoice->GetCurrentSelection()));
-
-    // Red
-    // Intensity
-    wxString text;
-    target->SetGaussianColorIntensity(gaussianFractalColor.redInt, Color::Red);
-    redIntSld->SetValue(gaussianFractalColor.redInt);
-    text = wxT("Intensity: ");
-    text += num_to_string(gaussianFractalColor.redInt);
-    redIntText->SetLabel(text);
-
-    // Mean
-    target->SetGaussianColorMean(gaussianFractalColor.redMean, Color::Red);
-    redMeanSld->SetValue(gaussianFractalColor.redMean);
-    text = wxT("Position: ");
-    text += num_to_string(gaussianFractalColor.redMean);
-    redMeanText->SetLabel(text);
-
-    // Standard deviation
-    target->SetGaussianColorStdDev(gaussianFractalColor.redStdDev, Color::Red);
-    redStdDevSld->SetValue(gaussianFractalColor.redStdDev);
-    text = wxT("Standard deviation: ");
-    text += num_to_string(gaussianFractalColor.redStdDev);
-    redStdDevText->SetLabel(text);
-
-
-    // Green
-    // Intensity
-    target->SetGaussianColorIntensity(gaussianFractalColor.greenInt, Color::Green);
-    greenIntSld->SetValue(gaussianFractalColor.greenInt);
-    text = wxT("Intensity: ");
-    text += num_to_string(gaussianFractalColor.greenInt);
-    greenIntText->SetLabel(text);
-
-    // Mean
-    target->SetGaussianColorMean(gaussianFractalColor.greenMean, Color::Green);
-    greenMeanSld->SetValue(gaussianFractalColor.greenMean);
-    text = wxT("Position: ");
-    text += num_to_string(gaussianFractalColor.greenMean);
-    greenMeanText->SetLabel(text);
-
-    // Standard deviation
-    target->SetGaussianColorStdDev(gaussianFractalColor.greenStdDev, Color::Green);
-    greenStdDevSld->SetValue(gaussianFractalColor.greenStdDev);
-    text = wxT("Standard deviation: ");
-    text += num_to_string(gaussianFractalColor.greenStdDev);
-    greenStdDevText->SetLabel(text);
-
-    // Blue
-    // Intensity
-    target->SetGaussianColorIntensity(gaussianFractalColor.blueInt, Color::Blue);
-    blueIntSld->SetValue(gaussianFractalColor.blueInt);
-    text = wxT("Intensity: ");
-    text += num_to_string(gaussianFractalColor.blueInt);
-    blueIntText->SetLabel(text);
-
-    // Mean
-    target->SetGaussianColorMean(gaussianFractalColor.blueMean, Color::Blue);
-    blueMeanSld->SetValue(gaussianFractalColor.blueMean);
-    text = wxT("Position: ");
-    text += num_to_string(gaussianFractalColor.blueMean);
-    blueMeanText->SetLabel(text);
-
-    // Standard deviation
-    target->SetGaussianColorStdDev(gaussianFractalColor.blueStdDev, Color::Blue);
-    blueStdDevSld->SetValue(gaussianFractalColor.blueStdDev);
-    text = wxT("Standard deviation: ");
-    text += num_to_string(gaussianFractalColor.blueStdDev);
-    blueStdDevText->SetLabel(text);
 }
 void ColorFrame::GradientColorChangeSelection( wxCommandEvent& event )
 {
@@ -1115,15 +567,6 @@ void ColorFrame::OnSetBlue(wxScrollEvent& event)
     text += num_to_string(value);
     blueSetText->SetLabel(wxString(text));
 }
-void ColorFrame::OnPaletteSize(wxSpinEvent& event)
-{
-    int size = pSizeSpin->GetValue();
-    redMeanSld->SetRange(0, size);
-    greenMeanSld->SetRange(0, size);
-    blueMeanSld->SetRange(0, size);
-    colorVarSlider->SetRange(0,size);
-    target->SetPaletteSize(size);
-}
 void ColorFrame::OnClose(wxCloseEvent& event)
 {
     *active = false;
@@ -1154,20 +597,6 @@ wxBitmap ColorFrame::PaintGradient()
     }
     dc.SelectObject(wxNullBitmap);
     return *gradientBmp;
-}
-void ColorFrame::OnPageChange(wxNotebookEvent& event)
-{
-    // On Linux when the wxNotebook is destroyed it sends a event.
-    if(*active)
-    {
-        if(event.GetSelection() == 0)
-            target->SetPaletteMode(ColorMode::Gradient);
-        else
-            target->SetPaletteMode(ColorMode::Gaussian);
-
-        typeNotebook->ChangeSelection(event.GetSelection());
-        colorVarSlider->SetRange(0, target->GetPaletteSize());
-    }
 }
 void ColorFrame::OnGradPaletteSize(wxSpinEvent& event)
 {

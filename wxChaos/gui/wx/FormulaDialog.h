@@ -52,7 +52,6 @@ class FormulaDialog : public wxDialog
     wxButton* funcButton;
     wxChoice* typeChoice;
     FractalCanvas* fCanvas;
-    GaussianColorStyles* colorStyle;
     wxWindow* parent;
 
     wxMenuItem* slider;
@@ -67,7 +66,7 @@ class FormulaDialog : public wxDialog
     void OnChoice(wxCommandEvent& event);
 
 public:
-    FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GaussianColorStyles* mColorStyle, wxMenuItem* juliaSlider, 
+    FormulaDialog(int _userDefinedID, int _FPuserDefinedID, wxMenuItem* juliaSlider,
                   wxMenuItem* juliaManual, bool* Active, FractalCanvas* _fCanvas, wxWindow* _parent,
                   wxWindowID id = wxID_ANY, const wxString& title = wxT("User formula"), const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);

@@ -82,12 +82,10 @@ enum IDS
 
 struct ConfigParserOpt
 {
-    ColorMode mode;
     FractalType type;
     int maxIterations;
     int paletteSize;
     std::string colorStyleGrad;
-    GaussianColorStyles colorStyleGaussian;
     bool constantWindow, commandConsole, juliaMode;
     bool colorPaletteWindow, colorFractal, colorSet;
     bool firstUse;
@@ -168,7 +166,6 @@ class MainFrame : public wxFrame
     std::vector<wxCheckBox*> checkBoxes;
 
     // Configuration.
-    GaussianColorStyles colorStyle;
     FractalType fractalType;
     ConfigParserOpt opt;
 

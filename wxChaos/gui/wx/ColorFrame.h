@@ -49,29 +49,6 @@ class ColorFrame : public wxFrame
     wxStaticText* gradStylesLabel;
     wxChoice* gradStylesChoice;
     wxButton* gradButton;
-    wxPanel* stdPanel;
-    wxStaticText* stylesLabel;
-    wxChoice* gaussianStylesChoice;
-    wxStaticText* pSizeText;
-    wxSpinCtrl* pSizeSpin;
-    wxStaticText* redIntText;
-    wxSlider* redIntSld;
-    wxStaticText* redMeanText;
-    wxSlider* redMeanSld;
-    wxStaticText* redStdDevText;
-    wxSlider* redStdDevSld;
-    wxStaticText* greenIntText;
-    wxSlider* greenIntSld;
-    wxStaticText* greenMeanText;
-    wxSlider* greenMeanSld;
-    wxStaticText* greenStdDevText;
-    wxSlider* greenStdDevSld;
-    wxStaticText* blueIntText;
-    wxSlider* blueIntSld;
-    wxStaticText* blueMeanText;
-    wxSlider* blueMeanSld;
-    wxStaticText* blueStdDevText;
-    wxSlider* blueStdDevSld;
     wxStaticBitmap* gradientMap;
     wxStaticText* gradPalText;
     wxSpinCtrl* gradPalSize;
@@ -81,7 +58,6 @@ class ColorFrame : public wxFrame
     Fractal* target;                               ///< Target fractal.
     bool* active;                                  ///< Used to communicate with the MainFrame.
     sf::Color setColor;                            ///< Color of the fractal set.
-    GaussianColorPalette gaussianFractalColor;     ///< Color in Gaussian color mode.
     GradientColorPalette gradFractalColor;         ///< Color in Grad color mode.
     int escapeTimeIndex, gaussIntIndex, buddhabrotIndex;
     int escapeAngleIndex, triangleIneqIndex, chaoticMapIndex;
@@ -90,7 +66,6 @@ class ColorFrame : public wxFrame
     void OnClose(wxCloseEvent& event);
     void OnChangeAlgorithm(wxCommandEvent& event);
     void OnRelativeColor(wxCommandEvent& event);
-    void OnPageChange(wxNotebookEvent& event);
     void OnColorFractal(wxCommandEvent& event);
     void OnColorSet(wxCommandEvent& event);
     void OnOrbitTrap(wxCommandEvent& event);
@@ -100,18 +75,7 @@ class ColorFrame : public wxFrame
     void OnSetBlue(wxScrollEvent& event);
     void OnOk(wxCommandEvent& event);
     void OnGrad(wxCommandEvent& event);
-    void GaussianColorChangeSelection(wxCommandEvent& event);
     void GradientColorChangeSelection(wxCommandEvent& event);
-    void OnPaletteSize(wxSpinEvent& event);
-    void ChangeRedIntensity(wxScrollEvent& event);
-    void ChangeRedMean(wxScrollEvent& event);
-    void ChangeRedStdDev(wxScrollEvent& event);
-    void ChangeGreenIntensity(wxScrollEvent& event);
-    void ChangeGreenMean(wxScrollEvent& event);
-    void ChangeGreenStdDev(wxScrollEvent& event);
-    void ChangeBlueIntensity(wxScrollEvent& event);
-    void ChangeBlueMean(wxScrollEvent& event);
-    void ChangeBlueStdDev(wxScrollEvent& event);
     void OnGradPaletteSize(wxSpinEvent& event);
     void OnColorVar(wxScrollEvent& event);
 
