@@ -12,44 +12,15 @@ using namespace std;
 */
 class ZoomRenderer : public wxThread
 {
-private:
     FractalCanvas* fractalCanvasPtr;
     int currentFrame;
     int totalFrames;
     int width, height;
     double zoomSpeed, colorSpeed;
     string filepath;
-public:
-    ZoomRenderer(string p_filepath, FractalCanvas* p_fcanvas, int p_width, int p_height, int p_total_frames,
-        double p_zoom_speed, double p_color_speed)
-    {
-        filepath = p_filepath;
-        fractalCanvasPtr = p_fcanvas;
-        currentFrame = 0;
-        totalFrames = p_total_frames;
-        width = p_width;
-        height = p_height;
-        zoomSpeed = p_zoom_speed;
-        colorSpeed = p_color_speed;
-    }
 
-    string FixedLengthToString(const int i, const int length)
-    {
-        ostringstream ostr;
-        if (i < 0)
-            ostr << '-';
-
-        ostr << setfill('0') << setw(length) << (i < 0 ? -i : i);
-        return ostr.str();
-    }
-
-    int GetProgress()
-    {
-        return currentFrame;
-    }
-
-    ExitCode Entry()
-    {
+protected:
+    ExitCode Entry() override {
         // Create and set-up fractal handler
         FractalHandler fractalHandler;
         Rect outermostZoom, innermostZoom;
@@ -84,7 +55,7 @@ public:
 
         for (currentFrame = 0; currentFrame < totalFrames; currentFrame++)
         {
-            double t = static_cast<double>(currentFrame);
+            double t = currentFrame;
             Rect viewport;
             viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeed * t / totalFrames)) * (innermostLo - outermostLo));
             viewport.SetHigherBound(outermostHi - (1 - exp(-zoomSpeed * t / totalFrames)) * (outermostHi - innermostHi));
@@ -99,6 +70,8 @@ public:
             sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
             string filename = "frame_" + FixedLengthToString(currentFrame, outputFileDigits) + ".jpg";
             string fullPath = FileNameJoin({ filepath, filename });
+
+            // ReSharper disable once CppExpressionWithoutSideEffects
             out.saveToFile(fullPath);
         }
 
@@ -112,7 +85,35 @@ public:
 
         system(renderVideoCommand.c_str());
 
-        return 0;
+        return nullptr;
+    }
+
+public:
+    ZoomRenderer(string p_filepath, FractalCanvas* p_fcanvas, int p_width, int p_height, int p_total_frames,
+        double p_zoom_speed, double p_color_speed)
+    {
+        filepath = p_filepath;
+        fractalCanvasPtr = p_fcanvas;
+        currentFrame = 0;
+        totalFrames = p_total_frames;
+        width = p_width;
+        height = p_height;
+        zoomSpeed = p_zoom_speed;
+        colorSpeed = p_color_speed;
+    }
+
+    static string FixedLengthToString(const int i, const int length)
+    {
+        ostringstream ostr;
+        if (i < 0)
+            ostr << '-';
+
+        ostr << setfill('0') << setw(length) << (i < 0 ? -i : i);
+        return ostr.str();
+    }
+
+    int GetProgress() const {
+        return currentFrame;
     }
 };
 
@@ -238,7 +239,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     mainSizer->Add(panel, 1, wxEXPAND | wxALL, 1);
 
     this->SetSizer(mainSizer);
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
     // Connect Events
@@ -310,17 +311,17 @@ void ZoomRecorder::CreateFractalHandler()
     // Copy parameters.
     fractalHandler.GetFractalPtr()->SetOptions(fractalOptions);
 }
-void ZoomRecorder::RenderPreview(int zoom, int zoomSpeed, double colorSpeed)
+void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const double colorSpeed)
 {
     const double totalFrames = this->CalculateTotalFrames();
-    const double zoomSpeedFloat = static_cast<double>(zoomSpeed);
+    const double zoomSpeedFloat = zoomSpeed;
 
     Vector2Double outermostLo = outermostZoom.GetLowerBound();
     Vector2Double outermostHi = outermostZoom.GetHigherBound();
     Vector2Double innermostLo = innermostZoom.GetLowerBound();
     Vector2Double innermostHi = innermostZoom.GetHigherBound();
 
-    double t = static_cast<double>(zoom);
+    const double t = zoom;
     Rect viewport;
     viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (innermostLo - outermostLo));
     viewport.SetHigherBound(outermostHi - (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (outermostHi - innermostHi));
@@ -389,7 +390,7 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent& event)
     // wxString::mb_str() returns a wxCharBuffer which cannot be implicitly
     // converted to std::string on GCC.  Explicitly construct the std::string
     // from the buffer.
-    std::string selectedDirPath(selectedFile.mb_str());
+    const std::string selectedDirPath(selectedFile.mb_str());
 
     wxProgressDialog progressDialog(wxT("Generating video..."), wxT("Please wait until the process is complete."), totalFrames, this);
     ZoomRenderer* renderer = new ZoomRenderer(selectedDirPath, fractalCanvasPtr, 2500, 1660, totalFrames, zoomSpeed, colorSpeed);
