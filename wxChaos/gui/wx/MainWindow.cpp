@@ -755,6 +755,23 @@ void MainFrame::OnScriptEditor(wxCommandEvent& event)
 }
 void MainFrame::OnZoomRecorder(wxCommandEvent& event)
 {
+    Fractal* fractal = fractalCanvas->GetFractalPtr();
+    const Rect outermostZoom = fractal->GetOutermostZoom();
+    const Rect currentZoom = fractal->GetCurrentZoom();
+
+    if (outermostZoom.left == currentZoom.left &&
+        outermostZoom.right == currentZoom.right &&
+        outermostZoom.bottom == currentZoom.bottom &&
+        outermostZoom.top == currentZoom.top)
+    {
+        wxMessageBox(
+            wxT("To use the zoom recorder you need to first perform a zoom on the main window."),
+            wxT("Zoom recorder"),
+            wxOK | wxICON_INFORMATION,
+            this);
+        return;
+    }
+
     this->SetSize(wxSize(700, 538));
     this->Layout();
     this->Update();
