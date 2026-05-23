@@ -9,7 +9,7 @@
 using namespace std;
 
 const int stdSpeed = 1;
-const GradientColorStyles defaultGradientStyle = Retro;
+const ColorPalettes defaultGradientStyle = Retro;
 const wxString defaultGradientString = wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);");
 
 
@@ -723,17 +723,17 @@ void Fractal::Move()
     if (rendered)
     {
         // If any movement button is pressed move the image and accelerate the movement.
-        if (movement[Direction::Left])
+        if (movement[Left])
             xVel += stdSpeed;
-        if (movement[Direction::Right])
+        if (movement[Right])
             xVel -= stdSpeed;
-        if (movement[Direction::Up])
+        if (movement[Up])
             yVel += stdSpeed;
-        if (movement[Direction::Down])
+        if (movement[Down])
             yVel -= stdSpeed;
 
         // If isn't pressed slow down the image.
-        if (!movement[Direction::Left] && !movement[Direction::Right] && !movement[Direction::Up] && !movement[Direction::Down])
+        if (!movement[Left] && !movement[Right] && !movement[Up] && !movement[Down])
         {
             if (xVel > 0) xVel -= stdSpeed;
             if (xVel < 0) xVel += stdSpeed;
@@ -1352,28 +1352,28 @@ void Fractal::SetMovement(Direction dir)
 {
     switch (dir)
     {
-    case Direction::Up:
+    case Up:
     {
         yVel -= stdSpeed;
-        movement[Direction::Up] = true;
+        movement[Up] = true;
         break;
     }
-    case Direction::Down:
+    case Down:
     {
         yVel += stdSpeed;
-        movement[Direction::Down] = true;
+        movement[Down] = true;
         break;
     }
-    case Direction::Left:
+    case Left:
     {
         xVel -= stdSpeed;
-        movement[Direction::Left] = true;
+        movement[Left] = true;
         break;
     }
-    case Direction::Right:
+    case Right:
     {
         xVel += stdSpeed;
-        movement[Direction::Right] = true;
+        movement[Right] = true;
         break;
     }
     default: break;
@@ -1383,24 +1383,24 @@ void Fractal::ReleaseMovement(Direction dir)
 {
     switch (dir)
     {
-    case Direction::Up:
+    case Up:
     {
-        movement[Direction::Up] = false;
+        movement[Up] = false;
         break;
     }
-    case Direction::Down:
+    case Down:
     {
-        movement[Direction::Down] = false;
+        movement[Down] = false;
         break;
     }
-    case Direction::Left:
+    case Left:
     {
-        movement[Direction::Left] = false;
+        movement[Left] = false;
         break;
     }
-    case Direction::Right:
+    case Right:
     {
-        movement[Direction::Right] = false;
+        movement[Right] = false;
         break;
     }
     default: break;
@@ -1410,9 +1410,6 @@ void Fractal::ReleaseMovement(Direction dir)
 // Save image.
 sf::Image Fractal::GetRenderedImage()
 {
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
-#endif
     onSnapshot = true;
     waitRoutine = true;
     if (!rendered)
@@ -1465,9 +1462,6 @@ sf::Image Fractal::GetRenderedImage()
 
     onSnapshot = false;
     waitRoutine = false;
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-#endif
     return image;
 }
 wxBitmap Fractal::GetRenderedWxBitmap()
@@ -1491,9 +1485,6 @@ wxBitmap Fractal::GetRenderedWxBitmap()
 }
 void Fractal::RenderBMP(string filename)
 {
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
-#endif
     waitRoutine = true;
     onSnapshot = true;
     BMPWriter writer(filename.c_str(), screenWidth, screenHeight);
@@ -1560,21 +1551,17 @@ void Fractal::RenderBMP(string filename)
     }
     writer.CloseBMP();
     delete[] data;
-
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-#endif
 }
 void Fractal::PrepareSnapshot(bool mode)
 {
     onSnapshot = mode;
 }
 
-void Fractal::SetGradStyle(GradientColorStyles _gradStyle)
+void Fractal::SetColorPalette(ColorPalettes _gradStyle)
 {
     gradStyle = _gradStyle;
 }
-GradientColorStyles Fractal::GetGradStyle()
+ColorPalettes Fractal::GetColorPalette()
 {
     return gradStyle;
 }
@@ -1710,15 +1697,15 @@ sf::Color Fractal::GetSetColor()
 {
     return fSetColor;
 }
-bool Fractal::GetExtColorMode()
+bool Fractal::GetExteriorColorMode()
 {
     return colorMode;
 }
-bool Fractal::GetSetColorMode()
+bool Fractal::GetInteriorColorMode()
 {
     return colorSet;
 }
-sf::Color Fractal::CalcColor(int colorNum)
+sf::Color Fractal::CalcColor(int colorNum) const
 {
     if (colorNum <= 0)
         colorNum = 0;

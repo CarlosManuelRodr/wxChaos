@@ -79,8 +79,8 @@ class FractalCanvas : public wxSFMLCanvas
     double prevKReal;
     double prevKImag;
     bool pointerChange;                    ///< If there is a change in the pointer this one is activated.
-    bool keybGuide;                        ///< State of the keyboard guide.
-    bool keybGuideMode;
+    bool keyboardGuide;                        ///< State of the keyboard guide.
+    bool keyboardGuideMode;
     bool helpImageMode;
     bool orbitMode;
     bool sliderMode;

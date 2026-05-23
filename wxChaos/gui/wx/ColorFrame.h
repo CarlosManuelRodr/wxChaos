@@ -15,7 +15,7 @@
 #include <wx/spinctrl.h>
 #include <wx/notebook.h>
 #include <SFML/Graphics/Color.hpp>
-#include "Styles.h"
+#include "ColorPalettes.h"
 #include "gradientdlg.h"
 #include "Fractal.h"
 
@@ -58,7 +58,7 @@ class ColorFrame : public wxFrame
     Fractal* target;                               ///< Target fractal.
     bool* active;                                  ///< Used to communicate with the MainFrame.
     sf::Color setColor;                            ///< Color of the fractal set.
-    GradientColorPalette gradFractalColor;         ///< Color in Grad color mode.
+    ColorPalette gradFractalColor;         ///< Color in Grad color mode.
     int escapeTimeIndex, gaussIntIndex, buddhabrotIndex;
     int escapeAngleIndex, triangleIneqIndex, chaoticMapIndex;
     int lyapunovIndex, convergenceTestIndex;

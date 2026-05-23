@@ -3,7 +3,7 @@
 #define RENDER_FRACTAL_H
 
 #include <complex>
-#include "Styles.h"
+#include "ColorPalettes.h"
 #include "wx/gradient.h"
 #include "../gui/sfml/FractalGUI.h"
 #include <mpParser.h>

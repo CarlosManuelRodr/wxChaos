@@ -12,7 +12,7 @@
 #pragma once
 #ifndef _configParser
 #define _configParser
-#include "Styles.h"
+#include "ColorPalettes.h"
 #include <vector>
 
 /**

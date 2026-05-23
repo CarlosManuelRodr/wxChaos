@@ -24,8 +24,8 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     kReal = 0;
     kImaginary = 0;
     pointerChange = false;
-    keybGuide = false;
-    keybGuideMode = false;
+    keyboardGuide = false;
+    keyboardGuideMode = false;
     helpImageMode = false;
     orbitMode = false;
     sliderMode = false;
@@ -104,7 +104,7 @@ void FractalCanvas::OnUpdate()
             if (screenPointer != nullptr)
                 screenPointer->Resize(this);
 
-            if (keybGuide && keybGuideMode)
+            if (keyboardGuide && keyboardGuideMode)
             {
                 if (this->getSize().y > 300 || this->getSize().x > 300)
                 {
@@ -220,7 +220,7 @@ void FractalCanvas::OnUpdate()
                 btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
         }
 
-        if (keybGuide && keybGuideMode)
+        if (keyboardGuide && keyboardGuideMode)
         {
             this->draw(outKeyboard);
             this->draw(outMouse);
@@ -228,7 +228,7 @@ void FractalCanvas::OnUpdate()
         if (helpImageMode)
         {
             this->draw(outHelp);
-            if (!keybGuide)
+            if (!keyboardGuide)
                 this->draw(outKeyboard);
         }
 
@@ -258,16 +258,16 @@ void FractalCanvas::SetWxSize(wxSize size)
     wSize = size;
 
     // Adjust position of the keyboard guide.
-    if (keybGuideMode)
+    if (keyboardGuideMode)
     {
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
             outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
             outMouse.setPosition(this->getSize().x - 90, 0);
-            keybGuide = true;
+            keyboardGuide = true;
         }
         else
-            keybGuide = false;
+            keyboardGuide = false;
     }
     if (helpImageMode)
     {
@@ -383,21 +383,21 @@ void FractalCanvas::ChangeToScript(ScriptData _scriptData)
 }
 void FractalCanvas::SetKeybGuide(bool mode)
 {
-    keybGuideMode = mode;
-    if (keybGuideMode)
+    keyboardGuideMode = mode;
+    if (keyboardGuideMode)
     {
         // Adjust position of the keyboard guide.
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
             outKeyboard.setPosition(this->getSize().x - keyboardImage.getSize().x, this->getSize().y - keyboardImage.getSize().y);
             outMouse.setPosition(this->getSize().x - mouseImage.getSize().x, 0);
-            keybGuide = true;
+            keyboardGuide = true;
         }
         else
-            keybGuide = false;
+            keyboardGuide = false;
     }
     else
-        keybGuide = false;
+        keyboardGuide = false;
 }
 void FractalCanvas::ShowHelpImage()
 {
@@ -482,16 +482,16 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
     wSize = event.GetSize();
 
     // Adjust position of the keyboard guide.
-    if (keybGuideMode)
+    if (keyboardGuideMode)
     {
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
             outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
             outMouse.setPosition(this->getSize().x - 90, 0);
-            keybGuide = true;
+            keyboardGuide = true;
         }
         else
-            keybGuide = false;
+            keyboardGuide = false;
     }
     if (helpImageMode)
     {

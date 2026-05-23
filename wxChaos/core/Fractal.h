@@ -2,9 +2,9 @@
 #ifndef FRACTAL_H
 #define FRACTAL_H
 #include <vector>
-#include "Styles.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include "wx/gradient.h"
-#include "../gui/sfml/FractalGUI.h"
 #include "types/FractalType.h"
 #include "types/RenderingAlgorithm.h"
 #include "types/ColorMode.h"
@@ -14,12 +14,12 @@
 #include "geometry/Vector2Int.h"
 #include "geometry/Vector2Double.h"
 #include "geometry/Rect.h"
+#include "../gui/sfml/FractalGUI.h"
+#include "ColorPalettes.h"
 #include "Options.h"
 #include "FormulaOpt.h"
 #include "RenderFractal.h"
 #include "ThreadWatchdog.h"
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
 
 /**
 * @class Fractal
@@ -49,7 +49,7 @@ protected:
     FormulaOpt userFormula;         ///< Formula specified by the user.
 
     // System.
-    unsigned int threadNumber;      ///< Number of threads. By default is the same as the number of cores in the system.
+    unsigned int threadNumber;      ///< Number of threads. By default, is the same as the number of cores in the system.
 
     // Julia variables.
     double kReal;
@@ -94,7 +94,7 @@ protected:
     bool relativeColor;
     bool colorSet;                                ///< Activates internal coloring.
     bool colorMode;                               ///< Activates external coloring.
-    GradientColorStyles gradStyle;                ///< Grad color palette to be used.
+    ColorPalettes gradStyle;                ///< Grad color palette to be used.
     int paletteSize;
     int gradPaletteSize;
     int varGradientStep;
@@ -146,7 +146,7 @@ protected:
     sf::Sprite outGeom;
 
     // Effect variables.
-    bool hasOrbitTrap;                ///< False by default. Activate it if the derived class has a orbit trap routine.
+    bool hasOrbitTrap;                ///< False by default. Activate it if the derived class has an orbit trap routine.
     bool orbitTrapMode;
     bool hasSmoothRender;
     bool smoothRender;
@@ -161,7 +161,7 @@ protected:
     ///@brief Looks into the color palette for the corresponding color.
     ///@param colorNum Color parameter.
     ///@return A struct with the color.
-    sf::Color CalcColor(int colorNum);
+    sf::Color CalcColor(int colorNum) const;
 
     ///@brief Rebuilds the color palette in the colorPaletteMode.
     void RebuildPalette();
@@ -195,7 +195,7 @@ public:
     ///@param Window Window to draw the fractal.
     Fractal(sf::RenderWindow* Window);
 
-    ~Fractal();
+    virtual ~Fractal();
 
     ///@brief Draws the fractal into the screen.
     ///@param Window Window to draw the fractal.
@@ -322,8 +322,8 @@ public:
     void PrepareSnapshot(bool mode);
 
     // Color styles.
-    void SetGradStyle(GradientColorStyles _gradStyle);
-    GradientColorStyles GetGradStyle();
+    void SetColorPalette(ColorPalettes _gradStyle);
+    ColorPalettes GetColorPalette();
 
     // Color operations.
     sf::Color GetSetColor();
@@ -332,8 +332,8 @@ public:
     void SetExtColorMode(bool mode);
     void SetFractalSetColorMode(bool mode);
     void SetFractalSetColor(sf::Color color);
-    bool GetExtColorMode();
-    bool GetSetColorMode();
+    bool GetExteriorColorMode();
+    bool GetInteriorColorMode();
     void ChangeVarGradient();
     void SetPaletteSize(int size);
     int GetPaletteSize();
@@ -380,10 +380,10 @@ public:
     PanelOptions* GetOptPanel();
 };
 
-template<class MT> inline void Fractal::TRender(MT* myRender)
+template<class MT> void Fractal::TRender(MT* myRender)
 {
     watchdog.Reset();
-    // If the image has been moved divides the rendering area so threads will draw the missing part.
+    // If the image has been moved, divides the rendering area so threads will draw the missing part.
     if (xMoved != 0 || yMoved != 0)
     {
         if (xMoved && yMoved)
