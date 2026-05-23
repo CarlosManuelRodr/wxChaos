@@ -15,6 +15,7 @@
 
 #include "FractalHandler.h"
 #include "../gui/wx/wxSFMLCanvas.h"
+#include "../gui/sfml/SFMLFractal.h"
 #include "../gui/sfml/ScreenPointer.h"
 
 /**
@@ -50,6 +51,7 @@ class FractalCanvas : public wxSFMLCanvas
 {
     // Fractal
     FractalHandler fractalHandler;
+    SFMLFractal sfmlFractal;
     SelectRect* selection;
     ButtonChange* play;
     ScreenPointer* screenPointer;

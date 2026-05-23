@@ -2,6 +2,7 @@
 #ifndef FRACTAL_H
 #define FRACTAL_H
 #include <vector>
+#include <wx/bitmap.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "wx/gradient.h"
@@ -14,12 +15,14 @@
 #include "geometry/Vector2Int.h"
 #include "geometry/Vector2Double.h"
 #include "geometry/Rect.h"
-#include "../gui/sfml/FractalGUI.h"
+#include "../gui/wx/PanelOptions.h"
 #include "ColorPalettes.h"
 #include "Options.h"
 #include "FormulaOpt.h"
 #include "RenderFractal.h"
 #include "ThreadWatchdog.h"
+
+class SFMLFractal;
 
 /**
 * @class Fractal
@@ -30,6 +33,8 @@
 */
 class Fractal
 {
+    friend class SFMLFractal;
+
 protected:
     bool** setMap;                             ///< Stores the points that belong to the fractal set.
     int** colorMap;                            ///< Store the color map.
@@ -64,9 +69,6 @@ protected:
     sf::Texture texture;
     sf::Sprite output;              ///< Sprite to draw the output image.
     std::vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
-    sf::Font font;
-    sf::Text text;
-    wxString tempText;
     sf::Image tempImage;            ///< Temporary image. Shows low res image while renering.
     sf::Texture tempTexture;
     sf::Sprite tempSprite;          ///< tempImage sprite.
@@ -166,9 +168,6 @@ protected:
     ///@brief Rebuilds the color palette in the colorPaletteMode.
     void RebuildPalette();
 
-    ///@brief Draws the maps into the screen.
-    void DrawMaps(sf::RenderWindow* Window);
-
     ///@brief If some minor change was made like a color adjustement redraws the maps.
     void RedrawMaps();
 
@@ -176,8 +175,6 @@ protected:
     ///@brief Draws a simple line. Used in orbit mode.
     void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
     void DrawCircle(double x_center, double y_center, double radius, sf::Color color = sf::Color(0, 0, 0));
-    void DrawGeom(sf::RenderWindow* Window);
-
     ///@brief By default it doesn't do anything. Has to be overriden in derived class.
     virtual void DrawOrbit() {}
 
@@ -197,14 +194,6 @@ public:
 
     virtual ~Fractal();
 
-    ///@brief Draws the fractal into the screen.
-    ///@param Window Window to draw the fractal.
-    void Show(sf::RenderWindow* Window);
-
-    ///@brief Resizes the fractal.
-    ///@param Window Window to draw the fractal.
-    void Resize(sf::RenderWindow* Window);
-
     ///@brief SetAreaOfView to specified size.
     ///@param width New width.
     ///@param height New height.
@@ -222,7 +211,6 @@ public:
     void SetAreaOfView(Rect worldCoordinates);
 
     void Move();                ///< Moves the fractal image.
-    void MoveKeyboard();
     void ZoomBack();            ///< Does a zoomback in the selection area.
     void DeleteSavedZooms();    ///< If some image property image has changed deletes saved zoom images.
     void Redraw();              ///< Redraws the fractal.
@@ -252,7 +240,6 @@ public:
     virtual void PreDrawMaps();                              ///< Perform necessary operations before drawing the maps.
     virtual void PostRender();                               ///< Perform necessary operations after the rendering is finished.
     virtual void PreRestartRender();                         ///< Perform necessary operations before restarting.
-    virtual void HandleEvents(sf::Event* Event);             ///< SFML event handler.
 
     ///@brief Verifies watchdog status.
     ///@return true if there is an active thread. false if not.

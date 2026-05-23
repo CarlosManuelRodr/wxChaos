@@ -39,7 +39,7 @@ void JuliaMode::Handle_Event()
         {
             sf::View View(sf::FloatRect(0, 0, (float)event.size.width, (float)event.size.height));
             window->setView(View);
-            juliaFractal.GetFractalPtr()->Resize(window);
+            sfmlFractal.Resize(window);
             play->Resize(window);
         }
 
@@ -110,7 +110,7 @@ void JuliaMode::Handle_Event()
             }
         }
 
-        juliaFractal.GetFractalPtr()->HandleEvents(&event);
+        sfmlFractal.HandleEvent(event);
     }
 
     if (target->ChangeInPointer())
@@ -121,7 +121,7 @@ void JuliaMode::Handle_Event()
     // Updates window.
     window->clear();
     juliaFractal.GetFractalPtr()->Move(); // Move no longer takes sf::Input
-    juliaFractal.GetFractalPtr()->Show(window);
+    sfmlFractal.Show(window);
     selection->Show(window);
     play->Show(window);
     window->display();
@@ -144,6 +144,7 @@ void JuliaMode::Run()
         window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     juliaFractal.CreateFractal(type, window);
+    sfmlFractal.SetFractal(juliaFractal.GetFractalPtr());
     juliaFractal.GetFractalPtr()->SetOptions(myJuliaOpt, true);
     juliaFractal.GetFractalPtr()->SetJuliaMode(true);
 

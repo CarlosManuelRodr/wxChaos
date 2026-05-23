@@ -40,6 +40,7 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     // Create fractal.
     fractalHandler.CreateFractal(fractType, this);
     target = fractalHandler.GetFractalPtr();
+    sfmlFractal.SetFractal(target);
 
     fractalHandler.SetFormula(userFormula);
     target->SetOnWxCtrl(true);
@@ -98,7 +99,7 @@ void FractalCanvas::OnUpdate()
             sf::Vector2i mousePos = sf::Mouse::getPosition(*this);
             // this->ConvertCoords(mousePos.x, mousePos.y); // Obsolete
 
-            target->Resize(this);
+            sfmlFractal.Resize(this);
             play->Resize(this);
 
             if (screenPointer != nullptr)
@@ -125,7 +126,7 @@ void FractalCanvas::OnUpdate()
             }
         }
 
-        target->HandleEvents(&event);
+        sfmlFractal.HandleEvent(event);
 
         // Keyboard event.
         if (event.type == sf::Event::KeyPressed)
@@ -201,7 +202,7 @@ void FractalCanvas::OnUpdate()
         target->SetK(kReal, kImaginary);
 
     target->Move();
-    target->Show(this);
+    sfmlFractal.Show(this);
 
     // Avoid drawing GUI elements if the fractal is rendering.
     if (!target->IsRendering())
@@ -336,6 +337,7 @@ void FractalCanvas::ChangeType(FractalType _type)
     fractalHandler.CreateFractal(_type, this);
     type = _type;
     target = fractalHandler.GetFractalPtr();
+    sfmlFractal.SetFractal(target);
     fractalHandler.SetFormula(userFormula);
     target->SetOnWxCtrl(true);
 
@@ -363,6 +365,7 @@ void FractalCanvas::ChangeToScript(ScriptData _scriptData)
     scriptData = _scriptData;
     fractalHandler.CreateScriptFractal(this, scriptData);
     target = fractalHandler.GetFractalPtr();
+    sfmlFractal.SetFractal(target);
     target->SetOnWxCtrl(true);
 
     // Deletes screen pointer if active.
@@ -417,6 +420,7 @@ void FractalCanvas::Reset()
         fractalHandler.CreateFractal(type, this);
 
     target = fractalHandler.GetFractalPtr();
+    sfmlFractal.SetFractal(target);
     fractalHandler.SetFormula(userFormula);
     target->SetOnWxCtrl(true);
     play->Reset();

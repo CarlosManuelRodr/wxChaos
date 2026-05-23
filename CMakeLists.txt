@@ -47,7 +47,7 @@ target_sources(angelscript PRIVATE
 # -------------------------------------------------------------------
 # Source Files (trimmed here for readability)
 # -------------------------------------------------------------------
-file(GLOB_RECURSE SRC_FILES
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
         wxChaos/core/*.cpp
         wxChaos/gui/*.cpp
         wxChaos/utils/*.cpp

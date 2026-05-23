@@ -23,6 +23,7 @@ class JuliaMode
     sf::RenderWindow* window;
     FractalCanvas* target;
     FractalHandler juliaFractal;
+    SFMLFractal sfmlFractal;
     SelectRect* selection;
     Options myJuliaOpt;
     ButtonChange* play;
