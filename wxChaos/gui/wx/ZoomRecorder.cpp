@@ -1,7 +1,15 @@
 #include <wx/progdlg.h>
+#include <wx/bitmap.h>
+#include <wx/artprov.h>
+#include <wx/icon.h>
+#include <wx/slider.h>
+#include <wx/statbox.h>
+#include <wx/button.h>
+#include <wx/stattext.h>
+#include <wx/image.h>
 #include <iomanip>
-#include "SFML/System.hpp"
 #include <cstdlib>
+#include "SFML/System.hpp"
 #include "ZoomRecorder.h"
 #include "Filesystem.h"
 using namespace std;
@@ -49,16 +57,16 @@ protected:
         // Render frames
         int outputFileDigits = int(log10(totalFrames) + 1);
         Vector2Double outermostLo = outermostZoom.GetLowerBound();
-        Vector2Double outermostHi = outermostZoom.GetHigherBound();
+        Vector2Double outermostHi = outermostZoom.GetUpperBound();
         Vector2Double innermostLo = innermostZoom.GetLowerBound();
-        Vector2Double innermostHi = innermostZoom.GetHigherBound();
+        Vector2Double innermostHi = innermostZoom.GetUpperBound();
 
         for (currentFrame = 0; currentFrame < totalFrames; currentFrame++)
         {
             double t = currentFrame;
             Rect viewport;
             viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeed * t / totalFrames)) * (innermostLo - outermostLo));
-            viewport.SetHigherBound(outermostHi - (1 - exp(-zoomSpeed * t / totalFrames)) * (outermostHi - innermostHi));
+            viewport.SetUpperBound(outermostHi - (1 - exp(-zoomSpeed * t / totalFrames)) * (outermostHi - innermostHi));
 
             fractalHandler.GetFractalPtr()->SetAreaOfView(viewport);
 
@@ -130,15 +138,15 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     // UI initialization
     this->SetSizeHints(wxSize(900, 680), wxSize(1400, 900));
 
-    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
-    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+    auto mainSizer = new wxBoxSizer(wxVERTICAL);
 
     panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* panelSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* previewAndButtonsSizer = new wxBoxSizer(wxVERTICAL);
-    wxStaticBoxSizer* previewSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Preview")), wxVERTICAL);
+    auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
+    auto previewAndButtonsSizer = new wxBoxSizer(wxVERTICAL);
+    auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Preview")), wxVERTICAL);
 
     previewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY,
         fractalHandler.GetFractalPtr()->GetRenderedWxBitmap(),
@@ -163,11 +171,6 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     cancelButton = new wxButton(panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);
     cancelButton->SetBitmap(wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR));
     buttonSizer->Add(cancelButton, 0, wxALL, 5);
-
-    // TODO: Implement help menu.
-    /*helpButton = new wxButton(panel, wxID_ANY, wxT("Instructions"), wxDefaultPosition, wxDefaultSize, 0);
-    helpButton->SetBitmap(wxArtProvider::GetBitmap(wxART_QUESTION, wxART_TOOLBAR));
-    buttonSizer->Add(helpButton, 0, wxALL, 5);*/
 
     previewAndButtonsSizer->Add(buttonSizer, 0, 0, 5);
     panelSizer->Add(previewAndButtonsSizer, 0, wxEXPAND, 5);
@@ -254,7 +257,6 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     previewSlider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
     saveButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnSaveVideo), NULL, this);
     cancelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnCancel), NULL, this);
-    //helpButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnShowInstructions), NULL, this);
     minutesSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
     secondsSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
     framerateSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
@@ -277,7 +279,6 @@ ZoomRecorder::~ZoomRecorder()
     previewSlider->Disconnect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
     saveButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnSaveVideo), NULL, this);
     cancelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnCancel), NULL, this);
-    //helpButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnShowInstructions), NULL, this);
     minutesSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
     secondsSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
     framerateSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
@@ -317,14 +318,14 @@ void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const doub
     const double zoomSpeedFloat = zoomSpeed;
 
     Vector2Double outermostLo = outermostZoom.GetLowerBound();
-    Vector2Double outermostHi = outermostZoom.GetHigherBound();
+    Vector2Double outermostHi = outermostZoom.GetUpperBound();
     Vector2Double innermostLo = innermostZoom.GetLowerBound();
-    Vector2Double innermostHi = innermostZoom.GetHigherBound();
+    Vector2Double innermostHi = innermostZoom.GetUpperBound();
 
     const double t = zoom;
     Rect viewport;
     viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (innermostLo - outermostLo));
-    viewport.SetHigherBound(outermostHi - (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (outermostHi - innermostHi));
+    viewport.SetUpperBound(outermostHi - (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (outermostHi - innermostHi));
 
     fractalHandler.GetFractalPtr()->SetAreaOfView(viewport);
 
@@ -366,7 +367,7 @@ void ZoomRecorder::OnScrollPreview(wxScrollEvent& event)
     else
         this->RenderPreview(event.GetPosition(), zoomSpeedCtrl->GetValue());
 }
-void ZoomRecorder::OnSaveVideo(wxCommandEvent& event)
+void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
 {
     // Select the output directory
     wxDirDialog* dirDialog = new wxDirDialog(this);
@@ -426,24 +427,24 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent& event)
     progressDialog.Show(false);
     this->EndModal(0);
 }
-void ZoomRecorder::OnCancel(wxCommandEvent& event)
+void ZoomRecorder::OnCancel(wxCommandEvent&)
 {
     fractalHandler.DeleteFractal();
     this->EndModal(0);
 }
-void ZoomRecorder::OnUpdateTotalFrames(wxSpinEvent& event)
+void ZoomRecorder::OnUpdateTotalFrames(wxSpinEvent&)
 {
     this->UpdateTotalFrames();
 }
-void ZoomRecorder::OnColorRotate(wxCommandEvent& event)
+void ZoomRecorder::OnColorRotate(wxCommandEvent&)
 {
     this->RenderPreview();
 }
-void ZoomRecorder::OnChangeSpeed(wxSpinEvent& event)
+void ZoomRecorder::OnChangeSpeed(wxSpinEvent&)
 {
     this->RenderPreview();
 }
-void ZoomRecorder::OnChangeSpeedDbl(wxSpinDoubleEvent& event)
+void ZoomRecorder::OnChangeSpeedDbl(wxSpinDoubleEvent&)
 {
     this->RenderPreview();
 }

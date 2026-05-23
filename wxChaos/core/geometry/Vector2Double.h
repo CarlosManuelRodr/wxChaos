@@ -4,17 +4,17 @@
 
 struct Vector2Double
 {
-    double x, y;
+    double _x, _y;
 
     Vector2Double();
-    Vector2Double(double _x, double _y);
-    Vector2Double(const Vector2Int& v);
+    Vector2Double(double x, double y);
+    explicit Vector2Double(const Vector2Int& v);
 
     Vector2Double operator-() const;
     Vector2Double& operator+=(const Vector2Double& v);
 
-    Vector2Double& operator*=(const double t);
-    Vector2Double& operator/=(const double t);
+    Vector2Double& operator*=(double t);
+    Vector2Double& operator/=(double t);
 
     double Length() const;
     double SquaredLength() const;
@@ -22,19 +22,19 @@ struct Vector2Double
 
 inline Vector2Double operator+(const Vector2Double& u, const Vector2Double& v)
 {
-    return Vector2Double(u.x + v.x, u.y + v.y);
+    return Vector2Double(u._x + v._x, u._y + v._y);
 }
 inline Vector2Double operator-(const Vector2Double& u, const Vector2Double& v)
 {
-    return Vector2Double(u.x - v.x, u.y - v.y);
+    return Vector2Double(u._x - v._x, u._y - v._y);
 }
 inline Vector2Double operator*(const Vector2Double& u, const Vector2Double& v)
 {
-    return Vector2Double(u.x * v.x, u.y * v.y);
+    return Vector2Double(u._x * v._x, u._y * v._y);
 }
 inline Vector2Double operator*(double t, const Vector2Double& v)
 {
-    return Vector2Double(t * v.x, t * v.y);
+    return Vector2Double(t * v._x, t * v._y);
 }
 inline Vector2Double operator*(const Vector2Double& v, double t)
 {

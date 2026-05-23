@@ -3,12 +3,12 @@
 
 struct Rect
 {
-    double left, bottom, right, top;
+    double _left, _bottom, _right, _top;
 
     Rect();
-    Rect(double _left, double _bottom, double _right, double _top);
-    Vector2Double GetLowerBound();
-    Vector2Double GetHigherBound();
+    Rect(double left, double bottom, double right, double top);
+    Vector2Double GetLowerBound() const;
+    Vector2Double GetUpperBound() const;
     void SetLowerBound(Vector2Double lb);
-    void SetHigherBound(Vector2Double hb);
+    void SetUpperBound(Vector2Double hb);
 };

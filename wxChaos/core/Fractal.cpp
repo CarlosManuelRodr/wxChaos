@@ -1,15 +1,15 @@
 #include <sstream>
-#include <cmath>
+#include <complex>
+#include <mpParser.h>
 #include "Fractal.h"
 #include "BmpWriter.h"
 #include "StringFuncs.h"
 #include "Filesystem.h"
-#include "global.h"
 #include "SystemUtils.h"
 using namespace std;
 
 const int stdSpeed = 1;
-const GradientColorStyles defaultGradStyle = GradientColorStyles::Retro;
+const GradientColorStyles defaultGradientStyle = Retro;
 const wxString defaultGradientString = wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);");
 
 
@@ -26,12 +26,12 @@ inline double CalcDist(const double x1, const double y1, const double x2, const 
 /**
 * @brief Moves matrix elements and fills with zeros.
 *
-* When the fractal image is moved it needs to move the elements in the maps so the program doesn't have to redraw the whole screen.
+* When the fractal image is moved, it needs to move the elements in the maps so the program doesn't have to redraw the whole screen.
 * @param matrix Matrix to move.
 * @param moveX Elements to move in the X axis.
 * @param moveY Elements to move in the Y axis.
 */
-template<class M> inline void MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight, const int moveX, const int moveY)
+template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight, const int moveX, const int moveY)
 {
     // Horizontal displacement.
     if (moveX > 0)
@@ -220,7 +220,7 @@ Fractal::Fractal(int width, int height)
     gradPaletteSize = paletteSize = 300;
     alg = RenderingAlgorithm::Other;
     colorPaletteMode = ColorMode::Gradient;
-    gradStyle = defaultGradStyle;
+    gradStyle = defaultGradientStyle;
     gradient.fromString(defaultGradientString);
     gradient.setMin(0);
     gradient.setMax(gradPaletteSize);
@@ -341,7 +341,7 @@ Fractal::Fractal(sf::RenderWindow* Window)
     relativeColor = false;
     gradPaletteSize = paletteSize = 300;
     alg = RenderingAlgorithm::Other;
-    gradStyle = defaultGradStyle;
+    gradStyle = defaultGradientStyle;
     colorPaletteMode = ColorMode::Gradient;
     gradient.fromString(defaultGradientString);
     gradient.setMin(0);
@@ -657,10 +657,10 @@ void Fractal::SetAreaOfView(sf::Rect<int> pixelCoordinates)
 }
 void Fractal::SetAreaOfView(Rect worldCoordinates)
 {
-    minX = worldCoordinates.left;
-    maxX = worldCoordinates.right;
-    minY = worldCoordinates.bottom;
-    maxY = worldCoordinates.top;
+    minX = worldCoordinates._left;
+    maxX = worldCoordinates._right;
+    minY = worldCoordinates._bottom;
+    maxY = worldCoordinates._top;
 
     xFactor = (maxX - minX) / (screenWidth - 1);
     yFactor = (maxY - minY) / (screenHeight - 1);

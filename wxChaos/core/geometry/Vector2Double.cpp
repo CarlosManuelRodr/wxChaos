@@ -3,33 +3,33 @@
 
 Vector2Double::Vector2Double()
 {
-    x = y = 0.0;
+    _x = _y = 0.0;
 }
-Vector2Double::Vector2Double(double _x, double _y)
+Vector2Double::Vector2Double(const double x, const double y)
 {
-    x = _x;
-    y = _y;
+    _x = x;
+    _y = y;
 }
 Vector2Double::Vector2Double(const Vector2Int& v)
 {
-    x = static_cast<double>(v.x);
-    y = static_cast<double>(v.y);
+    _x = static_cast<double>(v.x);
+    _y = static_cast<double>(v.y);
 }
 
 Vector2Double Vector2Double::operator-() const
 {
-    return Vector2Double(-x, -y);
+    return Vector2Double(-_x, -_y);
 }
 Vector2Double& Vector2Double::operator+=(const Vector2Double& v)
 {
-    x += v.x;
-    y += v.y;
+    _x += v._x;
+    _y += v._y;
     return *this;
 }
 Vector2Double& Vector2Double::operator*=(const double t)
 {
-    x *= t;
-    y *= t;
+    _x *= t;
+    _y *= t;
     return *this;
 }
 Vector2Double& Vector2Double::operator/=(const double t)
@@ -43,5 +43,5 @@ double Vector2Double::Length() const
 }
 double Vector2Double::SquaredLength() const
 {
-    return x * x + y * y;
+    return _x * _x + _y * _y;
 }

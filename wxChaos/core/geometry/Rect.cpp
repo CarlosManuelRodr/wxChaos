@@ -2,30 +2,30 @@
 
 Rect::Rect()
 {
-    left = top = right = bottom = 0.0;
+    _left = _top = _right = _bottom = 0.0;
 }
-Rect::Rect(double _left, double _bottom, double _right, double _top)
+Rect::Rect(const double left, const double bottom, const double right, const double top)
 {
-    left = _left;
-    bottom = _bottom;
-    right = _right;
-    top = _top;
+    _left = left;
+    _bottom = bottom;
+    _right = right;
+    _top = top;
 }
-Vector2Double Rect::GetLowerBound()
+Vector2Double Rect::GetLowerBound() const
 {
-    return Vector2Double(left, bottom);
+    return Vector2Double(_left, _bottom);
 }
-Vector2Double Rect::GetHigherBound()
+Vector2Double Rect::GetUpperBound() const
 {
-    return Vector2Double(right, top);
+    return Vector2Double(_right, _top);
 }
-void Rect::SetLowerBound(Vector2Double lb)
+void Rect::SetLowerBound(const Vector2Double lb)
 {
-    left = lb.x;
-    bottom = lb.y;
+    _left = lb._x;
+    _bottom = lb._y;
 }
-void Rect::SetHigherBound(Vector2Double hb)
+void Rect::SetUpperBound(const Vector2Double hb)
 {
-    right = hb.x;
-    top = hb.y;
+    _right = hb._x;
+    _top = hb._y;
 }

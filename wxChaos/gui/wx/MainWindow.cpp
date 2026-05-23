@@ -749,10 +749,10 @@ void MainFrame::OnZoomRecorder(wxCommandEvent& event)
     const Rect outermostZoom = fractal->GetOutermostZoom();
     const Rect currentZoom = fractal->GetCurrentZoom();
 
-    if (outermostZoom.left == currentZoom.left &&
-        outermostZoom.right == currentZoom.right &&
-        outermostZoom.bottom == currentZoom.bottom &&
-        outermostZoom.top == currentZoom.top)
+    if (outermostZoom._left == currentZoom._left &&
+        outermostZoom._right == currentZoom._right &&
+        outermostZoom._bottom == currentZoom._bottom &&
+        outermostZoom._top == currentZoom._top)
     {
         wxMessageBox(
             wxT("To use the zoom recorder you need to first perform a zoom on the main window."),
