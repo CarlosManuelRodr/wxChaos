@@ -121,7 +121,6 @@ void DPendulum::MoreIter()
 {
     // Increases 100 iterations.
     changeFractalIter = true;
-    if(paused) dontDrawTempImage = true;
     this->DeleteSavedZooms();
     redrawAll = true;
     maxIter += 100;
@@ -131,7 +130,6 @@ void DPendulum::LessIter()
     // Decreases 100 iterations.
     changeFractalIter = true;
     this->DeleteSavedZooms();
-    if(paused) dontDrawTempImage = true;
     redrawAll = true;
     int signedMaxIter = (int)maxIter;
     if(signedMaxIter - 100 > 0)

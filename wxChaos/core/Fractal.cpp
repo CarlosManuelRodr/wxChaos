@@ -135,11 +135,7 @@ Fractal::Fractal(int width, int height)
     screenWidth = width;
     backScreenWidth = screenWidth;
 
-    // SFML variables.
-    white = sf::Color(255, 255, 255);
-    fSetColor = sf::Color(0, 0, 0);
-    transparent = sf::Color(255, 255, 255, 0);
-    image.create(screenWidth, screenHeight, white);
+    fSetColor = wxColour(0, 0, 0);
 
     // Allocates memory for the maps.
     setMap = new bool* [screenWidth];
@@ -201,18 +197,14 @@ Fractal::Fractal(int width, int height)
     waitRoutine = false;
     redrawAll = false;
     redrawAlways = false;
-    imgInVector = false;
-    usingRenderImage = false;
     rendering = false;
     paused = false;
     pausing = false;
     justLaunchThreads = false;
-    renderingToScreen = false;
-    zoomingBack = false;
-    dontDrawTempImage = false;
     maxIter = 100;
     moving = false;
     varGradChange = false;
+    refreshImage = false;
 
     // Creates default color palette.
     relativeColor = false;
@@ -224,10 +216,7 @@ Fractal::Fractal(int width, int height)
     gradient.setMin(0);
     gradient.setMax(gradPaletteSize);
 
-    redPalette = new sf::Uint8[paletteSize];
-    greenPalette = new sf::Uint8[paletteSize];
-    bluePalette = new sf::Uint8[paletteSize];
-    palette = new sf::Color[paletteSize];
+    palette.resize(paletteSize);
     varGradientStep = paletteSize / 60;
     this->RebuildPalette();
 
@@ -252,22 +241,7 @@ Fractal::Fractal(sf::RenderWindow* Window)
     xMoved = 0;
     yMoved = 0;
 
-    // SFML variables.
-    white = sf::Color(255, 255, 255);
-    fSetColor = sf::Color(0, 0, 0);
-    transparent = sf::Color(255, 255, 255, 0);
-    image.create(screenWidth, screenHeight, white);
-    tempImage = image;
-    geomImage.create(screenWidth, screenHeight, transparent);
-
-    texture.loadFromImage(image);
-    output.setTexture(texture);
-
-    tempTexture.loadFromImage(tempImage);
-    tempSprite.setTexture(tempTexture);
-
-    geomTexture.loadFromImage(geomImage);
-    outGeom.setTexture(geomTexture);
+    fSetColor = wxColour(0, 0, 0);
 
     // Set fractal properties.
     minX = -2.0;
@@ -300,16 +274,12 @@ Fractal::Fractal(sf::RenderWindow* Window)
     moving = false;
     redrawAll = false;
     redrawAlways = false;
-    imgInVector = false;
-    usingRenderImage = false;
     rendering = false;
     paused = false;
     pausing = false;
     justLaunchThreads = false;
-    renderingToScreen = true;
-    zoomingBack = false;
-    dontDrawTempImage = true;
     varGradChange = false;
+    refreshImage = false;
 
     // Allocates memory for the maps.
     setMap = new bool* [screenWidth];
@@ -343,10 +313,7 @@ Fractal::Fractal(sf::RenderWindow* Window)
     gradient.setMin(0);
     gradient.setMax(gradPaletteSize);
 
-    redPalette = new sf::Uint8[paletteSize];
-    greenPalette = new sf::Uint8[paletteSize];
-    bluePalette = new sf::Uint8[paletteSize];
-    palette = new sf::Color[paletteSize];
+    palette.resize(paletteSize);
     varGradientStep = paletteSize / 60;
     this->RebuildPalette();
 
@@ -365,10 +332,6 @@ Fractal::~Fractal()
     delete[] setMap;
     delete[] colorMap;
     delete[] auxMap;
-    delete[] redPalette;
-    delete[] greenPalette;
-    delete[] bluePalette;
-    delete[] palette;
 }
 void Fractal::SetDefaultOpt()
 {
@@ -384,15 +347,7 @@ void Fractal::SetAreaOfView(sf::Rect<int> pixelCoordinates)
 {
     if (paused)
     {
-        this->DeleteSavedZooms();
-        dontDrawTempImage = true;
         paused = false;
-    }
-    else
-    {
-        imgVector.push_back(image);
-        imgInVector = true;
-        dontDrawTempImage = false;
     }
     this->SaveZoom();
 
@@ -410,13 +365,6 @@ void Fractal::SetAreaOfView(sf::Rect<int> pixelCoordinates)
 
     rendered = false;
     rendering = false;
-
-    tempImage = image;
-    tempTexture.loadFromImage(tempImage);
-    tempSprite.setTexture(tempTexture);
-    tempSprite.setTextureRect(pixelCoordinates);
-    tempSprite.setPosition(0, 0);
-    tempSprite.setScale((float)screenWidth / pixelCoordinates.width, (float)screenHeight / pixelCoordinates.height);
 
     posY = posX = 0;
     yVel = xVel = 0;
@@ -527,7 +475,6 @@ void Fractal::Move()
             // A new render is needed.
             //rendered = false;
             moving = true;
-            dontDrawTempImage = true;
         }
         else if (posX != 0 || posY != 0)
         {
@@ -572,7 +519,7 @@ Rect Fractal::GetCurrentZoom()
 }
 void Fractal::ZoomBack()
 {
-    bool stillRendering = this->StopRender();
+    this->StopRender();
 
     // Looks for previous zoom coordinates.
     bool thereIsZoom = true;
@@ -608,20 +555,7 @@ void Fractal::ZoomBack()
     xFactor = (maxX - minX) / (screenWidth - 1);
     yFactor = (maxY - minY) / (screenHeight - 1);
 
-    // If there are no changes uses previous image.
-    if (imgInVector && !varGradient && imgVector.size() > 0 && !stillRendering)
-    {
-        image = imgVector[imgVector.size() - 1];
-        texture.loadFromImage(image);
-        imgVector.pop_back();
-        usingRenderImage = true;
-    }
-    else
-    {
-        if (stillRendering && imgVector.size() > 0) imgVector.pop_back();
-        rendered = false;
-        zoomingBack = true;
-    }
+    rendered = false;
     magnification = 3 / (maxX - minX);
     orbitDrawn = false;
     paused = false;
@@ -635,16 +569,10 @@ void Fractal::ZoomBack()
 }
 void Fractal::DeleteSavedZooms()
 {
-    if (imgVector.size() > 0)
-    {
-        imgVector.clear();
-        imgInVector = false;
-    }
 }
 void Fractal::PrepareRender()
 {
     this->PreRender();
-    usingRenderImage = false;
 
     // Checks if the movement is valid.
     if ((abs(xMoved) >= screenWidth) || (abs(yMoved) >= screenHeight)) redrawAll = true;
@@ -668,20 +596,8 @@ void Fractal::PrepareRender()
 }
 void Fractal::Redraw()
 {
-    if (this->IsRendering())
-        dontDrawTempImage = true;
-    else if (colorMode)
-    {
-        tempImage = image;
-        tempTexture.loadFromImage(tempImage);
-        tempSprite.setOrigin(0, 0);
-        tempSprite.setScale((float)screenWidth / tempImage.getSize().x, (float)screenHeight / tempImage.getSize().y);
-    }
-
     this->StopRender();
     redrawAll = true;
-    imgVector.clear();
-    imgInVector = false;
     rendered = false;
     rendering = false;
     paused = false;
@@ -762,9 +678,6 @@ void Fractal::MoreIter()
     changeFractalIter = true;
     this->DeleteSavedZooms();
 
-    if (paused)
-        dontDrawTempImage = true;
-
     redrawAll = true;
     maxIter += 100;
 
@@ -774,9 +687,6 @@ void Fractal::LessIter()
 {
     changeFractalIter = true;
     this->DeleteSavedZooms();
-
-    if (paused)
-        dontDrawTempImage = true;
 
     redrawAll = true;
     int signedMaxIter = (int)maxIter;
@@ -815,7 +725,6 @@ void Fractal::ChangeIterations(int number)
         maxIter = static_cast<unsigned int>(number);
         rendered = false;
         changeFractalIter = true;
-        dontDrawTempImage = true;
     }
 }
 void Fractal::SetOptions(Options opt, bool keepSize)
@@ -837,7 +746,7 @@ void Fractal::SetOptions(Options opt, bool keepSize)
     relativeColor = opt.relativeColor;
     gradPaletteSize = opt.gradPaletteSize;
     alg = opt.alg;
-    fSetColor = opt.fSetColor;
+    fSetColor = wxColour(opt.fSetColor.r, opt.fSetColor.g, opt.fSetColor.b, opt.fSetColor.a);
 
     gradient = opt.gradient;
     paletteSize = gradPaletteSize;
@@ -889,7 +798,7 @@ Options Fractal::GetOptions()
     opt.colorMode = colorMode;
     opt.justLaunchThreads = justLaunchThreads;
 
-    opt.fSetColor = fSetColor;
+    opt.fSetColor = GetSetColor();
 
     opt.screenWidth = screenWidth;
     opt.screenHeight = screenHeight;
@@ -1004,7 +913,8 @@ sf::Image Fractal::GetRenderedImage()
     }
     this->PreDrawMaps();
 
-    image.create(screenWidth, screenHeight, white);
+    sf::Image image;
+    image.create(screenWidth, screenHeight, sf::Color(255, 255, 255));
 
     maxColorMapVal = 0;
     if (relativeColor)
@@ -1027,7 +937,7 @@ sf::Image Fractal::GetRenderedImage()
         for (int j = 0; j < screenHeight; j++)
         {
             if (setMap[i][j] == true && colorSet)
-                image.setPixel(i, j, fSetColor);
+                image.setPixel(i, j, GetSetColor());
             else
             {
                 if (colorMode)
@@ -1161,31 +1071,17 @@ void Fractal::SetGradient(wxGradient grad)
     // Copy gradient.
     colorPaletteMode = ColorMode::Gradient;
     gradient = grad;
-    delete[] redPalette;
-    delete[] greenPalette;
-    delete[] bluePalette;
-    delete[] palette;
     gradPaletteSize = paletteSize = gradient.getMax() - gradient.getMin();
-    redPalette = new sf::Uint8[paletteSize];
-    greenPalette = new sf::Uint8[paletteSize];
-    bluePalette = new sf::Uint8[paletteSize];
-    palette = new sf::Color[paletteSize];
+    palette.resize(paletteSize);
     varGradientStep = paletteSize / 60;
     this->RebuildPalette();
 }
 void Fractal::SetGradientSize(unsigned int size)
 {
     colorPaletteMode = ColorMode::Gradient;
-    delete[] redPalette;
-    delete[] greenPalette;
-    delete[] bluePalette;
-    delete[] palette;
     gradient.setMax(size);
     gradPaletteSize = paletteSize = size;
-    redPalette = new sf::Uint8[paletteSize];
-    greenPalette = new sf::Uint8[paletteSize];
-    bluePalette = new sf::Uint8[paletteSize];
-    palette = new sf::Color[paletteSize];
+    palette.resize(paletteSize);
     varGradientStep = paletteSize / 60;
     this->RebuildPalette();
 }
@@ -1194,9 +1090,6 @@ void Fractal::SetGradientSize(unsigned int size)
 void Fractal::RedrawMaps()
 {
     maxColorMapVal = 0;
-
-    if (this->IsRendering())
-        dontDrawTempImage = true;
 
     if (relativeColor)
     {
@@ -1212,28 +1105,7 @@ void Fractal::RedrawMaps()
     }
     if (maxColorMapVal == 0)
         maxColorMapVal = 1;
-
-    for (int i = 0; i < screenWidth; i++)
-    {
-        for (int j = 0; j < screenHeight; j++)
-        {
-            if (setMap[i][j] == true && colorSet)
-                image.setPixel(i, j, fSetColor);
-            else if (colorMode)
-            {
-                // Color pixel.
-                sf::Color Color;
-                if (relativeColor)
-                    Color = CalcColor(((double)colorMap[i][j] / (double)maxColorMapVal) * paletteSize + changeGradient);
-                else
-                    Color = CalcColor(colorMap[i][j] + changeGradient);
-                image.setPixel(i, j, Color);
-            }
-            else
-                image.setPixel(i, j, white);
-        }
-    }
-    texture.loadFromImage(image);
+    refreshImage = true;
 }
 void Fractal::SetExtColorMode(bool mode)
 {
@@ -1241,10 +1113,7 @@ void Fractal::SetExtColorMode(bool mode)
     if (colorMode != mode)
     {
         colorMode = mode;
-        if (usingRenderImage)
-            rendered = false;
-        else
-            this->RedrawMaps();
+        this->RedrawMaps();
     }
     this->DeleteSavedZooms();
 }
@@ -1254,33 +1123,20 @@ void Fractal::SetFractalSetColorMode(bool mode)
     if (colorSet != mode)
     {
         colorSet = mode;
-        if (usingRenderImage)
-            rendered = false;
-        else
-            this->RedrawMaps();
+        this->RedrawMaps();
     }
     this->DeleteSavedZooms();
 }
 void Fractal::SetFractalSetColor(sf::Color color)
 {
     // Changes the color of the set.
-    fSetColor = color;
-
-    if (this->IsRendering())
-        dontDrawTempImage = true;
-
-    if (usingRenderImage)
-    {
-        rendered = false;
-        dontDrawTempImage = true;
-    }
-    else
-        this->RedrawMaps();
+    fSetColor = wxColour(color.r, color.g, color.b, color.a);
+    this->RedrawMaps();
     this->DeleteSavedZooms();
 }
 sf::Color Fractal::GetSetColor()
 {
-    return fSetColor;
+    return sf::Color(fSetColor.Red(), fSetColor.Green(), fSetColor.Blue(), fSetColor.Alpha());
 }
 bool Fractal::GetExteriorColorMode()
 {
@@ -1296,89 +1152,24 @@ sf::Color Fractal::CalcColor(int colorNum) const
         colorNum = 0;
 
     colorNum = colorNum % paletteSize;
-    return palette[colorNum];
+    const wxColour& color = palette[colorNum];
+    return sf::Color(color.Red(), color.Green(), color.Blue(), color.Alpha());
 }
 void Fractal::ChangeVarGradient()
 {
     varGradient = !varGradient;
-    if (usingRenderImage)
-    {
-        rendered = false;
-        dontDrawTempImage = true;
-    }
-    imgVector.clear();
-    imgInVector = false;
 }
 void Fractal::RebuildPalette()
 {
     this->DeleteSavedZooms();
 
-    if (this->IsRendering())
-        dontDrawTempImage = true;
-
     wxColour myWxColor;
     for (int i = 0; i < paletteSize; i++)
     {
         myWxColor = gradient.getColorAt(i);
-        redPalette[i] = myWxColor.Red();
-        greenPalette[i] = myWxColor.Green();
-        bluePalette[i] = myWxColor.Blue();
+        palette[i] = myWxColor;
     }
-
-    for (int i = 0; i < paletteSize; i++)
-        palette[i] = sf::Color(redPalette[i], greenPalette[i], bluePalette[i]);
-
-    if (usingRenderImage)
-    {
-        rendered = false;
-        dontDrawTempImage = true;
-    }
-    else if (renderingToScreen)
-    {
-        // Redraw colors.
-        if (relativeColor)
-        {
-            // Search for color maximum.
-            maxColorMapVal = 0;
-            for (int i = 0; i < screenWidth; i++)
-            {
-                for (int j = 0; j < screenHeight; j++)
-                {
-                    if (colorMap[i][j] > maxColorMapVal)
-                        maxColorMapVal = colorMap[i][j];
-                }
-            }
-            if (maxColorMapVal == 0)
-                maxColorMapVal = 1;
-
-            for (int i = 0; i < screenWidth; i++)
-            {
-                for (int j = 0; j < screenHeight; j++)
-                {
-                    if (setMap[i][j] == false || !colorSet)
-                    {
-                        sf::Color Color = CalcColor(((double)colorMap[i][j] / (double)maxColorMapVal) * paletteSize + changeGradient);
-                        image.setPixel(i, j, Color);
-                    }
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < screenWidth; i++)
-            {
-                for (int j = 0; j < screenHeight; j++)
-                {
-                    if (setMap[i][j] == false || !colorSet)
-                    {
-                        sf::Color Color = CalcColor(colorMap[i][j] + changeGradient);
-                        image.setPixel(i, j, Color);
-                    }
-                }
-            }
-        }
-        texture.loadFromImage(image);
-    }
+    this->RedrawMaps();
 }
 int Fractal::GetPaletteSize()
 {
@@ -1392,15 +1183,6 @@ void Fractal::SetVarGradient(int n)
 {
     varGradChange = true;
     changeGradient = n % paletteSize;
-
-    if (this->IsRendering())
-        dontDrawTempImage = true;
-
-    if (usingRenderImage)
-    {
-        rendered = false;
-        dontDrawTempImage = true;
-    }
     this->DeleteSavedZooms();
 }
 
@@ -1423,7 +1205,6 @@ void Fractal::SetAlgorithm(RenderingAlgorithm _alg)
     alg = _alg;
     this->DeleteSavedZooms();
     this->StopRender();
-    dontDrawTempImage = true;
     rendered = false;
     rendering = false;
 }
@@ -1452,10 +1233,7 @@ void Fractal::SetK(double _real, double _imaginary)
 
     kReal = _real;
     kImaginary = _imaginary;
-
-    if (imgInVector) this->DeleteSavedZooms();
-
-    dontDrawTempImage = true;
+    this->DeleteSavedZooms();
 }
 bool Fractal::IsJuliaVariety()
 {
@@ -1535,8 +1313,6 @@ void Fractal::SetOrbitTrapMode(bool mode)
     if (hasOrbitTrap)
     {
         this->DeleteSavedZooms();
-        if (paused)
-            dontDrawTempImage = true;
         orbitTrapMode = mode;
     }
 }
@@ -1555,8 +1331,6 @@ void Fractal::SetSmoothRender(bool mode)
     if (hasSmoothRender)
     {
         this->DeleteSavedZooms();
-        if (paused)
-            dontDrawTempImage = true;
         smoothRender = mode;
     }
 }
@@ -1570,13 +1344,10 @@ bool Fractal::SmoothRenderActivated()
 }
 
 // Option panel.
-bool Fractal::HasOptPanel()
-{
-    if (panelOpt.GetElementsSize() > 0)
-        return true;
-    else
-        return false;
+bool Fractal::HasOptPanel() {
+    return panelOpt.GetElementsSize() > 0;
 }
+
 PanelOptions* Fractal::GetOptPanel()
 {
     return &panelOpt;

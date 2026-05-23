@@ -48,7 +48,7 @@ void JuliaMode::Handle_Event()
         // Fortunately, the event structure members they use are mostly compatible.
         if (selection->HandleEvents(event))
         {
-            juliaFractal.GetFractalPtr()->SetAreaOfView(selection->GetSeleccion());
+            sfmlFractal.SetAreaOfView(selection->GetSeleccion());
         }
         if (play->HandleEvents(event))
         {
@@ -76,7 +76,7 @@ void JuliaMode::Handle_Event()
             }
             if (event.key.code == sf::Keyboard::F5)  // Redraw fractal.
             {
-                juliaFractal.GetFractalPtr()->Redraw();
+                sfmlFractal.Redraw();
             }
             // Handle movement
             switch (event.key.code)

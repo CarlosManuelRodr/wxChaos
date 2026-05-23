@@ -164,7 +164,7 @@ void FractalCanvas::OnUpdate()
             }
             if (event.key.code == sf::Keyboard::F5)  // Redraw canvas.
             {
-                target->Redraw();
+                sfmlFractal.Redraw();
             }
             if (event.key.code == sf::Keyboard::P)  // Pause shortcut.
             {
@@ -546,7 +546,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
 
     if (event.ButtonDown(wxMOUSE_BTN_RIGHT))
     {
-        target->ZoomBack();
+        sfmlFractal.ZoomBack();
         if (btn->state && !target->IsPaused())
         {
             btn->state = false;
@@ -577,7 +577,7 @@ void FractalCanvas::OnUnClick(wxMouseEvent& event)
                         btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
                     target->DeleteSavedZooms();
                 }
-                target->SetAreaOfView(selection->GetSeleccion());
+                sfmlFractal.SetAreaOfView(selection->GetSeleccion());
             }
         }
     }
@@ -640,22 +640,22 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     {
     case WXK_UP:
     {
-        target->SetMovement(Direction::Up);
+        target->SetMovement(Up);
         break;
     }
     case WXK_DOWN:
     {
-        target->SetMovement(Direction::Down);
+        target->SetMovement(Down);
         break;
     }
     case WXK_LEFT:
     {
-        target->SetMovement(Direction::Left);
+        target->SetMovement(Left);
         break;
     }
     case WXK_RIGHT:
     {
-        target->SetMovement(Direction::Right);
+        target->SetMovement(Right);
         break;
     }
     default: break;
@@ -664,13 +664,13 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     wxChar key = event.GetUnicodeKey();
 
     if (key == wxT('W') || key == wxT('w'))
-        target->SetMovement(Direction::Up);
+        target->SetMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
-        target->SetMovement(Direction::Down);
+        target->SetMovement(Down);
     else if (key == wxT('A') || key == wxT('a'))
-        target->SetMovement(Direction::Left);
+        target->SetMovement(Left);
     else if (key == wxT('D') || key == wxT('d'))
-        target->SetMovement(Direction::Right);
+        target->SetMovement(Right);
 }
 void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 {
@@ -678,22 +678,22 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
     {
     case WXK_UP:
     {
-        target->ReleaseMovement(Direction::Up);
+        target->ReleaseMovement(Up);
         break;
     }
     case WXK_DOWN:
     {
-        target->ReleaseMovement(Direction::Down);
+        target->ReleaseMovement(Down);
         break;
     }
     case WXK_LEFT:
     {
-        target->ReleaseMovement(Direction::Left);
+        target->ReleaseMovement(Left);
         break;
     }
     case WXK_RIGHT:
     {
-        target->ReleaseMovement(Direction::Right);
+        target->ReleaseMovement(Right);
         break;
     }
     default: break;
@@ -701,11 +701,11 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 
     wxChar key = event.GetUnicodeKey();
     if (key == wxT('W') || key == wxT('w'))
-        target->ReleaseMovement(Direction::Up);
+        target->ReleaseMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
-        target->ReleaseMovement(Direction::Down);
+        target->ReleaseMovement(Down);
     else if (key == wxT('A') || key == wxT('a'))
-        target->ReleaseMovement(Direction::Left);
+        target->ReleaseMovement(Left);
     else if (key == wxT('D') || key == wxT('d'))
-        target->ReleaseMovement(Direction::Right);
+        target->ReleaseMovement(Right);
 }

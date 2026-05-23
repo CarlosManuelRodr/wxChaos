@@ -85,17 +85,25 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
 }
 }
 
-SFMLFractal::SFMLFractal() : fractal(nullptr) {}
+SFMLFractal::SFMLFractal()
+    : fractal(nullptr), imgInVector(false), usingRenderImage(false), zoomingBack(false), dontDrawTempImage(false) {}
 
 SFMLFractal::SFMLFractal(Fractal* fractal) : fractal(fractal)
 {
     EnsureFontLoaded();
+    ResetDisplayImages();
 }
 
 void SFMLFractal::SetFractal(Fractal* newFractal)
 {
     fractal = newFractal;
     EnsureFontLoaded();
+    imgVector.clear();
+    imgInVector = false;
+    usingRenderImage = false;
+    zoomingBack = false;
+    dontDrawTempImage = true;
+    ResetDisplayImages();
 }
 
 Fractal* SFMLFractal::GetFractal() const
@@ -110,6 +118,27 @@ void SFMLFractal::EnsureFontLoaded()
 
     font.loadFromFile(GetAbsPath({ "Resources", "PublicSans-Regular.otf" }));
     text.setFont(font);
+}
+
+void SFMLFractal::ResetDisplayImages()
+{
+    if (fractal == nullptr)
+        return;
+
+    const sf::Color white(255, 255, 255);
+    const sf::Color transparent(255, 255, 255, 0);
+    image.create(fractal->screenWidth, fractal->screenHeight, white);
+    tempImage = image;
+    geomImage.create(fractal->screenWidth, fractal->screenHeight, transparent);
+
+    texture.loadFromImage(image);
+    output.setTexture(texture);
+
+    tempTexture.loadFromImage(tempImage);
+    tempSprite.setTexture(tempTexture);
+
+    geomTexture.loadFromImage(geomImage);
+    outGeom.setTexture(geomTexture);
 }
 
 void SFMLFractal::HandleEvent(const sf::Event& event)
@@ -165,8 +194,7 @@ void SFMLFractal::Resize(sf::RenderWindow* window)
 
     fractal->screenHeight = window->getSize().y;
     fractal->backScreenWidth = fractal->screenWidth = window->getSize().x;
-    fractal->dontDrawTempImage = true;
-    fractal->tempSprite.setTextureRect(sf::IntRect(0, 0, fractal->screenWidth, fractal->screenHeight));
+    dontDrawTempImage = true;
 
     fractal->setMap = new bool* [fractal->screenWidth];
     fractal->colorMap = new int* [fractal->screenWidth];
@@ -195,10 +223,10 @@ void SFMLFractal::Resize(sf::RenderWindow* window)
 
     fractal->rendered = false;
     fractal->rendering = false;
-    fractal->geomImage.create(fractal->screenWidth, fractal->screenHeight, sf::Color(255, 255, 255, 0));
-    fractal->geomTexture.loadFromImage(fractal->geomImage);
-    fractal->imgVector.clear();
-    fractal->imgInVector = false;
+    imgVector.clear();
+    imgInVector = false;
+    usingRenderImage = false;
+    zoomingBack = false;
     fractal->orbitDrawn = false;
 
     for (unsigned int i = 0; i < fractal->zoom[3].size(); i++)
@@ -206,26 +234,100 @@ void SFMLFractal::Resize(sf::RenderWindow* window)
         fractal->zoom[3][i] = fractal->zoom[2][i] + (fractal->zoom[1][i] - fractal->zoom[0][i]) * (double)fractal->screenHeight / fractal->screenWidth;
     }
 
+    ResetDisplayImages();
+    tempSprite.setTextureRect(sf::IntRect(0, 0, fractal->screenWidth, fractal->screenHeight));
     sf::IntRect size;
     size.width = fractal->screenWidth;
     size.height = fractal->screenHeight;
-    fractal->output.setTextureRect(size);
-    fractal->outGeom.setTextureRect(size);
+    output.setTextureRect(size);
+    outGeom.setTextureRect(size);
+}
+
+void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
+{
+    if (fractal == nullptr)
+        return;
+
+    if (fractal->paused)
+    {
+        imgVector.clear();
+        imgInVector = false;
+        dontDrawTempImage = true;
+    }
+    else
+    {
+        imgVector.push_back(image);
+        imgInVector = true;
+        dontDrawTempImage = false;
+    }
+
+    fractal->SetAreaOfView(pixelCoordinates);
+    tempImage = image;
+    tempTexture.loadFromImage(tempImage);
+    tempSprite.setTexture(tempTexture);
+    tempSprite.setTextureRect(pixelCoordinates);
+    tempSprite.setPosition(0, 0);
+    tempSprite.setScale((float)fractal->screenWidth / pixelCoordinates.width, (float)fractal->screenHeight / pixelCoordinates.height);
+    usingRenderImage = false;
+    zoomingBack = false;
+}
+
+void SFMLFractal::ZoomBack()
+{
+    if (fractal == nullptr)
+        return;
+
+    const bool stillRendering = fractal->IsRendering();
+    fractal->ZoomBack();
+
+    if (imgInVector && !fractal->varGradient && !imgVector.empty() && !stillRendering)
+    {
+        image = imgVector.back();
+        texture.loadFromImage(image);
+        imgVector.pop_back();
+        usingRenderImage = true;
+    }
+    else
+    {
+        if (stillRendering && !imgVector.empty())
+            imgVector.pop_back();
+        zoomingBack = true;
+    }
+}
+
+void SFMLFractal::Redraw()
+{
+    if (fractal == nullptr)
+        return;
+
+    if (fractal->colorMode)
+    {
+        tempImage = image;
+        tempTexture.loadFromImage(tempImage);
+        tempSprite.setOrigin(0, 0);
+        tempSprite.setScale((float)fractal->screenWidth / tempImage.getSize().x, (float)fractal->screenHeight / tempImage.getSize().y);
+    }
+
+    fractal->Redraw();
+    imgVector.clear();
+    imgInVector = false;
+    usingRenderImage = false;
+    dontDrawTempImage = true;
 }
 
 void SFMLFractal::DrawMaps(sf::RenderWindow* window)
 {
     fractal->PreDrawMaps();
 
-    if (fractal->zoomingBack || fractal->dontDrawTempImage || !fractal->colorMode)
-        fractal->image.create(fractal->screenWidth, fractal->screenHeight, fractal->white);
+    if (zoomingBack || dontDrawTempImage || !fractal->colorMode)
+        image.create(fractal->screenWidth, fractal->screenHeight, sf::Color(255, 255, 255));
     else
     {
-        fractal->image.create(fractal->screenWidth, fractal->screenHeight, sf::Color(255, 255, 255, 0));
-        window->draw(fractal->tempSprite);
+        image.create(fractal->screenWidth, fractal->screenHeight, sf::Color(255, 255, 255, 0));
+        window->draw(tempSprite);
     }
 
-    fractal->output.setPosition(0, 0);
+    output.setPosition(0, 0);
     if (fractal->relativeColor)
     {
         fractal->maxColorMapVal = 0;
@@ -246,17 +348,17 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
             for (int j = 0; j < fractal->screenHeight; j++)
             {
                 if (fractal->setMap[i][j] == true && fractal->colorSet)
-                    fractal->image.setPixel(i, j, fractal->fSetColor);
+                    image.setPixel(i, j, fractal->GetSetColor());
                 else if (fractal->colorMode)
                 {
                     if (fractal->colorMap[i][j] >= 0)
                     {
                         const sf::Color color = fractal->CalcColor(((double)fractal->colorMap[i][j] / (double)fractal->maxColorMapVal) * fractal->paletteSize + fractal->changeGradient);
-                        fractal->image.setPixel(i, j, color);
+                        image.setPixel(i, j, color);
                     }
-                    else if (fractal->zoomingBack || fractal->dontDrawTempImage)
+                    else if (zoomingBack || dontDrawTempImage)
                     {
-                        fractal->image.setPixel(i, j, fractal->CalcColor(fractal->changeGradient));
+                        image.setPixel(i, j, fractal->CalcColor(fractal->changeGradient));
                     }
                 }
             }
@@ -269,20 +371,20 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
             for (int j = 0; j < fractal->screenHeight; j++)
             {
                 if (fractal->setMap[i][j] == true && fractal->colorSet)
-                    fractal->image.setPixel(i, j, fractal->fSetColor);
+                    image.setPixel(i, j, fractal->GetSetColor());
                 else if (fractal->colorMode)
                 {
                     if (fractal->colorMap[i][j] >= 0)
-                        fractal->image.setPixel(i, j, fractal->CalcColor(fractal->colorMap[i][j] + fractal->changeGradient));
-                    else if (fractal->zoomingBack || fractal->dontDrawTempImage)
-                        fractal->image.setPixel(i, j, fractal->CalcColor(fractal->changeGradient));
+                        image.setPixel(i, j, fractal->CalcColor(fractal->colorMap[i][j] + fractal->changeGradient));
+                    else if (zoomingBack || dontDrawTempImage)
+                        image.setPixel(i, j, fractal->CalcColor(fractal->changeGradient));
                 }
             }
         }
     }
 
-    fractal->texture.loadFromImage(fractal->image);
-    window->draw(fractal->output);
+    texture.loadFromImage(image);
+    window->draw(output);
 }
 
 void SFMLFractal::DrawGeometry(sf::RenderWindow* window)
@@ -328,7 +430,12 @@ void SFMLFractal::Show(sf::RenderWindow* window)
         return;
 
     if (fractal->xVel != 0 || fractal->yVel != 0)
-        fractal->output.setPosition(static_cast<float>(fractal->posX), static_cast<float>(fractal->posY));
+    {
+        // While panning, only draw the shifted render output. Showing the
+        // cached preview sprite here leaves stale pixels in the newly exposed area.
+        dontDrawTempImage = true;
+        output.setPosition(static_cast<float>(fractal->posX), static_cast<float>(fractal->posY));
+    }
     else
     {
         if (fractal->moving)
@@ -342,10 +449,10 @@ void SFMLFractal::Show(sf::RenderWindow* window)
 
         if (!fractal->rendered)
         {
-            if (fractal->usingRenderImage)
+            if (usingRenderImage)
             {
                 fractal->moving = false;
-                fractal->usingRenderImage = false;
+                usingRenderImage = false;
                 fractal->xMoved = 0;
                 fractal->yMoved = 0;
             }
@@ -366,10 +473,11 @@ void SFMLFractal::Show(sf::RenderWindow* window)
             {
                 fractal->rendered = true;
                 fractal->rendering = false;
-                fractal->dontDrawTempImage = false;
-                fractal->zoomingBack = false;
+                dontDrawTempImage = false;
+                zoomingBack = false;
                 fractal->PostRender();
                 DrawMaps(window);
+                fractal->refreshImage = false;
             }
         }
 
@@ -377,6 +485,13 @@ void SFMLFractal::Show(sf::RenderWindow* window)
         {
             DrawMaps(window);
             fractal->pausing = false;
+            fractal->refreshImage = false;
+        }
+
+        if (fractal->refreshImage)
+        {
+            DrawMaps(window);
+            fractal->refreshImage = false;
         }
 
         if (fractal->varGradient || fractal->varGradChange)
@@ -401,31 +516,31 @@ void SFMLFractal::Show(sf::RenderWindow* window)
                             else
                                 color = fractal->CalcColor(fractal->colorMap[i][j] + fractal->changeGradient);
 
-                            fractal->image.setPixel(i, j, color);
+                            image.setPixel(i, j, color);
                         }
                     }
                 }
-                fractal->texture.loadFromImage(fractal->image);
+                texture.loadFromImage(image);
             }
             fractal->varGradChange = false;
         }
     }
 
-    if (!fractal->dontDrawTempImage && fractal->colorMode)
-        window->draw(fractal->tempSprite);
+    if (!dontDrawTempImage && fractal->colorMode)
+        window->draw(tempSprite);
 
-    window->draw(fractal->output);
+    window->draw(output);
 
     if (fractal->orbitMode && !fractal->IsRendering())
     {
         if (!fractal->orbitDrawn)
         {
             fractal->orbitLines.clear();
-            fractal->geomImage.create(fractal->screenWidth, fractal->screenHeight, sf::Color(255, 255, 255, 0));
+            geomImage.create(fractal->screenWidth, fractal->screenHeight, sf::Color(255, 255, 255, 0));
             fractal->DrawOrbit();
-            fractal->geomTexture.loadFromImage(fractal->geomImage);
+            geomTexture.loadFromImage(geomImage);
         }
-        window->draw(fractal->outGeom);
+        window->draw(outGeom);
     }
     if (fractal->geomFigure && !fractal->IsRendering())
         DrawGeometry(window);

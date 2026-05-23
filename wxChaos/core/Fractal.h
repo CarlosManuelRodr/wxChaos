@@ -3,6 +3,7 @@
 #define FRACTAL_H
 #include <vector>
 #include <wx/bitmap.h>
+#include <wx/colour.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "wx/gradient.h"
@@ -65,14 +66,6 @@ protected:
     int posX, posY;                 ///< Positionof the fractal image.
     int xMoved, yMoved;             ///< Total movement of the image. Used just before redering a new area.
 
-    sf::Image image;                ///< Layer where the output image is created.
-    sf::Texture texture;
-    sf::Sprite output;              ///< Sprite to draw the output image.
-    std::vector<sf::Image> imgVector;    ///< Vector of rendering images that are loaded on zoomback.
-    sf::Image tempImage;            ///< Temporary image. Shows low res image while renering.
-    sf::Texture tempTexture;
-    sf::Sprite tempSprite;          ///< tempImage sprite.
-
     std::vector<double> zoom[4];         ///< Saves the performed zooms.
     Rect outermostZoom;
     int screenWidth;
@@ -86,13 +79,8 @@ protected:
     std::vector<RenderingAlgorithm> availableAlg;
     ColorMode colorPaletteMode;
     wxGradient gradient;                    ///< Gradient to be used.
-    sf::Color white;
-    sf::Color fSetColor;                    ///< Color of points belonging to the set.
-    sf::Color transparent;
-    sf::Uint8* redPalette;
-    sf::Uint8* greenPalette;
-    sf::Uint8* bluePalette;
-    sf::Color* palette;
+    wxColour fSetColor;                    ///< Color of points belonging to the set.
+    std::vector<wxColour> palette;
     bool relativeColor;
     bool colorSet;                                ///< Activates internal coloring.
     bool colorMode;                               ///< Activates external coloring.
@@ -101,6 +89,7 @@ protected:
     int gradPaletteSize;
     int varGradientStep;
     int maxColorMapVal;
+    bool refreshImage;
 
     // Status variables.
     bool movement[4];
@@ -115,12 +104,7 @@ protected:
     bool waitRoutine;
     bool redrawAll;
     bool redrawAlways;
-    bool imgInVector;
-    bool usingRenderImage;;
-    bool renderingToScreen;
     bool justLaunchThreads;
-    bool zoomingBack;
-    bool dontDrawTempImage;
     bool varGradChange;
     bool renderJobComp;                     ///< Fractal compatible with renderJobs.
     bool changeFractalProp;
@@ -143,10 +127,6 @@ protected:
     std::vector<CircleData> circles;
     std::vector<LineData> lines, orbitLines;
     bool geomFigure;
-    sf::Image geomImage;
-    sf::Texture geomTexture;
-    sf::Sprite outGeom;
-
     // Effect variables.
     bool hasOrbitTrap;                ///< False by default. Activate it if the derived class has an orbit trap routine.
     bool orbitTrapMode;
