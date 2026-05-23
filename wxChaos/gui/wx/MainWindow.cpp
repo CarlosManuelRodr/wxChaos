@@ -6,6 +6,62 @@
 
 #ifdef _WIN32
 #include <Shellapi.h>
+
+namespace
+{
+enum ProcessDpiAwarenessValue
+{
+    ProcessDpiUnaware = 0,
+    ProcessSystemDpiAware = 1,
+    ProcessPerMonitorDpiAware = 2
+};
+
+void EnableHighDpiSupport()
+{
+    HMODULE user32 = LoadLibraryW(L"user32.dll");
+    if (user32)
+    {
+        using SetProcessDpiAwarenessContextFn = BOOL(WINAPI*)(HANDLE);
+        auto setDpiAwarenessContext = reinterpret_cast<SetProcessDpiAwarenessContextFn>(
+            GetProcAddress(user32, "SetProcessDpiAwarenessContext"));
+
+        if (setDpiAwarenessContext &&
+            setDpiAwarenessContext(reinterpret_cast<HANDLE>(-4))) // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+        {
+            FreeLibrary(user32);
+            return;
+        }
+    }
+
+    HMODULE shcore = LoadLibraryW(L"Shcore.dll");
+    if (shcore)
+    {
+        using SetProcessDpiAwarenessFn = HRESULT(WINAPI*)(ProcessDpiAwarenessValue);
+        auto setProcessDpiAwareness = reinterpret_cast<SetProcessDpiAwarenessFn>(
+            GetProcAddress(shcore, "SetProcessDpiAwareness"));
+
+        if (setProcessDpiAwareness)
+            setProcessDpiAwareness(ProcessPerMonitorDpiAware);
+
+        FreeLibrary(shcore);
+        if (user32)
+            FreeLibrary(user32);
+        return;
+    }
+
+    if (user32)
+    {
+        using SetProcessDPIAwareFn = BOOL(WINAPI*)();
+        auto setProcessDPIAware = reinterpret_cast<SetProcessDPIAwareFn>(
+            GetProcAddress(user32, "SetProcessDPIAware"));
+
+        if (setProcessDPIAware)
+            setProcessDPIAware();
+
+        FreeLibrary(user32);
+    }
+}
+}
 #endif
 
 using namespace std;
@@ -1303,6 +1359,9 @@ class MainApp : public wxApp
 {
     virtual bool OnInit()
     {
+#ifdef _WIN32
+       EnableHighDpiSupport();
+#endif
        MainFrame* main = new MainFrame;
        main->Show();
        return true;
