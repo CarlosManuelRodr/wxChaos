@@ -1,12 +1,11 @@
 #include "JuliaMode.h"
 #include "SizeDialogSave.h"
-#include "global.h"
 using namespace std;
 
 bool juliaModeState;
 
 JuliaMode::JuliaMode(FractalCanvas* ptr, FractalType fractalType, Options juliaOpt, wxWindow* _parent)
-    : m_thread(&JuliaMode::Run, this)
+                    : event(), m_thread(&JuliaMode::Run, this)
 {
     parent = _parent;
     myJuliaOpt = juliaOpt;
@@ -83,13 +82,13 @@ void JuliaMode::Handle_Event()
             switch (event.key.code)
             {
             case sf::Keyboard::W:
-            case sf::Keyboard::Up:    juliaFractal.GetFractalPtr()->SetMovement(Direction::Up); break;
+            case sf::Keyboard::Up:    juliaFractal.GetFractalPtr()->SetMovement(Up); break;
             case sf::Keyboard::S:
-            case sf::Keyboard::Down:  juliaFractal.GetFractalPtr()->SetMovement(Direction::Down); break;
+            case sf::Keyboard::Down:  juliaFractal.GetFractalPtr()->SetMovement(Down); break;
             case sf::Keyboard::A:
-            case sf::Keyboard::Left:  juliaFractal.GetFractalPtr()->SetMovement(Direction::Left); break;
+            case sf::Keyboard::Left:  juliaFractal.GetFractalPtr()->SetMovement(Left); break;
             case sf::Keyboard::D:
-            case sf::Keyboard::Right: juliaFractal.GetFractalPtr()->SetMovement(Direction::Right); break;
+            case sf::Keyboard::Right: juliaFractal.GetFractalPtr()->SetMovement(Right); break;
             default: break;
             }
         }
@@ -100,13 +99,13 @@ void JuliaMode::Handle_Event()
             switch (event.key.code)
             {
             case sf::Keyboard::W:
-            case sf::Keyboard::Up:    juliaFractal.GetFractalPtr()->ReleaseMovement(Direction::Up); break;
+            case sf::Keyboard::Up:    juliaFractal.GetFractalPtr()->ReleaseMovement(Up); break;
             case sf::Keyboard::S:
-            case sf::Keyboard::Down:  juliaFractal.GetFractalPtr()->ReleaseMovement(Direction::Down); break;
+            case sf::Keyboard::Down:  juliaFractal.GetFractalPtr()->ReleaseMovement(Down); break;
             case sf::Keyboard::A:
-            case sf::Keyboard::Left:  juliaFractal.GetFractalPtr()->ReleaseMovement(Direction::Left); break;
+            case sf::Keyboard::Left:  juliaFractal.GetFractalPtr()->ReleaseMovement(Left); break;
             case sf::Keyboard::D:
-            case sf::Keyboard::Right: juliaFractal.GetFractalPtr()->ReleaseMovement(Direction::Right); break;
+            case sf::Keyboard::Right: juliaFractal.GetFractalPtr()->ReleaseMovement(Right); break;
             default: break;
             }
         }
@@ -152,17 +151,11 @@ void JuliaMode::Run()
     play = new ButtonChange("Resources/Play.tga", "Resources/Stop.tga", 0, 450, window);
     play->SetAnchorage(false, true, true, false);
 
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
-#endif
     while (window->isOpen())
     {
         Handle_Event();
     }
     juliaModeState = false; // Signal that the window is closed
-#ifdef _WIN32
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-#endif
 }
 
 void JuliaMode::Launch()

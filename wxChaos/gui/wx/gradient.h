@@ -8,8 +8,8 @@
 */
 
 #pragma once
-#ifndef WXGRADIENT_H
-#define WXGRADIENT_H
+#ifndef WX_GRADIENT_H
+#define WX_GRADIENT_H
 
 #include <wx/colour.h>
 #include <wx/wx.h>

@@ -1,12 +1,10 @@
+#include <wx/gbsizer.h>
+#include <wx/window.h>
 #include "About.h"
-#include <wx/mstream.h>
 
 IMPLEMENT_DYNAMIC_CLASS(AboutDialog, wxDialog)
-
 BEGIN_EVENT_TABLE(AboutDialog, wxDialog)
-
 END_EVENT_TABLE()
-
 
 
 AboutDialog::AboutDialog()
@@ -100,7 +98,7 @@ void AboutDialog::CreateControls()
 
     itemStdDialogButtonSizer14->Realize();
 
-    m_BuildInfoStaticText->SetLabel(AboutDialog::GetBuildInfo(wxBUILDINFO_LONG));
+    m_BuildInfoStaticText->SetLabel(GetBuildInfo(wxBUILDINFO_LONG));
 }
 wxBitmap AboutDialog::GetBitmapResource( const wxString& name )
 {

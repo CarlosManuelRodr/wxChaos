@@ -13,8 +13,6 @@
 
 #include <wx/wx.h>
 #include "FractalCanvas.h"
-#include "global.h"
-
 
 /**
 * @class FuncDialog
@@ -22,7 +20,6 @@
 */
 class FuncDialog : public wxDialog
 {
-private:
     wxPanel* mainPanel;
     wxTextCtrl* text;
     wxButton* closeButton;
@@ -30,21 +27,20 @@ private:
     void OnClose(wxCommandEvent& event);
 
 public:
-    FuncDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(460, 250), 
-               long style = wxDEFAULT_DIALOG_STYLE);
-    ~FuncDialog();
+    explicit FuncDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
+                        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(460, 250),
+                        long style = wxDEFAULT_DIALOG_STYLE);
+    ~FuncDialog() override;
 };
 
 #define FormulaDialogSize wxSize(520, 320)
 
 /**
 * @class FormulaDialog
-* @brief Dialog that lets the user to introduce custom formulas.
+* @brief Dialog that lets the user introduce custom formulas.
 */
 class FormulaDialog : public wxDialog
 {
-private:
     wxPanel* mainPanel;
     wxTextCtrl* formulaCtrl;
     wxStaticText* bailText;
@@ -75,7 +71,7 @@ public:
                   wxMenuItem* juliaManual, bool* Active, FractalCanvas* _fCanvas, wxWindow* _parent,
                   wxWindowID id = wxID_ANY, const wxString& title = wxT("User formula"), const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
-    ~FormulaDialog();
+    ~FormulaDialog() override;
 };
 
 #endif

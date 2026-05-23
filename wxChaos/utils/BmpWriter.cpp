@@ -68,25 +68,25 @@ BMPWriter::~BMPWriter()
 void BMPWriter::WriteLine(BMPPixel* data)
 {
     // Writes BMP line.
-    if(indexHeight < imageHeight)
+    if (indexHeight < imageHeight)
     {
-        for(unsigned int i=0; i<imageWidth; i++)
+        for (unsigned int i=0; i<imageWidth; i++)
         {
             file.write(ToByte(&data[i].b), 1);
             file.write(ToByte(&data[i].g), 1);
             file.write(ToByte(&data[i].r), 1);
         }
-        if(paddingBytes == 1)
+        if (paddingBytes == 1)
         {
             uint8_t padding = 0x00;
             file.write(ToByte(&padding), 1);
         }
-        if(paddingBytes == 2)
+        if (paddingBytes == 2)
         {
             uint16_t padding = 0x0000;
             file.write(ToByte(&padding), 2);
         }
-        if(paddingBytes == 3)
+        if (paddingBytes == 3)
         {
             uint32_t padding = 0x00000000;
             file.write(ToByte(&padding), 3);

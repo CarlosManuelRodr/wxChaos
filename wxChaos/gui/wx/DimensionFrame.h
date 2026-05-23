@@ -21,7 +21,7 @@
 #include <mathplot.h>
 #include "FractalHandler.h"
 
-extern bool dimFrameState;
+extern bool dimensionFrameState;
 void GetDesktopResolution(int& width, int& height);
 
 /**
@@ -50,11 +50,11 @@ enum FractalList
 };
 
 /**
-* @class DimCalculator
+* @class DimensionCalculator
 * @brief A multithread fractal dimension calculator.
 */
 
-class DimCalculator
+class DimensionCalculator
 {
     int ho, hf;            ///< Work area of the thread.
     bool** map;            ///< Fractal target.
@@ -63,19 +63,19 @@ class DimCalculator
     int N;                ///< Number of counted boxes.
 
 public:
-    DimCalculator();    ///< Constructor.
+    DimensionCalculator();    ///< Constructor.
 
     ///@brief Sets the map of the fractal target.
-    ///@param _map Pointer to fractal map.
+    ///@param _map Pointer to a fractal map.
     ///@param _size Size of the map (it will always be a square map).
-    ///@param _ho Upper limit of the workarea.
-    ///@param _hf Lower limit of the workarea.
+    ///@param _ho Upper limit of the work area.
+    ///@param _hf Lower limit of the work area.
     void SetMap(bool** _map, int _size, int _ho, int _hf);
 
-    void SetDiv(int _div);     ///< Set number of grid divisions.
+    void SetDiv(int _div);     ///< Set the number of grid divisions.
     void Run();                ///< The worker function for the thread.
-    int GetBoxCount();
-    bool IsRunning();
+    int GetBoxCount() const;
+    bool IsRunning() const;
     void Terminate(); // To signal the thread to stop
 };
 
@@ -93,7 +93,7 @@ class ImagePanel : public wxPanel
 public:
     ImagePanel(wxWindow* parent, int id, int _size);
     ~ImagePanel() override;
-    void OnPaint(wxPaintEvent& event);
+    void OnPaint(wxPaintEvent&);
 
     ///@brief Sets the map of the fractal target.
     ///@param _map Pointer to a fractal map.
@@ -128,8 +128,8 @@ class ConfFractOptDialog : public wxDialog
     std::vector<wxSpinCtrl*> spinControls;
     std::vector<wxCheckBox*> checkBoxes;
 
-    void OnOk(wxCommandEvent& event);
-    void OnApply(wxCommandEvent& event);
+    void OnOk(wxCommandEvent&);
+    void OnApply(wxCommandEvent&);
     void AdjustOptPanel();        ///< Adjust the option panel when a new fractal type is selected.
     void DeleteOptPanel();        ///< Deletes all the elements in the option panel.
 
@@ -172,10 +172,12 @@ public:
 class PlotWindow : public wxFrame
 {
     mpWindow* m_plot;
+    wxWindowID id_;
+
 public:
-    PlotWindow(std::vector<double> xList, std::vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
+    PlotWindow(const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
-    PlotWindow(LineParams params, std::vector<double> xList, std::vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
+    PlotWindow(LineParams params, const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~PlotWindow() override;
 };
@@ -238,7 +240,7 @@ class DimensionFrame : public wxFrame
     FractalHandler fractalHandler;              ///< The fractal handler.
     ImagePanel* previewImage;                   ///< Panel to show a preview of the dimension calculator.
     Options myOpt;                              ///< Fractal options.
-    DimCalculator* dimCalculator;               ///< An array of DimCalculator.
+    DimensionCalculator* dimCalculator;               ///< An array of DimCalculator.
     sf::Thread** dimThreads;                    ///< An array of sf::Thread pointers.
     std::vector<int> div;                       ///< Vector to hold the number of divisions.
     std::vector<double> epsilon;                ///< Vector to hold the epsilon values.
@@ -257,21 +259,21 @@ class DimensionFrame : public wxFrame
     int progress;
     sf::Clock clock;
 
-    void OnChangeFractal(wxCommandEvent& event);
-    void OnRenderPreview(wxCommandEvent& event);
-    void OnCalculate(wxCommandEvent& event);
-    void OnUpdateUI(wxUpdateUIEvent& event);
-    void OnChangeDump(wxCommandEvent& event);
-    void OnManualMaxY(wxCommandEvent& event);
-    void OnClose(wxCommandEvent& event);
-    void OnDestroy(wxCloseEvent& event);
-    void OnFractalOpt(wxCommandEvent& event);
-    void OnSavePreview(wxCommandEvent& event);
-    void OnHelp(wxCommandEvent& event);
+    void OnChangeFractal(wxCommandEvent&);
+    void OnRenderPreview(wxCommandEvent&);
+    void OnCalculate(wxCommandEvent&);
+    void OnUpdateUI(wxUpdateUIEvent&);
+    void OnChangeDump(wxCommandEvent&);
+    void OnManualMaxY(wxCommandEvent&);
+    void OnClose(wxCommandEvent&);
+    void OnDestroy(wxCloseEvent&);
+    void OnFractalOpt(wxCommandEvent&);
+    void OnSavePreview(wxCommandEvent& );
+    void OnHelp(wxCommandEvent&);
 
-    void CreateFractal(int size);
+    void CreateFractal(int pSize);
     void GetScriptFractals();        ///< Creates the menu elements corresponding to the script fractals.
-    void WriteText(wxString txt);    ///< Writes text to the output panel.
+    void WriteText(const wxString &txt) const;    ///< Writes text to the output panel.
 public:
     DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Calculate Dimension"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,

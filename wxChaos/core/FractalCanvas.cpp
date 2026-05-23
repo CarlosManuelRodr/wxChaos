@@ -52,19 +52,19 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
     play->Resize(this);
 
     screenPointer = new ScreenPointer(this);
-    keybImage.loadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
+    keyboardImage.loadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
     mouseImage.loadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
     helpImage.loadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
 
-    keybTexture.loadFromImage(keybImage);
+    keyboardTexture.loadFromImage(keyboardImage);
     mouseTexture.loadFromImage(mouseImage);
     helpTexture.loadFromImage(helpImage);
 
-    outKeyb.setTexture(keybTexture);
+    outKeyboard.setTexture(keyboardTexture);
     outMouse.setTexture(mouseTexture);
     outHelp.setTexture(helpTexture);
 
-    outKeyb.setColor(sf::Color(255, 255, 255, 220));
+    outKeyboard.setColor(sf::Color(255, 255, 255, 220));
     outMouse.setColor(sf::Color(255, 255, 255, 220));
     outHelp.setColor(sf::Color(255, 255, 255, 220));
 
@@ -108,7 +108,7 @@ void FractalCanvas::OnUpdate()
             {
                 if (this->getSize().y > 300 || this->getSize().x > 300)
                 {
-                    outKeyb.setPosition(this->getSize().x - 120, this->getSize().y - 80);
+                    outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
                     outMouse.setPosition(this->getSize().x - 90, 0);
                 }
             }
@@ -222,14 +222,14 @@ void FractalCanvas::OnUpdate()
 
         if (keybGuide && keybGuideMode)
         {
-            this->draw(outKeyb);
+            this->draw(outKeyboard);
             this->draw(outMouse);
         }
         if (helpImageMode)
         {
             this->draw(outHelp);
             if (!keybGuide)
-                this->draw(outKeyb);
+                this->draw(outKeyboard);
         }
 
         if (juliaMode || orbitMode || sliderMode) screenPointer->Show(this);
@@ -262,7 +262,7 @@ void FractalCanvas::SetWxSize(wxSize size)
     {
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyb.setPosition(this->getSize().x - 120, this->getSize().y - 80);
+            outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
             outMouse.setPosition(this->getSize().x - 90, 0);
             keybGuide = true;
         }
@@ -271,7 +271,7 @@ void FractalCanvas::SetWxSize(wxSize size)
     }
     if (helpImageMode)
     {
-        outKeyb.setPosition(this->getSize().x - keybImage.getSize().x, this->getSize().y - keybImage.getSize().y);
+        outKeyboard.setPosition(this->getSize().x - keyboardImage.getSize().x, this->getSize().y - keyboardImage.getSize().y);
         outHelp.setPosition((this->getSize().x - helpImage.getSize().x) / 2, (this->getSize().y - helpImage.getSize().y) / 2);
     }
 }
@@ -389,7 +389,7 @@ void FractalCanvas::SetKeybGuide(bool mode)
         // Adjust position of the keyboard guide.
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyb.setPosition(this->getSize().x - keybImage.getSize().x, this->getSize().y - keybImage.getSize().y);
+            outKeyboard.setPosition(this->getSize().x - keyboardImage.getSize().x, this->getSize().y - keyboardImage.getSize().y);
             outMouse.setPosition(this->getSize().x - mouseImage.getSize().x, 0);
             keybGuide = true;
         }
@@ -401,7 +401,7 @@ void FractalCanvas::SetKeybGuide(bool mode)
 }
 void FractalCanvas::ShowHelpImage()
 {
-    outKeyb.setPosition(this->getSize().x - keybImage.getSize().x, this->getSize().y - keybImage.getSize().y);
+    outKeyboard.setPosition(this->getSize().x - keyboardImage.getSize().x, this->getSize().y - keyboardImage.getSize().y);
     outHelp.setPosition((this->getSize().x - helpImage.getSize().x) / 2, (this->getSize().y - helpImage.getSize().y) / 2);
     helpImageMode = true;
 }
@@ -486,7 +486,7 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
     {
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyb.setPosition(this->getSize().x - 120, this->getSize().y - 80);
+            outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
             outMouse.setPosition(this->getSize().x - 90, 0);
             keybGuide = true;
         }
@@ -495,7 +495,7 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
     }
     if (helpImageMode)
     {
-        outKeyb.setPosition(this->getSize().x - 120, this->getSize().y - 80);
+        outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
         outHelp.setPosition((this->getSize().x - helpImage.getSize().x) / 2, (this->getSize().y - helpImage.getSize().y) / 2);
     }
 

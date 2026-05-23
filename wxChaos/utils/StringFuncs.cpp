@@ -1,3 +1,4 @@
+#include <sstream>
 #include "StringFuncs.h"
 using namespace std;
 
@@ -7,25 +8,26 @@ string str_num_to_string(const int d)
     oss << d;
     return oss.str();
 }
+
 string str_num_to_string(const double d)
 {
     ostringstream oss;
     oss << d;
     return oss.str();
 }
+
 string str_bool_to_string(const bool d)
 {
-    if(d)
-        return string("True");
-    else
-        return string("False");
+    return string(d ? "True" : "False");
 }
+
 wxString num_to_string(const int d)
 {
     wxString num;
     num << d;
     return num;
 }
+
 wxString num_to_string(const double d)
 {
     ostringstream oss;
@@ -33,113 +35,74 @@ wxString num_to_string(const double d)
     wxString num(oss.str().c_str(), wxConvUTF8);
     return num;
 }
+
 wxString bool_to_string(const bool d)
 {
-    if(d)
-        return wxString(wxT("True"));
-    else
-        return wxString(wxT("False"));
+    return d ? wxString(wxT("True")) : wxString(wxT("False"));
 }
+
 double string_to_double(const wxString& s)
 {
     // s.ToDouble(&num) fails on linux.
     string temp(s.mb_str());
     istringstream i(temp);
     double x;
-    if (!(i >> x))
-        return 0;
-    return x;
+    return !(i >> x) ? 0 : x;
 }
+
 int string_to_int(const wxString& s)
 {
     return wxAtoi(s);
 }
+
 double string_to_double(const string& s)
 {
     istringstream i(s);
     double x;
-    if (!(i >> x))
-        return 0;
-    return x;
+    return !(i >> x) ? 0 : x;
 }
+
 int string_to_int(const string& s)
 {
     istringstream i(s);
     double x;
-    if (!(i >> x))
-        return 0;
-    return static_cast<int>(x);
+    return !(i >> x) ? 0 : static_cast<int>(x);
 }
 
-bool is_there_substr(const wxString cad, const wxString cadBus)
+bool is_there_substr(const wxString &cad, const wxString &cadBus)
 {
-    int nCad, nCadBus;
-    nCad = cad.length();
-    nCadBus = cadBus.length();
-    wxString subCad;
+    const int nCad = cad.length();
+    int nCadBus = cadBus.length();
 
-    for(int i=0; i<=nCad-nCadBus; i++)
+    for (int i=0; i<=nCad-nCadBus; i++)
     {
-        subCad = cad.substr(i, nCadBus);
-        if(subCad == cadBus)
-            return true;
-    }
-    return false;
-}
-bool is_there_substr(const string cad, const string cadBus)
-{
-    int nCad, nCadBus;
-    nCad = cad.length();
-    nCadBus = cadBus.length();
-    string subCad;
-
-    for(int i=0; i<=nCad-nCadBus; i++)
-    {
-        subCad = cad.substr(i, nCadBus);
-        if(subCad == cadBus)
+        wxString subCad = cad.substr(i, nCadBus);
+        if (subCad == cadBus)
             return true;
     }
     return false;
 }
 
-bool is_there_function(const wxString input)
+bool is_there_substr(const string &cad, const string &cadBus)
 {
-    // Look for a sign outside the parenthesis.
-    int signLevel = 0;
-    for(unsigned int i=0; i<input.length(); i++)
+    int nCad = cad.length();
+    const int nCadBus = cadBus.length();
+
+    for (int i=0; i<=nCad-nCadBus; i++)
     {
-        if(input[i] == '(') signLevel--;
-        if(input[i] == ')') signLevel++;
-        if(signLevel == 0)
-        {
-            switch((char)input[i])
-            {
-            case '+':
-            case '-':
-            case '*':
-            case '^':
-            case '/':
-                return false;
-                break;
-            }
-        }
+        string subCad = cad.substr(i, nCadBus);
+        if (subCad == cadBus)
+            return true;
     }
-    // Search function.
-    bool pLeft = false, pRight = false;
-    for(unsigned int i=0; i<input.length(); i++)
-    {
-        if(input[i] == '(') pLeft = true;
-        if(input[i] == ')') pRight = true;
-    }
-    if(pLeft && pRight) return true;
-    else return false;
+    return false;
 }
-string replace_ext(const string filepath, const string newExt)
+
+string replace_ext(const string &filepath, const string &newExt)
 {
     // Changes file extension.
-    unsigned int extDot;
+    unsigned int extDot = 0;
     string out = filepath;
-    for(unsigned int i=0; i<filepath.size(); i++)
+    for (unsigned int i=0; i<filepath.size(); i++)
     {
         if(filepath[i] == '.') extDot = i;
     }
@@ -147,26 +110,27 @@ string replace_ext(const string filepath, const string newExt)
     out += newExt;
     return out;
 }
-bool check_ext(const string filename, const string ext)
+bool check_ext(const string &filename, const string &ext)
 {
-    for(unsigned int i=0; i<filename.length(); i++)
+    for (unsigned int i=0; i<filename.length(); i++)
     {
-        if(filename[i] == '.' && i+1 != filename.length())
+        if (filename[i] == '.' && i+1 != filename.length())
         {
-            if(filename.substr(i+1, filename.size()-1-i) == ext)
+            if (filename.substr(i+1, filename.size()-1-i) == ext)
                 return true;
         }
     }
     return false;
 }
+
 vector<int> get_int_list(const wxString in)
 {
     vector<int> out;
     int firstPos = 0;
 
-    for(unsigned int i=0; i<in.length(); i++)
+    for (unsigned int i=0; i<in.length(); i++)
     {
-        if(in[i] == ',')
+        if (in[i] == ',')
         {
             out.push_back(string_to_int(in.substr(firstPos, i-firstPos)));
             firstPos = i+1;
@@ -175,6 +139,5 @@ vector<int> get_int_list(const wxString in)
 
     // Get last number.
     out.push_back(string_to_int(in.substr(firstPos, in.size()-firstPos)));
-
     return out;
 }

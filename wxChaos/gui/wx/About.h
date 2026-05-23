@@ -13,10 +13,8 @@
 #define _aboutDialog
 
 #include <wx/statline.h>
-#include <wx/gbsizer.h>
 #include <wx/gdicmn.h>
 #include <wx/wx.h>
-#include <wx/window.h>
 
 #define SYMBOL_ABOUTDIALOG_STYLE wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_ABOUTDIALOG_TITLE _("About ")

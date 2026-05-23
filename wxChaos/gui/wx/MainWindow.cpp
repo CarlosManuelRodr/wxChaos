@@ -2,6 +2,7 @@
 #include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
 #include "Filesystem.h"
+#include "StringFuncs.h"
 #include <fstream>
 
 #ifdef _WIN32
@@ -781,9 +782,9 @@ void MainFrame::OnZoomRecorder(wxCommandEvent& event)
 }
 void MainFrame::OnDimensionCalculator(wxCommandEvent& event)
 {
-    if (!dimFrameState)
+    if (!dimensionFrameState)
     {
-        dimFrameState = true;
+        dimensionFrameState = true;
         dimensionCalculator = new DimensionFrame(this);
         dimensionCalculator->Show(true);
     }

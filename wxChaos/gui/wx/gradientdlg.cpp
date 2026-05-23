@@ -1,5 +1,4 @@
 #include "gradientdlg.h"
-#include "global.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxGradientDialog, wxDialog)
 
@@ -9,16 +8,12 @@ BEGIN_EVENT_TABLE(wxGradientDialog, wxDialog)
     EVT_BUTTON(wxID_DELETE, wxGradientDialog::OnDeleteColor)
 END_EVENT_TABLE()
 
-wxGradientDialog::wxGradientDialog()
-{
-}
+wxGradientDialog::wxGradientDialog() {}
 wxGradientDialog::wxGradientDialog(wxWindow* parent, wxGradient grad)
 {
     Create(parent, grad);
 }
-wxGradientDialog::~wxGradientDialog()
-{
-}
+wxGradientDialog::~wxGradientDialog() {}
 bool wxGradientDialog::Create(wxWindow* parent, wxGradient grad)
 {
     if (!wxDialog::Create(parent, wxID_ANY, wxT("Gradient editor")))    // Txt: "Gradient editor"
@@ -91,7 +86,7 @@ void wxGradientDialog::paintGradient()
     temp.setMax(300);
     gradientBmp = new wxBitmap(gradientStatBmp->GetSize().GetWidth(), gradientStatBmp->GetSize().GetHeight());
     dc.SelectObject(*gradientBmp);
-    for(int i = temp.getMin(); i<temp.getMax(); i++)
+    for (int i = temp.getMin(); i<temp.getMax(); i++)
     {
         dc.SetPen(wxPen(temp.getColorAt(i), 1));
         dc.DrawLine(i, 0, i, gradientStatBmp->GetSize().GetHeight());
@@ -102,7 +97,6 @@ void wxGradientDialog::paintGradient()
 void wxGradientDialog::paintStops()
 {
     m_displayedStops = m_gradient->getStops();
-    std::vector<wxColor>::iterator itr;
     int ctr = 0;
     int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
     wxBufferedDC dc;
@@ -110,7 +104,7 @@ void wxGradientDialog::paintStops()
     dc.SelectObject(*stopsBmp);
     dc.SetBackground(wxBrush(GetBackgroundColour()));
     dc.Clear();
-    for(itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
+    for (std::vector<wxColor>::iterator itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
     {
         // Draw triangle.
         dc.SetPen(wxPen(*wxBLACK));
@@ -141,8 +135,7 @@ void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
     selectedColorStop = -1;
     int ctr = 0;
     int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
-    std::vector<wxColor>::iterator itr;
-    for(itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
+    for (std::vector<wxColor>::iterator itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
     {
         if(event.GetX() >= ctr*dist && event.GetX() <= ctr*dist + 11)
         {
@@ -152,7 +145,7 @@ void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
         ctr++;
     }
     m_displayedStops = m_gradient->getStops();
-    if(selectedColorStop!=-1)
+    if (selectedColorStop!=-1)
     {
         colorStatBmp->SetBackgroundColour(m_displayedStops[selectedColorStop]);
         colorStatBmp->ClearBackground();
@@ -182,7 +175,7 @@ void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
     stopsStatBmp->SetBitmap(*stopsBmp);
 
     colorEditBtn->Enable(true);
-    if(m_displayedStops.size() > 2)
+    if (m_displayedStops.size() > 2)
         colorDeleteBtn->Enable(true);
 
     event.Skip();
@@ -193,7 +186,7 @@ void wxGradientDialog::OnEditColor(wxCommandEvent& WXUNUSED(event))
     data.SetCustomColour(0, colorStatBmp->GetBackgroundColour());
     data.SetColour(colorStatBmp->GetBackgroundColour());
     wxColourDialog dialog(this, &data);
-    if(dialog.ShowModal()==wxID_OK)
+    if (dialog.ShowModal()==wxID_OK)
     {
         colorStatBmp->SetBackgroundColour(dialog.GetColourData().GetColour());
         colorStatBmp->ClearBackground();
@@ -214,7 +207,7 @@ void wxGradientDialog::OnEditColor(wxCommandEvent& WXUNUSED(event))
 }
 void wxGradientDialog::OnDeleteColor(wxCommandEvent& WXUNUSED(event))
 {
-    if(selectedColorStop!=-1 && m_displayedStops.size()>2)
+    if (selectedColorStop!=-1 && m_displayedStops.size()>2)
     {
         m_gradient->removeColorStop(selectedColorStop);
         paintGradient();

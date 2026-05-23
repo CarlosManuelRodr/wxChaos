@@ -21,22 +21,7 @@
 #include "FormulaDialog.h"
 #include "ScriptEditor.h"
 #include "ZoomRecorder.h"
-#include "StringFuncs.h"
 #include "DimensionFrame.h"
-
-#ifdef _WIN32
-#include <WTypes.h>
-#endif
-#ifdef linux
-#include <unistd.h>
-#include <X11/Xlib.h>
-#include <X11/extensions/Xrandr.h>
-// X11's X.h defines a macro named 'Complex' that conflicts with the
-// ScriptCategory enumeration.  Undefine it so the enum name is usable.
-#ifdef Complex
-#undef Complex
-#endif
-#endif
 
 /**
 * @enum IDS
@@ -207,7 +192,7 @@ class MainFrame : public wxFrame
 public :
     MainFrame();
     void OnSave(wxCommandEvent& event);                    ///< Saves a picture of the viewing area.
-    void OnJuliaMode(wxCommandEvent& event);               ///< Opens a windows with the Julia version of the selected fractal.
+    void OnJuliaMode(wxCommandEvent& event);               ///< Opens a window with the Julia version of the selected fractal.
     void OnPalette(wxCommandEvent& event);                 ///< Opens a ColorFrame.
     void OnWelcomeDialog(wxCommandEvent& event);           ///< Shows the welcome dialog.
     void OnAbout(wxCommandEvent& event);                   ///< Opens the About frame.

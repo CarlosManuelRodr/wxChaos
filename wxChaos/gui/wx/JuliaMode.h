@@ -20,7 +20,6 @@ extern bool juliaModeState;
 */
 class JuliaMode
 {
-private:
     sf::RenderWindow* window;
     FractalCanvas* target;
     FractalHandler juliaFractal;

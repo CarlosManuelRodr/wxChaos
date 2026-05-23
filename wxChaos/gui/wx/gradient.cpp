@@ -1,6 +1,6 @@
 #include "gradient.h"
 
-wxGradient::wxGradient(){}
+wxGradient::wxGradient() {}
 
 wxGradient::wxGradient(std::vector<wxColor> stops, int min, int max)
 {

@@ -43,8 +43,8 @@ struct MainWindowStatus
 * @class FractalCanvas
 * @brief This is where the fractal is drawn.
 *
-* FractalCanvas handles all the memory related stuff that happens when a new fractal is selected or the program is opened or closed.
-* It's main purpose is to control the flow of the SFML events and to draw the generated image along with some GUI elements.
+* FractalCanvas handles all the memory-related stuff that happens when a new fractal is selected or the program is opened or closed.
+* Its main purpose is to control the flow of the SFML events and to draw the generated image along with some GUI elements.
 */
 class FractalCanvas : public wxSFMLCanvas
 {
@@ -54,26 +54,17 @@ class FractalCanvas : public wxSFMLCanvas
     ButtonChange* play;
     ScreenPointer* screenPointer;
     FractalType type;
-    Fractal* target;                    ///< Internally the methods of this class communicate with the fractal through this pointer.
+    Fractal* target;                        ///< Internally, the methods of this class communicate with the fractal through this pointer.
 
-    sf::Image keybImage;                ///< Texture of the info images.
+    sf::Image keyboardImage;                ///< Texture of the info images.
     sf::Image mouseImage;
     sf::Image helpImage;
-    sf::Texture keybTexture;
+    sf::Texture keyboardTexture;
     sf::Texture mouseTexture;
     sf::Texture helpTexture;
-    sf::Sprite outKeyb;                 ///< Sprite of the info images.
+    sf::Sprite outKeyboard;                ///< Sprite of the info images.
     sf::Sprite outMouse;
     sf::Sprite outHelp;
-
-    /* Since Linux can't handle wxSfml and a separate Sfml window the Julia fractal will be
-       displayed on the fractal canvas. */
-#ifdef __linux__
-    sf::Image juliaImage;
-    sf::Texture juliaTexture;
-    sf::Sprite outJulia;
-    FractalHandler juliaHandler;
-#endif
 
     FormulaOpt userFormula;
     ScriptData scriptData;

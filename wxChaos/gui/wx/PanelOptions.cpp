@@ -26,13 +26,13 @@ void PanelOptions::LinkBool(PanelOptionType pType, wxString labelTxt, bool* link
     linkTo.push_back(LinkTo::ToBool);
     boolTarget.push_back(linkBool);
 }
-int PanelOptions::GetElementsSize() { return type.size(); }
-LinkTo PanelOptions::GetLinkType(int index) { return linkTo.at(index); }
+int PanelOptions::GetElementsSize() const { return type.size(); }
+LinkTo PanelOptions::GetLinkType(int index) const { return linkTo.at(index); }
 wxString PanelOptions::GetLabelElement(int index) { return label.at(index); }
-int* PanelOptions::GetIntElement(int index) { return intTarget.at(index); }
-double* PanelOptions::GetDoubleElement(int index) { return dblTarget.at(index); }
-bool* PanelOptions::GetBoolElement(int index) { return boolTarget.at(index); }
+int* PanelOptions::GetIntElement(int index) const { return intTarget.at(index); }
+double* PanelOptions::GetDoubleElement(int index) const { return dblTarget.at(index); }
+bool* PanelOptions::GetBoolElement(int index) const { return boolTarget.at(index); }
 wxString PanelOptions::GetDefault(int index) { return defaults.at(index); }
-PanelOptionType PanelOptions::GetPanelOptType(int index) { return type.at(index); }
+PanelOptionType PanelOptions::GetPanelOptType(int index) const { return type.at(index); }
 void PanelOptions::SetForceShow(bool mode) { forceShow = mode; }
-bool PanelOptions::GetForceShow() { return forceShow; }
+bool PanelOptions::GetForceShow() const { return forceShow; }
