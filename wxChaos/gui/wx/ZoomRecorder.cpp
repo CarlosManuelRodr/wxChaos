@@ -128,7 +128,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     fractalHandler.GetFractalPtr()->SetAreaOfView(outermostZoom);
 
     // UI initialization
-    this->SetSizeHints(wxSize(600, 374), wxSize(1200, 578));
+    this->SetSizeHints(wxSize(900, 680), wxSize(1400, 900));
 
     wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);

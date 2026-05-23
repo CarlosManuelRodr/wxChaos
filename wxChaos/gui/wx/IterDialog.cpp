@@ -13,7 +13,7 @@ IterDialog::IterDialog(bool* Active, Fractal* _target, wxWindow* parent, wxWindo
 
     active = Active;
     target = _target;
-    this->SetSizeHints(wxSize(314, 124), wxSize(314, 124));
+    this->SetSizeHints(wxSize(420, 180), wxSize(420, 180));
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 

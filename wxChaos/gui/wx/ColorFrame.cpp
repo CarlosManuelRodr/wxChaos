@@ -170,7 +170,7 @@ ColorFrame::ColorFrame(bool* _active, Fractal* _target, wxWindow* parent,
     active = _active;
     target = _target;
 
-    this->SetSizeHints(wxSize(-1,-1), wxSize(-1,-1));
+    this->SetSizeHints(wxSize(760, 700), wxDefaultSize);
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 

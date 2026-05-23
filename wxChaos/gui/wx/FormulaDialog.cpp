@@ -6,7 +6,7 @@ FuncDialog::FuncDialog(wxWindow* parent, wxWindowID id, const wxString& title, c
     : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
-    this->SetSizeHints(wxDefaultSize, wxDefaultSize);
+    this->SetSizeHints(wxSize(460, 250), wxDefaultSize);
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 

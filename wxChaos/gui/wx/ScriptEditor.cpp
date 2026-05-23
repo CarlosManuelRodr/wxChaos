@@ -33,7 +33,7 @@ ScriptNameDialog::ScriptNameDialog(wxWindow* parent, wxWindowID id, const wxStri
                                    const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
-    this->SetSizeHints(wxSize(494, 158), wxDefaultSize);
+    this->SetSizeHints(wxSize(600, 220), wxDefaultSize);
 
     wxBoxSizer* mainSizer;
     mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -96,7 +96,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, wxWindowID id, const 
     isActive = active;
     currentScriptIndex = -1;
 
-    this->SetSizeHints(wxSize(1069, 600), wxDefaultSize);
+    this->SetSizeHints(wxSize(1200, 760), wxDefaultSize);
 
     wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);

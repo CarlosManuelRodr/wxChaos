@@ -69,7 +69,7 @@ private:
     int CalculateTotalFrames();
 public:
     ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Zoom recorder"),
-                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(600, 400),
+                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(960, 720),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ZoomRecorder();
 };

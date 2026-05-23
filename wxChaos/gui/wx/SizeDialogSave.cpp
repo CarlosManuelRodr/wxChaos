@@ -12,7 +12,7 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     saveProgressAvailable = _saveProgressAvailable;
     finished = false;
     clock.restart();
-    this->SetSizeHints(wxSize(366, 127), wxSize(366, 127));
+    this->SetSizeHints(wxSize(480, 180), wxSize(480, 180));
 
     wxBoxSizer* mainSizer;
     mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -114,7 +114,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     screenRatio = (double)opt.screenWidth / (double)opt.screenHeight;
     fractalType = type;
 
-    this->SetSizeHints(wxSize(283, 201), wxSize(283, 201));
+    this->SetSizeHints(wxSize(420, 300), wxSize(420, 300));
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 

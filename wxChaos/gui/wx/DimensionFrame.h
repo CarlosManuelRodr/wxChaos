@@ -20,7 +20,6 @@
 
 #include <mathplot.h>
 #include "FractalHandler.h"
-#include "global.h"
 
 extern bool dimFrameState;
 void GetDesktopResolution(int& width, int& height);
@@ -93,11 +92,11 @@ class ImagePanel : public wxPanel
 
 public:
     ImagePanel(wxWindow* parent, int id, int _size);
-    ~ImagePanel();
+    ~ImagePanel() override;
     void OnPaint(wxPaintEvent& event);
 
     ///@brief Sets the map of the fractal target.
-    ///@param _map Pointer to fractal map.
+    ///@param _map Pointer to a fractal map.
     ///@param _div Number of grid divisions to draw.
     void SetMap(bool** _map, int _div);
 };
@@ -136,7 +135,7 @@ class ConfFractOptDialog : public wxDialog
 
 public:
     ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Fractal options"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(213, 361), long style = wxCAPTION);
+        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 560), long style = wxCAPTION);
     ~ConfFractOptDialog();
 
     ///@brief Set new fractal target.
@@ -172,21 +171,16 @@ public:
 */
 class PlotWindow : public wxFrame
 {
-private:
     mpWindow* m_plot;
 public:
     PlotWindow(std::vector<double> xList, std::vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(390, 390), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     PlotWindow(LineParams params, std::vector<double> xList, std::vector<double> yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(390, 390), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
-    ~PlotWindow();
+        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+    ~PlotWindow() override;
 };
 
-#ifdef _WIN32
-#define DimensionFrameSize wxSize(890, 674)
-#elif __linux__
-#define DimensionFrameSize wxSize( 890,710 )
-#endif
+#define DimensionFrameSize wxSize(1200, 1260)
 
 /**
 * @class DimensionFrame
@@ -194,7 +188,6 @@ public:
 */
 class DimensionFrame : public wxFrame
 {
-private:
     wxScrolledWindow* mainPanel;
     wxChoice* fractalChoice;
     wxStaticText* minXTxt;
@@ -247,13 +240,13 @@ private:
     Options myOpt;                              ///< Fractal options.
     DimCalculator* dimCalculator;               ///< An array of DimCalculator.
     sf::Thread** dimThreads;                    ///< An array of sf::Thread pointers.
-    std::vector<int> div;                            ///< Vector to hold the number of divisions.
-    std::vector<double> epsilon;                     ///< Vector to hold the epsilon values.
-    std::vector<int> boxCount;                       ///< Vector to hold the box counting.
-    std::vector<ScriptData> loadedScripts;           ///< Parameters and location of user scripts.
+    std::vector<int> div;                       ///< Vector to hold the number of divisions.
+    std::vector<double> epsilon;                ///< Vector to hold the epsilon values.
+    std::vector<int> boxCount;                  ///< Vector to hold the box counting.
+    std::vector<ScriptData> loadedScripts;      ///< Parameters and location of user scripts.
     int divIndex;                               ///< Division index.
     int threadNumber;                           ///< Number of render threads.
-    std::vector<int> scriptList;                     ///< List of script fractals.
+    std::vector<int> scriptList;                ///< List of script fractals.
     bool scriptSelected;
     bool firstRender;
 
@@ -283,7 +276,7 @@ public:
     DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Calculate Dimension"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
         long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
-    ~DimensionFrame();
+    ~DimensionFrame() override;
 };
 
 #endif

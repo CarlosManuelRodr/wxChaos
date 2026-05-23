@@ -7,7 +7,7 @@ HTMLViewer::HTMLViewer(wxString htmlFile, wxWindow* parent, wxWindowID id, const
                        const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style)
 {
-    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+    this->SetSizeHints(wxSize(900, 620), wxDefaultSize);
 
     wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);

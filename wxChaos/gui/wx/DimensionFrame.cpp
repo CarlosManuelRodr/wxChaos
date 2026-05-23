@@ -7,7 +7,6 @@
 #include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
 #include "Filesystem.h"
-#include "global.h"
 #include "SystemUtils.h"
 using namespace std;
 
@@ -54,9 +53,9 @@ void DimCalculator::Run()
     running = true;
 
     N = 0;
-    double epsilon = (double)size / (double)div;
-    int ey_init = (double)ho / epsilon;
-    int ey_end = (double)hf / epsilon;
+    double epsilon = static_cast<double>(size) / static_cast<double>(div);
+    int ey_init = static_cast<double>(ho) / epsilon;
+    int ey_end = static_cast<double>(hf) / epsilon;
 
     // Iterate through the boxes.
     for (int ey = ey_init; ey < ey_end; ey++)
@@ -247,9 +246,9 @@ ConfFractOptDialog::ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWin
     : wxDialog(parent, id, title, pos, size, style)
 {
     target = _target;
-    this->SetSizeHints(wxSize(213, 361), wxDefaultSize);
+    this->SetSizeHints(DimensionFrameSize, wxDefaultSize);
 
-    wxBoxSizer* mainBoxxy = new wxBoxSizer(wxVERTICAL);
+    auto mainBoxxy = new wxBoxSizer(wxVERTICAL);
 
     mainScroll = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
     mainScroll->SetScrollRate(5, 5);
@@ -473,16 +472,16 @@ PlotWindow::PlotWindow(vector<double> xList, vector<double> yList, wxWindow* par
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_plot = new mpWindow(this, -1, wxPoint(0, 0), wxSize(500, 500), wxBORDER_NONE);
-    mpScaleX* xaxis = new mpScaleX(wxT("Epsilon"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-    mpScaleY* yaxis = new mpScaleY(wxT("N"), mpALIGN_LEFT, true);
-    xaxis->SetDrawOutsideMargins(false);
-    yaxis->SetDrawOutsideMargins(false);
-    xaxis->SetFont(graphFont);
-    yaxis->SetFont(graphFont);
+    mpScaleX* xAxis = new mpScaleX(wxT("Epsilon"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+    mpScaleY* yAxis = new mpScaleY(wxT("N"), mpALIGN_LEFT, true);
+    xAxis->SetDrawOutsideMargins(false);
+    yAxis->SetDrawOutsideMargins(false);
+    xAxis->SetFont(graphFont);
+    yAxis->SetFont(graphFont);
 
     m_plot->SetMargins(30, 30, 50, 100);
-    m_plot->AddLayer(xaxis);
-    m_plot->AddLayer(yaxis);
+    m_plot->AddLayer(xAxis);
+    m_plot->AddLayer(yAxis);
     mpFXYVector* vectorLayer = new mpFXYVector(_("Data"));
     vectorLayer->SetData(xList, yList);
     vectorLayer->SetPen(wxPen(*wxBLUE, 3, wxPENSTYLE_SOLID));
@@ -550,7 +549,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, wxWindowID id, const wxString& 
     firstRender = true;
     clock.restart();
 
-    this->SetSizeHints(wxSize(300, 300), wxDefaultSize);
+    this->SetSizeHints(wxSize(960, 700), wxDefaultSize);
 
 #ifdef _WIN32
     wxIcon icon(wxT("Resources/icon.ico"), wxBITMAP_TYPE_ICO);

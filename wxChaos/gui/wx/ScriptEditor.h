@@ -38,7 +38,7 @@ private:
     void OnOk(wxCommandEvent& event);
 public:
     ScriptNameDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
-                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(494, 158), long style = wxDEFAULT_DIALOG_STYLE);
+                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(600, 220), long style = wxDEFAULT_DIALOG_STYLE);
     ~ScriptNameDialog();
     wxString GetScriptName();
 };
@@ -86,7 +86,7 @@ private:
     void OnDebugPanel(wxCollapsiblePaneEvent& event);
 public:
     ScriptEditor(bool* active, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Script editor"),
-                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1069, 600),
+                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 900),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ScriptEditor();
 };

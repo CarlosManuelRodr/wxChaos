@@ -19,11 +19,7 @@
 #include "gradientdlg.h"
 #include "Fractal.h"
 
-#ifdef _WIN32
-#define ColorFrameSize wxSize(672, 650)
-#elif __linux__
-#define ColorFrameSize wxSize(690, 600)
-#endif
+#define ColorFrameSize wxSize(900, 820)
 
 /**
 * @class ColorFrame

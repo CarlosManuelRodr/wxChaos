@@ -28,7 +28,7 @@ class HTMLViewer : public wxDialog
 
 public:
     HTMLViewer(wxString htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(849, 591), long style = wxDEFAULT_DIALOG_STYLE);
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_DIALOG_STYLE);
     ~HTMLViewer();
 };
 

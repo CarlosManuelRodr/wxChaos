@@ -31,16 +31,12 @@ private:
 
 public:
     FuncDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(249, 173), 
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(460, 250), 
                long style = wxDEFAULT_DIALOG_STYLE);
     ~FuncDialog();
 };
 
-#ifdef _WIN32
-#define FormulaDialogSize wxSize(320, 249)
-#elif __linux__
-#define FormulaDialogSize wxSize(340, 260)
-#endif
+#define FormulaDialogSize wxSize(520, 320)
 
 /**
 * @class FormulaDialog

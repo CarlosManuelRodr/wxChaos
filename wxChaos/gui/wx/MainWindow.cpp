@@ -118,7 +118,7 @@ const std::string exec(const char* cmd)
 #endif
 
 // Fractal Frame
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPosition, wxSize(700, 538))
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPosition, wxSize(1180, 820))
 {
     // Init handlers.
     wxImage::AddHandler(new wxPNGHandler);
@@ -126,7 +126,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
 
     // WX.
     mainFramePtr = this;
-    this->SetSizeHints(wxSize(300, 300), wxDefaultSize);
+    this->SetSizeHints(wxSize(900, 650), wxDefaultSize);
 
     wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
@@ -176,7 +176,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
 void MainFrame::ShowFirstUseDialog()
 {
     HTMLViewer* diag = new HTMLViewer(GetWxAbsPath({ "Resources", "Tutorials", "mainTut.html" }), this, wxID_ANY,
-        wxString(wxT("Welcome to wxChaos")), wxDefaultPosition, wxSize(550, 400));
+        wxString(wxT("Welcome to wxChaos")), wxDefaultPosition, wxSize(960, 700));
 
     diag->Show(true);
     fractalCanvas->ShowHelpImage();
@@ -772,7 +772,7 @@ void MainFrame::OnZoomRecorder(wxCommandEvent& event)
         return;
     }
 
-    this->SetSize(wxSize(700, 538));
+    this->SetSize(wxSize(1180, 820));
     this->Layout();
     this->Update();
 

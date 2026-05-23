@@ -10,7 +10,7 @@ ConstDialog::ConstDialog(bool* Active, Fractal* mTarget, wxWindow* parent, wxWin
     wxString text;
     active = Active;
 
-    this->SetSizeHints(wxDefaultSize, wxDefaultSize);
+    this->SetSizeHints(wxSize(320, 250), wxDefaultSize);
     
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     
