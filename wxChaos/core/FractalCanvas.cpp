@@ -1,4 +1,4 @@
-﻿#include "FractalCanvas.h"
+#include "FractalCanvas.h"
 #include "StringFuncs.h"
 #include "../gui/wx/SizeDialogSave.h"
 #include "Filesystem.h"
@@ -117,9 +117,9 @@ void FractalCanvas::OnUpdate()
             {
                 btn->state = false;
                 if (type == FractalType::ScriptFractal)
-                    btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt)) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+                    btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
                 else
-                    btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt)) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                    btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
 
                 target->DeleteSavedZooms();
             }
@@ -146,7 +146,7 @@ void FractalCanvas::OnUpdate()
                 }
                 if (event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
-                    wxFileDialog* openFileDialog = new wxFileDialog(this, wxT(menuSelectFileTxt), wxT(""),
+                    wxFileDialog* openFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
                         wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
                     wxString fileName;
                     if (openFileDialog->ShowModal() == wxID_OK)
@@ -171,17 +171,17 @@ void FractalCanvas::OnUpdate()
                 {
                     btn->state = false;
                     if (type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt)) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
                     else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt)) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
                 }
                 else
                 {
                     btn->state = true;
                     if (type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuRelaunchTxt)) + wxT('\t') + wxT("P"));    // Txt: "Relaunch script"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Relaunch script")) + wxT('\t') + wxT("P"));    // Txt: "Relaunch script"
                     else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuContinueTxt)) + wxT('\t') + wxT("P"));    // Txt: "Continue"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Continue")) + wxT('\t') + wxT("P"));    // Txt: "Continue"
                 }
                 target->PauseContinue();
             }
@@ -215,9 +215,9 @@ void FractalCanvas::OnUpdate()
         {
             btn->state = false;
             if (type == FractalType::ScriptFractal)
-                btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt)) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+                btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
             else
-                btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt)) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
         }
 
         if (keybGuide && keybGuideMode)
@@ -547,9 +547,9 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         {
             btn->state = false;
             if (type == FractalType::ScriptFractal)
-                btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt)) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+                btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
             else
-                btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt)) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
         }
     }
 }
@@ -568,9 +568,9 @@ void FractalCanvas::OnUnClick(wxMouseEvent& event)
                 {
                     btn->state = false;
                     if (type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuAbortTxt)) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
                     else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT(menuPauseTxt)) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
                     target->DeleteSavedZooms();
                 }
                 target->SetAreaOfView(selection->GetSeleccion());
@@ -623,9 +623,9 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     }
     else
     {
-        text = wxT(realLabelTxt);    // Txt: "Real: "
+        text = wxT("Real: ");    // Txt: "Real: "
         text += num_to_string(target->GetX(event.GetPosition().x));
-        text += wxT(imagLabelTxt);    // Txt: "   Imaginary: "
+        text += wxT("   Imaginary: ");    // Txt: "   Imaginary: "
         text += num_to_string(target->GetY(event.GetPosition().y));
     }
     statusData.status->SetStatusText(text);

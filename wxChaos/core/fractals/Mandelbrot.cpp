@@ -25,7 +25,7 @@ Mandelbrot::Mandelbrot(sf::RenderWindow* Window) : Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(false);
-    panelOpt.LinkInt(PanelOptionType::Spin, wxT(buddhaRandPTxt), &buddhaRandomP, wxT("1000000"));
+    panelOpt.LinkInt(PanelOptionType::Spin, wxT("Number of buddhabrot\nrandom points:"), &buddhaRandomP, wxT("1000000"));
     buddhaRandomP = 1000000;
 
     // Specify algorithms.
@@ -49,7 +49,7 @@ Mandelbrot::Mandelbrot(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(false);
-    panelOpt.LinkInt(PanelOptionType::Spin, wxT(buddhaRandPTxt), &buddhaRandomP, wxT("1000000"));
+    panelOpt.LinkInt(PanelOptionType::Spin, wxT("Number of buddhabrot\nrandom points:"), &buddhaRandomP, wxT("1000000"));
     buddhaRandomP = 1000000;
 
     alg = RenderingAlgorithm::EscapeTime;

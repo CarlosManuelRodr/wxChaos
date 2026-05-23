@@ -135,7 +135,7 @@ class ConfFractOptDialog : public wxDialog
     void DeleteOptPanel();        ///< Deletes all the elements in the option panel.
 
 public:
-    ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT(menuFractalOptTxt),
+    ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Fractal options"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(213, 361), long style = wxCAPTION);
     ~ConfFractOptDialog();
 
@@ -280,7 +280,7 @@ private:
     void GetScriptFractals();        ///< Creates the menu elements corresponding to the script fractals.
     void WriteText(wxString txt);    ///< Writes text to the output panel.
 public:
-    DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT(calcDimTxt),
+    DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Calculate Dimension"),
         const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
         long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~DimensionFrame();

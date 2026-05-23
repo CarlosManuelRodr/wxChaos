@@ -21,7 +21,7 @@ FixedPoint4::FixedPoint4(sf::RenderWindow* Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.

@@ -23,7 +23,7 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     myType = myFractal->GetType();
     if (myType == FractalType::ScriptFractal)
     {
-        progressLabel = new wxStaticText(this, wxID_ANY, wxT(savingTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
+        progressLabel = new wxStaticText(this, wxID_ANY, wxT("Saving..."), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
         progressLabel->Wrap(-1);
         progressSizer->Add(progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
         progress = nullptr;
@@ -33,7 +33,7 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
         progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
         progressSizer->Add(progress, 0, wxALL | wxEXPAND, 5);
 
-        progressLabel = new wxStaticText(this, wxID_ANY, wxString(wxT(renderingDotsTxt)) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Rendering... "
+        progressLabel = new wxStaticText(this, wxID_ANY, wxString(wxT("Rendering: ")) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Rendering... "
         progressLabel->Wrap(-1);
         progressSizer->Add(progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
     }
@@ -46,7 +46,7 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     wxBoxSizer* buttonSizer;
     buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    cancelButton = new wxButton(this, wxID_ANY, wxT(cancelTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Cancel"
+    cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Cancel"
     buttonSizer->Add(cancelButton, 0, wxALL, 5);
 
     mainSizer->Add(buttonSizer, 1, wxEXPAND, 5);
@@ -75,7 +75,7 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent& event)
         if (myFractal->GetType() != FractalType::ScriptFractal)
         {
             int progressValue = myFractal->GetWatchdog()->GetThreadProgress();
-            progressLabel->SetLabel(wxString(wxT(renderingDotsTxt)) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
+            progressLabel->SetLabel(wxString(wxT("Rendering: ")) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
 
             progress->SetValue(progressValue);
             if (progressValue >= 100 && !myFractal->IsRendering())
@@ -123,11 +123,11 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     wxBoxSizer* sizeSizer = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* bSizer6 = new wxBoxSizer(wxVERTICAL);
 
-    selectText = new wxStaticText(mainPanel, wxID_ANY, wxT(selectSizeTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Select image size"
+    selectText = new wxStaticText(mainPanel, wxID_ANY, wxT("Select image size"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Select image size"
     selectText->Wrap(-1);
     bSizer6->Add(selectText, 0, wxALL, 5);
 
-    widthText = new wxStaticText(mainPanel, wxID_ANY, wxT(widthTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txe: "Width"
+    widthText = new wxStaticText(mainPanel, wxID_ANY, wxT("Width"), wxDefaultPosition, wxDefaultSize, 0);    // Txe: "Width"
     widthText->Wrap(-1);
     bSizer6->Add(widthText, 0, wxALL, 5);
 
@@ -142,7 +142,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     dumbText->Wrap(-1);
     bSizer8->Add(dumbText, 0, wxALL, 5);
 
-    heightText = new wxStaticText(mainPanel, wxID_ANY, wxT(heightTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Height"
+    heightText = new wxStaticText(mainPanel, wxID_ANY, wxT("Height"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Height"
     heightText->Wrap(-1);
     bSizer8->Add(heightText, 0, wxALL, 5);
 
@@ -155,7 +155,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
 
     wxBoxSizer* okSizer = new wxBoxSizer(wxVERTICAL);
 
-    iterationsText = new wxStaticText(mainPanel, wxID_ANY, wxT(iterationsTxt), wxDefaultPosition, wxDefaultSize, 0);        // Txt: "Iterations"
+    iterationsText = new wxStaticText(mainPanel, wxID_ANY, wxT("Iterations"), wxDefaultPosition, wxDefaultSize, 0);        // Txt: "Iterations"
     iterationsText->Wrap(-1);
     okSizer->Add(iterationsText, 0, wxALL, 5);
 
@@ -163,7 +163,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     okSizer->Add(iterationsSpin, 0, wxALL, 5);
     iterationsSpin->SetValue(opt.maxIter);
 
-    okButton = new wxButton(mainPanel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
+    okButton = new wxButton(mainPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
     okSizer->Add(okButton, 0, wxALL, 5);
     panelSizer->Add(okSizer, 1, wxEXPAND, 5);
 

@@ -20,7 +20,7 @@ IterDialog::IterDialog(bool* Active, Fractal* _target, wxWindow* parent, wxWindo
     panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxBoxSizer* subSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBoxSizer* textSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT(iterationsTxt)), wxHORIZONTAL);    // Txt: "Iterations"
+    wxStaticBoxSizer* textSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Iterations")), wxHORIZONTAL);    // Txt: "Iterations"
 
     number = target->GetIterations();
     text = num_to_string((int)number);
@@ -36,10 +36,10 @@ IterDialog::IterDialog(bool* Active, Fractal* _target, wxWindow* parent, wxWindo
 
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    acceptButton = new wxButton(panel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
+    acceptButton = new wxButton(panel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
     buttonSizer->Add(acceptButton, 0, wxALL, 5);
 
-    applyButton = new wxButton(panel, wxID_ANY, wxT(applyTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
+    applyButton = new wxButton(panel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
     buttonSizer->Add(applyButton, 0, wxALL, 5);
     subSizer->Add(buttonSizer, 0, 0, 5);
 

@@ -22,7 +22,7 @@ Newton::Newton(sf::RenderWindow* Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
@@ -43,7 +43,7 @@ Newton::Newton(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(minStepTxt), &minStep, wxT("0.001"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     type = FractalType::NewtonRaphsonMethod;

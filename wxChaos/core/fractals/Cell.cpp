@@ -20,7 +20,7 @@ Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     bailout = 2;
 
     // Specify algorithms.
@@ -41,7 +41,7 @@ Cell::Cell(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     bailout = 2;
 
     hasOrbit = true;

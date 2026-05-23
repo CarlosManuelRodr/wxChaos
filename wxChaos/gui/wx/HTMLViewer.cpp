@@ -21,7 +21,7 @@ HTMLViewer::HTMLViewer(wxString htmlFile, wxWindow* parent, wxWindowID id, const
     mainSizer->Add(textSizer, 9, wxEXPAND, 5);
 
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxVERTICAL);
-    closeButton = new wxButton(this, wxID_ANY, wxT(closeTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Close"
+    closeButton = new wxButton(this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Close"
     buttonSizer->Add(closeButton, 0, wxALL, 5);
     mainSizer->Add(buttonSizer, 0, wxEXPAND, 5);
 

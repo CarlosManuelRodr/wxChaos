@@ -61,7 +61,7 @@ void JuliaMode::Handle_Event()
         {
             if (event.key.code == sf::Keyboard::F4)
             {
-                wxFileDialog* openFileDialog = new wxFileDialog(NULL, wxT(menuSelectFileTxt), wxT(""), wxT("fractal.png"),
+                wxFileDialog* openFileDialog = new wxFileDialog(NULL, wxT("Select file name"), wxT(""), wxT("fractal.png"),
                     wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);    // Txt: "Select a file name"
                 wxString fileName;
                 if (openFileDialog->ShowModal() == wxID_OK)
@@ -131,7 +131,7 @@ void JuliaMode::Handle_Event()
 void JuliaMode::Run()
 {
     // The window must be created in the same thread that will execute it.
-    window = new sf::RenderWindow(sf::VideoMode(640, 480), menuJuliaModeTxt);    // Txt: "Julia mode"
+    window = new sf::RenderWindow(sf::VideoMode(640, 480), "Julia mode");    // Txt: "Julia mode"
 
     // Calculate position using wxWidgets and convert to sf::Vector2i
     wxPoint parentPos = parent->GetPosition();

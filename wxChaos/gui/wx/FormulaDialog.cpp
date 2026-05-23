@@ -14,7 +14,7 @@ FuncDialog::FuncDialog(wxWindow* parent, wxWindowID id, const wxString& title, c
     wxBoxSizer* panelSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* textSizer = new wxBoxSizer(wxVERTICAL);
 
-    text = new wxTextCtrl(mainPanel, wxID_ANY, wxString(wxT(availableFuncTxt)) + wxT("abs(), sin(), cos(), tan(), sinh(), cosh(),\ntanh(), ln(), log(), log10(), exp(), sqrt()."),
+    text = new wxTextCtrl(mainPanel, wxID_ANY, wxString(wxT("Available functions:\n")) + wxT("abs(), sin(), cos(), tan(), sinh(), cosh(),\ntanh(), ln(), log(), log10(), exp(), sqrt()."),
                             wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_READONLY);    // Txt: "Available functions:\n"
     text->SetFont(wxFont(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString));
 
@@ -23,7 +23,7 @@ FuncDialog::FuncDialog(wxWindow* parent, wxWindowID id, const wxString& title, c
 
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxVERTICAL);
 
-    closeButton = new wxButton(mainPanel, wxID_ANY, wxT(closeTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Close"
+    closeButton = new wxButton(mainPanel, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Close"
     buttonSizer->Add(closeButton, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
     panelSizer->Add(buttonSizer, 1, wxEXPAND, 5);
 
@@ -70,16 +70,16 @@ FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GaussianC
 
     mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxBoxSizer* panelSizer = new wxBoxSizer(wxVERTICAL);
-    wxStaticBoxSizer* formulaSizer = new wxStaticBoxSizer(new wxStaticBox(mainPanel, wxID_ANY, wxT(formulaTxt)), wxVERTICAL);    // Txt: "Formula"
+    wxStaticBoxSizer* formulaSizer = new wxStaticBoxSizer(new wxStaticBox(mainPanel, wxID_ANY, wxT("Formula")), wxVERTICAL);    // Txt: "Formula"
 
     formulaCtrl = new wxTextCtrl(mainPanel, wxID_ANY, wxString(fCanvas->GetFormula().userFormula), wxDefaultPosition, wxDefaultSize, 0);
     formulaSizer->Add(formulaCtrl, 2, wxALL | wxEXPAND, 5);
     panelSizer->Add(formulaSizer, 3, wxEXPAND, 5);
 
-    wxStaticBoxSizer* optionSizer = new wxStaticBoxSizer(new wxStaticBox(mainPanel, wxID_ANY, wxT(optionsTxt)), wxHORIZONTAL);
+    wxStaticBoxSizer* optionSizer = new wxStaticBoxSizer(new wxStaticBox(mainPanel, wxID_ANY, wxT("Options")), wxHORIZONTAL);
     wxBoxSizer* bailoutSizer = new wxBoxSizer(wxVERTICAL);
 
-    bailText = new wxStaticText(mainPanel, wxID_ANY, wxT(bailValueTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Bailout value"
+    bailText = new wxStaticText(mainPanel, wxID_ANY, wxT("Bailout value:"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Bailout value"
     bailText->Wrap(-1);
     bailoutSizer->Add(bailText, 0, wxALL, 5);
 
@@ -89,17 +89,17 @@ FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GaussianC
 
     wxBoxSizer* typeSizer = new wxBoxSizer(wxVERTICAL);
 
-    typeText = new wxStaticText(mainPanel, wxID_ANY, wxT(fractTypeTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Fractal type"
+    typeText = new wxStaticText(mainPanel, wxID_ANY, wxT("Fractal type:"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Fractal type"
     typeText->Wrap(-1);
     typeSizer->Add(typeText, 0, wxALL, 5);
 
-    wxString typeChoiceChoices[] = { wxT(complexTypeTxt), wxT(fixedPointTypeTxt) };
+    wxString typeChoiceChoices[] = { wxT("Complex"), wxT("Fixed point") };
     int typeChoiceNChoices = sizeof( typeChoiceChoices ) / sizeof( wxString );
     typeChoice = new wxChoice(mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, typeChoiceNChoices, typeChoiceChoices, 0);
 
     typeSizer->Add(typeChoice, 0, wxALL | wxEXPAND, 5);
 
-    juliaCheck = new wxCheckBox(mainPanel, wxID_ANY, wxT(juliaTypeTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Julia type"
+    juliaCheck = new wxCheckBox(mainPanel, wxID_ANY, wxT("Julia type"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Julia type"
     typeSizer->Add(juliaCheck, 0, wxALL, 5);
 
     if(fCanvas->GetFormula().julia)
@@ -111,13 +111,13 @@ FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, GaussianC
     panelSizer->Add(optionSizer, 3, wxEXPAND, 5);
 
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-    acceptButton = new wxButton(mainPanel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);
+    acceptButton = new wxButton(mainPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(acceptButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
 
-    applyButton = new wxButton(mainPanel, wxID_ANY, wxT(applyTxt), wxDefaultPosition, wxDefaultSize, 0);
+    applyButton = new wxButton(mainPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(applyButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
 
-    funcButton = new wxButton( mainPanel, wxID_ANY, wxT(availableLabelTxt), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Available functions"
+    funcButton = new wxButton( mainPanel, wxID_ANY, wxT("Available functions"), wxDefaultPosition, wxDefaultSize, 0 );    // Txt: "Available functions"
     buttonSizer->Add( funcButton, 0, wxALL, 5 );
     panelSizer->Add(buttonSizer, 1, wxEXPAND, 5);
 

@@ -22,16 +22,16 @@ DPendulum::DPendulum(sf::RenderWindow* Window):Fractal(Window)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(th1BailoutTxt), &th1Bailout, wxT("true"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(valueTxt), &th1NumBailout, wxT("3.14159"));
-    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(th2BailoutTxt), &th2Bailout, wxT("true"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(valueTxt), &th2NumBailout, wxT("3.14159"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(deltaTTxt), &dt, wxT("0.005"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" θ1 Bailout"), &th1Bailout, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Value: "), &th1NumBailout, wxT("3.14159"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" θ2 Bailout"), &th2Bailout, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Value: "), &th2NumBailout, wxT("3.14159"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("DeltaT: "), &dt, wxT("0.005"));
     panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m1: "), &m1, wxT("10"));
     panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m2: "), &m2, wxT("10"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(longitudeTxt), &l, wxT("20"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(gravityTxt), &g, wxT("9.81"));
-    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(relAnglesTxt), &referenced, wxT("false"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Longitude: "), &l, wxT("20"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Gravity: "), &g, wxT("9.81"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Relative angles"), &referenced, wxT("false"));
     panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Runge-Kutta"), &rungeKutta, wxT("false"));
     th1Bailout = true;
     th2Bailout = true;
@@ -65,16 +65,16 @@ DPendulum::DPendulum(int width, int height) : Fractal(width, height)
 
     // Creates panel.
     panelOpt.SetForceShow(true);
-    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(th1BailoutTxt), &th1Bailout, wxT("true"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(valueTxt), &th1NumBailout, wxT("3.14159"));
-    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(th2BailoutTxt), &th2Bailout, wxT("true"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(valueTxt), &th2NumBailout, wxT("3.14159"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(deltaTTxt), &dt, wxT("0.005"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" θ1 Bailout"), &th1Bailout, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Value: "), &th1NumBailout, wxT("3.14159"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" θ2 Bailout"), &th2Bailout, wxT("true"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Value: "), &th2NumBailout, wxT("3.14159"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("DeltaT: "), &dt, wxT("0.005"));
     panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m1: "), &m1, wxT("10"));
     panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m2: "), &m2, wxT("10"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(longitudeTxt), &l, wxT("20"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(gravityTxt), &g, wxT("9.81"));
-    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(relAnglesTxt), &referenced, wxT("false"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Longitude: "), &l, wxT("20"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Gravity: "), &g, wxT("9.81"));
+    panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Relative angles"), &referenced, wxT("false"));
     panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Runge-Kutta"), &rungeKutta, wxT("false"));
     th1Bailout = true;
     th2Bailout = true;

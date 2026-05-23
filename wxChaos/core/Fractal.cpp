@@ -566,7 +566,7 @@ void Fractal::Show(sf::RenderWindow* Window)
             string temp;
             std::ostringstream oss;
             oss << maxIter;
-            temp = fractIterationsTxt;
+            temp = " Iterations: ";
             temp += oss.str();
             text.setString(temp);
             text.setCharacterSize(25);

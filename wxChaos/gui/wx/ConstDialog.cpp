@@ -17,7 +17,7 @@ ConstDialog::ConstDialog(bool* Active, Fractal* mTarget, wxWindow* parent, wxWin
     dumbPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
     
-    wxStaticBoxSizer* realSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(realValTxt)), wxVERTICAL);    // Txt: "Real value"
+    wxStaticBoxSizer* realSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT("Real value")), wxVERTICAL);    // Txt: "Real value"
     
     lastReal = target->GetKReal();
     text = num_to_string(target->GetKReal());
@@ -25,7 +25,7 @@ ConstDialog::ConstDialog(bool* Active, Fractal* mTarget, wxWindow* parent, wxWin
     realSizer->Add(realText, 0, wxALL|wxEXPAND, 5);
     sizer->Add(realSizer, 2, wxEXPAND, 5);
     
-    wxStaticBoxSizer* imSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT(imagValTxt)), wxVERTICAL);    // Txt: "Imaginary value"
+    wxStaticBoxSizer* imSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT("Imaginary value")), wxVERTICAL);    // Txt: "Imaginary value"
     
     lastIm = target->GetKImaginary();
     text = num_to_string(target->GetKImaginary());
@@ -37,13 +37,13 @@ ConstDialog::ConstDialog(bool* Active, Fractal* mTarget, wxWindow* parent, wxWin
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* okSizer = new wxBoxSizer(wxVERTICAL);
     
-    okButton = new wxButton(dumbPanel, wxID_ANY, wxT(okTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
+    okButton = new wxButton(dumbPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
     okSizer->Add(okButton, 0, wxALL, 5);
     buttonSizer->Add(okSizer, 1, wxEXPAND, 5);
     
     wxBoxSizer* applySizer = new wxBoxSizer(wxVERTICAL);
     
-    applyButton = new wxButton(dumbPanel, wxID_ANY, wxT(applyTxt), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
+    applyButton = new wxButton(dumbPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
     applySizer->Add(applyButton, 0, wxALL, 5);
     buttonSizer->Add(applySizer, 1, wxEXPAND, 5);
     sizer->Add(buttonSizer, 1, wxEXPAND, 5);

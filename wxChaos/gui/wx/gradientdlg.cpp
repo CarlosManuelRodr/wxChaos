@@ -21,7 +21,7 @@ wxGradientDialog::~wxGradientDialog()
 }
 bool wxGradientDialog::Create(wxWindow* parent, wxGradient grad)
 {
-    if (!wxDialog::Create(parent, wxID_ANY, wxT(gradEditorTxt)))    // Txt: "Gradient editor"
+    if (!wxDialog::Create(parent, wxID_ANY, wxT("Gradient editor")))    // Txt: "Gradient editor"
         return false;
     CreateWidgets();
     stopsStatBmp->Connect(ID_STOPSAREA, wxEVT_LEFT_DOWN, wxMouseEventHandler(wxGradientDialog::OnStopsAreaClick), NULL, this);
@@ -43,7 +43,7 @@ void wxGradientDialog::CreateWidgets()
 {
     topSizer = new wxBoxSizer(wxVERTICAL);
 
-    gradientSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxString(wxT(gradientTxt)));    // Txt: "Gradient"
+    gradientSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxString(wxT("Gradient")));    // Txt: "Gradient"
     topSizer->Add(gradientSizer, 1, wxEXPAND | wxALL, 12);
     
     gradientStatBmp = new wxStaticBitmap(this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(300, 50), wxBORDER_SIMPLE );
@@ -55,13 +55,13 @@ void wxGradientDialog::CreateWidgets()
     stopsStatBmp = new wxStaticBitmap(this, ID_STOPSAREA, wxNullBitmap, wxDefaultPosition, wxSize(311, 16));
     stopAreaSizer->Add(stopsStatBmp);
 
-    stopEditSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxString(wxT(stopsTxt)));    // Txt: "Stops"
+    stopEditSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxString(wxT("Stops")));    // Txt: "Stops"
     gradientSizer->Add(stopEditSizer, 1, wxEXPAND | wxALL, 2);
 
     colorSizer = new wxBoxSizer(wxHORIZONTAL);
     stopEditSizer->Add(colorSizer, 1, wxEXPAND | wxALL , 6);
 
-    colorTxt = new wxStaticText(this, wxID_ANY, wxString(wxT(colortxt)), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);    // Txt: "Color: "
+    colorTxt = new wxStaticText(this, wxID_ANY, wxString(wxT("Color: ")), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);    // Txt: "Color: "
     colorSizer->Add(colorTxt, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 12);
 
     colorStatBmp = new wxStaticBitmap(this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(30, 20), wxBORDER_DOUBLE);
@@ -71,7 +71,7 @@ void wxGradientDialog::CreateWidgets()
     colorSizer->Add(colorEditBtn, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 6);
     colorEditBtn->Enable(false);
 
-    colorDeleteBtn = new wxButton(this, wxID_DELETE, wxString(wxT(eraseTxt)), wxDefaultPosition, wxSize(60, 22));    // Txt: "Erase"
+    colorDeleteBtn = new wxButton(this, wxID_DELETE, wxString(wxT("Erase")), wxDefaultPosition, wxSize(60, 22));    // Txt: "Erase"
     colorSizer->Add(colorDeleteBtn, 0, wxLEFT, 100);
     colorDeleteBtn->Enable(false);
 

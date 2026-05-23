@@ -35,7 +35,7 @@ JuliaZN::JuliaZN(sf::RenderWindow* Window):Fractal(Window)
     // Creates panel.
     panelOpt.SetForceShow(true);
     panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     n = 2;
     bailout = 2;
 }
@@ -56,7 +56,7 @@ JuliaZN::JuliaZN(int width, int height) : Fractal(width, height)
     // Creates panel.
     panelOpt.SetForceShow(true);
     panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT(bailoutTxt), &bailout, wxT("2"));
+    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     n = 2;
     bailout = 2;
 
