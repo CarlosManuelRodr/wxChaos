@@ -286,11 +286,16 @@ void SFMLFractal::ZoomBack()
         texture.loadFromImage(image);
         imgVector.pop_back();
         usingRenderImage = true;
+        fractal->rendering = false;
+        fractal->SetRendered(true);
+        zoomingBack = false;
+        dontDrawTempImage = true;
     }
     else
     {
         if (stillRendering && !imgVector.empty())
             imgVector.pop_back();
+        fractal->SetRendered(false);
         zoomingBack = true;
     }
 }
