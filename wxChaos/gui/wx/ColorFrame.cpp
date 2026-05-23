@@ -30,6 +30,60 @@ void GradientColorPalette::SetStyle(GradientColorStyles style)
             paletteSize = 300;
         }
         break;
+    case GradientColorStyles::PastelDream:
+        {
+            grad = wxT("rgb(255,209,220);rgb(255,245,186);rgb(207,244,252);rgb(210,230,255);rgb(230,214,255);rgb(255,209,220);");
+            paletteSize = 320;
+        }
+        break;
+    case GradientColorStyles::RoseGold:
+        {
+            grad = wxT("rgb(47,36,36);rgb(122,82,72);rgb(224,170,146);rgb(255,230,214);rgb(201,138,111);rgb(77,52,50);rgb(47,36,36);");
+            paletteSize = 300;
+        }
+        break;
+    case GradientColorStyles::Gunmetal:
+        {
+            grad = wxT("rgb(8,12,18);rgb(32,45,58);rgb(82,95,110);rgb(201,208,214);rgb(94,106,119);rgb(24,31,40);rgb(8,12,18);");
+            paletteSize = 280;
+        }
+        break;
+    case GradientColorStyles::SunsetDrive:
+        {
+            grad = wxT("rgb(34,10,66);rgb(92,29,115);rgb(180,52,108);rgb(255,126,95);rgb(255,210,120);rgb(89,166,255);rgb(34,10,66);");
+            paletteSize = 360;
+        }
+        break;
+    case GradientColorStyles::AuroraBorealis:
+        {
+            grad = wxT("rgb(2,24,43);rgb(0,78,92);rgb(0,168,150);rgb(126,255,214);rgb(96,139,255);rgb(48,64,173);rgb(2,24,43);");
+            paletteSize = 340;
+        }
+        break;
+    case GradientColorStyles::Vaporwave:
+        {
+            grad = wxT("rgb(22,15,70);rgb(59,32,145);rgb(255,71,181);rgb(255,183,77);rgb(91,240,255);rgb(255,255,255);rgb(22,15,70);");
+            paletteSize = 360;
+        }
+        break;
+    case GradientColorStyles::DeepOcean:
+        {
+            grad = wxT("rgb(0,7,20);rgb(0,32,63);rgb(0,91,150);rgb(72,202,228);rgb(173,232,244);rgb(0,91,150);rgb(0,7,20);");
+            paletteSize = 320;
+        }
+        break;
+    case GradientColorStyles::Ember:
+        {
+            grad = wxT("rgb(18,6,6);rgb(82,17,0);rgb(173,44,0);rgb(255,120,24);rgb(255,210,94);rgb(255,248,212);rgb(18,6,6);");
+            paletteSize = 320;
+        }
+        break;
+    case GradientColorStyles::RainbowFire:
+        {
+            grad = wxT("rgb(255,0,102);rgb(255,94,0);rgb(255,217,0);rgb(0,214,143);rgb(0,153,255);rgb(123,63,228);rgb(255,0,102);");
+            paletteSize = 420;
+        }
+        break;
     case GradientColorStyles::CustomGradient:
         break;
     };
@@ -188,7 +242,21 @@ ColorFrame::ColorFrame(bool* _active, Fractal* _target, wxWindow* parent,
     gradStylesLabel->Wrap(-1);
     gradSizer->Add(gradStylesLabel, 0, wxALL, 5);
 
-    wxString gradStyleChoiceChoices[] = { wxT("Retro"), wxT("Hakim"), wxT("Aguamarina"), wxT("Custom") };
+    wxString gradStyleChoiceChoices[] = {
+        wxT("Retro"),
+        wxT("Hakim"),
+        wxT("Aguamarina"),
+        wxT("Pastel Dream"),
+        wxT("Rose Gold"),
+        wxT("Gunmetal"),
+        wxT("Sunset Drive"),
+        wxT("Aurora Borealis"),
+        wxT("Vaporwave"),
+        wxT("Deep Ocean"),
+        wxT("Ember"),
+        wxT("Rainbow Fire"),
+        wxT("Custom")
+    };
     int gradStyleChoiceNChoices = sizeof(gradStyleChoiceChoices) / sizeof(wxString);
     gradStylesChoice = new wxChoice(gradientLabel, wxID_ANY, wxDefaultPosition, wxDefaultSize, gradStyleChoiceNChoices, gradStyleChoiceChoices, 0);
     gradStylesChoice->SetSelection(static_cast<int>(target->GetGradStyle()));
@@ -456,6 +524,8 @@ void ColorFrame::GradientColorChangeSelection( wxCommandEvent& event )
     myGrad.fromString(gradFractalColor.grad);
     target->SetGradStyle(static_cast<GradientColorStyles>(gradStylesChoice->GetCurrentSelection()));
     target->SetGradient(myGrad);
+    gradPalSize->SetValue(gradFractalColor.paletteSize);
+    colorVarSlider->SetRange(0, gradFractalColor.paletteSize);
     gradientMap->SetBitmap(PaintGradient());
     gradientMap->SetWindowStyle(wxSIMPLE_BORDER);
     gradientMap->Refresh();

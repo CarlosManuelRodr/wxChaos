@@ -20,6 +20,15 @@ enum GradientColorStyles
     Retro,
     Hakim,
     Aguamarina,
+    PastelDream,
+    RoseGold,
+    Gunmetal,
+    SunsetDrive,
+    AuroraBorealis,
+    Vaporwave,
+    DeepOcean,
+    Ember,
+    RainbowFire,
     CustomGradient
 };
 
