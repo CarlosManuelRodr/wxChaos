@@ -1550,7 +1550,19 @@ sf::Image Fractal::GetRenderedImage()
 wxBitmap Fractal::GetRenderedWxBitmap()
 {
     sf::Image renderedImage = this->GetRenderedImage();
-    wxImage wximg(renderedImage.getSize().x, renderedImage.getSize().y, (unsigned char*)renderedImage.getPixelsPtr(), true);
+    const sf::Vector2u imageSize = renderedImage.getSize();
+    const sf::Uint8* rgbaPixels = renderedImage.getPixelsPtr();
+    unsigned char* rgbPixels = new unsigned char[imageSize.x * imageSize.y * 3];
+
+    // wxImage expects packed RGB data, while SFML exposes RGBA pixels.
+    for (unsigned int i = 0, j = 0; i < imageSize.x * imageSize.y * 4; i += 4, j += 3)
+    {
+        rgbPixels[j] = rgbaPixels[i];
+        rgbPixels[j + 1] = rgbaPixels[i + 1];
+        rgbPixels[j + 2] = rgbaPixels[i + 2];
+    }
+
+    wxImage wximg(imageSize.x, imageSize.y, rgbPixels, true);
     wxBitmap output(wximg);
     return output;
 }
