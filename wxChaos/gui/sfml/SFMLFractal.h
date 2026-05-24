@@ -7,23 +7,23 @@ class Fractal;
 
 class SFMLFractal
 {
-    Fractal* fractal;
-    sf::Font font;
-    sf::Text text;
-    sf::Image image;
-    sf::Texture texture;
-    sf::Sprite output;
-    std::vector<sf::Image> imgVector;
-    sf::Image tempImage;
-    sf::Texture tempTexture;
-    sf::Sprite tempSprite;
-    sf::Image geomImage;
-    sf::Texture geomTexture;
-    sf::Sprite outGeom;
-    bool imgInVector{};
-    bool usingRenderImage{};
-    bool zoomingBack{};
-    bool dontDrawTempImage{};
+    Fractal* _fractal;
+    sf::Font _font;
+    sf::Text _text;
+    sf::Image _image;
+    sf::Texture _texture;
+    sf::Sprite _output;
+    std::vector<sf::Image> _imgVector;
+    sf::Image _tempImage;
+    sf::Texture _tempTexture;
+    sf::Sprite _tempSprite;
+    sf::Image _geomImage;
+    sf::Texture _geomTexture;
+    sf::Sprite _outGeom;
+    bool _imgInVector{};
+    bool _usingRenderImage{};
+    bool _zoomingBack{};
+    bool _dontDrawTempImage{};
 
     void DrawMaps(sf::RenderWindow* window);
     void DrawGeometry(sf::RenderWindow* window);
@@ -37,8 +37,8 @@ public:
     void SetFractal(Fractal* fractal);
     Fractal* GetFractal() const;
 
-    void HandleEvent(const sf::Event& event);
-    void Resize(sf::RenderWindow* window);
+    void HandleEvent(const sf::Event& event) const;
+    void Resize(const sf::RenderWindow* window);
     void Show(sf::RenderWindow* window);
     void SetAreaOfView(const sf::Rect<int>& pixelCoordinates);
     void ZoomBack();

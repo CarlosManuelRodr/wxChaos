@@ -29,7 +29,7 @@ class SFMLFractal;
 * @class Fractal
 * @brief Provides an interface to do the fractal rendering and draw the result to the screen.
 *
-* This is an abstract class. It's purpose is to provide a set of methods to do the fractal navigation routines, render the result
+* This is an abstract class. Its purpose is to provide a set of methods to do the fractal navigation routines, render the result
 * to the screen, allocate memory for the rendering maps, provide a color palette for the drawing, and perform zooming operations.
 */
 class Fractal
@@ -68,9 +68,9 @@ protected:
 
     std::vector<double> zoom[4];         ///< Saves the performed zooms.
     Rect outermostZoom;
-    int screenWidth;
-    int screenHeight;
-    int backScreenWidth;
+    unsigned int screenWidth;
+    unsigned int screenHeight;
+    unsigned int backScreenWidth;
     int changeGradient;
     double magnification;
 
