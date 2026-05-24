@@ -7,14 +7,17 @@ EVT_PAINT(wxSFMLCanvas::OnPaint)
 EVT_ERASE_BACKGROUND(wxSFMLCanvas::OnEraseBackground)
 END_EVENT_TABLE()
 
-wxSFMLCanvas::wxSFMLCanvas(wxWindow* Parent, wxWindowID Id, const wxPoint& Position, const wxSize& Size, long Style) :
-    wxControl(Parent, Id, Position, Size, Style)
+wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
+                           const long style) : wxControl(parent, id, position, size, style)
 {
     Window::create(wxWindow::GetHandle());
 }
 
-wxSFMLCanvas::~wxSFMLCanvas() {}
+wxSFMLCanvas::~wxSFMLCanvas() = default;
+
 void wxSFMLCanvas::OnUpdate() {}
+
+// ReSharper disable once CppMemberFunctionMayBeStatic
 void wxSFMLCanvas::OnEraseBackground(wxEraseEvent&) {}
 
 void wxSFMLCanvas::OnIdle(wxIdleEvent&)

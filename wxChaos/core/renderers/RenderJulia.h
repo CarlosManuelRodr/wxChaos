@@ -9,6 +9,6 @@ class RenderJulia : public RenderFractal
 {
 public:
     RenderJulia();
-    void Render();
-    void SpecialRender();
+    void Render() override;
+    void SpecialRender() override;
 };

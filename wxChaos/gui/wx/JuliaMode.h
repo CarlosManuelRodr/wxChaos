@@ -20,22 +20,21 @@ extern bool juliaModeState;
 */
 class JuliaMode
 {
-    sf::RenderWindow* window;
-    FractalCanvas* target;
-    FractalHandler juliaFractal;
-    SFMLFractal sfmlFractal;
-    SelectRect* selection;
-    Options myJuliaOpt;
-    ButtonChange* play;
-    FractalType type;
-    wxWindow* parent;
+    sf::RenderWindow* _window;
+    FractalCanvas* _target;
+    FractalHandler _juliaFractal;
+    SFMLFractal _sfmlFractal;
+    SelectRect* _selection;
+    Options _myJuliaOpt;
+    ButtonChange* _play;
+    FractalType _type;
+    wxWindow* _parent;
 
-    sf::Event event;
-
+    sf::Event _event;
     sf::Thread m_thread; // Thread for the rendering loop
 
     ///@brief Handles the window's events.
-    void Handle_Event();
+    void HandleEvent();
 
     ///@brief The main loop for the Julia window thread.
     void Run();
@@ -46,7 +45,7 @@ public:
     ///@param fractalType Type of Julia fractal to be created.
     ///@param juliaOpt Options to copy from the parent fractal.
     ///@param _parent Parent wxWidget window.
-    JuliaMode(FractalCanvas* ptr, FractalType fractalType, Options juliaOpt, wxWindow* _parent = nullptr);
+    JuliaMode(FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt, wxWindow* parent = nullptr);
     ~JuliaMode();
 
     ///@brief Launches the thread.
@@ -59,5 +58,5 @@ public:
     void Terminate();
 
     ///@brief Signals the window to close.
-    void Close();
+    void Close() const;
 };

@@ -27,41 +27,41 @@
 */
 class ColorFrame : public wxFrame
 {
-    wxScrolledWindow* mPanel;
-    wxStaticBitmap* colorOptBitmap;
-    wxStaticText* algorithmText;
-    wxChoice* algorithmChoice;
-    wxStaticText* optionsText;
-    wxCheckBox* relativeCheck;
-    wxCheckBox* colorFractal;
-    wxCheckBox* colorSet;
-    wxCheckBox* orbitTrap;
-    wxCheckBox* smoothRender;
-    wxStaticText* redSetText;
-    wxSlider* redSetSld;
-    wxStaticText* greenSetText;
-    wxSlider* greenSetSld;
-    wxStaticText* blueSetText;
-    wxSlider* blueSetSld;
-    wxButton* okButton;
-    wxNotebook* typeNotebook;
-    wxPanel* gradientLabel;
-    wxStaticText* gradStylesLabel;
-    wxChoice* gradStylesChoice;
-    wxButton* gradButton;
-    wxStaticBitmap* gradientMap;
-    wxStaticText* gradPalText;
-    wxSpinCtrl* gradPalSize;
-    wxStaticText* colorVarText;
-    wxSlider* colorVarSlider;
+    wxScrolledWindow* _mPanel;
+    wxStaticBitmap* _colorOptBitmap;
+    wxStaticText* _algorithmText;
+    wxChoice* _algorithmChoice;
+    wxStaticText* _optionsText;
+    wxCheckBox* _relativeCheck;
+    wxCheckBox* _colorFractal;
+    wxCheckBox* _colorSet;
+    wxCheckBox* _orbitTrap;
+    wxCheckBox* _smoothRender;
+    wxStaticText* _redSetText;
+    wxSlider* _redSetSld;
+    wxStaticText* _greenSetText;
+    wxSlider* _greenSetSld;
+    wxStaticText* _blueSetText;
+    wxSlider* _blueSetSld;
+    wxButton* _okButton;
+    wxNotebook* _typeNotebook;
+    wxPanel* _gradientLabel;
+    wxStaticText* _gradStylesLabel;
+    wxChoice* _gradStylesChoice;
+    wxButton* _gradButton;
+    wxStaticBitmap* _gradientMap;
+    wxStaticText* _gradPalText;
+    wxSpinCtrl* _gradPalSize;
+    wxStaticText* _colorVarText;
+    wxSlider* _colorVarSlider;
     
-    Fractal* target;                               ///< Target fractal.
-    bool* active;                                  ///< Used to communicate with the MainFrame.
-    sf::Color setColor;                            ///< Color of the fractal set.
-    ColorPalette gradFractalColor;         ///< Color in Grad color mode.
-    int escapeTimeIndex, gaussIntIndex, buddhabrotIndex;
-    int escapeAngleIndex, triangleIneqIndex, chaoticMapIndex;
-    int lyapunovIndex, convergenceTestIndex;
+    Fractal* _target;                               ///< Target fractal.
+    bool* _active;                                  ///< Used to communicate with the MainFrame.
+    sf::Color _setColor;                            ///< Color of the fractal set.
+    ColorPalette _gradFractalColor;                 ///< Color in Grad color mode.
+    int _escapeTimeIndex, _gaussIntIndex, _buddhabrotIndex;
+    int _escapeAngleIndex, _triangleIneqIndex, _chaoticMapIndex;
+    int _lyapunovIndex, _convergenceTestIndex;
 
     void OnClose(wxCloseEvent& event);
     void OnChangeAlgorithm(wxCommandEvent& event);
@@ -81,22 +81,25 @@ class ColorFrame : public wxFrame
 
     void ConnectEvents();
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
-    wxBitmap PaintGradient();          ///< Paints the gradient widget.
+    wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
 
 
 public:
     ///@brief Constructor.
-    ///@param _active Used to communicate with the MainFrame.
-    ///@param _target Pointer to the target fractal.
+    ///@param active Used to communicate with the MainFrame.
+    ///@param target Pointer to the target fractal.
     ///@param parent Parent wxWindow.
-    ColorFrame(bool* _active, Fractal* _target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color options"),
+    ///@param title
+    ///@param pos
+    ///@param windowStyle
+    ColorFrame(bool* active, Fractal* target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color options"),
                const wxPoint& pos = wxDefaultPosition, const wxSize& size = ColorFrameSize, 
                long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
-    ~ColorFrame();
+    ~ColorFrame() override;
 
     ///@brief Sets the target fractal.
-    ///@param _target Pointer to target fractal.
-    void SetTarget(Fractal* _target);
+    ///@param target Pointer to target fractal.
+    void SetTarget(Fractal* target);
 
 };
 

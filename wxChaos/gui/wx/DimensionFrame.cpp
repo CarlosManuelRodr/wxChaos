@@ -1,5 +1,6 @@
 #include <limits>
 #include <fstream>
+#include <mpParser.h>
 #include "DimensionFrame.h"
 #include "StringFuncs.h"
 #include "SizeDialogSave.h"

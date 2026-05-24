@@ -1,8 +1,7 @@
 /**
 * @file HTMLViewer.h
-* @brief All the fractal drawing related classes.
+* @brief All the fractal drawing-related classes.
 *
-* For the definition of how each fractal is rendered look into fractalTypes.h
 * @copyright GNU Public License.
 * @author Carlos Manuel Rodriguez y Martinez
 * @date 9/22/2012
@@ -21,15 +20,15 @@
 */
 class HTMLViewer : public wxDialog
 {
-    wxHtmlWindow* htmlView;
-    wxButton* closeButton;
+    wxHtmlWindow* _htmlView;
+    wxButton* _closeButton;
 
     void OnClose(wxCommandEvent& event);
 
 public:
-    HTMLViewer(wxString htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
+    HTMLViewer(const wxString& htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_DIALOG_STYLE);
-    ~HTMLViewer();
+    ~HTMLViewer() override;
 };
 
 #endif

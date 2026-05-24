@@ -1,3 +1,4 @@
+#include <complex>
 #include "RenderJulia.h"
 #include "FractalUtils.h"
 using namespace std;
@@ -15,22 +16,22 @@ void RenderJulia::Render()
 
     // Creates fractal.
     unsigned n;
-    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
+    if (myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
             c_im = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 Z_re = minX + x*xFactor;
                 Z_im = c_im;
 
                 insideSet = true;
-                for(n=0; n<maxIter; n++)
+                for (n=0; n<maxIter; n++)
                 {
                     Z_re2 = Z_re*Z_re;
                     Z_im2 = Z_im*Z_im;
-                    if(Z_re2 + Z_im2 > 4)
+                    if (Z_re2 + Z_im2 > 4)
                     {
                         insideSet = false;
                         break;
@@ -38,39 +39,37 @@ void RenderJulia::Render()
                     Z_im = 2*Z_re*Z_im + kImaginary;
                     Z_re = Z_re2 - Z_im2 + kReal;
                 }
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
                 colorMap[x][y] = n;
             }
         }
     }
-    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
+    else if (myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
-        double distance, distance1;
-        double mu;
-        double log2 = log(2.0);
-        double loglog2 = log(log2);
-        double temp_im;
+        double distance1;
+        const double log2 = log(2.0);
+        const double loglog2 = log(log2);
 
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
-            temp_im = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            double temp_im = maxY - y * yFactor;
+            for (x=wo; x<wf; x++)
             {
                 Z_re = minX + x*xFactor;
                 Z_im = temp_im;
 
                 insideSet = true;
-                distance = 99;
-                mu = (loglog2 - log(log(sqrt(4.0))))/log2 + 1;
+                double distance = 99;
+                double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
 
-                for(n=0; n<maxIter && insideSet; n++)
+                for (n=0; n<maxIter && insideSet; n++)
                 {
                     Z_re2 = Z_re*Z_re;
                     Z_im2 = Z_im*Z_im;
 
-                    if(Z_re2 + Z_im2 > 4)
+                    if (Z_re2 + Z_im2 > 4)
                     {
                         mu = (loglog2 - log(log(sqrt(Z_re2 + Z_im2))))/log2 + 1;
                         if(n > 0) insideSet = false;
@@ -82,24 +81,23 @@ void RenderJulia::Render()
                     distance1 = distance;
                     distance = minVal(distance, gaussianIntDist(Z_re, Z_im));
                 }
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
-                colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
+                colorMap[x][y] = static_cast<int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
     }
-    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
+    else if (myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
-        int color1, color2, color3, color4;
-        color1 = 1;
-        color2 = 0.25*myOpt.paletteSize;
-        color3 = 0.50*myOpt.paletteSize;
-        color4 = 0.75*myOpt.paletteSize;
-        complex<double> z, k;
-        k = complex<double>(kReal, kImaginary);
+        constexpr int color1 = 1;
+        const int color2 = 0.25 * myOpt.paletteSize;
+        const int color3 = 0.50 * myOpt.paletteSize;
+        const int color4 = 0.75 * myOpt.paletteSize;
+        complex<double> z;
+        const auto k = complex<double>(kReal, kImaginary);
 
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
             c_im = maxY - y*yFactor;
             for(x=wo; x<wf; x++)

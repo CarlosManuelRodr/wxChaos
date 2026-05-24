@@ -1,105 +1,104 @@
 #include "IterDialog.h"
 #include "StringFuncs.h"
 #include "Filesystem.h"
-#include "global.h"
 
-IterDialog::IterDialog(bool* Active, Fractal* _target, wxWindow* parent, wxWindowID id, const wxString& title, 
+IterDialog::IterDialog(bool* Active, Fractal* target, wxWindow* parent, wxWindowID id, const wxString& title,
                        const wxPoint& pos, const wxSize& size, long style)
     : wxFrame(parent, id, title, pos, size, style)
 {
     // WX Frame.
-    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
-    active = Active;
-    target = _target;
+    _active = Active;
+    _target = target;
     this->SetSizeHints(wxSize(420, 180), wxSize(420, 180));
 
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+    const auto sizer = new wxBoxSizer(wxVERTICAL);
 
-    panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* subSizer = new wxBoxSizer(wxVERTICAL);
+    _panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    const auto  subSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBoxSizer* textSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Iterations")), wxHORIZONTAL);    // Txt: "Iterations"
+    const auto  textSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, wxT("Iterations")), wxHORIZONTAL);
 
-    number = target->GetIterations();
-    text = num_to_string((int)number);
-    textCtrl = new wxTextCtrl(panel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
-    textSizer->Add(textCtrl, 0, wxALL, 5);
+    _number = _target->GetIterations();
+    _text = num_to_string(static_cast<int>(_number));
+    _textCtrl = new wxTextCtrl(_panel, wxID_ANY, _text, wxDefaultPosition, wxDefaultSize, 0);
+    textSizer->Add(_textCtrl, 0, wxALL, 5);
 
-    plusButton = new wxButton(panel, wxID_ANY, wxT("+"), wxDefaultPosition, wxDefaultSize, 0);
-    textSizer->Add(plusButton, 0, wxALL, 5);
+    _plusButton = new wxButton(_panel, wxID_ANY, wxT("+"), wxDefaultPosition, wxDefaultSize, 0);
+    textSizer->Add(_plusButton, 0, wxALL, 5);
 
-    minusButton = new wxButton(panel, wxID_ANY, wxT("-"), wxDefaultPosition, wxDefaultSize, 0);
-    textSizer->Add(minusButton, 0, wxALL, 5);
+    _minusButton = new wxButton(_panel, wxID_ANY, wxT("-"), wxDefaultPosition, wxDefaultSize, 0);
+    textSizer->Add(_minusButton, 0, wxALL, 5);
     subSizer->Add(textSizer, 1, wxEXPAND, 5);
 
-    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto  buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    acceptButton = new wxButton(panel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
-    buttonSizer->Add(acceptButton, 0, wxALL, 5);
+    _acceptButton = new wxButton(_panel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);
+    buttonSizer->Add(_acceptButton, 0, wxALL, 5);
 
-    applyButton = new wxButton(panel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
-    buttonSizer->Add(applyButton, 0, wxALL, 5);
+    _applyButton = new wxButton(_panel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
+    buttonSizer->Add(_applyButton, 0, wxALL, 5);
     subSizer->Add(buttonSizer, 0, 0, 5);
 
-    panel->SetSizer(subSizer);
-    panel->Layout();
-    subSizer->Fit(panel);
-    sizer->Add(panel, 1, wxEXPAND | wxALL, 0);
+    _panel->SetSizer(subSizer);
+    _panel->Layout();
+    subSizer->Fit(_panel);
+    sizer->Add(_panel, 1, wxEXPAND | wxALL, 0);
 
     this->SetSizer(sizer);
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
-    plusButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnPlus), NULL, this);
-    minusButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnMinus), NULL, this);
-    acceptButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnOk), NULL, this);
-    applyButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnApply), NULL, this);
+    _plusButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnPlus), nullptr, this);
+    _minusButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnMinus), nullptr, this);
+    _acceptButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnOk), nullptr, this);
+    _applyButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnApply), nullptr, this);
 }
 
 IterDialog::~IterDialog()
 {
-    *active = false;
-    plusButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnPlus), NULL, this);
-    minusButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnMinus), NULL, this);
-    acceptButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnOk), NULL, this);
-    applyButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnApply), NULL, this);
+    *_active = false;
+    _plusButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnPlus), nullptr, this);
+    _minusButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnMinus), nullptr, this);
+    _acceptButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnOk), nullptr, this);
+    _applyButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterDialog::OnApply), nullptr, this);
 }
 
-void IterDialog::OnPlus(wxCommandEvent& event)
+void IterDialog::OnPlus(wxCommandEvent&)
 {
     // Increases iterations.
-    number++;
-    text = num_to_string((int)number);
-    textCtrl->SetValue(text);
-    target->ChangeIterations(number);
+    _number++;
+    _text = num_to_string(static_cast<int>(_number));
+    _textCtrl->SetValue(_text);
+    _target->ChangeIterations(_number);
 }
-void IterDialog::OnMinus(wxCommandEvent& event)
+void IterDialog::OnMinus(wxCommandEvent&)
 {
     // Decreases iterations.
-    if(number - 1 > 0)
-        number--;
-    text = num_to_string((int)number);
-    textCtrl->SetValue(text);
-    target->ChangeIterations(number);
+    if(_number - 1 > 0)
+        _number--;
+    _text = num_to_string(static_cast<int>(_number));
+    _textCtrl->SetValue(_text);
+    _target->ChangeIterations(_number);
 }
-void IterDialog::OnOk(wxCommandEvent& event)
+void IterDialog::OnOk(wxCommandEvent&)
 {
     // Closes dialog.
     this->Close(true);
     this->Destroy();
 }
-void IterDialog::OnApply(wxCommandEvent& event)
+void IterDialog::OnApply(wxCommandEvent&)
 {
     // Redraw fractal.
-    text = textCtrl->GetValue();
-    number = string_to_int(text);
-    target->ChangeIterations(number);
+    _text = _textCtrl->GetValue();
+    _number = string_to_int(_text);
+    _target->ChangeIterations(_number);
 }
-void IterDialog::SetTarget(Fractal* _target)
+void IterDialog::SetTarget(Fractal* target)
 {
-    target = _target;
-    textCtrl->SetValue(num_to_string((int)target->GetIterations()));
-    number = target->GetIterations();
+    _target = target;
+    _textCtrl->SetValue(num_to_string(static_cast<int>(_target->GetIterations())));
+    _number = _target->GetIterations();
 }

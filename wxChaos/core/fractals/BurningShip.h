@@ -8,13 +8,12 @@
 */
 class BurningShip : public Fractal
 {
-private:
     RenderBurningShip* myRender;
 public:
-    BurningShip(sf::RenderWindow* Window);
+    explicit BurningShip(sf::RenderWindow* Window);
     BurningShip(int width, int height);
-    ~BurningShip();
+    ~BurningShip() override;
 
-    void Render();
-    void DrawOrbit();
+    void Render() override;
+    void DrawOrbit() override;
 };

@@ -3,7 +3,7 @@
 #include "HTMLViewer.h"
 #include "Filesystem.h"
 #include "StringFuncs.h"
-#include <fstream>
+#include "global.h"
 
 #ifdef _WIN32
 #include <Shellapi.h>
@@ -136,7 +136,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
 
     juliaModeState = false;
     changeJuliaMode = false;
-    changeKeybGuide = false;
+    changeKeyboardGuide = false;
     colorFrameActive = false;
     introConstActive = false;
     iterDiagActive = false;
@@ -191,7 +191,7 @@ void MainFrame::ConnectEvents()
     this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::JuliaHandle));
     this->Connect(ID_WELCOME_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnWelcomeDialog));
     this->Connect(ID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbout));
-    this->Connect(ID_KEYBGUIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnKeybGuide));
+    this->Connect(ID_KEYBOARDGUIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnKeybGuide));
     this->Connect(ID_SAVE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnSave));
     this->Connect(ID_PALETTE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnPalette));
     this->Connect(ID_MANDELBROT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeMandelbrot));
@@ -372,7 +372,7 @@ void MainFrame::SetUpGUI()
 
     // Help menu.
     helpMenu->Append(ID_USER_MANUAL, wxT("User manual"));
-    keyboardGuide = new wxMenuItem(helpMenu, ID_KEYBGUIDE, wxString(wxT("Keyboard guide")), wxEmptyString, wxITEM_CHECK);
+    keyboardGuide = new wxMenuItem(helpMenu, ID_KEYBOARDGUIDE, wxString(wxT("Keyboard guide")), wxEmptyString, wxITEM_CHECK);
     helpMenu->Append(keyboardGuide);
     helpMenu->Append(ID_WELCOME_DIALOG, wxT("Open welcome guide"));
     helpMenu->Append(ID_ABOUT, wxT("About"));
@@ -621,9 +621,9 @@ void MainFrame::OnSldIntroConst(wxCommandEvent &event)
 void MainFrame::OnKeybGuide(wxCommandEvent &event)
 {
     // Keyboard guide.
-    changeKeybGuide = !changeKeybGuide;
-    fractalCanvas->SetKeybGuide(changeKeybGuide);
-    keyboardGuide->Check(changeKeybGuide);
+    changeKeyboardGuide = !changeKeyboardGuide;
+    fractalCanvas->SetKeyboardGuide(changeKeyboardGuide);
+    keyboardGuide->Check(changeKeyboardGuide);
 }
 void MainFrame::OnItManual(wxCommandEvent &event)
 {
@@ -910,105 +910,12 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
 // Methods to adjust the menu.
 void MainFrame::GetParserOpt()
 {
-    // Gets options from the parser which reads "config.ini" file.
     string dir = GetWorkingDirectory();
     dir += "/config.ini";
-    ConfigParser p(dir);
-    vector<string> fractalOpt;
-    vector<FractalType> fractalValues;
 
-    if(p.FileOpened())
-    {
-        fractalOpt.push_back("Mandelbrot");
-        fractalOpt.push_back("MandelbrotZN");
-        fractalOpt.push_back("Julia");
-        fractalOpt.push_back("JuliaZN");
-        fractalOpt.push_back("Newton");
-        fractalOpt.push_back("Sinoidal");
-        fractalOpt.push_back("Magnet");
-        fractalOpt.push_back("Medusa");
-        fractalOpt.push_back("Manowar");
-        fractalOpt.push_back("JManowar");
-        fractalOpt.push_back("Sierp_Triangle");
-        fractalOpt.push_back("FixedPoint1");
-        fractalOpt.push_back("FixedPoint2");
-        fractalOpt.push_back("FixedPoint3");
-        fractalOpt.push_back("FixedPoint4");
-        fractalOpt.push_back("Tricorn");
-        fractalOpt.push_back("Burning_Ship");
-        fractalOpt.push_back("Burning_Ship_Julia");
-        fractalOpt.push_back("Fractory");
-        fractalOpt.push_back("Cell");
-        fractalOpt.push_back("Logistic");
-        fractalOpt.push_back("Henon_Map");
-        fractalOpt.push_back("Double_Pendulum");
-        fractalOpt.push_back("User_Defined");
-        fractalOpt.push_back("FPUser_Defined");
-        fractalValues.push_back(FractalType::Mandelbrot);
-        fractalValues.push_back(FractalType::MandelbrotZN);
-        fractalValues.push_back(FractalType::Julia);
-        fractalValues.push_back(FractalType::JuliaZN);
-        fractalValues.push_back(FractalType::NewtonRaphsonMethod);
-        fractalValues.push_back(FractalType::Sinoidal);
-        fractalValues.push_back(FractalType::Magnetic);
-        fractalValues.push_back(FractalType::Medusa);
-        fractalValues.push_back(FractalType::Manowar);
-        fractalValues.push_back(FractalType::ManowarJulia);
-        fractalValues.push_back(FractalType::SierpinskyTriangle);
-        fractalValues.push_back(FractalType::FixedPoint1);
-        fractalValues.push_back(FractalType::FixedPoint2);
-        fractalValues.push_back(FractalType::FixedPoint3);
-        fractalValues.push_back(FractalType::FixedPoint4);
-        fractalValues.push_back(FractalType::Tricorn);
-        fractalValues.push_back(FractalType::BurningShip);
-        fractalValues.push_back(FractalType::BurningShipJulia);
-        fractalValues.push_back(FractalType::Fractory);
-        fractalValues.push_back(FractalType::Cell);
-        fractalValues.push_back(FractalType::DoublePendulum);
-        fractalValues.push_back(FractalType::UserDefined);
-        fractalValues.push_back(FractalType::FixedPointUserDefined);
-
-        p.OptionToVar<FractalType>(opt.type, "FRACTAL_TYPE", fractalOpt, fractalValues, FractalType::Mandelbrot);
-        p.IntArgToVar(opt.maxIterations, "DEFAULT_ITERATION", 100);
-        p.StringArgToVar(opt.colorStyleGrad, "COLOR_STYLE", "rgb(0,0,0);rgb(255,255,255);");
-        if (opt.colorStyleGrad.find("rgb(") == string::npos)
-            opt.colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);";
-
-        p.IntArgToVar(opt.paletteSize, "PALETTE_SIZE", 300);
-        p.BoolArgToVar(opt.constantWindow, "CONSTANT_WINDOW", false);
-        p.BoolArgToVar(opt.commandConsole, "COMMAND_CONSOLE", false);
-        p.BoolArgToVar(opt.juliaMode, "JULIA_MODE", false);
-        p.BoolArgToVar(opt.colorPaletteWindow, "COLOR_PALETTE_WINDOW", false);
-        p.BoolArgToVar(opt.colorFractal, "COLOR_FRACTAL", false);
-        p.BoolArgToVar(opt.colorSet, "COLOR_SET", false);
-        p.BoolArgToVar(opt.firstUse, "FIRST_USE", false);
-        p.ReplaceArg("FIRST_USE", "False");
-    }
-    else
-    {
-        // Writes a file with default values.
-        ofstream file;
-        file.open(dir.c_str());
-        file << "//Fractal options\nCOLOR_TYPE=Gradient\nPALETTE_SIZE=300\nCOLOR_STYLE=";
-        file << "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);\n";
-        file << "FRACTAL_TYPE=Mandelbrot\nDEFAULT_ITERATION=100\nCONSTANT_WINDOW=False\nJULIA_MODE=False\n";
-        file << "COMMAND_CONSOLE=False\nFIRST_USE=False\n\n//Color options\nCOLOR_PALETTE_WINDOW=False\nCOLOR_FRACTAL=True\n";
-        file << "COLOR_SET=True\n";
-        file << "APP_VERSION=" << APP_VERSION << "\n";
-        file.close();
-
-        opt.type = FractalType::Mandelbrot;
-        opt.maxIterations = 100;
-        opt.paletteSize = 300;
-        opt.colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);\n";
-        opt.constantWindow = false;
-        opt.commandConsole = false;
-        opt.juliaMode = false;
-        opt.colorPaletteWindow = false;
-        opt.colorFractal = true;
-        opt.colorSet = true;
-        opt.firstUse = false;
-    }
+    const AppConfigStore configStore(dir);
+    opt = configStore.Load();
+    configStore.SetFirstUse(false);
 }
 void MainFrame::UpdateOptPanel()
 {

@@ -7,11 +7,10 @@
 */
 class RenderFixedPoint1 : public RenderFractal
 {
-private:
-    double minStep;
+    double _minStep;
 public:
     RenderFixedPoint1();
 
-    void Render();
-    void SetParams(double _minStep);
+    void Render() override;
+    void SetParams(double minStep);
 };

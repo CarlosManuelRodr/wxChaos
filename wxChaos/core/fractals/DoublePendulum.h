@@ -6,9 +6,8 @@
 * @class DPendulum
 * @brief Handles the RenderDPendulum threads.
 */
-class DPendulum : public Fractal
+class DoublePendulum : public Fractal
 {
-private:
     bool th1Bailout, th2Bailout;
     double th1NumBailout, th2NumBailout;
     double m1, m2, l, g;
@@ -17,13 +16,13 @@ private:
     bool rungeKutta;
     RenderDPendulum* myRender;
 public:
-    DPendulum(sf::RenderWindow* Window);
-    DPendulum(int width, int height);
-    ~DPendulum();
+    explicit DoublePendulum(sf::RenderWindow* Window);
+    DoublePendulum(int width, int height);
+    ~DoublePendulum() override;
 
-    void Render();
-    void DrawOrbit();
-    void CopyOptFromPanel();
-    void MoreIter();
-    void LessIter();
+    void Render() override;
+    void DrawOrbit() override;
+    void CopyOptFromPanel() override;
+    void MoreIter() override;
+    void LessIter() override;
 };

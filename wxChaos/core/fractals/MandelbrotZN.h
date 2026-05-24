@@ -13,11 +13,11 @@ private:
     double bailout;
     RenderMandelbrotZN* myRender;
 public:
-    MandelbrotZN(sf::RenderWindow* Window);
+    explicit MandelbrotZN(sf::RenderWindow* window);
     MandelbrotZN(int width, int height);
-    ~MandelbrotZN();
+    ~MandelbrotZN() override;
 
-    void Render();
-    void DrawOrbit();
-    void CopyOptFromPanel();
+    void Render() override;
+    void DrawOrbit() override;
+    void CopyOptFromPanel() override;
 };

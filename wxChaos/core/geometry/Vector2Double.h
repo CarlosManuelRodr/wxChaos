@@ -1,6 +1,5 @@
 #pragma once
 #include "Vector2Int.h"
-#include <cmath>
 
 struct Vector2Double
 {

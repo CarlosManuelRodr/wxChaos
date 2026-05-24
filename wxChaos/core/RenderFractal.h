@@ -2,25 +2,9 @@
 #ifndef RENDER_FRACTAL_H
 #define RENDER_FRACTAL_H
 
-#include <complex>
-#include "ColorPalettes.h"
-#include "wx/gradient.h"
-#include "../gui/sfml/FractalGUI.h"
-#include <mpParser.h>
-
 #include "types/FractalType.h"
-#include "types/Color.h"
-#include "types/RenderingAlgorithm.h"
-#include "types/ColorMode.h"
-#include "types/Direction.h"
-#include "types/FormulaType.h"
-#include "geometry/LineData.h"
-#include "geometry/CircleData.h"
 #include "geometry/Vector2Int.h"
-#include "geometry/Vector2Double.h"
-#include "geometry/Rect.h"
 #include "Options.h"
-#include "FormulaOpt.h"
 
 class RenderFractal
 {
@@ -56,6 +40,8 @@ protected:
     double kImaginary;
 
 public:
+    virtual ~RenderFractal() = default;
+
     virtual void Render() = 0;
     virtual void SpecialRender() {}
     virtual void Stop();

@@ -8,15 +8,14 @@
 */
 class Newton : public Fractal
 {
-private:
     RenderNewton* myRender;
     double minStep;
 public:
-    Newton(sf::RenderWindow *Window);
+    explicit Newton(sf::RenderWindow* window);
     Newton(int width, int height);
-    ~Newton();
+    ~Newton() override;
 
-    void Render();
-    void DrawOrbit();
-    void CopyOptFromPanel();
+    void Render() override;
+    void DrawOrbit() override;
+    void CopyOptFromPanel() override;
 };

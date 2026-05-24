@@ -7,11 +7,10 @@
 */
 class RenderCell : public RenderFractal
 {
-private:
-    double bailout;
+    double _bailout;
 public:
     RenderCell();
 
-    void Render();
-    void SetParams(double _bailout);
+    void Render() override;
+    void SetParams(double bailout);
 };

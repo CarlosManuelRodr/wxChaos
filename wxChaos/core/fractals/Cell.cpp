@@ -1,54 +1,54 @@
+#include <complex>
 #include "Cell.h"
-#include "global.h"
 using namespace std;
 
 Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
 {
-    minX = -1.95533;
-    maxX = 1.91967;
-    minY = -1.2495;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.95533;
+    _maxX = 1.91967;
+    _minY = -1.2495;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    hasOrbit = true;
-    type = FractalType::Cell;
-    myRender = new RenderCell[threadNumber];
-    SetWatchdog<RenderCell>(myRender, &watchdog, threadNumber);
+    _hasOrbit = true;
+    _type = FractalType::Cell;
+    myRender = new RenderCell[_threadNumber];
+    SetWatchdog<RenderCell>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
+    _panelOpt.SetForceShow(true);
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     bailout = 2;
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
 }
 Cell::Cell(int width, int height) : Fractal(width, height)
 {
-    minX = -1.3;
-    maxX = 1.3;
-    minY = -1.2495;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.3;
+    _maxX = 1.3;
+    _minY = -1.2495;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
+    _panelOpt.SetForceShow(true);
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     bailout = 2;
 
-    hasOrbit = true;
-    alg = RenderingAlgorithm::EscapeTime;
-    type = FractalType::Cell;
-    myRender = new RenderCell[threadNumber];
-    SetWatchdog<RenderCell>(myRender, &watchdog, threadNumber);
+    _hasOrbit = true;
+    _alg = RenderingAlgorithm::EscapeTime;
+    _type = FractalType::Cell;
+    myRender = new RenderCell[_threadNumber];
+    SetWatchdog<RenderCell>(myRender, &_watchdog, _threadNumber);
 }
 Cell::~Cell()
 {
@@ -57,12 +57,12 @@ Cell::~Cell()
 }
 void Cell::Render()
 {
-    for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(bailout);
+    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(bailout);
     this->TRender<RenderCell>(myRender);
 }
 void Cell::DrawOrbit()
 {
-    complex<double> c(orbitX, orbitY);
+    complex<double> c(_orbitX, _orbitY);
     complex<double> b, z;
     z = c;
     b = c - sin(c);
@@ -71,7 +71,7 @@ void Cell::DrawOrbit()
     bool outOfSet = false;
     double squaredBail = bailout*bailout;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for(unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
         if(z.real()*z.real() + z.imag()*z.imag() > squaredBail)
@@ -89,10 +89,10 @@ void Cell::DrawOrbit()
     for(unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 void Cell::CopyOptFromPanel()
 {
-    bailout = *panelOpt.GetDoubleElement(0);
+    bailout = *_panelOpt.GetDoubleElement(0);
 }
 

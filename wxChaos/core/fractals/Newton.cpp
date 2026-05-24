@@ -1,54 +1,54 @@
+#include <complex>
 #include "Newton.h"
-#include "global.h"
 using namespace std;
 
-Newton::Newton(sf::RenderWindow* Window):Fractal(Window)
+Newton::Newton(sf::RenderWindow* window):Fractal(window)
 {
     // Adjust the scale.
-    minX = -1.5721;
-    maxX = 1.4086;
-    minY = -1;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.5721;
+    _maxX = 1.4086;
+    _minY = -1;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::NewtonRaphsonMethod;
-    hasOrbit = true;
-    hasOrbitTrap = true;
-    myRender = new RenderNewton[threadNumber];
-    SetWatchdog<RenderNewton>(myRender, &watchdog, threadNumber);
+    _type = FractalType::NewtonRaphsonMethod;
+    _hasOrbit = true;
+    _hasOrbitTrap = true;
+    myRender = new RenderNewton[_threadNumber];
+    SetWatchdog<RenderNewton>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
+    _panelOpt.SetForceShow(true);
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::ConvergenceTest;
-    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
+    _alg = RenderingAlgorithm::ConvergenceTest;
+    _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
-Newton::Newton(int width, int height) : Fractal(width, height)
+Newton::Newton(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -1.5721;
-    maxX = 1.4086;
-    minY = -1;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.5721;
+    _maxX = 1.4086;
+    _minY = -1;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
+    _panelOpt.SetForceShow(true);
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
     minStep = 0.001;
 
-    type = FractalType::NewtonRaphsonMethod;
-    myRender = new RenderNewton[threadNumber];
-    SetWatchdog<RenderNewton>(myRender, &watchdog, threadNumber);
+    _type = FractalType::NewtonRaphsonMethod;
+    myRender = new RenderNewton[_threadNumber];
+    SetWatchdog<RenderNewton>(myRender, &_watchdog, _threadNumber);
 }
 Newton::~Newton()
 {
@@ -57,34 +57,32 @@ Newton::~Newton()
 }
 void Newton::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
-    complex<double> anterior;
-    const double minStep = 0.001;
+    complex<double> z(_orbitX, _orbitY);
 
-    if(orbitX != 0 && orbitY != 0)
+    if (_orbitX != 0 && _orbitY != 0)
     {
-        for(unsigned n=0; n<maxIter; n++)
+        for(unsigned n=0; n<_maxIter; n++)
         {
-            anterior = z;
+            complex<double> previous = z;
             z = z - (pow(z, 3) - complex<double>(1, 0))/(complex<double>(2, 0)*pow(z,2));
 
-            this->DrawLine(anterior.real(), anterior.imag(), z.real(), z.imag(), sf::Color(0,255,0), true);
+            this->DrawLine(previous.real(), previous.imag(), z.real(), z.imag(), sf::Color(0,255,0), true);
 
-            if((anterior.real() - minStep < z.real() && anterior.real() + minStep > z.real())
-                && (anterior.imag() - minStep < z.imag() && anterior.imag() + minStep > z.imag()))
+            if ((previous.real() - minStep < z.real() && previous.real() + minStep > z.real())
+                && (previous.imag() - minStep < z.imag() && previous.imag() + minStep > z.imag()))
                 break;
         }
     }
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 void Newton::Render()
 {
-    for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(minStep);
+    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(minStep);
     this->TRender<RenderNewton>(myRender);
 }
 void Newton::CopyOptFromPanel()
 {
-    minStep = *panelOpt.GetDoubleElement(0);
+    minStep = *_panelOpt.GetDoubleElement(0);
 }
 

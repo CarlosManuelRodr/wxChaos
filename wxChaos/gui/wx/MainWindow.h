@@ -11,13 +11,13 @@
 #ifndef _mainWindow
 #define _mainWindow
 
+#include "config/AppConfigStore.h"
 #include "JuliaMode.h"
 #include "About.h"
 #include "ColorFrame.h"
 #include "ConstDialog.h"
 #include "SizeDialogSave.h"
 #include "IterDialog.h"
-#include "ConfigParser.h"
 #include "FormulaDialog.h"
 #include "ScriptEditor.h"
 #include "ZoomRecorder.h"
@@ -56,7 +56,7 @@ enum IDS
     ID_FPUSER_DEFINED,
     ID_JULIA_MODE,
     ID_ABOUT,
-    ID_KEYBGUIDE,
+    ID_KEYBOARDGUIDE,
     ID_PAUSE_CONTINUE,
     ID_REDRAW,
     ID_RESET,
@@ -74,23 +74,6 @@ enum IDS
     ID_ZOOM_RECORDER,
     ID_DIMENSION_CALCULATOR
 };
-
-/**
-* @struct ConfigParserOpt
-* @brief Struct used to hold information parsed from the "config.ini" file.
-*/
-
-struct ConfigParserOpt
-{
-    FractalType type;
-    int maxIterations;
-    int paletteSize;
-    std::string colorStyleGrad;
-    bool constantWindow, commandConsole, juliaMode;
-    bool colorPaletteWindow, colorFractal, colorSet;
-    bool firstUse;
-};
-
 
 /**
 * @class MainFrame
@@ -112,7 +95,7 @@ class MainFrame : public wxFrame
     
     MainWindowStatus statusData;
     bool changeJuliaMode;
-    bool changeKeybGuide;
+    bool changeKeyboardGuide;
     bool colorFrameActive;
     bool introConstActive;
     bool iterDiagActive;
@@ -167,7 +150,7 @@ class MainFrame : public wxFrame
 
     // Configuration.
     FractalType fractalType;
-    ConfigParserOpt opt;
+    AppConfig opt;
 
     void SetUpGUI();                      ///< Create the main window.
     void UpdateMenu();                    ///< Adjust menu items when a new fractal type is selected.

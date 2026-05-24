@@ -21,8 +21,8 @@
 class wxSFMLCanvas : public wxControl, public sf::RenderWindow
 {
 public:
-    explicit wxSFMLCanvas(wxWindow* Parent = NULL, wxWindowID Id = -1, const wxPoint& Position = wxDefaultPosition,
-                          const wxSize& Size = wxDefaultSize, long Style = 0);
+    explicit wxSFMLCanvas(wxWindow* parent = nullptr, wxWindowID id = -1, const wxPoint& position = wxDefaultPosition,
+                          const wxSize& size = wxDefaultSize, long style = 0);
     ~wxSFMLCanvas() override;
 
 private:

@@ -9,5 +9,5 @@ class RenderTricorn : public RenderFractal
 {
 public:
     RenderTricorn();
-    void Render();
+    void Render() override;
 };

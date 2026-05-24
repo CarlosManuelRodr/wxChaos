@@ -8,7 +8,6 @@
 */
 class RenderScriptFractal : public RenderFractal
 {
-private:
     AngelscriptRenderEngine* renderEngine;
     std::string path;
     wxString errorInfo;
@@ -16,13 +15,13 @@ private:
     bool hasEnded;
 public:
     RenderScriptFractal();
-    ~RenderScriptFractal();
+    ~RenderScriptFractal() override;
 
-    void Render();
+    void Render() override;
+    void PreTerminate() override;
     void SetPath(std::string scriptPath);
     wxString GetErrorInfo();
     void ClearErrorInfo();
-    void PreTerminate();
-    bool IsThereError();
+    bool IsThereError() const;
     void SetParams(int _threadIndex);
 };

@@ -12,11 +12,8 @@
 #define __sizeDiag
 
 #include <wx/wx.h>
-#include <wx/spinctrl.h>
 #include <wx/statline.h>
-#include <SFML/System.hpp>
 #include "FractalCanvas.h"
-#include "global.h"
 
 /**
 * @class SaveProgressDiag
@@ -24,30 +21,29 @@
 */
 class SaveProgressDiag : public wxDialog
 {
-private:
-    wxGauge* progress;
-    wxStaticText* progressLabel;
-    wxStaticLine* staticLine;
-    wxButton* cancelButton;
-    Fractal* myFractal;
-    FractalType myType;
+    wxGauge* _progress;
+    wxStaticText* _progressLabel;
+    wxStaticLine* _staticLine;
+    wxButton* _cancelButton;
+    Fractal* _myFractal;
+    FractalType _myType;
 
-    bool finished;
-    bool saveProgressAvailable;
-    sf::Clock clock;
+    bool _finished;
+    bool _saveProgressAvailable;
+    sf::Clock _clock;
 
     void CalcProgress(wxUpdateUIEvent& event);  ///< When the window is updates ask the threads to calculate their progress.
-    void OnCancel(wxCommandEvent& event);       ///< Stop threads and close window.
+    void OnCancel(wxCommandEvent& event);       ///< Stop threads and close the window.
 
 public:
-    SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool _saveProgressAvailable = true, wxWindowID id = wxID_ANY,
+    SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable = true, wxWindowID id = wxID_ANY,
         const wxString& title = wxT("Saving..."), const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxSize(480, 180), long style = wxDEFAULT_DIALOG_STYLE);
-    ~SaveProgressDiag();
+    ~SaveProgressDiag() override;
 
     ///@brief Inform if the fractal has finished.
     ///@return true if has finished, false if not.
-    bool IsFinished();
+    bool IsFinished() const;
 };
 
 /**
@@ -56,7 +52,6 @@ public:
 */
 class SizeDialogSave : public wxDialog
 {
-private:
     wxPanel* mainPanel;
     wxStaticText* selectText;
     wxStaticText* widthText;
@@ -82,11 +77,11 @@ private:
     void OnOk(wxCommandEvent& event);             ///< Creates fractal with the parameters from the dialog and saves image.
 
 public:
-    SizeDialogSave(FractalCanvas* mFCanvas, std::string filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
-                   std::string scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
+    SizeDialogSave(FractalCanvas* mFCanvas, const std::string& filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
+                   const std::string& scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 300),
                    long style = wxDEFAULT_DIALOG_STYLE);
-    ~SizeDialogSave();
+    ~SizeDialogSave() override;
 };
 
 #endif

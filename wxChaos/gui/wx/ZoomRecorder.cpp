@@ -7,6 +7,7 @@
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/image.h>
+#include <sstream>
 #include <iomanip>
 #include <cstdlib>
 #include "SFML/System.hpp"
@@ -126,9 +127,8 @@ public:
 };
 
 // ZoomRecorder implementation.
-ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID id,
-    const wxString& title, const wxPoint& pos, const wxSize& size, long style)
-    : wxDialog(parent, id, title, pos, size, style)
+ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, const wxWindowID id, const wxString& title,
+                           const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
     // Fractal handler initialization
     fractalCanvasPtr = mFCanvas;
@@ -141,12 +141,12 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
-    auto mainSizer = new wxBoxSizer(wxVERTICAL);
+    const auto mainSizer = new wxBoxSizer(wxVERTICAL);
 
     panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
-    auto previewAndButtonsSizer = new wxBoxSizer(wxVERTICAL);
-    auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Preview")), wxVERTICAL);
+    const auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto previewAndButtonsSizer = new wxBoxSizer(wxVERTICAL);
+    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(panel, wxID_ANY, wxT("Preview")), wxVERTICAL);
 
     previewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY,
         fractalHandler.GetFractalPtr()->GetRenderedWxBitmap(),
@@ -162,7 +162,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     previewSizer->Add(previewSlider, 0, wxALL | wxEXPAND, 5);
     previewAndButtonsSizer->Add(previewSizer, 1, wxEXPAND, 5);
 
-    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
     saveButton = new wxButton(panel, wxID_ANY, wxT("Save video"), wxDefaultPosition, wxDefaultSize, 0);
     saveButton->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR));
@@ -181,7 +181,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     videoDurationText->Wrap(-1);
     optionsSizer->Add(videoDurationText, 0, wxALL, 5);
 
-    wxBoxSizer* videoDurationSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto videoDurationSizer = new wxBoxSizer(wxHORIZONTAL);
 
     minutesSpinCtrl = new wxSpinCtrl(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 60, 1);
     minutesSpinCtrl->SetMaxSize(wxSize(70, -1));
@@ -206,7 +206,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     framerateText->Wrap(-1);
     optionsSizer->Add(framerateText, 0, wxALL, 5);
 
-    wxBoxSizer* framerateSize = new wxBoxSizer(wxHORIZONTAL);
+    const auto framerateSize = new wxBoxSizer(wxHORIZONTAL);
 
     framerateSpinCtrl = new wxSpinCtrl(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 120, 30);
     framerateSize->Add(framerateSpinCtrl, 0, wxALL, 5);
@@ -246,45 +246,45 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID
     this->Centre(wxBOTH);
 
     // Connect Events
-    previewSlider->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    saveButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnSaveVideo), NULL, this);
-    cancelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnCancel), NULL, this);
-    minutesSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
-    secondsSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
-    framerateSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
-    zoomSpeedCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnChangeSpeed), NULL, this);
-    rotateCheckbox->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ZoomRecorder::OnColorRotate), NULL, this);
-    colorSpeedCtrl->Connect(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler(ZoomRecorder::OnChangeSpeedDbl), NULL, this);
+    previewSlider->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    saveButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnSaveVideo), nullptr, this);
+    cancelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnCancel), nullptr, this);
+    minutesSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), nullptr, this);
+    secondsSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), nullptr, this);
+    framerateSpinCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), nullptr, this);
+    zoomSpeedCtrl->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnChangeSpeed), nullptr, this);
+    rotateCheckbox->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ZoomRecorder::OnColorRotate), nullptr, this);
+    colorSpeedCtrl->Connect(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler(ZoomRecorder::OnChangeSpeedDbl), nullptr, this);
 }
 
 ZoomRecorder::~ZoomRecorder()
 {
     // Disconnect Events
-    previewSlider->Disconnect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Disconnect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Disconnect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Disconnect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Disconnect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Disconnect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Disconnect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Disconnect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    previewSlider->Disconnect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), NULL, this);
-    saveButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnSaveVideo), NULL, this);
-    cancelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnCancel), NULL, this);
-    minutesSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
-    secondsSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
-    framerateSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), NULL, this);
-    zoomSpeedCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnChangeSpeed), NULL, this);
-    rotateCheckbox->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ZoomRecorder::OnColorRotate), NULL, this);
-    colorSpeedCtrl->Disconnect(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler(ZoomRecorder::OnChangeSpeedDbl), NULL, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    previewSlider->Disconnect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ZoomRecorder::OnScrollPreview), nullptr, this);
+    saveButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnSaveVideo), nullptr, this);
+    cancelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ZoomRecorder::OnCancel), nullptr, this);
+    minutesSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), nullptr, this);
+    secondsSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), nullptr, this);
+    framerateSpinCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnUpdateTotalFrames), nullptr, this);
+    zoomSpeedCtrl->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ZoomRecorder::OnChangeSpeed), nullptr, this);
+    rotateCheckbox->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ZoomRecorder::OnColorRotate), nullptr, this);
+    colorSpeedCtrl->Disconnect(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, wxSpinDoubleEventHandler(ZoomRecorder::OnChangeSpeedDbl), nullptr, this);
 }
 
 void ZoomRecorder::CreateFractalHandler()
@@ -343,7 +343,7 @@ void ZoomRecorder::RenderPreview()
     else
         this->RenderPreview(previewSlider->GetValue(), zoomSpeedCtrl->GetValue());
 }
-int ZoomRecorder::CalculateTotalFrames()
+int ZoomRecorder::CalculateTotalFrames() const
 {
     const int seconds = secondsSpinCtrl->GetValue();
     const int minutes = minutesSpinCtrl->GetValue();

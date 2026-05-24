@@ -1,46 +1,47 @@
+#include <complex>
 #include "Tricorn.h"
 using namespace std;
 
 Tricorn::Tricorn(sf::RenderWindow* Window) : Fractal(Window)
 {
-    minX = -3;
-    maxX = 3;
-    minY = -1.94;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -3;
+    _maxX = 3;
+    _minY = -1.94;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    hasOrbit = true;
-    type = FractalType::Tricorn;
-    myRender = new RenderTricorn[threadNumber];
-    SetWatchdog<RenderTricorn>(myRender, &watchdog, threadNumber);
+    _hasOrbit = true;
+    _type = FractalType::Tricorn;
+    myRender = new RenderTricorn[_threadNumber];
+    SetWatchdog<RenderTricorn>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
-    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
 }
 Tricorn::Tricorn(int width, int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -2.5;
-    maxX = 2.5;
-    minY = -2.5;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -2.5;
+    _maxX = 2.5;
+    _minY = -2.5;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    hasOrbit = true;
-    alg = RenderingAlgorithm::EscapeTime;
+    _hasOrbit = true;
+    _alg = RenderingAlgorithm::EscapeTime;
 
-    type = FractalType::Tricorn;
-    myRender = new RenderTricorn[threadNumber];
-    SetWatchdog<RenderTricorn>(myRender, &watchdog, threadNumber);
+    _type = FractalType::Tricorn;
+    myRender = new RenderTricorn[_threadNumber];
+    SetWatchdog<RenderTricorn>(myRender, &_watchdog, _threadNumber);
 }
 Tricorn::~Tricorn()
 {
@@ -53,12 +54,12 @@ void Tricorn::Render()
 }
 void Tricorn::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
+    complex<double> z(_orbitX, _orbitY);
     complex<double> c = z;
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for(unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
         if(z.real()*z.real() + z.imag()*z.imag() > 4)
@@ -78,6 +79,6 @@ void Tricorn::DrawOrbit()
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
     }
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 

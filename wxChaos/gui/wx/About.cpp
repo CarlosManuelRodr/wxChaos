@@ -1,5 +1,6 @@
 #include <wx/gbsizer.h>
 #include <wx/window.h>
+#include <wx/statline.h>
 #include "About.h"
 
 IMPLEMENT_DYNAMIC_CLASS(AboutDialog, wxDialog)

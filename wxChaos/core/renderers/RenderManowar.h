@@ -9,6 +9,6 @@ class RenderManowar : public RenderFractal
 {
 public:
     RenderManowar();
-    void Render();
-    void SpecialRender();
+    void Render() override;
+    void SpecialRender() override;
 };

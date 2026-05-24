@@ -3,6 +3,6 @@
 
 struct CircleData
 {
-    double x_center, y_center, radius;
+    double xCenter, yCenter, radius;
     sf::Color color;
 };

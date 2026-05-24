@@ -1,45 +1,47 @@
+#include <complex>
+#include <mpParser.h>
 #include "FPUserDefined.h"
 using namespace std;
 
 FPUserDefined::FPUserDefined(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
-    minX = -1.8713;
-    maxX = 1.82101;
-    minY = -1.22781;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.8713;
+    _maxX = 1.82101;
+    _minY = -1.22781;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::FixedPointUserDefined;
-    hasOrbit = true;
-    myRender = new RenderFPUserDefined[threadNumber];
-    SetWatchdog<RenderFPUserDefined>(myRender, &watchdog, threadNumber);
+    _type = FractalType::FixedPointUserDefined;
+    _hasOrbit = true;
+    myRender = new RenderFPUserDefined[_threadNumber];
+    SetWatchdog<RenderFPUserDefined>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
+    _panelOpt.SetForceShow(true);
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::ConvergenceTest;
-    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
+    _alg = RenderingAlgorithm::ConvergenceTest;
+    _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 FPUserDefined::FPUserDefined(int width, int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -1.8713;
-    maxX = 1.82101;
-    minY = -1.22781;
-    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    _minX = -1.8713;
+    _maxX = 1.82101;
+    _minY = -1.22781;
+    _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
     this->SetOutermostZoom();
 
     minStep = 0.001;
-    type = FractalType::FixedPointUserDefined;
-    myRender = new RenderFPUserDefined[threadNumber];
-    SetWatchdog<RenderFPUserDefined>(myRender, &watchdog, threadNumber);
+    _type = FractalType::FixedPointUserDefined;
+    myRender = new RenderFPUserDefined[_threadNumber];
+    SetWatchdog<RenderFPUserDefined>(myRender, &_watchdog, _threadNumber);
 }
 FPUserDefined::~FPUserDefined()
 {
@@ -48,31 +50,31 @@ FPUserDefined::~FPUserDefined()
 }
 void FPUserDefined::Render()
 {
-    for(unsigned int i=0; i<threadNumber; i++)
+    for(unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(minStep);
 
     this->TRender<RenderFPUserDefined>(myRender);
 }
 void FPUserDefined::SetFormula(FormulaOpt formula)
 {
-    userFormula = formula;
-    for(unsigned int i=0; i<threadNumber; i++)
+    _userFormula = formula;
+    for(unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetFormula(formula);
 }
 void FPUserDefined::DrawOrbit()
 {
     vector<complex<double>> zVector;
     mup::ParserX parser;
-    parser.SetExpr(userFormula.userFormula.wc_str());
+    parser.SetExpr(_userFormula.userFormula.wc_str());
 
     mup::Value zVal;
     parser.DefineVar(_T("z"), mup::Variable(&zVal));
     parser.DefineVar(_T("Z"), mup::Variable(&zVal));
-    zVal = mup::cmplx_type(orbitX, orbitY);
+    zVal = mup::cmplx_type(_orbitX, _orbitY);
 
     try
     {
-        for(unsigned n=0; n<maxIter; n++)
+        for(unsigned n=0; n<_maxIter; n++)
         {
             zVector.push_back(complex<double>(zVal.GetFloat(),zVal.GetImag()));
             zVal = parser.Eval();
@@ -82,7 +84,7 @@ void FPUserDefined::DrawOrbit()
         for(unsigned int i=0; i<zVector.size()-1; i++)
             this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-        orbitDrawn = true;
+        _orbitDrawn = true;
     }
     catch(mup::ParserError&)
     {
@@ -91,7 +93,7 @@ void FPUserDefined::DrawOrbit()
 }
 void FPUserDefined::CopyOptFromPanel()
 {
-    minStep = *panelOpt.GetDoubleElement(0);
+    minStep = *_panelOpt.GetDoubleElement(0);
 }
 void FPUserDefined::PostRender()
 {

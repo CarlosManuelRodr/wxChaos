@@ -1,9 +1,10 @@
+#include <complex>
 #include "RenderFixedPoint1.h"
 using namespace std;
 
 RenderFixedPoint1::RenderFixedPoint1()
 {
-    minStep = 0.01;
+    _minStep = 0.01;
 }
 void RenderFixedPoint1::Render()
 {
@@ -21,8 +22,8 @@ void RenderFixedPoint1::Render()
             {
                 z = sin(z);
 
-                if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
-                    && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
+                if((z_prev.real() - _minStep < z.real() && z_prev.real() + _minStep > z.real())
+                    && (z_prev.imag() - _minStep < z.imag() && z_prev.imag() + _minStep > z.imag()))
                     break;
                 else
                     z_prev = z;
@@ -32,8 +33,8 @@ void RenderFixedPoint1::Render()
         }
     }
 }
-void RenderFixedPoint1::SetParams(double _minStep)
+void RenderFixedPoint1::SetParams(double minStep)
 {
-    minStep = _minStep;
+    _minStep = minStep;
 }
 

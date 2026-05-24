@@ -1,9 +1,10 @@
+#include <complex>
 #include "RenderFixedPoint4.h"
 using namespace std;
 
 RenderFixedPoint4::RenderFixedPoint4()
 {
-    minStep = 0.01;
+    _minStep = 0.01;
 }
 void RenderFixedPoint4::Render()
 {
@@ -21,8 +22,8 @@ void RenderFixedPoint4::Render()
             {
                 z = pow(z,2);
 
-                if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
-                    && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
+                if((z_prev.real() - _minStep < z.real() && z_prev.real() + _minStep > z.real())
+                    && (z_prev.imag() - _minStep < z.imag() && z_prev.imag() + _minStep > z.imag()))
                     break;
                 else
                     z_prev = z;
@@ -32,8 +33,8 @@ void RenderFixedPoint4::Render()
         }
     }
 }
-void RenderFixedPoint4::SetParams(double _minStep)
+void RenderFixedPoint4::SetParams(double minStep)
 {
-    minStep = _minStep;
+    _minStep = minStep;
 }
 

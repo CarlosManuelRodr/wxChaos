@@ -2,8 +2,8 @@
 * @file FractalCanvas.h
 * @brief FractalCanvas related stuff.
 *
-* FractalCanvas is the class used to draw the fractal, the play button, the selection rect and
-* the screenpointer.
+* FractalCanvas is the class used to draw the fractal, the play button, the selection rect, and
+* the screen pointer.
 *
 * @author Carlos Manuel Rodriguez y Martinez
 * @date 7/19/2012
@@ -14,6 +14,8 @@
 #define _fractalCanvas
 
 #include "FractalHandler.h"
+#include "sfml/ButtonChange.h"
+#include "sfml/SelectRect.h"
 #include "../gui/wx/wxSFMLCanvas.h"
 #include "../gui/sfml/SFMLFractal.h"
 #include "../gui/sfml/ScreenPointer.h"
@@ -50,43 +52,43 @@ struct MainWindowStatus
 class FractalCanvas : public wxSFMLCanvas
 {
     // Fractal
-    FractalHandler fractalHandler;
-    SFMLFractal sfmlFractal;
-    SelectRect* selection;
-    ButtonChange* play;
-    ScreenPointer* screenPointer;
-    FractalType type;
-    Fractal* target;                        ///< Internally, the methods of this class communicate with the fractal through this pointer.
+    FractalHandler _fractalHandler;
+    SFMLFractal _sfmlFractal;
+    SelectRect* _selection;
+    ButtonChange* _play;
+    ScreenPointer* _screenPointer;
+    FractalType _type;
+    Fractal* _target;                       ///< Internally, the methods of this class communicate with the fractal through this pointer.
 
-    sf::Image keyboardImage;                ///< Texture of the info images.
-    sf::Image mouseImage;
-    sf::Image helpImage;
-    sf::Texture keyboardTexture;
-    sf::Texture mouseTexture;
-    sf::Texture helpTexture;
-    sf::Sprite outKeyboard;                ///< Sprite of the info images.
-    sf::Sprite outMouse;
-    sf::Sprite outHelp;
+    sf::Image _keyboardImage;               ///< Texture of the info images.
+    sf::Image _mouseImage;
+    sf::Image _helpImage;
+    sf::Texture _keyboardTexture;
+    sf::Texture _mouseTexture;
+    sf::Texture _helpTexture;
+    sf::Sprite _outKeyboard;                ///< Sprite of the info images.
+    sf::Sprite _outMouse;
+    sf::Sprite _outHelp;
 
-    FormulaOpt userFormula;
-    ScriptData scriptData;
+    FormulaOpt _userFormula;
+    ScriptData _scriptData;
 
-    sf::Event event;
-    wxSize wSize;                          ///< Size of the fractalCanvas.
-    virtual void OnUpdate();               ///< Handles the SFML events and the drawing of the textures.
+    sf::Event _event;
+    wxSize _canvasSize;                     ///< Size of the fractalCanvas.
+    virtual void OnUpdate();                ///< Handles the SFML events and the drawing of the textures.
 
-    bool juliaMode;                        ///< State of the Julia mode.
-    double kReal;
-    double kImaginary;
-    double prevKReal;
-    double prevKImag;
-    bool pointerChange;                    ///< If there is a change in the pointer this one is activated.
-    bool keyboardGuide;                        ///< State of the keyboard guide.
-    bool keyboardGuideMode;
-    bool helpImageMode;
-    bool orbitMode;
-    bool sliderMode;
-    bool onUpdate;
+    bool _juliaMode;                        ///< State of the Julia mode.
+    double _kReal;
+    double _kImaginary;
+    double _prevKReal;
+    double _prevKImag;
+    bool _pointerChange;                    ///< If there is a change in the pointer, this boolean is activated.
+    bool _keyboardGuide;                    ///< State of the keyboard guide.
+    bool _keyboardGuideMode;
+    bool _helpImageMode;
+    bool _orbitMode;
+    bool _sliderMode;
+    bool _onUpdate;
 
     MainWindowStatus statusData;
     PauseContinueButton* btn;
@@ -95,11 +97,16 @@ public:
     ///@brief Constructor
     ///@param status Pointer to the status bar of the MainFrame.
     ///@param pcb Pointer to struct that holds the adress of the pause button and its status.
-    ///@param fractType Type of the fractal to be created.
+    ///@param fractalType Type of the fractal to be created.
+    ///@param parent
+    ///@param id
+    ///@param position
+    ///@param size
+    ///@param style
     ///@param parent Parent wxWindow.
-    FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FractalType fractType, wxWindow* Parent, wxWindowID Id,
-        const wxPoint& Position, const wxSize& Size, long Style = 0);
-    ~FractalCanvas();
+    FractalCanvas(const MainWindowStatus &status, PauseContinueButton* pcb, FractalType fractalType, wxWindow* parent, wxWindowID id,
+                  const wxPoint& position, const wxSize& size, long style = 0);
+    ~FractalCanvas() override;
 
     ///@brief Changes the size of the canvas.
     ///@param size New size. Must be the size of the parent container.
@@ -110,37 +117,37 @@ public:
     void SetJuliaMode(bool mode);
 
     ///@return Real value of the K constant.
-    double GetKReal();
+    double GetKReal() const;
 
     ///@return Imaginary value of the K constant.
-    double GetKImaginary();
+    double GetKImaginary() const;
 
     ///@brief State of the ScreenPointer.
     ///@return true if there was a change in the pointer. false if not.
     bool ChangeInPointer();
 
     ///@brief Changes the fractal type.
-    ///@param _type New fractal type.
-    void ChangeType(FractalType _type);
+    ///@param type New fractal type.
+    void ChangeType(FractalType type);
 
     ///@brief Like ChangeType but used when a script fractal selected.
-    ///@param _scriptData Script parameters.
-    void ChangeToScript(ScriptData _scriptData);
+    ///@param scriptData Script parameters.
+    void ChangeToScript(const ScriptData &scriptData);
 
     ///@return A pointer to the fractal.
-    Fractal* GetFractalPtr();
+    Fractal* GetFractalPtr() const;
 
     ///@return The type of the current fractal.
-    FractalType GetFractalType();
+    FractalType GetFractalType() const;
 
     ///@brief Sets the keyboard guide mode.
     ///@param mode New mode.
-    void SetKeybGuide(bool mode);
+    void SetKeyboardGuide(bool mode);
 
     ///@brief Shows the help image.
     void ShowHelpImage();
 
-    ///@brief Resets the fractal. Internally it deletes it and creates a new one exactly the same.
+    ///@brief Resets the fractal. Internally, it deletes it and creates a new one exactly the same.
     void Reset();
 
     ///@brief Sets the orbit mode.
@@ -152,15 +159,15 @@ public:
     void SetSliderMode(bool mode);
 
     ///@brief Sets the user formula.
-    ///@param _userFormula Formula specified by the user.
-    void SetUserFormula(FormulaOpt _userFormula);
+    ///@param userFormula Formula specified by the user.
+    void SetUserFormula(const FormulaOpt &userFormula);
 
-    ///@return Formula in the user defined fractal.
+    ///@return Formula in the user-defined fractal.
     FormulaOpt GetFormula();
 
     ///// Event processor /////
 
-    ///@brief Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
+    ///@brief Updates the status bar of the MainFrame when the mouse is moved over the fractal canvas.
     void OnMoveMouse(wxMouseEvent& event);
 
     void OnClick(wxMouseEvent& event);

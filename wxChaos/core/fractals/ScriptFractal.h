@@ -9,21 +9,20 @@
 */
 class ScriptFractal : public Fractal
 {
-private:
-    std::string path;
-    ScriptData myScriptData;
-    RenderScriptFractal* myRender;
+    std::string _path;
+    ScriptData _myScriptData;
+    RenderScriptFractal* _myRender;
 public:
-    ScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
+    ScriptFractal(sf::RenderWindow* window, const ScriptData& scriptData);
     ScriptFractal(int width, int height, ScriptData scriptData, int renderThreads = -1);
     ScriptFractal(int width, int height, std::string scriptPath);
-    ~ScriptFractal();
+    ~ScriptFractal() override;
 
-    void Render();
-    void PostRender();
-    void PreRestartRender();
-    bool IsThereError();
-    wxString GetErrorInfo();
-    void ClearErrorInfo();
+    void Render() override;
+    void PostRender() override;
+    void PreRestartRender() override;
+    bool IsThereError() const;
+    wxString GetErrorInfo() const;
+    void ClearErrorInfo() const;
     std::string GetPath();
 };

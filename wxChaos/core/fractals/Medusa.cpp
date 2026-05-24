@@ -1,52 +1,53 @@
+#include <complex>
 #include "Medusa.h"
 using namespace std;
 
-Medusa::Medusa(sf::RenderWindow* Window) : Fractal(Window)
+Medusa::Medusa(sf::RenderWindow* window) : Fractal(window)
 {
-    minX = -1.1342;
-    maxX = 1.7251;
-    minY = -0.90215;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.1342;
+    _maxX = 1.7251;
+    _minY = -0.90215;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::Medusa;
-    kReal = -0.2;
-    kImaginary = 0;
-    juliaVariety = true;
-    hasOrbit = true;
-    hasOrbitTrap = true;
+    _type = FractalType::Medusa;
+    _kReal = -0.2;
+    _kImaginary = 0;
+    _juliaVariety = true;
+    _hasOrbit = true;
+    _hasOrbitTrap = true;
 
-    myRender = new RenderMedusa[threadNumber];
-    SetWatchdog<RenderMedusa>(myRender, &watchdog, threadNumber);
+    myRender = new RenderMedusa[_threadNumber];
+    SetWatchdog<RenderMedusa>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 Medusa::Medusa(int width, int height) : Fractal(width, height)
 {
-    minX = -1.1342;
-    maxX = 1.7251;
-    minY = -0.90215;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.1342;
+    _maxX = 1.7251;
+    _minY = -0.90215;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    kReal = -0.2;
-    kImaginary = 0;
-    juliaVariety = true;
-    alg = RenderingAlgorithm::EscapeTime;
+    _kReal = -0.2;
+    _kImaginary = 0;
+    _juliaVariety = true;
+    _alg = RenderingAlgorithm::EscapeTime;
 
-    type = FractalType::Medusa;
-    myRender = new RenderMedusa[threadNumber];
-    SetWatchdog<RenderMedusa>(myRender, &watchdog, threadNumber);
+    _type = FractalType::Medusa;
+    myRender = new RenderMedusa[_threadNumber];
+    SetWatchdog<RenderMedusa>(myRender, &_watchdog, _threadNumber);
 }
 Medusa::~Medusa()
 {
@@ -59,12 +60,12 @@ void Medusa::Render()
 }
 void Medusa::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
-    complex<double> k(kReal, kImaginary);
+    complex<double> z(_orbitX, _orbitY);
+    complex<double> k(_kReal, _kImaginary);
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for(unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
         if(z.real()*z.real() + z.imag()*z.imag() > 4)
@@ -82,6 +83,6 @@ void Medusa::DrawOrbit()
     {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
     }
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 

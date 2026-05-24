@@ -9,5 +9,5 @@ class RenderBurningShip : public RenderFractal
 {
 public:
     RenderBurningShip();
-    void Render();
+    void Render() override;
 };

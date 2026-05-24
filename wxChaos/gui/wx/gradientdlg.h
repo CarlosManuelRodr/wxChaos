@@ -14,11 +14,8 @@
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
-#include <wx/dcbuffer.h>
 #include <wx/statbmp.h>
 #include <wx/stattext.h>
-#include <wx/button.h>
-#include <wx/colordlg.h>
 #include "gradient.h"
 
 /**
@@ -27,7 +24,6 @@
 */
 class wxGradientDialog : wxDialog
 {
-private:
     void OnStopsAreaClick(wxMouseEvent& event);
     void OnEditColor(wxCommandEvent& event);
     void OnDeleteColor(wxCommandEvent& event);
@@ -66,12 +62,11 @@ private:
 
 public:
     wxGradientDialog();
-    wxGradientDialog(wxWindow *parent, wxGradient grad = wxGradient(std::vector<wxColor>(2, *wxBLACK), 0, 100));
-    virtual ~wxGradientDialog();
-    bool Create(wxWindow *parent,  wxGradient grad = wxGradient(std::vector<wxColor>(2, *wxBLACK), 0, 100));
-    wxGradient GetGradient();
-    wxBitmap* GetGradientBitmap();
-    virtual int ShowModal();
+    explicit wxGradientDialog(wxWindow *parent, const wxGradient& grad = wxGradient(std::vector<wxColor>(2, *wxBLACK), 0, 100));
+    ~wxGradientDialog() override;
+    bool Create(wxWindow *parent, const wxGradient& grad = wxGradient(std::vector<wxColor>(2, *wxBLACK), 0, 100));
+    wxGradient GetGradient() const;
+    int ShowModal() override;
 };
 
 #endif

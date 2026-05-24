@@ -8,17 +8,16 @@
 */
 class Mandelbrot : public Fractal
 {
-private:
     RenderMandelbrot* myRender;
     int buddhaRandomP;
 public:
-    Mandelbrot(sf::RenderWindow* Window);
+    explicit Mandelbrot(sf::RenderWindow* window);
     Mandelbrot(int width, int height);
-    ~Mandelbrot();
+    ~Mandelbrot() override;
 
-    void Render();     ///< Launch threads.
-    void DrawOrbit();
-    void CopyOptFromPanel();
-    void PreRender();
-    void PreDrawMaps();
+    void Render() override;     ///< Launch threads.
+    void DrawOrbit() override;
+    void CopyOptFromPanel() override;
+    void PreRender() override;
+    void PreDrawMaps() override;
 };

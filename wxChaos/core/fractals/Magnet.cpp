@@ -1,45 +1,46 @@
+#include <complex>
 #include "Magnet.h"
 using namespace std;
 
-Magnet::Magnet(sf::RenderWindow* Window) : Fractal(Window)
+Magnet::Magnet(sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
-    minX = -1.8;
-    maxX = 4.4;
-    minY = -2.2;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.8;
+    _maxX = 4.4;
+    _minY = -2.2;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::Magnetic;
-    hasOrbit = true;
+    _type = FractalType::Magnetic;
+    _hasOrbit = true;
 
-    myRender = new RenderMagnet[threadNumber];
-    SetWatchdog<RenderMagnet>(myRender, &watchdog, threadNumber);
+    myRender = new RenderMagnet[_threadNumber];
+    SetWatchdog<RenderMagnet>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 Magnet::Magnet(int width, int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -1.05;
-    maxX = 3.35;
-    minY = -2.2;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.05;
+    _maxX = 3.35;
+    _minY = -2.2;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    alg = RenderingAlgorithm::EscapeTime;
-    type = FractalType::Magnetic;
-    myRender = new RenderMagnet[threadNumber];
-    SetWatchdog<RenderMagnet>(myRender, &watchdog, threadNumber);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _type = FractalType::Magnetic;
+    myRender = new RenderMagnet[_threadNumber];
+    SetWatchdog<RenderMagnet>(myRender, &_watchdog, _threadNumber);
 }
 Magnet::~Magnet()
 {
@@ -53,14 +54,14 @@ void Magnet::Render()
 void Magnet::DrawOrbit()
 {
     complex<double> z(0, 0);
-    complex<double> constant(orbitX, orbitY);
+    complex<double> constant(_orbitX, _orbitY);
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4)
+        if (z.real()*z.real() + z.imag()*z.imag() > 4)
         {
             outOfSet = true;
             break;
@@ -68,12 +69,14 @@ void Magnet::DrawOrbit()
         z = pow((pow(z, 2) + constant - complex<double>(1, 0))/(complex<double>(2, 0)*z + constant - complex<double>(2,0)), 2);
     }
     sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
+    if (outOfSet)
+        color = sf::Color(255, 0, 0);
+    else
+        color = sf::Color(0, 255, 0);
 
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 

@@ -16,7 +16,6 @@
 */
 class ZoomRecorder : public wxDialog
 {
-private:
     wxPanel* panel;
     wxStaticBitmap* previewBitmap;
     wxStaticText* previewFrameText;
@@ -54,7 +53,7 @@ private:
     void RenderPreview(int zoom, int zoomSpeed = 1, double colorSpeed = -1.0);
     void RenderPreview();
     void UpdateTotalFrames();
-    int CalculateTotalFrames();
+    int CalculateTotalFrames() const;
 public:
     ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Zoom recorder"),
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(960, 720),

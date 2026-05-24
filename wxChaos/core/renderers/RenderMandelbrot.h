@@ -7,15 +7,14 @@
 */
 class RenderMandelbrot : public RenderFractal
 {
-private:
-    int buddhaRandomP;
-    int bd;
+    int _buddhaRandomP;
+    int _bd;
 public:
     RenderMandelbrot();
 
-    void Render();
-    void SpecialRender();
-    int AskProgress();
+    void Render() override;
+    void SpecialRender() override;
+    int AskProgress() override;
 
     ///@brief Number of random points that will launch in Buddhabrot mode.
     ///@param n Number of points.

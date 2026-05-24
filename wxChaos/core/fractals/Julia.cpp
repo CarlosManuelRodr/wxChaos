@@ -1,56 +1,56 @@
+#include <complex>
 #include "Julia.h"
 using namespace std;
 
 Julia::Julia(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
-    minX = -1.77437;
-    maxX = 1.6912;
-    minY = -1.06769;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.77437;
+    _maxX = 1.6912;
+    _minY = -1.06769;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::Julia;
-    kReal = -0.754696;
-    kImaginary = -0.0524231;
-    hasOrbit = true;
-    juliaVariety = true;
-    hasOrbitTrap = true;
-    hasSmoothRender = true;
-    smoothRender = true;
-    colorPaletteMode = ColorMode::Gradient;
-    myRender = new RenderJulia[threadNumber];
-    SetWatchdog<RenderJulia>(myRender, &watchdog, threadNumber);
+    _type = FractalType::Julia;
+    _kReal = -0.754696;
+    _kImaginary = -0.0524231;
+    _hasOrbit = true;
+    _juliaVariety = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
+    _smoothRender = true;
+    myRender = new RenderJulia[_threadNumber];
+    SetWatchdog<RenderJulia>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
-    availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
 }
 Julia::Julia(int width, int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -1.77437;
-    maxX = 1.6912;
-    minY = -1.06769;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.77437;
+    _maxX = 1.6912;
+    _minY = -1.06769;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    alg = RenderingAlgorithm::EscapeTime;
-    hasOrbitTrap = true;
-    hasSmoothRender = true;
-    juliaVariety = true;
-    type = FractalType::Julia;
-    myRender = new RenderJulia[threadNumber];
-    SetWatchdog<RenderJulia>(myRender, &watchdog, threadNumber);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
+    _juliaVariety = true;
+    _type = FractalType::Julia;
+    myRender = new RenderJulia[_threadNumber];
+    SetWatchdog<RenderJulia>(myRender, &_watchdog, _threadNumber);
 }
 Julia::~Julia()
 {
@@ -59,12 +59,12 @@ Julia::~Julia()
 }
 void Julia::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
-    complex<double> k(kReal, kImaginary);
+    complex<double> z(_orbitX, _orbitY);
+    complex<double> k(_kReal, _kImaginary);
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for(unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
         if(z.real()*z.real() + z.imag()*z.imag() > 4)
@@ -82,7 +82,7 @@ void Julia::DrawOrbit()
     for(unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 void Julia::Render()
 {

@@ -12,11 +12,11 @@ class JuliaZN: public Fractal
     int n;
     double bailout;
 public:
-    JuliaZN(sf::RenderWindow *Window);
+    explicit JuliaZN(sf::RenderWindow* window);
     JuliaZN(int width, int height);
-    ~JuliaZN();
+    ~JuliaZN() override;
 
-    void CopyOptFromPanel();
-    void Render();
-    void DrawOrbit();
+    void CopyOptFromPanel() override;
+    void Render() override;
+    void DrawOrbit() override;
 };

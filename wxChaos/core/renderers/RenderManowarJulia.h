@@ -10,6 +10,6 @@ class RenderManowarJulia : public RenderFractal
 public:
     RenderManowarJulia();
 
-    void Render();
-    void SpecialRender();
+    void Render() override;
+    void SpecialRender() override;
 };

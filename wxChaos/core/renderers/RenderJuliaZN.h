@@ -7,13 +7,12 @@
 */
 class RenderJuliaZN : public RenderFractal
 {
-private:
-    int n;
-    double bailout;
+    int _n;
+    double _bailout;
 public:
     RenderJuliaZN();
 
-    void Render();
-    void SpecialRender();
-    void SetParams(int _n, double _bailout);
+    void Render() override;
+    void SpecialRender() override;
+    void SetParams(int n, double bailout);
 };

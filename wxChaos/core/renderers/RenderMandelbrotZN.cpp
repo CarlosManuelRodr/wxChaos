@@ -1,11 +1,12 @@
+#include <complex>
 #include "RenderMandelbrotZN.h"
 #include "FractalUtils.h"
 using namespace std;
 
 RenderMandelbrotZN::RenderMandelbrotZN()
 {
-    n = 0;
-    bailout = 0;
+    _n = 0;
+    _bailout = 0;
 }
 void RenderMandelbrotZN::Render()
 {
@@ -15,101 +16,99 @@ void RenderMandelbrotZN::Render()
     // Creates fractal.
     unsigned i;
     complex<double> z, c;
-    double squaredBail = bailout*bailout;
-    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
+    const double squaredBail = _bailout*_bailout;
+    if (myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
             c_im = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 z = c = complex<double>(minX + x*xFactor, c_im);
                 insideSet = true;
 
-                for(i=0; i<maxIter; i++)
+                for (i=0; i<maxIter; i++)
                 {
-                    z = pow(z,n) + c;
+                    z = pow(z,_n) + c;
                     if(z.real()*z.real() + z.imag()*z.imag() > squaredBail)
                     {
                         insideSet = false;
                         break;
                     }
                 }
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
                 colorMap[x][y] = i;
             }
         }
     }
-    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
+    else if (myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
-        double distance, distance1;
-        double mu;
-        double log2 = log(2.0);
-        double loglog2 = log(log2);
-        double zNorm;
+        double distance1 = 0;
+        const double log2 = log(2.0);
+        const double loglog2 = log(log2);
 
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
             c_im = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 z = complex<double>(0,0);
                 c = complex<double>(minX + x*xFactor, c_im);
                 insideSet = true;
-                distance = 99;
-                mu = (loglog2 - log(log(sqrt(4.0))))/log2 + 1;
+                double distance = 99;
+                double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
 
-                for(i=0; i<maxIter && insideSet; i++)
+                for (i=0; i<maxIter && insideSet; i++)
                 {
-                    zNorm = z.real()*z.real() + z.imag()*z.imag();
-                    if(zNorm > squaredBail)
+                    const double zNorm = z.real() * z.real() + z.imag() * z.imag();
+                    if (zNorm > squaredBail)
                     {
                         mu = (loglog2 - log(log(sqrt(zNorm))))/log2 + 1;
                         insideSet = false;
                     }
-                    z = pow(z,n) + c;
+                    z = pow(z,_n) + c;
 
                     distance1 = distance;
                     distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
                 }
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
                 colorMap[x][y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*myOpt.paletteSize)));
             }
         }
     }
-    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
+    else if (myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
-        int color1, color2, color3, color4;
-        color1 = 1;
-        color2 = 0.25*myOpt.paletteSize;
-        color3 = 0.50*myOpt.paletteSize;
-        color4 = 0.75*myOpt.paletteSize;
+        // ReSharper disable once CppTooWideScope
+        constexpr int color1 = 1;
+        const int color2 = 0.25 * myOpt.paletteSize;
+        const int color3 = 0.50 * myOpt.paletteSize;
+        const int color4 = 0.75 * myOpt.paletteSize;
 
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
             c_im = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 z = c = complex<double>(minX + x*xFactor, c_im);
                 insideSet = true;
 
-                for(i=0; i<maxIter; i++)
+                for (i=0; i<maxIter; i++)
                 {
-                    z = pow(z,n) + c;
-                    if(z.real()*z.real() + z.imag()*z.imag() > squaredBail)
+                    z = pow(z,_n) + c;
+                    if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
                     {
                         insideSet = false;
                         break;
                     }
                 }
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
-                if(z.real() > 0 && z.imag() > 0)
+                if (z.real() > 0 && z.imag() > 0)
                     colorMap[x][y] = i + color1;
                 else if(z.real() <= 0 && z.imag() > 0)
                     colorMap[x][y] = i + color2;
@@ -124,96 +123,100 @@ void RenderMandelbrotZN::Render()
 void RenderMandelbrotZN::SpecialRender()
 {
     double c_im;
-    double Z_re2;
-    double Z_im2;
     bool insideSet;
-    double squaredBail = bailout*bailout;
-    double log2 = log(2.0);
+    const double squaredBail = _bailout*_bailout;
+    const double log2 = log(2.0);
     unsigned i;
 
-    if(myOpt.orbitTrapMode)
+    if (myOpt.orbitTrapMode)
     {
-        // Creates fractal.
-        complex<double> z, c;
-        double distX, distY;
-        int iterations;
-        double bailFourPower = squaredBail*squaredBail;
+        double Z_im2 = 0;
+        double Z_re2 = 0;
 
-        for(y=ho; y<hf; y++)
+        // Creates fractal.
+        complex<double> c;
+        const double bailFourPower = squaredBail * squaredBail;
+
+        for (y=ho; y<hf; y++)
         {
             c_im = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
-                z = c = complex<double>(minX + x*xFactor, c_im);
+                complex<double> z = c = complex<double>(minX + x * xFactor, c_im);
+
+                double distanceX = abs(z.real());
+                double distanceY = abs(z.imag());
+
                 insideSet = true;
+                int iterations = 0;
 
-                distX = abs(z.real());
-                distY = abs(z.imag());
-
-                insideSet = true;
-                iterations = 0;
-
-                for(i=0; i<maxIter; i++)
+                for (i=0; i<maxIter; i++)
                 {
-                    z = pow(z, n) + c;
+                    z = pow(z, _n) + c;
                     Z_re2 = z.real()*z.real();
                     Z_im2 = z.imag()*z.imag();
-                    if(Z_re2 + Z_im2 > squaredBail)
+                    if (Z_re2 + Z_im2 > squaredBail)
                     {
                         insideSet = false;
-                        if(Z_re2 + Z_im2 > bailFourPower)
+                        if (Z_re2 + Z_im2 > bailFourPower)
                         {
-                            if(abs(z.imag()) < distY) distY = abs(z.imag());
-                            if(abs(z.real()) < distX) distX = abs(z.real());
+                            if (abs(z.imag()) < distanceY)
+                                distanceY = abs(z.imag());
+                            if (abs(z.real()) < distanceX)
+                                distanceX = abs(z.real());
                             break;
                         }
                     }
                     else iterations = i;
 
-                    if(abs(z.imag()) < distY) distY = abs(z.imag());
-                    if(abs(z.real()) < distX) distX = abs(z.real());
+                    if (abs(z.imag()) < distanceY)
+                        distanceY = abs(z.imag());
+                    if (abs(z.real()) < distanceX)
+                        distanceX = abs(z.real());
                 }
-                if(distX == 0) distX = 0.000001;
-                if(distY == 0) distY = 0.000001;
+                if (distanceX == 0)
+                    distanceX = 0.000001;
+                if (distanceY == 0)
+                    distanceY = 0.000001;
 
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
-                if(myOpt.smoothRender)
+                if (myOpt.smoothRender)
                 {
-                    if(!insideSet)
-                        colorMap[x][y] = static_cast<int>(abs(4.0*(iterations -  log(log(Z_re2+Z_im2))/log2) + 4.0*(log(1/distX) + log(1/distY))));
+                    if (!insideSet)
+                        colorMap[x][y] = static_cast<int>(abs(4.0*(iterations -  log(log(Z_re2+Z_im2))/log2) + 4.0*(log(1/distanceX) + log(1/distanceY))));
                     else
-                        colorMap[x][y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distX) + log(1/distY)))));
+                        colorMap[x][y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distanceX) + log(1/distanceY)))));
                 }
                 else
-                    colorMap[x][y] = static_cast<int>(abs(iterations + log(1/distX) + log(1/distY)));
+                    colorMap[x][y] = static_cast<int>(abs(iterations + log(1/distanceX) + log(1/distanceY)));
             }
         }
     }
-    else if(myOpt.smoothRender)
+    else if (myOpt.smoothRender)
     {
         // Creates fractal.
         complex<double> z, c;
-        double squaredBail = bailout*bailout;
-        for(y=ho; y<hf; y++)
+        double squaredBail = _bailout*_bailout;
+        for (y=ho; y<hf; y++)
         {
             c_im = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 z = c = complex<double>(minX + x*xFactor, c_im);
                 insideSet = true;
 
-                for(i=0; i<maxIter; i++)
+                for (i=0; i<maxIter; i++)
                 {
-                    z = pow(z,n) + c;
-                    if(z.real()*z.real() + z.imag()*z.imag() > squaredBail)
+                    z = pow(z,_n) + c;
+                    if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
                     {
                         insideSet = false;
                         break;
                     }
                 }
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
                 colorMap[x][y] = static_cast<int>(abs(4.0*(i -  log(log(z.real()*z.real()+z.imag()*z.imag()))/log2)));
@@ -221,9 +224,9 @@ void RenderMandelbrotZN::SpecialRender()
         }
     }
 }
-void RenderMandelbrotZN::SetParams(int _n, double _bailout)
+void RenderMandelbrotZN::SetParams(int n, double bailout)
 {
-    n = _n;
-    bailout = _bailout;
+    _n = n;
+    _bailout = bailout;
 }
 

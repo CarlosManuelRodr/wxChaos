@@ -1,7 +1,6 @@
 #include <fstream>
 #include "global.h"
 #include "Filesystem.h"
-#include "ConfigParser.h"
 using namespace std;
 
 #ifdef _WIN32

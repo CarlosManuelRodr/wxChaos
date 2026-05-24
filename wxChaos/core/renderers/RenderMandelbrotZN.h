@@ -7,13 +7,12 @@
 */
 class RenderMandelbrotZN : public RenderFractal
 {
-private:
-    int n;
-    double bailout;
+    int _n;
+    double _bailout;
 public:
     RenderMandelbrotZN();
 
-    void Render();
-    void SpecialRender();
-    void SetParams(int _n, double _bailout);
+    void Render() override;
+    void SpecialRender() override;
+    void SetParams(int n, double bailout);
 };

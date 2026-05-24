@@ -1,55 +1,56 @@
+#include <complex>
 #include "Sinoidal.h"
 using namespace std;
 
-Sinoidal::Sinoidal(sf::RenderWindow* Window) : Fractal(Window)
+Sinoidal::Sinoidal(sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
-    minX = -8;
-    maxX = 4;
-    minY = -4.12;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -8;
+    _maxX = 4;
+    _minY = -4.12;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::Sinoidal;
-    kReal = 1;
-    kImaginary = 0.25;
-    hasOrbit = true;
-    juliaVariety = true;
+    _type = FractalType::Sinoidal;
+    _kReal = 1;
+    _kImaginary = 0.25;
+    _hasOrbit = true;
+    _juliaVariety = true;
 
-    hasOrbitTrap = true;
+    _hasOrbitTrap = true;
 
-    myRender = new RenderSinoidal[threadNumber];
-    SetWatchdog<RenderSinoidal>(myRender, &watchdog, threadNumber);
+    myRender = new RenderSinoidal[_threadNumber];
+    SetWatchdog<RenderSinoidal>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
-Sinoidal::Sinoidal(int width, int height) : Fractal(width, height)
+Sinoidal::Sinoidal(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -6;
-    maxX = 4;
-    minY = -4.5;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -6;
+    _maxX = 4;
+    _minY = -4.5;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    alg = RenderingAlgorithm::EscapeTime;
-    kReal = 1;
-    kImaginary = 0.25;
-    juliaVariety = true;
+    _alg = RenderingAlgorithm::EscapeTime;
+    _kReal = 1;
+    _kImaginary = 0.25;
+    _juliaVariety = true;
 
-    type = FractalType::Sinoidal;
-    myRender = new RenderSinoidal[threadNumber];
-    SetWatchdog<RenderSinoidal>(myRender, &watchdog, threadNumber);
+    _type = FractalType::Sinoidal;
+    myRender = new RenderSinoidal[_threadNumber];
+    SetWatchdog<RenderSinoidal>(myRender, &_watchdog, _threadNumber);
 }
 Sinoidal::~Sinoidal()
 {
@@ -62,15 +63,15 @@ void Sinoidal::Render()
 }
 void Sinoidal::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
-    complex<double> k(kReal, kImaginary);
+    complex<double> z(_orbitX, _orbitY);
+    const complex<double> k(_kReal, _kImaginary);
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > maxIter)
+        if (z.real()*z.real() + z.imag()*z.imag() > _maxIter)
         {
             outOfSet = true;
             break;
@@ -78,12 +79,14 @@ void Sinoidal::DrawOrbit()
         z = k*sin(z);
     }
     sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
+    if (outOfSet)
+        color = sf::Color(255, 0, 0);
+    else
+        color = sf::Color(0, 255, 0);
 
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 

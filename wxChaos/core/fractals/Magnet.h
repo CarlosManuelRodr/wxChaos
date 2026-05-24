@@ -9,13 +9,12 @@
 
 class Magnet : public Fractal
 {
-private:
     RenderMagnet* myRender;
 public:
-    Magnet(sf::RenderWindow* Window);
+    explicit Magnet(sf::RenderWindow* window);
     Magnet(int width, int height);
-    ~Magnet();
+    ~Magnet() override;
 
-    void Render();
-    void DrawOrbit();
+    void Render() override;
+    void DrawOrbit() override;
 };

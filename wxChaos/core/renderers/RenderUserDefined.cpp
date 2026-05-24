@@ -1,3 +1,4 @@
+#include <mpParser.h>
 #include "RenderUserDefined.h"
 
 RenderUserDefined::RenderUserDefined()
@@ -5,7 +6,7 @@ RenderUserDefined::RenderUserDefined()
     bailout = 1;
     julia = false;
 }
-void RenderUserDefined::SetFormula(FormulaOpt formula)
+void RenderUserDefined::SetFormula(const FormulaOpt &formula)
 {
     bailout = formula.bailout;
     julia = formula.julia;
@@ -16,9 +17,7 @@ void RenderUserDefined::Render()
     mup::ParserX parser;
     parser.SetExpr(parserFormula.wc_str());
 
-    unsigned n;
     int squaredBail = bailout*bailout;
-    double z_y;
 
     // muParserX vars.
     mup::Value zVal;
@@ -28,18 +27,21 @@ void RenderUserDefined::Render()
     parser.DefineVar(_T("c"),  mup::Variable(&cVal));
     parser.DefineVar(_T("Z"), mup::Variable(&zVal));
     parser.DefineVar(_T("C"),  mup::Variable(&cVal));
-    if(julia) cVal = mup::cmplx_type(kReal, kImaginary);
-    bool insideSet;
+
+    if(julia)
+        cVal = mup::cmplx_type(kReal, kImaginary);
 
     // Parser execution.
-    try
-    {
-        for(y=ho; y<hf; y++)
+    try {
+        bool insideSet;
+        double z_y;
+        unsigned n;
+        for (y=ho; y<hf; y++)
         {
             z_y = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
-                if(!julia)
+                if (!julia)
                 {
                     cVal = mup::cmplx_type(minX + x*xFactor, z_y);
                     zVal = zero;
@@ -48,31 +50,31 @@ void RenderUserDefined::Render()
                     zVal = mup::cmplx_type(minX + x*xFactor, z_y);
 
                 insideSet = true;
-                for(n=0; n<maxIter; n++)
+                for (n=0; n<maxIter; n++)
                 {
-                    if(zVal.GetFloat()*zVal.GetFloat() + zVal.GetImag()*zVal.GetImag() > squaredBail)
+                    if (zVal.GetFloat()*zVal.GetFloat() + zVal.GetImag()*zVal.GetImag() > squaredBail)
                     {
                         insideSet = false;
                         break;
                     }
                     zVal = parser.Eval();
                 }
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
                 colorMap[x][y] = n;
             }
         }
     }
-    catch(mup::ParserError& e)
+    catch (mup::ParserError& e)
     {
         // Reports error and fill screen with null values.
         errorInfo = wxT("Error: ");
         errorInfo += wxString(e.GetMsg());
 
-        for(int y=ho; y<hf; y++)
+        for (int y=ho; y<hf; y++)
         {
-            for(int x=wo; x<wf; x++)
+            for (int x=wo; x<wf; x++)
             {
                 setMap[x][y] = false;
                 colorMap[x][y] = 0;
@@ -91,8 +93,8 @@ void RenderUserDefined::ClearErrorInfo()
 {
     errorInfo.clear();
 }
-bool RenderUserDefined::IsThereError()
+bool RenderUserDefined::IsThereError() const
 {
-    return !(errorInfo.size() == 0);
+    return errorInfo.size() != 0;
 }
 

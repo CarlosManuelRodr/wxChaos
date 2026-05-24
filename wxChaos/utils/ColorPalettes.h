@@ -1,5 +1,5 @@
 /** 
-* @file Styles.h 
+* @file ColorPalettes.h
 * @brief Contains palette related enums and classes.
 *
 * @copyright GNU Public License.
@@ -7,8 +7,8 @@
 * @date 7/18/2012
 */
 
-#ifndef _styles
-#define _styles
+#ifndef _color_palettes
+#define _color_palettes
 #include <wx/string.h>
 
 /**

@@ -10,6 +10,6 @@ class RenderMedusa : public RenderFractal
 public:
     RenderMedusa();
 
-    void Render();
-    void SpecialRender();
+    void Render() override;
+    void SpecialRender() override;
 };

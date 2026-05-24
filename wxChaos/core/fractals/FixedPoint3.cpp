@@ -1,45 +1,45 @@
+#include <complex>
 #include "FixedPoint3.h"
-#include "global.h"
 using namespace std;
 
 FixedPoint3::FixedPoint3(sf::RenderWindow* Window):Fractal(Window)
 {
     // Adjust the scale.
-    minX = -3.76339;
-    maxX = 3.59018;
-    minY = -2.39204;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -3.76339;
+    _maxX = 3.59018;
+    _minY = -2.39204;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
-    hasOrbit = true;
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
+    _hasOrbit = true;
 
-    type = FractalType::FixedPoint3;
-    myRender = new RenderFixedPoint3[threadNumber];
-    SetWatchdog<RenderFixedPoint3>(myRender, &watchdog, threadNumber);
+    _type = FractalType::FixedPoint3;
+    myRender = new RenderFixedPoint3[_threadNumber];
+    SetWatchdog<RenderFixedPoint3>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
+    _panelOpt.SetForceShow(true);
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
     minStep = 0.001;
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::ConvergenceTest;
-    availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
+    _alg = RenderingAlgorithm::ConvergenceTest;
+    _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
-FixedPoint3::FixedPoint3(int width, int height) : Fractal(width, height)
+FixedPoint3::FixedPoint3(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -3.76339;
-    maxX = 3.59018;
-    minY = -2.39204;
-    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    _minX = -3.76339;
+    _maxX = 3.59018;
+    _minY = -2.39204;
+    _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
     this->SetOutermostZoom();
 
-    type = FractalType::FixedPoint3;
-    myRender = new RenderFixedPoint3[threadNumber];
-    SetWatchdog<RenderFixedPoint3>(myRender, &watchdog, threadNumber);
+    _type = FractalType::FixedPoint3;
+    myRender = new RenderFixedPoint3[_threadNumber];
+    SetWatchdog<RenderFixedPoint3>(myRender, &_watchdog, _threadNumber);
 }
 FixedPoint3::~FixedPoint3()
 {
@@ -48,45 +48,38 @@ FixedPoint3::~FixedPoint3()
 }
 void FixedPoint3::Render()
 {
-    for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(minStep);
+    for (unsigned int i=0; i<_threadNumber; i++)
+        myRender[i].SetParams(minStep);
     this->TRender<RenderFixedPoint3>(myRender);
 }
 void FixedPoint3::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
+    complex<double> z(_orbitX, _orbitY);
     complex<double> z_ant;
-    double minStep = 0.001;
     vector< complex<double> > zVector;
-    bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
         z = tan(z);
 
-        if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
+        if ((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
             && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
         {
             break;
         }
-        else
-        {
-            z_ant = z;
-        }
+        z_ant = z;
     }
 
-    sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
-
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    const auto color = sf::Color(0, 255, 0);
+    for (unsigned int i=0; i<zVector.size()-1; i++)
     {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
     }
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 void FixedPoint3::CopyOptFromPanel()
 {
-    minStep = *panelOpt.GetDoubleElement(0);
+    minStep = *_panelOpt.GetDoubleElement(0);
 }
 

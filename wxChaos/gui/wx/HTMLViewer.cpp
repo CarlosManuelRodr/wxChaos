@@ -1,43 +1,41 @@
 #include "HTMLViewer.h"
-#include "global.h"
 #include "Filesystem.h"
 
 // TextViewer
-HTMLViewer::HTMLViewer(wxString htmlFile, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, 
-                       const wxSize& size, long style)
-    : wxDialog(parent, id, title, pos, size, style)
+HTMLViewer::HTMLViewer(const wxString& htmlFile, wxWindow* parent, const wxWindowID id, const wxString& title,
+                       const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
     this->SetSizeHints(wxSize(900, 620), wxDefaultSize);
 
-    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
-    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* textSizer = new wxBoxSizer(wxVERTICAL);
+    const auto mainSizer = new wxBoxSizer(wxVERTICAL);
+    const auto textSizer = new wxBoxSizer(wxVERTICAL);
 
-    htmlView = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO);
-    textSizer->Add(htmlView, 1, wxALL|wxEXPAND, 5);
-    htmlView->LoadPage(htmlFile);
+    _htmlView = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO);
+    textSizer->Add(_htmlView, 1, wxALL|wxEXPAND, 5);
+    _htmlView->LoadPage(htmlFile);
     mainSizer->Add(textSizer, 9, wxEXPAND, 5);
 
-    wxBoxSizer* buttonSizer = new wxBoxSizer(wxVERTICAL);
-    closeButton = new wxButton(this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Close"
-    buttonSizer->Add(closeButton, 0, wxALL, 5);
+    const auto buttonSizer = new wxBoxSizer(wxVERTICAL);
+    _closeButton = new wxButton(this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0);
+    buttonSizer->Add(_closeButton, 0, wxALL, 5);
     mainSizer->Add(buttonSizer, 0, wxEXPAND, 5);
 
     this->SetSizer(mainSizer);
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
     // Connect Events.
-    closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(HTMLViewer::OnClose), NULL, this);
+    _closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(HTMLViewer::OnClose), nullptr, this);
 }
 HTMLViewer::~HTMLViewer()
 {
     // Disconnect Events.
-    closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(HTMLViewer::OnClose), NULL, this);
+    _closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(HTMLViewer::OnClose), nullptr, this);
 }
-void HTMLViewer::OnClose(wxCommandEvent& event)
+void HTMLViewer::OnClose(wxCommandEvent&)
 {
     this->Close(true);
 }

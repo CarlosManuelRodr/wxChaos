@@ -8,13 +8,12 @@
 */
 class Sinoidal : public Fractal
 {
-private:
     RenderSinoidal* myRender;
 public:
-    Sinoidal(sf::RenderWindow* Window);
+    explicit Sinoidal(sf::RenderWindow* window);
     Sinoidal(int width, int height);
-    ~Sinoidal();
+    ~Sinoidal() override;
 
-    void Render();
-    void DrawOrbit();
+    void Render() override;
+    void DrawOrbit() override;
 };

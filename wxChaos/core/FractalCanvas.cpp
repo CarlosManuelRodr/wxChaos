@@ -2,74 +2,73 @@
 #include "StringFuncs.h"
 #include "../gui/wx/SizeDialogSave.h"
 #include "Filesystem.h"
-#include "global.h"
 using namespace std;
 
 FractalCanvas* fractalCanvasPtr = nullptr;
 
 // Fractal Canvas
-FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, FractalType fractType, wxWindow* Parent,
-    wxWindowID Id, const wxPoint& Position, const wxSize& Size, long Style)
-    : wxSFMLCanvas(Parent, Id, Position, Size, Style)
+FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton* pcb, const FractalType fractalType,
+                             wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
+                             const long style) : wxSFMLCanvas(parent, id, position, size, style)
 {
     fractalCanvasPtr = this;
 
     statusData = status;
     btn = pcb;
-    type = fractType;
+    _type = fractalType;
 
     // Status variables.
-    wSize = Size;
-    juliaMode = false;
-    kReal = 0;
-    kImaginary = 0;
-    pointerChange = false;
-    keyboardGuide = false;
-    keyboardGuideMode = false;
-    helpImageMode = false;
-    orbitMode = false;
-    sliderMode = false;
-    onUpdate = false;
+    _canvasSize = size;
+    _juliaMode = false;
+    _kReal = 0;
+    _kImaginary = 0;
+    _pointerChange = false;
+    _keyboardGuide = false;
+    _keyboardGuideMode = false;
+    _helpImageMode = false;
+    _orbitMode = false;
+    _sliderMode = false;
+    _onUpdate = false;
 
     // UserFormula
-    userFormula.bailout = 2;
-    userFormula.julia = false;
-    userFormula.userFormula = wxT("z = z^2 + c");
-    userFormula.type = FormulaType::Complex;
+    _userFormula.bailout = 2;
+    _userFormula.julia = false;
+    _userFormula.userFormula = wxT("z = z^2 + c");
+    _userFormula.type = FormulaType::Complex;
 
     // Create fractal.
-    fractalHandler.CreateFractal(fractType, this);
-    target = fractalHandler.GetFractalPtr();
-    sfmlFractal.SetFractal(target);
+    _fractalHandler.CreateFractal(fractalType, this);
+    _target = _fractalHandler.GetFractalPtr();
+    _sfmlFractal.SetFractal(_target);
 
-    fractalHandler.SetFormula(userFormula);
-    target->SetOnWxCtrl(true);
+    _fractalHandler.SetFormula(_userFormula);
+    _target->SetOnWxCtrl(true);
 
     // Initializes GUI elements.
-    selection = new SelectRect(this);
+    _selection = new SelectRect(this);
 
-    play = new ButtonChange(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 500, this);
-    play->SetAnchorage(false, true, true, false);
-    play->Resize(this);
+    _play = new ButtonChange(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 500, this);
+    _play->SetAnchorage(false, true, true, false);
+    _play->Resize(this);
 
-    screenPointer = new ScreenPointer(this);
-    keyboardImage.loadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
-    mouseImage.loadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
-    helpImage.loadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
+    _screenPointer = new ScreenPointer(this);
+    _keyboardImage.loadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
+    _mouseImage.loadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
+    _helpImage.loadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
 
-    keyboardTexture.loadFromImage(keyboardImage);
-    mouseTexture.loadFromImage(mouseImage);
-    helpTexture.loadFromImage(helpImage);
+    _keyboardTexture.loadFromImage(_keyboardImage);
+    _mouseTexture.loadFromImage(_mouseImage);
+    _helpTexture.loadFromImage(_helpImage);
 
-    outKeyboard.setTexture(keyboardTexture);
-    outMouse.setTexture(mouseTexture);
-    outHelp.setTexture(helpTexture);
+    _outKeyboard.setTexture(_keyboardTexture);
+    _outMouse.setTexture(_mouseTexture);
+    _outHelp.setTexture(_helpTexture);
 
-    outKeyboard.setColor(sf::Color(255, 255, 255, 220));
-    outMouse.setColor(sf::Color(255, 255, 255, 220));
-    outHelp.setColor(sf::Color(255, 255, 255, 220));
+    _outKeyboard.setColor(sf::Color(255, 255, 255, 220));
+    _outMouse.setColor(sf::Color(255, 255, 255, 220));
+    _outHelp.setColor(sf::Color(255, 255, 255, 220));
 
-    this->SetFocus();
+    this->wxWindow::SetFocus();
     this->setFramerateLimit(31);
 
     this->Connect(wxEVT_MOTION, wxMouseEventHandler(FractalCanvas::OnMoveMouse));
@@ -84,68 +83,65 @@ FractalCanvas::FractalCanvas(MainWindowStatus status, PauseContinueButton* pcb, 
 FractalCanvas::~FractalCanvas()
 {
     // Cleanup.
-    fractalHandler.DeleteFractal();
-    delete play;
-    delete screenPointer;
+    _fractalHandler.DeleteFractal();
+    delete _play;
+    delete _screenPointer;
 }
 void FractalCanvas::OnUpdate()
 {
     // Handles SFML events.
-    while (this->pollEvent(event))
+    while (this->pollEvent(_event))
     {
         // Size change event.
-        if (event.type == sf::Event::Resized)
+        if (_event.type == sf::Event::Resized)
         {
-            sf::Vector2i mousePos = sf::Mouse::getPosition(*this);
-            // this->ConvertCoords(mousePos.x, mousePos.y); // Obsolete
+            _sfmlFractal.Resize(this);
+            _play->Resize(this);
 
-            sfmlFractal.Resize(this);
-            play->Resize(this);
+            if (_screenPointer != nullptr)
+                _screenPointer->Resize(this);
 
-            if (screenPointer != nullptr)
-                screenPointer->Resize(this);
-
-            if (keyboardGuide && keyboardGuideMode)
+            if (_keyboardGuide && _keyboardGuideMode)
             {
                 if (this->getSize().y > 300 || this->getSize().x > 300)
                 {
-                    outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
-                    outMouse.setPosition(this->getSize().x - 90, 0);
+                    _outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
+                    _outMouse.setPosition(this->getSize().x - 90, 0);
                 }
             }
 
             if (btn->state)
             {
                 btn->state = false;
-                if (type == FractalType::ScriptFractal)
-                    btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+                if (_type == FractalType::ScriptFractal)
+                    btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
                 else
-                    btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                    btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
 
-                target->DeleteSavedZooms();
+                _target->DeleteSavedZooms();
             }
         }
 
-        sfmlFractal.HandleEvent(event);
+        _sfmlFractal.HandleEvent(_event);
 
         // Keyboard event.
-        if (event.type == sf::Event::KeyPressed)
+        if (_event.type == sf::Event::KeyPressed)
         {
-            if (!target->IsRendering())
+            if (!_target->IsRendering())
             {
-                if (event.key.code == sf::Keyboard::F1)  // Open or close slider.
+                if (_event.key.code == sf::Keyboard::F1)  // Open or close slider.
                 {
                     bool modo = !statusData.slider->IsChecked();
                     this->SetSliderMode(modo);
                     statusData.slider->Check(modo);
                 }
-                if (event.key.code == sf::Keyboard::F2)  // Shows or hides fractal orbit.
+                if (_event.key.code == sf::Keyboard::F2)  // Shows or hides fractal orbit.
                 {
                     bool modo = !statusData.showOrbit->IsChecked();
                     this->SetOrbitMode(modo);
                     statusData.showOrbit->Check(modo);
                 }
-                if (event.key.code == sf::Keyboard::F4)  // Saves image.
+                if (_event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
                     wxFileDialog* openFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
                         wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
@@ -156,428 +152,399 @@ void FractalCanvas::OnUpdate()
                         int ext = openFileDialog->GetFilterIndex();
                         string path = string(fileName.mb_str());
 
-                        SizeDialogSave* diag = new SizeDialogSave(this, path, ext, type, target, this);
+                        SizeDialogSave* diag = new SizeDialogSave(this, path, ext, _type, _target, this);
                         diag->Show(true);
                     }
                     openFileDialog->Destroy();
                 }
             }
-            if (event.key.code == sf::Keyboard::F5)  // Redraw canvas.
+            if (_event.key.code == sf::Keyboard::F5)  // Redraw canvas.
             {
-                sfmlFractal.Redraw();
+                _sfmlFractal.Redraw();
             }
-            if (event.key.code == sf::Keyboard::P)  // Pause shortcut.
+            if (_event.key.code == sf::Keyboard::P)  // Pause shortcut.
             {
                 if (btn->state)
                 {
                     btn->state = false;
-                    if (type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+                    if (_type == FractalType::ScriptFractal)
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
                     else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
                 }
                 else
                 {
                     btn->state = true;
-                    if (type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Relaunch script")) + wxT('\t') + wxT("P"));    // Txt: "Relaunch script"
+                    if (_type == FractalType::ScriptFractal)
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Relaunch script")) + wxT('\t') + wxT("P"));
                     else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Continue")) + wxT('\t') + wxT("P"));    // Txt: "Continue"
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Continue")) + wxT('\t') + wxT("P"));
                 }
-                target->PauseContinue();
+                _target->PauseContinue();
             }
         }
     }
 
-    // This is here because the binding between SFML and wxWidgets makes SFML to handle incorrectly a resolution change.
-    sf::View View(sf::FloatRect(0, 0, wSize.GetX(), wSize.GetY()));
-    this->setView(View);
+    // This is here because the binding between SFML and wxWidgets makes SFML to incorrectly handle a resolution change.
+    const sf::View view(sf::FloatRect(0, 0, _canvasSize.GetX(), _canvasSize.GetY()));
+    this->setView(view);
 
     // Clears the screen and draw GUI elements and fractal.
     this->clear();
 
-    if (orbitMode)
-        target->SetOrbitPoint(kReal, kImaginary);
-    if (sliderMode && pointerChange)
-        target->SetK(kReal, kImaginary);
+    if (_orbitMode)
+        _target->SetOrbitPoint(_kReal, _kImaginary);
+    if (_sliderMode && _pointerChange)
+        _target->SetK(_kReal, _kImaginary);
 
-    target->Move();
-    sfmlFractal.Show(this);
+    _target->Move();
+    _sfmlFractal.Show(this);
 
     // Avoid drawing GUI elements if the fractal is rendering.
-    if (!target->IsRendering())
+    if (!_target->IsRendering())
     {
-        selection->Show(this);
+        _selection->Show(this);
 
-        if (btn->pauseContinue->IsEnabled() && !target->IsPaused())
+        if (btn->pauseContinue->IsEnabled() && !_target->IsPaused())
             btn->pauseContinue->Enable(false);
 
-        if (btn->state && !target->IsPaused())
+        if (btn->state && !_target->IsPaused())
         {
             btn->state = false;
-            if (type == FractalType::ScriptFractal)
-                btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+            if (_type == FractalType::ScriptFractal)
+                btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
             else
-                btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
         }
 
-        if (keyboardGuide && keyboardGuideMode)
+        if (_keyboardGuide && _keyboardGuideMode)
         {
-            this->draw(outKeyboard);
-            this->draw(outMouse);
+            this->draw(_outKeyboard);
+            this->draw(_outMouse);
         }
-        if (helpImageMode)
+        if (_helpImageMode)
         {
-            this->draw(outHelp);
-            if (!keyboardGuide)
-                this->draw(outKeyboard);
+            this->draw(_outHelp);
+            if (!_keyboardGuide)
+                this->draw(_outKeyboard);
         }
 
-        if (juliaMode || orbitMode || sliderMode) screenPointer->Show(this);
-
-#ifdef __linux__
-        if (juliaMode)
-        {
-            if (pointerChange)
-            {
-                juliaImage = juliaHandler.GetFractalPtr()->GetRenderedImage();
-                juliaTexture.loadFromImage(juliaImage);
-                pointerChange = false;
-            }
-            outJulia.setTexture(juliaTexture);
-            this->draw(outJulia);
-        }
-#endif
+        if (_juliaMode || _orbitMode || _sliderMode)
+            _screenPointer->Show(this);
     }
-    else if (!btn->pauseContinue->IsEnabled() && type != FractalType::SierpinskyTriangle) // Triangle and Logistic don't use threads so they cannot be paused.
+    else if (!btn->pauseContinue->IsEnabled() && _type != FractalType::SierpinskyTriangle) // Triangle and Logistic don't use threads, so they cannot be paused.
     {
         btn->pauseContinue->Enable(true);
     }
 }
-void FractalCanvas::SetWxSize(wxSize size)
+void FractalCanvas::SetWxSize(const wxSize size)
 {
-    wSize = size;
+    _canvasSize = size;
 
     // Adjust position of the keyboard guide.
-    if (keyboardGuideMode)
+    if (_keyboardGuideMode)
     {
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
-            outMouse.setPosition(this->getSize().x - 90, 0);
-            keyboardGuide = true;
+            _outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
+            _outMouse.setPosition(this->getSize().x - 90, 0);
+            _keyboardGuide = true;
         }
         else
-            keyboardGuide = false;
+            _keyboardGuide = false;
     }
-    if (helpImageMode)
+    if (_helpImageMode)
     {
-        outKeyboard.setPosition(this->getSize().x - keyboardImage.getSize().x, this->getSize().y - keyboardImage.getSize().y);
-        outHelp.setPosition((this->getSize().x - helpImage.getSize().x) / 2, (this->getSize().y - helpImage.getSize().y) / 2);
+        _outKeyboard.setPosition(this->getSize().x - _keyboardImage.getSize().x, this->getSize().y - _keyboardImage.getSize().y);
+        _outHelp.setPosition((this->getSize().x - _helpImage.getSize().x) / 2, (this->getSize().y - _helpImage.getSize().y) / 2);
     }
 }
-void FractalCanvas::SetJuliaMode(bool mode)
+void FractalCanvas::SetJuliaMode(const bool mode)
 {
     // If Julia mode is activated creates screen pointer.
     if (mode)
     {
-        juliaMode = true;
-        if (screenPointer == nullptr)
-            screenPointer = new ScreenPointer(this);
+        _juliaMode = true;
+        if (_screenPointer == nullptr)
+            _screenPointer = new ScreenPointer(this);
     }
     // If deactivated, deletes it.
     else
     {
-        juliaMode = false;
-        if (screenPointer != nullptr && !orbitMode && !sliderMode)
+        _juliaMode = false;
+        if (_screenPointer != nullptr && !_orbitMode && !_sliderMode)
         {
-            delete screenPointer;
-            screenPointer = nullptr;
+            delete _screenPointer;
+            _screenPointer = nullptr;
         }
-#ifdef __linux__
-        juliaHandler.DeleteFractal();
-#endif
     }
 }
-double FractalCanvas::GetKReal()
+double FractalCanvas::GetKReal() const
 {
-    if (!onUpdate)
-        return kReal;
-    else
-        return prevKReal;
+    return !_onUpdate ? _kReal : _prevKReal;
 }
-double FractalCanvas::GetKImaginary()
+
+double FractalCanvas::GetKImaginary() const
 {
-    if (!onUpdate)
-        return kImaginary;
-    else
-        return prevKImag;
+    return !_onUpdate ? _kImaginary : _prevKImag;
 }
+
 bool FractalCanvas::ChangeInPointer()
 {
-    if (pointerChange)
+    if (_pointerChange)
     {
-        pointerChange = false;
+        _pointerChange = false;
         return true;
     }
-    else
-        return false;
+    return false;
 }
-Fractal* FractalCanvas::GetFractalPtr()
+Fractal* FractalCanvas::GetFractalPtr() const
 {
-    return target;
+    return _target;
 }
-FractalType FractalCanvas::GetFractalType()
+FractalType FractalCanvas::GetFractalType() const
 {
-    return type;
+    return _type;
 }
-void FractalCanvas::ChangeType(FractalType _type)
+void FractalCanvas::ChangeType(const FractalType type)
 {
     // Deletes old fractal and creates a new one.
-    fractalHandler.CreateFractal(_type, this);
-    type = _type;
-    target = fractalHandler.GetFractalPtr();
-    sfmlFractal.SetFractal(target);
-    fractalHandler.SetFormula(userFormula);
-    target->SetOnWxCtrl(true);
+    _fractalHandler.CreateFractal(type, this);
+    _type = type;
+    _target = _fractalHandler.GetFractalPtr();
+    _sfmlFractal.SetFractal(_target);
+    _fractalHandler.SetFormula(_userFormula);
+    _target->SetOnWxCtrl(true);
 
     // Deletes screen pointer if active.
-    if (orbitMode || sliderMode)
+    if (_orbitMode || _sliderMode)
     {
-        orbitMode = false;
-        sliderMode = false;
-        if (!juliaMode)
+        _orbitMode = false;
+        _sliderMode = false;
+        if (!_juliaMode)
         {
-            if (screenPointer != nullptr)
-                delete screenPointer;
+            if (_screenPointer != nullptr)
+                delete _screenPointer;
 
-            screenPointer = nullptr;
+            _screenPointer = nullptr;
         }
     }
 
-    play->Reset();
+    _play->Reset();
 
 }
-void FractalCanvas::ChangeToScript(ScriptData _scriptData)
+void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
 {
     // Deletes old fractal and creates a new one.
-    type = FractalType::ScriptFractal;
-    scriptData = _scriptData;
-    fractalHandler.CreateScriptFractal(this, scriptData);
-    target = fractalHandler.GetFractalPtr();
-    sfmlFractal.SetFractal(target);
-    target->SetOnWxCtrl(true);
+    _type = FractalType::ScriptFractal;
+    _scriptData = scriptData;
+    _fractalHandler.CreateScriptFractal(this, _scriptData);
+    _target = _fractalHandler.GetFractalPtr();
+    _sfmlFractal.SetFractal(_target);
+    _target->SetOnWxCtrl(true);
 
     // Deletes screen pointer if active.
-    if (orbitMode || sliderMode)
+    if (_orbitMode || _sliderMode)
     {
-        orbitMode = false;
-        sliderMode = false;
-        if (!juliaMode)
+        _orbitMode = false;
+        _sliderMode = false;
+        if (!_juliaMode)
         {
-            if (screenPointer != nullptr)
-                delete screenPointer;
+            if (_screenPointer != nullptr)
+                delete _screenPointer;
 
-            screenPointer = nullptr;
+            _screenPointer = nullptr;
         }
     }
 
-    play->Reset();
+    _play->Reset();
 }
-void FractalCanvas::SetKeybGuide(bool mode)
+void FractalCanvas::SetKeyboardGuide(const bool mode)
 {
-    keyboardGuideMode = mode;
-    if (keyboardGuideMode)
+    _keyboardGuideMode = mode;
+    if (_keyboardGuideMode)
     {
         // Adjust position of the keyboard guide.
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyboard.setPosition(this->getSize().x - keyboardImage.getSize().x, this->getSize().y - keyboardImage.getSize().y);
-            outMouse.setPosition(this->getSize().x - mouseImage.getSize().x, 0);
-            keyboardGuide = true;
+            _outKeyboard.setPosition(this->getSize().x - _keyboardImage.getSize().x, this->getSize().y - _keyboardImage.getSize().y);
+            _outMouse.setPosition(this->getSize().x - _mouseImage.getSize().x, 0);
+            _keyboardGuide = true;
         }
         else
-            keyboardGuide = false;
+            _keyboardGuide = false;
     }
     else
-        keyboardGuide = false;
+        _keyboardGuide = false;
 }
 void FractalCanvas::ShowHelpImage()
 {
-    outKeyboard.setPosition(this->getSize().x - keyboardImage.getSize().x, this->getSize().y - keyboardImage.getSize().y);
-    outHelp.setPosition((this->getSize().x - helpImage.getSize().x) / 2, (this->getSize().y - helpImage.getSize().y) / 2);
-    helpImageMode = true;
+    _outKeyboard.setPosition(this->getSize().x - _keyboardImage.getSize().x, this->getSize().y - _keyboardImage.getSize().y);
+    _outHelp.setPosition((this->getSize().x - _helpImage.getSize().x) / 2, (this->getSize().y - _helpImage.getSize().y) / 2);
+    _helpImageMode = true;
 }
 void FractalCanvas::Reset()
 {
     // Deletes old fractal and creates a new one.
-    if (target->IsRendering())
-        target->StopRender();
+    if (_target->IsRendering())
+        _target->StopRender();
 
-    if (type == FractalType::ScriptFractal)
-        fractalHandler.CreateScriptFractal(this, scriptData);
+    if (_type == FractalType::ScriptFractal)
+        _fractalHandler.CreateScriptFractal(this, _scriptData);
     else
-        fractalHandler.CreateFractal(type, this);
+        _fractalHandler.CreateFractal(_type, this);
 
-    target = fractalHandler.GetFractalPtr();
-    sfmlFractal.SetFractal(target);
-    fractalHandler.SetFormula(userFormula);
-    target->SetOnWxCtrl(true);
-    play->Reset();
+    _target = _fractalHandler.GetFractalPtr();
+    _sfmlFractal.SetFractal(_target);
+    _fractalHandler.SetFormula(_userFormula);
+    _target->SetOnWxCtrl(true);
+    _play->Reset();
 
     // Deactivates screen pointer.
-    juliaMode = false;
-    orbitMode = false;
-    sliderMode = false;
-    if (screenPointer != nullptr)
+    _juliaMode = false;
+    _orbitMode = false;
+    _sliderMode = false;
+    if (_screenPointer != nullptr)
     {
-        delete screenPointer;
-        screenPointer = nullptr;
+        delete _screenPointer;
+        _screenPointer = nullptr;
     }
 }
-void FractalCanvas::SetOrbitMode(bool mode)
+void FractalCanvas::SetOrbitMode(const bool mode)
 {
-    orbitMode = mode;
-    if (orbitMode)
+    _orbitMode = mode;
+    if (_orbitMode)
     {
-        target->SetOrbitMode(true);
-        if (screenPointer == nullptr)
-            screenPointer = new ScreenPointer(this);
+        _target->SetOrbitMode(true);
+        if (_screenPointer == nullptr)
+            _screenPointer = new ScreenPointer(this);
     }
     else
     {
-        target->SetOrbitMode(false);
-        if (screenPointer != nullptr && !juliaMode && !sliderMode)
+        _target->SetOrbitMode(false);
+        if (_screenPointer != nullptr && !_juliaMode && !_sliderMode)
         {
-            delete screenPointer;
-            screenPointer = nullptr;
+            delete _screenPointer;
+            _screenPointer = nullptr;
         }
     }
 }
-void FractalCanvas::SetSliderMode(bool mode)
+void FractalCanvas::SetSliderMode(const bool mode)
 {
-    sliderMode = mode;
-    if (sliderMode)
+    _sliderMode = mode;
+    if (_sliderMode)
     {
-        if (screenPointer == nullptr)
-            screenPointer = new ScreenPointer(this);
-        target->SetJuliaMode(true);
+        if (_screenPointer == nullptr)
+            _screenPointer = new ScreenPointer(this);
+        _target->SetJuliaMode(true);
     }
     else
     {
-        if (screenPointer != nullptr && !juliaMode && !orbitMode)
+        if (_screenPointer != nullptr && !_juliaMode && !_orbitMode)
         {
-            delete screenPointer;
-            screenPointer = nullptr;
+            delete _screenPointer;
+            _screenPointer = nullptr;
         }
-        target->SetJuliaMode(false);
+        _target->SetJuliaMode(false);
     }
 }
-void FractalCanvas::SetUserFormula(FormulaOpt _userFormula)
+void FractalCanvas::SetUserFormula(const FormulaOpt &userFormula)
 {
-    userFormula = _userFormula;
+    _userFormula = userFormula;
 }
 FormulaOpt FractalCanvas::GetFormula()
 {
-    return userFormula;
+    return _userFormula;
 }
 void FractalCanvas::OnResize(wxSizeEvent& event)
 {
-    wSize = event.GetSize();
+    _canvasSize = event.GetSize();
 
     // Adjust position of the keyboard guide.
-    if (keyboardGuideMode)
+    if (_keyboardGuideMode)
     {
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
-            outMouse.setPosition(this->getSize().x - 90, 0);
-            keyboardGuide = true;
+            _outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
+            _outMouse.setPosition(this->getSize().x - 90, 0);
+            _keyboardGuide = true;
         }
         else
-            keyboardGuide = false;
+            _keyboardGuide = false;
     }
-    if (helpImageMode)
+    if (_helpImageMode)
     {
-        outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
-        outHelp.setPosition((this->getSize().x - helpImage.getSize().x) / 2, (this->getSize().y - helpImage.getSize().y) / 2);
+        _outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
+        _outHelp.setPosition((this->getSize().x - _helpImage.getSize().x) / 2, (this->getSize().y - _helpImage.getSize().y) / 2);
     }
-
-#ifdef __linux__
-    if (juliaMode)
-    {
-        outJulia.setPosition(wSize.GetWidth() - juliaImage.getSize().x, wSize.GetHeight() - juliaImage.getSize().y);
-        pointerChange = true;
-    }
-#endif
 }
 
 void FractalCanvas::OnClick(wxMouseEvent& event)
 {
     // Pointer event.
-    if (juliaMode || orbitMode || sliderMode)
+    if (_juliaMode || _orbitMode || _sliderMode)
     {
-        if (screenPointer->ClickEvent(event))
+        if (_screenPointer->ClickEvent(event))
         {
-            prevKReal = kReal;
-            prevKImag = kImaginary;
+            _prevKReal = _kReal;
+            _prevKImag = _kImaginary;
 
-            onUpdate = true;
-            kReal = screenPointer->GetX(target);
-            kImaginary = screenPointer->GetY(target);
-            pointerChange = true;
+            _onUpdate = true;
+            _kReal = _screenPointer->GetX(_target);
+            _kImaginary = _screenPointer->GetY(_target);
+            _pointerChange = true;
 
-            if (orbitMode)
-                target->SetOrbitChange();
+            if (_orbitMode)
+                _target->SetOrbitChange();
 
-            onUpdate = false;
+            _onUpdate = false;
         }
     }
     // Selection event.
-    else if (!target->IsRendering() && !target->IsMoving())
-        selection->ClickEvent(event);
+    else if (!_target->IsRendering() && !_target->IsMoving())
+        _selection->ClickEvent(event);
 
     // Mouse event.
-    if (helpImageMode)
+    if (_helpImageMode)
     {
         if (event.ButtonDown(wxMOUSE_BTN_LEFT))
-            helpImageMode = false;
+            _helpImageMode = false;
     }
 
     if (event.ButtonDown(wxMOUSE_BTN_RIGHT))
     {
-        sfmlFractal.ZoomBack();
-        if (btn->state && !target->IsPaused())
+        _sfmlFractal.ZoomBack();
+        if (btn->state && !_target->IsPaused())
         {
             btn->state = false;
-            if (type == FractalType::ScriptFractal)
-                btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+            if (_type == FractalType::ScriptFractal)
+                btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
             else
-                btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
+                btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
         }
     }
 }
 void FractalCanvas::OnUnClick(wxMouseEvent& event)
 {
     // Selection event.
-    if (juliaMode || orbitMode || sliderMode)
-        screenPointer->UnClickEvent(event);
+    if (_juliaMode || _orbitMode || _sliderMode)
+        _screenPointer->UnClickEvent(event);
     else
     {
-        if (!target->IsRendering() && !target->IsMoving())
+        if (!_target->IsRendering() && !_target->IsMoving())
         {
-            if (selection->UnClickEvent(event))
+            if (_selection->UnClickEvent(event))
             {
                 if (btn->state)
                 {
                     btn->state = false;
-                    if (type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));    // Txt: "Abort"
+                    if (_type == FractalType::ScriptFractal)
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
                     else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: "Pause"
-                    target->DeleteSavedZooms();
+                        btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
+                    _target->DeleteSavedZooms();
                 }
-                sfmlFractal.SetAreaOfView(selection->GetSeleccion());
+                _sfmlFractal.SetAreaOfView(_selection->GetSeleccion());
             }
         }
     }
@@ -585,52 +552,52 @@ void FractalCanvas::OnUnClick(wxMouseEvent& event)
 void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 {
     // Selection event.
-    if (juliaMode || orbitMode || sliderMode)
+    if (_juliaMode || _orbitMode || _sliderMode)
     {
-        if (screenPointer->MoveEvent(event))
+        if (_screenPointer->MoveEvent(event))
         {
-            prevKReal = kReal;
-            prevKImag = kImaginary;
+            _prevKReal = _kReal;
+            _prevKImag = _kImaginary;
 
-            onUpdate = true;
-            kReal = screenPointer->GetX(target);
-            kImaginary = screenPointer->GetY(target);
-            pointerChange = true;
+            _onUpdate = true;
+            _kReal = _screenPointer->GetX(_target);
+            _kImaginary = _screenPointer->GetY(_target);
+            _pointerChange = true;
 
-            if (orbitMode)
-                target->SetOrbitChange();
+            if (_orbitMode)
+                _target->SetOrbitChange();
 
-            onUpdate = false;
+            _onUpdate = false;
         }
     }
     else
     {
-        if (!target->IsRendering() && !target->IsMoving())
-            selection->MoveEvent(event);
+        if (!_target->IsRendering() && !_target->IsMoving())
+            _selection->MoveEvent(event);
     }
 
     // Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
     wxString text;
-    if (type == FractalType::DoublePendulum)
+    if (_type == FractalType::DoublePendulum)
     {
         text = wxT("θ2: ");
-        text += num_to_string(target->GetX(event.GetPosition().x));
+        text += num_to_string(_target->GetX(event.GetPosition().x));
         text += wxT("   θ1: ");
-        text += num_to_string(target->GetY(event.GetPosition().y));
+        text += num_to_string(_target->GetY(event.GetPosition().y));
     }
-    else if (type == FractalType::SierpinskyTriangle || type == FractalType::ScriptFractal)
+    else if (_type == FractalType::SierpinskyTriangle || _type == FractalType::ScriptFractal)
     {
         text = wxT("x: ");
-        text += num_to_string(target->GetX(event.GetPosition().x));
+        text += num_to_string(_target->GetX(event.GetPosition().x));
         text += wxT("   y: ");
-        text += num_to_string(target->GetY(event.GetPosition().y));
+        text += num_to_string(_target->GetY(event.GetPosition().y));
     }
     else
     {
-        text = wxT("Real: ");    // Txt: "Real: "
-        text += num_to_string(target->GetX(event.GetPosition().x));
-        text += wxT("   Imaginary: ");    // Txt: "   Imaginary: "
-        text += num_to_string(target->GetY(event.GetPosition().y));
+        text = wxT("Real: ");
+        text += num_to_string(_target->GetX(event.GetPosition().x));
+        text += wxT("   Imaginary: ");
+        text += num_to_string(_target->GetY(event.GetPosition().y));
     }
     statusData.status->SetStatusText(text);
 }
@@ -640,22 +607,22 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     {
     case WXK_UP:
     {
-        target->SetMovement(Up);
+        _target->SetMovement(Up);
         break;
     }
     case WXK_DOWN:
     {
-        target->SetMovement(Down);
+        _target->SetMovement(Down);
         break;
     }
     case WXK_LEFT:
     {
-        target->SetMovement(Left);
+        _target->SetMovement(Left);
         break;
     }
     case WXK_RIGHT:
     {
-        target->SetMovement(Right);
+        _target->SetMovement(Right);
         break;
     }
     default: break;
@@ -664,13 +631,13 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     wxChar key = event.GetUnicodeKey();
 
     if (key == wxT('W') || key == wxT('w'))
-        target->SetMovement(Up);
+        _target->SetMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
-        target->SetMovement(Down);
+        _target->SetMovement(Down);
     else if (key == wxT('A') || key == wxT('a'))
-        target->SetMovement(Left);
+        _target->SetMovement(Left);
     else if (key == wxT('D') || key == wxT('d'))
-        target->SetMovement(Right);
+        _target->SetMovement(Right);
 }
 void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 {
@@ -678,22 +645,22 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
     {
     case WXK_UP:
     {
-        target->ReleaseMovement(Up);
+        _target->ReleaseMovement(Up);
         break;
     }
     case WXK_DOWN:
     {
-        target->ReleaseMovement(Down);
+        _target->ReleaseMovement(Down);
         break;
     }
     case WXK_LEFT:
     {
-        target->ReleaseMovement(Left);
+        _target->ReleaseMovement(Left);
         break;
     }
     case WXK_RIGHT:
     {
-        target->ReleaseMovement(Right);
+        _target->ReleaseMovement(Right);
         break;
     }
     default: break;
@@ -701,11 +668,11 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 
     wxChar key = event.GetUnicodeKey();
     if (key == wxT('W') || key == wxT('w'))
-        target->ReleaseMovement(Up);
+        _target->ReleaseMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
-        target->ReleaseMovement(Down);
+        _target->ReleaseMovement(Down);
     else if (key == wxT('A') || key == wxT('a'))
-        target->ReleaseMovement(Left);
+        _target->ReleaseMovement(Left);
     else if (key == wxT('D') || key == wxT('d'))
-        target->ReleaseMovement(Right);
+        _target->ReleaseMovement(Right);
 }

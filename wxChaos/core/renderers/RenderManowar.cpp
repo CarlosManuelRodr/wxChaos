@@ -1,35 +1,32 @@
 #include "RenderManowar.h"
 #include "FractalUtils.h"
 
-RenderManowar::RenderManowar()
-{
-
-}
+RenderManowar::RenderManowar() {}
 void RenderManowar::Render()
 {
     // Creates fractal.
-    unsigned n;
     bool insideSet;
     double z_re, z_im, z_re2, z_im2, man_re, man_im;
     double c_re, c_im, temp_re, temp_im;
     double z_y_init;
 
-    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
+    if (myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
-        for(y=ho; y<hf; y++)
+        unsigned n = 0;
+        for (y=ho; y<hf; y++)
         {
             z_y_init = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 man_re = z_re = c_re = minX + x*xFactor;
                 man_im = z_im = c_im = z_y_init;
 
                 insideSet = true;
-                for(n=0; n<maxIter; n++)
+                for (n=0; n<maxIter; n++)
                 {
                     z_re2 = z_re*z_re;
                     z_im2 = z_im*z_im;
-                    if(z_re2 + z_im2 > 4)
+                    if (z_re2 + z_im2 > 4)
                     {
                         insideSet = false;
                         break;
@@ -41,7 +38,7 @@ void RenderManowar::Render()
                     man_re = temp_re;
                     man_im = temp_im;
                 }
-                if(insideSet)
+                if (insideSet)
                 {
                     setMap[x][y] = true;
                 }
@@ -49,26 +46,25 @@ void RenderManowar::Render()
             }
         }
     }
-    else if(myOpt.alg == RenderingAlgorithm::GaussianInt)
+    else if (myOpt.alg == RenderingAlgorithm::GaussianInt)
     {
-        unsigned n;
-        double distance, distance1;
-        double mu;
-        double log2 = log(2.0);
-        double loglog2 = log(log2);
+        double distance1 = 0.0;
+        const double log2 = log(2.0);
+        const double loglog2 = log(log2);
 
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
             z_y_init = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 man_re = z_re = c_re = minX + x*xFactor;
                 man_im = z_im = c_im = z_y_init;
                 insideSet = true;
-                distance = 99;
-                mu = (loglog2 - log(log(sqrt(4.0))))/log2 + 1;
+                double distance = 99.0;
+                double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
 
-                for(n=0; n<maxIter && insideSet; n++)
+                // ReSharper disable once CppDeclarationHidesLocal
+                for (unsigned n = 0; n<maxIter && insideSet; n++)
                 {
                     z_re2 = z_re*z_re;
                     z_im2 = z_im*z_im;
@@ -88,7 +84,7 @@ void RenderManowar::Render()
                     distance1 = distance;
                     distance = minVal(distance, gaussianIntDist(z_re, z_im));
                 }
-                if(insideSet)
+                if (insideSet)
                 {
                     setMap[x][y] = true;
                 }
@@ -96,28 +92,29 @@ void RenderManowar::Render()
             }
         }
     }
-    else if(myOpt.alg == RenderingAlgorithm::EscapeAngle)
+    else if (myOpt.alg == RenderingAlgorithm::EscapeAngle)
     {
-        int color1, color2, color3, color4;
-        color1 = 1;
-        color2 = 0.25*myOpt.paletteSize;
-        color3 = 0.50*myOpt.paletteSize;
-        color4 = 0.75*myOpt.paletteSize;
+        // ReSharper disable once CppTooWideScope
+        constexpr int color1 = 1;
+        const int color2 = static_cast<int>(0.25 * myOpt.paletteSize);
+        const int color3 = static_cast<int>(0.50 * myOpt.paletteSize);
+        const int color4 = static_cast<int>(0.75 * myOpt.paletteSize);
+        unsigned n = 0;
 
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
             z_y_init = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 man_re = z_re = c_re = minX + x*xFactor;
                 man_im = z_im = c_im = z_y_init;
 
                 insideSet = true;
-                for(n=0; n<maxIter; n++)
+                for (n=0; n<maxIter; n++)
                 {
                     z_re2 = z_re*z_re;
                     z_im2 = z_im*z_im;
-                    if(z_re2 + z_im2 > 4)
+                    if (z_re2 + z_im2 > 4)
                     {
                         insideSet = false;
                         break;
@@ -129,14 +126,14 @@ void RenderManowar::Render()
                     man_re = temp_re;
                     man_im = temp_im;
                 }
-                if(insideSet)
+                if (insideSet)
                     setMap[x][y] = true;
 
-                if(z_re > 0 && z_im > 0)
+                if (z_re > 0 && z_im > 0)
                     colorMap[x][y] = n + color1;
-                else if(z_re <= 0 && z_im > 0)
+                else if (z_re <= 0 && z_im > 0)
                     colorMap[x][y] = n + color2;
-                else if(z_re <= 0 && z_im < 0)
+                else if (z_re <= 0 && z_im < 0)
                     colorMap[x][y] = n + color3;
                 else
                     colorMap[x][y] = n + color4;
@@ -147,59 +144,58 @@ void RenderManowar::Render()
 void RenderManowar::SpecialRender()
 {
     // Creates fractal.
-    bool insideSet;
-    double z_re, z_im, z_re2, z_im2, man_re, man_im;
-    double c_re, c_im, temp_re, temp_im;
+    double z_re, z_im;
+    double c_re;
 
-    double distX, distY;
-    bool broken;
-
-    for(y=ho; y<hf; y++)
+    for (y=ho; y<hf; y++)
     {
-        c_im = maxY - y*yFactor;
-        for(x=wo; x<wf; x++)
+        double c_im = maxY - y * yFactor;
+        for (x=wo; x<wf; x++)
         {
-            man_re = z_re = c_re = minX + x*xFactor;
-            man_im = z_im = c_im;
-            broken = false;
+            double man_re = z_re = c_re = minX + x * xFactor;
+            double man_im = z_im = c_im;
+            bool broken = false;
 
-            distX = abs(c_re);
-            distY = abs(c_im);
+            double distX = abs(c_re);
+            double distY = abs(c_im);
 
-            insideSet = true;
+            bool insideSet = true;
             int iterations = 0;
 
-            for(unsigned n=0; n<maxIter; n++)
+            for (unsigned n=0; n<maxIter; n++)
             {
-                z_re2 = z_re*z_re;
-                z_im2 = z_im*z_im;
-                if(z_re2 + z_im2 > 4)
+                double z_re2 = z_re * z_re;
+                double z_im2 = z_im * z_im;
+                if (z_re2 + z_im2 > 4)
                 {
                     insideSet = false;
                     broken = true;
                 }
-                temp_re = z_re;
-                temp_im = z_im;
+                const double temp_re = z_re;
+                const double temp_im = z_im;
                 z_im = 2*z_re*z_im + c_im + man_im;
                 z_re = z_re2 - z_im2 + c_re + man_re;
                 man_re = temp_re;
                 man_im = temp_im;
 
-                if(myOpt.orbitTrapMode)
+                if (myOpt.orbitTrapMode)
                 {
                     if(abs(z_im) < distY) distY = abs(z_im);
                     if(abs(z_re) < distX) distX = abs(z_re);
                 }
 
-                if(!broken) iterations = n;
+                if (!broken)
+                    iterations = n;
             }
-            if(distX == 0) distX = 0.000001;
-            if(distY == 0) distY = 0.000001;
+            if (distX == 0)
+                distX = 0.000001;
+            if (distY == 0)
+                distY = 0.000001;
 
-            if(insideSet)
+            if (insideSet)
                 setMap[x][y] = 1;
 
-            if(myOpt.orbitTrapMode)
+            if (myOpt.orbitTrapMode)
                 colorMap[x][y] = static_cast<unsigned int>(iterations + log(1/distX) + log(1/distY));
             else
                 colorMap[x][y] = iterations;

@@ -1,63 +1,62 @@
+#include <complex>
 #include "Mandelbrot.h"
-#include "global.h"
 using namespace std;
 
-Mandelbrot::Mandelbrot(sf::RenderWindow* Window) : Fractal(Window)
+Mandelbrot::Mandelbrot(sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
-    minX = -2.45296;
-    maxX = 1.1624;
-    minY = -1.169;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -2.45296;
+    _maxX = 1.1624;
+    _minY = -1.169;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::Mandelbrot;
-    hasOrbit = true;
-    hasOrbitTrap = true;
-    hasSmoothRender = true;
-    smoothRender = true;
-    colorPaletteMode = ColorMode::Gradient;
-    myRender = new RenderMandelbrot[threadNumber];
-    SetWatchdog<RenderMandelbrot>(myRender, &watchdog, threadNumber);
+    _type = FractalType::Mandelbrot;
+    _hasOrbit = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
+    _smoothRender = true;
+    myRender = new RenderMandelbrot[_threadNumber];
+    SetWatchdog<RenderMandelbrot>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
-    panelOpt.SetForceShow(false);
-    panelOpt.LinkInt(PanelOptionType::Spin, wxT("Number of buddhabrot\nrandom points:"), &buddhaRandomP, wxT("1000000"));
+    _panelOpt.SetForceShow(false);
+    _panelOpt.LinkInt(PanelOptionType::Spin, wxT("Number of buddhabrot\nrandom points:"), &buddhaRandomP, wxT("1000000"));
     buddhaRandomP = 1000000;
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
-    availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
 }
 Mandelbrot::Mandelbrot(int width, int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -1.89;
-    maxX = 0.55;
-    minY = -1.12;
-    maxY = minY+(maxX-minX);
+    _minX = -1.89;
+    _maxX = 0.55;
+    _minY = -1.12;
+    _maxY = _minY+(_maxX-_minX);
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     // Creates panel.
-    panelOpt.SetForceShow(false);
-    panelOpt.LinkInt(PanelOptionType::Spin, wxT("Number of buddhabrot\nrandom points:"), &buddhaRandomP, wxT("1000000"));
+    _panelOpt.SetForceShow(false);
+    _panelOpt.LinkInt(PanelOptionType::Spin, wxT("Number of buddhabrot\nrandom points:"), &buddhaRandomP, wxT("1000000"));
     buddhaRandomP = 1000000;
 
-    alg = RenderingAlgorithm::EscapeTime;
-    hasSmoothRender = true;
-    hasOrbitTrap = true;
-    type = FractalType::Mandelbrot;
-    myRender = new RenderMandelbrot[threadNumber];
-    SetWatchdog<RenderMandelbrot>(myRender, &watchdog, threadNumber);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _hasSmoothRender = true;
+    _hasOrbitTrap = true;
+    _type = FractalType::Mandelbrot;
+    myRender = new RenderMandelbrot[_threadNumber];
+    SetWatchdog<RenderMandelbrot>(myRender, &_watchdog, _threadNumber);
 }
 Mandelbrot::~Mandelbrot()
 {
@@ -66,22 +65,22 @@ Mandelbrot::~Mandelbrot()
 }
 void Mandelbrot::Render()
 {
-    for(unsigned int i=0; i<threadNumber; i++)
+    for(unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetBuddhaRandomP(buddhaRandomP);
 
     this->TRender<RenderMandelbrot>(myRender);
 }
 void Mandelbrot::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
+    complex<double> z(_orbitX, _orbitY);
     complex<double> c = z;
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4)
+        if (z.real()*z.real() + z.imag()*z.imag() > 4)
         {
             outOfSet = true;
             break;
@@ -89,17 +88,19 @@ void Mandelbrot::DrawOrbit()
         z = pow(z, 2) + c;
     }
     sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
+    if (outOfSet)
+        color = sf::Color(255, 0, 0);
+    else
+        color = sf::Color(0, 255, 0);
 
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 void Mandelbrot::CopyOptFromPanel()
 {
-    buddhaRandomP = *panelOpt.GetIntElement(0);
+    buddhaRandomP = *_panelOpt.GetIntElement(0);
 }
 void Mandelbrot::PreRender()
 {

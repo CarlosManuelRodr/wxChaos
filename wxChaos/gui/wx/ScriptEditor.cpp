@@ -29,16 +29,14 @@ void Render()
     }
 })"""";
 
-ScriptNameDialog::ScriptNameDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, 
-                                   const wxSize& size, long style)
-    : wxDialog(parent, id, title, pos, size, style)
+ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
+                                   const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
     this->SetSizeHints(wxSize(600, 220), wxDefaultSize);
 
-    wxBoxSizer* mainSizer;
-    mainSizer = new wxBoxSizer(wxVERTICAL);
+    const auto mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBoxSizer* scriptNameSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, wxT("Set a name for the script")), wxHORIZONTAL);
+    const auto scriptNameSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, wxT("Set a name for the script")), wxHORIZONTAL);
 
     scriptNameText = new wxStaticText(scriptNameSizer->GetStaticBox(), wxID_ANY, wxT("Script name: "), wxDefaultPosition, wxDefaultSize, 0);
     scriptNameText->Wrap(-1);
@@ -60,7 +58,7 @@ ScriptNameDialog::ScriptNameDialog(wxWindow* parent, wxWindowID id, const wxStri
 
 
     this->SetSizer(mainSizer);
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
     // Connect Events
@@ -76,22 +74,22 @@ ScriptNameDialog::~ScriptNameDialog()
 
 }
 
-void ScriptNameDialog::OnCancel(wxCommandEvent& event)
+void ScriptNameDialog::OnCancel(wxCommandEvent&)
 {
     this->EndModal(0);
 }
-void ScriptNameDialog::OnOk(wxCommandEvent& event)
+void ScriptNameDialog::OnOk(wxCommandEvent&)
 {
     this->EndModal(1);
 }
-wxString ScriptNameDialog::GetScriptName()
+wxString ScriptNameDialog::GetScriptName() const
 {
     return scriptNameCtrl->GetValue();
 }
 
 
-ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, 
-                           const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
+ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
+                           const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style)
 {
     isActive = active;
     currentScriptIndex = -1;
@@ -250,22 +248,22 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, wxWindowID id, const 
 
 
     this->SetSizer(mainSizer);
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
     this->FetchUserScripts();
     this->SetBlackPreview();
 
     // Connect Events
-    scriptsListBox->Connect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(ScriptEditor::OnSelectScript), NULL, this);
-    saveChangesButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnSaveChanges), NULL, this);
-    newButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnNewScript), NULL, this);
-    removeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnDeleteScript), NULL, this);
-    closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnClose), NULL, this);
-    codeEditor->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(ScriptEditor::OnCodeChange), NULL, this);
-    validateButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnValidateScript), NULL, this);
-    runButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnRunScript), NULL, this);
-    debugCollapsiblePane->Connect(wxEVT_COLLAPSIBLEPANE_CHANGED, wxCollapsiblePaneEventHandler(ScriptEditor::OnDebugPanel), NULL, this);
+    scriptsListBox->Connect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(ScriptEditor::OnSelectScript), nullptr, this);
+    saveChangesButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnSaveChanges), nullptr, this);
+    newButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnNewScript), nullptr, this);
+    removeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnDeleteScript), nullptr, this);
+    closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnClose), nullptr, this);
+    codeEditor->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(ScriptEditor::OnCodeChange), nullptr, this);
+    validateButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnValidateScript), nullptr, this);
+    runButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnRunScript), nullptr, this);
+    debugCollapsiblePane->Connect(wxEVT_COLLAPSIBLEPANE_CHANGED, wxCollapsiblePaneEventHandler(ScriptEditor::OnDebugPanel), nullptr, this);
 }
 
 ScriptEditor::~ScriptEditor()
@@ -273,18 +271,18 @@ ScriptEditor::~ScriptEditor()
     *isActive = false;
 
     // Disconnect Events
-    scriptsListBox->Disconnect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(ScriptEditor::OnSelectScript), NULL, this);
-    saveChangesButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnSaveChanges), NULL, this);
-    newButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnNewScript), NULL, this);
-    removeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnDeleteScript), NULL, this);
-    closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnClose), NULL, this);
-    codeEditor->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(ScriptEditor::OnCodeChange), NULL, this);
-    validateButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnValidateScript), NULL, this);
-    runButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnRunScript), NULL, this);
-    debugCollapsiblePane->Disconnect(wxEVT_COLLAPSIBLEPANE_CHANGED, wxCollapsiblePaneEventHandler(ScriptEditor::OnDebugPanel), NULL, this);
+    scriptsListBox->Disconnect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(ScriptEditor::OnSelectScript), nullptr, this);
+    saveChangesButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnSaveChanges), nullptr, this);
+    newButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnNewScript), nullptr, this);
+    removeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnDeleteScript), nullptr, this);
+    closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnClose), nullptr, this);
+    codeEditor->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(ScriptEditor::OnCodeChange), nullptr, this);
+    validateButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnValidateScript), nullptr, this);
+    runButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnRunScript), nullptr, this);
+    debugCollapsiblePane->Disconnect(wxEVT_COLLAPSIBLEPANE_CHANGED, wxCollapsiblePaneEventHandler(ScriptEditor::OnDebugPanel), nullptr, this);
 }
 
-void ScriptEditor::SetUpLexer()
+void ScriptEditor::SetUpLexer() const
 {
     codeEditor->SetLexer(wxSTC_LEX_CPP);
 
@@ -324,14 +322,14 @@ void ScriptEditor::LoadScript(unsigned index)
         currentScriptIndex = index;
     }
 }
-void ScriptEditor::SetBlackPreview()
+void ScriptEditor::SetBlackPreview() const
 {
     wxBitmap black(250, 166);
     wxMemoryDC dc(black);
     dc.SetBackground(*wxBLACK_BRUSH);
     renderPreviewBitmap->SetBitmap(black);
 }
-int ScriptEditor::GetScriptIndex(wxString scriptName)
+int ScriptEditor::GetScriptIndex(const wxString& scriptName) const
 {
     for (unsigned i = 0; i < scriptsListBox->GetCount(); i++)
     {
@@ -341,18 +339,20 @@ int ScriptEditor::GetScriptIndex(wxString scriptName)
     return -1;
 }
 
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void ScriptEditor::OnSelectScript(wxCommandEvent& event)
 {
     const int selection = event.GetSelection();
     this->LoadScript(selection);
 }
-void ScriptEditor::OnSaveChanges(wxCommandEvent& event)
+// ReSharper disable once CppMemberFunctionMayBeConst
+void ScriptEditor::OnSaveChanges(wxCommandEvent&)
 {
     saveChangesButton->Enable(false);
     int saveIndex = scriptsListBox->GetSelection();
     codeEditor->SaveFile(loadedScripts[saveIndex].file);
 }
-void ScriptEditor::OnNewScript(wxCommandEvent& event)
+void ScriptEditor::OnNewScript(wxCommandEvent&)
 {
     ScriptNameDialog nameDialog(this);
 
@@ -371,7 +371,7 @@ void ScriptEditor::OnNewScript(wxCommandEvent& event)
         scriptsListBox->SetSelection(newScriptIndex);
     }
 }
-void ScriptEditor::OnDeleteScript(wxCommandEvent& event)
+void ScriptEditor::OnDeleteScript(wxCommandEvent&)
 {
     wxMessageDialog messageDialog(this, "This operation cannot be undone. Are you sure you want to continue?",
                                   wxMessageBoxCaptionStr, wxYES | wxNO);
@@ -382,7 +382,7 @@ void ScriptEditor::OnDeleteScript(wxCommandEvent& event)
         this->FetchUserScripts();
     }
 }
-void ScriptEditor::OnClose(wxCommandEvent& event)
+void ScriptEditor::OnClose(wxCommandEvent&)
 {
     mainFramePtr->ReloadScripts();
     this->Show(false);
@@ -395,7 +395,7 @@ void ScriptEditor::OnCodeChange(wxKeyEvent& event)
         saveChangesButton->Enable(true);
     event.Skip();
 }
-void ScriptEditor::OnValidateScript(wxCommandEvent& event)
+void ScriptEditor::OnValidateScript(wxCommandEvent&)
 {
     this->ConsolePrepareInput(wxT("Validate script"));
     this->ConsolePrepareOutput();
@@ -410,7 +410,7 @@ void ScriptEditor::OnValidateScript(wxCommandEvent& event)
     if (configEngine.GetStatus() == EngineStatus::Ok)
         this->ConsoleSetText(wxString("No errors found."));
 }
-void ScriptEditor::OnRunScript(wxCommandEvent& event)
+void ScriptEditor::OnRunScript(wxCommandEvent&)
 {
     this->ConsolePrepareInput(wxT("Run script"));
 
@@ -435,13 +435,13 @@ void ScriptEditor::OnRunScript(wxCommandEvent& event)
     else
         this->ConsoleSetText(wxString("Time ellapsed: ") << elapsed.count() << wxT(" milliseconds"));
 }
-void ScriptEditor::OnDebugPanel(wxCollapsiblePaneEvent& event)
+void ScriptEditor::OnDebugPanel(wxCollapsiblePaneEvent&)
 {
     this->Layout();
     this->Update();
 }
 
-void ScriptEditor::ConsoleSetText(wxString text)
+void ScriptEditor::ConsoleSetText(const wxString& text)
 {
     console->MoveEnd();
     console->BeginTextColour(wxColour(255, 255, 255));
@@ -449,7 +449,7 @@ void ScriptEditor::ConsoleSetText(wxString text)
     console->ShowPosition(console->GetCaretPosition());
     console->EndTextColour();
 }
-void ScriptEditor::ConsoleSetWelcomeText()
+void ScriptEditor::ConsoleSetWelcomeText() const
 {
     console->BeginTextColour(wxColour(255, 255, 255));
     console->WriteText(wxT("wxChaos "));
@@ -457,13 +457,13 @@ void ScriptEditor::ConsoleSetWelcomeText()
     console->WriteText(wxT(" Console\n=====================\n"));
     console->EndTextColour();
 }
-void ScriptEditor::ConsolePrepareInput(wxString command)
+void ScriptEditor::ConsolePrepareInput(const wxString& command) const
 {
     console->BeginTextColour(wxColour(15, 181, 57));
     console->WriteText(wxString("\nInput << ") << command << wxT("\n"));
     console->EndTextColour();
 }
-void ScriptEditor::ConsolePrepareOutput()
+void ScriptEditor::ConsolePrepareOutput() const
 {
     console->BeginTextColour(wxColour(172, 181, 15));
     console->WriteText(wxT("Output >> \n"));

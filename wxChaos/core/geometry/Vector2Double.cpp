@@ -1,3 +1,4 @@
+#include <cmath>
 #include "Vector2Double.h"
 #include "Vector2Int.h"
 

@@ -8,13 +8,12 @@
 */
 class Medusa : public Fractal
 {
-private:
     RenderMedusa* myRender;
 public:
-    Medusa(sf::RenderWindow* Window);
+    explicit Medusa(sf::RenderWindow* window);
     Medusa(int width, int height);
-    ~Medusa();
+    ~Medusa() override;
 
-    void Render();
-    void DrawOrbit();
+    void Render() override;
+    void DrawOrbit() override;
 };

@@ -18,7 +18,7 @@ class FractalHandler
     Medusa* medusa;
     Manowar* manowar;
     ManowarJulia* manowarJulia;
-    SierpTriangle* sierpinskyTriangle;
+    SierpinskyTriangle* sierpinskyTriangle;
     FixedPoint1* fixedPoint1;
     FixedPoint2* fixedPoint2;
     FixedPoint3* fixedPoint3;
@@ -28,7 +28,7 @@ class FractalHandler
     BurningShipJulia* burningShipJulia;
     Fractory* fractory;
     Cell* cell;
-    DPendulum* dPendulum;
+    DoublePendulum* dPendulum;
     UserDefined* userDefined;
     FPUserDefined* fpUserDefined;
     ScriptFractal* scriptFractal;
@@ -45,8 +45,8 @@ public:
     void CreateScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, std::string scriptPath);
-    void SetFormula(FormulaOpt formula);
+    void SetFormula(FormulaOpt formula) const;
     void DeleteFractal();
-    Fractal* GetFractalPtr();
-    FractalType GetType();
+    Fractal* GetFractalPtr() const;
+    FractalType GetType() const;
 };

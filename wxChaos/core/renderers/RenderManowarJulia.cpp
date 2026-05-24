@@ -1,11 +1,9 @@
+#include <complex>
 #include "RenderManowarJulia.h"
 #include "FractalUtils.h"
 using namespace std;
 
-RenderManowarJulia::RenderManowarJulia()
-{
-
-}
+RenderManowarJulia::RenderManowarJulia() {}
 void RenderManowarJulia::Render()
 {
     // Creates fractal.
@@ -15,12 +13,12 @@ void RenderManowarJulia::Render()
     double temp_re, temp_im;
     double z_y_init;
 
-    if(myOpt.alg == RenderingAlgorithm::EscapeTime)
+    if (myOpt.alg == RenderingAlgorithm::EscapeTime)
     {
-        for(y=ho; y<hf; y++)
+        for (y=ho; y<hf; y++)
         {
             z_y_init = maxY - y*yFactor;
-            for(x=wo; x<wf; x++)
+            for (x=wo; x<wf; x++)
             {
                 man_re = z_re = minX + x*xFactor;
                 man_im = z_im = z_y_init;
@@ -125,7 +123,7 @@ void RenderManowarJulia::Render()
                     }
                     temp_re = z_re;
                     temp_im = z_im;
-                    z_im = 2*z_re*z_im + kImaginary + man_im;
+                    z_im = 2.0 * z_re * z_im + kImaginary + man_im;
                     z_re = z_re2 - z_im2 + kReal + man_re;
                     man_re = temp_re;
                     man_im = temp_im;

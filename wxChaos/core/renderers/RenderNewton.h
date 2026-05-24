@@ -7,12 +7,10 @@
 */
 class RenderNewton : public RenderFractal
 {
-private:
     double minStep;
 public:
     RenderNewton();
-
-    void Render();
-    void SpecialRender();
+    void Render() override;
+    void SpecialRender() override;
     void SetParams(double _minStep);
 };

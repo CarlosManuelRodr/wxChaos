@@ -2,7 +2,6 @@
 #include "wx/gradient.h"
 #include "SFML/Graphics.hpp"
 #include "wx/PanelOptions.h"
-#include "types/ColorMode.h"
 #include "types/RenderingAlgorithm.h"
 #include "types/FractalType.h"
 
@@ -17,7 +16,6 @@ struct Options
     unsigned maxIter;
     int changeGradient;
     wxGradient gradient;
-    ColorMode colorPaletteMode;
     RenderingAlgorithm alg;
     FractalType type;
     int paletteSize;

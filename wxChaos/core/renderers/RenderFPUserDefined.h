@@ -1,4 +1,5 @@
 #pragma once
+#include "FormulaOpt.h"
 #include "../RenderFractal.h"
 
 /*
@@ -7,18 +8,17 @@
 */
 class RenderFPUserDefined : public RenderFractal
 {
-private:
-    int bailout;
-    bool julia;
-    double minStep;
-    wxString errorInfo;
-    wxString parserFormula;
+    int _bailout;
+    bool _julia;
+    double _minStep;
+    wxString _errorInfo;
+    wxString _parserFormula;
 public:
     RenderFPUserDefined();
 
     void SetFormula(FormulaOpt formula);
-    void Render();
-    void SetParams(double _minStep);
+    void Render() override;
+    void SetParams(double minStep);
     wxString GetErrorInfo();
     void ClearErrorInfo();
     bool IsThereError();

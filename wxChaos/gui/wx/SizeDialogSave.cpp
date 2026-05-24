@@ -1,109 +1,108 @@
+#include <wx/spinctrl.h>
 #include "SizeDialogSave.h"
 #include "StringFuncs.h"
 using namespace std;
 
 // SaveProgressDiag
-SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool _saveProgressAvailable, wxWindowID id,
-    const wxString& title, const wxPoint& pos, const wxSize& size, long style)
-    : wxDialog(parent, id, title, pos, size, style)
+SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable, const wxWindowID id,
+                                   const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
+                                   : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
-    myFractal = targetFractal;
-    saveProgressAvailable = _saveProgressAvailable;
-    finished = false;
-    clock.restart();
+    _myFractal = targetFractal;
+    _saveProgressAvailable = saveProgressAvailable;
+    _finished = false;
+    _clock.restart();
     this->SetSizeHints(wxSize(480, 180), wxSize(480, 180));
 
-    wxBoxSizer* mainSizer;
-    mainSizer = new wxBoxSizer(wxVERTICAL);
+    const auto mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxBoxSizer* progressSizer;
-    progressSizer = new wxBoxSizer(wxVERTICAL);
+    const auto progressSizer = new wxBoxSizer(wxVERTICAL);
 
-    myType = myFractal->GetType();
-    if (myType == FractalType::ScriptFractal)
+    _myType = _myFractal->GetType();
+    if (_myType == FractalType::ScriptFractal)
     {
-        progressLabel = new wxStaticText(this, wxID_ANY, wxT("Saving..."), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
-        progressLabel->Wrap(-1);
-        progressSizer->Add(progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-        progress = nullptr;
+        _progressLabel = new wxStaticText(this, wxID_ANY, wxT("Saving..."), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Saving..."
+        _progressLabel->Wrap(-1);
+        progressSizer->Add(_progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+        _progress = nullptr;
     }
     else
     {
-        progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
-        progressSizer->Add(progress, 0, wxALL | wxEXPAND, 5);
+        _progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
+        progressSizer->Add(_progress, 0, wxALL | wxEXPAND, 5);
 
-        progressLabel = new wxStaticText(this, wxID_ANY, wxString(wxT("Rendering: ")) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Rendering... "
-        progressLabel->Wrap(-1);
-        progressSizer->Add(progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+        _progressLabel = new wxStaticText(this, wxID_ANY, wxString(wxT("Rendering: ")) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Rendering... "
+        _progressLabel->Wrap(-1);
+        progressSizer->Add(_progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
     }
 
-    staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
-    progressSizer->Add(staticLine, 0, wxEXPAND | wxALL, 5);
+    _staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
+    progressSizer->Add(_staticLine, 0, wxEXPAND | wxALL, 5);
 
     mainSizer->Add(progressSizer, 2, wxEXPAND, 5);
 
-    wxBoxSizer* buttonSizer;
-    buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Cancel"
-    buttonSizer->Add(cancelButton, 0, wxALL, 5);
+    _cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Cancel"
+    buttonSizer->Add(_cancelButton, 0, wxALL, 5);
 
     mainSizer->Add(buttonSizer, 1, wxEXPAND, 5);
 
     this->SetSizer(mainSizer);
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
     this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(SaveProgressDiag::CalcProgress));
-    cancelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SaveProgressDiag::OnCancel), NULL, this);
+    _cancelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SaveProgressDiag::OnCancel), nullptr, this);
 }
 SaveProgressDiag::~SaveProgressDiag()
 {
     this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(SaveProgressDiag::CalcProgress));
-    cancelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SaveProgressDiag::OnCancel), NULL, this);
+    _cancelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SaveProgressDiag::OnCancel), nullptr, this);
 }
-void SaveProgressDiag::OnCancel(wxCommandEvent& event)
+void SaveProgressDiag::OnCancel(wxCommandEvent&)
 {
-    myFractal->GetWatchdog()->StopThreads();
+    _myFractal->GetWatchdog()->StopThreads();
     this->Close(true);
 }
-void SaveProgressDiag::CalcProgress(wxUpdateUIEvent& event)
+void SaveProgressDiag::CalcProgress(wxUpdateUIEvent&)
 {
-    if (clock.getElapsedTime().asSeconds() >= 0.05f)
+    if (_clock.getElapsedTime().asSeconds() >= 0.05f)
     {
         // Updates progress gauge.
-        if (myFractal->GetType() != FractalType::ScriptFractal)
+        if (_myFractal->GetType() != FractalType::ScriptFractal)
         {
-            int progressValue = myFractal->GetWatchdog()->GetThreadProgress();
-            progressLabel->SetLabel(wxString(wxT("Rendering: ")) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
+            int progressValue = _myFractal->GetWatchdog()->GetThreadProgress();
+            _progressLabel->SetLabel(wxString(wxT("Rendering: ")) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
 
-            progress->SetValue(progressValue);
-            if (progressValue >= 100 && !myFractal->IsRendering())
+            _progress->SetValue(progressValue);
+            if (progressValue >= 100 && !_myFractal->IsRendering())
             {
-                finished = true;
+                _finished = true;
                 this->Close(true);
             }
         }
         else
         {
-            if (!myFractal->IsRendering())
+            if (!_myFractal->IsRendering())
             {
-                finished = true;
+                _finished = true;
                 this->Close(true);
             }
         }
-        clock.restart();
+        _clock.restart();
     }
 }
-bool SaveProgressDiag::IsFinished()
+bool SaveProgressDiag::IsFinished() const
 {
-    return finished;
+    return _finished;
 }
 
 // SizeDialogSave
-SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
-    string scriptPath, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
-    : wxDialog(parent, id, title, pos, size, style)
+SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, const string& filePath, const int ext, const FractalType type,
+                               Fractal* target, wxWindow* parent, const string& scriptPath, const wxWindowID id, const wxString& title,
+                               const wxPoint& pos, const wxSize& size, const long style)
+                               : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
     extension = ext;
@@ -111,17 +110,17 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     opt = target->GetOptions();
     path = filePath;
     myScriptPath = scriptPath;
-    screenRatio = (double)opt.screenWidth / (double)opt.screenHeight;
+    screenRatio = static_cast<double>(opt.screenWidth) / static_cast<double>(opt.screenHeight);
     fractalType = type;
 
     this->SetSizeHints(wxSize(420, 300), wxSize(420, 300));
 
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+    const auto sizer = new wxBoxSizer(wxVERTICAL);
 
     mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* panelSizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizeSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* bSizer6 = new wxBoxSizer(wxVERTICAL);
+    const auto panelSizer = new wxBoxSizer(wxVERTICAL);
+    const auto sizeSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto bSizer6 = new wxBoxSizer(wxVERTICAL);
 
     selectText = new wxStaticText(mainPanel, wxID_ANY, wxT("Select image size"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Select image size"
     selectText->Wrap(-1);
@@ -136,7 +135,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     widthSpin->SetValue(opt.screenWidth);
     sizeSizer->Add(bSizer6, 1, wxEXPAND, 5);
 
-    wxBoxSizer* bSizer8 = new wxBoxSizer(wxVERTICAL);
+    const auto bSizer8 = new wxBoxSizer(wxVERTICAL);
 
     dumbText = new wxStaticText(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     dumbText->Wrap(-1);
@@ -153,7 +152,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     sizeSizer->Add(bSizer8, 1, wxEXPAND, 5);
     panelSizer->Add(sizeSizer, 1, wxEXPAND, 5);
 
-    wxBoxSizer* okSizer = new wxBoxSizer(wxVERTICAL);
+    const auto okSizer = new wxBoxSizer(wxVERTICAL);
 
     iterationsText = new wxStaticText(mainPanel, wxID_ANY, wxT("Iterations"), wxDefaultPosition, wxDefaultSize, 0);        // Txt: "Iterations"
     iterationsText->Wrap(-1);
@@ -173,34 +172,36 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, string filePath, int ext
     sizer->Add(mainPanel, 1, wxEXPAND | wxALL, 0);
 
     this->SetSizer(sizer);
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
-    widthSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeWidth), NULL, this);
-    heightSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeHeight), NULL, this);
-    okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SizeDialogSave::OnOk), NULL, this);
+    widthSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeWidth), nullptr, this);
+    heightSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeHeight), nullptr, this);
+    okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SizeDialogSave::OnOk), nullptr, this);
 }
 
 SizeDialogSave::~SizeDialogSave()
 {
-    widthSpin->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeWidth), NULL, this);
-    heightSpin->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeHeight), NULL, this);
-    okButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SizeDialogSave::OnOk), NULL, this);
+    widthSpin->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeWidth), nullptr, this);
+    heightSpin->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeHeight), nullptr, this);
+    okButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SizeDialogSave::OnOk), nullptr, this);
 }
 
-void SizeDialogSave::ChangeWidth(wxSpinEvent& event)
+// ReSharper disable once CppMemberFunctionMayBeConst
+void SizeDialogSave::ChangeWidth(wxSpinEvent&)
 {
     int value = widthSpin->GetValue();
     value /= screenRatio;
     heightSpin->SetValue(value);
 }
-void SizeDialogSave::ChangeHeight(wxSpinEvent& event)
+// ReSharper disable once CppMemberFunctionMayBeConst
+void SizeDialogSave::ChangeHeight(wxSpinEvent&)
 {
     int value = heightSpin->GetValue();
     value *= screenRatio;
     widthSpin->SetValue(value);
 }
-void SizeDialogSave::OnOk(wxCommandEvent& event)
+void SizeDialogSave::OnOk(wxCommandEvent&)
 {
     // Creates fractal.
     if (fractalType == FractalType::ScriptFractal)
@@ -215,7 +216,7 @@ void SizeDialogSave::OnOk(wxCommandEvent& event)
     fractalHandler.GetFractalPtr()->SetOptions(opt);
 
     // Saves image according to extension.
-    SaveProgressDiag* diag = new SaveProgressDiag(fractalHandler.GetFractalPtr(), this);
+    const auto diag = new SaveProgressDiag(fractalHandler.GetFractalPtr(), this);
     fractalHandler.GetFractalPtr()->Render();
     diag->ShowModal();
     if (diag->IsFinished())
@@ -223,8 +224,12 @@ void SizeDialogSave::OnOk(wxCommandEvent& event)
         if (extension == 0 || extension == 1)  // PNG or JPG
         {
             fractalHandler.GetFractalPtr()->SetRendered(true);
-            sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
-            out.saveToFile(path);
+            const sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
+            const bool result = out.saveToFile(path);
+            if (!result)
+            {
+                wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
+            }
         }
         else  // BMP
         {

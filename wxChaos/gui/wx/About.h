@@ -12,7 +12,6 @@
 #ifndef _aboutDialog
 #define _aboutDialog
 
-#include <wx/statline.h>
 #include <wx/gdicmn.h>
 #include <wx/wx.h>
 
@@ -50,19 +49,19 @@ public:
         long style = SYMBOL_ABOUTDIALOG_STYLE );
 
     // Destructor
-    ~AboutDialog();
+    ~AboutDialog() override;
 
     // Initializes member variables
     void Init();
 
-    // Creates the controls and sizers
+    // Creates the controls and the sizers
     void CreateControls();
 
     wxString GetAppName() const
     {
         return m_AppName;
     }
-    void SetAppName(wxString value)
+    void SetAppName(const wxString& value)
     {
         m_AppName = value;
     }
@@ -70,7 +69,7 @@ public:
     {
         return m_Version;
     }
-    void SetVersion(wxString value)
+    void SetVersion(const wxString& value)
     {
         m_Version = value;
     }
@@ -78,7 +77,7 @@ public:
     {
         return m_Copyright;
     }
-    void SetCopyright(wxString value)
+    void SetCopyright(const wxString& value)
     {
         m_Copyright = value;
     }
@@ -86,7 +85,7 @@ public:
     {
         return m_CustomBuildInfo;
     }
-    void SetCustomBuildInfo(wxString value)
+    void SetCustomBuildInfo(const wxString& value)
     {
         m_CustomBuildInfo = value;
     }

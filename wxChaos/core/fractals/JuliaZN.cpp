@@ -1,70 +1,70 @@
+#include <complex>
 #include "JuliaZN.h"
-#include "global.h"
 using namespace std;
 
-JuliaZN::JuliaZN(sf::RenderWindow* Window):Fractal(Window)
+JuliaZN::JuliaZN(sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
-    minX = -1.77437;
-    maxX = 1.6912;
-    minY = -1.06769;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.77437;
+    _maxX = 1.6912;
+    _minY = -1.06769;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::JuliaZN;
-    kReal = -0.754696;
-    kImaginary = -0.0524231;
-    hasOrbit = true;
-    juliaVariety = true;
-    hasOrbitTrap = true;
-    hasSmoothRender = true;
-    smoothRender = false;
-    myRender = new RenderJuliaZN[threadNumber];
-    SetWatchdog<RenderJuliaZN>(myRender, &watchdog, threadNumber);
+    _type = FractalType::JuliaZN;
+    _kReal = -0.754696;
+    _kImaginary = -0.0524231;
+    _hasOrbit = true;
+    _juliaVariety = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
+    _smoothRender = false;
+    myRender = new RenderJuliaZN[_threadNumber];
+    SetWatchdog<RenderJuliaZN>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 
     // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
+    _panelOpt.SetForceShow(true);
+    _panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     n = 2;
     bailout = 2;
 }
-JuliaZN::JuliaZN(int width, int height) : Fractal(width, height)
+JuliaZN::JuliaZN(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -1.77437;
-    maxX = 1.6912;
-    minY = -1.06769;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -1.77437;
+    _maxX = 1.6912;
+    _minY = -1.06769;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    alg = RenderingAlgorithm::EscapeTime;
+    _alg = RenderingAlgorithm::EscapeTime;
 
     // Creates panel.
-    panelOpt.SetForceShow(true);
-    panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
-    panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
+    _panelOpt.SetForceShow(true);
+    _panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     n = 2;
     bailout = 2;
 
-    hasOrbitTrap = true;
-    hasSmoothRender = true;
-    juliaVariety = true;
-    type = FractalType::JuliaZN;
-    myRender = new RenderJuliaZN[threadNumber];
-    SetWatchdog<RenderJuliaZN>(myRender, &watchdog, threadNumber);
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
+    _juliaVariety = true;
+    _type = FractalType::JuliaZN;
+    myRender = new RenderJuliaZN[_threadNumber];
+    SetWatchdog<RenderJuliaZN>(myRender, &_watchdog, _threadNumber);
 }
 JuliaZN::~JuliaZN()
 {
@@ -73,12 +73,12 @@ JuliaZN::~JuliaZN()
 }
 void JuliaZN::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
-    complex<double> k(kReal, kImaginary);
+    complex<double> z(_orbitX, _orbitY);
+    complex<double> k(_kReal, _kImaginary);
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned i=0; i<maxIter; i++)
+    for(unsigned i=0; i<_maxIter; i++)
     {
         zVector.push_back(z);
         if(z.real()*z.real() + z.imag()*z.imag() > bailout*bailout)
@@ -96,16 +96,16 @@ void JuliaZN::DrawOrbit()
     for(unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 void JuliaZN::Render()
 {
-    for(unsigned int i=0; i<threadNumber; i++) myRender[i].SetParams(n, bailout);
+    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(n, bailout);
     this->TRender<RenderJuliaZN>(myRender);
 }
 void JuliaZN::CopyOptFromPanel()
 {
-    n = *panelOpt.GetIntElement(0);
-    bailout = *panelOpt.GetDoubleElement(0);
+    n = *_panelOpt.GetIntElement(0);
+    bailout = *_panelOpt.GetDoubleElement(0);
 }
 

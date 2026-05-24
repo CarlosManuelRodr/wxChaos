@@ -79,16 +79,14 @@ void RenderScriptFractal::ClearErrorInfo()
 {
     errorInfo.clear();
 }
-bool RenderScriptFractal::IsThereError()
+bool RenderScriptFractal::IsThereError() const
 {
-    if(errorInfo.size() == 0)
-        return false;
-    else
-        return true;
+    return errorInfo.size() != 0;
 }
+
 void RenderScriptFractal::PreTerminate()
 {
-    if(!hasEnded)
+    if (!hasEnded)
         renderEngine->Abort();
 }
 void RenderScriptFractal::SetParams(int _threadIndex)

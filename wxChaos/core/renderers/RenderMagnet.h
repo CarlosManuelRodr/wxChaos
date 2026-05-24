@@ -9,5 +9,5 @@ class RenderMagnet : public RenderFractal
 {
 public:
     RenderMagnet();
-    void Render();
+    void Render() override;
 };

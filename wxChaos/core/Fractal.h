@@ -9,7 +9,6 @@
 #include "wx/gradient.h"
 #include "types/FractalType.h"
 #include "types/RenderingAlgorithm.h"
-#include "types/ColorMode.h"
 #include "types/Direction.h"
 #include "geometry/LineData.h"
 #include "geometry/CircleData.h"
@@ -37,104 +36,104 @@ class Fractal
     friend class SFMLFractal;
 
 protected:
-    bool** setMap;                             ///< Stores the points that belong to the fractal set.
-    int** colorMap;                            ///< Store the color map.
-    unsigned int** auxMap;                     ///< An additional map to perform some auxiliary operations.
-    ThreadWatchdog<RenderFractal> watchdog;    ///< Watch over the render threads.
+    bool** _setMap;                             ///< Stores the points that belong to the fractal set.
+    int** _colorMap;                            ///< Store the color map.
+    unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
+    ThreadWatchdog<RenderFractal> _watchdog;    ///< Watch over the render threads.
 
     // Fractal properties.
-    PanelOptions panelOpt;          ///< List of GUI elements to put into the option panel.
-    FractalType type;               ///< Type of fractal to render.
-    double minX;                    ///< Left numeric limit of the fractal.
-    double maxX;                    ///< Right numeric limit of the fractal.
-    double minY;                    ///< Lower numeric limit of the fractal.
-    double maxY;                    ///< Upper numeric limit of the fractal.
-    double xFactor;                 ///< Conversion factor numberX to pixelX.
-    double yFactor;                 ///< Conversion factor numberY to pixelY.
-    unsigned maxIter;               ///< Maximum number of iterations.
-    FormulaOpt userFormula;         ///< Formula specified by the user.
+    PanelOptions _panelOpt;          ///< List of GUI elements to put into the option panel.
+    FractalType _type;               ///< Type of fractal to render.
+    double _minX;                    ///< Left numeric limit of the fractal.
+    double _maxX;                    ///< Right numeric limit of the fractal.
+    double _minY;                    ///< Lower numeric limit of the fractal.
+    double _maxY;                    ///< Upper numeric limit of the fractal.
+    double _xFactor;                 ///< Conversion factor numberX to pixelX.
+    double _yFactor;                 ///< Conversion factor numberY to pixelY.
+    unsigned _maxIter;               ///< Maximum number of iterations.
+    FormulaOpt _userFormula;         ///< Formula specified by the user.
 
     // System.
-    unsigned int threadNumber;      ///< Number of threads. By default, is the same as the number of cores in the system.
+    unsigned int _threadNumber;      ///< Number of threads. By default, is the same as the number of cores in the system.
 
     // Julia variables.
-    double kReal;
-    double kImaginary;
+    double _kReal;
+    double _kImaginary;
 
     // Image properties.
-    int xVel, yVel;                 ///< Speed of movement of the fractal image.
-    int posX, posY;                 ///< Positionof the fractal image.
-    int xMoved, yMoved;             ///< Total movement of the image. Used just before redering a new area.
+    int _xVel, _yVel;                 ///< Speed of movement of the fractal image.
+    int _posX, _posY;                 ///< Position of the fractal image.
+    int _xMoved, _yMoved;             ///< Total movement of the image. Used just before redering a new area.
 
-    std::vector<double> zoom[4];         ///< Saves the performed zooms.
-    Rect outermostZoom;
-    unsigned int screenWidth;
-    unsigned int screenHeight;
-    unsigned int backScreenWidth;
-    int changeGradient;
-    double magnification;
+    std::vector<double> _zoom[4];     ///< Saves the performed zooms.
+    Rect _outermostZoom;
+    unsigned int _screenWidth;
+    unsigned int _screenHeight;
+    unsigned int _backScreenWidth;
+    int _changeGradient;
+    double _magnification;
 
     // Color properties.
-    RenderingAlgorithm alg;
-    std::vector<RenderingAlgorithm> availableAlg;
-    ColorMode colorPaletteMode;
-    wxGradient gradient;                    ///< Gradient to be used.
-    wxColour fSetColor;                    ///< Color of points belonging to the set.
-    std::vector<wxColour> palette;
-    bool relativeColor;
-    bool colorSet;                                ///< Activates internal coloring.
-    bool colorMode;                               ///< Activates external coloring.
-    ColorPalettes gradStyle;                ///< Grad color palette to be used.
-    int paletteSize;
-    int gradPaletteSize;
-    int varGradientStep;
-    int maxColorMapVal;
-    bool refreshImage;
+    RenderingAlgorithm _alg;
+    std::vector<RenderingAlgorithm> _availableAlg;
+    wxGradient _gradient;                   ///< Gradient to be used.
+    wxColour _fSetColor;                    ///< Color of points belonging to the set.
+    std::vector<wxColour> _palette;
+    bool _relativeColor;
+    bool _colorSet;                         ///< Activates internal coloring.
+    bool _colorMode;                        ///< Activates external coloring.
+    ColorPalettes _gradStyle;               ///< Grad color palette to be used.
+    int _paletteSize;
+    int _gradPaletteSize;
+    int _varGradientStep;
+    int _maxColorMapVal;
+    bool _refreshImage;
 
     // Status variables.
-    bool movement[4];
-    bool moving;                            ///< Movement status.
-    bool rendered;
-    bool rendering;
-    bool paused;
-    bool pausing;
-    bool changeFractalIter;
-    bool varGradient;                       ///< If this is activated (by the play button) the gradient variation mode starts.
-    bool onSnapshot;
-    bool waitRoutine;
-    bool redrawAll;
-    bool redrawAlways;
-    bool justLaunchThreads;
-    bool varGradChange;
-    bool renderJobComp;                     ///< Fractal compatible with renderJobs.
-    bool changeFractalProp;
-    bool onWxCtrl;
-    std::vector<Vector2Int> endPoints;
-    std::vector<Vector2Int> startPoints;
-    std::vector<Vector2Int> pausePoints;
+    bool _movement[4];
+    bool _moving;                            ///< Movement status.
+    bool _rendered;
+    bool _rendering;
+    bool _paused;
+    bool _pausing;
+    bool _changeFractalIter;
+    bool _varGradient;                       ///< If this is activated (by the play button) the gradient variation mode starts.
+    bool _onSnapshot;
+    bool _waitRoutine;
+    bool _redrawAll;
+    bool _redrawAlways;
+    bool _justLaunchThreads;
+    bool _varGradChange;
+    bool _renderJobComp;                     ///< Fractal compatible with renderJobs.
+    bool _changeFractalProp;
+    bool _onWxCtrl;
+    std::vector<Vector2Int> _endPoints;
+    std::vector<Vector2Int> _startPoints;
+    std::vector<Vector2Int> _pausePoints;
 
     // Julia Mode variables.
-    bool juliaMode;
-    bool juliaVariety;                    ///< Activate it in derived class if is a Julia variety. False by default.
+    bool _juliaMode;
+    bool _juliaVariety;                    ///< Activate it in derived class if is a Julia variety. False by default.
 
     // Orbit mode variables.
-    bool hasOrbit;                        ///< False by default. Activate it if the derived class has a DrawOrbit method defined.
-    bool orbitMode;
-    bool orbitDrawn;
-    double orbitX, orbitY;
+    bool _hasOrbit;                        ///< False by default. Activate it if the derived class has a DrawOrbit method defined.
+    bool _orbitMode;
+    bool _orbitDrawn;
+    double _orbitX, _orbitY;
 
     // Geometry variables.
-    std::vector<CircleData> circles;
-    std::vector<LineData> lines, orbitLines;
-    bool geomFigure;
+    std::vector<CircleData> _circles;
+    std::vector<LineData> _lines, _orbitLines;
+    bool _geomFigure;
+
     // Effect variables.
-    bool hasOrbitTrap;                ///< False by default. Activate it if the derived class has an orbit trap routine.
-    bool orbitTrapMode;
-    bool hasSmoothRender;
-    bool smoothRender;
+    bool _hasOrbitTrap;                ///< False by default. Activate it if the derived class has an orbit trap routine.
+    bool _orbitTrapMode;
+    bool _hasSmoothRender;
+    bool _smoothRender;
 
     // Internal methods.
-    ///@brief Saves the rendering area limits to be able to do a zoomback later.
+    ///@brief Saves the rendering area limits to be able to do a zoom-back later.
     void SaveZoom();
 
     ///@brief Called in child class after constructor.
@@ -145,18 +144,11 @@ protected:
     ///@return A struct with the color.
     sf::Color CalcColor(int colorNum) const;
 
-    ///@brief Rebuilds the color palette in the colorPaletteMode.
+    ///@brief Rebuilds the color palette
     void RebuildPalette();
 
-    ///@brief If some minor change was made like a color adjustement redraws the maps.
+    ///@brief If some minor change was made like a color adjustement, redraws the maps.
     void RedrawMaps();
-
-    // Geometry.
-    ///@brief Draws a simple line. Used in orbit mode.
-    void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
-    void DrawCircle(double x_center, double y_center, double radius, sf::Color color = sf::Color(0, 0, 0));
-    ///@brief By default it doesn't do anything. Has to be overriden in derived class.
-    virtual void DrawOrbit() {}
 
     void SetDefaultOpt();
 
@@ -174,12 +166,12 @@ public:
 
     virtual ~Fractal();
 
-    ///@brief SetAreaOfView to specified size.
+    ///@brief SetAreaOfView to a specified size.
     ///@param width New width.
     ///@param height New height.
     void Resize(int width, int height);
 
-    ///@brief Perform some adjustements needed before the rendering starts.
+    ///@brief Perform some adjustments needed before the rendering starts.
     void PrepareRender();
 
     ///@brief Resizes the viewing area of the fractal.
@@ -188,17 +180,17 @@ public:
 
     ///@brief Resizes the viewing area of the fractal.
     ///@param worldCoordinates Selection area in world coordinates.
-    void SetAreaOfView(Rect worldCoordinates);
+    void SetAreaOfView(const Rect& worldCoordinates);
 
-    void Move();                ///< Moves the fractal image.
-    void ZoomBack();            ///< Does a zoomback in the selection area.
-    void DeleteSavedZooms();    ///< If some image property image has changed deletes saved zoom images.
-    void Redraw();              ///< Redraws the fractal.
+    void Move();                       ///< Moves the fractal image.
+    void ZoomBack();                   ///< Does a zoom-back in the selection area.
+    static void DeleteSavedZooms();    ///< If some image property image has changed, deletes saved zoom images.
+    void Redraw();                     ///< Redraws the fractal.
 
     // Thread control.
     ///@brief Calculate drawing limits of each thread and launches them.
     ///@param myRender Array of RenderFractal.
-    template<class MT> inline void TRender(MT* myRender);
+    template<class MT> void TRender(MT* myRender);
 
     ///@brief Return a pointer to the watchdog.
     ///@return A pointer to the watchdog.
@@ -212,9 +204,9 @@ public:
 
     ///@brief Get pause status.
     ///@return true if paused, false if not.
-    bool IsPaused();
+    bool IsPaused() const;
 
-    // Métodos virtuales.
+    // Virtual methods.
     virtual void Render() = 0;                               ///< Start the fractal rendering. Defined in derived class.
     virtual void PreRender();                                ///< Perform necessary operations before starting to render.
     virtual void PreDrawMaps();                              ///< Perform necessary operations before drawing the maps.
@@ -227,40 +219,40 @@ public:
     virtual void SetFormula(FormulaOpt formula);                   ///< Sets user formula.
     virtual void CopyOptFromPanel();                               ///< Copy options from the option panel.
     virtual void MoreIter();                                       ///< Increases the number of iterations.
-    virtual void LessIter();                                       ///< Decreases interations.
+    virtual void LessIter();                                       ///< Decreases iterations.
     virtual void ChangeThreadNumber();                             ///< Changes the number of rendering threads.
 
     // Communication methods.
-    ///@brief Get value of X number in the plane at selected pixel.
-    ///@param Pixel_X Pixel to inspect.
+    ///@brief Get value of X number in the plane at the selected pixel.
+    ///@param pixelX Pixel to inspect.
     ///@return Numerical value corresponding to the pixel position.
-    double GetX(int Pixel_X);
+    double GetX(int pixelX) const;
 
-    ///@brief Get value of Y number in the plane at selected pixel.
-    ///@param Pixel_Y Pixel to inspect.
+    ///@brief Get value of Y number in the plane at the selected pixel.
+    ///@param pixelY Pixel to inspect.
     ///@return Numerical value corresponding to the pixel position.
-    double GetY(int Pixel_Y);
+    double GetY(int pixelY) const;
 
     ///@brief Gets pixel corresponding to the specified numerical position.
     ///@param xNum Numerical position.
     ///@return Pixel corresponding to number.
-    int GetPixelX(double xNum);
+    int GetPixelX(double xNum) const;
 
     ///@brief Gets pixel corresponding to the specified numerical position.
     ///@param yNum Numerical position.
     ///@return Pixel corresponding to number.
-    int GetPixelY(double yNum);
+    int GetPixelY(double yNum) const;
 
     ///@brief Sets fractal options.
     ///@param opt Fractal options.
     ///@param keepSize If true doesn't copy new resolution.
-    void SetOptions(Options opt, bool keepSize = false);
+    void SetOptions(const Options& opt, bool keepSize = false);
 
     ///@brief Gets fractal options.
     ///@return a Options struct with the fractal options.
     Options GetOptions();
 
-    ///@brief Forces the fractal to adquire a "rendered" status.
+    ///@brief Forces the fractal to acquire a "rendered" status.
     void SetRendered(bool mode);
 
     ///@brief Return the farthest zoom viewed by the user.
@@ -285,17 +277,16 @@ public:
     // Save image.
     sf::Image GetRenderedImage();
     wxBitmap GetRenderedWxBitmap();
-    void RenderBMP(std::string filename);
+    void RenderBMP(const std::string& filename);
     void PrepareSnapshot(bool mode);
 
     // Color styles.
-    void SetColorPalette(ColorPalettes _gradStyle);
-    ColorPalettes GetColorPalette();
+    void SetColorPalette(ColorPalettes gradStyle);
+    ColorPalettes GetColorPalette() const;
 
     // Color operations.
     sf::Color GetSetColor();
     wxGradient* GetGradient();
-    ColorMode GetColorMode();
     void SetExtColorMode(bool mode);
     void SetFractalSetColorMode(bool mode);
     void SetFractalSetColor(sf::Color color);
@@ -307,303 +298,310 @@ public:
     void SetGradient(wxGradient grad);
     void SetGradientSize(unsigned int size);
     void SetRelativeColor(bool mode);
-    bool GetRelativeColorMode();
+    bool GetRelativeColorMode() const;
     void SetVarGradient(int n);
 
     // Algorithm.
-    RenderingAlgorithm GetCurrentAlg();
+    RenderingAlgorithm GetCurrentAlg() const;
     std::vector<RenderingAlgorithm> GetAvailableAlg();
     void SetAlgorithm(RenderingAlgorithm _alg);
 
     // Julia mode operations.
-    bool IsJuliaVariety();
+    bool IsJuliaVariety() const;
     void SetJuliaMode(bool mode);
-    void SetK(double _real, double _imaginary);
-    double GetKReal();
-    double GetKImaginary();
+    void SetK(double real, double imaginary);
+    double GetKReal() const;
+    double GetKImaginary() const;
 
     // Orbit mode operations.
     void SetOrbitMode(bool mode);
     void SetOrbitPoint(double x, double y);
-    bool HasOrbit();
+    bool HasOrbit() const;
     void SetOrbitChange();
 
     // Orbit trap operations.
     void SetOrbitTrapMode(bool mode);
-    bool HasOrbitTrapMode();
-    bool OrbitTrapActivated();
+    bool HasOrbitTrapMode() const;
+    bool OrbitTrapActivated() const;
 
     // SmoothRender.
     void SetSmoothRender(bool mode);
-    bool HasSmoothRenderMode();
-    bool SmoothRenderActivated();
+    bool HasSmoothRenderMode() const;
+    bool SmoothRenderActivated() const;
 
     // Menu operations.
     void ChangeIterations(int number);
     unsigned int GetIterations();
 
     // Option panel.
-    bool HasOptPanel();
+    bool HasOptPanel() const;
     PanelOptions* GetOptPanel();
+
+    // Geometry.
+    ///@brief Draws a simple line. Used in orbit mode.
+    void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
+    void DrawCircle(double x_center, double y_center, double radius, sf::Color color = sf::Color(0, 0, 0));
+    ///@brief By default, it doesn't do anything. Has to be overridden in derived class.
+    virtual void DrawOrbit() {}
 };
 
 template<class MT> void Fractal::TRender(MT* myRender)
 {
-    watchdog.Reset();
+    _watchdog.Reset();
     // If the image has been moved, divides the rendering area so threads will draw the missing part.
-    if (xMoved != 0 || yMoved != 0)
+    if (_xMoved != 0 || _yMoved != 0)
     {
-        if (xMoved && yMoved)
+        if (_xMoved && _yMoved)
         {
-            for (unsigned int i = 0; i < threadNumber; i++)
+            for (unsigned int i = 0; i < _threadNumber; i++)
             {
                 myRender[i].SetOpt(this->GetOptions());
-                myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+                myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
 
-                if (orbitTrapMode || smoothRender)
+                if (_orbitTrapMode || _smoothRender)
                     myRender[i].SetSpecialRenderMode(true);
                 else
                     myRender[i].SetSpecialRenderMode(false);
 
-                myRender[i].SetK(kReal, kImaginary);
+                myRender[i].SetK(_kReal, _kImaginary);
             }
 
-            if (xMoved > 0 && yMoved < 0)
+            if (_xMoved > 0 && _yMoved < 0)
             {
                 // First thread pack.
-                unsigned int localThreadN = ceil((double)threadNumber / 2.0);
-                int Div = static_cast<int>(floor((screenHeight + yMoved) / (double)localThreadN));
+                unsigned int localThreadN = ceil((double)_threadNumber / 2.0);
+                int Div = static_cast<int>(floor((_screenHeight + _yMoved) / (double)localThreadN));
                 int Step = Div;
                 for (unsigned int i = 0; i < localThreadN; i++)
                 {
                     if (i + 2 != localThreadN)
                     {
-                        myRender[i].SetLimits(0, Step - Div, xMoved, Step);
+                        myRender[i].SetLimits(0, Step - Div, _xMoved, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, Step, xMoved, screenHeight + yMoved);
+                        myRender[i].SetLimits(0, Step, _xMoved, _screenHeight + _yMoved);
                 }
 
                 // Second thread pack.
-                Div = static_cast<int>(floor(abs(yMoved) / (double)(threadNumber - localThreadN)));
+                Div = static_cast<int>(floor(abs(_yMoved) / (double)(_threadNumber - localThreadN)));
                 Step = Div;
-                int start = screenHeight + yMoved;
-                for (unsigned int i = localThreadN; i < threadNumber; i++)
+                int start = _screenHeight + _yMoved;
+                for (unsigned int i = localThreadN; i < _threadNumber; i++)
                 {
 
-                    if (i + 2 != threadNumber)
+                    if (i + 2 != _threadNumber)
                     {
-                        myRender[i].SetLimits(0, start + Step - Div, screenWidth, start + Step);
+                        myRender[i].SetLimits(0, start + Step - Div, _screenWidth, start + Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
+                        myRender[i].SetLimits(0, start + Step, _screenWidth, _screenHeight);
                 }
             }
-            else if (xMoved > 0 && yMoved > 0)
+            else if (_xMoved > 0 && _yMoved > 0)
             {
                 // First thread pack.
-                unsigned int localThreadN = ceil((double)threadNumber / 2.0);
-                int Div = static_cast<int>(floor(abs(yMoved) / (double)localThreadN));
+                unsigned int localThreadN = ceil((double)_threadNumber / 2.0);
+                int Div = static_cast<int>(floor(abs(_yMoved) / (double)localThreadN));
                 int Step = Div;
                 for (unsigned int i = 0; i < localThreadN; i++)
                 {
                     if (i + 2 != localThreadN)
                     {
-                        myRender[i].SetLimits(0, Step - Div, screenWidth, Step);
+                        myRender[i].SetLimits(0, Step - Div, _screenWidth, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, Step, screenWidth, yMoved);
+                        myRender[i].SetLimits(0, Step, _screenWidth, _yMoved);
                 }
 
                 // Second thread pack.
-                int start = yMoved;
-                Div = static_cast<int>(floor((screenHeight - yMoved) / (double)(threadNumber - localThreadN)));
+                int start = _yMoved;
+                Div = static_cast<int>(floor((_screenHeight - _yMoved) / (double)(_threadNumber - localThreadN)));
                 Step = Div;
-                for (unsigned int i = localThreadN; i < threadNumber; i++)
+                for (unsigned int i = localThreadN; i < _threadNumber; i++)
                 {
-                    if (i + 2 != threadNumber)
+                    if (i + 2 != _threadNumber)
                     {
-                        myRender[i].SetLimits(0, start + Step - Div, xMoved, start + Step);
+                        myRender[i].SetLimits(0, start + Step - Div, _xMoved, start + Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, start + Step, xMoved, screenHeight);
+                        myRender[i].SetLimits(0, start + Step, _xMoved, _screenHeight);
                 }
             }
-            else if (xMoved < 0 && yMoved < 0)
+            else if (_xMoved < 0 && _yMoved < 0)
             {
                 // First thread pack.
-                unsigned int localThreadN = ceil((double)threadNumber / 2.0);
-                int Div = static_cast<int>(floor((screenHeight + yMoved) / (double)localThreadN));
+                unsigned int localThreadN = ceil((double)_threadNumber / 2.0);
+                int Div = static_cast<int>(floor((_screenHeight + _yMoved) / (double)localThreadN));
                 int Step = Div;
                 for (unsigned int i = 0; i < localThreadN; i++)
                 {
                     if (i + 2 != localThreadN)
                     {
-                        myRender[i].SetLimits(screenWidth + xMoved, Step - Div, screenWidth, Step);
+                        myRender[i].SetLimits(_screenWidth + _xMoved, Step - Div, _screenWidth, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(screenWidth + xMoved, Step, screenWidth, screenHeight + yMoved);
+                        myRender[i].SetLimits(_screenWidth + _xMoved, Step, _screenWidth, _screenHeight + _yMoved);
                 }
 
                 // Second thread pack.
-                Div = static_cast<int>(floor(abs(yMoved) / (double)(threadNumber - localThreadN)));
+                Div = static_cast<int>(floor(abs(_yMoved) / (double)(_threadNumber - localThreadN)));
                 Step = Div;
-                int start = screenHeight + yMoved;
-                for (unsigned int i = localThreadN; i < threadNumber; i++)
+                int start = _screenHeight + _yMoved;
+                for (unsigned int i = localThreadN; i < _threadNumber; i++)
                 {
 
-                    if (i + 2 != threadNumber)
+                    if (i + 2 != _threadNumber)
                     {
-                        myRender[i].SetLimits(0, start + Step - Div, screenWidth, start + Step);
+                        myRender[i].SetLimits(0, start + Step - Div, _screenWidth, start + Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
+                        myRender[i].SetLimits(0, start + Step, _screenWidth, _screenHeight);
                 }
             }
-            else if (xMoved < 0 && yMoved > 0)
+            else if (_xMoved < 0 && _yMoved > 0)
             {
                 // First thread pack.
-                unsigned int localThreadN = ceil((double)threadNumber / 2.0);
-                int Div = static_cast<int>(floor(abs(yMoved) / (double)localThreadN));
+                unsigned int localThreadN = ceil((double)_threadNumber / 2.0);
+                int Div = static_cast<int>(floor(abs(_yMoved) / (double)localThreadN));
                 int Step = Div;
                 for (unsigned int i = 0; i < localThreadN; i++)
                 {
                     if (i + 2 != localThreadN)
                     {
-                        myRender[i].SetLimits(0, Step - Div, screenWidth, Step);
+                        myRender[i].SetLimits(0, Step - Div, _screenWidth, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, Step, screenWidth, yMoved);
+                        myRender[i].SetLimits(0, Step, _screenWidth, _yMoved);
                 }
 
                 // Second thread pack.
-                int start = yMoved;
-                Div = static_cast<int>(floor((screenHeight - yMoved) / (double)(threadNumber - localThreadN)));
+                int start = _yMoved;
+                Div = static_cast<int>(floor((_screenHeight - _yMoved) / (double)(_threadNumber - localThreadN)));
                 Step = Div;
-                for (unsigned int i = localThreadN; i < threadNumber; i++)
+                for (unsigned int i = localThreadN; i < _threadNumber; i++)
                 {
-                    if (i + 2 != threadNumber)
+                    if (i + 2 != _threadNumber)
                     {
-                        myRender[i].SetLimits(screenWidth + xMoved, start + Step - Div, screenWidth, start + Step);
+                        myRender[i].SetLimits(_screenWidth + _xMoved, start + Step - Div, _screenWidth, start + Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(screenWidth + xMoved, start + Step, screenWidth, screenHeight);
+                        myRender[i].SetLimits(_screenWidth + _xMoved, start + Step, _screenWidth, _screenHeight);
                 }
             }
         }
-        else if (xMoved)
+        else if (_xMoved)
         {
-            int Div = static_cast<int>(floor(screenHeight / (double)threadNumber));
+            int Div = static_cast<int>(floor(_screenHeight / (double)_threadNumber));
             int Step = Div;
-            if (xMoved > 0)
+            if (_xMoved > 0)
             {
-                for (unsigned int i = 0; i < threadNumber; i++)
+                for (unsigned int i = 0; i < _threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
-                    myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+                    myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
 
-                    if (orbitTrapMode || smoothRender)
+                    if (_orbitTrapMode || _smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
 
-                    myRender[i].SetK(kReal, kImaginary);
+                    myRender[i].SetK(_kReal, _kImaginary);
 
-                    if (i + 2 != threadNumber)
+                    if (i + 2 != _threadNumber)
                     {
-                        myRender[i].SetLimits(0, Step - Div, xMoved, Step);
+                        myRender[i].SetLimits(0, Step - Div, _xMoved, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, Step, xMoved, screenHeight);
+                        myRender[i].SetLimits(0, Step, _xMoved, _screenHeight);
                 }
             }
             else
             {
-                for (unsigned int i = 0; i < threadNumber; i++)
+                for (unsigned int i = 0; i < _threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
-                    myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+                    myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
 
-                    if (orbitTrapMode || smoothRender)
+                    if (_orbitTrapMode || _smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
 
-                    myRender[i].SetK(kReal, kImaginary);
+                    myRender[i].SetK(_kReal, _kImaginary);
 
-                    if (i + 2 != threadNumber)
+                    if (i + 2 != _threadNumber)
                     {
-                        myRender[i].SetLimits(screenWidth + xMoved, Step - Div, screenWidth, Step);
+                        myRender[i].SetLimits(_screenWidth + _xMoved, Step - Div, _screenWidth, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(screenWidth + xMoved, Step, screenWidth, screenHeight);
+                        myRender[i].SetLimits(_screenWidth + _xMoved, Step, _screenWidth, _screenHeight);
                 }
             }
         }
-        else if (yMoved)
+        else if (_yMoved)
         {
-            if (yMoved > 0)
+            if (_yMoved > 0)
             {
-                int Div = static_cast<int>(floor(yMoved / (double)threadNumber));
+                int Div = static_cast<int>(floor(_yMoved / (double)_threadNumber));
                 int Step = Div;
 
-                for (unsigned int i = 0; i < threadNumber; i++)
+                for (unsigned int i = 0; i < _threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
-                    myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+                    myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
 
-                    if (orbitTrapMode || smoothRender)
+                    if (_orbitTrapMode || _smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
 
-                    myRender[i].SetK(kReal, kImaginary);
+                    myRender[i].SetK(_kReal, _kImaginary);
 
-                    if (i + 2 != threadNumber)
+                    if (i + 2 != _threadNumber)
                     {
-                        myRender[i].SetLimits(0, Step - Div, screenWidth, Step);
+                        myRender[i].SetLimits(0, Step - Div, _screenWidth, Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, Step, screenWidth, yMoved);
+                        myRender[i].SetLimits(0, Step, _screenWidth, _yMoved);
                 }
             }
             else
             {
-                int Div = static_cast<int>(floor(abs(yMoved) / (double)threadNumber));
+                int Div = static_cast<int>(floor(abs(_yMoved) / (double)_threadNumber));
                 int Step = Div;
 
-                for (unsigned int i = 0; i < threadNumber; i++)
+                for (unsigned int i = 0; i < _threadNumber; i++)
                 {
                     myRender[i].SetOpt(this->GetOptions());
-                    myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+                    myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
 
-                    if (orbitTrapMode || smoothRender)
+                    if (_orbitTrapMode || _smoothRender)
                         myRender[i].SetSpecialRenderMode(true);
                     else
                         myRender[i].SetSpecialRenderMode(false);
 
-                    myRender[i].SetK(kReal, kImaginary);
+                    myRender[i].SetK(_kReal, _kImaginary);
 
-                    int start = screenHeight + yMoved;
+                    int start = _screenHeight + _yMoved;
 
-                    if (i + 2 != threadNumber)
+                    if (i + 2 != _threadNumber)
                     {
-                        myRender[i].SetLimits(0, start + Step - Div, screenWidth, start + Step);
+                        myRender[i].SetLimits(0, start + Step - Div, _screenWidth, start + Step);
                         Step += Div;
                     }
                     else
-                        myRender[i].SetLimits(0, start + Step, screenWidth, screenHeight);
+                        myRender[i].SetLimits(0, start + Step, _screenWidth, _screenHeight);
                 }
             }
         }
@@ -611,34 +609,34 @@ template<class MT> void Fractal::TRender(MT* myRender)
     else
     {
         // Draws all the screen.
-        int Div = static_cast<int>(floor(screenHeight / (double)threadNumber));
+        int Div = static_cast<int>(floor(_screenHeight / (double)_threadNumber));
         int Step = Div;
 
-        for (unsigned int i = 0; i < threadNumber; i++)
+        for (unsigned int i = 0; i < _threadNumber; i++)
         {
             myRender[i].SetOpt(this->GetOptions());
-            myRender[i].SetRenderOut(setMap, colorMap, auxMap);
+            myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
 
-            if (orbitTrapMode || smoothRender)
+            if (_orbitTrapMode || _smoothRender)
                 myRender[i].SetSpecialRenderMode(true);
             else
                 myRender[i].SetSpecialRenderMode(false);
 
-            myRender[i].SetK(kReal, kImaginary);
+            myRender[i].SetK(_kReal, _kImaginary);
 
-            if (!justLaunchThreads)
+            if (!_justLaunchThreads)
             {
-                if (i + 2 != threadNumber)
+                if (i + 2 != _threadNumber)
                 {
-                    myRender[i].SetLimits(0, Step - Div, screenWidth, Step);
+                    myRender[i].SetLimits(0, Step - Div, _screenWidth, Step);
                     Step += Div;
                 }
                 else
-                    myRender[i].SetLimits(0, Step, screenWidth, screenHeight);
+                    myRender[i].SetLimits(0, Step, _screenWidth, _screenHeight);
             }
             else
             {
-                if (i + 2 != threadNumber)
+                if (i + 2 != _threadNumber)
                 {
                     myRender[i].SetOldHo(Step - Div);
                     Step += Div;
@@ -649,12 +647,12 @@ template<class MT> void Fractal::TRender(MT* myRender)
         }
     }
 
-    watchdog.LaunchThreads();
-    watchdog.launch();
+    _watchdog.LaunchThreads();
+    _watchdog.launch();
 
-    if (waitRoutine)
+    if (_waitRoutine)
     {
-        watchdog.wait();
+        _watchdog.wait();
     }
 }
 

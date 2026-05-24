@@ -1,6 +1,5 @@
 #include "FractalHandler.h"
 #include "FractalTypes.h"
-#include "FractalUtils.h"
 using namespace std;
 
 FractalHandler::FractalHandler()
@@ -94,7 +93,7 @@ void FractalHandler::CreateFractal(FractalType _type, sf::RenderWindow* Window)
         }
     case FractalType::SierpinskyTriangle:
         {
-            target = sierpinskyTriangle = new SierpTriangle(Window);
+            target = sierpinskyTriangle = new SierpinskyTriangle(Window);
             break;
         }
     case FractalType::FixedPoint1:
@@ -144,7 +143,7 @@ void FractalHandler::CreateFractal(FractalType _type, sf::RenderWindow* Window)
         }
     case FractalType::DoublePendulum:
         {
-            target = dPendulum = new DPendulum(Window);
+            target = dPendulum = new DoublePendulum(Window);
             break;
         }
     case FractalType::UserDefined:
@@ -218,7 +217,7 @@ void FractalHandler::CreateFractal(FractalType _type, int width, int height)
         }
     case FractalType::SierpinskyTriangle:
         {
-            target = sierpinskyTriangle = new SierpTriangle(width, height);
+            target = sierpinskyTriangle = new SierpinskyTriangle(width, height);
             break;
         }
     case FractalType::FixedPoint1:
@@ -268,7 +267,7 @@ void FractalHandler::CreateFractal(FractalType _type, int width, int height)
         }
     case FractalType::DoublePendulum:
         {
-            target = dPendulum = new DPendulum(width, height);
+            target = dPendulum = new DoublePendulum(width, height);
             break;
         }
     case FractalType::UserDefined:
@@ -296,7 +295,7 @@ void FractalHandler::CreateScriptFractal(int width, int height, string scriptPat
 {
     target = scriptFractal = new ScriptFractal(width, height, scriptPath);
 }
-void FractalHandler::SetFormula(FormulaOpt formula)
+void FractalHandler::SetFormula(FormulaOpt formula) const
 {
     if(type == FractalType::UserDefined)
     {
@@ -441,11 +440,11 @@ void FractalHandler::DeleteFractal()
         scriptFractal = nullptr;
     }
 }
-Fractal* FractalHandler::GetFractalPtr()
+Fractal* FractalHandler::GetFractalPtr() const
 {
     return target;
 }
-FractalType FractalHandler::GetType()
+FractalType FractalHandler::GetType() const
 {
     return type;
 }

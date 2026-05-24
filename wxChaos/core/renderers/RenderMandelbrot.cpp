@@ -3,8 +3,8 @@
 
 RenderMandelbrot::RenderMandelbrot()
 {
-    buddhaRandomP = 0;
-    bd = 0;
+    _buddhaRandomP = 0;
+    _bd = 0;
 }
 void RenderMandelbrot::Render()
 {
@@ -300,7 +300,7 @@ void RenderMandelbrot::SpecialRender()
 }
 void RenderMandelbrot::SetBuddhaRandomP(int n)
 {
-    buddhaRandomP = n;
+    _buddhaRandomP = n;
 }
 int RenderMandelbrot::AskProgress()
 {

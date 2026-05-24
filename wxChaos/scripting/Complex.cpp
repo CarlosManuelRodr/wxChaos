@@ -12,9 +12,9 @@ Complex::Complex(const std::complex<double>& other)
 {
     complexNum = other;
 }
-Complex::Complex(double _r, double _i)
+Complex::Complex(const double r, const double i)
 {
-    complexNum = std::complex<double>(_r, _i);
+    complexNum = std::complex<double>(r, i);
 }
 bool Complex::operator==(const Complex &o) const
 {

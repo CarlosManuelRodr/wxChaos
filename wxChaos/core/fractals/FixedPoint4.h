@@ -8,15 +8,14 @@
 */
 class FixedPoint4 : public Fractal
 {
-private:
     RenderFixedPoint4* myRender;
     double minStep;
 public:
-    FixedPoint4(sf::RenderWindow* Window);
+    explicit FixedPoint4(sf::RenderWindow* Window);
     FixedPoint4(int width, int height);
-    ~FixedPoint4();
+    ~FixedPoint4() override;
 
-    void Render();
-    void DrawOrbit();
-    void CopyOptFromPanel();
+    void Render() override;
+    void DrawOrbit() override;
+    void CopyOptFromPanel() override;
 };

@@ -4,157 +4,155 @@ using namespace std;
 
 bool juliaModeState;
 
-JuliaMode::JuliaMode(FractalCanvas* ptr, FractalType fractalType, Options juliaOpt, wxWindow* _parent)
-                    : event(), m_thread(&JuliaMode::Run, this)
+JuliaMode::JuliaMode(FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt, wxWindow* parent)
+                    : _event(), m_thread(&JuliaMode::Run, this)
 {
-    parent = _parent;
-    myJuliaOpt = juliaOpt;
-    type = fractalType;
-    target = ptr;
+    _parent = parent;
+    _myJuliaOpt = juliaOpt;
+    _type = fractalType;
+    _target = ptr;
 
-    window = nullptr;
-    selection = nullptr;
-    play = nullptr;
+    _window = nullptr;
+    _selection = nullptr;
+    _play = nullptr;
 }
 
 JuliaMode::~JuliaMode()
 {
-    delete selection;
-    delete play;
-    juliaFractal.DeleteFractal();
-    delete window;
+    delete _selection;
+    delete _play;
+    _juliaFractal.DeleteFractal();
+    delete _window;
 }
 
-void JuliaMode::Handle_Event()
+void JuliaMode::HandleEvent()
 {
-    while (window->pollEvent(event))
+    while (_window->pollEvent(_event))
     {
         // Window closed.
-        if (event.type == sf::Event::Closed)
+        if (_event.type == sf::Event::Closed)
         {
-            juliaFractal.GetFractalPtr()->StopRender();
-            window->close();
+            _juliaFractal.GetFractalPtr()->StopRender();
+            _window->close();
         }
-        if (event.type == sf::Event::Resized)
+        if (_event.type == sf::Event::Resized)
         {
-            sf::View View(sf::FloatRect(0, 0, (float)event.size.width, (float)event.size.height));
-            window->setView(View);
-            sfmlFractal.Resize(window);
-            play->Resize(window);
+            sf::View View(sf::FloatRect(0, 0, (float)_event.size.width, (float)_event.size.height));
+            _window->setView(View);
+            _sfmlFractal.Resize(_window);
+            _play->Resize(_window);
         }
 
         // The original HandleEvents methods in SelectRect and ButtonChange take SFML 1.6 style events.
         // As we are not supposed to change those files, we'll continue to call them.
         // Fortunately, the event structure members they use are mostly compatible.
-        if (selection->HandleEvents(event))
+        if (_selection->HandleEvents(_event))
         {
-            sfmlFractal.SetAreaOfView(selection->GetSeleccion());
+            _sfmlFractal.SetAreaOfView(_selection->GetSeleccion());
         }
-        if (play->HandleEvents(event))
+        if (_play->HandleEvents(_event))
         {
-            juliaFractal.GetFractalPtr()->ChangeVarGradient();
+            _juliaFractal.GetFractalPtr()->ChangeVarGradient();
         }
 
         // Keyboad events.
-        if (event.type == sf::Event::KeyPressed)
+        if (_event.type == sf::Event::KeyPressed)
         {
-            if (event.key.code == sf::Keyboard::F4)
+            if (_event.key.code == sf::Keyboard::F4)
             {
-                wxFileDialog* openFileDialog = new wxFileDialog(NULL, wxT("Select file name"), wxT(""), wxT("fractal.png"),
-                    wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);    // Txt: "Select a file name"
-                wxString fileName;
+                const auto openFileDialog = new wxFileDialog(nullptr, wxT("Select file name"), wxT(""), wxT("fractal.png"),
+                                                             wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);    // Txt: "Select a file name"
                 if (openFileDialog->ShowModal() == wxID_OK)
                 {
-                    fileName = openFileDialog->GetPath();
-                    int ext = openFileDialog->GetFilterIndex();
-                    string path = string(fileName.mb_str());
-
-                    SizeDialogSave* diag = new SizeDialogSave(NULL, path, ext, type, juliaFractal.GetFractalPtr(), parent);
+                    wxString fileName = openFileDialog->GetPath();
+                    const int ext = openFileDialog->GetFilterIndex();
+                    const auto path = string(fileName.mb_str());
+                    const auto diag = new SizeDialogSave(nullptr, path, ext, _type, _juliaFractal.GetFractalPtr(), _parent);
                     diag->Show(true);
                 }
                 openFileDialog->Destroy();
             }
-            if (event.key.code == sf::Keyboard::F5)  // Redraw fractal.
+            if (_event.key.code == sf::Keyboard::F5)  // Redraw fractal.
             {
-                sfmlFractal.Redraw();
+                _sfmlFractal.Redraw();
             }
             // Handle movement
-            switch (event.key.code)
+            switch (_event.key.code)
             {
-            case sf::Keyboard::W:
-            case sf::Keyboard::Up:    juliaFractal.GetFractalPtr()->SetMovement(Up); break;
-            case sf::Keyboard::S:
-            case sf::Keyboard::Down:  juliaFractal.GetFractalPtr()->SetMovement(Down); break;
-            case sf::Keyboard::A:
-            case sf::Keyboard::Left:  juliaFractal.GetFractalPtr()->SetMovement(Left); break;
-            case sf::Keyboard::D:
-            case sf::Keyboard::Right: juliaFractal.GetFractalPtr()->SetMovement(Right); break;
-            default: break;
+                case sf::Keyboard::W:
+                case sf::Keyboard::Up:    _juliaFractal.GetFractalPtr()->SetMovement(Up); break;
+                case sf::Keyboard::S:
+                case sf::Keyboard::Down:  _juliaFractal.GetFractalPtr()->SetMovement(Down); break;
+                case sf::Keyboard::A:
+                case sf::Keyboard::Left:  _juliaFractal.GetFractalPtr()->SetMovement(Left); break;
+                case sf::Keyboard::D:
+                case sf::Keyboard::Right: _juliaFractal.GetFractalPtr()->SetMovement(Right); break;
+                default: break;
             }
         }
 
-        if (event.type == sf::Event::KeyReleased)
+        if (_event.type == sf::Event::KeyReleased)
         {
             // Handle movement stop
-            switch (event.key.code)
+            switch (_event.key.code)
             {
-            case sf::Keyboard::W:
-            case sf::Keyboard::Up:    juliaFractal.GetFractalPtr()->ReleaseMovement(Up); break;
-            case sf::Keyboard::S:
-            case sf::Keyboard::Down:  juliaFractal.GetFractalPtr()->ReleaseMovement(Down); break;
-            case sf::Keyboard::A:
-            case sf::Keyboard::Left:  juliaFractal.GetFractalPtr()->ReleaseMovement(Left); break;
-            case sf::Keyboard::D:
-            case sf::Keyboard::Right: juliaFractal.GetFractalPtr()->ReleaseMovement(Right); break;
-            default: break;
+                case sf::Keyboard::W:
+                case sf::Keyboard::Up:    _juliaFractal.GetFractalPtr()->ReleaseMovement(Up); break;
+                case sf::Keyboard::S:
+                case sf::Keyboard::Down:  _juliaFractal.GetFractalPtr()->ReleaseMovement(Down); break;
+                case sf::Keyboard::A:
+                case sf::Keyboard::Left:  _juliaFractal.GetFractalPtr()->ReleaseMovement(Left); break;
+                case sf::Keyboard::D:
+                case sf::Keyboard::Right: _juliaFractal.GetFractalPtr()->ReleaseMovement(Right); break;
+                default: break;
             }
         }
 
-        sfmlFractal.HandleEvent(event);
+        _sfmlFractal.HandleEvent(_event);
     }
 
-    if (target->ChangeInPointer())
+    if (_target->ChangeInPointer())
     {
-        juliaFractal.GetFractalPtr()->SetK(target->GetKReal(), target->GetKImaginary());
+        _juliaFractal.GetFractalPtr()->SetK(_target->GetKReal(), _target->GetKImaginary());
     }
 
     // Updates window.
-    window->clear();
-    juliaFractal.GetFractalPtr()->Move(); // Move no longer takes sf::Input
-    sfmlFractal.Show(window);
-    selection->Show(window);
-    play->Show(window);
-    window->display();
+    _window->clear();
+    _juliaFractal.GetFractalPtr()->Move(); // Move no longer takes sf::Input
+    _sfmlFractal.Show(_window);
+    _selection->Show(_window);
+    _play->Show(_window);
+    _window->display();
 }
 
 void JuliaMode::Run()
 {
     // The window must be created in the same thread that will execute it.
-    window = new sf::RenderWindow(sf::VideoMode(640, 480), "Julia mode");    // Txt: "Julia mode"
+    _window = new sf::RenderWindow(sf::VideoMode(640, 480), "Julia mode");    // Txt: "Julia mode"
 
     // Calculate position using wxWidgets and convert to sf::Vector2i
-    wxPoint parentPos = parent->GetPosition();
-    wxSize parentSize = parent->GetSize();
+    wxPoint parentPos = _parent->GetPosition();
+    wxSize parentSize = _parent->GetSize();
     sf::Vector2i juliaWindowPos(parentPos.x + parentSize.GetWidth() + 5, parentPos.y);
-    window->setPosition(juliaWindowPos);
+    _window->setPosition(juliaWindowPos);
 
-    window->setFramerateLimit(30);
+    _window->setFramerateLimit(30);
     sf::Image icon;
     if (icon.loadFromFile("Resources/iconPNG.png"))
-        window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+        _window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-    juliaFractal.CreateFractal(type, window);
-    sfmlFractal.SetFractal(juliaFractal.GetFractalPtr());
-    juliaFractal.GetFractalPtr()->SetOptions(myJuliaOpt, true);
-    juliaFractal.GetFractalPtr()->SetJuliaMode(true);
+    _juliaFractal.CreateFractal(_type, _window);
+    _sfmlFractal.SetFractal(_juliaFractal.GetFractalPtr());
+    _juliaFractal.GetFractalPtr()->SetOptions(_myJuliaOpt, true);
+    _juliaFractal.GetFractalPtr()->SetJuliaMode(true);
 
-    selection = new SelectRect(window);
-    play = new ButtonChange("Resources/Play.tga", "Resources/Stop.tga", 0, 450, window);
-    play->SetAnchorage(false, true, true, false);
+    _selection = new SelectRect(_window);
+    _play = new ButtonChange("Resources/Play.tga", "Resources/Stop.tga", 0, 450, _window);
+    _play->SetAnchorage(false, true, true, false);
 
-    while (window->isOpen())
+    while (_window->isOpen())
     {
-        Handle_Event();
+        HandleEvent();
     }
     juliaModeState = false; // Signal that the window is closed
 }
@@ -174,10 +172,11 @@ void JuliaMode::Terminate()
     m_thread.terminate();
 }
 
-void JuliaMode::Close()
+void JuliaMode::Close() const
 {
-    if (window) {
-        juliaFractal.GetFractalPtr()->StopRender();
-        window->close();
+    if (_window)
+        {
+        _juliaFractal.GetFractalPtr()->StopRender();
+        _window->close();
     }
 }

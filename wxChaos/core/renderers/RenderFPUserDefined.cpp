@@ -1,23 +1,24 @@
+#include <mpParser.h>
 #include "RenderFPUserDefined.h"
 
 RenderFPUserDefined::RenderFPUserDefined()
 {
-    bailout = 0;
-    julia = false;
-    minStep = 0.001;
+    _bailout = 0;
+    _julia = false;
+    _minStep = 0.001;
 }
 
 void RenderFPUserDefined::SetFormula(FormulaOpt formula)
 {
-    bailout = formula.bailout;
-    julia = formula.julia;
-    parserFormula = formula.userFormula;
+    _bailout = formula.bailout;
+    _julia = formula.julia;
+    _parserFormula = formula.userFormula;
 }
 
 void RenderFPUserDefined::Render()
 {
     mup::ParserX parser;
-    parser.SetExpr(parserFormula.wc_str());
+    parser.SetExpr(_parserFormula.wc_str());
 
     double z_y;
     mup::Value zVal, z_prevVal;
@@ -36,10 +37,10 @@ void RenderFPUserDefined::Render()
                 for (n = 0; n < maxIter; n++)
                 {
                     zVal = parser.Eval();
-                    if ((z_prevVal.GetFloat() - minStep < zVal.GetFloat() &&
-                         z_prevVal.GetFloat() + minStep > zVal.GetFloat()) &&
-                        (z_prevVal.GetImag() - minStep < zVal.GetImag() &&
-                         z_prevVal.GetImag() + minStep > zVal.GetImag()))
+                    if ((z_prevVal.GetFloat() - _minStep < zVal.GetFloat() &&
+                         z_prevVal.GetFloat() + _minStep > zVal.GetFloat()) &&
+                        (z_prevVal.GetImag() - _minStep < zVal.GetImag() &&
+                         z_prevVal.GetImag() + _minStep > zVal.GetImag()))
                         break;
                     else
                         z_prevVal = zVal;
@@ -53,8 +54,8 @@ void RenderFPUserDefined::Render()
     }
     catch (mup::ParserError &e)
     {
-        errorInfo = wxT("Error: ");
-        errorInfo += wxString(e.GetMsg());
+        _errorInfo = wxT("Error: ");
+        _errorInfo += wxString(e.GetMsg());
         for (int y = ho; y < hf; y++)
         {
             for (int x = wo; x < wf; x++)
@@ -69,23 +70,23 @@ void RenderFPUserDefined::Render()
     parser.ClearFun();
 }
 
-void RenderFPUserDefined::SetParams(double _minStep)
+void RenderFPUserDefined::SetParams(double minStep)
 {
-    minStep = _minStep;
+    _minStep = minStep;
 }
 
 wxString RenderFPUserDefined::GetErrorInfo()
 {
-    return errorInfo;
+    return _errorInfo;
 }
 
 void RenderFPUserDefined::ClearErrorInfo()
 {
-    errorInfo.clear();
+    _errorInfo.clear();
 }
 
 bool RenderFPUserDefined::IsThereError()
 {
-    return !(errorInfo.size() == 0);
+    return !(_errorInfo.size() == 0);
 }
 

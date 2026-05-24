@@ -1,96 +1,95 @@
+#include <wx/gdicmn.h>
+#include <wx/statbox.h>
 #include "ConstDialog.h"
 #include "StringFuncs.h"
-#include "global.h"
 
-ConstDialog::ConstDialog(bool* Active, Fractal* mTarget, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, 
-                         const wxSize& size, long style) 
-    : wxDialog(parent, id, title, pos, size, style)
+ConstDialog::ConstDialog(bool* active, Fractal* mTarget, wxWindow* parent, const wxWindowID id, const wxString& title,
+                         const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
-    target = mTarget;
-    wxString text;
-    active = Active;
+    _target = mTarget;
+    _active = active;
 
     this->SetSizeHints(wxSize(320, 250), wxDefaultSize);
+
+    const auto mainSizer = new wxBoxSizer(wxVERTICAL);
     
-    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+    _dumbPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    const auto sizer = new wxBoxSizer(wxVERTICAL);
+
+    const auto realSizer = new wxStaticBoxSizer(new wxStaticBox(_dumbPanel, wxID_ANY, wxT("Real value")), wxVERTICAL);
     
-    dumbPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-    
-    wxStaticBoxSizer* realSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT("Real value")), wxVERTICAL);    // Txt: "Real value"
-    
-    lastReal = target->GetKReal();
-    text = num_to_string(target->GetKReal());
-    realText = new wxTextCtrl(dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
-    realSizer->Add(realText, 0, wxALL|wxEXPAND, 5);
+    _lastReal = _target->GetKReal();
+    wxString text = num_to_string(_target->GetKReal());
+    _realText = new wxTextCtrl(_dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
+    realSizer->Add(_realText, 0, wxALL|wxEXPAND, 5);
     sizer->Add(realSizer, 2, wxEXPAND, 5);
+
+    const auto imSizer = new wxStaticBoxSizer(new wxStaticBox(_dumbPanel, wxID_ANY, wxT("Imaginary value")), wxVERTICAL);
     
-    wxStaticBoxSizer* imSizer = new wxStaticBoxSizer(new wxStaticBox(dumbPanel, wxID_ANY, wxT("Imaginary value")), wxVERTICAL);    // Txt: "Imaginary value"
-    
-    lastIm = target->GetKImaginary();
-    text = num_to_string(target->GetKImaginary());
-    imText = new wxTextCtrl(dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
-    imSizer->Add(imText, 0, wxALL|wxEXPAND, 5);
+    _lastIm = _target->GetKImaginary();
+    text = num_to_string(_target->GetKImaginary());
+    _imText = new wxTextCtrl(_dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
+    imSizer->Add(_imText, 0, wxALL|wxEXPAND, 5);
     
     sizer->Add(imSizer, 2, wxEXPAND, 5);
+
+    const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto okSizer = new wxBoxSizer(wxVERTICAL);
     
-    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* okSizer = new wxBoxSizer(wxVERTICAL);
-    
-    okButton = new wxButton(dumbPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
-    okSizer->Add(okButton, 0, wxALL, 5);
+    _okButton = new wxButton(_dumbPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);
+    okSizer->Add(_okButton, 0, wxALL, 5);
     buttonSizer->Add(okSizer, 1, wxEXPAND, 5);
+
+    const auto applySizer = new wxBoxSizer(wxVERTICAL);
     
-    wxBoxSizer* applySizer = new wxBoxSizer(wxVERTICAL);
-    
-    applyButton = new wxButton(dumbPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Apply"
-    applySizer->Add(applyButton, 0, wxALL, 5);
+    _applyButton = new wxButton(_dumbPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
+    applySizer->Add(_applyButton, 0, wxALL, 5);
     buttonSizer->Add(applySizer, 1, wxEXPAND, 5);
     sizer->Add(buttonSizer, 1, wxEXPAND, 5);
     
-    dumbPanel->SetSizer(sizer);
-    dumbPanel->Layout();
-    sizer->Fit(dumbPanel);
-    mainSizer->Add(dumbPanel, 1, wxEXPAND | wxALL, 0);
+    _dumbPanel->SetSizer(sizer);
+    _dumbPanel->Layout();
+    sizer->Fit(_dumbPanel);
+    mainSizer->Add(_dumbPanel, 1, wxEXPAND | wxALL, 0);
     
     this->SetSizer(mainSizer);
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     
     this->Centre(wxBOTH);
 
-    okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnOk), NULL, this);
-    applyButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnApply), NULL, this);
+    _okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnOk), nullptr, this);
+    _applyButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnApply), nullptr, this);
     this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(ConstDialog::OnClose));
 }
 
 ConstDialog::~ConstDialog()
 {
-    okButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnOk), NULL, this);
-    *active = false;
+    _okButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnOk), nullptr, this);
+    *_active = false;
 }
 
-void ConstDialog::OnOk(wxCommandEvent& event)
+void ConstDialog::OnOk(wxCommandEvent&)
 {
-    double real = string_to_double(realText->GetLineText(0));
-    double imag = string_to_double(imText->GetLineText(0));
+    const double real = string_to_double(_realText->GetLineText(0));
+    const double imag = string_to_double(_imText->GetLineText(0));
 
-    if(real != lastReal || imag != lastIm)
-        target->SetK(real, imag);
+    if (real != _lastReal || imag != _lastIm)
+        _target->SetK(real, imag);
 
     this->Close(true);
     this->Destroy();
 }
-void ConstDialog::OnApply(wxCommandEvent& event)
+void ConstDialog::OnApply(wxCommandEvent&)
 {
-    double real = string_to_double(realText->GetLineText(0));
-    double imag = string_to_double(imText->GetLineText(0));
+    const double real = string_to_double(_realText->GetLineText(0));
+    const double imag = string_to_double(_imText->GetLineText(0));
 
-    lastReal = real;
-    lastIm = imag;
+    _lastReal = real;
+    _lastIm = imag;
 
-    target->SetK(real, imag);
+    _target->SetK(real, imag);
 }
-void ConstDialog::OnClose(wxCloseEvent& event)
+void ConstDialog::OnClose(wxCloseEvent&)
 {
     this->Destroy();
 }

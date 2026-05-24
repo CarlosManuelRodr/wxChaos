@@ -1,46 +1,47 @@
+#include <complex>
 #include "BurningShipJulia.h"
 using namespace std;
 
 BurningShipJulia::BurningShipJulia(sf::RenderWindow* Window) : Fractal(Window)
 {
-    minX = -2.77051;
-    maxX = 2.77682;
-    minY = -1.75939;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
-    juliaVariety = true;
+    _minX = -2.77051;
+    _maxX = 2.77682;
+    _minY = -1.75939;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
+    _juliaVariety = true;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    hasOrbit = true;
-    type = FractalType::BurningShip;
-    myRender = new RenderBurningShipJulia[threadNumber];
-    SetWatchdog<RenderBurningShipJulia>(myRender, &watchdog, threadNumber);
+    _hasOrbit = true;
+    _type = FractalType::BurningShip;
+    myRender = new RenderBurningShipJulia[_threadNumber];
+    SetWatchdog<RenderBurningShipJulia>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
 BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, height)
 {
-    minX = -2.77051;
-    maxX = 2.77682;
-    minY = -1.75939;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -2.77051;
+    _maxX = 2.77682;
+    _minY = -1.75939;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
-    juliaVariety = true;
-    hasOrbit = true;
+    _juliaVariety = true;
+    _hasOrbit = true;
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    alg = RenderingAlgorithm::EscapeTime;
-    type = FractalType::BurningShip;
-    myRender = new RenderBurningShipJulia[threadNumber];
-    SetWatchdog<RenderBurningShipJulia>(myRender, &watchdog, threadNumber);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _type = FractalType::BurningShip;
+    myRender = new RenderBurningShipJulia[_threadNumber];
+    SetWatchdog<RenderBurningShipJulia>(myRender, &_watchdog, _threadNumber);
 }
 BurningShipJulia::~BurningShipJulia()
 {
@@ -53,12 +54,12 @@ void BurningShipJulia::Render()
 }
 void BurningShipJulia::DrawOrbit()
 {
-    complex<double> z(orbitX, orbitY);
-    complex<double> k(kReal, kImaginary);
+    complex<double> z(_orbitX, _orbitY);
+    complex<double> k(_kReal, _kImaginary);
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<maxIter; n++)
+    for(unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
         if(z.real()*z.real() + z.imag()*z.imag() > 4)
@@ -76,6 +77,6 @@ void BurningShipJulia::DrawOrbit()
     for(unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-    orbitDrawn = true;
+    _orbitDrawn = true;
 }
 

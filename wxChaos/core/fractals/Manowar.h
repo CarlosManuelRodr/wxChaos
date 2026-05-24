@@ -8,13 +8,12 @@
 */
 class Manowar : public Fractal
 {
-private:
     RenderManowar* myRender;
 public:
-    Manowar(sf::RenderWindow* Window);
+    explicit Manowar(sf::RenderWindow* window);
     Manowar(int width, int height);
-    ~Manowar();
+    ~Manowar() override;
 
-    void Render();
-    void DrawOrbit();
+    void Render() override;
+    void DrawOrbit() override;
 };

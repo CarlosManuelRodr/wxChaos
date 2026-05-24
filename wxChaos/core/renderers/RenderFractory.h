@@ -9,5 +9,5 @@ class RenderFractory : public RenderFractal
 {
 public:
     RenderFractory();
-    void Render();
+    void Render() override;
 };

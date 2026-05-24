@@ -4,18 +4,9 @@
 #include <wx/string.h>
 #include <wx/listbox.h>
 #include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/icon.h>
-#include <wx/button.h>
 #include <wx/sizer.h>
-#include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/stc/stc.h>
-#include <wx/panel.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/statbmp.h>
 #include <wx/collpane.h>
@@ -40,12 +31,11 @@ public:
     ScriptNameDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
                      const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(600, 220), long style = wxDEFAULT_DIALOG_STYLE);
     ~ScriptNameDialog();
-    wxString GetScriptName();
+    wxString GetScriptName() const;
 };
 
 class ScriptEditor : public wxFrame
 {
-private:
     wxPanel* mainPanel;
     wxPanel* scriptPanel;
     wxListBox* scriptsListBox;
@@ -65,15 +55,15 @@ private:
     std::vector<ScriptData> loadedScripts;
     int currentScriptIndex;
 
-    void SetUpLexer();
+    void SetUpLexer() const;
     void FetchUserScripts();
     void LoadScript(unsigned index);
-    void ConsoleSetText(wxString text);
-    void ConsoleSetWelcomeText();
-    void ConsolePrepareInput(wxString command);
-    void ConsolePrepareOutput();
-    void SetBlackPreview();
-    int GetScriptIndex(wxString scriptName);
+    void ConsoleSetText(const wxString& text);
+    void ConsoleSetWelcomeText() const;
+    void ConsolePrepareInput(const wxString& command) const;
+    void ConsolePrepareOutput() const;
+    void SetBlackPreview() const;
+    int GetScriptIndex(const wxString& scriptName) const;
 
     void OnSelectScript(wxCommandEvent& event);
     void OnSaveChanges(wxCommandEvent& event);

@@ -10,6 +10,6 @@ class RenderSinoidal : public RenderFractal
 public:
     RenderSinoidal();
 
-    void Render();
-    void SpecialRender();
+    void Render() override;
+    void SpecialRender() override;
 };

@@ -1,16 +1,17 @@
+#include <complex>
 #include "RenderCell.h"
 #include "FractalUtils.h"
 using namespace std;
 
 RenderCell::RenderCell()
 {
-    bailout = 1.0;
+    _bailout = 1.0;
 }
 void RenderCell::Render()
 {
     // Creates fractal.
     unsigned n;
-    double squaredBail = bailout*bailout;
+    double squaredBail = _bailout*_bailout;
     complex<double> z, b, c;
     double c_im;
     bool insideSet;
@@ -85,8 +86,8 @@ void RenderCell::Render()
         }
     }
 }
-void RenderCell::SetParams(double _bailout)
+void RenderCell::SetParams(double bailout)
 {
-    bailout = _bailout;
+    _bailout = bailout;
 }
 

@@ -1,39 +1,40 @@
+#include <mpParser.h>
 #include "UserDefined.h"
 using namespace std;
 
 UserDefined::UserDefined(sf::RenderWindow* Window) : Fractal(Window)
 {
     // Adjust the scale.
-    minX = -2.5;
-    maxX = 2.5;
-    minY = -1.5;
-    maxY = minY+(maxX-minX)*screenHeight/screenWidth;
+    _minX = -2.5;
+    _maxX = 2.5;
+    _minY = -1.5;
+    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     this->SetOutermostZoom();
 
-    xFactor = (maxX-minX)/(screenWidth-1);
-    yFactor = (maxY-minY)/(screenHeight-1);
+    _xFactor = (_maxX-_minX)/(_screenWidth-1);
+    _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    type = FractalType::UserDefined;
-    hasOrbit = true;
-    myRender = new RenderUserDefined[threadNumber];
-    SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
+    _type = FractalType::UserDefined;
+    _hasOrbit = true;
+    myRender = new RenderUserDefined[_threadNumber];
+    SetWatchdog<RenderUserDefined>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    alg = RenderingAlgorithm::EscapeTime;
-    availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _alg = RenderingAlgorithm::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
 }
 UserDefined::UserDefined(int width, int height) : Fractal(width, height)
 {
     // Adjust the scale.
-    minX = -2.5;
-    maxX = 2.5;
-    minY = -1.5;
-    maxY = minY + (maxX - minX) * screenHeight / screenWidth;
+    _minX = -2.5;
+    _maxX = 2.5;
+    _minY = -1.5;
+    _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
     this->SetOutermostZoom();
 
-    type = FractalType::UserDefined;
-    myRender = new RenderUserDefined[threadNumber];
-    SetWatchdog<RenderUserDefined>(myRender, &watchdog, threadNumber);
+    _type = FractalType::UserDefined;
+    myRender = new RenderUserDefined[_threadNumber];
+    SetWatchdog<RenderUserDefined>(myRender, &_watchdog, _threadNumber);
 }
 UserDefined::~UserDefined()
 {
@@ -46,36 +47,36 @@ void UserDefined::Render()
 }
 void UserDefined::SetFormula(FormulaOpt formula)
 {
-    userFormula = formula;
-    for(unsigned int i = 0; i < threadNumber; i++)
+    _userFormula = formula;
+    for(unsigned int i = 0; i < _threadNumber; i++)
         myRender[i].SetFormula(formula);
 
     if(formula.julia)
-        juliaVariety = true;
+        _juliaVariety = true;
 }
 void UserDefined::DrawOrbit()
 {
-    bool julia = userFormula.julia;
+    bool julia = _userFormula.julia;
     vector< complex<double> > zVector;
     mup::ParserX parser;
-    parser.SetExpr(userFormula.userFormula.wc_str());
+    parser.SetExpr(_userFormula.userFormula.wc_str());
 
-    int bailout = userFormula.bailout;
+    int bailout = _userFormula.bailout;
     mup::Value zVal;
     mup::Value cVal;
     parser.DefineVar(_T("z"), mup::Variable(&zVal));
     parser.DefineVar(_T("c"),  mup::Variable(&cVal));
     parser.DefineVar(_T("Z"), mup::Variable(&zVal));
     parser.DefineVar(_T("C"),  mup::Variable(&cVal));
-    if(julia) cVal = mup::cmplx_type(kReal, kImaginary);
+    if(julia) cVal = mup::cmplx_type(_kReal, _kImaginary);
     bool outOfSet = false;
 
-    zVal = mup::cmplx_type(orbitX, orbitY);
-    if(!julia) cVal = mup::cmplx_type(orbitX, orbitY);
+    zVal = mup::cmplx_type(_orbitX, _orbitY);
+    if(!julia) cVal = mup::cmplx_type(_orbitX, _orbitY);
 
     try
     {
-        for(unsigned n=0; n<maxIter; n++)
+        for(unsigned n=0; n<_maxIter; n++)
         {
             zVector.push_back(complex<double>(zVal.GetFloat(),zVal.GetImag()));
             if(zVal.GetFloat()*zVal.GetFloat() + zVal.GetImag()*zVal.GetImag() > bailout*bailout)
@@ -92,7 +93,7 @@ void UserDefined::DrawOrbit()
         for(unsigned int i=0; i<zVector.size()-1; i++)
             this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
-        orbitDrawn = true;
+        _orbitDrawn = true;
     }
     catch (mup::ParserError&)
     {
