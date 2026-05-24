@@ -5,8 +5,6 @@
 #include "Fractal.h"
 #include "Filesystem.h"
 
-namespace
-{
 template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight, const int moveX, const int moveY)
 {
     if (moveX > 0)
@@ -14,8 +12,8 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
         const int displacement = moveX;
         for (unsigned int i = 0; i < matrixHeight; i++)
         {
-            int iterations = matrixWidth - displacement;
-            for (int j = matrixWidth - 1; j >= 0; j--)
+            unsigned int iterations = matrixWidth - displacement;
+            for (unsigned int j = matrixWidth - 1; j >= 0; j--)
             {
                 if (iterations > 0)
                 {
@@ -32,7 +30,7 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
         const int displacement = -moveX;
         for (unsigned int i = 0; i < matrixHeight; i++)
         {
-            int iterations = matrixWidth - displacement;
+            unsigned int iterations = matrixWidth - displacement;
             for (unsigned int j = 0; j < matrixWidth; j++)
             {
                 if (iterations > 0)
@@ -51,8 +49,8 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
         const int displacement = moveY;
         for (unsigned int j = 0; j < matrixWidth; j++)
         {
-            int iterations = matrixHeight - displacement;
-            for (int i = matrixHeight - 1; i >= 0; i--)
+            unsigned int iterations = matrixHeight - displacement;
+            for (unsigned int i = matrixHeight - 1; i >= 0; i--)
             {
                 if (iterations > 0)
                 {
@@ -69,7 +67,7 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
         const int displacement = -moveY;
         for (unsigned int j = 0; j < matrixWidth; j++)
         {
-            int iterations = matrixHeight - displacement;
+            unsigned int iterations = matrixHeight - displacement;
             for (unsigned int i = 0; i < matrixHeight; i++)
             {
                 if (iterations > 0)
@@ -83,10 +81,8 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
         }
     }
 }
-}
 
-SFMLFractal::SFMLFractal()
-    : fractal(nullptr), imgInVector(false), usingRenderImage(false), zoomingBack(false), dontDrawTempImage(false) {}
+SFMLFractal::SFMLFractal() : fractal(nullptr) {}
 
 SFMLFractal::SFMLFractal(Fractal* fractal) : fractal(fractal)
 {
