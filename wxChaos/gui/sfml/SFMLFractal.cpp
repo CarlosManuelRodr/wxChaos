@@ -5,6 +5,16 @@
 #include "Fractal.h"
 #include "Filesystem.h"
 
+/**
+* @brief Moves matrix elements and fills with zeros.
+*
+* When the fractal image is moved, it needs to move the elements in the maps so the program doesn't have to redraw the whole screen.
+* @param matrix Matrix to move.
+* @param matrixWidth The total number of elements in the X axis.
+* @param matrixHeight The total number of elements in the Y axis.
+* @param moveX Elements to move in the X axis.
+* @param moveY Elements to move in the Y axis.
+*/
 template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,
                                   const int moveX, const int moveY)
 {
