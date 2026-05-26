@@ -2,6 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "ColorPalettes.h"
+#include "types/RenderingAlgorithm.h"
+#include "wx/gradient.h"
 
 class Fractal;
 
@@ -28,10 +31,11 @@ class SFMLFractal
     sf::Image _geomImage;                ///< Image layer for orbit and geometry overlays.
     sf::Texture _geomTexture;            ///< Texture backing the geometry overlay.
     sf::Sprite _outGeom;                 ///< Sprite used to draw the geometry overlay.
-    bool _imgInVector{};                 ///< True when there are cached images available for zoom-back.
-    bool _usingRenderImage{};            ///< True when the current frame came from a cached zoom-back image.
-    bool _zoomingBack{};                 ///< True while the view is being redrawn after zooming back.
-    bool _dontDrawTempImage{};           ///< Suppresses drawing the temporary image layer when it would be stale.
+    bool _changeFractalIter;
+    bool _imgInVector;                   ///< True when there are cached images available for zoom-back.
+    bool _usingRenderImage;              ///< True when the current frame came from a cached zoom-back image.
+    bool _zoomingBack;                   ///< True while the view is being redrawn after zooming back.
+    bool _dontDrawTempImage;             ///< Suppresses drawing the temporary image layer when it would be stale.
 
     ///@brief Draws fractal maps into the SFML image and then draws the output sprite.
     ///@param window Target window.
@@ -46,6 +50,9 @@ class SFMLFractal
 
     ///@brief Recreates all SFML image, texture, and sprite objects for the current fractal size.
     void ResetDisplayImages();
+
+    ///@brief Clears cached images used for zoom-back.
+    void ClearImageCache();
 
 public:
     ///@brief Constructs an empty SFML fractal presenter.
@@ -65,7 +72,7 @@ public:
 
     ///@brief Handles SFML input events that affect the fractal view.
     ///@param event SFML event to process.
-    void HandleEvent(const sf::Event& event) const;
+    void HandleEvent(const sf::Event& event);
 
     ///@brief Resizes the fractal maps and SFML presentation layers to match the window.
     ///@param window Window whose size will be copied.
@@ -82,6 +89,68 @@ public:
     ///@brief Restores the previous zoom level, using a cached image when possible.
     void ZoomBack();
 
-    ///@brief Forces a redraw and clears cached zoom-back images.
+    ///@brief Forces a redrawing and clears cached zoom-back images.
     void Redraw();
+
+    ///@brief Increases the iteration count and invalidates cached images.
+    void IncreaseIterations();
+
+    ///@brief Decreases the iteration count and invalidates cached images.
+    void DecreaseIterations();
+
+    ///@brief Sets the iteration count and invalidates cached images.
+    ///@param iterations New maximum iteration count.
+    void ChangeIterations(int iterations);
+
+    ///@brief Sets the Julia constant and invalidates cached images.
+    ///@param real Real component.
+    ///@param imaginary Imaginary component.
+    void SetK(double real, double imaginary);
+
+    ///@brief Sets the gradient and invalidates cached images.
+    ///@param gradient New gradient.
+    void SetGradient(wxGradient gradient);
+
+    ///@brief Sets the gradient palette size and invalidates cached images.
+    ///@param size New palette size.
+    void SetGradientSize(unsigned int size);
+
+    ///@brief Sets the color palette style.
+    ///@param palette New palette style.
+    void SetColorPalette(ColorPalettes palette);
+
+    ///@brief Sets whether exterior colors are drawn and invalidates cached images.
+    ///@param mode Exterior color mode.
+    void SetExtColorMode(bool mode);
+
+    ///@brief Sets whether set colors are drawn and invalidates cached images.
+    ///@param mode Set color mode.
+    void SetFractalSetColorMode(bool mode);
+
+    ///@brief Sets the fractal set color and invalidates cached images.
+    ///@param color New set color.
+    void SetFractalSetColor(sf::Color color);
+
+    ///@brief Sets relative color mode and invalidates cached images.
+    ///@param mode Relative color mode.
+    void SetRelativeColor(bool mode);
+
+    ///@brief Toggles animated gradient variation and invalidates cached images.
+    void ChangeVarGradient();
+
+    ///@brief Sets the color variation offset and invalidates cached images.
+    ///@param offset Color variation offset.
+    void SetVarGradient(int offset);
+
+    ///@brief Sets the rendering algorithm and invalidates cached images.
+    ///@param algorithm New rendering algorithm.
+    void SetAlgorithm(RenderingAlgorithm algorithm);
+
+    ///@brief Sets orbit trap mode and invalidates cached images.
+    ///@param mode Orbit trap mode.
+    void SetOrbitTrapMode(bool mode);
+
+    ///@brief Sets smooth render mode and invalidates cached images.
+    ///@param mode Smooth render mode.
+    void SetSmoothRender(bool mode);
 };

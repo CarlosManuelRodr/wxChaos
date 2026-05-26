@@ -118,7 +118,7 @@ void FractalCanvas::OnUpdate()
                 else
                     btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
 
-                _target->InvalidateZoomCache();
+                _sfmlFractal.Redraw();
             }
         }
 
@@ -195,7 +195,7 @@ void FractalCanvas::OnUpdate()
     if (_orbitMode)
         _target->SetOrbitPoint(_kReal, _kImaginary);
     if (_sliderMode && _pointerChange)
-        _target->SetK(_kReal, _kImaginary);
+        _sfmlFractal.SetK(_kReal, _kImaginary);
 
     _target->Move();
     _sfmlFractal.Show(this);
@@ -301,6 +301,10 @@ bool FractalCanvas::ChangeInPointer()
 Fractal* FractalCanvas::GetFractalPtr() const
 {
     return _target;
+}
+SFMLFractal* FractalCanvas::GetSFMLFractalPtr()
+{
+    return &_sfmlFractal;
 }
 FractalType FractalCanvas::GetFractalType() const
 {
@@ -543,7 +547,7 @@ void FractalCanvas::OnUnClick(wxMouseEvent& event)
                         btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
                     else
                         btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
-                    _target->InvalidateZoomCache();
+                    _sfmlFractal.Redraw();
                 }
                 _sfmlFractal.SetAreaOfView(_selection->GetSeleccion());
             }

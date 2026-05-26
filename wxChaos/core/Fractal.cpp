@@ -50,8 +50,6 @@ sf::Color Fractal::CalcColor(int colorNum) const
 }
 void Fractal::RebuildPalette()
 {
-    InvalidateZoomCache();
-
     for (int i = 0; i < _paletteSize; i++)
     {
         wxColour myWxColor = _gradient.getColorAt(i);
@@ -91,7 +89,7 @@ void Fractal::SetDefaultOpt()
         i = false;
 }
 
-void Fractal::ConfigureRenderer(RenderFractal& renderer)
+void Fractal::ConfigureRenderer(RenderFractal& renderer) const
 {
     renderer.SetOpt(this->GetOptions());
     renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
@@ -295,7 +293,6 @@ Fractal::Fractal(const int width, const int height)
     _magnification = 0;
     _changeGradient = 0;
     _rendered = false;
-    _changeFractalIter = false;
     _varGradient = false;
     _colorMode = true;
     _juliaMode = false;
@@ -369,7 +366,6 @@ Fractal::Fractal(const sf::RenderWindow* window)
     _magnification = 0;
     _changeGradient = 0;
     _rendered = false;
-    _changeFractalIter = true;
     _varGradient = false;
     _colorMode = true;
     _juliaMode = false;
@@ -676,10 +672,6 @@ void Fractal::ZoomBack()
 
     _orbitDrawn = false;
 }
-void Fractal::InvalidateZoomCache()
-{
-}
-
 void Fractal::Redraw()
 {
     this->StopRender();
@@ -778,19 +770,12 @@ void Fractal::CopyOptFromPanel()
 }
 void Fractal::IncreaseIterations()
 {
-    _changeFractalIter = true;
-    InvalidateZoomCache();
-
     _redrawAll = true;
     _maxIter += 100;
-
     _rendered = false;
 }
 void Fractal::DecreaseIterations()
 {
-    _changeFractalIter = true;
-    InvalidateZoomCache();
-
     _redrawAll = true;
     const int signedMaxIter = static_cast<int>(_maxIter);
 
@@ -861,7 +846,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
 
     this->CopyOptFromPanel();
 }
-Options Fractal::GetOptions()
+Options Fractal::GetOptions() const
 {
     Options opt;
 
@@ -1181,7 +1166,6 @@ void Fractal::SetExtColorMode(bool mode)
         _colorMode = mode;
         this->RedrawMaps();
     }
-    this->InvalidateZoomCache();
 }
 void Fractal::SetFractalSetColorMode(bool mode)
 {
@@ -1191,14 +1175,12 @@ void Fractal::SetFractalSetColorMode(bool mode)
         _colorSet = mode;
         this->RedrawMaps();
     }
-    this->InvalidateZoomCache();
 }
 void Fractal::SetFractalSetColor(sf::Color color)
 {
     // Changes the color of the set.
     _fSetColor = wxColour(color.r, color.g, color.b, color.a);
     this->RedrawMaps();
-    this->InvalidateZoomCache();
 }
 bool Fractal::GetExteriorColorMode() const
 {
@@ -1251,7 +1233,6 @@ void Fractal::SetVarGradient(int n)
 {
     _varGradChange = true;
     _changeGradient = n % _paletteSize;
-    this->InvalidateZoomCache();
 }
 
 // Algorithm.
@@ -1266,7 +1247,6 @@ vector<RenderingAlgorithm> Fractal::GetAvailableAlg()
 void Fractal::SetAlgorithm(const RenderingAlgorithm algorithm)
 {
     _algorithm = algorithm;
-    this->InvalidateZoomCache();
     this->StopRender();
     _rendered = false;
     _rendering = false;
@@ -1291,7 +1271,6 @@ void Fractal::SetK(double real, double imaginary)
 
     _kReal = real;
     _kImaginary = imaginary;
-    this->InvalidateZoomCache();
 }
 double Fractal::GetKReal() const
 {
@@ -1334,7 +1313,6 @@ void Fractal::SetOrbitTrapMode(const bool mode)
 {
     if (_hasOrbitTrap)
     {
-        this->InvalidateZoomCache();
         _orbitTrapMode = mode;
     }
 }
@@ -1351,7 +1329,6 @@ void Fractal::SetSmoothRender(const bool mode)
 {
     if (_hasSmoothRender)
     {
-        this->InvalidateZoomCache();
         _smoothRender = mode;
     }
 }
@@ -1370,7 +1347,6 @@ void Fractal::ChangeIterations(int number)
     {
         _maxIter = static_cast<unsigned int>(number);
         _rendered = false;
-        _changeFractalIter = true;
     }
 }
 

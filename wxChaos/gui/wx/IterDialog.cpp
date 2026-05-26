@@ -2,7 +2,7 @@
 #include "StringFuncs.h"
 #include "Filesystem.h"
 
-IterDialog::IterDialog(bool* Active, Fractal* target, wxWindow* parent, wxWindowID id, const wxString& title,
+IterDialog::IterDialog(bool* Active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id, const wxString& title,
                        const wxPoint& pos, const wxSize& size, long style)
     : wxFrame(parent, id, title, pos, size, style)
 {
@@ -11,7 +11,8 @@ IterDialog::IterDialog(bool* Active, Fractal* target, wxWindow* parent, wxWindow
     this->SetIcon(icon);
 
     _active = Active;
-    _target = target;
+    _presenter = presenter;
+    _target = _presenter->GetFractal();
     this->SetSizeHints(wxSize(420, 180), wxSize(420, 180));
 
     const auto sizer = new wxBoxSizer(wxVERTICAL);
@@ -72,7 +73,7 @@ void IterDialog::OnPlus(wxCommandEvent&)
     _number++;
     _text = num_to_string(static_cast<int>(_number));
     _textCtrl->SetValue(_text);
-    _target->ChangeIterations(_number);
+    _presenter->ChangeIterations(_number);
 }
 void IterDialog::OnMinus(wxCommandEvent&)
 {
@@ -81,7 +82,7 @@ void IterDialog::OnMinus(wxCommandEvent&)
         _number--;
     _text = num_to_string(static_cast<int>(_number));
     _textCtrl->SetValue(_text);
-    _target->ChangeIterations(_number);
+    _presenter->ChangeIterations(_number);
 }
 void IterDialog::OnOk(wxCommandEvent&)
 {
@@ -94,11 +95,12 @@ void IterDialog::OnApply(wxCommandEvent&)
     // Redraw fractal.
     _text = _textCtrl->GetValue();
     _number = string_to_int(_text);
-    _target->ChangeIterations(_number);
+    _presenter->ChangeIterations(_number);
 }
-void IterDialog::SetTarget(Fractal* target)
+void IterDialog::SetTarget(SFMLFractal* presenter)
 {
-    _target = target;
+    _presenter = presenter;
+    _target = _presenter->GetFractal();
     _textCtrl->SetValue(num_to_string(static_cast<int>(_target->GetIterations())));
     _number = _target->GetIterations();
 }

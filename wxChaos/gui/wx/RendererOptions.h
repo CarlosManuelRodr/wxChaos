@@ -18,6 +18,7 @@
 #include "ColorPalettes.h"
 #include "gradientdlg.h"
 #include "Fractal.h"
+#include "sfml/SFMLFractal.h"
 
 #define RendererOptionsFrameSize wxSize(900, 820)
 
@@ -54,6 +55,7 @@ class RendererOptions : public wxFrame
     wxStaticText* _colorVarText;
     wxSlider* _colorVarSlider;
     
+    SFMLFractal* _presenter;                        ///< Presenter used to mutate the displayed fractal.
     Fractal* _target;                               ///< Target fractal.
     bool* _active;                                  ///< Used to communicate with the MainFrame.
     sf::Color _setColor;                            ///< Color of the fractal set.
@@ -86,19 +88,19 @@ class RendererOptions : public wxFrame
 public:
     ///@brief Constructor.
     ///@param active Used to communicate with the MainFrame.
-    ///@param target Pointer to the target fractal.
+    ///@param presenter Pointer to the target fractal presenter.
     ///@param parent Parent wxWindow.
     ///@param title
     ///@param pos
     ///@param windowStyle
-    RendererOptions(bool* active, Fractal* target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
+    RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
                const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
                long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
     ~RendererOptions() override;
 
     ///@brief Sets the target fractal.
-    ///@param target Pointer to target fractal.
-    void SetTarget(Fractal* target);
+    ///@param presenter Pointer to target fractal presenter.
+    void SetTarget(SFMLFractal* presenter);
 
 };
 

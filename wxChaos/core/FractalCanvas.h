@@ -137,6 +137,9 @@ public:
     ///@return A pointer to the fractal.
     Fractal* GetFractalPtr() const;
 
+    ///@return A pointer to the SFML fractal presenter.
+    SFMLFractal* GetSFMLFractalPtr();
+
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;
 

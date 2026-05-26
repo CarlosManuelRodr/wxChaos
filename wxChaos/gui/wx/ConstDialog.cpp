@@ -3,10 +3,11 @@
 #include "ConstDialog.h"
 #include "StringFuncs.h"
 
-ConstDialog::ConstDialog(bool* active, Fractal* mTarget, wxWindow* parent, const wxWindowID id, const wxString& title,
+ConstDialog::ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, const wxWindowID id, const wxString& title,
                          const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
-    _target = mTarget;
+    _presenter = presenter;
+    _target = _presenter->GetFractal();
     _active = active;
 
     this->SetSizeHints(wxSize(320, 250), wxDefaultSize);
@@ -74,7 +75,7 @@ void ConstDialog::OnOk(wxCommandEvent&)
     const double imag = string_to_double(_imText->GetLineText(0));
 
     if (real != _lastReal || imag != _lastIm)
-        _target->SetK(real, imag);
+        _presenter->SetK(real, imag);
 
     this->Close(true);
     this->Destroy();
@@ -87,7 +88,7 @@ void ConstDialog::OnApply(wxCommandEvent&)
     _lastReal = real;
     _lastIm = imag;
 
-    _target->SetK(real, imag);
+    _presenter->SetK(real, imag);
 }
 void ConstDialog::OnClose(wxCloseEvent&)
 {

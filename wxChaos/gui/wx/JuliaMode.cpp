@@ -52,7 +52,7 @@ void JuliaMode::HandleEvent()
         }
         if (_play->HandleEvents(_event))
         {
-            _juliaFractal.GetFractalPtr()->ChangeVarGradient();
+            _sfmlFractal.ChangeVarGradient();
         }
 
         // Keyboad events.
@@ -113,7 +113,7 @@ void JuliaMode::HandleEvent()
 
     if (_target->ChangeInPointer())
     {
-        _juliaFractal.GetFractalPtr()->SetK(_target->GetKReal(), _target->GetKImaginary());
+        _sfmlFractal.SetK(_target->GetKReal(), _target->GetKImaginary());
     }
 
     // Updates window.

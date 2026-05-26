@@ -14,6 +14,7 @@
 #include <wx/panel.h>
 #include <wx/dialog.h>
 #include "Fractal.h"
+#include "sfml/SFMLFractal.h"
 
 /**
 * @class ConstDialog
@@ -27,6 +28,7 @@ class ConstDialog : public wxDialog
     wxTextCtrl* _imText;
     wxButton* _okButton;
     wxButton* _applyButton;
+    SFMLFractal* _presenter;
     Fractal* _target;
 
     double _lastReal, _lastIm;
@@ -37,7 +39,7 @@ class ConstDialog : public wxDialog
     void OnClose(wxCloseEvent& event);
 
 public:
-    ConstDialog(bool* active, Fractal* mTarget, wxWindow* parent, wxWindowID id = wxID_ANY,
+    ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id = wxID_ANY,
                 const wxString& title = wxT("Enter constant"), const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxSize(320, 250), long style = wxDEFAULT_DIALOG_STYLE);
     ~ConstDialog() override;

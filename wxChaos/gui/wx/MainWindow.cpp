@@ -153,17 +153,17 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     if(opt.colorPaletteWindow)
     {
         rendererOptionsActive = true;
-        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetFractalPtr(), this);
+        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this);
         rendererOptions->Show(true);
     }
     if(opt.constantWindow)
     {
-        diag = new ConstDialog(&introConstActive, fractalCanvas->GetFractalPtr(), this);
+        diag = new ConstDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
         diag->Show(true);
         introConstActive = true;
     }
     if(!opt.colorSet)
-        fractalCanvas->GetFractalPtr()->SetFractalSetColorMode(false);
+        fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(false);
 
     if (opt.firstUse)
         this->ShowFirstUseDialog();
@@ -423,11 +423,11 @@ void MainFrame::SetUpGUI()
     grad.setMin(0);
     grad.setMax(opt.paletteSize);
     grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
-    fractalCanvas->GetFractalPtr()->SetGradient(grad);
+    fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
 
-    fractalCanvas->GetFractalPtr()->ChangeIterations(opt.maxIterations);
-    fractalCanvas->GetFractalPtr()->SetExtColorMode(opt.colorFractal);
-    fractalCanvas->GetFractalPtr()->SetFractalSetColorMode(opt.colorSet);
+    fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(opt.maxIterations);
+    fractalCanvas->GetSFMLFractalPtr()->SetExtColorMode(opt.colorFractal);
+    fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(opt.colorSet);
     fractalSizer->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
 }
 
@@ -525,7 +525,7 @@ void MainFrame::OnPalette(wxCommandEvent &event)
     if(!rendererOptionsActive)
     {
         rendererOptionsActive = true;
-        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetFractalPtr(), this);
+        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this);
         rendererOptions->Show(true);
 
         // Adjust position.
@@ -567,9 +567,8 @@ void MainFrame::OnRedraw(wxCommandEvent &event)
         else
             pauseBtn.pauseContinue->SetItemLabel(wxT("Pause"));
 
-        fractalCanvas->GetFractalPtr()->InvalidateZoomCache();
     }
-    fractalCanvas->GetFractalPtr()->Redraw();
+    fractalCanvas->GetSFMLFractalPtr()->Redraw();
 }
 void MainFrame::OnReset(wxCommandEvent &event)
 {
@@ -578,16 +577,16 @@ void MainFrame::OnReset(wxCommandEvent &event)
     grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
     grad.setMin(0);
     grad.setMax(opt.paletteSize);
-    fractalCanvas->GetFractalPtr()->SetGradient(grad);
+    fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
     this->UpdateMenu();
 }
 void MainFrame::OnMoreIt(wxCommandEvent &event)
 {
-    fractalCanvas->GetFractalPtr()->IncreaseIterations();
+    fractalCanvas->GetSFMLFractalPtr()->IncreaseIterations();
 }
 void MainFrame::OnLessIt(wxCommandEvent &event)
 {
-    fractalCanvas->GetFractalPtr()->DecreaseIterations();
+    fractalCanvas->GetSFMLFractalPtr()->DecreaseIterations();
 }
 void MainFrame::OnShowOrbit(wxCommandEvent &event)
 {
@@ -600,7 +599,7 @@ void MainFrame::OnManIntroConst(wxCommandEvent &event)
     // Manual constant.
     if(!introConstActive)
     {
-        diag = new ConstDialog(&introConstActive, fractalCanvas->GetFractalPtr(), this);
+        diag = new ConstDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
         diag->Show(true);
         introConstActive = true;
     }
@@ -630,7 +629,7 @@ void MainFrame::OnItManual(wxCommandEvent &event)
     // Manual iterations.
     if(!iterDiagActive)
     {
-        iterDiag = new IterDialog(&iterDiagActive, fractalCanvas->GetFractalPtr(), this);
+        iterDiag = new IterDialog(&iterDiagActive, fractalCanvas->GetSFMLFractalPtr(), this);
         iterDiag->Show(true);
         iterDiagActive = true;
     }
@@ -712,11 +711,10 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent& event)
         else
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
 
-        fractalCanvas->GetFractalPtr()->InvalidateZoomCache();
     }
 
     fractalCanvas->SetFocus();
-    fractalCanvas->GetFractalPtr()->Redraw();
+    fractalCanvas->GetSFMLFractalPtr()->Redraw();
 }
 void MainFrame::OnUserManual(wxCommandEvent &event)
 {
@@ -883,7 +881,7 @@ void MainFrame::ChangeFractal(FractalType fType, bool enableJulia)
         Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
         fractalCanvas->ChangeType(fType);
 
-        fractalCanvas->GetFractalPtr()->SetGradient(fractOpt.gradient);
+        fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
 
         fractalType = fType;
         this->UpdateMenu();
@@ -900,7 +898,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
 
     Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
     fractalCanvas->ChangeToScript(loadedScripts[id]);
-    fractalCanvas->GetFractalPtr()->SetGradient(fractOpt.gradient);
+    fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
 
     fractalType = FractalType::ScriptFractal;
     this->UpdateMenu();
@@ -1108,9 +1106,9 @@ void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
     if(rendererOptionsActive)
-        rendererOptions->SetTarget(fractalCanvas->GetFractalPtr());
+        rendererOptions->SetTarget(fractalCanvas->GetSFMLFractalPtr());
     if(iterDiagActive)
-        iterDiag->SetTarget(fractalCanvas->GetFractalPtr());
+        iterDiag->SetTarget(fractalCanvas->GetSFMLFractalPtr());
 
     showOrbit->Check(false);
     if(fractalCanvas->GetFractalPtr()->HasOrbit())

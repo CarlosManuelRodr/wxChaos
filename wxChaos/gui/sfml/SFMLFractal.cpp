@@ -1,6 +1,7 @@
 #include "SFMLFractal.h"
 
 #include <string>
+#include <utility>
 
 #include "Fractal.h"
 #include "Filesystem.h"
@@ -93,10 +94,19 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
     }
 }
 
-SFMLFractal::SFMLFractal() : _fractal(nullptr) {}
-
-SFMLFractal::SFMLFractal(Fractal* fractal) : _fractal(fractal)
+SFMLFractal::SFMLFractal()
 {
+    _fractal = nullptr;
+    _changeFractalIter = false;
+    _imgInVector = false;
+    _usingRenderImage = false;
+    _zoomingBack = false;
+    _dontDrawTempImage = false;
+}
+
+SFMLFractal::SFMLFractal(Fractal* fractal)
+{
+    _fractal = fractal;
     EnsureFontLoaded();
     ResetDisplayImages();
 }
@@ -105,10 +115,7 @@ void SFMLFractal::SetFractal(Fractal* fractal)
 {
     _fractal = fractal;
     EnsureFontLoaded();
-    _imgCache.clear();
-    _imgInVector = false;
-    _usingRenderImage = false;
-    _zoomingBack = false;
+    ClearImageCache();
     _dontDrawTempImage = true;
     ResetDisplayImages();
 }
@@ -148,7 +155,15 @@ void SFMLFractal::ResetDisplayImages()
     _outGeom.setTexture(_geomTexture);
 }
 
-void SFMLFractal::HandleEvent(const sf::Event& event) const
+void SFMLFractal::ClearImageCache()
+{
+    _imgCache.clear();
+    _imgInVector = false;
+    _usingRenderImage = false;
+    _zoomingBack = false;
+}
+
+void SFMLFractal::HandleEvent(const sf::Event& event)
 {
     if (_fractal == nullptr)
         return;
@@ -158,10 +173,10 @@ void SFMLFractal::HandleEvent(const sf::Event& event) const
         switch (event.key.code)
         {
         case sf::Keyboard::L:
-            _fractal->IncreaseIterations();
+            IncreaseIterations();
             break;
         case sf::Keyboard::K:
-            _fractal->DecreaseIterations();
+            DecreaseIterations();
             break;
         default:
             break;
@@ -171,7 +186,7 @@ void SFMLFractal::HandleEvent(const sf::Event& event) const
     if (!_fractal->_onWxCtrl && event.type == sf::Event::MouseButtonPressed &&
         event.mouseButton.button == sf::Mouse::Right && _fractal->_xVel == 0 && _fractal->_yVel == 0)
     {
-        _fractal->ZoomBack();
+        ZoomBack();
     }
 }
 
@@ -230,10 +245,7 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
 
     _fractal->_rendered = false;
     _fractal->_rendering = false;
-    _imgCache.clear();
-    _imgInVector = false;
-    _usingRenderImage = false;
-    _zoomingBack = false;
+    ClearImageCache();
     _fractal->_orbitDrawn = false;
 
     for (unsigned int i = 0; i < _fractal->_zoom[3].size(); i++)
@@ -257,8 +269,7 @@ void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 
     if (_fractal->_paused)
     {
-        _imgCache.clear();
-        _imgInVector = false;
+        ClearImageCache();
         _dontDrawTempImage = true;
     }
     else
@@ -324,10 +335,158 @@ void SFMLFractal::Redraw()
     }
 
     _fractal->Redraw();
-    _imgCache.clear();
-    _imgInVector = false;
-    _usingRenderImage = false;
+    ClearImageCache();
     _dontDrawTempImage = true;
+}
+
+void SFMLFractal::IncreaseIterations()
+{
+    _changeFractalIter = true;
+
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->IncreaseIterations();
+}
+
+void SFMLFractal::DecreaseIterations()
+{
+    _changeFractalIter = true;
+
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->DecreaseIterations();
+}
+
+void SFMLFractal::ChangeIterations(const int iterations)
+{
+    _changeFractalIter = true;
+
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->ChangeIterations(iterations);
+}
+
+void SFMLFractal::SetK(const double real, const double imaginary)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetK(real, imaginary);
+}
+
+void SFMLFractal::SetGradient(wxGradient gradient)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetGradient(std::move(gradient));
+}
+
+void SFMLFractal::SetGradientSize(const unsigned int size)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetGradientSize(size);
+}
+
+void SFMLFractal::SetColorPalette(const ColorPalettes palette)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetColorPalette(palette);
+}
+
+void SFMLFractal::SetExtColorMode(const bool mode)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetExtColorMode(mode);
+}
+
+void SFMLFractal::SetFractalSetColorMode(const bool mode)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetFractalSetColorMode(mode);
+}
+
+void SFMLFractal::SetFractalSetColor(const sf::Color color)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetFractalSetColor(color);
+}
+
+void SFMLFractal::SetRelativeColor(const bool mode)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetRelativeColor(mode);
+}
+
+void SFMLFractal::ChangeVarGradient()
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->ChangeVarGradient();
+}
+
+void SFMLFractal::SetVarGradient(const int offset)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetVarGradient(offset);
+}
+
+void SFMLFractal::SetAlgorithm(const RenderingAlgorithm algorithm)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetAlgorithm(algorithm);
+}
+
+void SFMLFractal::SetOrbitTrapMode(const bool mode)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetOrbitTrapMode(mode);
+}
+
+void SFMLFractal::SetSmoothRender(const bool mode)
+{
+    if (_fractal == nullptr)
+        return;
+
+    ClearImageCache();
+    _fractal->SetSmoothRender(mode);
 }
 
 void SFMLFractal::DrawMaps(sf::RenderWindow* window)
@@ -565,7 +724,7 @@ void SFMLFractal::Show(sf::RenderWindow* window)
         static sf::Image base;
         static sf::Texture baseTexture;
         static sf::Sprite baseSprite;
-        if (_fractal->_changeFractalIter)
+        if (_changeFractalIter)
         {
             int number = _fractal->_maxIter;
             int digits = 1;
@@ -583,7 +742,7 @@ void SFMLFractal::Show(sf::RenderWindow* window)
             _text.setString(" Iterations: " + std::to_string(_fractal->_maxIter));
             _text.setCharacterSize(25);
             _text.setPosition(0, 0);
-            _fractal->_changeFractalIter = false;
+            _changeFractalIter = false;
         }
         window->draw(baseSprite);
         window->draw(_text);

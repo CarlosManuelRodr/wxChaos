@@ -99,7 +99,6 @@ protected:
     bool _rendering;
     bool _paused;
     bool _pausing;
-    bool _changeFractalIter;
     bool _varGradient;                       ///< If this is activated (by the play button) the gradient variation mode starts.
     bool _onSnapshot;
     bool _waitRoutine;
@@ -156,7 +155,7 @@ protected:
     void SetDefaultOpt();
 
     ///@brief Copies the current fractal state into a renderer before launch.
-    void ConfigureRenderer(RenderFractal& renderer);
+    void ConfigureRenderer(RenderFractal& renderer) const;
 
     ///@brief Selects the pixel regions that need rendering for the current movement state.
     std::vector<RenderRegion> BuildRenderRegions() const;
@@ -196,7 +195,6 @@ public:
 
     void Move();                       ///< Moves the fractal image.
     void ZoomBack();                   ///< Does a zoom-back in the selection area.
-    void InvalidateZoomCache();        ///< If some image property image has changed, deletes saved zoom images.
     void Redraw();                     ///< Redraws the fractal.
 
     // Thread control.
@@ -266,7 +264,7 @@ public:
 
     ///@brief Gets fractal options.
     ///@return a Options struct with the fractal options.
-    Options GetOptions();
+    Options GetOptions() const;
 
     ///@brief Forces the fractal to acquire a "rendered" status.
     void SetRendered(bool mode);
