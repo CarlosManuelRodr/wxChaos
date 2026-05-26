@@ -19,16 +19,15 @@
 #include "gradientdlg.h"
 #include "Fractal.h"
 
-#define ColorFrameSize wxSize(900, 820)
+#define RendererOptionsFrameSize wxSize(900, 820)
 
 /**
-* @class ColorFrame
+* @class RendererOptions
 * @brief Frame that allows the user to change several color and algorithm parameters.
 */
-class ColorFrame : public wxFrame
+class RendererOptions : public wxFrame
 {
     wxScrolledWindow* _mPanel;
-    wxStaticBitmap* _colorOptBitmap;
     wxStaticText* _algorithmText;
     wxChoice* _algorithmChoice;
     wxStaticText* _optionsText;
@@ -92,10 +91,10 @@ public:
     ///@param title
     ///@param pos
     ///@param windowStyle
-    ColorFrame(bool* active, Fractal* target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color options"),
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = ColorFrameSize, 
+    RendererOptions(bool* active, Fractal* target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
                long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
-    ~ColorFrame() override;
+    ~RendererOptions() override;
 
     ///@brief Sets the target fractal.
     ///@param target Pointer to target fractal.

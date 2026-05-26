@@ -137,7 +137,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     juliaModeState = false;
     changeJuliaMode = false;
     changeKeyboardGuide = false;
-    colorFrameActive = false;
+    rendererOptionsActive = false;
     introConstActive = false;
     iterDiagActive = false;
     infoFrameActive = false;
@@ -152,9 +152,9 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     if(opt.juliaMode) this->UpdateJuliaMode();
     if(opt.colorPaletteWindow)
     {
-        colorFrameActive = true;
-        pal = new ColorFrame(&colorFrameActive, fractalCanvas->GetFractalPtr(), this);
-        pal->Show(true);
+        rendererOptionsActive = true;
+        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetFractalPtr(), this);
+        rendererOptions->Show(true);
     }
     if(opt.constantWindow)
     {
@@ -242,10 +242,10 @@ void MainFrame::SetUpGUI()
     fractalMenu = new wxMenu();
     iterationsMenu = new wxMenu();
     toolMenu = new wxMenu();
-    colorMenu = new wxMenu();
+    rendererMenu = new wxMenu();
     helpMenu = new wxMenu();
     formula = new wxMenu();
-    pal = nullptr;
+    rendererOptions = nullptr;
 
     // Formulas.
     wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinoidal, *magnet;
@@ -368,7 +368,7 @@ void MainFrame::SetUpGUI()
     pauseBtn.state = false;
     fractalMenu->Append(ID_REDRAW, wxString(wxT("Redraw")) + wxT('\t') + wxT("F5"));
     fractalMenu->Append(ID_RESET, wxString(wxT("Reset")));
-    colorMenu->Append(ID_PALETTE, wxT("Color options"));
+    rendererMenu->Append(ID_PALETTE, wxT("Renderer options"));
 
     // Help menu.
     helpMenu->Append(ID_USER_MANUAL, wxT("User manual"));
@@ -381,7 +381,7 @@ void MainFrame::SetUpGUI()
     menubar->Append(fileMenu, wxT("File"));
     menubar->Append(fractalMenu, wxT("Fractal"));
     menubar->Append(iterationsMenu, wxT("Iterations"));
-    menubar->Append(colorMenu, wxT("Color"));
+    menubar->Append(rendererMenu, wxT("Renderer"));
     menubar->Append(toolMenu, wxT("Tools"));
     menubar->Append(helpMenu, wxT("Help"));
     this->SetMenuBar(menubar);
@@ -522,20 +522,20 @@ void MainFrame::OnSave(wxCommandEvent &event)
 void MainFrame::OnPalette(wxCommandEvent &event)
 {
     // Color palette frame.
-    if(!colorFrameActive)
+    if(!rendererOptionsActive)
     {
-        colorFrameActive = true;
-        pal = new ColorFrame(&colorFrameActive, fractalCanvas->GetFractalPtr(), this);
-        pal->Show(true);
+        rendererOptionsActive = true;
+        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetFractalPtr(), this);
+        rendererOptions->Show(true);
 
         // Adjust position.
         int h, w;
         GetDesktopResolution(h, w);
         if(this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
-            pal->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
+            rendererOptions->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
     }
     else
-        pal->SetFocus();
+        rendererOptions->SetFocus();
 }
 void MainFrame::OnFormulaDialog(wxCommandEvent &event)
 {
@@ -1107,8 +1107,8 @@ void MainFrame::GetScriptFractals()
 void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
-    if(colorFrameActive)
-        pal->SetTarget(fractalCanvas->GetFractalPtr());
+    if(rendererOptionsActive)
+        rendererOptions->SetTarget(fractalCanvas->GetFractalPtr());
     if(iterDiagActive)
         iterDiag->SetTarget(fractalCanvas->GetFractalPtr());
 

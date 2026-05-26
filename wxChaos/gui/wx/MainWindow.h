@@ -14,7 +14,7 @@
 #include "config/AppConfigStore.h"
 #include "JuliaMode.h"
 #include "About.h"
-#include "ColorFrame.h"
+#include "RendererOptions.h"
 #include "ConstDialog.h"
 #include "SizeDialogSave.h"
 #include "IterDialog.h"
@@ -88,7 +88,7 @@ class MainFrame : public wxFrame
     JuliaMode* juliaModePtr;
     ConstDialog* diag;
     IterDialog* iterDiag;
-    ColorFrame* pal;
+    RendererOptions* rendererOptions;
     FormulaDialog* formDialog;
     ScriptEditor* scriptEditor;
     DimensionFrame* dimensionCalculator;
@@ -96,7 +96,7 @@ class MainFrame : public wxFrame
     MainWindowStatus statusData;
     bool changeJuliaMode;
     bool changeKeyboardGuide;
-    bool colorFrameActive;
+    bool rendererOptionsActive;
     bool introConstActive;
     bool iterDiagActive;
     bool infoFrameActive;
@@ -111,7 +111,7 @@ class MainFrame : public wxFrame
     wxMenu* fractalMenu;
     wxMenu* iterationsMenu;
     wxMenu* toolMenu;
-    wxMenu* colorMenu;
+    wxMenu* rendererMenu;
     wxMenu* helpMenu;
     wxMenu* formula;
     wxMenuItem* juliaMode;

@@ -368,9 +368,9 @@ template<class MT> void Fractal::TRender(MT* myRender)
 
             if (_xMoved > 0 && _yMoved < 0)
             {
-                // First thread pack.
-                unsigned int localThreadN = ceil((double)_threadNumber / 2.0);
-                int Div = static_cast<int>(floor((_screenHeight + _yMoved) / (double)localThreadN));
+                // First thread group.
+                unsigned int localThreadN = ceil(static_cast<double>(_threadNumber) / 2.0);
+                int Div = static_cast<int>(floor((_screenHeight + _yMoved) / static_cast<double>(localThreadN)));
                 int Step = Div;
                 for (unsigned int i = 0; i < localThreadN; i++)
                 {
@@ -383,8 +383,8 @@ template<class MT> void Fractal::TRender(MT* myRender)
                         myRender[i].SetLimits(0, Step, _xMoved, _screenHeight + _yMoved);
                 }
 
-                // Second thread pack.
-                Div = static_cast<int>(floor(abs(_yMoved) / (double)(_threadNumber - localThreadN)));
+                // Second thread group.
+                Div = static_cast<int>(floor(abs(_yMoved) / static_cast<double>(_threadNumber - localThreadN)));
                 Step = Div;
                 int start = _screenHeight + _yMoved;
                 for (unsigned int i = localThreadN; i < _threadNumber; i++)
@@ -401,9 +401,9 @@ template<class MT> void Fractal::TRender(MT* myRender)
             }
             else if (_xMoved > 0 && _yMoved > 0)
             {
-                // First thread pack.
-                unsigned int localThreadN = ceil((double)_threadNumber / 2.0);
-                int Div = static_cast<int>(floor(abs(_yMoved) / (double)localThreadN));
+                // First thread group.
+                unsigned int localThreadN = ceil(static_cast<double>(_threadNumber) / 2.0);
+                int Div = static_cast<int>(floor(abs(_yMoved) / static_cast<double>(localThreadN)));
                 int Step = Div;
                 for (unsigned int i = 0; i < localThreadN; i++)
                 {
@@ -416,9 +416,9 @@ template<class MT> void Fractal::TRender(MT* myRender)
                         myRender[i].SetLimits(0, Step, _screenWidth, _yMoved);
                 }
 
-                // Second thread pack.
+                // Second thread group.
                 int start = _yMoved;
-                Div = static_cast<int>(floor((_screenHeight - _yMoved) / (double)(_threadNumber - localThreadN)));
+                Div = static_cast<int>(floor((_screenHeight - _yMoved) / static_cast<double>(_threadNumber - localThreadN)));
                 Step = Div;
                 for (unsigned int i = localThreadN; i < _threadNumber; i++)
                 {
@@ -433,9 +433,9 @@ template<class MT> void Fractal::TRender(MT* myRender)
             }
             else if (_xMoved < 0 && _yMoved < 0)
             {
-                // First thread pack.
-                unsigned int localThreadN = ceil((double)_threadNumber / 2.0);
-                int Div = static_cast<int>(floor((_screenHeight + _yMoved) / (double)localThreadN));
+                // First thread group.
+                unsigned int localThreadN = ceil(static_cast<double>(_threadNumber) / 2.0);
+                int Div = static_cast<int>(floor((_screenHeight + _yMoved) / static_cast<double>(localThreadN)));
                 int Step = Div;
                 for (unsigned int i = 0; i < localThreadN; i++)
                 {
@@ -448,7 +448,7 @@ template<class MT> void Fractal::TRender(MT* myRender)
                         myRender[i].SetLimits(_screenWidth + _xMoved, Step, _screenWidth, _screenHeight + _yMoved);
                 }
 
-                // Second thread pack.
+                // Second thread group.
                 Div = static_cast<int>(floor(abs(_yMoved) / (double)(_threadNumber - localThreadN)));
                 Step = Div;
                 int start = _screenHeight + _yMoved;
@@ -466,9 +466,9 @@ template<class MT> void Fractal::TRender(MT* myRender)
             }
             else if (_xMoved < 0 && _yMoved > 0)
             {
-                // First thread pack.
-                unsigned int localThreadN = ceil((double)_threadNumber / 2.0);
-                int Div = static_cast<int>(floor(abs(_yMoved) / (double)localThreadN));
+                // First thread group.
+                unsigned int localThreadN = ceil(static_cast<double>(_threadNumber) / 2.0);
+                int Div = static_cast<int>(floor(abs(_yMoved) / static_cast<double>(localThreadN)));
                 int Step = Div;
                 for (unsigned int i = 0; i < localThreadN; i++)
                 {
@@ -483,7 +483,7 @@ template<class MT> void Fractal::TRender(MT* myRender)
 
                 // Second thread pack.
                 int start = _yMoved;
-                Div = static_cast<int>(floor((_screenHeight - _yMoved) / (double)(_threadNumber - localThreadN)));
+                Div = static_cast<int>(floor((_screenHeight - _yMoved) / static_cast<double>(_threadNumber - localThreadN)));
                 Step = Div;
                 for (unsigned int i = localThreadN; i < _threadNumber; i++)
                 {
@@ -499,7 +499,7 @@ template<class MT> void Fractal::TRender(MT* myRender)
         }
         else if (_xMoved)
         {
-            int Div = static_cast<int>(floor(_screenHeight / (double)_threadNumber));
+            int Div = static_cast<int>(floor(_screenHeight / static_cast<double>(_threadNumber)));
             int Step = Div;
             if (_xMoved > 0)
             {
@@ -552,7 +552,7 @@ template<class MT> void Fractal::TRender(MT* myRender)
         {
             if (_yMoved > 0)
             {
-                int Div = static_cast<int>(floor(_yMoved / (double)_threadNumber));
+                int Div = static_cast<int>(floor(_yMoved / static_cast<double>(_threadNumber)));
                 int Step = Div;
 
                 for (unsigned int i = 0; i < _threadNumber; i++)
@@ -578,7 +578,7 @@ template<class MT> void Fractal::TRender(MT* myRender)
             }
             else
             {
-                int Div = static_cast<int>(floor(abs(_yMoved) / (double)_threadNumber));
+                int Div = static_cast<int>(floor(abs(_yMoved) / static_cast<double>(_threadNumber)));
                 int Step = Div;
 
                 for (unsigned int i = 0; i < _threadNumber; i++)
@@ -609,7 +609,7 @@ template<class MT> void Fractal::TRender(MT* myRender)
     else
     {
         // Draws all the screen.
-        int Div = static_cast<int>(floor(_screenHeight / (double)_threadNumber));
+        int Div = static_cast<int>(floor(_screenHeight / static_cast<double>(_threadNumber)));
         int Step = Div;
 
         for (unsigned int i = 0; i < _threadNumber; i++)

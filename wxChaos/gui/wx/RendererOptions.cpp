@@ -1,6 +1,6 @@
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
-#include "ColorFrame.h"
+#include "RendererOptions.h"
 #include "StringFuncs.h"
 #include "Filesystem.h"
 
@@ -8,7 +8,7 @@ ColorPalette::ColorPalette()
 {
     paletteSize = -1;
 }
-void ColorPalette::SetStyle(ColorPalettes palette)
+void ColorPalette::SetStyle(const ColorPalettes palette)
 {
     // Sets the wxString parameter of each color style.
     switch(palette)
@@ -90,29 +90,25 @@ void ColorPalette::SetStyle(ColorPalettes palette)
     };
 }
 
-ColorFrame::ColorFrame(bool* active, Fractal* target, wxWindow* parent,
-    wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long windowStyle)
-    : wxFrame(parent, id, title, pos, size, windowStyle)
+RendererOptions::RendererOptions(bool* active, Fractal* target, wxWindow* parent, const wxWindowID id,
+                                 const wxString& title, const wxPoint& pos, const wxSize& size, const long windowStyle)
+                                 : wxFrame(parent, id, title, pos, size, windowStyle)
 {
     // Constructs the ColorFrame. Gets color values from the target fractal so the frame parameters match the fractal parameters.
-    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
-    wxString text;
     _active = active;
     _target = target;
 
     this->SetSizeHints(wxSize(760, 700), wxDefaultSize);
 
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+    auto* sizer = new wxBoxSizer(wxVERTICAL);
 
     _mPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL);
     _mPanel->SetScrollRate(5, 5);
-    wxBoxSizer* mainSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* setSizer = new wxBoxSizer(wxVERTICAL);
-
-    _colorOptBitmap = new wxStaticBitmap(_mPanel, wxID_ANY, wxBitmap(GetWxAbsPath({ "Resources","color_opt.png" }), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
-    setSizer->Add(_colorOptBitmap, 0, wxALL, 0);
+    const auto mainSizer = new wxBoxSizer(wxHORIZONTAL);
+    auto* setSizer = new wxBoxSizer(wxVERTICAL);
 
     _algorithmText = new wxStaticText(_mPanel, wxID_ANY, wxT("Color algorithm"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Color algorithm"
     _algorithmText->Wrap(-1);
@@ -131,76 +127,43 @@ ColorFrame::ColorFrame(bool* active, Fractal* target, wxWindow* parent,
 
     setSizer->Add(_algorithmChoice, 0, wxALL|wxEXPAND, 5);
 
-    _optionsText = new wxStaticText(_mPanel, wxID_ANY, wxT("Options"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Options"
+    _optionsText = new wxStaticText(_mPanel, wxID_ANY, wxT("Options"), wxDefaultPosition, wxDefaultSize, 0);
     _optionsText->Wrap(-1);
     setSizer->Add(_optionsText, 0, wxALL, 5);
 
-    //
-    _relativeCheck = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Relative colors"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: " Relative colors"
+    _relativeCheck = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Relative colors"), wxDefaultPosition, wxDefaultSize, 0);
+    _relativeCheck->SetValue(_target->GetRelativeColorMode());
     setSizer->Add(_relativeCheck, 0, wxALL, 5);
-    if(_target->GetRelativeColorMode())
-        _relativeCheck->SetValue(true);
-    else
-        _relativeCheck->SetValue(false);
-    //
 
-    _colorFractal = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Fractal color (external color)"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: " Color fractal (external color)"
-    //
-    if(_target->GetExteriorColorMode())
-        _colorFractal->SetValue(true);
-    else
-        _colorFractal->SetValue(false);
-    //
+    _colorFractal = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Fractal color (external color)"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorFractal->SetValue(_target->GetExteriorColorMode());
     setSizer->Add(_colorFractal, 0, wxALL, 5);
 
-    _colorSet = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Set color (internal color)"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: " Color set (internal color)"
-    //
-    if(_target->GetInteriorColorMode())
-        _colorSet->SetValue(true);
-    else
-        _colorSet->SetValue(false);
-    //
+    _colorSet = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Set color (internal color)"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorSet->SetValue(_target->GetInteriorColorMode());
     setSizer->Add(_colorSet, 0, wxALL, 5);
 
-    _orbitTrap = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Orbit traps"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: " Orbit traps"
-    //
-    if(_target->HasOrbitTrapMode())
-        _orbitTrap->Enable(true);
-    else
-        _orbitTrap->Enable(false);
-
-    if(_target->OrbitTrapActivated())
-        _orbitTrap->SetValue(true);
-    else
-        _orbitTrap->SetValue(false);
-    //
-
+    _orbitTrap = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Orbit traps"), wxDefaultPosition, wxDefaultSize, 0);
+    _orbitTrap->Enable(_target->HasOrbitTrapMode());
+    _orbitTrap->SetValue(_target->OrbitTrapActivated());
     setSizer->Add(_orbitTrap, 0, wxALL, 5);
 
-    _smoothRender = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Smooth render"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: " Smooth render"
-    //
-    if(_target->HasSmoothRenderMode())
-        _smoothRender->Enable(true);
-    else
-        _smoothRender->Enable(false);
+    _smoothRender = new wxCheckBox(_mPanel, wxID_ANY, wxT(" Smooth render"), wxDefaultPosition, wxDefaultSize, 0);
+    _smoothRender->Enable(_target->HasSmoothRenderMode());
+    _smoothRender->SetValue(_target->SmoothRenderActivated());
 
-    if(_target->SmoothRenderActivated())
-        _smoothRender->SetValue(true);
-    else
-        _smoothRender->SetValue(false);
-    //
     setSizer->Add(_smoothRender, 0, wxALL, 5);
 
-    _colorVarText = new wxStaticText(_mPanel, wxID_ANY, wxT("Color variation"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Color variation"
+    _colorVarText = new wxStaticText(_mPanel, wxID_ANY, wxT("Color variation"), wxDefaultPosition, wxDefaultSize, 0);
     _colorVarText->Wrap(-1);
     setSizer->Add(_colorVarText, 0, wxALL, 5);
 
     _colorVarSlider = new wxSlider(_mPanel, wxID_ANY, 0, 0, 300, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
     setSizer->Add(_colorVarSlider, 0, wxALL|wxEXPAND, 5);
 
-    wxStaticBoxSizer* colorSetSizer = new wxStaticBoxSizer(new wxStaticBox(_mPanel, wxID_ANY, wxT("Set color")), wxVERTICAL);    // Txt: "Set color"
+    auto* colorSetSizer = new wxStaticBoxSizer(new wxStaticBox(_mPanel, wxID_ANY, wxT("Set color")), wxVERTICAL);
 
-    text = wxT("Red: ");
+    wxString text = L"Red: ";
     _setColor = _target->GetSetColor();
     text += num_to_string(_setColor.r);
     _redSetText = new wxStaticText(_mPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
@@ -230,23 +193,23 @@ ColorFrame::ColorFrame(bool* active, Fractal* target, wxWindow* parent,
 
     setSizer->Add(colorSetSizer, 1, wxEXPAND, 5);
 
-    _okButton = new wxButton(_mPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
+    _okButton = new wxButton(_mPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);
     setSizer->Add(_okButton, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     mainSizer->Add(setSizer, 1, wxEXPAND, 5);
 
     _typeNotebook = new wxNotebook(_mPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
     _gradientLabel = new wxPanel(_typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* gradSizer = new wxBoxSizer(wxVERTICAL);
+    auto* gradSizer = new wxBoxSizer(wxVERTICAL);
 
-    _gradStylesLabel = new wxStaticText(_gradientLabel, wxID_ANY, wxT("Color styles:"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Color styles:"
+    _gradStylesLabel = new wxStaticText(_gradientLabel, wxID_ANY, wxT("Color styles:"), wxDefaultPosition, wxDefaultSize, 0);
     _gradStylesLabel->Wrap(-1);
     gradSizer->Add(_gradStylesLabel, 0, wxALL, 5);
 
     wxString gradStyleChoiceChoices[] = {
         wxT("Retro"),
         wxT("Hakim"),
-        wxT("Aguamarina"),
+        wxT("Aquamarine"),
         wxT("Pastel Dream"),
         wxT("Rose Gold"),
         wxT("Gunmetal"),
@@ -260,7 +223,7 @@ ColorFrame::ColorFrame(bool* active, Fractal* target, wxWindow* parent,
     };
     int gradStyleChoiceNChoices = sizeof(gradStyleChoiceChoices) / sizeof(wxString);
     _gradStylesChoice = new wxChoice(_gradientLabel, wxID_ANY, wxDefaultPosition, wxDefaultSize, gradStyleChoiceNChoices, gradStyleChoiceChoices, 0);
-    _gradStylesChoice->SetSelection(static_cast<int>(_target->GetColorPalette()));
+    _gradStylesChoice->SetSelection(_target->GetColorPalette());
     gradSizer->Add(_gradStylesChoice, 0, wxALL, 5);
 
     _gradientMap = new wxStaticBitmap(_gradientLabel, wxID_ANY, PaintGradient(), wxDefaultPosition, wxDefaultSize, 0);
@@ -298,115 +261,115 @@ ColorFrame::ColorFrame(bool* active, Fractal* target, wxWindow* parent,
     this->SetAlgorithmChoices();
     this->ConnectEvents();
 }
-ColorFrame::~ColorFrame()
+RendererOptions::~RendererOptions()
 {
     *_active = false;    // Warns the mainframe that this frame has been closed.
 }
 
-void ColorFrame::ConnectEvents()
+void RendererOptions::ConnectEvents()
 {
-    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(ColorFrame::OnClose));
-    _gradStylesChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(ColorFrame::GradientColorChangeSelection), nullptr, this);
-    _algorithmChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(ColorFrame::OnChangeAlgorithm), nullptr, this);
-    _relativeCheck->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnRelativeColor), nullptr, this);
-    _gradPalSize->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(ColorFrame::OnGradPaletteSize), nullptr, this);
-    _colorFractal->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnColorFractal), nullptr, this);
-    _colorSet->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnColorSet), nullptr, this);
-    _orbitTrap->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnOrbitTrap), nullptr, this);
-    _smoothRender->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(ColorFrame::OnSmoothRender), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _redSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnSetRed), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _greenSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnSetGreen), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _blueSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnSetBlue), nullptr, this);
-    _okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ColorFrame::OnOk), nullptr, this);
-    _gradButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ColorFrame::OnGrad), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
-    _colorVarSlider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ColorFrame::OnColorVar), nullptr, this);
+    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(RendererOptions::OnClose));
+    _gradStylesChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(RendererOptions::GradientColorChangeSelection), nullptr, this);
+    _algorithmChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(RendererOptions::OnChangeAlgorithm), nullptr, this);
+    _relativeCheck->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(RendererOptions::OnRelativeColor), nullptr, this);
+    _gradPalSize->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(RendererOptions::OnGradPaletteSize), nullptr, this);
+    _colorFractal->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(RendererOptions::OnColorFractal), nullptr, this);
+    _colorSet->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(RendererOptions::OnColorSet), nullptr, this);
+    _orbitTrap->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(RendererOptions::OnOrbitTrap), nullptr, this);
+    _smoothRender->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(RendererOptions::OnSmoothRender), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _redSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(RendererOptions::OnSetRed), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _greenSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(RendererOptions::OnSetGreen), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _blueSetSld->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(RendererOptions::OnSetBlue), nullptr, this);
+    _okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(RendererOptions::OnOk), nullptr, this);
+    _gradButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(RendererOptions::OnGrad), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_TOP, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_BOTTOM, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
+    _colorVarSlider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(RendererOptions::OnColorVar), nullptr, this);
 }
-void ColorFrame::SetAlgorithmChoices()
+void RendererOptions::SetAlgorithmChoices()
 {
     // Construct the algorithm choice according to the algorithms available in the fractal.
-    for(unsigned int i=0; i<_target->GetAvailableAlg().size(); i++)
+    for (unsigned int i=0; i<_target->GetAvailableAlg().size(); i++)
     {
-        switch(_target->GetAvailableAlg()[i])
+        switch (_target->GetAvailableAlg()[i])
         {
-        case RenderingAlgorithm::EscapeTime:
-            {
-                _algorithmChoice->Append(wxT("Escape time"));
-                _escapeTimeIndex = i;
-            }
-            break;
-        case RenderingAlgorithm::GaussianInt:
-            {
-                _algorithmChoice->Append(wxT("Gaussian integer"));
-                _gaussIntIndex = i;
-            }
-            break;
-        case RenderingAlgorithm::EscapeAngle:
-            {
-                _algorithmChoice->Append(wxT("Escape angle"));
-                _escapeAngleIndex = i;
-            }
-            break;
-        case RenderingAlgorithm::TriangleInequality:
-            {
-                _algorithmChoice->Append(wxT("Triangle inequality"));
-                _triangleIneqIndex = i;
-            }
-            break;
-        case RenderingAlgorithm::ChaoticMap:
-            {
-                _algorithmChoice->Append(wxT("Chaotic map"));
-                _chaoticMapIndex = i;
-            }
-            break;
-        case RenderingAlgorithm::Lyapunov:
-            {
-                _algorithmChoice->Append(wxT("Lyapunov"));
-                _lyapunovIndex = i;
-            }
-            break;
-        case RenderingAlgorithm::ConvergenceTest:
-            {
-                _algorithmChoice->Append(wxT("Convergence test"));
-                _convergenceTestIndex = i;
-            }
-        case RenderingAlgorithm::Other:
-            break;
+            case RenderingAlgorithm::EscapeTime:
+                {
+                    _algorithmChoice->Append(wxT("Escape time"));
+                    _escapeTimeIndex = static_cast<int>(i);
+                }
+                break;
+            case RenderingAlgorithm::GaussianInt:
+                {
+                    _algorithmChoice->Append(wxT("Gaussian integer"));
+                    _gaussIntIndex = static_cast<int>(i);
+                }
+                break;
+            case RenderingAlgorithm::EscapeAngle:
+                {
+                    _algorithmChoice->Append(wxT("Escape angle"));
+                    _escapeAngleIndex = static_cast<int>(i);
+                }
+                break;
+            case RenderingAlgorithm::TriangleInequality:
+                {
+                    _algorithmChoice->Append(wxT("Triangle inequality"));
+                    _triangleIneqIndex = static_cast<int>(i);
+                }
+                break;
+            case RenderingAlgorithm::ChaoticMap:
+                {
+                    _algorithmChoice->Append(wxT("Chaotic map"));
+                    _chaoticMapIndex = static_cast<int>(i);
+                }
+                break;
+            case RenderingAlgorithm::Lyapunov:
+                {
+                    _algorithmChoice->Append(wxT("Lyapunov"));
+                    _lyapunovIndex = static_cast<int>(i);
+                }
+                break;
+            case RenderingAlgorithm::ConvergenceTest:
+                {
+                    _algorithmChoice->Append(wxT("Convergence test"));
+                    _convergenceTestIndex = static_cast<int>(i);
+                }
+            case RenderingAlgorithm::Other:
+                break;
         };
 
         if (_target->GetCurrentAlg() == _target->GetAvailableAlg()[i])
-            _algorithmChoice->SetSelection( i );
+            _algorithmChoice->SetSelection(static_cast<int>(i));
     }
     if (_algorithmChoice->GetCount() == 0)
     {
@@ -415,21 +378,15 @@ void ColorFrame::SetAlgorithmChoices()
     }
 
     // Adjust frame parameters when an algorithm is chosen.
-    int selection = _algorithmChoice->GetSelection();
+    const int selection = _algorithmChoice->GetSelection();
     if (selection == _escapeTimeIndex)
     {
-        if (_target->HasOrbitTrapMode())
-            _orbitTrap->Enable(true);
-
-        if (_target->HasSmoothRenderMode())
-            _smoothRender->Enable(true);
-        else
-            _smoothRender->Enable(false);
+        _orbitTrap->Enable(_target->HasOrbitTrapMode());
+        _smoothRender->Enable(_target->HasSmoothRenderMode());
     }
     else if (selection == _convergenceTestIndex)
     {
-        if (_target->HasOrbitTrapMode())
-            _orbitTrap->Enable(true);
+        _orbitTrap->Enable(_target->HasOrbitTrapMode());
     }
     else
     {
@@ -441,31 +398,15 @@ void ColorFrame::SetAlgorithmChoices()
         _target->SetSmoothRender(false);
     }
 }
-void ColorFrame::SetTarget(Fractal* target)
+void RendererOptions::SetTarget(Fractal* target)
 {
     // Sets the new target fractal.
     _target = target;
     _gradPalSize->SetValue(_target->GetPaletteSize());
-
-    if (_target->HasOrbitTrapMode())
-        _orbitTrap->Enable(true);
-    else
-        _orbitTrap->Enable(false);
-
-    if (_target->OrbitTrapActivated())
-        _orbitTrap->SetValue(true);
-    else
-        _orbitTrap->SetValue(false);
-
-    if (_target->SmoothRenderActivated())
-        _smoothRender->SetValue(true);
-    else
-        _smoothRender->SetValue(false);
-
-    if (_target->HasSmoothRenderMode())
-        _smoothRender->Enable(true);
-    else
-        _smoothRender->Enable(false);
+    _orbitTrap->Enable(_target->HasOrbitTrapMode());
+    _orbitTrap->SetValue(_target->OrbitTrapActivated());
+    _smoothRender->SetValue(_target->SmoothRenderActivated());
+    _smoothRender->Enable(_target->HasSmoothRenderMode());
 
     _algorithmChoice->Clear();
     _escapeTimeIndex = -1;
@@ -486,21 +427,9 @@ void ColorFrame::SetTarget(Fractal* target)
         _algorithmChoice->SetSelection(0);
 
     _typeNotebook->ChangeSelection(0);
-
-    if (_target->GetRelativeColorMode())
-        _relativeCheck->SetValue(true);
-    else
-        _relativeCheck->SetValue(false);
-
-    if (_target->GetInteriorColorMode())
-        _colorSet->SetValue(true);
-    else
-        _colorSet->SetValue(false);
-
-    if (_target->GetExteriorColorMode())
-        _colorFractal->SetValue(true);
-    else
-        _colorFractal->SetValue(false);
+    _relativeCheck->SetValue(_target->GetRelativeColorMode());
+    _colorSet->SetValue(_target->GetInteriorColorMode());
+    _colorFractal->SetValue(_target->GetExteriorColorMode());
 
     // Color of the set.
     _redSetText->SetLabel(wxString(wxT("Red: ")) + wxT("0"));
@@ -513,11 +442,11 @@ void ColorFrame::SetTarget(Fractal* target)
 
     _gradStylesChoice->SetSelection(_target->GetColorPalette());
 }
-void ColorFrame::OnOk(wxCommandEvent& event)
+void RendererOptions::OnOk(wxCommandEvent& event)
 {
     this->Destroy();
 }
-void ColorFrame::GradientColorChangeSelection(wxCommandEvent& event)
+void RendererOptions::GradientColorChangeSelection(wxCommandEvent&)
 {
     // Changes the gradStyle.
     _gradFractalColor.SetStyle(static_cast<ColorPalettes>(_gradStylesChoice->GetCurrentSelection()));
@@ -534,26 +463,19 @@ void ColorFrame::GradientColorChangeSelection(wxCommandEvent& event)
     _gradientMap->Refresh();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ColorFrame::OnChangeAlgorithm( wxCommandEvent& event )
+void RendererOptions::OnChangeAlgorithm( wxCommandEvent& event )
 {
     // Adjust frame parameters when an algorithm is chosen.
-    int selection = _algorithmChoice->GetSelection();
-    if(selection == _escapeTimeIndex)
+    const int selection = _algorithmChoice->GetSelection();
+    if (selection == _escapeTimeIndex)
     {
-        if (_target->HasOrbitTrapMode())
-            _orbitTrap->Enable(true);
-
-        if (_target->HasSmoothRenderMode())
-            _smoothRender->Enable(true);
-        else
-            _smoothRender->Enable(false);
-
+        _orbitTrap->Enable(_target->HasOrbitTrapMode());
+        _smoothRender->Enable(_target->HasSmoothRenderMode());
         _target->SetAlgorithm(RenderingAlgorithm::EscapeTime);
     }
     else if(selection == _convergenceTestIndex)
     {
-        if (_target->HasOrbitTrapMode())
-            _orbitTrap->Enable(true);
+        _orbitTrap->Enable(_target->HasOrbitTrapMode());
     }
     else
     {
@@ -581,52 +503,52 @@ void ColorFrame::OnChangeAlgorithm( wxCommandEvent& event )
 
 // Option to change methods.
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ColorFrame::OnRelativeColor(wxCommandEvent&)
+void RendererOptions::OnRelativeColor(wxCommandEvent&)
 {
-    bool modo = _relativeCheck->IsChecked();
-    _target->SetRelativeColor(modo);
-    _relativeCheck->SetValue(modo);
+    const bool mode = _relativeCheck->IsChecked();
+    _target->SetRelativeColor(mode);
+    _relativeCheck->SetValue(mode);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ColorFrame::OnColorFractal(wxCommandEvent&)
+void RendererOptions::OnColorFractal(wxCommandEvent&)
 {
-    bool modo = _colorFractal->IsChecked();
-    _target->SetExtColorMode(modo);
-    _colorFractal->SetValue(modo);
+    const bool mode = _colorFractal->IsChecked();
+    _target->SetExtColorMode(mode);
+    _colorFractal->SetValue(mode);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ColorFrame::OnColorSet(wxCommandEvent&)
+void RendererOptions::OnColorSet(wxCommandEvent&)
 {
-    bool modo = _colorSet->IsChecked();
-    _target->SetFractalSetColorMode(modo);
-    _colorSet->SetValue(modo);
+    const bool mode = _colorSet->IsChecked();
+    _target->SetFractalSetColorMode(mode);
+    _colorSet->SetValue(mode);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ColorFrame::OnOrbitTrap(wxCommandEvent&)
+void RendererOptions::OnOrbitTrap(wxCommandEvent&)
 {
-    bool modo = _orbitTrap->IsChecked();
-    _target->SetOrbitTrapMode(modo);
-    _orbitTrap->SetValue(modo);
+    const bool mode = _orbitTrap->IsChecked();
+    _target->SetOrbitTrapMode(mode);
+    _orbitTrap->SetValue(mode);
     _target->Redraw();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ColorFrame::OnSmoothRender(wxCommandEvent&)
+void RendererOptions::OnSmoothRender(wxCommandEvent&)
 {
-    bool modo = _smoothRender->IsChecked();
-    _target->SetSmoothRender(modo);
-    _smoothRender->SetValue(modo);
+    const bool mode = _smoothRender->IsChecked();
+    _target->SetSmoothRender(mode);
+    _smoothRender->SetValue(mode);
     _target->Redraw();
 }
-void ColorFrame::OnSetRed(wxScrollEvent&)
+void RendererOptions::OnSetRed(wxScrollEvent&)
 {
-    int value = _redSetSld->GetValue();
+    const int value = _redSetSld->GetValue();
     _setColor.r = value;
     _target->SetFractalSetColor(_setColor);
     wxString text = L"Red: ";
     text += num_to_string(value);
     _redSetText->SetLabel(wxString(text));
 }
-void ColorFrame::OnSetGreen(wxScrollEvent&)
+void RendererOptions::OnSetGreen(wxScrollEvent&)
 {
     int value = _greenSetSld->GetValue();
     _setColor.g = value;
@@ -635,23 +557,22 @@ void ColorFrame::OnSetGreen(wxScrollEvent&)
     text += num_to_string(value);
     _greenSetText->SetLabel(wxString(text));
 }
-void ColorFrame::OnSetBlue(wxScrollEvent&)
+void RendererOptions::OnSetBlue(wxScrollEvent&)
 {
     int value = _blueSetSld->GetValue();
     _setColor.b = value;
     _target->SetFractalSetColor(_setColor);
-    wxString text;
-    text = wxT("Blue: ");
+    wxString text = L"Blue: ";
     text += num_to_string(value);
     _blueSetText->SetLabel(wxString(text));
 }
-void ColorFrame::OnClose(wxCloseEvent&)
+void RendererOptions::OnClose(wxCloseEvent&)
 {
     *_active = false;
     this->Show(false);
     this->Destroy();
 }
-void ColorFrame::OnGrad(wxCommandEvent&)
+void RendererOptions::OnGrad(wxCommandEvent&)
 {
     wxGradientDialog diag(this, *_target->GetGradient());
     diag.ShowModal();
@@ -661,14 +582,14 @@ void ColorFrame::OnGrad(wxCommandEvent&)
     _gradientMap->Refresh();
     _gradStylesChoice->SetSelection(CustomGradient);
 }
-wxBitmap ColorFrame::PaintGradient() const
+wxBitmap RendererOptions::PaintGradient() const
 {
     wxBufferedDC dc;
     wxGradient m_gradient = *_target->GetGradient();
     m_gradient.setMax(300);
-    auto gradientBmp = new wxBitmap(m_gradient.getMax()-m_gradient.getMin(), 75);
+    const auto gradientBmp = new wxBitmap(m_gradient.getMax()-m_gradient.getMin(), 75);
     dc.SelectObject(*gradientBmp);
-    for(int i = m_gradient.getMin(); i<m_gradient.getMax(); i++)
+    for (int i = m_gradient.getMin(); i<m_gradient.getMax(); i++)
     {
         dc.SetPen(wxPen(m_gradient.getColorAt(i), 1));
         dc.DrawLine(i, 0, i, 75);
@@ -677,17 +598,17 @@ wxBitmap ColorFrame::PaintGradient() const
     return *gradientBmp;
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ColorFrame::OnGradPaletteSize(wxSpinEvent&)
+void RendererOptions::OnGradPaletteSize(wxSpinEvent&)
 {
     const int size = _gradPalSize->GetValue();
-    if(size > 0)
+    if (size > 0)
         _target->SetGradientSize(size);
 
     _gradientMap->SetBitmap(this->PaintGradient());
     _colorVarSlider->SetRange(0,size);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ColorFrame::OnColorVar(wxScrollEvent&)
+void RendererOptions::OnColorVar(wxScrollEvent&)
 {
     _target->SetVarGradient(_colorVarSlider->GetValue());
 }
