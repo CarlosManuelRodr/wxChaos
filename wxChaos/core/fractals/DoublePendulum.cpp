@@ -116,26 +116,6 @@ void DoublePendulum::CopyOptFromPanel()
     g = *_panelOpt.GetDoubleElement(6);
     referenced = *_panelOpt.GetBoolElement(2);
 }
-void DoublePendulum::MoreIter()
-{
-    // Increases 100 iterations.
-    _changeFractalIter = true;
-    this->InvalidateZoomCache();
-    _redrawAll = true;
-    _maxIter += 100;
-}
-void DoublePendulum::LessIter()
-{
-    // Decreases 100 iterations.
-    _changeFractalIter = true;
-    this->InvalidateZoomCache();
-    _redrawAll = true;
-    int signedMaxIter = (int)_maxIter;
-    if(signedMaxIter - 100 > 0)
-    {
-        _maxIter -= 100;
-    }
-}
 void DoublePendulum::DrawOrbit()
 {
     double part0 = m1 + m2;

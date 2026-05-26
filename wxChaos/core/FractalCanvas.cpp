@@ -456,6 +456,7 @@ FormulaOpt FractalCanvas::GetFormula()
 {
     return _userFormula;
 }
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnResize(wxSizeEvent& event)
 {
     _canvasSize = event.GetSize();

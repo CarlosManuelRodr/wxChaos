@@ -158,10 +158,10 @@ void SFMLFractal::HandleEvent(const sf::Event& event) const
         switch (event.key.code)
         {
         case sf::Keyboard::L:
-            _fractal->MoreIter();
+            _fractal->IncreaseIterations();
             break;
         case sf::Keyboard::K:
-            _fractal->LessIter();
+            _fractal->DecreaseIterations();
             break;
         default:
             break;

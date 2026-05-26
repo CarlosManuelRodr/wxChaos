@@ -234,9 +234,9 @@ public:
     virtual bool IsRendering();
     virtual void SetFormula(FormulaOpt formula);                   ///< Sets user formula.
     virtual void CopyOptFromPanel();                               ///< Copy options from the option panel.
-    virtual void MoreIter();                                       ///< Increases the number of iterations.
-    virtual void LessIter();                                       ///< Decreases iterations.
     virtual void ChangeThreadNumber();                             ///< Changes the number of rendering threads.
+    virtual void IncreaseIterations();
+    virtual void DecreaseIterations();
 
     // Communication methods.
     ///@brief Get value of X number in the plane at the selected pixel.

@@ -776,7 +776,7 @@ void Fractal::CopyOptFromPanel()
 {
     // Do nothing.
 }
-void Fractal::MoreIter()
+void Fractal::IncreaseIterations()
 {
     _changeFractalIter = true;
     InvalidateZoomCache();
@@ -786,7 +786,7 @@ void Fractal::MoreIter()
 
     _rendered = false;
 }
-void Fractal::LessIter()
+void Fractal::DecreaseIterations()
 {
     _changeFractalIter = true;
     InvalidateZoomCache();

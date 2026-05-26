@@ -583,11 +583,11 @@ void MainFrame::OnReset(wxCommandEvent &event)
 }
 void MainFrame::OnMoreIt(wxCommandEvent &event)
 {
-    fractalCanvas->GetFractalPtr()->MoreIter();
+    fractalCanvas->GetFractalPtr()->IncreaseIterations();
 }
 void MainFrame::OnLessIt(wxCommandEvent &event)
 {
-    fractalCanvas->GetFractalPtr()->LessIter();
+    fractalCanvas->GetFractalPtr()->DecreaseIterations();
 }
 void MainFrame::OnShowOrbit(wxCommandEvent &event)
 {
