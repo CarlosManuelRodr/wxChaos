@@ -22,6 +22,7 @@
 #include "ThreadWatchdog.h"
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
+#include "rendering/RenderThreadPool.h"
 
 class SFMLFractal;
 
@@ -41,6 +42,7 @@ protected:
     int** _colorMap;                            ///< Store the color map.
     unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
     ThreadWatchdog<RenderFractal> _watchdog;    ///< Watch over the render threads.
+    RenderThreadPool _renderPool;               ///< Reusable pool for render jobs.
 
     // Fractal properties.
     PanelOptions _panelOpt;          ///< List of GUI elements to put into the option panel.
@@ -159,8 +161,8 @@ protected:
     ///@brief Selects the pixel regions that need rendering for the current movement state.
     std::vector<RenderRegion> BuildRenderRegions() const;
 
-    ///@brief Splits render regions into the legacy worker jobs used by TRender.
-    std::vector<RenderJob> BuildRenderJobs(const std::vector<RenderRegion>& regions) const;
+    ///@brief Splits render regions into jobs used by the selected render backend.
+    std::vector<RenderJob> BuildRenderJobs(const std::vector<RenderRegion>& regions, int tileHeight) const;
 
 public:
 
@@ -205,6 +207,10 @@ public:
     ///@brief Return a pointer to the watchdog.
     ///@return A pointer to the watchdog.
     ThreadWatchdog<RenderFractal>* GetWatchdog();
+
+    ///@brief Returns progress for the active render backend.
+    ///@return A value from 0 to 100.
+    int GetRenderProgress();
 
     ///@brief Pauses or resumes the rendering.
     void PauseContinue();
@@ -357,11 +363,32 @@ public:
 
 template<class MT> void Fractal::TRender(MT* myRender)
 {
-    _watchdog.Reset();
-
     const std::vector<RenderRegion> regions = this->BuildRenderRegions();
-    const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions);
+    const bool useRenderPool = _renderJobComp && !_justLaunchThreads;
+    const int tileHeight = useRenderPool ? 16 : 0;
+    const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions, tileHeight);
     const bool relaunchExistingWork = _justLaunchThreads && _xMoved == 0 && _yMoved == 0;
+
+    if (useRenderPool)
+    {
+        std::vector<RenderFractal*> renderers;
+        renderers.reserve(_threadNumber);
+
+        for (unsigned int i = 0; i < _threadNumber; i++)
+        {
+            this->ConfigureRenderer(myRender[i]);
+            renderers.push_back(&myRender[i]);
+        }
+
+        _renderPool.Render(renderers, jobs);
+
+        if (_waitRoutine)
+            _renderPool.Wait();
+
+        return;
+    }
+
+    _watchdog.Reset();
 
     for (unsigned int i = 0; i < _threadNumber; i++)
     {

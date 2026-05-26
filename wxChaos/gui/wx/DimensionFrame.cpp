@@ -1170,7 +1170,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
             if (target->IsRendering())
             {
                 // Update progress while rendering preview.
-                progress = target->GetWatchdog()->GetThreadProgress();
+                progress = target->GetRenderProgress();
                 if (scriptSelected)
                     progressTxt->SetLabel(wxString(wxT("Rendering")));
                 else
@@ -1343,7 +1343,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
             else
             {
                 // Updates progress bar while rendering.
-                progress = target->GetWatchdog()->GetThreadProgress() / 2;
+                progress = target->GetRenderProgress() / 2;
 
                 if (scriptSelected)
                     progressTxt->SetLabel(wxString(wxT("Calculating dimension")));

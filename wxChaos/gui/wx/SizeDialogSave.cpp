@@ -62,7 +62,7 @@ SaveProgressDiag::~SaveProgressDiag()
 }
 void SaveProgressDiag::OnCancel(wxCommandEvent&)
 {
-    _myFractal->GetWatchdog()->StopThreads();
+    _myFractal->StopRender();
     this->Close(true);
 }
 void SaveProgressDiag::CalcProgress(wxUpdateUIEvent&)
@@ -72,7 +72,7 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent&)
         // Updates progress gauge.
         if (_myFractal->GetType() != FractalType::ScriptFractal)
         {
-            int progressValue = _myFractal->GetWatchdog()->GetThreadProgress();
+            int progressValue = _myFractal->GetRenderProgress();
             _progressLabel->SetLabel(wxString(wxT("Rendering: ")) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
 
             _progress->SetValue(progressValue);

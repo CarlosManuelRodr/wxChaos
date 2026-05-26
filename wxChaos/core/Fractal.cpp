@@ -1,5 +1,6 @@
 #include <complex>
 #include <algorithm>
+#include <cmath>
 #include <mpParser.h>
 #include "Fractal.h"
 #include "BmpWriter.h"
@@ -142,7 +143,7 @@ std::vector<RenderRegion> Fractal::BuildRenderRegions() const
     return regions;
 }
 
-std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>& regions) const
+std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>& regions, const int tileHeight) const
 {
     std::vector<RenderJob> jobs;
 
@@ -151,7 +152,7 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
     const int screenHeight = static_cast<int>(_screenHeight);
     int totalArea = 0;
 
-    if (regions.size() > threadNumber)
+    if (tileHeight <= 0 && regions.size() > threadNumber)
     {
         jobs.push_back(RenderJob(RenderRegion(0, 0, screenWidth, screenHeight)));
 
@@ -168,6 +169,20 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
     {
         while (jobs.size() < threadNumber)
             jobs.push_back(RenderJob());
+
+        return jobs;
+    }
+
+    if (tileHeight > 0)
+    {
+        for (const RenderRegion& region : regions)
+        {
+            for (int top = region.GetTop(); top < region.GetBottom(); top += tileHeight)
+            {
+                const int bottom = std::min(top + tileHeight, region.GetBottom());
+                jobs.push_back(RenderJob(RenderRegion(region.GetLeft(), top, region.GetRight(), bottom)));
+            }
+        }
 
         return jobs;
     }
@@ -678,6 +693,13 @@ ThreadWatchdog<RenderFractal>* Fractal::GetWatchdog()
 {
     return &_watchdog;
 }
+int Fractal::GetRenderProgress()
+{
+    if (_renderPool.IsRunning())
+        return _renderPool.GetProgress();
+
+    return _watchdog.GetThreadProgress();
+}
 void Fractal::PauseContinue()
 {
     if (_paused)
@@ -685,8 +707,13 @@ void Fractal::PauseContinue()
         this->PreRestartRender();
         _rendered = false;
         _rendering = true;
-        _watchdog.LaunchThreads();
-        _watchdog.launch();
+        if (_renderJobComp)
+            this->Render();
+        else
+        {
+            _watchdog.LaunchThreads();
+            _watchdog.launch();
+        }
         _paused = false;
     }
     else
@@ -701,8 +728,13 @@ bool Fractal::StopRender()
 {
     if (this->IsRendering())
     {
-        _watchdog.terminate();
-        _watchdog.StopThreads();
+        if (_renderPool.IsRunning())
+            _renderPool.Stop();
+        else
+        {
+            _watchdog.terminate();
+            _watchdog.StopThreads();
+        }
         _rendering = false;
         return true;
     }
@@ -734,7 +766,7 @@ bool Fractal::IsRendering()
 {
     if (_waitRoutine)
         return false;
-    return _watchdog.ThreadRunning();
+    return _renderPool.IsRunning() || _watchdog.ThreadRunning();
 }
 void Fractal::SetFormula(FormulaOpt formula)
 {
@@ -1246,12 +1278,8 @@ void Fractal::SetJuliaMode(const bool mode)
 // Julia mode operations.
 void Fractal::SetK(double real, double imaginary)
 {
-    if (_watchdog.ThreadRunning())
-    {
-        _watchdog.terminate();
-        _watchdog.StopThreads();
-        _rendering = false;
-    }
+    this->StopRender();
+
     if (real != _kReal || imaginary != _kImaginary)
         _rendered = false;
 

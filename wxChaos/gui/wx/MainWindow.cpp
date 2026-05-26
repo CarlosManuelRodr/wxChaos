@@ -895,7 +895,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int>(event.GetId() - SCRIPT_ID_INDEX);
     selectedScriptIndex = id;
 
-    if(fractalCanvas->GetFractalPtr()->GetWatchdog()->ThreadRunning())
+    if(fractalCanvas->GetFractalPtr()->IsRendering())
         fractalCanvas->GetFractalPtr()->PauseContinue();
 
     Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
