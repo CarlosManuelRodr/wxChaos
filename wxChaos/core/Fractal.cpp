@@ -78,7 +78,7 @@ void Fractal::RedrawMaps()
         _maxColorMapVal = 1;
     _refreshImage = true;
 }
-void Fractal::SetDefaultOpt()
+void Fractal::SetDefaultOptions()
 {
     _renderJobComp = true;
     _changeFractalProp = false;
@@ -281,7 +281,7 @@ Fractal::Fractal(const int width, const int height)
     _yMoved = 0;
 
     // Set fractal properties.
-    this->SetDefaultOpt();
+    this->SetDefaultOptions();
     _minX = -2.0;
     _maxX = 1.0;
     _minY = -1.2;
@@ -335,7 +335,7 @@ Fractal::Fractal(const int width, const int height)
 }
 Fractal::Fractal(const sf::RenderWindow* window)
 {
-    this->SetDefaultOpt();
+    this->SetDefaultOptions();
 
     // System.
     _threadNumber = Get_Cores();
@@ -765,27 +765,6 @@ void Fractal::SetFormula(FormulaOpt formula)
     _userFormula = std::move(formula);
 }
 void Fractal::CopyOptFromPanel()
-{
-    // Do nothing.
-}
-void Fractal::IncreaseIterations()
-{
-    _redrawAll = true;
-    _maxIter += 100;
-    _rendered = false;
-}
-void Fractal::DecreaseIterations()
-{
-    _redrawAll = true;
-    const int signedMaxIter = static_cast<int>(_maxIter);
-
-    if (signedMaxIter - 100 > 0)
-        _maxIter -= 100;
-
-    _rendered = false;
-}
-
-void Fractal::ChangeThreadNumber()
 {
     // Do nothing.
 }
@@ -1341,16 +1320,17 @@ bool Fractal::SmoothRenderActivated() const
 {
     return _smoothRender;
 }
-void Fractal::ChangeIterations(int number)
+void Fractal::SetIterations(const int number)
 {
     if (number > 0)
     {
+        _redrawAll = true;
         _maxIter = static_cast<unsigned int>(number);
         _rendered = false;
     }
 }
 
-unsigned int Fractal::GetIterations()
+unsigned int Fractal::GetIterations() const
 {
     return _maxIter;
 }

@@ -14,7 +14,6 @@
 #include "geometry/CircleData.h"
 #include "geometry/Vector2Int.h"
 #include "geometry/Rect.h"
-#include "../gui/wx/PanelOptions.h"
 #include "ColorPalettes.h"
 #include "Options.h"
 #include "FormulaOpt.h"
@@ -23,6 +22,7 @@
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
 #include "rendering/RenderThreadPool.h"
+#include "../gui/wx/PanelOptions.h"
 
 class SFMLFractal;
 
@@ -149,10 +149,10 @@ protected:
     ///@brief Rebuilds the color palette
     void RebuildPalette();
 
-    ///@brief If some minor change was made like a color adjustement, redraws the maps.
+    ///@brief If some minor change was made like a color adjustment, redraws the maps.
     void RedrawMaps();
 
-    void SetDefaultOpt();
+    void SetDefaultOptions();
 
     ///@brief Copies the current fractal state into a renderer before launch.
     void ConfigureRenderer(RenderFractal& renderer) const;
@@ -173,7 +173,7 @@ public:
 
     ///@brief Construct a fractal that will be drawn to the screen.
     ///@param window Window to draw the fractal.
-    Fractal(const sf::RenderWindow* window);
+    explicit Fractal(const sf::RenderWindow* window);
 
     virtual ~Fractal();
 
@@ -232,9 +232,6 @@ public:
     virtual bool IsRendering();
     virtual void SetFormula(FormulaOpt formula);                   ///< Sets user formula.
     virtual void CopyOptFromPanel();                               ///< Copy options from the option panel.
-    virtual void ChangeThreadNumber();                             ///< Changes the number of rendering threads.
-    virtual void IncreaseIterations();
-    virtual void DecreaseIterations();
 
     // Communication methods.
     ///@brief Get value of X number in the plane at the selected pixel.
@@ -344,8 +341,8 @@ public:
     bool SmoothRenderActivated() const;
 
     // Menu operations.
-    void ChangeIterations(int number);
-    unsigned int GetIterations();
+    void SetIterations(int number);
+    unsigned int GetIterations() const;
 
     // Option panel.
     bool HasOptPanel() const;
@@ -355,7 +352,6 @@ public:
     ///@brief Draws a simple line. Used in orbit mode.
     void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
     void DrawCircle(double x_center, double y_center, double radius, sf::Color color = sf::Color(0, 0, 0));
-    ///@brief By default, it doesn't do anything. Has to be overridden in derived class.
     virtual void DrawOrbit() {}
 };
 

@@ -347,7 +347,8 @@ void SFMLFractal::IncreaseIterations()
         return;
 
     ClearImageCache();
-    _fractal->IncreaseIterations();
+    const int change = _fractal->GetIterations() + 100;
+    _fractal->SetIterations(change);
 }
 
 void SFMLFractal::DecreaseIterations()
@@ -358,7 +359,10 @@ void SFMLFractal::DecreaseIterations()
         return;
 
     ClearImageCache();
-    _fractal->DecreaseIterations();
+
+    const int change = _fractal->GetIterations() - 100;
+    if (change > 0)
+        _fractal->SetIterations(change);
 }
 
 void SFMLFractal::ChangeIterations(const int iterations)
@@ -369,7 +373,7 @@ void SFMLFractal::ChangeIterations(const int iterations)
         return;
 
     ClearImageCache();
-    _fractal->ChangeIterations(iterations);
+    _fractal->SetIterations(iterations);
 }
 
 void SFMLFractal::SetK(const double real, const double imaginary)

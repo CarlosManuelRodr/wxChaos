@@ -2,7 +2,7 @@
 #include "FixedPoint4.h"
 using namespace std;
 
-FixedPoint4::FixedPoint4(sf::RenderWindow* Window):Fractal(Window)
+FixedPoint4::FixedPoint4(sf::RenderWindow* window):Fractal(window)
 {
     // Adjust the scale.
     _minX = -1.8713;
@@ -28,7 +28,7 @@ FixedPoint4::FixedPoint4(sf::RenderWindow* Window):Fractal(Window)
     _algorithm = RenderingAlgorithm::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
-FixedPoint4::FixedPoint4(int width, int height) : Fractal(width, height)
+FixedPoint4::FixedPoint4(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8713;
