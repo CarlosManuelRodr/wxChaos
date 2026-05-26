@@ -118,7 +118,7 @@ void FractalCanvas::OnUpdate()
                 else
                     btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
 
-                _target->DeleteSavedZooms();
+                _target->InvalidateZoomCache();
             }
         }
 
@@ -542,7 +542,7 @@ void FractalCanvas::OnUnClick(wxMouseEvent& event)
                         btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
                     else
                         btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
-                    _target->DeleteSavedZooms();
+                    _target->InvalidateZoomCache();
                 }
                 _sfmlFractal.SetAreaOfView(_selection->GetSeleccion());
             }

@@ -24,7 +24,7 @@ MandelbrotZN::MandelbrotZN(sf::RenderWindow* window):Fractal(window)
     SetWatchdog<RenderMandelbrotZN>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
@@ -55,7 +55,7 @@ MandelbrotZN::MandelbrotZN(int width, int height) : Fractal(width, height)
     n = 3;
     bailout = 2;
 
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _hasSmoothRender = false;
     _hasOrbitTrap = true;
     _type = FractalType::MandelbrotZN;

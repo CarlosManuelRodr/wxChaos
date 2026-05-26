@@ -26,7 +26,7 @@ Newton::Newton(sf::RenderWindow* window):Fractal(window)
     minStep = 0.001;
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::ConvergenceTest;
+    _algorithm = RenderingAlgorithm::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 Newton::Newton(const int width, const int height) : Fractal(width, height)

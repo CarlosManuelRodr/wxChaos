@@ -26,7 +26,7 @@ Julia::Julia(sf::RenderWindow* Window):Fractal(Window)
     SetWatchdog<RenderJulia>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
@@ -44,7 +44,7 @@ Julia::Julia(int width, int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _juliaVariety = true;

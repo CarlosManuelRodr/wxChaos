@@ -105,7 +105,7 @@ void SFMLFractal::SetFractal(Fractal* fractal)
 {
     _fractal = fractal;
     EnsureFontLoaded();
-    _imgVector.clear();
+    _imgCache.clear();
     _imgInVector = false;
     _usingRenderImage = false;
     _zoomingBack = false;
@@ -230,7 +230,7 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
 
     _fractal->_rendered = false;
     _fractal->_rendering = false;
-    _imgVector.clear();
+    _imgCache.clear();
     _imgInVector = false;
     _usingRenderImage = false;
     _zoomingBack = false;
@@ -257,13 +257,13 @@ void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 
     if (_fractal->_paused)
     {
-        _imgVector.clear();
+        _imgCache.clear();
         _imgInVector = false;
         _dontDrawTempImage = true;
     }
     else
     {
-        _imgVector.push_back(_image);
+        _imgCache.push_back(_image);
         _imgInVector = true;
         _dontDrawTempImage = false;
     }
@@ -290,11 +290,11 @@ void SFMLFractal::ZoomBack()
     const bool stillRendering = _fractal->IsRendering();
     _fractal->ZoomBack();
 
-    if (_imgInVector && !_fractal->_varGradient && !_imgVector.empty() && !stillRendering)
+    if (_imgInVector && !_fractal->_varGradient && !_imgCache.empty() && !stillRendering)
     {
-        _image = _imgVector.back();
+        _image = _imgCache.back();
         _texture.loadFromImage(_image);
-        _imgVector.pop_back();
+        _imgCache.pop_back();
         _usingRenderImage = true;
         _fractal->_rendering = false;
         _fractal->SetRendered(true);
@@ -303,8 +303,8 @@ void SFMLFractal::ZoomBack()
     }
     else
     {
-        if (stillRendering && !_imgVector.empty())
-            _imgVector.pop_back();
+        if (stillRendering && !_imgCache.empty())
+            _imgCache.pop_back();
         _fractal->SetRendered(false);
         _zoomingBack = true;
     }
@@ -324,7 +324,7 @@ void SFMLFractal::Redraw()
     }
 
     _fractal->Redraw();
-    _imgVector.clear();
+    _imgCache.clear();
     _imgInVector = false;
     _usingRenderImage = false;
     _dontDrawTempImage = true;

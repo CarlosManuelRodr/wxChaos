@@ -19,7 +19,7 @@ Fractory::Fractory(sf::RenderWindow* Window) : Fractal(Window)
     SetWatchdog<RenderFractory>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
@@ -35,7 +35,7 @@ Fractory::Fractory(int width, int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _hasOrbit = true;
 
     _type = FractalType::Fractory;

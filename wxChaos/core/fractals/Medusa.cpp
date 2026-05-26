@@ -24,7 +24,7 @@ Medusa::Medusa(sf::RenderWindow* window) : Fractal(window)
     SetWatchdog<RenderMedusa>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
@@ -43,7 +43,7 @@ Medusa::Medusa(int width, int height) : Fractal(width, height)
     _kReal = -0.2;
     _kImaginary = 0;
     _juliaVariety = true;
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
 
     _type = FractalType::Medusa;
     myRender = new RenderMedusa[_threadNumber];

@@ -25,7 +25,7 @@ FixedPoint2::FixedPoint2(sf::RenderWindow* Window):Fractal(Window)
     minStep = 0.001;
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::ConvergenceTest;
+    _algorithm = RenderingAlgorithm::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
 FixedPoint2::FixedPoint2(int width, int height) : Fractal(width, height)

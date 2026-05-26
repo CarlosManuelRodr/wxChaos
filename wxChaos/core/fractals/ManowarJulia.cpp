@@ -20,7 +20,7 @@ ManowarJulia::ManowarJulia(sf::RenderWindow* window) : Fractal(window)
     SetWatchdog<RenderManowarJulia>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
@@ -40,7 +40,7 @@ ManowarJulia::ManowarJulia(int width, int height) : Fractal(width, height)
     _kImaginary = -0.0432547;
 
     _juliaVariety = true;
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
 
     _type = FractalType::ManowarJulia;
     myRender = new RenderManowarJulia[_threadNumber];

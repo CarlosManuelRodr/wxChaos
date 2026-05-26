@@ -1,5 +1,6 @@
 #include <complex>
 #include <algorithm>
+#include <utility>
 #include <mpParser.h>
 #include "Fractal.h"
 #include "BmpWriter.h"
@@ -49,7 +50,7 @@ sf::Color Fractal::CalcColor(int colorNum) const
 }
 void Fractal::RebuildPalette()
 {
-    DeleteSavedZooms();
+    InvalidateZoomCache();
 
     for (int i = 0; i < _paletteSize; i++)
     {
@@ -106,13 +107,13 @@ std::vector<RenderRegion> Fractal::BuildRenderRegions() const
 
     if (_xMoved == 0 && _yMoved == 0)
     {
-        regions.push_back(RenderRegion(0, 0, screenWidth, screenHeight));
+        regions.emplace_back(0, 0, screenWidth, screenHeight);
         return regions;
     }
 
     if ((abs(_xMoved) >= screenWidth) || (abs(_yMoved) >= screenHeight))
     {
-        regions.push_back(RenderRegion(0, 0, screenWidth, screenHeight));
+        regions.emplace_back(0, 0, screenWidth, screenHeight);
         return regions;
     }
 
@@ -121,22 +122,22 @@ std::vector<RenderRegion> Fractal::BuildRenderRegions() const
 
     if (_yMoved > 0)
     {
-        regions.push_back(RenderRegion(0, 0, screenWidth, _yMoved));
+        regions.emplace_back(0, 0, screenWidth, _yMoved);
         yStart = _yMoved;
     }
     else if (_yMoved < 0)
     {
         yEnd = screenHeight + _yMoved;
-        regions.push_back(RenderRegion(0, yEnd, screenWidth, screenHeight));
+        regions.emplace_back(0, yEnd, screenWidth, screenHeight);
     }
 
     if (_xMoved > 0)
     {
-        regions.push_back(RenderRegion(0, yStart, _xMoved, yEnd));
+        regions.emplace_back(0, yStart, _xMoved, yEnd);
     }
     else if (_xMoved < 0)
     {
-        regions.push_back(RenderRegion(screenWidth + _xMoved, yStart, screenWidth, yEnd));
+        regions.emplace_back(screenWidth + _xMoved, yStart, screenWidth, yEnd);
     }
 
     return regions;
@@ -153,10 +154,10 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
 
     if (tileHeight <= 0 && regions.size() > threadNumber)
     {
-        jobs.push_back(RenderJob(RenderRegion(0, 0, screenWidth, screenHeight)));
+        jobs.emplace_back(RenderRegion(0, 0, screenWidth, screenHeight));
 
         while (jobs.size() < threadNumber)
-            jobs.push_back(RenderJob());
+            jobs.emplace_back();
 
         return jobs;
     }
@@ -167,7 +168,7 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
     if (totalArea == 0)
     {
         while (jobs.size() < threadNumber)
-            jobs.push_back(RenderJob());
+            jobs.emplace_back();
 
         return jobs;
     }
@@ -179,7 +180,7 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
             for (int top = region.GetTop(); top < region.GetBottom(); top += tileHeight)
             {
                 const int bottom = std::min(top + tileHeight, region.GetBottom());
-                jobs.push_back(RenderJob(RenderRegion(region.GetLeft(), top, region.GetRight(), bottom)));
+                jobs.emplace_back(RenderRegion(region.GetLeft(), top, region.GetRight(), bottom));
             }
         }
 
@@ -192,7 +193,7 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
     for (unsigned int regionIndex = 0; regionIndex < regions.size(); regionIndex++)
     {
         const RenderRegion& region = regions[regionIndex];
-        const unsigned int remainingRegions = static_cast<unsigned int>(regions.size() - regionIndex);
+        const auto remainingRegions = static_cast<unsigned int>(regions.size() - regionIndex);
         unsigned int regionJobs = 1;
 
         if (remainingRegions == 1)
@@ -222,24 +223,24 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
 
             if (height <= 0 || rows <= 0)
             {
-                jobs.push_back(RenderJob());
+                jobs.emplace_back();
             }
             else
             {
-                jobs.push_back(RenderJob(RenderRegion(region.GetLeft(), currentTop, region.GetRight(), bottom)));
+                jobs.emplace_back(RenderRegion(region.GetLeft(), currentTop, region.GetRight(), bottom));
                 currentTop = bottom;
             }
         }
     }
 
     while (jobs.size() < threadNumber)
-        jobs.push_back(RenderJob());
+        jobs.emplace_back();
 
     return jobs;
 }
 
 // Basic methods.
-Fractal::Fractal(int width, int height)
+Fractal::Fractal(const int width, const int height)
 {
     // System.
     _threadNumber = Get_Cores();
@@ -323,7 +324,7 @@ Fractal::Fractal(int width, int height)
     // Creates default color palette.
     _relativeColor = false;
     _gradPaletteSize = _paletteSize = 300;
-    _alg = RenderingAlgorithm::Other;
+    _algorithm = RenderingAlgorithm::Other;
     _gradStyle = defaultGradientStyle;
     _gradient.fromString(defaultGradientString);
     _gradient.setMin(0);
@@ -335,7 +336,7 @@ Fractal::Fractal(int width, int height)
 
     this->SetOutermostZoom();
 }
-Fractal::Fractal(sf::RenderWindow* Window)
+Fractal::Fractal(const sf::RenderWindow* window)
 {
     this->SetDefaultOpt();
 
@@ -343,8 +344,8 @@ Fractal::Fractal(sf::RenderWindow* Window)
     _threadNumber = Get_Cores();
 
     // Copy window properties.
-    _screenHeight = Window->getSize().y;
-    _backScreenWidth = _screenWidth = Window->getSize().x;
+    _screenHeight = window->getSize().y;
+    _backScreenWidth = _screenWidth = window->getSize().x;
 
     // Set position and velocities.
     _xVel = 0;
@@ -419,7 +420,7 @@ Fractal::Fractal(sf::RenderWindow* Window)
     // Creates default color palette.
     _relativeColor = false;
     _gradPaletteSize = _paletteSize = 300;
-    _alg = RenderingAlgorithm::Other;
+    _algorithm = RenderingAlgorithm::Other;
     _gradStyle = defaultGradientStyle;
     _gradient.fromString(defaultGradientString);
     _gradient.setMin(0);
@@ -631,9 +632,9 @@ void Fractal::ZoomBack()
 
     // Looks for previous zoom coordinates.
     bool thereIsZoom = true;
-    for (int i = 0; i < 4; i++)
+    for (const auto & i : _zoom)
     {
-        if (_zoom[i].empty())
+        if (i.empty())
             thereIsZoom = false;
     }
 
@@ -645,8 +646,8 @@ void Fractal::ZoomBack()
         _minY = _zoom[2][_zoom[2].size() - 1];
         _maxY = _zoom[3][_zoom[3].size() - 1];
 
-        for (int i = 0; i < 4; i++)
-            _zoom[i].pop_back();
+        for (auto & i : _zoom)
+            i.pop_back();
     }
     // If they don't, expand the drawing area.
     else
@@ -675,7 +676,7 @@ void Fractal::ZoomBack()
 
     _orbitDrawn = false;
 }
-void Fractal::DeleteSavedZooms()
+void Fractal::InvalidateZoomCache()
 {
 }
 
@@ -769,7 +770,7 @@ bool Fractal::IsRendering()
 }
 void Fractal::SetFormula(FormulaOpt formula)
 {
-    _userFormula = formula;
+    _userFormula = std::move(formula);
 }
 void Fractal::CopyOptFromPanel()
 {
@@ -778,7 +779,7 @@ void Fractal::CopyOptFromPanel()
 void Fractal::MoreIter()
 {
     _changeFractalIter = true;
-    this->DeleteSavedZooms();
+    InvalidateZoomCache();
 
     _redrawAll = true;
     _maxIter += 100;
@@ -788,7 +789,7 @@ void Fractal::MoreIter()
 void Fractal::LessIter()
 {
     _changeFractalIter = true;
-    this->DeleteSavedZooms();
+    InvalidateZoomCache();
 
     _redrawAll = true;
     const int signedMaxIter = static_cast<int>(_maxIter);
@@ -814,11 +815,11 @@ double Fractal::GetY(const int pixelY) const
 }
 int Fractal::GetPixelX(const double xNum) const
 {
-    return (xNum - _minX) / _xFactor;
+    return static_cast<int>((xNum - _minX) / _xFactor);
 }
 int Fractal::GetPixelY(const double yNum) const
 {
-    return (_maxY - yNum) / _yFactor;
+    return static_cast<int>((_maxY - yNum) / _yFactor);
 }
 void Fractal::SetOptions(const Options& opt, const bool keepSize)
 {
@@ -837,7 +838,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _changeGradient = opt.changeGradient;
     _relativeColor = opt.relativeColor;
     _gradPaletteSize = opt.gradPaletteSize;
-    _alg = opt.alg;
+    _algorithm = opt.alg;
     _fSetColor = wxColour(opt.fSetColor.r, opt.fSetColor.g, opt.fSetColor.b, opt.fSetColor.a);
 
     _gradient = opt.gradient;
@@ -873,7 +874,7 @@ Options Fractal::GetOptions()
     opt.maxIter = _maxIter;
     opt.changeGradient = _changeGradient;
     opt.smoothRender = _smoothRender;
-    opt.alg = _alg;
+    opt.alg = _algorithm;
     opt.gradient = _gradient;
     opt.relativeColor = _relativeColor;
     opt.paletteSize = _paletteSize;
@@ -900,29 +901,27 @@ void Fractal::SetRendered(bool mode)
 {
     _rendered = mode;
 }
-Rect Fractal::GetOutermostZoom()
+Rect Fractal::GetOutermostZoom() const
 {
     return _outermostZoom;
 }
-Rect Fractal::GetCurrentZoom()
+Rect Fractal::GetCurrentZoom() const
 {
-    return Rect(_minX, _minY, _maxX, _maxY);
+    return {_minX, _minY, _maxX, _maxY};
 }
-FractalType Fractal::GetType()
+FractalType Fractal::GetType() const
 {
     return _type;
 }
-bool** Fractal::GetSetMap()
+bool** Fractal::GetSetMap() const
 {
     return _setMap;
 }
-bool Fractal::IsMoving()
+bool Fractal::IsMoving() const
 {
-    if (_xVel == 0 && _yVel == 0)
-        return false;
-    else
-        return true;
+    return _xVel != 0 || _yVel != 0;
 }
+
 void Fractal::SetFractalPropChanged()
 {
     _changeFractalProp = true;
@@ -1038,13 +1037,18 @@ sf::Image Fractal::GetRenderedImage()
                 if (_colorMode)
                 {
                     // Color pixel.
-                    sf::Color Color;
+                    sf::Color color;
                     if (_relativeColor)
-                        Color = CalcColor((static_cast<double>(_colorMap[i][j]) / static_cast<double>(_maxColorMapVal)) * _paletteSize + _changeGradient);
+                    {
+                        const double colorMapValue = _colorMap[i][j];
+                        const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
+                        const double ratio = colorMapValue / doubleMaxColorMapValue;
+                        color = CalcColor(static_cast<int>(ratio * _paletteSize + _changeGradient));
+                    }
                     else
-                        Color = CalcColor(_colorMap[i][j] + _changeGradient);
+                        color = CalcColor(_colorMap[i][j] + _changeGradient);
 
-                    image.setPixel(i, j, Color);
+                    image.setPixel(i, j, color);
                 }
             }
         }
@@ -1059,7 +1063,7 @@ wxBitmap Fractal::GetRenderedWxBitmap()
     sf::Image renderedImage = this->GetRenderedImage();
     const sf::Vector2u imageSize = renderedImage.getSize();
     const sf::Uint8* rgbaPixels = renderedImage.getPixelsPtr();
-    unsigned char* rgbPixels = new unsigned char[imageSize.x * imageSize.y * 3];
+    auto* rgbPixels = new unsigned char[imageSize.x * imageSize.y * 3];
 
     // wxImage expects packed RGB data, while SFML exposes RGBA pixels.
     for (unsigned int i = 0, j = 0; i < imageSize.x * imageSize.y * 4; i += 4, j += 3)
@@ -1117,7 +1121,10 @@ void Fractal::RenderBMP(const string& filename)
             {
                 if (_relativeColor)
                 {
-                    sf::Color c = CalcColor((static_cast<double>(_colorMap[i][j]) / static_cast<double>(_maxColorMapVal)) * _paletteSize + _changeGradient);
+                    const double colorMapValue = _colorMap[i][j];
+                    const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
+                    const double ratio = colorMapValue / doubleMaxColorMapValue;
+                    const sf::Color c = CalcColor(static_cast<int>(ratio * _paletteSize + _changeGradient));
                     data[i].r = c.r;
                     data[i].g = c.g;
                     data[i].b = c.b;
@@ -1156,9 +1163,9 @@ ColorPalettes Fractal::GetColorPalette() const
 {
     return _gradStyle;
 }
-sf::Color Fractal::GetSetColor()
+sf::Color Fractal::GetSetColor() const
 {
-    return sf::Color(_fSetColor.Red(), _fSetColor.Green(), _fSetColor.Blue(), _fSetColor.Alpha());
+    return {_fSetColor.Red(), _fSetColor.Green(), _fSetColor.Blue(), _fSetColor.Alpha()};
 }
 // Gradient color.
 wxGradient* Fractal::GetGradient()
@@ -1174,7 +1181,7 @@ void Fractal::SetExtColorMode(bool mode)
         _colorMode = mode;
         this->RedrawMaps();
     }
-    this->DeleteSavedZooms();
+    this->InvalidateZoomCache();
 }
 void Fractal::SetFractalSetColorMode(bool mode)
 {
@@ -1184,20 +1191,20 @@ void Fractal::SetFractalSetColorMode(bool mode)
         _colorSet = mode;
         this->RedrawMaps();
     }
-    this->DeleteSavedZooms();
+    this->InvalidateZoomCache();
 }
 void Fractal::SetFractalSetColor(sf::Color color)
 {
     // Changes the color of the set.
     _fSetColor = wxColour(color.r, color.g, color.b, color.a);
     this->RedrawMaps();
-    this->DeleteSavedZooms();
+    this->InvalidateZoomCache();
 }
-bool Fractal::GetExteriorColorMode()
+bool Fractal::GetExteriorColorMode() const
 {
     return _colorMode;
 }
-bool Fractal::GetInteriorColorMode()
+bool Fractal::GetInteriorColorMode() const
 {
     return _colorSet;
 }
@@ -1209,7 +1216,7 @@ void Fractal::SetPaletteSize(int size)
 {
     this->SetGradientSize(size);
 }
-int Fractal::GetPaletteSize()
+int Fractal::GetPaletteSize() const
 {
     return _paletteSize;
 }
@@ -1244,22 +1251,22 @@ void Fractal::SetVarGradient(int n)
 {
     _varGradChange = true;
     _changeGradient = n % _paletteSize;
-    this->DeleteSavedZooms();
+    this->InvalidateZoomCache();
 }
 
 // Algorithm.
 RenderingAlgorithm Fractal::GetCurrentAlg() const
 {
-    return _alg;
+    return _algorithm;
 }
 vector<RenderingAlgorithm> Fractal::GetAvailableAlg()
 {
     return _availableAlg;
 }
-void Fractal::SetAlgorithm(RenderingAlgorithm alg)
+void Fractal::SetAlgorithm(const RenderingAlgorithm algorithm)
 {
-    _alg = alg;
-    this->DeleteSavedZooms();
+    _algorithm = algorithm;
+    this->InvalidateZoomCache();
     this->StopRender();
     _rendered = false;
     _rendering = false;
@@ -1284,7 +1291,7 @@ void Fractal::SetK(double real, double imaginary)
 
     _kReal = real;
     _kImaginary = imaginary;
-    this->DeleteSavedZooms();
+    this->InvalidateZoomCache();
 }
 double Fractal::GetKReal() const
 {
@@ -1327,7 +1334,7 @@ void Fractal::SetOrbitTrapMode(const bool mode)
 {
     if (_hasOrbitTrap)
     {
-        this->DeleteSavedZooms();
+        this->InvalidateZoomCache();
         _orbitTrapMode = mode;
     }
 }
@@ -1344,7 +1351,7 @@ void Fractal::SetSmoothRender(const bool mode)
 {
     if (_hasSmoothRender)
     {
-        this->DeleteSavedZooms();
+        this->InvalidateZoomCache();
         _smoothRender = mode;
     }
 }

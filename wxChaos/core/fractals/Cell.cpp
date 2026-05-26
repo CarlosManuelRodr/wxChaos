@@ -24,7 +24,7 @@ Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
     bailout = 2;
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
 }
@@ -45,7 +45,7 @@ Cell::Cell(int width, int height) : Fractal(width, height)
     bailout = 2;
 
     _hasOrbit = true;
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _type = FractalType::Cell;
     myRender = new RenderCell[_threadNumber];
     SetWatchdog<RenderCell>(myRender, &_watchdog, _threadNumber);

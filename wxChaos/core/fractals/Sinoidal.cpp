@@ -26,7 +26,7 @@ Sinoidal::Sinoidal(sf::RenderWindow* window) : Fractal(window)
     SetWatchdog<RenderSinoidal>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
@@ -43,7 +43,7 @@ Sinoidal::Sinoidal(const int width, const int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _kReal = 1;
     _kImaginary = 0.25;
     _juliaVariety = true;

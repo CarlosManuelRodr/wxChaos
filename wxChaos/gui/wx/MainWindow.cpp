@@ -567,7 +567,7 @@ void MainFrame::OnRedraw(wxCommandEvent &event)
         else
             pauseBtn.pauseContinue->SetItemLabel(wxT("Pause"));
 
-        fractalCanvas->GetFractalPtr()->DeleteSavedZooms();
+        fractalCanvas->GetFractalPtr()->InvalidateZoomCache();
     }
     fractalCanvas->GetFractalPtr()->Redraw();
 }
@@ -712,7 +712,7 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent& event)
         else
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
 
-        fractalCanvas->GetFractalPtr()->DeleteSavedZooms();
+        fractalCanvas->GetFractalPtr()->InvalidateZoomCache();
     }
 
     fractalCanvas->SetFocus();

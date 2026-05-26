@@ -34,6 +34,6 @@ struct Options
     bool relativeColor;
     sf::Color fSetColor;
 
-    int screenHeight;
-    int screenWidth;
+    unsigned int screenHeight;
+    unsigned int screenWidth;
 };

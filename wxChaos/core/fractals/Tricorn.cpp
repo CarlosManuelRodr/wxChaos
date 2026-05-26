@@ -19,7 +19,7 @@ Tricorn::Tricorn(sf::RenderWindow* Window) : Fractal(Window)
     SetWatchdog<RenderTricorn>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
@@ -37,7 +37,7 @@ Tricorn::Tricorn(int width, int height) : Fractal(width, height)
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _hasOrbit = true;
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
 
     _type = FractalType::Tricorn;
     myRender = new RenderTricorn[_threadNumber];

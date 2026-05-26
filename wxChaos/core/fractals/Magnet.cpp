@@ -21,7 +21,7 @@ Magnet::Magnet(sf::RenderWindow* window) : Fractal(window)
     SetWatchdog<RenderMagnet>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
@@ -37,7 +37,7 @@ Magnet::Magnet(int width, int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _type = FractalType::Magnetic;
     myRender = new RenderMagnet[_threadNumber];
     SetWatchdog<RenderMagnet>(myRender, &_watchdog, _threadNumber);

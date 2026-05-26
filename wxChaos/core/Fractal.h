@@ -77,7 +77,7 @@ protected:
     double _magnification;
 
     // Color properties.
-    RenderingAlgorithm _alg;
+    RenderingAlgorithm _algorithm;
     std::vector<RenderingAlgorithm> _availableAlg;
     wxGradient _gradient;                   ///< Gradient to be used.
     wxColour _fSetColor;                    ///< Color of points belonging to the set.
@@ -173,8 +173,8 @@ public:
     Fractal(int width, int height);
 
     ///@brief Construct a fractal that will be drawn to the screen.
-    ///@param Window Window to draw the fractal.
-    Fractal(sf::RenderWindow* Window);
+    ///@param window Window to draw the fractal.
+    Fractal(const sf::RenderWindow* window);
 
     virtual ~Fractal();
 
@@ -196,7 +196,7 @@ public:
 
     void Move();                       ///< Moves the fractal image.
     void ZoomBack();                   ///< Does a zoom-back in the selection area.
-    static void DeleteSavedZooms();    ///< If some image property image has changed, deletes saved zoom images.
+    void InvalidateZoomCache();        ///< If some image property image has changed, deletes saved zoom images.
     void Redraw();                     ///< Redraws the fractal.
 
     // Thread control.
@@ -272,18 +272,18 @@ public:
     void SetRendered(bool mode);
 
     ///@brief Return the farthest zoom viewed by the user.
-    Rect GetOutermostZoom();
+    Rect GetOutermostZoom() const;
 
     ///@brief Return the current zoom rect.
-    Rect GetCurrentZoom();
+    Rect GetCurrentZoom() const;
 
     ///@brief Gets the type of the fractal.
-    FractalType GetType();
+    FractalType GetType() const;
 
     ///@brief Returns a pointer to the set map.
-    bool** GetSetMap();
+    bool** GetSetMap() const;
 
-    bool IsMoving();
+    bool IsMoving() const;
     void SetFractalPropChanged();
     bool GetChangeFractalProp();
     void SetOnWxCtrl(bool mode);
@@ -301,16 +301,16 @@ public:
     ColorPalettes GetColorPalette() const;
 
     // Color operations.
-    sf::Color GetSetColor();
+    sf::Color GetSetColor() const;
     wxGradient* GetGradient();
     void SetExtColorMode(bool mode);
     void SetFractalSetColorMode(bool mode);
     void SetFractalSetColor(sf::Color color);
-    bool GetExteriorColorMode();
-    bool GetInteriorColorMode();
+    bool GetExteriorColorMode() const;
+    bool GetInteriorColorMode() const;
     void ChangeVarGradient();
     void SetPaletteSize(int size);
-    int GetPaletteSize();
+    int GetPaletteSize() const;
     void SetGradient(wxGradient grad);
     void SetGradientSize(unsigned int size);
     void SetRelativeColor(bool mode);
@@ -320,7 +320,7 @@ public:
     // Algorithm.
     RenderingAlgorithm GetCurrentAlg() const;
     std::vector<RenderingAlgorithm> GetAvailableAlg();
-    void SetAlgorithm(RenderingAlgorithm _alg);
+    void SetAlgorithm(RenderingAlgorithm algorithm);
 
     // Julia mode operations.
     bool IsJuliaVariety() const;

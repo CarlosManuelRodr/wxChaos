@@ -21,7 +21,7 @@ class SFMLFractal
     sf::Image _image;                    ///< Current rendered fractal image.
     sf::Texture _texture;                ///< Texture backing the rendered fractal sprite.
     sf::Sprite _output;                  ///< Sprite used to draw the rendered fractal image.
-    std::vector<sf::Image> _imgVector;   ///< Cached rendered images used when zooming back.
+    std::vector<sf::Image> _imgCache;    ///< Cached rendered images used when zooming back.
     sf::Image _tempImage;                ///< Temporary image shown while a new zoom render is running.
     sf::Texture _tempTexture;            ///< Texture backing the temporary zoom image.
     sf::Sprite _tempSprite;              ///< Sprite used to draw the temporary zoom image.

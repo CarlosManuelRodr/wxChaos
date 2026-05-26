@@ -20,7 +20,7 @@ UserDefined::UserDefined(sf::RenderWindow* Window) : Fractal(Window)
     SetWatchdog<RenderUserDefined>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
 }
 UserDefined::UserDefined(int width, int height) : Fractal(width, height)

@@ -45,7 +45,7 @@ DoublePendulum::DoublePendulum(sf::RenderWindow* Window):Fractal(Window)
     rungeKutta = false;
 
     // Specify algorithms.
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
@@ -87,7 +87,7 @@ DoublePendulum::DoublePendulum(int width, int height) : Fractal(width, height)
     referenced = false;
     rungeKutta = false;
 
-    _alg = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithm::EscapeTime;
     _type = FractalType::DoublePendulum;
     myRender = new RenderDPendulum[_threadNumber];
     SetWatchdog<RenderDPendulum>(myRender, &_watchdog, _threadNumber);
@@ -120,7 +120,7 @@ void DoublePendulum::MoreIter()
 {
     // Increases 100 iterations.
     _changeFractalIter = true;
-    this->DeleteSavedZooms();
+    this->InvalidateZoomCache();
     _redrawAll = true;
     _maxIter += 100;
 }
@@ -128,7 +128,7 @@ void DoublePendulum::LessIter()
 {
     // Decreases 100 iterations.
     _changeFractalIter = true;
-    this->DeleteSavedZooms();
+    this->InvalidateZoomCache();
     _redrawAll = true;
     int signedMaxIter = (int)_maxIter;
     if(signedMaxIter - 100 > 0)
