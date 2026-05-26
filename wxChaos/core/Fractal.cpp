@@ -1,4 +1,5 @@
 #include <complex>
+#include <algorithm>
 #include <mpParser.h>
 #include "Fractal.h"
 #include "BmpWriter.h"
@@ -88,6 +89,141 @@ void Fractal::SetDefaultOpt()
     for (int i = 0; i < 4; i++)
         _movement[i] = false;
 }
+
+void Fractal::ConfigureRenderer(RenderFractal& renderer)
+{
+    renderer.SetOpt(this->GetOptions());
+    renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
+    renderer.SetSpecialRenderMode(_orbitTrapMode || _smoothRender);
+    renderer.SetK(_kReal, _kImaginary);
+}
+
+std::vector<RenderRegion> Fractal::BuildRenderRegions() const
+{
+    std::vector<RenderRegion> regions;
+    const int screenWidth = static_cast<int>(_screenWidth);
+    const int screenHeight = static_cast<int>(_screenHeight);
+
+    if (_xMoved == 0 && _yMoved == 0)
+    {
+        regions.push_back(RenderRegion(0, 0, screenWidth, screenHeight));
+        return regions;
+    }
+
+    if ((abs(_xMoved) >= screenWidth) || (abs(_yMoved) >= screenHeight))
+    {
+        regions.push_back(RenderRegion(0, 0, screenWidth, screenHeight));
+        return regions;
+    }
+
+    int yStart = 0;
+    int yEnd = screenHeight;
+
+    if (_yMoved > 0)
+    {
+        regions.push_back(RenderRegion(0, 0, screenWidth, _yMoved));
+        yStart = _yMoved;
+    }
+    else if (_yMoved < 0)
+    {
+        yEnd = screenHeight + _yMoved;
+        regions.push_back(RenderRegion(0, yEnd, screenWidth, screenHeight));
+    }
+
+    if (_xMoved > 0)
+    {
+        regions.push_back(RenderRegion(0, yStart, _xMoved, yEnd));
+    }
+    else if (_xMoved < 0)
+    {
+        regions.push_back(RenderRegion(screenWidth + _xMoved, yStart, screenWidth, yEnd));
+    }
+
+    return regions;
+}
+
+std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>& regions) const
+{
+    std::vector<RenderJob> jobs;
+
+    const unsigned int threadNumber = std::max(1U, _threadNumber);
+    const int screenWidth = static_cast<int>(_screenWidth);
+    const int screenHeight = static_cast<int>(_screenHeight);
+    int totalArea = 0;
+
+    if (regions.size() > threadNumber)
+    {
+        jobs.push_back(RenderJob(RenderRegion(0, 0, screenWidth, screenHeight)));
+
+        while (jobs.size() < threadNumber)
+            jobs.push_back(RenderJob());
+
+        return jobs;
+    }
+
+    for (const RenderRegion& region : regions)
+        totalArea += region.GetArea();
+
+    if (totalArea == 0)
+    {
+        while (jobs.size() < threadNumber)
+            jobs.push_back(RenderJob());
+
+        return jobs;
+    }
+
+    unsigned int remainingJobs = threadNumber;
+    int remainingArea = totalArea;
+
+    for (unsigned int regionIndex = 0; regionIndex < regions.size(); regionIndex++)
+    {
+        const RenderRegion& region = regions[regionIndex];
+        const unsigned int remainingRegions = static_cast<unsigned int>(regions.size() - regionIndex);
+        unsigned int regionJobs = 1;
+
+        if (remainingRegions == 1)
+        {
+            regionJobs = remainingJobs;
+        }
+        else if (region.GetArea() > 0)
+        {
+            regionJobs = static_cast<unsigned int>(std::max(1.0,
+                std::round(static_cast<double>(remainingJobs) * region.GetArea() / remainingArea)));
+            regionJobs = std::min(regionJobs, remainingJobs - remainingRegions + 1);
+        }
+
+        remainingJobs -= regionJobs;
+        remainingArea -= region.GetArea();
+
+        int currentTop = region.GetTop();
+        const int height = region.GetHeight();
+
+        for (unsigned int jobIndex = 0; jobIndex < regionJobs; jobIndex++)
+        {
+            const unsigned int remainingRegionJobs = regionJobs - jobIndex;
+            const int rows = remainingRegionJobs > 0
+                ? (region.GetBottom() - currentTop) / static_cast<int>(remainingRegionJobs)
+                : 0;
+            const int bottom = jobIndex + 1 == regionJobs ? region.GetBottom() : currentTop + rows;
+
+            if (height <= 0 || rows <= 0)
+            {
+                jobs.push_back(RenderJob());
+            }
+            else
+            {
+                jobs.push_back(RenderJob(RenderRegion(region.GetLeft(), currentTop, region.GetRight(), bottom)));
+                currentTop = bottom;
+            }
+        }
+    }
+
+    while (jobs.size() < threadNumber)
+        jobs.push_back(RenderJob());
+
+    return jobs;
+}
+
 // Basic methods.
 Fractal::Fractal(int width, int height)
 {

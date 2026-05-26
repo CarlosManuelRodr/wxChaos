@@ -13,7 +13,6 @@
 #include "geometry/LineData.h"
 #include "geometry/CircleData.h"
 #include "geometry/Vector2Int.h"
-#include "geometry/Vector2Double.h"
 #include "geometry/Rect.h"
 #include "../gui/wx/PanelOptions.h"
 #include "ColorPalettes.h"
@@ -21,6 +20,8 @@
 #include "FormulaOpt.h"
 #include "RenderFractal.h"
 #include "ThreadWatchdog.h"
+#include "rendering/RenderJob.h"
+#include "rendering/RenderRegion.h"
 
 class SFMLFractal;
 
@@ -151,6 +152,15 @@ protected:
     void RedrawMaps();
 
     void SetDefaultOpt();
+
+    ///@brief Copies the current fractal state into a renderer before launch.
+    void ConfigureRenderer(RenderFractal& renderer);
+
+    ///@brief Selects the pixel regions that need rendering for the current movement state.
+    std::vector<RenderRegion> BuildRenderRegions() const;
+
+    ///@brief Splits render regions into the legacy worker jobs used by TRender.
+    std::vector<RenderJob> BuildRenderJobs(const std::vector<RenderRegion>& regions) const;
 
 public:
 
@@ -348,302 +358,29 @@ public:
 template<class MT> void Fractal::TRender(MT* myRender)
 {
     _watchdog.Reset();
-    // If the image has been moved, divides the rendering area so threads will draw the missing part.
-    if (_xMoved != 0 || _yMoved != 0)
+
+    const std::vector<RenderRegion> regions = this->BuildRenderRegions();
+    const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions);
+    const bool relaunchExistingWork = _justLaunchThreads && _xMoved == 0 && _yMoved == 0;
+
+    for (unsigned int i = 0; i < _threadNumber; i++)
     {
-        if (_xMoved && _yMoved)
+        this->ConfigureRenderer(myRender[i]);
+
+        const RenderJob& job = jobs[i];
+        const RenderRegion& region = job.GetRegion();
+
+        if (relaunchExistingWork)
         {
-            for (unsigned int i = 0; i < _threadNumber; i++)
-            {
-                myRender[i].SetOpt(this->GetOptions());
-                myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
-
-                if (_orbitTrapMode || _smoothRender)
-                    myRender[i].SetSpecialRenderMode(true);
-                else
-                    myRender[i].SetSpecialRenderMode(false);
-
-                myRender[i].SetK(_kReal, _kImaginary);
-            }
-
-            if (_xMoved > 0 && _yMoved < 0)
-            {
-                // First thread group.
-                unsigned int localThreadN = ceil(static_cast<double>(_threadNumber) / 2.0);
-                int Div = static_cast<int>(floor((_screenHeight + _yMoved) / static_cast<double>(localThreadN)));
-                int Step = Div;
-                for (unsigned int i = 0; i < localThreadN; i++)
-                {
-                    if (i + 2 != localThreadN)
-                    {
-                        myRender[i].SetLimits(0, Step - Div, _xMoved, Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, Step, _xMoved, _screenHeight + _yMoved);
-                }
-
-                // Second thread group.
-                Div = static_cast<int>(floor(abs(_yMoved) / static_cast<double>(_threadNumber - localThreadN)));
-                Step = Div;
-                int start = _screenHeight + _yMoved;
-                for (unsigned int i = localThreadN; i < _threadNumber; i++)
-                {
-
-                    if (i + 2 != _threadNumber)
-                    {
-                        myRender[i].SetLimits(0, start + Step - Div, _screenWidth, start + Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, start + Step, _screenWidth, _screenHeight);
-                }
-            }
-            else if (_xMoved > 0 && _yMoved > 0)
-            {
-                // First thread group.
-                unsigned int localThreadN = ceil(static_cast<double>(_threadNumber) / 2.0);
-                int Div = static_cast<int>(floor(abs(_yMoved) / static_cast<double>(localThreadN)));
-                int Step = Div;
-                for (unsigned int i = 0; i < localThreadN; i++)
-                {
-                    if (i + 2 != localThreadN)
-                    {
-                        myRender[i].SetLimits(0, Step - Div, _screenWidth, Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, Step, _screenWidth, _yMoved);
-                }
-
-                // Second thread group.
-                int start = _yMoved;
-                Div = static_cast<int>(floor((_screenHeight - _yMoved) / static_cast<double>(_threadNumber - localThreadN)));
-                Step = Div;
-                for (unsigned int i = localThreadN; i < _threadNumber; i++)
-                {
-                    if (i + 2 != _threadNumber)
-                    {
-                        myRender[i].SetLimits(0, start + Step - Div, _xMoved, start + Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, start + Step, _xMoved, _screenHeight);
-                }
-            }
-            else if (_xMoved < 0 && _yMoved < 0)
-            {
-                // First thread group.
-                unsigned int localThreadN = ceil(static_cast<double>(_threadNumber) / 2.0);
-                int Div = static_cast<int>(floor((_screenHeight + _yMoved) / static_cast<double>(localThreadN)));
-                int Step = Div;
-                for (unsigned int i = 0; i < localThreadN; i++)
-                {
-                    if (i + 2 != localThreadN)
-                    {
-                        myRender[i].SetLimits(_screenWidth + _xMoved, Step - Div, _screenWidth, Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(_screenWidth + _xMoved, Step, _screenWidth, _screenHeight + _yMoved);
-                }
-
-                // Second thread group.
-                Div = static_cast<int>(floor(abs(_yMoved) / (double)(_threadNumber - localThreadN)));
-                Step = Div;
-                int start = _screenHeight + _yMoved;
-                for (unsigned int i = localThreadN; i < _threadNumber; i++)
-                {
-
-                    if (i + 2 != _threadNumber)
-                    {
-                        myRender[i].SetLimits(0, start + Step - Div, _screenWidth, start + Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, start + Step, _screenWidth, _screenHeight);
-                }
-            }
-            else if (_xMoved < 0 && _yMoved > 0)
-            {
-                // First thread group.
-                unsigned int localThreadN = ceil(static_cast<double>(_threadNumber) / 2.0);
-                int Div = static_cast<int>(floor(abs(_yMoved) / static_cast<double>(localThreadN)));
-                int Step = Div;
-                for (unsigned int i = 0; i < localThreadN; i++)
-                {
-                    if (i + 2 != localThreadN)
-                    {
-                        myRender[i].SetLimits(0, Step - Div, _screenWidth, Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, Step, _screenWidth, _yMoved);
-                }
-
-                // Second thread pack.
-                int start = _yMoved;
-                Div = static_cast<int>(floor((_screenHeight - _yMoved) / static_cast<double>(_threadNumber - localThreadN)));
-                Step = Div;
-                for (unsigned int i = localThreadN; i < _threadNumber; i++)
-                {
-                    if (i + 2 != _threadNumber)
-                    {
-                        myRender[i].SetLimits(_screenWidth + _xMoved, start + Step - Div, _screenWidth, start + Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(_screenWidth + _xMoved, start + Step, _screenWidth, _screenHeight);
-                }
-            }
+            myRender[i].SetOldHo(job.GetProgressOriginY());
         }
-        else if (_xMoved)
+        else if (job.IsEmpty())
         {
-            int Div = static_cast<int>(floor(_screenHeight / static_cast<double>(_threadNumber)));
-            int Step = Div;
-            if (_xMoved > 0)
-            {
-                for (unsigned int i = 0; i < _threadNumber; i++)
-                {
-                    myRender[i].SetOpt(this->GetOptions());
-                    myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
-
-                    if (_orbitTrapMode || _smoothRender)
-                        myRender[i].SetSpecialRenderMode(true);
-                    else
-                        myRender[i].SetSpecialRenderMode(false);
-
-                    myRender[i].SetK(_kReal, _kImaginary);
-
-                    if (i + 2 != _threadNumber)
-                    {
-                        myRender[i].SetLimits(0, Step - Div, _xMoved, Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, Step, _xMoved, _screenHeight);
-                }
-            }
-            else
-            {
-                for (unsigned int i = 0; i < _threadNumber; i++)
-                {
-                    myRender[i].SetOpt(this->GetOptions());
-                    myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
-
-                    if (_orbitTrapMode || _smoothRender)
-                        myRender[i].SetSpecialRenderMode(true);
-                    else
-                        myRender[i].SetSpecialRenderMode(false);
-
-                    myRender[i].SetK(_kReal, _kImaginary);
-
-                    if (i + 2 != _threadNumber)
-                    {
-                        myRender[i].SetLimits(_screenWidth + _xMoved, Step - Div, _screenWidth, Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(_screenWidth + _xMoved, Step, _screenWidth, _screenHeight);
-                }
-            }
+            myRender[i].SetLimits(0, 0, 0, 1);
         }
-        else if (_yMoved)
+        else
         {
-            if (_yMoved > 0)
-            {
-                int Div = static_cast<int>(floor(_yMoved / static_cast<double>(_threadNumber)));
-                int Step = Div;
-
-                for (unsigned int i = 0; i < _threadNumber; i++)
-                {
-                    myRender[i].SetOpt(this->GetOptions());
-                    myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
-
-                    if (_orbitTrapMode || _smoothRender)
-                        myRender[i].SetSpecialRenderMode(true);
-                    else
-                        myRender[i].SetSpecialRenderMode(false);
-
-                    myRender[i].SetK(_kReal, _kImaginary);
-
-                    if (i + 2 != _threadNumber)
-                    {
-                        myRender[i].SetLimits(0, Step - Div, _screenWidth, Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, Step, _screenWidth, _yMoved);
-                }
-            }
-            else
-            {
-                int Div = static_cast<int>(floor(abs(_yMoved) / static_cast<double>(_threadNumber)));
-                int Step = Div;
-
-                for (unsigned int i = 0; i < _threadNumber; i++)
-                {
-                    myRender[i].SetOpt(this->GetOptions());
-                    myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
-
-                    if (_orbitTrapMode || _smoothRender)
-                        myRender[i].SetSpecialRenderMode(true);
-                    else
-                        myRender[i].SetSpecialRenderMode(false);
-
-                    myRender[i].SetK(_kReal, _kImaginary);
-
-                    int start = _screenHeight + _yMoved;
-
-                    if (i + 2 != _threadNumber)
-                    {
-                        myRender[i].SetLimits(0, start + Step - Div, _screenWidth, start + Step);
-                        Step += Div;
-                    }
-                    else
-                        myRender[i].SetLimits(0, start + Step, _screenWidth, _screenHeight);
-                }
-            }
-        }
-    }
-    else
-    {
-        // Draws all the screen.
-        int Div = static_cast<int>(floor(_screenHeight / static_cast<double>(_threadNumber)));
-        int Step = Div;
-
-        for (unsigned int i = 0; i < _threadNumber; i++)
-        {
-            myRender[i].SetOpt(this->GetOptions());
-            myRender[i].SetRenderOut(_setMap, _colorMap, _auxMap);
-
-            if (_orbitTrapMode || _smoothRender)
-                myRender[i].SetSpecialRenderMode(true);
-            else
-                myRender[i].SetSpecialRenderMode(false);
-
-            myRender[i].SetK(_kReal, _kImaginary);
-
-            if (!_justLaunchThreads)
-            {
-                if (i + 2 != _threadNumber)
-                {
-                    myRender[i].SetLimits(0, Step - Div, _screenWidth, Step);
-                    Step += Div;
-                }
-                else
-                    myRender[i].SetLimits(0, Step, _screenWidth, _screenHeight);
-            }
-            else
-            {
-                if (i + 2 != _threadNumber)
-                {
-                    myRender[i].SetOldHo(Step - Div);
-                    Step += Div;
-                }
-                else
-                    myRender[i].SetOldHo(Step);
-            }
+            myRender[i].SetLimits(region.GetLeft(), region.GetTop(), region.GetRight(), region.GetBottom());
         }
     }
 
