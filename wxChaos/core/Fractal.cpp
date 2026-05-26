@@ -1,6 +1,5 @@
 #include <complex>
 #include <algorithm>
-#include <cmath>
 #include <mpParser.h>
 #include "Fractal.h"
 #include "BmpWriter.h"
@@ -46,11 +45,11 @@ sf::Color Fractal::CalcColor(int colorNum) const
 
     colorNum = colorNum % _paletteSize;
     const wxColour& color = _palette[colorNum];
-    return sf::Color(color.Red(), color.Green(), color.Blue(), color.Alpha());
+    return {color.Red(), color.Green(), color.Blue(), color.Alpha()};
 }
 void Fractal::RebuildPalette()
 {
-    this->DeleteSavedZooms();
+    DeleteSavedZooms();
 
     for (int i = 0; i < _paletteSize; i++)
     {
@@ -87,8 +86,8 @@ void Fractal::SetDefaultOpt()
     _geomFigure = false;
     _onWxCtrl = false;
 
-    for (int i = 0; i < 4; i++)
-        _movement[i] = false;
+    for (bool & i : _movement)
+        i = false;
 }
 
 void Fractal::ConfigureRenderer(RenderFractal& renderer)
