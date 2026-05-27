@@ -4,44 +4,44 @@
 
 /*
 * @class FractalHandler
-* @brief Handles the fractal memory management.
+* @brief Interface class to instantiate fractals.
 */
 class FractalHandler
 {
-    Mandelbrot* mandelbrot;
-    MandelbrotZN* mandelbrotZN;
-    Julia* julia;
-    JuliaZN* juliaZN;
-    Newton* newton;
-    Sinoidal* sinoidal;
-    Magnet* magnet;
-    Medusa* medusa;
-    Manowar* manowar;
-    ManowarJulia* manowarJulia;
-    SierpinskyTriangle* sierpinskyTriangle;
-    FixedPoint1* fixedPoint1;
-    FixedPoint2* fixedPoint2;
-    FixedPoint3* fixedPoint3;
-    FixedPoint4* fixedPoint4;
-    Tricorn* tricorn;
-    BurningShip* burningShip;
-    BurningShipJulia* burningShipJulia;
-    Fractory* fractory;
-    Cell* cell;
-    DoublePendulum* dPendulum;
-    UserDefined* userDefined;
-    FPUserDefined* fpUserDefined;
-    ScriptFractal* scriptFractal;
+    Mandelbrot* _mandelbrot;
+    MandelbrotZN* _mandelbrotZN;
+    Julia* _julia;
+    JuliaZN* _juliaZN;
+    Newton* _newton;
+    Sinoidal* _sinoidal;
+    Magnet* _magnet;
+    Medusa* _medusa;
+    Manowar* _manowar;
+    ManowarJulia* _manowarJulia;
+    SierpinskyTriangle* _sierpinskyTriangle;
+    FixedPoint1* _fixedPoint1;
+    FixedPoint2* _fixedPoint2;
+    FixedPoint3* _fixedPoint3;
+    FixedPoint4* _fixedPoint4;
+    Tricorn* _tricorn;
+    BurningShip* _burningShip;
+    BurningShipJulia* _burningShipJulia;
+    Fractory* _fractory;
+    Cell* _cell;
+    DoublePendulum* _doublePendulum;
+    UserDefined* _userDefined;
+    FPUserDefined* _fpUserDefined;
+    ScriptFractal* _scriptFractal;
 
-    Fractal* target;
-    FractalType type;
+    Fractal* _target;
+    FractalType _type;
 
 public:
     FractalHandler();
     ~FractalHandler();
 
-    void CreateFractal(FractalType _type, sf::RenderWindow* Window);
-    void CreateFractal(FractalType _type, int width, int height);
+    void CreateFractal(FractalType type, sf::RenderWindow* Window);
+    void CreateFractal(FractalType type, int width, int height);
     void CreateScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, std::string scriptPath);

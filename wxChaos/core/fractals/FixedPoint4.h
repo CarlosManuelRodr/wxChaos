@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderFixedPoint4.h"
+#include "../renderers/FixedPoint4Renderer.h"
 
 /*
 * @class FixedPoint4
@@ -8,7 +8,7 @@
 */
 class FixedPoint4 : public Fractal
 {
-    RenderFixedPoint4* myRender;
+    FixedPoint4Renderer* myRender;
     double minStep;
 public:
     explicit FixedPoint4(const sf::RenderWindow* window);

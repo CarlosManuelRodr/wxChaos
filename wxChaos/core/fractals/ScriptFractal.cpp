@@ -24,13 +24,13 @@ ScriptFractal::ScriptFractal(const sf::RenderWindow* window, const ScriptData &s
     _path = scriptData.file;
     _myScriptData = scriptData;
     _type = FractalType::ScriptFractal;
-    _myRender = new RenderScriptFractal[_threadNumber];
+    _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
     {
         _myRender[i].SetParams(i);
         _myRender[i].SetPath(scriptData.file);
     }
-    SetWatchdog<RenderScriptFractal>(_myRender, &_watchdog, _threadNumber);
+    SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
 }
 ScriptFractal::ScriptFractal(const int width, const int height, const ScriptData& scriptData, const int renderThreads)
                              : Fractal(width, height)
@@ -56,13 +56,13 @@ ScriptFractal::ScriptFractal(const int width, const int height, const ScriptData
     _path = scriptData.file;
     _myScriptData = scriptData;
     _type = FractalType::ScriptFractal;
-    _myRender = new RenderScriptFractal[_threadNumber];
+    _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
     {
         _myRender[i].SetParams(static_cast<int>(i));
         _myRender[i].SetPath(scriptData.file);
     }
-    SetWatchdog<RenderScriptFractal>(_myRender, &_watchdog, _threadNumber);
+    SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
 }
 ScriptFractal::ScriptFractal(const int width, const int height, const string& scriptPath) : Fractal(width, height)
 {
@@ -79,10 +79,10 @@ ScriptFractal::ScriptFractal(const int width, const int height, const string& sc
     }
 
     _type = FractalType::ScriptFractal;
-    _myRender = new RenderScriptFractal[_threadNumber];
+    _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
         _myRender[i].SetPath(scriptPath);
-    SetWatchdog<RenderScriptFractal>(_myRender, &_watchdog, _threadNumber);
+    SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
 }
 ScriptFractal::~ScriptFractal()
 {
@@ -94,7 +94,7 @@ void ScriptFractal::Render()
     asSetMap = _setMap;
     asColorMap = _colorMap;
     asPrepareMultithread();
-    this->TRender<RenderScriptFractal>(_myRender);
+    this->SetRendererBounds<ScriptFractalRenderer>(_myRender);
     asUnprepareMultithread();
 }
 void ScriptFractal::PostRender()

@@ -1,3 +1,4 @@
+// ReSharper disable CppExpressionWithoutSideEffects
 #include "AngelscriptConfigurationEngine.h"
 #include "AngelscriptBindings.h"
 #include <scriptstdstring.h>
@@ -11,9 +12,8 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
         status = EngineStatus::Error;
         return;
     }
-    else
-        status = EngineStatus::Ok;
 
+    status = EngineStatus::Ok;
     engine->SetMessageCallback(asFUNCTION(MessageCallback), nullptr, asCALL_CDECL);
 
     RegisterStdString(engine);
@@ -115,7 +115,7 @@ ScriptData AngelscriptConfigurationEngine::GetScriptData()
     return configuration;
 }
 
-EngineStatus AngelscriptConfigurationEngine::GetStatus()
+EngineStatus AngelscriptConfigurationEngine::GetStatus() const
 {
     return status;
 }
@@ -127,6 +127,5 @@ wxString AngelscriptConfigurationEngine::GetErrorInfo()
         thereIsConsoleText = false;
         return errorInfo + consoleText;
     }
-    else
-        return errorInfo;
+    return errorInfo;
 }

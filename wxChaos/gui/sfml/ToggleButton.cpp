@@ -1,10 +1,11 @@
 #include "ToggleButton.h"
 
-ToggleButton::ToggleButton(const std::string& path1, const std::string& path2, const int posX, const int posY,
-                           const sf::RenderWindow* window) : Button(path1, posX, posY, window)
+ToggleButton::ToggleButton(const std::string& textureImagePath, const std::string& toggledTextureImagePath,
+                           const int positionX, const int positionY, const sf::RenderWindow* window)
+                           : Button(textureImagePath, positionX, positionY, window)
 {
-    _textureImage2.loadFromFile(path2);
-    _texture2.loadFromImage(_textureImage2);
+    _toggledTextureImage.loadFromFile(toggledTextureImagePath);
+    _toggledTexture.loadFromImage(_toggledTextureImage);
 }
 
 bool ToggleButton::HandleEvents(const sf::Event event)
@@ -18,7 +19,7 @@ bool ToggleButton::HandleEvents(const sf::Event event)
                 if (event.mouseButton.y >= _area.top && event.mouseButton.y <= _area.top + _area.height)
                 {
                     _pressed = !_pressed;
-                    _sprite.setTexture(_pressed ? _texture2 : _texture);
+                    _sprite.setTexture(_pressed ? _toggledTexture : _texture);
                     return true;
                 }
             }

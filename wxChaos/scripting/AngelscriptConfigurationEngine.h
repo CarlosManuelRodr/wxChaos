@@ -5,9 +5,12 @@
 #include "ScriptData.h"
 #include "types/EngineStatus.h"
 
+/**
+* @struct AngelscriptConfigurationEngine
+* @brief Script configurator. Used to call the Configure() function.
+*/
 class AngelscriptConfigurationEngine
 {
-private:
     ScriptData configuration;
     asIScriptEngine* engine;
     EngineStatus status;
@@ -20,6 +23,6 @@ public:
     bool CompileFromPath(const std::string& path);
     bool Execute();
     ScriptData GetScriptData();
-    EngineStatus GetStatus();
+    EngineStatus GetStatus() const;
     wxString GetErrorInfo();
 };

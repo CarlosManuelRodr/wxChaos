@@ -104,7 +104,7 @@ string replace_ext(const string &filepath, const string &newExt)
     string out = filepath;
     for (unsigned int i=0; i<filepath.size(); i++)
     {
-        if(filepath[i] == '.') extDot = i;
+        if (filepath[i] == '.') extDot = i;
     }
     out.erase(extDot, filepath.size()-extDot);
     out += newExt;

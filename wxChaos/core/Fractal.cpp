@@ -89,9 +89,9 @@ void Fractal::SetDefaultOptions()
         i = false;
 }
 
-void Fractal::ConfigureRenderer(RenderFractal& renderer) const
+void Fractal::ConfigureRenderer(Renderer& renderer) const
 {
-    renderer.SetOpt(this->GetOptions());
+    renderer.SetOptions(this->GetOptions());
     renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
     renderer.SetSpecialRenderMode(_orbitTrapMode || _smoothRender);
     renderer.SetK(_kReal, _kImaginary);
@@ -321,7 +321,7 @@ Fractal::Fractal(const int width, const int height)
     // Creates default color palette.
     _relativeColor = false;
     _gradPaletteSize = _paletteSize = 300;
-    _algorithm = RenderingAlgorithm::Other;
+    _algorithm = RenderingAlgorithmType::Other;
     _gradStyle = defaultGradientStyle;
     _gradient.fromString(defaultGradientString);
     _gradient.setMin(0);
@@ -416,7 +416,7 @@ Fractal::Fractal(const sf::RenderWindow* window)
     // Creates default color palette.
     _relativeColor = false;
     _gradPaletteSize = _paletteSize = 300;
-    _algorithm = RenderingAlgorithm::Other;
+    _algorithm = RenderingAlgorithmType::Other;
     _gradStyle = defaultGradientStyle;
     _gradient.fromString(defaultGradientString);
     _gradient.setMin(0);
@@ -681,7 +681,7 @@ void Fractal::Redraw()
     _paused = false;
 }
 // Thread control
-ThreadWatchdog<RenderFractal>* Fractal::GetWatchdog()
+ThreadWatchdog<Renderer>* Fractal::GetWatchdog()
 {
     return &_watchdog;
 }
@@ -1215,15 +1215,15 @@ void Fractal::SetVarGradient(int n)
 }
 
 // Algorithm.
-RenderingAlgorithm Fractal::GetCurrentAlg() const
+RenderingAlgorithmType Fractal::GetCurrentAlg() const
 {
     return _algorithm;
 }
-vector<RenderingAlgorithm> Fractal::GetAvailableAlg()
+vector<RenderingAlgorithmType> Fractal::GetAvailableAlg()
 {
     return _availableAlg;
 }
-void Fractal::SetAlgorithm(const RenderingAlgorithm algorithm)
+void Fractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
 {
     _algorithm = algorithm;
     this->StopRender();

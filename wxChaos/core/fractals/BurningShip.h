@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderBurningShip.h"
+#include "../renderers/BurningShipRenderer.h"
 
 /*
 * @class BurningShip
@@ -8,7 +8,7 @@
 */
 class BurningShip : public Fractal
 {
-    RenderBurningShip* myRender;
+    BurningShipRenderer* myRender;
 public:
     explicit BurningShip(const sf::RenderWindow* window);
     BurningShip(int width, int height);

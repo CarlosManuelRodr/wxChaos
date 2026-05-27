@@ -324,48 +324,48 @@ void RendererOptions::SetAlgorithmChoices()
     {
         switch (_target->GetAvailableAlg()[i])
         {
-            case RenderingAlgorithm::EscapeTime:
+            case RenderingAlgorithmType::EscapeTime:
                 {
                     _algorithmChoice->Append(wxT("Escape time"));
                     _escapeTimeIndex = static_cast<int>(i);
                 }
                 break;
-            case RenderingAlgorithm::GaussianInt:
+            case RenderingAlgorithmType::GaussianInt:
                 {
                     _algorithmChoice->Append(wxT("Gaussian integer"));
                     _gaussIntIndex = static_cast<int>(i);
                 }
                 break;
-            case RenderingAlgorithm::EscapeAngle:
+            case RenderingAlgorithmType::EscapeAngle:
                 {
                     _algorithmChoice->Append(wxT("Escape angle"));
                     _escapeAngleIndex = static_cast<int>(i);
                 }
                 break;
-            case RenderingAlgorithm::TriangleInequality:
+            case RenderingAlgorithmType::TriangleInequality:
                 {
                     _algorithmChoice->Append(wxT("Triangle inequality"));
                     _triangleIneqIndex = static_cast<int>(i);
                 }
                 break;
-            case RenderingAlgorithm::ChaoticMap:
+            case RenderingAlgorithmType::ChaoticMap:
                 {
                     _algorithmChoice->Append(wxT("Chaotic map"));
                     _chaoticMapIndex = static_cast<int>(i);
                 }
                 break;
-            case RenderingAlgorithm::Lyapunov:
+            case RenderingAlgorithmType::Lyapunov:
                 {
                     _algorithmChoice->Append(wxT("Lyapunov"));
                     _lyapunovIndex = static_cast<int>(i);
                 }
                 break;
-            case RenderingAlgorithm::ConvergenceTest:
+            case RenderingAlgorithmType::ConvergenceTest:
                 {
                     _algorithmChoice->Append(wxT("Convergence test"));
                     _convergenceTestIndex = static_cast<int>(i);
                 }
-            case RenderingAlgorithm::Other:
+            case RenderingAlgorithmType::Other:
                 break;
         };
 
@@ -417,13 +417,13 @@ void RendererOptions::SetTarget(SFMLFractal* presenter)
     _escapeAngleIndex = -1;
     this->SetAlgorithmChoices();
 
-    if (_target->GetCurrentAlg() == RenderingAlgorithm::EscapeTime)
+    if (_target->GetCurrentAlg() == RenderingAlgorithmType::EscapeTime)
         _algorithmChoice->SetSelection(_escapeTimeIndex);
-    else if (_target->GetCurrentAlg() == RenderingAlgorithm::GaussianInt)
+    else if (_target->GetCurrentAlg() == RenderingAlgorithmType::GaussianInt)
         _algorithmChoice->SetSelection(_gaussIntIndex);
-    else if (_target->GetCurrentAlg() == RenderingAlgorithm::EscapeAngle)
+    else if (_target->GetCurrentAlg() == RenderingAlgorithmType::EscapeAngle)
         _algorithmChoice->SetSelection(_escapeAngleIndex);
-    else if (_target->GetCurrentAlg() == RenderingAlgorithm::ConvergenceTest)
+    else if (_target->GetCurrentAlg() == RenderingAlgorithmType::ConvergenceTest)
         _algorithmChoice->SetSelection(_convergenceTestIndex);
     else
         _algorithmChoice->SetSelection(0);
@@ -473,9 +473,9 @@ void RendererOptions::OnChangeAlgorithm( wxCommandEvent& event )
     {
         _orbitTrap->Enable(_target->HasOrbitTrapMode());
         _smoothRender->Enable(_target->HasSmoothRenderMode());
-        _presenter->SetAlgorithm(RenderingAlgorithm::EscapeTime);
+        _presenter->SetAlgorithm(RenderingAlgorithmType::EscapeTime);
     }
-    else if(selection == _convergenceTestIndex)
+    else if (selection == _convergenceTestIndex)
     {
         _orbitTrap->Enable(_target->HasOrbitTrapMode());
     }
@@ -490,17 +490,17 @@ void RendererOptions::OnChangeAlgorithm( wxCommandEvent& event )
     }
 
     if (selection == _gaussIntIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithm::GaussianInt);
+        _presenter->SetAlgorithm(RenderingAlgorithmType::GaussianInt);
     else if (selection == _escapeAngleIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithm::EscapeAngle);
+        _presenter->SetAlgorithm(RenderingAlgorithmType::EscapeAngle);
     else if (selection == _triangleIneqIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithm::TriangleInequality);
+        _presenter->SetAlgorithm(RenderingAlgorithmType::TriangleInequality);
     else if (selection == _chaoticMapIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithm::ChaoticMap);
+        _presenter->SetAlgorithm(RenderingAlgorithmType::ChaoticMap);
     else if (selection == _lyapunovIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithm::Lyapunov);
+        _presenter->SetAlgorithm(RenderingAlgorithmType::Lyapunov);
     else if (selection == _convergenceTestIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithm::ConvergenceTest);
+        _presenter->SetAlgorithm(RenderingAlgorithmType::ConvergenceTest);
 }
 
 // Option to change methods.
@@ -515,7 +515,7 @@ void RendererOptions::OnRelativeColor(wxCommandEvent&)
 void RendererOptions::OnColorFractal(wxCommandEvent&)
 {
     const bool mode = _colorFractal->IsChecked();
-    _presenter->SetExtColorMode(mode);
+    _presenter->SetExteriorColorMode(mode);
     _colorFractal->SetValue(mode);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst

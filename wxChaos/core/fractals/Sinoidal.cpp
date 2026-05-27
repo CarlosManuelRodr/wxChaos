@@ -22,14 +22,14 @@ Sinoidal::Sinoidal(const sf::RenderWindow* window) : Fractal(window)
 
     _hasOrbitTrap = true;
 
-    myRender = new RenderSinoidal[_threadNumber];
-    SetWatchdog<RenderSinoidal>(myRender, &_watchdog, _threadNumber);
+    myRender = new SinoidalRenderer[_threadNumber];
+    SetWatchdog<SinoidalRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 }
 Sinoidal::Sinoidal(const int width, const int height) : Fractal(width, height)
 {
@@ -43,14 +43,14 @@ Sinoidal::Sinoidal(const int width, const int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
     _kReal = 1;
     _kImaginary = 0.25;
     _juliaVariety = true;
 
     _type = FractalType::Sinoidal;
-    myRender = new RenderSinoidal[_threadNumber];
-    SetWatchdog<RenderSinoidal>(myRender, &_watchdog, _threadNumber);
+    myRender = new SinoidalRenderer[_threadNumber];
+    SetWatchdog<SinoidalRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Sinoidal::~Sinoidal()
 {
@@ -59,7 +59,7 @@ Sinoidal::~Sinoidal()
 }
 void Sinoidal::Render()
 {
-    this->TRender<RenderSinoidal>(myRender);
+    this->SetRendererBounds<SinoidalRenderer>(myRender);
 }
 void Sinoidal::DrawOrbit()
 {

@@ -16,7 +16,7 @@
 #include <wx/notebook.h>
 #include <SFML/Graphics/Color.hpp>
 #include "ColorPalettes.h"
-#include "gradientdlg.h"
+#include "wxGradientDialog.h"
 #include "Fractal.h"
 #include "sfml/SFMLFractal.h"
 

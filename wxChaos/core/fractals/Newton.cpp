@@ -17,8 +17,8 @@ Newton::Newton(const sf::RenderWindow* window) : Fractal(window)
     _type = FractalType::NewtonRaphsonMethod;
     _hasOrbit = true;
     _hasOrbitTrap = true;
-    myRender = new RenderNewton[_threadNumber];
-    SetWatchdog<RenderNewton>(myRender, &_watchdog, _threadNumber);
+    myRender = new NewtonRenderer[_threadNumber];
+    SetWatchdog<NewtonRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -26,8 +26,8 @@ Newton::Newton(const sf::RenderWindow* window) : Fractal(window)
     minStep = 0.001;
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::ConvergenceTest;
-    _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
+    _algorithm = RenderingAlgorithmType::ConvergenceTest;
+    _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
 }
 Newton::Newton(const int width, const int height) : Fractal(width, height)
 {
@@ -47,8 +47,8 @@ Newton::Newton(const int width, const int height) : Fractal(width, height)
     minStep = 0.001;
 
     _type = FractalType::NewtonRaphsonMethod;
-    myRender = new RenderNewton[_threadNumber];
-    SetWatchdog<RenderNewton>(myRender, &_watchdog, _threadNumber);
+    myRender = new NewtonRenderer[_threadNumber];
+    SetWatchdog<NewtonRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Newton::~Newton()
 {
@@ -61,7 +61,7 @@ void Newton::DrawOrbit()
 
     if (_orbitX != 0 && _orbitY != 0)
     {
-        for(unsigned n=0; n<_maxIter; n++)
+        for (unsigned n=0; n<_maxIter; n++)
         {
             complex<double> previous = z;
             z = z - (pow(z, 3) - complex<double>(1, 0))/(complex<double>(2, 0)*pow(z,2));
@@ -81,7 +81,7 @@ void Newton::Render()
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(minStep);
 
-    this->TRender<RenderNewton>(myRender);
+    this->SetRendererBounds<NewtonRenderer>(myRender);
 }
 void Newton::CopyOptFromPanel()
 {

@@ -18,7 +18,6 @@
 
 class ScriptNameDialog : public wxDialog
 {
-private:
     wxStaticText* scriptNameText;
     wxTextCtrl* scriptNameCtrl;
     wxStdDialogButtonSizer* buttonsSizer;
@@ -28,9 +27,9 @@ private:
     void OnCancel(wxCommandEvent& event);
     void OnOk(wxCommandEvent& event);
 public:
-    ScriptNameDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, 
-                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(600, 220), long style = wxDEFAULT_DIALOG_STYLE);
-    ~ScriptNameDialog();
+    explicit ScriptNameDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
+                              const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(600, 220), long style = wxDEFAULT_DIALOG_STYLE);
+    ~ScriptNameDialog() override;
     wxString GetScriptName() const;
 };
 
@@ -58,7 +57,7 @@ class ScriptEditor : public wxFrame
     void SetUpLexer() const;
     void FetchUserScripts();
     void LoadScript(unsigned index);
-    void ConsoleSetText(const wxString& text);
+    void ConsoleSetText(const wxString& text) const;
     void ConsoleSetWelcomeText() const;
     void ConsolePrepareInput(const wxString& command) const;
     void ConsolePrepareOutput() const;
@@ -78,5 +77,5 @@ public:
     ScriptEditor(bool* active, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Script editor"),
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 900),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
-    ~ScriptEditor();
+    ~ScriptEditor() override;
 };

@@ -14,7 +14,7 @@
 #define _fractalCanvas
 
 #include "sfml/ToggleButton.h"
-#include "sfml/SelectRect.h"
+#include "sfml/SelectionRect.h"
 #include "wxSFMLCanvas.h"
 #include "../sfml/SFMLFractal.h"
 #include "../sfml/CoordinateSelector.h"
@@ -54,7 +54,7 @@ class FractalCanvas : public wxSFMLCanvas
     // Fractal
     FractalHandler _fractalHandler;
     SFMLFractal _sfmlFractal;
-    SelectRect* _selection;
+    SelectionRect* _selection;
     ToggleButton* _play;
     CoordinateSelector* _screenPointer;
     FractalType _type;

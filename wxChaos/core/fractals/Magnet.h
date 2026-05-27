@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderMagnet.h"
+#include "../renderers/MagnetRenderer.h"
 
 /*
 * @class Magnet
@@ -9,7 +9,7 @@
 
 class Magnet : public Fractal
 {
-    RenderMagnet* myRender;
+    MagnetRenderer* myRender;
 public:
     explicit Magnet(const sf::RenderWindow* window);
     Magnet(int width, int height);

@@ -45,10 +45,10 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     _target->SetOnWxCtrl(true);
 
     // Initializes GUI elements.
-    _selection = new SelectRect(this);
+    _selection = new SelectionRect();
 
     _play = new ToggleButton(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 4, this);
-    _play->SetAnchorage(false, true, true, false);
+    _play->SetAnchor(false, true, true, false);
     _play->Resize(this);
 
     _screenPointer = new CoordinateSelector(this);
@@ -553,7 +553,7 @@ void FractalCanvas::OnUnClick(wxMouseEvent& event)
                         btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
                     _sfmlFractal.Redraw();
                 }
-                _sfmlFractal.SetAreaOfView(_selection->GetSeleccion());
+                _sfmlFractal.SetAreaOfView(_selection->GetSelection());
             }
         }
     }
@@ -610,35 +610,36 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     }
     statusData.status->SetStatusText(text);
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnKeyDown(wxKeyEvent& event)
 {
     switch (event.GetKeyCode())
     {
-    case WXK_UP:
-    {
-        _target->SetMovement(Up);
-        break;
-    }
-    case WXK_DOWN:
-    {
-        _target->SetMovement(Down);
-        break;
-    }
-    case WXK_LEFT:
-    {
-        _target->SetMovement(Left);
-        break;
-    }
-    case WXK_RIGHT:
-    {
-        _target->SetMovement(Right);
-        break;
-    }
-    default: break;
+        case WXK_UP:
+        {
+            _target->SetMovement(Up);
+            break;
+        }
+        case WXK_DOWN:
+        {
+            _target->SetMovement(Down);
+            break;
+        }
+        case WXK_LEFT:
+        {
+            _target->SetMovement(Left);
+            break;
+        }
+        case WXK_RIGHT:
+        {
+            _target->SetMovement(Right);
+            break;
+        }
+        default: break;
     }
 
-    wxChar key = event.GetUnicodeKey();
-
+    const wxChar key = event.GetUnicodeKey();
     if (key == wxT('W') || key == wxT('w'))
         _target->SetMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
@@ -648,34 +649,36 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     else if (key == wxT('D') || key == wxT('d'))
         _target->SetMovement(Right);
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 {
     switch (event.GetKeyCode())
     {
-    case WXK_UP:
-    {
-        _target->ReleaseMovement(Up);
-        break;
-    }
-    case WXK_DOWN:
-    {
-        _target->ReleaseMovement(Down);
-        break;
-    }
-    case WXK_LEFT:
-    {
-        _target->ReleaseMovement(Left);
-        break;
-    }
-    case WXK_RIGHT:
-    {
-        _target->ReleaseMovement(Right);
-        break;
-    }
-    default: break;
+        case WXK_UP:
+        {
+            _target->ReleaseMovement(Up);
+            break;
+        }
+        case WXK_DOWN:
+        {
+            _target->ReleaseMovement(Down);
+            break;
+        }
+        case WXK_LEFT:
+        {
+            _target->ReleaseMovement(Left);
+            break;
+        }
+        case WXK_RIGHT:
+        {
+            _target->ReleaseMovement(Right);
+            break;
+        }
+        default: break;
     }
 
-    wxChar key = event.GetUnicodeKey();
+    const wxChar key = event.GetUnicodeKey();
     if (key == wxT('W') || key == wxT('w'))
         _target->ReleaseMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))

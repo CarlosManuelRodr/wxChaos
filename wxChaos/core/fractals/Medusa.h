@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderMedusa.h"
+#include "../renderers/MedusaRenderer.h"
 
 /*
 * @class Medusa
@@ -8,7 +8,7 @@
 */
 class Medusa : public Fractal
 {
-    RenderMedusa* myRender;
+    MedusaRenderer* myRender;
 public:
     explicit Medusa(const sf::RenderWindow* window);
     Medusa(int width, int height);

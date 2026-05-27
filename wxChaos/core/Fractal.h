@@ -6,9 +6,9 @@
 #include <wx/colour.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include "wx/gradient.h"
+#include "wx/wxGradient.h"
 #include "types/FractalType.h"
-#include "types/RenderingAlgorithm.h"
+#include "types/RenderingAlgorithmType.h"
 #include "types/Direction.h"
 #include "geometry/LineData.h"
 #include "geometry/CircleData.h"
@@ -17,7 +17,7 @@
 #include "ColorPalettes.h"
 #include "Options.h"
 #include "FormulaOpt.h"
-#include "RenderFractal.h"
+#include "Renderer.h"
 #include "ThreadWatchdog.h"
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
@@ -41,7 +41,7 @@ protected:
     bool** _setMap;                             ///< Stores the points that belong to the fractal set.
     int** _colorMap;                            ///< Store the color map.
     unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
-    ThreadWatchdog<RenderFractal> _watchdog;    ///< Watch over the render threads.
+    ThreadWatchdog<Renderer> _watchdog;    ///< Watch over the render threads.
     RenderThreadPool _renderPool;               ///< Reusable pool for render jobs.
 
     // Fractal properties.
@@ -77,8 +77,8 @@ protected:
     double _magnification;
 
     // Color properties.
-    RenderingAlgorithm _algorithm;
-    std::vector<RenderingAlgorithm> _availableAlg;
+    RenderingAlgorithmType _algorithm;
+    std::vector<RenderingAlgorithmType> _availableAlg;
     wxGradient _gradient;                   ///< Gradient to be used.
     wxColour _fSetColor;                    ///< Color of points belonging to the set.
     std::vector<wxColour> _palette;
@@ -94,19 +94,19 @@ protected:
 
     // Status variables.
     bool _movement[4];
-    bool _moving;                            ///< Movement status.
+    bool _moving;                           ///< Movement status.
     bool _rendered;
     bool _rendering;
     bool _paused;
     bool _pausing;
-    bool _varGradient;                       ///< If this is activated (by the play button) the gradient variation mode starts.
+    bool _varGradient;                      ///< If this is activated (by the play button) the gradient variation mode starts.
     bool _onSnapshot;
     bool _waitRoutine;
     bool _redrawAll;
     bool _redrawAlways;
     bool _justLaunchThreads;
     bool _varGradChange;
-    bool _renderJobComp;                     ///< Fractal compatible with renderJobs.
+    bool _renderJobComp;                    ///< Fractal compatible with renderJobs.
     bool _changeFractalProp;
     bool _onWxCtrl;
     std::vector<Vector2Int> _endPoints;
@@ -155,7 +155,7 @@ protected:
     void SetDefaultOptions();
 
     ///@brief Copies the current fractal state into a renderer before launch.
-    void ConfigureRenderer(RenderFractal& renderer) const;
+    void ConfigureRenderer(Renderer& renderer) const;
 
     ///@brief Selects the pixel regions that need rendering for the current movement state.
     std::vector<RenderRegion> BuildRenderRegions() const;
@@ -200,11 +200,11 @@ public:
     // Thread control.
     ///@brief Calculate drawing limits of each thread and launches them.
     ///@param myRender Array of RenderFractal.
-    template<class MT> void TRender(MT* myRender);
+    template<class MT> void SetRendererBounds(MT* myRender);
 
     ///@brief Return a pointer to the watchdog.
     ///@return A pointer to the watchdog.
-    ThreadWatchdog<RenderFractal>* GetWatchdog();
+    ThreadWatchdog<Renderer>* GetWatchdog();
 
     ///@brief Returns progress for the active render backend.
     ///@return A value from 0 to 100.
@@ -313,9 +313,9 @@ public:
     void SetVarGradient(int n);
 
     // Algorithm.
-    RenderingAlgorithm GetCurrentAlg() const;
-    std::vector<RenderingAlgorithm> GetAvailableAlg();
-    void SetAlgorithm(RenderingAlgorithm algorithm);
+    RenderingAlgorithmType GetCurrentAlg() const;
+    std::vector<RenderingAlgorithmType> GetAvailableAlg();
+    void SetAlgorithm(RenderingAlgorithmType algorithm);
 
     // Julia mode operations.
     bool IsJuliaVariety() const;
@@ -355,7 +355,7 @@ public:
     virtual void DrawOrbit() {}
 };
 
-template<class MT> void Fractal::TRender(MT* myRender)
+template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer* myRender)
 {
     const std::vector<RenderRegion> regions = this->BuildRenderRegions();
     const bool useRenderPool = _renderJobComp && !_justLaunchThreads;
@@ -365,7 +365,7 @@ template<class MT> void Fractal::TRender(MT* myRender)
 
     if (useRenderPool)
     {
-        std::vector<RenderFractal*> renderers;
+        std::vector<Renderer*> renderers;
         renderers.reserve(_threadNumber);
 
         for (unsigned int i = 0; i < _threadNumber; i++)
@@ -393,7 +393,7 @@ template<class MT> void Fractal::TRender(MT* myRender)
 
         if (relaunchExistingWork)
         {
-            myRender[i].SetOldHo(job.GetProgressOriginY());
+            myRender[i].SetOldHeightOrigin(job.GetProgressOriginY());
         }
         else if (job.IsEmpty())
         {

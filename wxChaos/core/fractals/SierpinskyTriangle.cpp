@@ -12,8 +12,8 @@ SierpinskyTriangle::SierpinskyTriangle(const sf::RenderWindow* window) : Fractal
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    myRender = new RenderSierpinskyTriangle[_threadNumber];
-    SetWatchdog<RenderSierpinskyTriangle>(myRender, &_watchdog, _threadNumber);
+    myRender = new SierpinskyTriangleRenderer[_threadNumber];
+    SetWatchdog<SierpinskyTriangleRenderer>(myRender, &_watchdog, _threadNumber);
 
     _type = FractalType::SierpinskyTriangle;
 }
@@ -27,11 +27,11 @@ SierpinskyTriangle::SierpinskyTriangle(const int width, const int height) : Frac
 
     _renderJobComp = false;
     _type = FractalType::SierpinskyTriangle;
-    myRender = new RenderSierpinskyTriangle[_threadNumber];
-    SetWatchdog<RenderSierpinskyTriangle>(myRender, &_watchdog, _threadNumber);
+    myRender = new SierpinskyTriangleRenderer[_threadNumber];
+    SetWatchdog<SierpinskyTriangleRenderer>(myRender, &_watchdog, _threadNumber);
 }
 void SierpinskyTriangle::Render()
 {
-    this->TRender<RenderSierpinskyTriangle>(myRender);
+    this->SetRendererBounds<SierpinskyTriangleRenderer>(myRender);
 }
 

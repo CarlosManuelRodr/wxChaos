@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderUserDefined.h"
+#include "../renderers/UserDefinedRenderer.h"
 
 /*
 * @class UserDefined
@@ -9,7 +9,7 @@
 class UserDefined : public Fractal
 {
 private:
-    RenderUserDefined* myRender;
+    UserDefinedRenderer* myRender;
 public:
     UserDefined(const sf::RenderWindow* window);
     UserDefined(int width, int height);

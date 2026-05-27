@@ -1,10 +1,10 @@
+// ReSharper disable CppParameterMayBeConst
+// ReSharper disable CppParameterMayBeConstPtrOrRef
 #include "AngelscriptBindings.h"
 #include "AngelscriptConfigurationEngine.h"
 #include "StringFuncs.h"
 #include "Filesystem.h"
-#include <scriptstdstring.h>
 #include <cassert>
-#include <cmath>
 
 using namespace std;
 
@@ -80,25 +80,25 @@ std::vector<ScriptData> GetAllUserScripts()
 
 int CompileScriptFromPath(asIScriptEngine* engine, const string& filePath)
 {
-    int r;
-    FILE* f = fopen(filePath.c_str(), "rb");
-    if (f == nullptr)
+    FILE* f = nullptr;
+    const errno_t err = fopen_s(&f, filePath.c_str(), "rb");
+    if (err != 0 || f == nullptr)
         return -1;
 
     fseek(f, 0, SEEK_END);
-    int len = ftell(f);
+    const int len = ftell(f);
     fseek(f, 0, SEEK_SET);
 
     string script;
     script.resize(len);
-    size_t c = fread(&script[0], len, 1, f);
+    const size_t c = fread(&script[0], len, 1, f);
     fclose(f);
 
     if (c == 0)
         return -1;
 
     asIScriptModule* mod = engine->GetModule(nullptr, asGM_ALWAYS_CREATE);
-    r = mod->AddScriptSection("script", &script[0], len);
+    int r = mod->AddScriptSection("script", &script[0], len);
     if (r < 0)
         return -1;
 
@@ -179,31 +179,19 @@ static void asSetPoint(int x, int y, bool setVal, int colorVal)
 
 static void asPrintString(string& str)
 {
-    if (consoleText.empty())
-        consoleText = str;
-    else
-        consoleText += str;
-
+    consoleText.empty() ? consoleText = str : consoleText += str;
     thereIsConsoleText = true;
 }
 
 static void asPrintInt(int num)
 {
-    if (consoleText.empty())
-        consoleText = str_num_to_string(num);
-    else
-        consoleText += str_num_to_string(num);
-
+    consoleText.empty() ? consoleText = str_num_to_string(num) : consoleText += str_num_to_string(num);
     thereIsConsoleText = true;
 }
 
 static void asPrintFloat(double num)
 {
-    if (consoleText.empty())
-        consoleText = str_num_to_string(num);
-    else
-        consoleText += str_num_to_string(num);
-
+    consoleText.empty() ? consoleText = str_num_to_string(num) : consoleText += str_num_to_string(num);
     thereIsConsoleText = true;
 }
 
@@ -211,17 +199,9 @@ void asPrintComplex(const Complex& num)
 {
     string temp = str_num_to_string(num.complexNum.real());
 
-    if (num.complexNum.imag() >= 0)
-        temp += "+i";
-    else
-        temp += "-i";
-
-    temp += str_num_to_string((double)abs(num.complexNum.imag()));
-
-    if (consoleText.empty())
-        consoleText = temp;
-    else
-        consoleText += temp;
+    temp += num.complexNum.imag() >= 0 ? "+i" : "-i";
+    temp += str_num_to_string(abs(num.complexNum.imag()));
+    consoleText.empty() ? consoleText = temp : consoleText += temp;
 
     thereIsConsoleText = true;
 }
@@ -251,9 +231,10 @@ ScriptData FetchScriptData(const string& fileName)
     return dat;
 }
 
+// ReSharper disable once CppParameterNeverUsed
 void MessageCallback(const asSMessageInfo* msg, void* param)
 {
-    const char* type = "ERR ";
+    auto type = "ERR ";
 
     if (msg->type == asMSGTYPE_WARNING)
         type = "WARN";
@@ -291,6 +272,7 @@ static void ComplexInitConstructor(double r, double i, Complex* self)
 
 void RegisterScriptMathReal(asIScriptEngine* engine)
 {
+    // ReSharper disable once CppJoinDeclarationAndAssignment
     int r;
     r = engine->RegisterGlobalFunction("double cos_r(double)", asFUNCTIONPR(cos, (double), double), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("double sin_r(double)", asFUNCTIONPR(sin, (double), double), asCALL_CDECL); assert(r >= 0);
@@ -319,6 +301,7 @@ void RegisterScriptMathReal(asIScriptEngine* engine)
 
 void RegisterScriptMathComplex(asIScriptEngine* engine)
 {
+    // ReSharper disable once CppJoinDeclarationAndAssignment
     int r;
 
     r = engine->RegisterObjectType("complex", sizeof(Complex), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CAK | asOBJ_APP_CLASS_ALLFLOATS); assert(r >= 0);
@@ -361,6 +344,7 @@ void RegisterScriptMathComplex(asIScriptEngine* engine)
 
 void RegisterWxChaosInterface(asIScriptEngine* engine)
 {
+    // ReSharper disable once CppJoinDeclarationAndAssignment
     int r;
     r = engine->RegisterGlobalFunction("void SetFractalName(string &in)", asFUNCTION(asSetFractalName), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetCategory(string &in)", asFUNCTION(asSetCategory), asCALL_CDECL); assert(r >= 0);

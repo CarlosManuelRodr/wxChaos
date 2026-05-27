@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderMandelbrotZN.h"
+#include "../renderers/MandelbrotZNRenderer.h"
 
 /*
 * @class MandelbrotZN
@@ -11,7 +11,7 @@ class MandelbrotZN : public Fractal
 private:
     int n;
     double bailout;
-    RenderMandelbrotZN* myRender;
+    MandelbrotZNRenderer* myRender;
 public:
     explicit MandelbrotZN(const sf::RenderWindow* window);
     MandelbrotZN(int width, int height);

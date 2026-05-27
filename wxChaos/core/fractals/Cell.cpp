@@ -15,8 +15,8 @@ Cell::Cell(const sf::RenderWindow* window) : Fractal(window)
 
     _hasOrbit = true;
     _type = FractalType::Cell;
-    myRender = new RenderCell[_threadNumber];
-    SetWatchdog<RenderCell>(myRender, &_watchdog, _threadNumber);
+    myRender = new CellRenderer[_threadNumber];
+    SetWatchdog<CellRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -24,9 +24,9 @@ Cell::Cell(const sf::RenderWindow* window) : Fractal(window)
     bailout = 2;
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
 }
 Cell::Cell(int width, int height) : Fractal(width, height)
 {
@@ -45,10 +45,10 @@ Cell::Cell(int width, int height) : Fractal(width, height)
     bailout = 2;
 
     _hasOrbit = true;
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
     _type = FractalType::Cell;
-    myRender = new RenderCell[_threadNumber];
-    SetWatchdog<RenderCell>(myRender, &_watchdog, _threadNumber);
+    myRender = new CellRenderer[_threadNumber];
+    SetWatchdog<CellRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Cell::~Cell()
 {
@@ -60,7 +60,7 @@ void Cell::Render()
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(bailout);
 
-    this->TRender<RenderCell>(myRender);
+    this->SetRendererBounds<CellRenderer>(myRender);
 }
 void Cell::DrawOrbit()
 {

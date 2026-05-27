@@ -19,8 +19,8 @@ Mandelbrot::Mandelbrot(const sf::RenderWindow* window) : Fractal(window)
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _smoothRender = true;
-    myRender = new RenderMandelbrot[_threadNumber];
-    SetWatchdog<RenderMandelbrot>(myRender, &_watchdog, _threadNumber);
+    myRender = new MandelbrotRenderer[_threadNumber];
+    SetWatchdog<MandelbrotRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(false);
@@ -28,11 +28,11 @@ Mandelbrot::Mandelbrot(const sf::RenderWindow* window) : Fractal(window)
     buddhaRandomP = 1000000;
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
-    _availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Mandelbrot::Mandelbrot(const int width, const int height) : Fractal(width, height)
 {
@@ -51,12 +51,12 @@ Mandelbrot::Mandelbrot(const int width, const int height) : Fractal(width, heigh
     _panelOpt.LinkInt(PanelOptionType::Spin, wxT("Number of buddhabrot\nrandom points:"), &buddhaRandomP, wxT("1000000"));
     buddhaRandomP = 1000000;
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
     _hasSmoothRender = true;
     _hasOrbitTrap = true;
     _type = FractalType::Mandelbrot;
-    myRender = new RenderMandelbrot[_threadNumber];
-    SetWatchdog<RenderMandelbrot>(myRender, &_watchdog, _threadNumber);
+    myRender = new MandelbrotRenderer[_threadNumber];
+    SetWatchdog<MandelbrotRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Mandelbrot::~Mandelbrot()
 {
@@ -65,10 +65,10 @@ Mandelbrot::~Mandelbrot()
 }
 void Mandelbrot::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++)
+    for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetBuddhaRandomP(buddhaRandomP);
 
-    this->TRender<RenderMandelbrot>(myRender);
+    this->SetRendererBounds<MandelbrotRenderer>(myRender);
 }
 void Mandelbrot::DrawOrbit()
 {

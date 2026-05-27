@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderFPUserDefined.h"
+#include "../renderers/FPUserDefinedRenderer.h"
 
 /*
 * @class FPUserDefined
@@ -9,7 +9,7 @@
 class FPUserDefined : public Fractal
 {
 private:
-    RenderFPUserDefined* myRender;
+    FPUserDefinedRenderer* myRender;
     double minStep;
 public:
     FPUserDefined(const sf::RenderWindow* window);

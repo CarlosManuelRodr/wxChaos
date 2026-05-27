@@ -16,8 +16,8 @@ FixedPoint3::FixedPoint3(const sf::RenderWindow* window) : Fractal(window)
     _hasOrbit = true;
 
     _type = FractalType::FixedPoint3;
-    myRender = new RenderFixedPoint3[_threadNumber];
-    SetWatchdog<RenderFixedPoint3>(myRender, &_watchdog, _threadNumber);
+    myRender = new FixedPoint3Renderer[_threadNumber];
+    SetWatchdog<FixedPoint3Renderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -25,8 +25,8 @@ FixedPoint3::FixedPoint3(const sf::RenderWindow* window) : Fractal(window)
     minStep = 0.001;
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::ConvergenceTest;
-    _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
+    _algorithm = RenderingAlgorithmType::ConvergenceTest;
+    _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
 }
 FixedPoint3::FixedPoint3(const int width, const int height) : Fractal(width, height)
 {
@@ -40,8 +40,8 @@ FixedPoint3::FixedPoint3(const int width, const int height) : Fractal(width, hei
     minStep = 0.001;
 
     _type = FractalType::FixedPoint3;
-    myRender = new RenderFixedPoint3[_threadNumber];
-    SetWatchdog<RenderFixedPoint3>(myRender, &_watchdog, _threadNumber);
+    myRender = new FixedPoint3Renderer[_threadNumber];
+    SetWatchdog<FixedPoint3Renderer>(myRender, &_watchdog, _threadNumber);
 }
 FixedPoint3::~FixedPoint3()
 {
@@ -52,7 +52,7 @@ void FixedPoint3::Render()
 {
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(minStep);
-    this->TRender<RenderFixedPoint3>(myRender);
+    this->SetRendererBounds<FixedPoint3Renderer>(myRender);
 }
 void FixedPoint3::DrawOrbit()
 {

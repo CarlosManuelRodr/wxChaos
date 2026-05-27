@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderJulia.h"
+#include "../renderers/JuliaRenderer.h"
 
 /*
 * @class Julia
@@ -8,7 +8,7 @@
 */
 class Julia: public Fractal
 {
-    RenderJulia* myRender;
+    JuliaRenderer* myRender;
 public:
     Julia(const sf::RenderWindow* window);
     Julia(int width, int height);

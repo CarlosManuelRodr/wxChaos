@@ -20,14 +20,14 @@ MandelbrotZN::MandelbrotZN(const sf::RenderWindow* window) : Fractal(window)
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _smoothRender = false;
-    myRender = new RenderMandelbrotZN[_threadNumber];
-    SetWatchdog<RenderMandelbrotZN>(myRender, &_watchdog, _threadNumber);
+    myRender = new MandelbrotZNRenderer[_threadNumber];
+    SetWatchdog<MandelbrotZNRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -55,12 +55,12 @@ MandelbrotZN::MandelbrotZN(const int width, const int height) : Fractal(width, h
     n = 3;
     bailout = 2;
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
     _hasSmoothRender = false;
     _hasOrbitTrap = true;
     _type = FractalType::MandelbrotZN;
-    myRender = new RenderMandelbrotZN[_threadNumber];
-    SetWatchdog<RenderMandelbrotZN>(myRender, &_watchdog, _threadNumber);
+    myRender = new MandelbrotZNRenderer[_threadNumber];
+    SetWatchdog<MandelbrotZNRenderer>(myRender, &_watchdog, _threadNumber);
 }
 MandelbrotZN::~MandelbrotZN()
 {
@@ -72,7 +72,7 @@ void MandelbrotZN::Render()
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(n, bailout);
 
-    this->TRender<RenderMandelbrotZN>(myRender);
+    this->SetRendererBounds<MandelbrotZNRenderer>(myRender);
 }
 void MandelbrotZN::DrawOrbit()
 {

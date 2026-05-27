@@ -51,7 +51,7 @@ uint32_t SwitchEndianess32(uint32_t data)
 // Conversion operations.
 void BoolToChar(char& target, bool in)
 {
-    if(in)
+    if (in)
         target = 0x01;
     else
         target = 0x00;
@@ -59,7 +59,7 @@ void BoolToChar(char& target, bool in)
 
 void CharToBool(bool& target, char in)
 {
-    if(in == 0x00)
+    if (in == 0x00)
         target = false;
     else
         target = true;
@@ -69,7 +69,7 @@ void UInt32ToChar(char* target, uint32_t in)
 {
     in = SwitchEndianess32(in);
     uint32_t temp = 0x000000FF;
-    for(unsigned int i=0; i<sizeof(uint32_t); i++)
+    for (unsigned int i=0; i<sizeof(uint32_t); i++)
     {
         target[i] = in & temp;
         in >>= 8;
@@ -80,7 +80,7 @@ void Int32ToChar(char* target, int32_t in)
 {
     in = SwitchEndianess32(in);
     int32_t temp = 0x000000FF;
-    for(unsigned int i=0; i<sizeof(int32_t); i++)
+    for (unsigned int i=0; i<sizeof(int32_t); i++)
     {
         target[i] = in & temp;
         in >>= 8;
@@ -91,11 +91,11 @@ void CharToUInt32(uint32_t& target, char* in)
 {
     target = 0x00000000;
     uint32_t temp;
-    for(unsigned int i=0; i<sizeof(uint32_t); i++)
+    for (unsigned int i=0; i<sizeof(uint32_t); i++)
     {
         temp = in[i] & 0x000000FF;
         target |= temp;
-        if(i != 3)
+        if (i != 3)
             target <<= 8;
     }
 }
@@ -104,10 +104,10 @@ void CharToInt32(int32_t& target, char* in)
 {
     target = 0x00000000;
     int32_t temp;
-    for(unsigned int i=0; i<sizeof(int32_t); i++)
+    for (unsigned int i=0; i<sizeof(int32_t); i++)
     {
         temp = in[i] & 0x000000FF;
         target |= temp;
-        if(i != 3) target <<= 8;
+        if (i != 3) target <<= 8;
     }
 }

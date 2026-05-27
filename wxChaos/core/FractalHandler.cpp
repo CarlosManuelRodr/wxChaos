@@ -4,280 +4,280 @@ using namespace std;
 
 FractalHandler::FractalHandler()
 {
-    mandelbrot = nullptr;
-    mandelbrotZN = nullptr;
-    julia = nullptr;
-    juliaZN = nullptr;
-    newton = nullptr;
-    sinoidal = nullptr;
-    magnet = nullptr;
-    sierpinskyTriangle = nullptr;
-    medusa = nullptr;
-    manowar = nullptr;
-    manowarJulia = nullptr;
-    fixedPoint1 = nullptr;
-    fixedPoint2 = nullptr;
-    fixedPoint3 = nullptr;
-    fixedPoint4 = nullptr;
-    tricorn = nullptr;
-    burningShip = nullptr;
-    burningShipJulia = nullptr;
-    fractory = nullptr;
-    cell = nullptr;
-    dPendulum = nullptr;
-    userDefined = nullptr;
-    fpUserDefined = nullptr;
-    scriptFractal = nullptr;
-    target = nullptr;
-    type = FractalType::Undefined;
+    _mandelbrot = nullptr;
+    _mandelbrotZN = nullptr;
+    _julia = nullptr;
+    _juliaZN = nullptr;
+    _newton = nullptr;
+    _sinoidal = nullptr;
+    _magnet = nullptr;
+    _sierpinskyTriangle = nullptr;
+    _medusa = nullptr;
+    _manowar = nullptr;
+    _manowarJulia = nullptr;
+    _fixedPoint1 = nullptr;
+    _fixedPoint2 = nullptr;
+    _fixedPoint3 = nullptr;
+    _fixedPoint4 = nullptr;
+    _tricorn = nullptr;
+    _burningShip = nullptr;
+    _burningShipJulia = nullptr;
+    _fractory = nullptr;
+    _cell = nullptr;
+    _doublePendulum = nullptr;
+    _userDefined = nullptr;
+    _fpUserDefined = nullptr;
+    _scriptFractal = nullptr;
+    _target = nullptr;
+    _type = FractalType::Undefined;
 }
 FractalHandler::~FractalHandler()
 {
     this->DeleteFractal();
 }
-void FractalHandler::CreateFractal(FractalType _type, sf::RenderWindow* Window)
+void FractalHandler::CreateFractal(FractalType type, sf::RenderWindow* Window)
 {
     this->DeleteFractal();
-    type = _type;
-    switch(_type)
+    _type = type;
+    switch(type)
     {
     case FractalType::Mandelbrot:
         {
-            target = mandelbrot = new Mandelbrot(Window);
+            _target = _mandelbrot = new Mandelbrot(Window);
             break;
         }
     case FractalType::MandelbrotZN:
         {
-            target = mandelbrotZN = new MandelbrotZN(Window);
+            _target = _mandelbrotZN = new MandelbrotZN(Window);
             break;
         }
     case FractalType::Julia:
         {
-            target = julia = new Julia(Window);
+            _target = _julia = new Julia(Window);
             break;
         }
     case FractalType::JuliaZN:
         {
-            target = juliaZN = new JuliaZN(Window);
+            _target = _juliaZN = new JuliaZN(Window);
             break;
         }
     case FractalType::NewtonRaphsonMethod:
         {
-            target = newton = new Newton(Window);
+            _target = _newton = new Newton(Window);
             break;
         }
     case FractalType::Sinoidal:
         {
-            target = sinoidal = new Sinoidal(Window);
+            _target = _sinoidal = new Sinoidal(Window);
             break;
         }
     case FractalType::Magnetic:
         {
-            target = magnet = new Magnet(Window);
+            _target = _magnet = new Magnet(Window);
             break;
         }
     case FractalType::Medusa:
         {
-            target = medusa = new Medusa(Window);
+            _target = _medusa = new Medusa(Window);
             break;
         }
     case FractalType::Manowar:
         {
-            target = manowar = new Manowar(Window);
+            _target = _manowar = new Manowar(Window);
             break;
         }
     case FractalType::ManowarJulia:
         {
-            target = manowarJulia = new ManowarJulia(Window);
+            _target = _manowarJulia = new ManowarJulia(Window);
             break;
         }
     case FractalType::SierpinskyTriangle:
         {
-            target = sierpinskyTriangle = new SierpinskyTriangle(Window);
+            _target = _sierpinskyTriangle = new SierpinskyTriangle(Window);
             break;
         }
     case FractalType::FixedPoint1:
         {
-            target = fixedPoint1 = new FixedPoint1(Window);
+            _target = _fixedPoint1 = new FixedPoint1(Window);
             break;
         }
     case FractalType::FixedPoint2:
         {
-            target = fixedPoint2 = new FixedPoint2(Window);
+            _target = _fixedPoint2 = new FixedPoint2(Window);
             break;
         }
     case FractalType::FixedPoint3:
         {
-            target = fixedPoint3 = new FixedPoint3(Window);
+            _target = _fixedPoint3 = new FixedPoint3(Window);
             break;
         }
     case FractalType::FixedPoint4:
         {
-            target = fixedPoint4 = new FixedPoint4(Window);
+            _target = _fixedPoint4 = new FixedPoint4(Window);
             break;
         }
     case FractalType::Tricorn:
         {
-            target = tricorn = new Tricorn(Window);
+            _target = _tricorn = new Tricorn(Window);
             break;
         }
     case FractalType::BurningShip:
         {
-            target = burningShip = new BurningShip(Window);
+            _target = _burningShip = new BurningShip(Window);
             break;
         }
     case FractalType::BurningShipJulia:
         {
-            target = burningShipJulia = new BurningShipJulia(Window);
+            _target = _burningShipJulia = new BurningShipJulia(Window);
             break;
         }
     case FractalType::Fractory:
         {
-            target = fractory = new Fractory(Window);
+            _target = _fractory = new Fractory(Window);
             break;
         }
     case FractalType::Cell:
         {
-            target = cell = new Cell(Window);
+            _target = _cell = new Cell(Window);
             break;
         }
     case FractalType::DoublePendulum:
         {
-            target = dPendulum = new DoublePendulum(Window);
+            _target = _doublePendulum = new DoublePendulum(Window);
             break;
         }
     case FractalType::UserDefined:
         {
-            target = userDefined = new UserDefined(Window);
+            _target = _userDefined = new UserDefined(Window);
             break;
         }
     case FractalType::FixedPointUserDefined:
         {
-            target = fpUserDefined = new FPUserDefined(Window);
+            _target = _fpUserDefined = new FPUserDefined(Window);
             break;
         }
     default: break;
     }
 }
-void FractalHandler::CreateFractal(FractalType _type, int width, int height)
+void FractalHandler::CreateFractal(FractalType type, int width, int height)
 {
     this->DeleteFractal();
-    type = _type;
-    switch(_type)
+    _type = type;
+    switch(type)
     {
     case FractalType::Mandelbrot:
         {
-            target = mandelbrot = new Mandelbrot(width, height);
+            _target = _mandelbrot = new Mandelbrot(width, height);
             break;
         }
     case FractalType::MandelbrotZN:
         {
-            target = mandelbrotZN = new MandelbrotZN(width, height);
+            _target = _mandelbrotZN = new MandelbrotZN(width, height);
             break;
         }
     case FractalType::Julia:
         {
-            target = julia = new Julia(width, height);
+            _target = _julia = new Julia(width, height);
             break;
         }
     case FractalType::JuliaZN:
         {
-            target = juliaZN = new JuliaZN(width, height);
+            _target = _juliaZN = new JuliaZN(width, height);
             break;
         }
     case FractalType::NewtonRaphsonMethod:
         {
-            target = newton = new Newton(width, height);
+            _target = _newton = new Newton(width, height);
             break;
         }
     case FractalType::Sinoidal:
         {
-            target = sinoidal = new Sinoidal(width, height);
+            _target = _sinoidal = new Sinoidal(width, height);
             break;
         }
     case FractalType::Magnetic:
         {
-            target = magnet = new Magnet(width, height);
+            _target = _magnet = new Magnet(width, height);
             break;
         }
     case FractalType::Medusa:
         {
-            target = medusa = new Medusa(width, height);
+            _target = _medusa = new Medusa(width, height);
             break;
         }
     case FractalType::Manowar:
         {
-            target = manowar = new Manowar(width, height);
+            _target = _manowar = new Manowar(width, height);
             break;
         }
     case FractalType::ManowarJulia:
         {
-            target = manowarJulia = new ManowarJulia(width, height);
+            _target = _manowarJulia = new ManowarJulia(width, height);
             break;
         }
     case FractalType::SierpinskyTriangle:
         {
-            target = sierpinskyTriangle = new SierpinskyTriangle(width, height);
+            _target = _sierpinskyTriangle = new SierpinskyTriangle(width, height);
             break;
         }
     case FractalType::FixedPoint1:
         {
-            target = fixedPoint1 = new FixedPoint1(width, height);
+            _target = _fixedPoint1 = new FixedPoint1(width, height);
             break;
         }
     case FractalType::FixedPoint2:
         {
-            target = fixedPoint2 = new FixedPoint2(width, height);
+            _target = _fixedPoint2 = new FixedPoint2(width, height);
             break;
         }
     case FractalType::FixedPoint3:
         {
-            target = fixedPoint3 = new FixedPoint3(width, height);
+            _target = _fixedPoint3 = new FixedPoint3(width, height);
             break;
         }
     case FractalType::FixedPoint4:
         {
-            target = fixedPoint4 = new FixedPoint4(width, height);
+            _target = _fixedPoint4 = new FixedPoint4(width, height);
             break;
         }
     case FractalType::Tricorn:
         {
-            target = tricorn = new Tricorn(width, height);
+            _target = _tricorn = new Tricorn(width, height);
             break;
         }
     case FractalType::BurningShip:
         {
-            target = burningShip = new BurningShip(width, height);
+            _target = _burningShip = new BurningShip(width, height);
             break;
         }
     case FractalType::BurningShipJulia:
         {
-            target = burningShipJulia = new BurningShipJulia(width, height);
+            _target = _burningShipJulia = new BurningShipJulia(width, height);
             break;
         }
     case FractalType::Fractory:
         {
-            target = fractory = new Fractory(width, height);
+            _target = _fractory = new Fractory(width, height);
             break;
         }
     case FractalType::Cell:
         {
-            target = cell = new Cell(width, height);
+            _target = _cell = new Cell(width, height);
             break;
         }
     case FractalType::DoublePendulum:
         {
-            target = dPendulum = new DoublePendulum(width, height);
+            _target = _doublePendulum = new DoublePendulum(width, height);
             break;
         }
     case FractalType::UserDefined:
         {
-            target = userDefined = new UserDefined(width, height);
+            _target = _userDefined = new UserDefined(width, height);
             break;
         }
     case FractalType::FixedPointUserDefined:
         {
-            target = fpUserDefined = new FPUserDefined(width, height);
+            _target = _fpUserDefined = new FPUserDefined(width, height);
             break;
         }
     default: break;
@@ -285,166 +285,166 @@ void FractalHandler::CreateFractal(FractalType _type, int width, int height)
 }
 void FractalHandler::CreateScriptFractal(sf::RenderWindow* Window, ScriptData scriptData)
 {
-    target = scriptFractal = new ScriptFractal(Window, scriptData);
+    _target = _scriptFractal = new ScriptFractal(Window, scriptData);
 }
 void FractalHandler::CreateScriptFractal(int width, int height, ScriptData scriptData)
 {
-    target = scriptFractal = new ScriptFractal(width, height, scriptData);
+    _target = _scriptFractal = new ScriptFractal(width, height, scriptData);
 }
 void FractalHandler::CreateScriptFractal(int width, int height, string scriptPath)
 {
-    target = scriptFractal = new ScriptFractal(width, height, scriptPath);
+    _target = _scriptFractal = new ScriptFractal(width, height, scriptPath);
 }
 void FractalHandler::SetFormula(FormulaOpt formula) const
 {
-    if(type == FractalType::UserDefined)
+    if (_type == FractalType::UserDefined)
     {
-        if(formula.type != FormulaType::Complex)
+        if (formula.type != FormulaType::Complex)
         {
             formula.type = FormulaType::Complex;
             formula.userFormula = wxT("z = z^2 + c");
         }
-        userDefined->SetFormula(formula);
+        _userDefined->SetFormula(formula);
     }
-    else if(type == FractalType::FixedPointUserDefined)
+    else if (_type == FractalType::FixedPointUserDefined)
     {
-        if(formula.type != FormulaType::FixedPoint)
+        if (formula.type != FormulaType::FixedPoint)
         {
             formula.type = FormulaType::FixedPoint;
             formula.userFormula = wxT("z = sin(z)");
         }
-        fpUserDefined->SetFormula(formula);
+        _fpUserDefined->SetFormula(formula);
     }
 }
 void FractalHandler::DeleteFractal()
 {
-    target = nullptr;
-    if(mandelbrot != nullptr)
+    _target = nullptr;
+    if (_mandelbrot != nullptr)
     {
-        delete mandelbrot;
-        mandelbrot = nullptr;
+        delete _mandelbrot;
+        _mandelbrot = nullptr;
     }
-    if(mandelbrotZN != nullptr)
+    if (_mandelbrotZN != nullptr)
     {
-        delete mandelbrotZN;
-        mandelbrotZN = nullptr;
+        delete _mandelbrotZN;
+        _mandelbrotZN = nullptr;
     }
-    if(julia != nullptr)
+    if (_julia != nullptr)
     {
-        delete julia;
-        julia = nullptr;
+        delete _julia;
+        _julia = nullptr;
     }
-    if(juliaZN != nullptr)
+    if (_juliaZN != nullptr)
     {
-        delete juliaZN;
-        juliaZN = nullptr;
+        delete _juliaZN;
+        _juliaZN = nullptr;
     }
-    if(newton != nullptr)
+    if (_newton != nullptr)
     {
-        delete newton;
-        newton = nullptr;
+        delete _newton;
+        _newton = nullptr;
     }
-    if(sinoidal != nullptr)
+    if (_sinoidal != nullptr)
     {
-        delete sinoidal;
-        sinoidal = nullptr;
+        delete _sinoidal;
+        _sinoidal = nullptr;
     }
-    if(magnet != nullptr)
+    if (_magnet != nullptr)
     {
-        delete magnet;
-        magnet = nullptr;
+        delete _magnet;
+        _magnet = nullptr;
     }
-    if(medusa != nullptr)
+    if (_medusa != nullptr)
     {
-        delete medusa;
-        medusa = nullptr;
+        delete _medusa;
+        _medusa = nullptr;
     }
-    if(manowar != nullptr)
+    if (_manowar != nullptr)
     {
-        delete manowar;
-        manowar = nullptr;
+        delete _manowar;
+        _manowar = nullptr;
     }
-    if(manowarJulia != nullptr)
+    if (_manowarJulia != nullptr)
     {
-        delete manowarJulia;
-        manowarJulia = nullptr;
+        delete _manowarJulia;
+        _manowarJulia = nullptr;
     }
-    if(sierpinskyTriangle != nullptr)
+    if (_sierpinskyTriangle != nullptr)
     {
-        delete sierpinskyTriangle;
-        sierpinskyTriangle = nullptr;
+        delete _sierpinskyTriangle;
+        _sierpinskyTriangle = nullptr;
     }
-    if(fixedPoint1 != nullptr)
+    if (_fixedPoint1 != nullptr)
     {
-        delete fixedPoint1;
-        fixedPoint1 = nullptr;
+        delete _fixedPoint1;
+        _fixedPoint1 = nullptr;
     }
-    if(fixedPoint2 != nullptr)
+    if (_fixedPoint2 != nullptr)
     {
-        delete fixedPoint2;
-        fixedPoint2 = nullptr;
+        delete _fixedPoint2;
+        _fixedPoint2 = nullptr;
     }
-    if(fixedPoint3 != nullptr)
+    if (_fixedPoint3 != nullptr)
     {
-        delete fixedPoint3;
-        fixedPoint3 = nullptr;
+        delete _fixedPoint3;
+        _fixedPoint3 = nullptr;
     }
-    if(fixedPoint4 != nullptr)
+    if (_fixedPoint4 != nullptr)
     {
-        delete fixedPoint4;
-        fixedPoint4 = nullptr;
+        delete _fixedPoint4;
+        _fixedPoint4 = nullptr;
     }
-    if(tricorn != nullptr)
+    if (_tricorn != nullptr)
     {
-        delete tricorn;
-        tricorn = nullptr;
+        delete _tricorn;
+        _tricorn = nullptr;
     }
-    if(burningShip != nullptr)
+    if (_burningShip != nullptr)
     {
-        delete burningShip;
-        burningShip = nullptr;
+        delete _burningShip;
+        _burningShip = nullptr;
     }
-    if(burningShipJulia != nullptr)
+    if (_burningShipJulia != nullptr)
     {
-        delete burningShipJulia;
-        burningShipJulia = nullptr;
+        delete _burningShipJulia;
+        _burningShipJulia = nullptr;
     }
-    if(fractory != nullptr)
+    if (_fractory != nullptr)
     {
-        delete fractory;
-        fractory = nullptr;
+        delete _fractory;
+        _fractory = nullptr;
     }
-    if(cell != nullptr)
+    if (_cell != nullptr)
     {
-        delete cell;
-        cell = nullptr;
+        delete _cell;
+        _cell = nullptr;
     }
-    if(dPendulum != nullptr)
+    if (_doublePendulum != nullptr)
     {
-        delete dPendulum;
-        dPendulum = nullptr;
+        delete _doublePendulum;
+        _doublePendulum = nullptr;
     }
-    if(userDefined != nullptr)
+    if (_userDefined != nullptr)
     {
-        delete userDefined;
-        userDefined = nullptr;
+        delete _userDefined;
+        _userDefined = nullptr;
     }
-    if(fpUserDefined != nullptr)
+    if (_fpUserDefined != nullptr)
     {
-        delete fpUserDefined;
-        fpUserDefined = nullptr;
+        delete _fpUserDefined;
+        _fpUserDefined = nullptr;
     }
-    if(scriptFractal != nullptr)
+    if (_scriptFractal != nullptr)
     {
-        delete scriptFractal;
-        scriptFractal = nullptr;
+        delete _scriptFractal;
+        _scriptFractal = nullptr;
     }
 }
 Fractal* FractalHandler::GetFractalPtr() const
 {
-    return target;
+    return _target;
 }
 FractalType FractalHandler::GetType() const
 {
-    return type;
+    return _type;
 }

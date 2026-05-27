@@ -20,14 +20,14 @@ Medusa::Medusa(const sf::RenderWindow* window) : Fractal(window)
     _hasOrbit = true;
     _hasOrbitTrap = true;
 
-    myRender = new RenderMedusa[_threadNumber];
-    SetWatchdog<RenderMedusa>(myRender, &_watchdog, _threadNumber);
+    myRender = new MedusaRenderer[_threadNumber];
+    SetWatchdog<MedusaRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 }
 Medusa::Medusa(const int width, const int height) : Fractal(width, height)
 {
@@ -43,11 +43,11 @@ Medusa::Medusa(const int width, const int height) : Fractal(width, height)
     _kReal = -0.2;
     _kImaginary = 0;
     _juliaVariety = true;
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
 
     _type = FractalType::Medusa;
-    myRender = new RenderMedusa[_threadNumber];
-    SetWatchdog<RenderMedusa>(myRender, &_watchdog, _threadNumber);
+    myRender = new MedusaRenderer[_threadNumber];
+    SetWatchdog<MedusaRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Medusa::~Medusa()
 {
@@ -56,7 +56,7 @@ Medusa::~Medusa()
 }
 void Medusa::Render()
 {
-    this->TRender<RenderMedusa>(myRender);
+    this->SetRendererBounds<MedusaRenderer>(myRender);
 }
 void Medusa::DrawOrbit()
 {

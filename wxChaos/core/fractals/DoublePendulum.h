@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderDPendulum.h"
+#include "../renderers/DoublePendulumRenderer.h"
 
 /*
 * @class DPendulum
@@ -14,7 +14,7 @@ class DoublePendulum : public Fractal
     double dt;
     bool referenced;
     bool rungeKutta;
-    RenderDPendulum* myRender;
+    DoublePendulumRenderer* myRender;
 public:
     explicit DoublePendulum(const sf::RenderWindow* window);
     DoublePendulum(int width, int height);

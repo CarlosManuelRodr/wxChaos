@@ -17,7 +17,7 @@
 #include "RendererOptions.h"
 #include "ConstDialog.h"
 #include "SizeDialogSave.h"
-#include "IterDialog.h"
+#include "IterationsDialog.h"
 #include "FormulaDialog.h"
 #include "ScriptEditor.h"
 #include "ZoomRecorder.h"
@@ -87,7 +87,7 @@ class MainFrame : public wxFrame
     FractalCanvas* fractalCanvas;
     JuliaMode* juliaModePtr;
     ConstDialog* diag;
-    IterDialog* iterDiag;
+    IterationsDialog* iterDiag;
     RendererOptions* rendererOptions;
     FormulaDialog* formDialog;
     ScriptEditor* scriptEditor;

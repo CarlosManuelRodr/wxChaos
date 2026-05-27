@@ -96,18 +96,18 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
 
     this->SetSizeHints(wxSize(1200, 760), wxDefaultSize);
 
-    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
-    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+    const auto mainSizer = new wxBoxSizer(wxVERTICAL);
 
     mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* mainPanelSizer = new wxBoxSizer(wxVERTICAL);
+    const auto mainPanelSizer = new wxBoxSizer(wxVERTICAL);
 
     scriptPanel = new wxPanel(mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* panelSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    wxStaticBoxSizer* scriptListSizer = new wxStaticBoxSizer(new wxStaticBox(scriptPanel, wxID_ANY, wxT("Scripts")), wxVERTICAL);
+    const auto scriptListSizer = new wxStaticBoxSizer(new wxStaticBox(scriptPanel, wxID_ANY, wxT("Scripts")), wxVERTICAL);
 
     scriptListSizer->SetMinSize(wxSize(250, -1));
     scriptsListBox = new wxListBox(scriptListSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_ALWAYS_SB | wxLB_HSCROLL);
@@ -136,7 +136,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     scriptListSizer->Add(closeButton, 0, wxALL | wxEXPAND, 5);
     panelSizer->Add(scriptListSizer, 0, wxEXPAND, 5);
 
-    wxStaticBoxSizer* codeSizer = new wxStaticBoxSizer(new wxStaticBox(scriptPanel, wxID_ANY, wxT("Code editor")), wxVERTICAL);
+    const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(scriptPanel, wxID_ANY, wxT("Code editor")), wxVERTICAL);
 
     codeEditor = new wxStyledTextCtrl(codeSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString);
     codeEditor->SetUseTabs(false);
@@ -174,7 +174,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     codeEditor->SetSelBackground(true, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
     codeEditor->SetSelForeground(true, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT));
 
-    wxFont font = wxFont(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Consolas"));
+    const auto font = wxFont(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Consolas"));
     codeEditor->StyleSetFont(wxSTC_STYLE_DEFAULT, font);
     this->SetUpLexer();
     codeSizer->Add(codeEditor, 1, wxEXPAND | wxALL, 5);
@@ -190,12 +190,12 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     debugCollapsiblePane->Collapse(true);
     debugCollapsiblePane->SetMinSize(wxSize(750, -1));
 
-    wxBoxSizer* debugSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto debugSizer = new wxBoxSizer(wxHORIZONTAL);
 
     debugPanel = new wxPanel(debugCollapsiblePane->GetPane(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer* debugElementsSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto debugElementsSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    wxStaticBoxSizer* debugButtonsSizer = new wxStaticBoxSizer(new wxStaticBox(debugPanel, wxID_ANY, wxT("Actions")), wxVERTICAL);
+    const auto debugButtonsSizer = new wxStaticBoxSizer(new wxStaticBox(debugPanel, wxID_ANY, wxT("Actions")), wxVERTICAL);
 
     validateButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, wxT("Validate"), wxDefaultPosition, wxDefaultSize, 0);
 
@@ -208,7 +208,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     debugButtonsSizer->Add(runButton, 0, wxALL | wxEXPAND, 5);
     debugElementsSizer->Add(debugButtonsSizer, 0, wxEXPAND, 5);
 
-    wxStaticBoxSizer* consoleSizer = new wxStaticBoxSizer(new wxStaticBox(debugPanel, wxID_ANY, wxT("Console")), wxVERTICAL);
+    const auto consoleSizer = new wxStaticBoxSizer(new wxStaticBox(debugPanel, wxID_ANY, wxT("Console")), wxVERTICAL);
     consoleSizer->SetMinSize(wxSize(300, -1));
 
     console = new wxRichTextCtrl(consoleSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 
@@ -221,7 +221,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     consoleSizer->Add(console, 1, wxEXPAND | wxALL, 5);
     debugElementsSizer->Add(consoleSizer, 1, wxEXPAND, 5);
 
-    wxStaticBoxSizer* previewSizer = new wxStaticBoxSizer(new wxStaticBox(debugPanel, wxID_ANY, wxT("Preview")), wxVERTICAL);
+    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(debugPanel, wxID_ANY, wxT("Preview")), wxVERTICAL);
 
     renderPreviewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY, 
                                              wxBitmap(GetWxAbsPath({ "Resources", "fractal_thumbnail.png" }), wxBITMAP_TYPE_ANY), 
@@ -245,7 +245,6 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     mainPanel->Layout();
     mainPanelSizer->Fit(mainPanel);
     mainSizer->Add(mainPanel, 1, wxEXPAND | wxALL, 1);
-
 
     this->SetSizer(mainSizer);
     this->wxTopLevelWindowBase::Layout();
@@ -389,6 +388,7 @@ void ScriptEditor::OnClose(wxCommandEvent&)
     *isActive = false;
     this->Destroy();
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnCodeChange(wxKeyEvent& event)
 {
     if (!saveChangesButton->IsThisEnabled())
@@ -418,11 +418,11 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     ScriptFractal scriptFractal(250, 166, loadedScripts[currentScriptIndex], 1);
-    wxBitmap fractalBitmap = scriptFractal.GetRenderedWxBitmap();
+    const wxBitmap fractalBitmap = scriptFractal.GetRenderedWxBitmap();
 
     // Stop timer
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+    const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 
     renderPreviewBitmap->SetBitmap(fractalBitmap);
 
@@ -441,7 +441,7 @@ void ScriptEditor::OnDebugPanel(wxCollapsiblePaneEvent&)
     this->Update();
 }
 
-void ScriptEditor::ConsoleSetText(const wxString& text)
+void ScriptEditor::ConsoleSetText(const wxString& text) const
 {
     console->MoveEnd();
     console->BeginTextColour(wxColour(255, 255, 255));

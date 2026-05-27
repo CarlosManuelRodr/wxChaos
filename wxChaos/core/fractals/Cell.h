@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderCell.h"
+#include "../renderers/CellRenderer.h"
 
 /*
 * @class Cell
@@ -9,7 +9,7 @@
 class Cell : public Fractal
 {
 private:
-    RenderCell* myRender;
+    CellRenderer* myRender;
     double bailout;
 public:
     Cell(const sf::RenderWindow* window);

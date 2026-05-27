@@ -110,7 +110,7 @@ const std::string exec(const char* cmd)
     std::string result = "";
     while(!feof(pipe))
     {
-        if(fgets(buffer, 128, pipe) != NULL)
+        if (fgets(buffer, 128, pipe) != NULL)
             result += buffer;
     }
     pclose(pipe);
@@ -149,26 +149,26 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     this->UpdateMenu();
 
     // Set parameters found in the config.ini file.
-    if(opt.juliaMode) this->UpdateJuliaMode();
-    if(opt.colorPaletteWindow)
+    if (opt.juliaMode) this->UpdateJuliaMode();
+    if (opt.colorPaletteWindow)
     {
         rendererOptionsActive = true;
         rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this);
         rendererOptions->Show(true);
     }
-    if(opt.constantWindow)
+    if (opt.constantWindow)
     {
         diag = new ConstDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
         diag->Show(true);
         introConstActive = true;
     }
-    if(!opt.colorSet)
+    if (!opt.colorSet)
         fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(false);
 
     if (opt.firstUse)
         this->ShowFirstUseDialog();
 
-    if(fractalType != FractalType::Mandelbrot && fractalType != FractalType::Manowar)
+    if (fractalType != FractalType::Mandelbrot && fractalType != FractalType::Manowar)
         juliaMode->Enable(false);
 
     this->GetScriptFractals();
@@ -426,7 +426,7 @@ void MainFrame::SetUpGUI()
     fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
 
     fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(opt.maxIterations);
-    fractalCanvas->GetSFMLFractalPtr()->SetExtColorMode(opt.colorFractal);
+    fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(opt.colorFractal);
     fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(opt.colorSet);
     fractalSizer->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
 }
@@ -442,7 +442,7 @@ void MainFrame::OnQuit(wxCommandEvent &event)
 }
 void MainFrame::CloseAll()
 {
-    if(juliaModeState)
+    if (juliaModeState)
     {
         juliaMode->Check(false);
         juliaModePtr->Terminate();
@@ -465,7 +465,7 @@ void MainFrame::OnJuliaMode(wxCommandEvent &event)
 void MainFrame::JuliaHandle(wxUpdateUIEvent &event)
 {
     // Waits until the Julia window is closed to delete it.
-    if(changeJuliaMode && !juliaModeState)
+    if (changeJuliaMode && !juliaModeState)
     {
         juliaMode->Check(false);
         juliaModePtr->Close();
@@ -503,14 +503,14 @@ void MainFrame::OnSave(wxCommandEvent &event)
     wxFileDialog* saveFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
                                     wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
     wxString fileName;
-    if(saveFileDialog->ShowModal() == wxID_OK)
+    if (saveFileDialog->ShowModal() == wxID_OK)
     {
         fileName = saveFileDialog->GetPath();
         int ext = saveFileDialog->GetFilterIndex();
         string path = string(fileName.mb_str());
         SizeDialogSave* diag;
 
-        if(fractalType == FractalType::ScriptFractal)
+        if (fractalType == FractalType::ScriptFractal)
             diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, loadedScripts[selectedScriptIndex].file);
         else
             diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this);
@@ -522,7 +522,7 @@ void MainFrame::OnSave(wxCommandEvent &event)
 void MainFrame::OnPalette(wxCommandEvent &event)
 {
     // Color palette frame.
-    if(!rendererOptionsActive)
+    if (!rendererOptionsActive)
     {
         rendererOptionsActive = true;
         rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this);
@@ -531,7 +531,7 @@ void MainFrame::OnPalette(wxCommandEvent &event)
         // Adjust position.
         int h, w;
         GetDesktopResolution(h, w);
-        if(this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
+        if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
             rendererOptions->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
     }
     else
@@ -540,7 +540,7 @@ void MainFrame::OnPalette(wxCommandEvent &event)
 void MainFrame::OnFormulaDialog(wxCommandEvent &event)
 {
     // User formula menu.
-    if(!formDiagActive)
+    if (!formDiagActive)
     {
         formDiagActive = true;
         formDialog = new FormulaDialog(ID_USER_DEFINED, ID_FPUSER_DEFINED, slider, manual, &formDiagActive, fractalCanvas, this);
@@ -549,7 +549,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent &event)
         // Adjust position.
         int h, w;
         GetDesktopResolution(h, w);
-        if(this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
+        if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
             formDialog->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
 
         fractalType = FractalType::UserDefined;
@@ -559,10 +559,10 @@ void MainFrame::OnFormulaDialog(wxCommandEvent &event)
 }
 void MainFrame::OnRedraw(wxCommandEvent &event)
 {
-    if(pauseBtn.state)
+    if (pauseBtn.state)
     {
         pauseBtn.state = false;
-        if(fractalType == FractalType::ScriptFractal)
+        if (fractalType == FractalType::ScriptFractal)
             pauseBtn.pauseContinue->SetItemLabel(wxT("Abort"));
         else
             pauseBtn.pauseContinue->SetItemLabel(wxT("Pause"));
@@ -597,7 +597,7 @@ void MainFrame::OnShowOrbit(wxCommandEvent &event)
 void MainFrame::OnManIntroConst(wxCommandEvent &event)
 {
     // Manual constant.
-    if(!introConstActive)
+    if (!introConstActive)
     {
         diag = new ConstDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
         diag->Show(true);
@@ -627,9 +627,9 @@ void MainFrame::OnKeybGuide(wxCommandEvent &event)
 void MainFrame::OnItManual(wxCommandEvent &event)
 {
     // Manual iterations.
-    if(!iterDiagActive)
+    if (!iterDiagActive)
     {
-        iterDiag = new IterDialog(&iterDiagActive, fractalCanvas->GetSFMLFractalPtr(), this);
+        iterDiag = new IterationsDialog(&iterDiagActive, fractalCanvas->GetSFMLFractalPtr(), this);
         iterDiag->Show(true);
         iterDiagActive = true;
     }
@@ -643,9 +643,9 @@ void MainFrame::OnItManual(wxCommandEvent &event)
 void MainFrame::OnPauseContinue(wxCommandEvent &event)
 {
     // Pauses the rendering.
-    if(pauseBtn.state)
+    if (pauseBtn.state)
     {
-        if(fractalType == FractalType::ScriptFractal)
+        if (fractalType == FractalType::ScriptFractal)
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
         else
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
@@ -653,7 +653,7 @@ void MainFrame::OnPauseContinue(wxCommandEvent &event)
     }
     else
     {
-        if(fractalType == FractalType::ScriptFractal)
+        if (fractalType == FractalType::ScriptFractal)
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Relaunch script"))+ wxT('\t') + wxT("P"));
         else
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Continue"))+ wxT('\t') + wxT("P"));
@@ -664,12 +664,12 @@ void MainFrame::OnPauseContinue(wxCommandEvent &event)
 void MainFrame::OnFractalOptions(wxCommandEvent &event)
 {
     // Ajust the panel.
-    if(!showOptPanel)
+    if (!showOptPanel)
     {
         fractOptItem->Check(true);
         optionPanel->Show();
         wxSize windowSize = this->GetSize();
-        if(!this->IsMaximized())
+        if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
 
         this->GetSizer()->Layout();
@@ -680,7 +680,7 @@ void MainFrame::OnFractalOptions(wxCommandEvent &event)
         fractOptItem->Check(false);
         optionPanel->Hide();
         wxSize windowSize = this->GetSize();
-        if(!this->IsMaximized())
+        if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()-175, windowSize.GetHeight());
         this->GetSizer()->Layout();
         showOptPanel = false;
@@ -690,23 +690,23 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent& event)
 {
     // Pass parameters to the fractal and redraws it.
     PanelOptions* pOptions = fractalCanvas->GetFractalPtr()->GetOptPanel();
-    for(unsigned int i=0; i<foundTextControls.size(); i++)
+    for (unsigned int i=0; i<foundTextControls.size(); i++)
         *pOptions->GetDoubleElement(i) = string_to_double(textControls[i]->GetValue());
 
-    for(unsigned int i=0; i<foundSpinControls.size(); i++)
+    for (unsigned int i=0; i<foundSpinControls.size(); i++)
         *pOptions->GetIntElement(i) = spinControls[i]->GetValue();
 
-    for(unsigned int i=0; i<foundCheckBoxes.size(); i++)
+    for (unsigned int i=0; i<foundCheckBoxes.size(); i++)
     {
-        if(checkBoxes[i]->GetValue())
+        if (checkBoxes[i]->GetValue())
             *pOptions->GetBoolElement(i) = true;
         else
             *pOptions->GetBoolElement(i) = false;
     }
-    if(pauseBtn.state)
+    if (pauseBtn.state)
     {
         pauseBtn.state = false;
-        if(fractalType == FractalType::ScriptFractal)
+        if (fractalType == FractalType::ScriptFractal)
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
         else
             pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
@@ -876,7 +876,7 @@ void MainFrame::ChangeFPUserDefined(wxCommandEvent& event)
 void MainFrame::ChangeFractal(FractalType fType, bool enableJulia)
 {
     selectedScriptIndex = -1;  // Deselect the script fractal.
-    if(fractalType != fType || fractalType == FractalType::UserDefined || fractalType == FractalType::FixedPointUserDefined)
+    if (fractalType != fType || fractalType == FractalType::UserDefined || fractalType == FractalType::FixedPointUserDefined)
     {
         Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
         fractalCanvas->ChangeType(fType);
@@ -893,7 +893,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int>(event.GetId() - SCRIPT_ID_INDEX);
     selectedScriptIndex = id;
 
-    if(fractalCanvas->GetFractalPtr()->IsRendering())
+    if (fractalCanvas->GetFractalPtr()->IsRendering())
         fractalCanvas->GetFractalPtr()->PauseContinue();
 
     Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
@@ -921,21 +921,21 @@ void MainFrame::UpdateOptPanel()
     int index, labelIndex;
 
     // If there are elements in pOptions creates panel.
-    if(pOptions->GetElementsSize() > 0)
+    if (pOptions->GetElementsSize() > 0)
     {
         fractOptItem->Enable(true);
-        if(labels.size() != 0 || textControls.size() != 0 || spinControls.size() != 0 || checkBoxes.size() != 0)
+        if (labels.size() != 0 || textControls.size() != 0 || spinControls.size() != 0 || checkBoxes.size() != 0)
         {
             // If there are elements from a previous panel deletes them.
             this->DeleteOptPanel();
         }
 
-        if(pOptions->GetForceShow())
+        if (pOptions->GetForceShow())
         {
             fractOptItem->Check(true);
             optionPanel->Show();
             wxSize windowSize = this->GetSize();
-            if(!this->IsMaximized())
+            if (!this->IsMaximized())
                 this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
 
             this->GetSizer()->Layout();
@@ -945,7 +945,7 @@ void MainFrame::UpdateOptPanel()
             fractOptItem->Check(false);
 
         // Creates elements from each kind.
-        for(int i=0; i<pOptions->GetElementsSize(); i++)
+        for (int i=0; i<pOptions->GetElementsSize(); i++)
         {
             switch(pOptions->GetPanelOptType(i))
             {
@@ -988,7 +988,7 @@ void MainFrame::UpdateOptPanel()
                 {
                     checkBoxes.push_back(new wxCheckBox(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
                     index = checkBoxes.size()-1;
-                    if(pOptions->GetDefault(i) == wxT("true"))
+                    if (pOptions->GetDefault(i) == wxT("true"))
                         checkBoxes[index]->SetValue(true);
                     else
                         checkBoxes[index]->SetValue(false);
@@ -1011,29 +1011,29 @@ void MainFrame::UpdateOptPanel()
     {
         fractOptItem->Check(false);
         fractOptItem->Enable(false);
-        if(showOptPanel)
+        if (showOptPanel)
             this->DeleteOptPanel();
     }
 }
 void MainFrame::DeleteOptPanel()
 {
     // Deletes panel elements.
-    for(unsigned int i=0; i<labels.size(); i++)
+    for (unsigned int i=0; i<labels.size(); i++)
         labels[i]->Destroy();
 
     labels.clear();
     foundLabels.clear();
-    for(unsigned int i=0; i<textControls.size(); i++)
+    for (unsigned int i=0; i<textControls.size(); i++)
         textControls[i]->Destroy();
 
     textControls.clear();
     foundTextControls.clear();
-    for(unsigned int i=0; i<spinControls.size(); i++)
+    for (unsigned int i=0; i<spinControls.size(); i++)
         spinControls[i]->Destroy();
 
     spinControls.clear();
     foundSpinControls.clear();
-    for(unsigned int i=0; i<checkBoxes.size(); i++)
+    for (unsigned int i=0; i<checkBoxes.size(); i++)
         checkBoxes[i]->Destroy();
 
     checkBoxes.clear();
@@ -1043,12 +1043,12 @@ void MainFrame::DeleteOptPanel()
     panelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnApplyPanelOpt), NULL, this);
     delete panelButton;
 
-    if(showOptPanel)
+    if (showOptPanel)
     {
         optionPanel->Hide();
         wxSize windowSize = this->GetSize();
 
-        if(!this->IsMaximized())
+        if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()-175, windowSize.GetHeight());
 
         this->GetSizer()->Layout();
@@ -1105,13 +1105,13 @@ void MainFrame::GetScriptFractals()
 void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
-    if(rendererOptionsActive)
+    if (rendererOptionsActive)
         rendererOptions->SetTarget(fractalCanvas->GetSFMLFractalPtr());
-    if(iterDiagActive)
+    if (iterDiagActive)
         iterDiag->SetTarget(fractalCanvas->GetSFMLFractalPtr());
 
     showOrbit->Check(false);
-    if(fractalCanvas->GetFractalPtr()->HasOrbit())
+    if (fractalCanvas->GetFractalPtr()->HasOrbit())
         showOrbit->Enable(true);
     else
         showOrbit->Enable(false);
@@ -1120,7 +1120,7 @@ void MainFrame::UpdateMenu()
     lessIter->Enable(true);
 
     // Closes constant dialog.
-    if(introConstActive)
+    if (introConstActive)
     {
         diag->Show(false);
         introConstActive = false;
@@ -1128,7 +1128,7 @@ void MainFrame::UpdateMenu()
     }
 
     // Adjust Julia constant menu items.
-    if(fractalCanvas->GetFractalPtr()->IsJuliaVariety())
+    if (fractalCanvas->GetFractalPtr()->IsJuliaVariety())
     {
         manual->Enable(true);
         slider->Enable(true);
@@ -1141,22 +1141,22 @@ void MainFrame::UpdateMenu()
     slider->Check(false);
 
     // Closes formula dialog.
-    if(fractalType != FractalType::UserDefined && fractalType != FractalType::FixedPointUserDefined)
+    if (fractalType != FractalType::UserDefined && fractalType != FractalType::FixedPointUserDefined)
     {
-        if(formDiagActive)
+        if (formDiagActive)
         {
             formDialog->Destroy();
             formDiagActive = false;
         }
     }
 
-    if(fractalType == FractalType::ScriptFractal)
+    if (fractalType == FractalType::ScriptFractal)
         pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
     else
         pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
 
     // If Julia mode is opened closes it.
-    if(juliaModeState)
+    if (juliaModeState)
     {
         juliaMode->Check(false);
         juliaModePtr->Terminate();
@@ -1170,7 +1170,7 @@ void MainFrame::UpdateMenu()
 void MainFrame::UpdateJuliaMode()
 {
     // Destroy Julia window.
-    if(juliaModeState)
+    if (juliaModeState)
     {
         juliaMode->Check(false);
         juliaModePtr->Close();

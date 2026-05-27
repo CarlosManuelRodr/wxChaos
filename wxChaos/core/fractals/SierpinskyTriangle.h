@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderSierpinskyTriangle.h"
+#include "../renderers/SierpinskyTriangleRenderer.h"
 
 /*
 * @class SierpTriangle
@@ -8,7 +8,7 @@
 */
 class SierpinskyTriangle : public Fractal
 {
-    RenderSierpinskyTriangle* myRender;
+    SierpinskyTriangleRenderer* myRender;
 public:
     explicit SierpinskyTriangle(const sf::RenderWindow* window);
     SierpinskyTriangle(int width, int height);

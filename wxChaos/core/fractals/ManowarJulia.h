@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderManowarJulia.h"
+#include "../renderers/ManowarJuliaRenderer.h"
 
 /*
 * @class ManowarJulia
@@ -8,7 +8,7 @@
 */
 class ManowarJulia : public Fractal
 {
-    RenderManowarJulia* myRender;
+    ManowarJuliaRenderer* myRender;
 public:
     explicit ManowarJulia(const sf::RenderWindow* window);
     ManowarJulia(int width, int height);

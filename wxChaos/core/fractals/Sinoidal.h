@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderSinoidal.h"
+#include "../renderers/SinoidalRenderer.h"
 
 /*
 * @class Sinoidal
@@ -8,7 +8,7 @@
 */
 class Sinoidal : public Fractal
 {
-    RenderSinoidal* myRender;
+    SinoidalRenderer* myRender;
 public:
     explicit Sinoidal(const sf::RenderWindow* window);
     Sinoidal(int width, int height);

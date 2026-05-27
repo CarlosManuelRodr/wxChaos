@@ -17,8 +17,8 @@ FPUserDefined::FPUserDefined(const sf::RenderWindow* window) : Fractal(window)
 
     _type = FractalType::FixedPointUserDefined;
     _hasOrbit = true;
-    myRender = new RenderFPUserDefined[_threadNumber];
-    SetWatchdog<RenderFPUserDefined>(myRender, &_watchdog, _threadNumber);
+    myRender = new FPUserDefinedRenderer[_threadNumber];
+    SetWatchdog<FPUserDefinedRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -26,8 +26,8 @@ FPUserDefined::FPUserDefined(const sf::RenderWindow* window) : Fractal(window)
     minStep = 0.001;
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::ConvergenceTest;
-    _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
+    _algorithm = RenderingAlgorithmType::ConvergenceTest;
+    _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
 }
 FPUserDefined::FPUserDefined(const int width, const int height) : Fractal(width, height)
 {
@@ -40,8 +40,8 @@ FPUserDefined::FPUserDefined(const int width, const int height) : Fractal(width,
 
     minStep = 0.001;
     _type = FractalType::FixedPointUserDefined;
-    myRender = new RenderFPUserDefined[_threadNumber];
-    SetWatchdog<RenderFPUserDefined>(myRender, &_watchdog, _threadNumber);
+    myRender = new FPUserDefinedRenderer[_threadNumber];
+    SetWatchdog<FPUserDefinedRenderer>(myRender, &_watchdog, _threadNumber);
 }
 FPUserDefined::~FPUserDefined()
 {
@@ -53,7 +53,7 @@ void FPUserDefined::Render()
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(minStep);
 
-    this->TRender<RenderFPUserDefined>(myRender);
+    this->SetRendererBounds<FPUserDefinedRenderer>(myRender);
 }
 void FPUserDefined::SetFormula(FormulaOpt formula)
 {

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderTricorn.h"
+#include "../renderers/TricornRenderer.h"
 
 /*
 * @class Tricorn
@@ -9,7 +9,7 @@
 class Tricorn : public Fractal
 {
 private:
-    RenderTricorn* myRender;
+    TricornRenderer* myRender;
 public:
     Tricorn(const sf::RenderWindow* window);
     Tricorn(int width, int height);

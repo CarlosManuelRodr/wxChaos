@@ -16,12 +16,12 @@ UserDefined::UserDefined(const sf::RenderWindow* window) : Fractal(window)
 
     _type = FractalType::UserDefined;
     _hasOrbit = true;
-    myRender = new RenderUserDefined[_threadNumber];
-    SetWatchdog<RenderUserDefined>(myRender, &_watchdog, _threadNumber);
+    myRender = new UserDefinedRenderer[_threadNumber];
+    SetWatchdog<UserDefinedRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
 }
 UserDefined::UserDefined(const int width, const int height) : Fractal(width, height)
 {
@@ -33,8 +33,8 @@ UserDefined::UserDefined(const int width, const int height) : Fractal(width, hei
     this->SetOutermostZoom();
 
     _type = FractalType::UserDefined;
-    myRender = new RenderUserDefined[_threadNumber];
-    SetWatchdog<RenderUserDefined>(myRender, &_watchdog, _threadNumber);
+    myRender = new UserDefinedRenderer[_threadNumber];
+    SetWatchdog<UserDefinedRenderer>(myRender, &_watchdog, _threadNumber);
 }
 UserDefined::~UserDefined()
 {
@@ -43,7 +43,7 @@ UserDefined::~UserDefined()
 }
 void UserDefined::Render()
 {
-    this->TRender<RenderUserDefined>(myRender);
+    this->SetRendererBounds<UserDefinedRenderer>(myRender);
 }
 void UserDefined::SetFormula(FormulaOpt formula)
 {
@@ -67,11 +67,11 @@ void UserDefined::DrawOrbit()
     parser.DefineVar(_T("c"),  mup::Variable(&cVal));
     parser.DefineVar(_T("Z"), mup::Variable(&zVal));
     parser.DefineVar(_T("C"),  mup::Variable(&cVal));
-    if(julia) cVal = mup::cmplx_type(_kReal, _kImaginary);
+    if (julia) cVal = mup::cmplx_type(_kReal, _kImaginary);
     bool outOfSet = false;
 
     zVal = mup::cmplx_type(_orbitX, _orbitY);
-    if(!julia) cVal = mup::cmplx_type(_orbitX, _orbitY);
+    if (!julia) cVal = mup::cmplx_type(_orbitX, _orbitY);
 
     try
     {

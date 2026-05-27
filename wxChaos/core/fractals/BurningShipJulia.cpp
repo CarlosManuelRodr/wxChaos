@@ -16,14 +16,14 @@ BurningShipJulia::BurningShipJulia(const sf::RenderWindow* window) : Fractal(win
 
     _hasOrbit = true;
     _type = FractalType::BurningShip;
-    myRender = new RenderBurningShipJulia[_threadNumber];
-    SetWatchdog<RenderBurningShipJulia>(myRender, &_watchdog, _threadNumber);
+    myRender = new BurningShipJuliaRenderer[_threadNumber];
+    SetWatchdog<BurningShipJuliaRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 }
 BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, height)
 {
@@ -38,10 +38,10 @@ BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, heigh
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
     _type = FractalType::BurningShip;
-    myRender = new RenderBurningShipJulia[_threadNumber];
-    SetWatchdog<RenderBurningShipJulia>(myRender, &_watchdog, _threadNumber);
+    myRender = new BurningShipJuliaRenderer[_threadNumber];
+    SetWatchdog<BurningShipJuliaRenderer>(myRender, &_watchdog, _threadNumber);
 }
 BurningShipJulia::~BurningShipJulia()
 {
@@ -50,7 +50,7 @@ BurningShipJulia::~BurningShipJulia()
 }
 void BurningShipJulia::Render()
 {
-    this->TRender<RenderBurningShipJulia>(myRender);
+    this->SetRendererBounds<BurningShipJuliaRenderer>(myRender);
 }
 void BurningShipJulia::DrawOrbit()
 {

@@ -1,3 +1,4 @@
+// ReSharper disable CppMemberFunctionMayBeConst
 #include "Complex.h"
 
 Complex::Complex()

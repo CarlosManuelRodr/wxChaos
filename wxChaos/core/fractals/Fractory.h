@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderFractory.h"
+#include "../renderers/FractoryRenderer.h"
 
 /*
 * @class Fractory
@@ -9,7 +9,7 @@
 class Fractory : public Fractal
 {
 private:
-    RenderFractory *myRender;
+    FractoryRenderer *myRender;
 public:
     Fractory(const sf::RenderWindow* window);
     Fractory(int width, int height);

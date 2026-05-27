@@ -1,5 +1,4 @@
 #pragma once
-#include <cmath>
 
 constexpr int trapFactor = 1;
 
@@ -10,8 +9,8 @@ inline double minVal(const double a, const double b)
 
 inline double gaussianIntDist(const double x, const double y)
 {
-    double gint_x = floor(x * trapFactor + 0.5) / trapFactor;
-    double gint_y = floor(y * trapFactor + 0.5) / trapFactor;
+    const double gint_x = floor(x * trapFactor + 0.5) / trapFactor;
+    const double gint_y = floor(y * trapFactor + 0.5) / trapFactor;
     return sqrt((x - gint_x) * (x - gint_x) + (y - gint_y) * (y - gint_y));
 }
 

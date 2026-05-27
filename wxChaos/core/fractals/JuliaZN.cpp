@@ -22,14 +22,14 @@ JuliaZN::JuliaZN(const sf::RenderWindow* window) : Fractal(window)
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _smoothRender = false;
-    myRender = new RenderJuliaZN[_threadNumber];
-    SetWatchdog<RenderJuliaZN>(myRender, &_watchdog, _threadNumber);
+    myRender = new JuliaZNRenderer[_threadNumber];
+    SetWatchdog<JuliaZNRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -50,7 +50,7 @@ JuliaZN::JuliaZN(const int width, const int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -63,8 +63,8 @@ JuliaZN::JuliaZN(const int width, const int height) : Fractal(width, height)
     _hasSmoothRender = true;
     _juliaVariety = true;
     _type = FractalType::JuliaZN;
-    myRender = new RenderJuliaZN[_threadNumber];
-    SetWatchdog<RenderJuliaZN>(myRender, &_watchdog, _threadNumber);
+    myRender = new JuliaZNRenderer[_threadNumber];
+    SetWatchdog<JuliaZNRenderer>(myRender, &_watchdog, _threadNumber);
 }
 JuliaZN::~JuliaZN()
 {
@@ -100,7 +100,7 @@ void JuliaZN::Render()
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(n, bailout);
 
-    this->TRender<RenderJuliaZN>(myRender);
+    this->SetRendererBounds<JuliaZNRenderer>(myRender);
 }
 void JuliaZN::CopyOptFromPanel()
 {

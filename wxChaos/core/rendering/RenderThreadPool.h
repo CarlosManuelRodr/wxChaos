@@ -7,7 +7,7 @@
 #include <mutex>
 #include <thread>
 #include <vector>
-#include "RenderFractal.h"
+#include "Renderer.h"
 #include "rendering/RenderJob.h"
 
 /**
@@ -22,7 +22,7 @@
 class RenderThreadPool
 {
     std::vector<std::thread> _workers;
-    std::vector<RenderFractal*> _renderers;
+    std::vector<Renderer*> _renderers;
     std::vector<char> _workerActive;
     std::deque<RenderJob> _jobs;
 
@@ -51,7 +51,7 @@ public:
     ///@brief Starts rendering the supplied jobs with the supplied renderers.
     ///@param renderers Renderer instances, one for each worker.
     ///@param jobs Jobs to render.
-    void Render(const std::vector<RenderFractal*>& renderers, const std::vector<RenderJob>& jobs);
+    void Render(const std::vector<Renderer*>& renderers, const std::vector<RenderJob>& jobs);
 
     ///@brief Stops all active work and waits for workers to become idle.
     void Stop();

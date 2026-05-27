@@ -1,8 +1,8 @@
 #pragma once
-#include "wx/gradient.h"
+#include "wx/wxGradient.h"
 #include "SFML/Graphics.hpp"
 #include "wx/PanelOptions.h"
-#include "types/RenderingAlgorithm.h"
+#include "types/RenderingAlgorithmType.h"
 #include "types/FractalType.h"
 
 struct Options
@@ -16,7 +16,7 @@ struct Options
     unsigned maxIter;
     int changeGradient;
     wxGradient gradient;
-    RenderingAlgorithm alg;
+    RenderingAlgorithmType alg;
     FractalType type;
     int paletteSize;
     int gradPaletteSize;

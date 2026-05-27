@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderMandelbrot.h"
+#include "../renderers/MandelbrotRenderer.h"
 
 /*
 * @class Mandelbrot
@@ -8,7 +8,7 @@
 */
 class Mandelbrot : public Fractal
 {
-    RenderMandelbrot* myRender;
+    MandelbrotRenderer* myRender;
     int buddhaRandomP;
 public:
     explicit Mandelbrot(const sf::RenderWindow* window);

@@ -17,14 +17,14 @@ Manowar::Manowar(const sf::RenderWindow* window) : Fractal(window)
     _type = FractalType::Manowar;
     _hasOrbit = true;
     _hasOrbitTrap = true;
-    myRender = new RenderManowar[_threadNumber];
-    SetWatchdog<RenderManowar>(myRender, &_watchdog, _threadNumber);
+    myRender = new ManowarRenderer[_threadNumber];
+    SetWatchdog<ManowarRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 }
 Manowar::Manowar(const int width, const int height) : Fractal(width, height)
 {
@@ -38,11 +38,11 @@ Manowar::Manowar(const int width, const int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
 
     _type = FractalType::Manowar;
-    myRender = new RenderManowar[_threadNumber];
-    SetWatchdog<RenderManowar>(myRender, &_watchdog, _threadNumber);
+    myRender = new ManowarRenderer[_threadNumber];
+    SetWatchdog<ManowarRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Manowar::~Manowar()
 {
@@ -51,7 +51,7 @@ Manowar::~Manowar()
 }
 void Manowar::Render()
 {
-    this->TRender<RenderManowar>(myRender);
+    this->SetRendererBounds<ManowarRenderer>(myRender);
 }
 void Manowar::DrawOrbit()
 {

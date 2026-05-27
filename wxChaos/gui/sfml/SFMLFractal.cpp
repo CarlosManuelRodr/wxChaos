@@ -412,7 +412,7 @@ void SFMLFractal::SetColorPalette(const ColorPalettes palette)
     _fractal->SetColorPalette(palette);
 }
 
-void SFMLFractal::SetExtColorMode(const bool mode)
+void SFMLFractal::SetExteriorColorMode(const bool mode)
 {
     if (_fractal == nullptr)
         return;
@@ -466,7 +466,7 @@ void SFMLFractal::SetVarGradient(const int offset)
     _fractal->SetVarGradient(offset);
 }
 
-void SFMLFractal::SetAlgorithm(const RenderingAlgorithm algorithm)
+void SFMLFractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
 {
     if (_fractal == nullptr)
         return;

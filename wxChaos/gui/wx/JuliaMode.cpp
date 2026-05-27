@@ -25,6 +25,7 @@ JuliaMode::~JuliaMode()
     delete _window;
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 void JuliaMode::HandleEvent()
 {
     while (_window->pollEvent(_event))
@@ -37,7 +38,7 @@ void JuliaMode::HandleEvent()
         }
         if (_event.type == sf::Event::Resized)
         {
-            sf::View View(sf::FloatRect(0, 0, (float)_event.size.width, (float)_event.size.height));
+            sf::View View(sf::FloatRect(0, 0, static_cast<float>(_event.size.width), static_cast<float>(_event.size.height)));
             _window->setView(View);
             _sfmlFractal.Resize(_window);
             _play->Resize(_window);
@@ -48,7 +49,7 @@ void JuliaMode::HandleEvent()
         // Fortunately, the event structure members they use are mostly compatible.
         if (_selection->HandleEvents(_event))
         {
-            _sfmlFractal.SetAreaOfView(_selection->GetSeleccion());
+            _sfmlFractal.SetAreaOfView(_selection->GetSelection());
         }
         if (_play->HandleEvents(_event))
         {
@@ -128,12 +129,12 @@ void JuliaMode::HandleEvent()
 void JuliaMode::Run()
 {
     // The window must be created in the same thread that will execute it.
-    _window = new sf::RenderWindow(sf::VideoMode(640, 480), "Julia mode");    // Txt: "Julia mode"
+    _window = new sf::RenderWindow(sf::VideoMode(640, 480), "Julia mode");
 
     // Calculate position using wxWidgets and convert to sf::Vector2i
-    wxPoint parentPos = _parent->GetPosition();
-    wxSize parentSize = _parent->GetSize();
-    sf::Vector2i juliaWindowPos(parentPos.x + parentSize.GetWidth() + 5, parentPos.y);
+    const wxPoint parentPos = _parent->GetPosition();
+    const wxSize parentSize = _parent->GetSize();
+    const sf::Vector2i juliaWindowPos(parentPos.x + parentSize.GetWidth() + 5, parentPos.y);
     _window->setPosition(juliaWindowPos);
 
     _window->setFramerateLimit(30);
@@ -146,9 +147,9 @@ void JuliaMode::Run()
     _juliaFractal.GetFractalPtr()->SetOptions(_myJuliaOpt, true);
     _juliaFractal.GetFractalPtr()->SetJuliaMode(true);
 
-    _selection = new SelectRect(_window);
+    _selection = new SelectionRect();
     _play = new ToggleButton("Resources/Play.tga", "Resources/Stop.tga", 0, 4, _window);
-    _play->SetAnchorage(false, true, true, false);
+    _play->SetAnchor(false, true, true, false);
 
     while (_window->isOpen())
     {

@@ -17,13 +17,13 @@ Magnet::Magnet(const sf::RenderWindow* window) : Fractal(window)
     _type = FractalType::Magnetic;
     _hasOrbit = true;
 
-    myRender = new RenderMagnet[_threadNumber];
-    SetWatchdog<RenderMagnet>(myRender, &_watchdog, _threadNumber);
+    myRender = new MagnetRenderer[_threadNumber];
+    SetWatchdog<MagnetRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 }
 Magnet::Magnet(const int width, const int height) : Fractal(width, height)
 {
@@ -37,10 +37,10 @@ Magnet::Magnet(const int width, const int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
     _type = FractalType::Magnetic;
-    myRender = new RenderMagnet[_threadNumber];
-    SetWatchdog<RenderMagnet>(myRender, &_watchdog, _threadNumber);
+    myRender = new MagnetRenderer[_threadNumber];
+    SetWatchdog<MagnetRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Magnet::~Magnet()
 {
@@ -49,7 +49,7 @@ Magnet::~Magnet()
 }
 void Magnet::Render()
 {
-    this->TRender<RenderMagnet>(myRender);
+    this->SetRendererBounds<MagnetRenderer>(myRender);
 }
 void Magnet::DrawOrbit()
 {

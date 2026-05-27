@@ -3,8 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "ColorPalettes.h"
-#include "types/RenderingAlgorithm.h"
-#include "wx/gradient.h"
+#include "types/RenderingAlgorithmType.h"
+#include "wx/wxGradient.h"
 
 class Fractal;
 
@@ -121,7 +121,7 @@ public:
 
     ///@brief Sets whether exterior colors are drawn and invalidates cached images.
     ///@param mode Exterior color mode.
-    void SetExtColorMode(bool mode);
+    void SetExteriorColorMode(bool mode);
 
     ///@brief Sets whether set colors are drawn and invalidates cached images.
     ///@param mode Set color mode.
@@ -144,7 +144,7 @@ public:
 
     ///@brief Sets the rendering algorithm and invalidates cached images.
     ///@param algorithm New rendering algorithm.
-    void SetAlgorithm(RenderingAlgorithm algorithm);
+    void SetAlgorithm(RenderingAlgorithmType algorithm);
 
     ///@brief Sets orbit trap mode and invalidates cached images.
     ///@param mode Orbit trap mode.

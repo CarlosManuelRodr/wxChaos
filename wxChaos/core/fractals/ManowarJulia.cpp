@@ -16,14 +16,14 @@ ManowarJulia::ManowarJulia(const sf::RenderWindow* window) : Fractal(window)
     _juliaVariety = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
-    myRender = new RenderManowarJulia[_threadNumber];
-    SetWatchdog<RenderManowarJulia>(myRender, &_watchdog, _threadNumber);
+    myRender = new ManowarJuliaRenderer[_threadNumber];
+    SetWatchdog<ManowarJuliaRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 }
 ManowarJulia::ManowarJulia(const int width, const int height) : Fractal(width, height)
 {
@@ -40,11 +40,11 @@ ManowarJulia::ManowarJulia(const int width, const int height) : Fractal(width, h
     _kImaginary = -0.0432547;
 
     _juliaVariety = true;
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
 
     _type = FractalType::ManowarJulia;
-    myRender = new RenderManowarJulia[_threadNumber];
-    SetWatchdog<RenderManowarJulia>(myRender, &_watchdog, _threadNumber);
+    myRender = new ManowarJuliaRenderer[_threadNumber];
+    SetWatchdog<ManowarJuliaRenderer>(myRender, &_watchdog, _threadNumber);
 }
 ManowarJulia::~ManowarJulia()
 {
@@ -53,7 +53,7 @@ ManowarJulia::~ManowarJulia()
 }
 void ManowarJulia::Render()
 {
-    this->TRender<RenderManowarJulia>(myRender);
+    this->SetRendererBounds<ManowarJuliaRenderer>(myRender);
 }
 void ManowarJulia::DrawOrbit()
 {
@@ -66,7 +66,7 @@ void ManowarJulia::DrawOrbit()
     for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4)
+        if (z.real()*z.real() + z.imag()*z.imag() > 4)
         {
             outOfSet = true;
             break;

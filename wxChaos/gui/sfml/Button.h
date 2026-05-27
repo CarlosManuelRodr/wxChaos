@@ -3,6 +3,15 @@
 #include <SFML/Graphics.hpp>
 #include <wx/wx.h>
 
+enum AnchorType
+{
+    None,
+    TopLeft,
+    BottomLeft,
+    BottomRight,
+    TopRight
+};
+
 /**
  * @class Button
  * @brief Simple clickable SFML sprite used as an overlay control.
@@ -38,7 +47,7 @@ protected:
     double _bottomMargin;
 
     /// Anchor corner: 0 none, 1 top-left, 2 bottom-left, 3 bottom-right, 4 top-right.
-    int _anchorType;
+    AnchorType _anchorType;
 
     /// Source image loaded from disk.
     sf::Image _textureImage;
@@ -61,11 +70,11 @@ public:
     void Resize(const sf::RenderWindow* window);
 
     /// @brief Creates a button from an image file.
-    /// @param path Image path for the button texture.
-    /// @param posX Initial X position, or horizontal margin when anchored.
-    /// @param posY Initial Y position, or vertical margin when anchored.
+    /// @param textureImagePath Image path for the button texture.
+    /// @param positionX Initial X position, or horizontal margin when anchored.
+    /// @param positionY Initial Y position, or vertical margin when anchored.
     /// @param window Render window used to calculate initial placement.
-    Button(const std::string& path, int posX, int posY, const sf::RenderWindow* window);
+    Button(const std::string& textureImagePath, int positionX, int positionY, const sf::RenderWindow* window);
 
     /// @brief Draws the button sprite.
     /// @param window Target render window.
@@ -76,7 +85,7 @@ public:
     /// @param left True when anchoring to the left edge.
     /// @param bottom True when anchoring to the bottom edge.
     /// @param right True when anchoring to the right edge.
-    void SetAnchorage(bool top, bool left, bool bottom, bool right);
+    void SetAnchor(bool top, bool left, bool bottom, bool right);
 
     /// @brief Toggles the pressed state.
     void ChangeState();

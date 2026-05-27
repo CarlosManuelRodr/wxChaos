@@ -16,8 +16,8 @@ FixedPoint4::FixedPoint4(const sf::RenderWindow* window) : Fractal(window)
     _hasOrbit = true;
 
     _type = FractalType::FixedPoint4;
-    myRender = new RenderFixedPoint4[_threadNumber];
-    SetWatchdog<RenderFixedPoint4>(myRender, &_watchdog, _threadNumber);
+    myRender = new FixedPoint4Renderer[_threadNumber];
+    SetWatchdog<FixedPoint4Renderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -25,8 +25,8 @@ FixedPoint4::FixedPoint4(const sf::RenderWindow* window) : Fractal(window)
     minStep = 0.001;
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::ConvergenceTest;
-    _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
+    _algorithm = RenderingAlgorithmType::ConvergenceTest;
+    _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
 }
 FixedPoint4::FixedPoint4(const int width, const int height) : Fractal(width, height)
 {
@@ -40,8 +40,8 @@ FixedPoint4::FixedPoint4(const int width, const int height) : Fractal(width, hei
     minStep = 0.001;
 
     _type = FractalType::FixedPoint4;
-    myRender = new RenderFixedPoint4[_threadNumber];
-    SetWatchdog<RenderFixedPoint4>(myRender, &_watchdog, _threadNumber);
+    myRender = new FixedPoint4Renderer[_threadNumber];
+    SetWatchdog<FixedPoint4Renderer>(myRender, &_watchdog, _threadNumber);
 }
 FixedPoint4::~FixedPoint4()
 {
@@ -53,7 +53,7 @@ void FixedPoint4::Render()
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(minStep);
 
-    this->TRender<RenderFixedPoint4>(myRender);
+    this->SetRendererBounds<FixedPoint4Renderer>(myRender);
 }
 void FixedPoint4::DrawOrbit()
 {
@@ -66,7 +66,7 @@ void FixedPoint4::DrawOrbit()
         zVector.push_back(z);
         z = pow(z,2);
 
-        if((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
+        if ((z_ant.real() - minStep < z.real() && z_ant.real() + minStep > z.real())
             && (z_ant.imag() - minStep < z.imag() && z_ant.imag() + minStep > z.imag()))
             break;
 

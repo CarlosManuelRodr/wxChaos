@@ -16,8 +16,8 @@ DoublePendulum::DoublePendulum(const sf::RenderWindow* window):Fractal(window)
     _hasOrbit = true;
 
     _type = FractalType::DoublePendulum;
-    myRender = new RenderDPendulum[_threadNumber];
-    SetWatchdog<RenderDPendulum>(myRender, &_watchdog, _threadNumber);
+    myRender = new DoublePendulumRenderer[_threadNumber];
+    SetWatchdog<DoublePendulumRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -45,9 +45,9 @@ DoublePendulum::DoublePendulum(const sf::RenderWindow* window):Fractal(window)
     rungeKutta = false;
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
 }
 DoublePendulum::DoublePendulum(int width, int height) : Fractal(width, height)
 {
@@ -87,10 +87,10 @@ DoublePendulum::DoublePendulum(int width, int height) : Fractal(width, height)
     referenced = false;
     rungeKutta = false;
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
     _type = FractalType::DoublePendulum;
-    myRender = new RenderDPendulum[_threadNumber];
-    SetWatchdog<RenderDPendulum>(myRender, &_watchdog, _threadNumber);
+    myRender = new DoublePendulumRenderer[_threadNumber];
+    SetWatchdog<DoublePendulumRenderer>(myRender, &_watchdog, _threadNumber);
 }
 DoublePendulum::~DoublePendulum()
 {
@@ -101,7 +101,7 @@ void DoublePendulum::Render()
 {
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(th1Bailout, th2Bailout, th1NumBailout, th2NumBailout, dt, m1, m2, l, g, referenced, rungeKutta);
-    this->TRender<RenderDPendulum>(myRender);
+    this->SetRendererBounds<DoublePendulumRenderer>(myRender);
 }
 void DoublePendulum::CopyOptFromPanel()
 {

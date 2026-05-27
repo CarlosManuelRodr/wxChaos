@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderScriptFractal.h"
+#include "../renderers/ScriptFractalRenderer.h"
 #include "../scripting/ScriptData.h"
 
 /*
@@ -11,7 +11,7 @@ class ScriptFractal : public Fractal
 {
     std::string _path;
     ScriptData _myScriptData;
-    RenderScriptFractal* _myRender;
+    ScriptFractalRenderer* _myRender;
 public:
     ScriptFractal(const sf::RenderWindow* window, const ScriptData& scriptData);
     ScriptFractal(int width, int height, const ScriptData& scriptData, int renderThreads = -1);

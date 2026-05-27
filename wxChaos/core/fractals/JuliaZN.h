@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderJuliaZN.h"
+#include "../renderers/JuliaZNRenderer.h"
 
 /*
 * @class JuliaZN
@@ -8,7 +8,7 @@
 */
 class JuliaZN: public Fractal
 {
-    RenderJuliaZN* myRender;
+    JuliaZNRenderer* myRender;
     int n;
     double bailout;
 public:

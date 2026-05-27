@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/RenderNewton.h"
+#include "../renderers/NewtonRenderer.h"
 
 /*
 * @class Newton
@@ -8,7 +8,7 @@
 */
 class Newton : public Fractal
 {
-    RenderNewton* myRender;
+    NewtonRenderer* myRender;
     double minStep;
 public:
     explicit Newton(const sf::RenderWindow* window);

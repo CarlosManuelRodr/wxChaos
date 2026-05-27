@@ -101,7 +101,7 @@ FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, wxMenuIte
     juliaCheck = new wxCheckBox(mainPanel, wxID_ANY, wxT("Julia type"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Julia type"
     typeSizer->Add(juliaCheck, 0, wxALL, 5);
 
-    if(fCanvas->GetFormula().julia)
+    if (fCanvas->GetFormula().julia)
         juliaCheck->SetValue(true);
     else
         juliaCheck->SetValue(false);
@@ -129,7 +129,7 @@ FormulaDialog::FormulaDialog(int _userDefinedID, int _FPuserDefinedID, wxMenuIte
     this->Layout();
     this->Centre(wxBOTH);
 
-    if(fCanvas->GetFormula().type == FormulaType::Complex)
+    if (fCanvas->GetFormula().type == FormulaType::Complex)
     {
         typeChoice->SetSelection( 0 );
         juliaCheck->Enable(true);
@@ -171,14 +171,14 @@ void FormulaDialog::OnApply(wxCommandEvent& event)
     options.bailout = string_to_int(bailCtrl->GetValue());
     options.julia = juliaCheck->GetValue();
 
-    if(typeChoice->GetCurrentSelection() == 0)
+    if (typeChoice->GetCurrentSelection() == 0)
         options.type = FormulaType::Complex;
     else
         options.type = FormulaType::FixedPoint;
 
     fCanvas->SetUserFormula(options);
 
-    if(typeChoice->GetCurrentSelection() == 0)
+    if (typeChoice->GetCurrentSelection() == 0)
     {
         wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, userDefinedID);
         event.SetEventObject(parent);
@@ -199,7 +199,7 @@ void FormulaDialog::OnClose(wxCloseEvent& event)
 }
 void FormulaDialog::OnChoice( wxCommandEvent& event )
 {
-    if(typeChoice->GetCurrentSelection() == 0)
+    if (typeChoice->GetCurrentSelection() == 0)
     {
         juliaCheck->Enable(true);
         bailCtrl->Enable(true);

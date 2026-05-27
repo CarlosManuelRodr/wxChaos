@@ -22,15 +22,15 @@ Julia::Julia(const sf::RenderWindow* window) : Fractal(window)
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _smoothRender = true;
-    myRender = new RenderJulia[_threadNumber];
-    SetWatchdog<RenderJulia>(myRender, &_watchdog, _threadNumber);
+    myRender = new JuliaRenderer[_threadNumber];
+    SetWatchdog<JuliaRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
-    _algorithm = RenderingAlgorithm::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
-    _availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
+    _algorithm = RenderingAlgorithmType::EscapeTime;
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Julia::Julia(const int width, const int height) : Fractal(width, height)
 {
@@ -44,13 +44,13 @@ Julia::Julia(const int width, const int height) : Fractal(width, height)
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _algorithm = RenderingAlgorithm::EscapeTime;
+    _algorithm = RenderingAlgorithmType::EscapeTime;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _juliaVariety = true;
     _type = FractalType::Julia;
-    myRender = new RenderJulia[_threadNumber];
-    SetWatchdog<RenderJulia>(myRender, &_watchdog, _threadNumber);
+    myRender = new JuliaRenderer[_threadNumber];
+    SetWatchdog<JuliaRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Julia::~Julia()
 {
@@ -83,6 +83,6 @@ void Julia::DrawOrbit()
 }
 void Julia::Render()
 {
-    this->TRender<RenderJulia>(myRender);
+    this->SetRendererBounds<JuliaRenderer>(myRender);
 }
 

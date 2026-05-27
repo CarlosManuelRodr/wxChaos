@@ -146,7 +146,7 @@ void AboutDialog::ApplyInfo()
     m_VersionStaticText->SetLabel(m_Version);
     m_CopyrightStaticText->SetLabel(m_Copyright);
     wxString buildInfo;
-    if(m_CustomBuildInfo.IsEmpty())
+    if (m_CustomBuildInfo.IsEmpty())
     {
         buildInfo = AboutDialog::GetBuildInfo(wxBUILDINFO_LONG);
     }

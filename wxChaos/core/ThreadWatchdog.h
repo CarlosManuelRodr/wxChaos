@@ -2,7 +2,7 @@
 #define WXCHAOS_SLN_THREAD_WATCHDOG_H
 
 #include <SFML/System.hpp>
-#include "RenderFractal.h"
+#include "Renderer.h"
 
 /**
 * @class ThreadWatchdog
@@ -26,7 +26,7 @@ public:
 
     ///@brief Changes the number of execution threads. For this it will have to delete the previous ones.
     ///@param threadNumber Number of new threads.
-    void SetThreadNumber(int threadNumber);
+    void SetThreadNumber(unsigned int threadNumber);
 
     ///@brief Sets a new thread to watch over.
     ///@param threadAddress Pointer to the thread to watch over.
@@ -61,7 +61,7 @@ public:
 * @param watchdog Pointer to the watchdog that will be used.
 * @param threadNumber Number of threads to set.
 */
-template<class MT> void SetWatchdog(MT* myRender, ThreadWatchdog<RenderFractal>* watchdog, const unsigned int threadNumber)
+template<class MT> void SetWatchdog(MT* myRender, ThreadWatchdog<Renderer>* watchdog, const unsigned int threadNumber)
 {
     watchdog->SetThreadNumber(threadNumber);
     for (unsigned int i = 0; i < threadNumber; i++)
@@ -86,16 +86,15 @@ template<class MT> ThreadWatchdog<MT>::~ThreadWatchdog()
         delete[] _sfmlThreads;
     }
 }
-template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(const int threadNumber)
+template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(const unsigned int threadNumber)
 {
     if (_threadList != nullptr)
     {
         delete[] _threadList;
     }
-    if (_sfmlThreads != nullptr)
-    {
-        delete[] _sfmlThreads;
-    }
+
+    delete[] _sfmlThreads;
+
     _threadCounter = 0;
     _threadRunning = false;
 
@@ -143,7 +142,7 @@ template<class MT> void ThreadWatchdog<MT>::LaunchThreads()
     for (unsigned int i = 0; i < _threadCounter; i++)
     {
         // Create a new thread that will call the run() method of our RenderFractal object
-        _sfmlThreads[i] = new Thread(&RenderFractal::run, _threadList[i]);
+        _sfmlThreads[i] = new Thread(&Renderer::run, _threadList[i]);
         _sfmlThreads[i]->launch();
     }
 }
@@ -171,9 +170,9 @@ template<class MT> int ThreadWatchdog<MT>::GetThreadProgress()
 {
     int progress = 0;
     for (unsigned int i = 0; i < _threadCounter; i++)
-        progress += _threadList[i]->AskProgress();
+        progress += _threadList[i]->GetProgress();
 
-    return (double)progress / (double)_threadCounter;
+    return static_cast<double>(progress) / static_cast<double>(_threadCounter);
 }
 template<class MT> MT* ThreadWatchdog<MT>::GetThread(unsigned int nThread)
 {

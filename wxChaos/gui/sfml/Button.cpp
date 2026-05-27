@@ -1,13 +1,13 @@
 #include "Button.h"
 
-Button::Button(const std::string& path, const int posX, const int posY, const sf::RenderWindow* window)
+Button::Button(const std::string& textureImagePath, const int positionX, const int positionY, const sf::RenderWindow* window)
 {
     const double screenWidth = window->getSize().x;
     const double screenHeight = window->getSize().y;
-    _textureImage.loadFromFile(path);
+    _textureImage.loadFromFile(textureImagePath);
     _texture.loadFromImage(_textureImage);
     _sprite.setTexture(_texture);
-    _sprite.setPosition(static_cast<float>(posX), static_cast<float>(posY));
+    _sprite.setPosition(static_cast<float>(positionX), static_cast<float>(positionY));
     _width = _texture.getSize().x;
     _height = _texture.getSize().y;
     _area = _sprite.getGlobalBounds();
@@ -18,12 +18,12 @@ Button::Button(const std::string& path, const int posX, const int posY, const sf
     _topMargin = _area.top;
     _rightMargin = screenWidth - _area.left - _area.width;
     _bottomMargin = screenHeight - _area.top - _area.height;
-    _anchorType = 0;
+    _anchorType = None;
 }
 
 void Button::Resize(const sf::RenderWindow* window)
 {
-    if (_anchorType == 0)
+    if (_anchorType == None)
     {
         _sprite.setPosition(static_cast<float>(_fx * window->getSize().x),
                             static_cast<float>(_fy * window->getSize().y));
@@ -39,10 +39,10 @@ void Button::Resize(const sf::RenderWindow* window)
         float x = static_cast<float>(_leftMargin);
         float y = static_cast<float>(_topMargin);
 
-        if (_anchorType == 2 || _anchorType == 3)
+        if (_anchorType == BottomLeft || _anchorType == BottomRight)
             y = static_cast<float>(window->getSize().y - _bottomMargin - _height);
 
-        if (_anchorType == 3 || _anchorType == 4)
+        if (_anchorType == BottomRight || _anchorType == TopRight)
             x = static_cast<float>(window->getSize().x - _rightMargin - _width);
 
         _sprite.setPosition(x, y);
@@ -56,31 +56,31 @@ void Button::Show(sf::RenderWindow* window) const
     window->draw(_sprite);
 }
 
-void Button::SetAnchorage(const bool top, const bool left, const bool bottom, const bool right)
+void Button::SetAnchor(const bool top, const bool left, const bool bottom, const bool right)
 {
-    _anchorType = 0;
+    _anchorType = None;
 
     if (top && left)
     {
-        _anchorType = 1;
+        _anchorType = TopLeft;
         _leftMargin = _area.left;
         _topMargin = _area.top;
     }
     else if (bottom && left)
     {
-        _anchorType = 2;
+        _anchorType = BottomLeft;
         _leftMargin = _area.left;
         _bottomMargin = _area.top;
     }
     else if (bottom && right)
     {
-        _anchorType = 3;
+        _anchorType = BottomRight;
         _rightMargin = _area.left;
         _bottomMargin = _area.top;
     }
     else if (top && right)
     {
-        _anchorType = 4;
+        _anchorType = TopRight;
         _rightMargin = _area.left;
         _topMargin = _area.top;
     }

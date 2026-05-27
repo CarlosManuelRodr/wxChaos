@@ -24,7 +24,7 @@ class JuliaMode
     FractalCanvas* _target;
     FractalHandler _juliaFractal;
     SFMLFractal _sfmlFractal;
-    SelectRect* _selection;
+    SelectionRect* _selection;
     Options _myJuliaOpt;
     ToggleButton* _play;
     FractalType _type;
@@ -44,7 +44,7 @@ public:
     ///@param ptr Pointer to the fractalCanvas.
     ///@param fractalType Type of Julia fractal to be created.
     ///@param juliaOpt Options to copy from the parent fractal.
-    ///@param _parent Parent wxWidget window.
+    ///@param parent Parent wxWidget window.
     JuliaMode(FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt, wxWindow* parent = nullptr);
     ~JuliaMode();
 

@@ -42,7 +42,7 @@ void RenderThreadPool::SetThreadNumber(const unsigned int threadNumber)
         _workers.push_back(std::thread(&RenderThreadPool::WorkerLoop, this, i));
 }
 
-void RenderThreadPool::Render(const std::vector<RenderFractal*>& renderers, const std::vector<RenderJob>& jobs)
+void RenderThreadPool::Render(const std::vector<Renderer*>& renderers, const std::vector<RenderJob>& jobs)
 {
     this->Stop();
     this->SetThreadNumber(static_cast<unsigned int>(renderers.size()));
@@ -75,7 +75,7 @@ void RenderThreadPool::Render(const std::vector<RenderFractal*>& renderers, cons
 
 void RenderThreadPool::Stop()
 {
-    std::vector<RenderFractal*> renderers;
+    std::vector<Renderer*> renderers;
 
     {
         std::lock_guard<std::mutex> lock(_mutex);
@@ -94,7 +94,7 @@ void RenderThreadPool::Stop()
         }
     }
 
-    for (RenderFractal* renderer : renderers)
+    for (Renderer* renderer : renderers)
     {
         if (renderer != nullptr)
         {
@@ -130,7 +130,7 @@ int RenderThreadPool::GetProgress()
     for (unsigned int i = 0; i < _renderers.size(); i++)
     {
         if (_workerActive[i] && _renderers[i] != nullptr)
-            progress += _renderers[i]->AskProgress();
+            progress += _renderers[i]->GetProgress();
     }
 
     return std::min(100, std::max(0, progress / static_cast<int>(_totalJobs)));
@@ -141,7 +141,7 @@ void RenderThreadPool::WorkerLoop(const unsigned int workerIndex)
     while (true)
     {
         RenderJob job;
-        RenderFractal* renderer = nullptr;
+        Renderer* renderer = nullptr;
 
         {
             std::unique_lock<std::mutex> lock(_mutex);
@@ -161,7 +161,7 @@ void RenderThreadPool::WorkerLoop(const unsigned int workerIndex)
         {
             const RenderRegion& region = job.GetRegion();
             renderer->SetLimits(region.GetLeft(), region.GetTop(), region.GetRight(), region.GetBottom());
-            renderer->SetOldHo(job.GetProgressOriginY());
+            renderer->SetOldHeightOrigin(job.GetProgressOriginY());
             renderer->run();
         }
 
