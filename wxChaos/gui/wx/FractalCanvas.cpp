@@ -47,7 +47,7 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     // Initializes GUI elements.
     _selection = new SelectRect(this);
 
-    _play = new ToggleButton(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 500, this);
+    _play = new ToggleButton(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 4, this);
     _play->SetAnchorage(false, true, true, false);
     _play->Resize(this);
 
@@ -123,6 +123,8 @@ void FractalCanvas::OnUpdate()
         }
 
         _sfmlFractal.HandleEvent(_event);
+        if (!_target->IsRendering() && _play->HandleEvents(_event))
+            _sfmlFractal.ChangeVarGradient();
 
         // Keyboard event.
         if (_event.type == sf::Event::KeyPressed)
@@ -221,6 +223,7 @@ void FractalCanvas::OnUpdate()
             this->draw(_outKeyboard);
             this->draw(_outMouse);
         }
+
         if (_helpImageMode)
         {
             this->draw(_outHelp);
@@ -235,6 +238,8 @@ void FractalCanvas::OnUpdate()
     {
         btn->pauseContinue->Enable(true);
     }
+
+    _play->Show(this);
 }
 void FractalCanvas::SetWxSize(const wxSize size)
 {

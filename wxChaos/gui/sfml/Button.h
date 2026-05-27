@@ -18,6 +18,7 @@ protected:
     double _rightMargin;
     double _bottomMargin;
     bool _anchorage;
+    bool _anchorMarginsInitialized;
     int _anchorType;
 
     int _width;

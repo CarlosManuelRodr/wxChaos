@@ -13,12 +13,13 @@ Button::Button(const std::string& path, const int posX, const int posY, const sf
     _anchorage = false;
     _screenWidth = window->getSize().x;
     _screenHeight = window->getSize().y;
-    _fy = _area.top/_screenHeight;
-    _fx = _area.left/_screenWidth;
+    _fy = _screenHeight > 0 ? _area.top/_screenHeight : 0;
+    _fx = _screenWidth > 0 ? _area.left/_screenWidth : 0;
     _leftMargin = _area.left;
     _topMargin = _area.top;
     _rightMargin = _screenWidth - _area.left - _area.width;
     _bottomMargin = _screenHeight - _area.top - _area.height;
+    _anchorMarginsInitialized = false;
     _anchorType = 0;
 }
 
@@ -31,6 +32,26 @@ void Button::Resize(const sf::RenderWindow* window)
     }
     else
     {
+        if (window->getSize().x == 0 || window->getSize().y == 0)
+        {
+            _area = _sprite.getGlobalBounds();
+            return;
+        }
+
+        if (!_anchorMarginsInitialized)
+        {
+            const sf::FloatRect initialArea = _sprite.getGlobalBounds();
+            _leftMargin = initialArea.left;
+            _topMargin = initialArea.top;
+            _rightMargin = window->getSize().x > initialArea.left + initialArea.width
+                               ? window->getSize().x - initialArea.left - initialArea.width
+                               : 0;
+            _bottomMargin = window->getSize().y > initialArea.top + initialArea.height
+                                ? window->getSize().y - initialArea.top - initialArea.height
+                                : 0;
+            _anchorMarginsInitialized = true;
+        }
+
         float x = static_cast<float>(_leftMargin);
         float y = static_cast<float>(_topMargin);
 
@@ -56,15 +77,32 @@ void Button::SetAnchorage(const bool top, const bool left, const bool bottom, co
     _anchorType = 0;
 
     if (top && left)
+    {
         _anchorType = 1;
+        _leftMargin = _area.left;
+        _topMargin = _area.top;
+    }
     else if (bottom && left)
+    {
         _anchorType = 2;
+        _leftMargin = _area.left;
+        _bottomMargin = _area.top;
+    }
     else if (bottom && right)
+    {
         _anchorType = 3;
+        _rightMargin = _area.left;
+        _bottomMargin = _area.top;
+    }
     else if (top && right)
+    {
         _anchorType = 4;
+        _rightMargin = _area.left;
+        _topMargin = _area.top;
+    }
 
     _anchorage = _anchorType != 0;
+    _anchorMarginsInitialized = _anchorage;
 }
 
 void Button::ChangeState()
