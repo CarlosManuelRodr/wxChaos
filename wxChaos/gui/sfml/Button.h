@@ -8,15 +8,12 @@ protected:
     sf::Image _textureImage;
     sf::Texture _texture;
     sf::Sprite _sprite;
-    sf::Font font;
-    sf::Text _buttonText;
     sf::FloatRect _area;
     bool _pressed;
     double _screenWidth;
     double _screenHeight;
     double _fx, _fy;
     bool _anchorage;
-    bool _thereIsText;
     int _anchorType;
 
     int _width;
@@ -25,9 +22,8 @@ protected:
 public:
     virtual ~Button() = default;
     void Resize(const sf::RenderWindow* window);
-    Button(const std::string& path, int posX, int posY, sf::RenderWindow* window);
-    Button(int posX, int posY, sf::RenderWindow* window, std::string text);
-    void Show(sf::RenderWindow* window);
+    Button(const std::string& path, int posX, int posY, const sf::RenderWindow* window);
+    void Show(sf::RenderWindow* window) const;
     void SetAnchorage(bool top, bool left, bool bottom, bool right);
     void ChangeState();
     virtual bool HandleEvents(sf::Event Event);

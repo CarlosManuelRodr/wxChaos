@@ -48,7 +48,6 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     _selection = new SelectRect(this);
 
     _play = new ToggleButton(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 500, this);
-    _play->SetAnchorage(false, true, true, false);
     _play->Resize(this);
 
     _screenPointer = new CoordinateSelector(this);
