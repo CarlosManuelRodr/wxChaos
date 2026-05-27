@@ -2,6 +2,8 @@
 
 Button::Button(const std::string& path, const int posX, const int posY, const sf::RenderWindow* window)
 {
+    const double screenWidth = window->getSize().x;
+    const double screenHeight = window->getSize().y;
     _textureImage.loadFromFile(path);
     _texture.loadFromImage(_textureImage);
     _sprite.setTexture(_texture);
@@ -10,22 +12,18 @@ Button::Button(const std::string& path, const int posX, const int posY, const sf
     _height = _texture.getSize().y;
     _area = _sprite.getGlobalBounds();
     _pressed = false;
-    _anchorage = false;
-    _screenWidth = window->getSize().x;
-    _screenHeight = window->getSize().y;
-    _fy = _screenHeight > 0 ? _area.top/_screenHeight : 0;
-    _fx = _screenWidth > 0 ? _area.left/_screenWidth : 0;
+    _fy = screenHeight > 0 ? _area.top/screenHeight : 0;
+    _fx = screenWidth > 0 ? _area.left/screenWidth : 0;
     _leftMargin = _area.left;
     _topMargin = _area.top;
-    _rightMargin = _screenWidth - _area.left - _area.width;
-    _bottomMargin = _screenHeight - _area.top - _area.height;
-    _anchorMarginsInitialized = false;
+    _rightMargin = screenWidth - _area.left - _area.width;
+    _bottomMargin = screenHeight - _area.top - _area.height;
     _anchorType = 0;
 }
 
 void Button::Resize(const sf::RenderWindow* window)
 {
-    if (!_anchorage)
+    if (_anchorType == 0)
     {
         _sprite.setPosition(static_cast<float>(_fx * window->getSize().x),
                             static_cast<float>(_fy * window->getSize().y));
@@ -36,20 +34,6 @@ void Button::Resize(const sf::RenderWindow* window)
         {
             _area = _sprite.getGlobalBounds();
             return;
-        }
-
-        if (!_anchorMarginsInitialized)
-        {
-            const sf::FloatRect initialArea = _sprite.getGlobalBounds();
-            _leftMargin = initialArea.left;
-            _topMargin = initialArea.top;
-            _rightMargin = window->getSize().x > initialArea.left + initialArea.width
-                               ? window->getSize().x - initialArea.left - initialArea.width
-                               : 0;
-            _bottomMargin = window->getSize().y > initialArea.top + initialArea.height
-                                ? window->getSize().y - initialArea.top - initialArea.height
-                                : 0;
-            _anchorMarginsInitialized = true;
         }
 
         float x = static_cast<float>(_leftMargin);
@@ -100,9 +84,6 @@ void Button::SetAnchorage(const bool top, const bool left, const bool bottom, co
         _rightMargin = _area.left;
         _topMargin = _area.top;
     }
-
-    _anchorage = _anchorType != 0;
-    _anchorMarginsInitialized = _anchorage;
 }
 
 void Button::ChangeState()

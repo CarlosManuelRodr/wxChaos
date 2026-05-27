@@ -1,7 +1,7 @@
 #include "ToggleButton.h"
 
 ToggleButton::ToggleButton(const std::string& path1, const std::string& path2, const int posX, const int posY,
-                           sf::RenderWindow* window) : Button(path1, posX, posY, window)
+                           const sf::RenderWindow* window) : Button(path1, posX, posY, window)
 {
     _textureImage2.loadFromFile(path2);
     _texture2.loadFromImage(_textureImage2);
