@@ -131,7 +131,7 @@ void SFMLFractal::EnsureFontLoaded()
         return;
 
     _font.loadFromFile(GetAbsPath({ "Resources", "PublicSans-Regular.otf" }));
-    _text.setFont(_font);
+    _iterationsText.setFont(_font);
 }
 
 void SFMLFractal::ResetDisplayImages()
@@ -725,9 +725,9 @@ void SFMLFractal::Show(sf::RenderWindow* window)
 
     if (!_fractal->_onSnapshot && !_fractal->_rendering)
     {
-        static sf::Image base;
-        static sf::Texture baseTexture;
-        static sf::Sprite baseSprite;
+        static sf::Image iterationsOverlayImage;
+        static sf::Texture iterationsOverlayTexture;
+        static sf::Sprite iterationsOverlaySprite;
         if (_changeFractalIter)
         {
             int number = _fractal->_maxIter;
@@ -738,17 +738,17 @@ void SFMLFractal::Show(sf::RenderWindow* window)
                 digits++;
             }
 
-            base.create(148 + (12 * digits), 35, sf::Color(0, 0, 0, 100));
-            baseTexture.loadFromImage(base);
-            baseSprite.setTexture(baseTexture);
-            baseSprite.setPosition(0, 0);
+            iterationsOverlayImage.create(148 + (12 * digits), 35, sf::Color(0, 0, 0, 100));
+            iterationsOverlayTexture.loadFromImage(iterationsOverlayImage);
+            iterationsOverlaySprite.setTexture(iterationsOverlayTexture);
+            iterationsOverlaySprite.setPosition(0, 0);
 
-            _text.setString(" Iterations: " + std::to_string(_fractal->_maxIter));
-            _text.setCharacterSize(25);
-            _text.setPosition(0, 0);
+            _iterationsText.setString(" Iterations: " + std::to_string(_fractal->_maxIter));
+            _iterationsText.setCharacterSize(25);
+            _iterationsText.setPosition(0, 0);
             _changeFractalIter = false;
         }
-        window->draw(baseSprite);
-        window->draw(_text);
+        window->draw(iterationsOverlaySprite);
+        window->draw(_iterationsText);
     }
 }

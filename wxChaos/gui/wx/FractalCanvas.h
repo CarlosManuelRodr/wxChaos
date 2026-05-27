@@ -75,7 +75,6 @@ class FractalCanvas : public wxSFMLCanvas
 
     sf::Event _event;
     wxSize _canvasSize;                     ///< Size of the fractalCanvas.
-    virtual void OnUpdate();                ///< Handles the SFML events and the drawing of the textures.
 
     bool _juliaMode;                        ///< State of the Julia mode.
     double _kReal;
@@ -92,6 +91,9 @@ class FractalCanvas : public wxSFMLCanvas
 
     MainWindowStatus statusData;
     PauseContinueButton* btn;
+
+protected:
+    void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
 
 public:
     ///@brief Constructor

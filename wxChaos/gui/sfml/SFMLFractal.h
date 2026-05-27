@@ -20,7 +20,7 @@ class SFMLFractal
 {
     Fractal* _fractal;                   ///< Fractal model currently being displayed.
     sf::Font _font;                      ///< Font used by SFML text overlays.
-    sf::Text _text;                      ///< Iteration-count overlay text.
+    sf::Text _iterationsText;            ///< Iteration-count overlay text.
     sf::Image _image;                    ///< Current rendered fractal image.
     sf::Texture _texture;                ///< Texture backing the rendered fractal sprite.
     sf::Sprite _output;                  ///< Sprite used to draw the rendered fractal image.
