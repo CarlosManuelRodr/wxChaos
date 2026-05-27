@@ -26,6 +26,6 @@ public:
     void Show(sf::RenderWindow* window) const;
     void SetAnchorage(bool top, bool left, bool bottom, bool right);
     void ChangeState();
-    virtual bool HandleEvents(sf::Event Event);
+    virtual bool HandleEvents(sf::Event event);
     virtual bool ClickEvent(wxMouseEvent& event);
 };

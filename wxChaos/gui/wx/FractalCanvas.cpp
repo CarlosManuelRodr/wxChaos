@@ -48,6 +48,7 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     _selection = new SelectRect(this);
 
     _play = new ToggleButton(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 500, this);
+    _play->SetAnchorage(false, true, true, false);
     _play->Resize(this);
 
     _screenPointer = new CoordinateSelector(this);
@@ -130,28 +131,27 @@ void FractalCanvas::OnUpdate()
             {
                 if (_event.key.code == sf::Keyboard::F1)  // Open or close slider.
                 {
-                    bool modo = !statusData.slider->IsChecked();
-                    this->SetSliderMode(modo);
-                    statusData.slider->Check(modo);
+                    const bool mode = !statusData.slider->IsChecked();
+                    this->SetSliderMode(mode);
+                    statusData.slider->Check(mode);
                 }
                 if (_event.key.code == sf::Keyboard::F2)  // Shows or hides fractal orbit.
                 {
-                    bool modo = !statusData.showOrbit->IsChecked();
-                    this->SetOrbitMode(modo);
-                    statusData.showOrbit->Check(modo);
+                    const bool mode = !statusData.showOrbit->IsChecked();
+                    this->SetOrbitMode(mode);
+                    statusData.showOrbit->Check(mode);
                 }
                 if (_event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
-                    wxFileDialog* openFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
+                    const auto openFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
                         wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
-                    wxString fileName;
                     if (openFileDialog->ShowModal() == wxID_OK)
                     {
+                        wxString fileName;
                         fileName = openFileDialog->GetPath();
-                        int ext = openFileDialog->GetFilterIndex();
-                        string path = string(fileName.mb_str());
-
-                        SizeDialogSave* diag = new SizeDialogSave(this, path, ext, _type, _target, this);
+                        const int ext = openFileDialog->GetFilterIndex();
+                        auto path = string(fileName.mb_str());
+                        const auto diag = new SizeDialogSave(this, path, ext, _type, _target, this);
                         diag->Show(true);
                     }
                     openFileDialog->Destroy();

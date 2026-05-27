@@ -68,8 +68,23 @@ void Button::ChangeState()
     _pressed = !_pressed;
 }
 
-bool Button::HandleEvents(sf::Event Event)
+bool Button::HandleEvents(const sf::Event event)
 {
+    if (event.type == sf::Event::MouseButtonPressed)
+    {
+        if (event.mouseButton.button == sf::Mouse::Left)
+        {
+            if (event.mouseButton.x >= _area.left && event.mouseButton.x <= _area.left + _area.width)
+            {
+                if (event.mouseButton.y >= _area.top && event.mouseButton.y <= _area.top + _area.height)
+                {
+                    _pressed = !_pressed;
+                    _sprite.setColor(_pressed ? sf::Color(0, 255, 0, 100) : sf::Color(255, 255, 255, 100));
+                    return true;
+                }
+            }
+        }
+    }
     return false;
 }
 

@@ -6,8 +6,8 @@
  * @brief Simple SFML toggle button with two states.
  */
 class ToggleButton : public Button {
-    sf::Image textureImage2;
-    sf::Texture texture2;
+    sf::Image _textureImage2;
+    sf::Texture _texture2;
 public:
     ToggleButton(const std::string& path1, const std::string& path2, int posX, int posY, sf::RenderWindow* window);
     bool HandleEvents(sf::Event event) override;
