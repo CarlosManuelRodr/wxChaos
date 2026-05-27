@@ -13,6 +13,10 @@ protected:
     double _screenWidth;
     double _screenHeight;
     double _fx, _fy;
+    double _leftMargin;
+    double _topMargin;
+    double _rightMargin;
+    double _bottomMargin;
     bool _anchorage;
     int _anchorType;
 
