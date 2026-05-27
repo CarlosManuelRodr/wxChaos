@@ -1,12 +1,12 @@
-#include "ScreenPointer.h"
+#include "CoordinateSelector.h"
 #include "Fractal.h"
 
-ScreenPointer::ScreenPointer(sf::RenderWindow* Window)
+CoordinateSelector::CoordinateSelector(const sf::RenderWindow* window)
 {
-    screenWidth = Window->getSize().x;
-    screenHeight = Window->getSize().y;
-    x = Window->getSize().x / 2;
-    y = Window->getSize().y / 2;
+    screenWidth = window->getSize().x;
+    screenHeight = window->getSize().y;
+    x = window->getSize().x / 2;
+    y = window->getSize().y / 2;
 
     color = sf::Color(0, 0, 0);
     textureImage.create(screenWidth, screenHeight, sf::Color(255, 255, 255, 0));
@@ -18,14 +18,14 @@ ScreenPointer::ScreenPointer(sf::RenderWindow* Window)
     inSelection = false;
 }
 
-void ScreenPointer::Show(sf::RenderWindow* Window)
+void CoordinateSelector::Show(sf::RenderWindow* window)
 {
     if (!rendered)
         this->Render();
-    Window->draw(output);
+    window->draw(output);
 }
 
-void ScreenPointer::Render()
+void CoordinateSelector::Render()
 {
     textureImage.create(screenWidth, screenHeight, sf::Color(255, 255, 255, 0));
     for (unsigned int i = 0; i < screenWidth; i++)
@@ -36,30 +36,30 @@ void ScreenPointer::Render()
     rendered = true;
 }
 
-bool ScreenPointer::HandleEvents(sf::Event Event)
+bool CoordinateSelector::HandleEvents(const sf::Event& event)
 {
-    if (Event.type == sf::Event::MouseButtonPressed)
+    if (event.type == sf::Event::MouseButtonPressed)
     {
-        if (Event.mouseButton.button == sf::Mouse::Left)
+        if (event.mouseButton.button == sf::Mouse::Left)
         {
-            y = Event.mouseButton.y;
-            x = Event.mouseButton.x;
+            y = event.mouseButton.y;
+            x = event.mouseButton.x;
             rendered = false;
             inSelection = true;
         }
     }
 
-    if (Event.type == sf::Event::MouseMoved && inSelection)
+    if (event.type == sf::Event::MouseMoved && inSelection)
     {
-        x = Event.mouseMove.x;
-        y = Event.mouseMove.y;
+        x = event.mouseMove.x;
+        y = event.mouseMove.y;
         rendered = false;
         return true;
     }
 
-    if (Event.type == sf::Event::MouseButtonReleased)
+    if (event.type == sf::Event::MouseButtonReleased)
     {
-        if (Event.mouseButton.button == sf::Mouse::Left)
+        if (event.mouseButton.button == sf::Mouse::Left)
         {
             inSelection = false;
             return true;
@@ -68,7 +68,8 @@ bool ScreenPointer::HandleEvents(sf::Event Event)
     return false;
 }
 
-bool ScreenPointer::ClickEvent(wxMouseEvent& event)
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
+bool CoordinateSelector::ClickEvent(wxMouseEvent& event)
 {
     if (event.ButtonDown(wxMOUSE_BTN_LEFT))
     {
@@ -80,16 +81,16 @@ bool ScreenPointer::ClickEvent(wxMouseEvent& event)
     }
     return false;
 }
-
-void ScreenPointer::UnClickEvent(wxMouseEvent& event)
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
+void CoordinateSelector::UnClickEvent(wxMouseEvent& event)
 {
     if (event.ButtonUp(wxMOUSE_BTN_LEFT))
     {
         inSelection = false;
     }
 }
-
-bool ScreenPointer::MoveEvent(wxMouseEvent& event)
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
+bool CoordinateSelector::MoveEvent(wxMouseEvent& event)
 {
     if (inSelection)
     {
@@ -104,10 +105,10 @@ bool ScreenPointer::MoveEvent(wxMouseEvent& event)
     return false;
 }
 
-void ScreenPointer::Resize(sf::RenderWindow* Window)
+void CoordinateSelector::Resize(const sf::RenderWindow* window)
 {
-    screenWidth = Window->getSize().x;
-    screenHeight = Window->getSize().y;
+    screenWidth = window->getSize().x;
+    screenHeight = window->getSize().y;
     x = screenWidth / 2;
     y = screenHeight / 2;
     this->Render();
@@ -119,17 +120,17 @@ void ScreenPointer::Resize(sf::RenderWindow* Window)
     output.setTextureRect(Size);
 }
 
-double ScreenPointer::GetX(Fractal* target)
+double CoordinateSelector::GetX(const Fractal* target) const
 {
     return target->GetX(x);
 }
 
-double ScreenPointer::GetY(Fractal* target)
+double CoordinateSelector::GetY(const Fractal* target) const
 {
     return target->GetY(y);
 }
 
-void ScreenPointer::AdjustPosition(Fractal* target, double numX, double numY)
+void CoordinateSelector::AdjustPosition(const Fractal* target, const double numX, const double numY)
 {
     x = target->GetPixelX(numX);
     y = target->GetPixelY(numY);

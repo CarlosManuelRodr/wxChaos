@@ -26,7 +26,7 @@ class JuliaMode
     SFMLFractal _sfmlFractal;
     SelectRect* _selection;
     Options _myJuliaOpt;
-    ButtonChange* _play;
+    ToggleButton* _play;
     FractalType _type;
     wxWindow* _parent;
 

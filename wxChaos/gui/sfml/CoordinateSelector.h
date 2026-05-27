@@ -5,10 +5,10 @@
 class Fractal; // forward declaration
 
 /**
- * @class ScreenPointer
- * @brief A selection cross to point to a number. Used in Slider, JuliaMode, and OrbitMode.
+ * @class CoordinateSelector
+ * @brief A selection cross to point to a coordinate on the rendering plane.
  */
-class ScreenPointer
+class CoordinateSelector
 {
     int x, y;
     unsigned int screenWidth;
@@ -23,17 +23,17 @@ class ScreenPointer
     void Render();
 
 public:
-    explicit ScreenPointer(sf::RenderWindow* Window);
-    void Show(sf::RenderWindow* Window);
-    void Resize(sf::RenderWindow* Window);
-    bool HandleEvents(sf::Event Event);
+    explicit CoordinateSelector(const sf::RenderWindow* window);
+    void Show(sf::RenderWindow* window);
+    void Resize(const sf::RenderWindow* window);
+    bool HandleEvents(const sf::Event& event);
 
     // WX events
     bool ClickEvent(wxMouseEvent& event);
     void UnClickEvent(wxMouseEvent& event);
     bool MoveEvent(wxMouseEvent& event);
 
-    double GetX(Fractal* target);
-    double GetY(Fractal* target);
-    void AdjustPosition(Fractal* target, double numX, double numY);
+    double GetX(const Fractal* target) const;
+    double GetY(const Fractal* target) const;
+    void AdjustPosition(const Fractal* target, double numX, double numY);
 };

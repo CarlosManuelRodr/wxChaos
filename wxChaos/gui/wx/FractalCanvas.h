@@ -13,11 +13,11 @@
 #ifndef _fractalCanvas
 #define _fractalCanvas
 
-#include "sfml/ButtonChange.h"
+#include "sfml/ToggleButton.h"
 #include "sfml/SelectRect.h"
 #include "wxSFMLCanvas.h"
 #include "../sfml/SFMLFractal.h"
-#include "../sfml/ScreenPointer.h"
+#include "../sfml/CoordinateSelector.h"
 #include "../../core/FractalHandler.h"
 
 /**
@@ -55,8 +55,8 @@ class FractalCanvas : public wxSFMLCanvas
     FractalHandler _fractalHandler;
     SFMLFractal _sfmlFractal;
     SelectRect* _selection;
-    ButtonChange* _play;
-    ScreenPointer* _screenPointer;
+    ToggleButton* _play;
+    CoordinateSelector* _screenPointer;
     FractalType _type;
     Fractal* _target;                       ///< Internally, the methods of this class communicate with the fractal through this pointer.
 

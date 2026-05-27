@@ -5,29 +5,30 @@
 
 class Button {
 protected:
-    sf::Image textureImage;
-    sf::Texture texture;
-    sf::Sprite output;
+    sf::Image _textureImage;
+    sf::Texture _texture;
+    sf::Sprite _sprite;
     sf::Font font;
-    sf::Text buttonText;
-    sf::FloatRect area;
-    bool pressed;
-    double screenWidth;
-    double screenHeight;
-    double FX, FY;
-    bool anchorage;
-    bool thereIsText;
-    int anchorType;
+    sf::Text _buttonText;
+    sf::FloatRect _area;
+    bool _pressed;
+    double _screenWidth;
+    double _screenHeight;
+    double _fx, _fy;
+    bool _anchorage;
+    bool _thereIsText;
+    int _anchorType;
 
-    int buttonWidth;
-    int buttonHeight;
+    int _width;
+    int _height;
 
 public:
-    void Resize(sf::RenderWindow* Window);
-    Button(std::string Path, int posX, int posY, sf::RenderWindow* Window);
-    Button(int posX, int posY, sf::RenderWindow* Window, std::string text);
-    void Show(sf::RenderWindow* Window);
-    void SetAnchorage(bool Top, bool Left, bool Bottom, bool Right);
+    virtual ~Button() = default;
+    void Resize(const sf::RenderWindow* window);
+    Button(const std::string& path, int posX, int posY, sf::RenderWindow* window);
+    Button(int posX, int posY, sf::RenderWindow* window, std::string text);
+    void Show(sf::RenderWindow* window);
+    void SetAnchorage(bool top, bool left, bool bottom, bool right);
     void ChangeState();
     virtual bool HandleEvents(sf::Event Event);
     virtual bool ClickEvent(wxMouseEvent& event);

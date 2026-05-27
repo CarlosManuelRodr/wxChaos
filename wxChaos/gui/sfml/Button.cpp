@@ -1,57 +1,56 @@
 #include "Button.h"
 #include <sstream>
-#include <cmath>
 
-void Button::Resize(sf::RenderWindow* Window)
+Button::Button(const std::string& path, const int posX, const int posY, sf::RenderWindow* window)
 {
-    if (FX != 0.0)
-        area.left = Window->getSize().x - FX;
-    if (FY != 0.0)
-        area.top = Window->getSize().y - FY;
+    _textureImage.loadFromFile(path);
+    _texture.loadFromImage(_textureImage);
+    _sprite.setTexture(_texture);
+    _sprite.setPosition(static_cast<float>(posX), static_cast<float>(posY));
+    _area = _sprite.getGlobalBounds();
+    _pressed = false;
+    _thereIsText = false;
 }
 
-Button::Button(std::string Path, int posX, int posY, sf::RenderWindow* Window)
-{
-    textureImage.loadFromFile(Path);
-    texture.loadFromImage(textureImage);
-    output.setTexture(texture);
-    output.setPosition(static_cast<float>(posX), static_cast<float>(posY));
-    area = output.getGlobalBounds();
-    pressed = false;
-    thereIsText = false;
-}
-
-Button::Button(int posX, int posY, sf::RenderWindow* Window, std::string text)
+Button::Button(const int posX, const int posY, sf::RenderWindow* window, std::string text)
 {
     font.loadFromFile("arial.ttf");
-    buttonText.setFont(font);
-    buttonText.setString(text);
-    buttonText.setCharacterSize(14);
-    buttonText.setFillColor(sf::Color::White);
-    output.setPosition(static_cast<float>(posX), static_cast<float>(posY));
-    area = output.getGlobalBounds();
-    pressed = false;
-    thereIsText = true;
+    _buttonText.setFont(font);
+    _buttonText.setString(text);
+    _buttonText.setCharacterSize(14);
+    _buttonText.setFillColor(sf::Color::White);
+    _sprite.setPosition(static_cast<float>(posX), static_cast<float>(posY));
+    _area = _sprite.getGlobalBounds();
+    _pressed = false;
+    _thereIsText = true;
 }
 
-void Button::Show(sf::RenderWindow* Window)
+void Button::Resize(const sf::RenderWindow* window)
 {
-    Window->draw(output);
-    if (thereIsText)
+    if (_fx != 0.0)
+        _area.left = window->getSize().x - _fx;
+    if (_fy != 0.0)
+        _area.top = window->getSize().y - _fy;
+}
+
+void Button::Show(sf::RenderWindow* window)
+{
+    window->draw(_sprite);
+    if (_thereIsText)
     {
-        buttonText.setPosition(output.getPosition());
-        Window->draw(buttonText);
+        _buttonText.setPosition(_sprite.getPosition());
+        window->draw(_buttonText);
     }
 }
 
-void Button::SetAnchorage(bool Top, bool Left, bool Bottom, bool Right)
+void Button::SetAnchorage(bool top, bool left, bool bottom, bool right)
 {
     // Implementation placeholder
 }
 
 void Button::ChangeState()
 {
-    pressed = !pressed;
+    _pressed = !_pressed;
 }
 
 bool Button::HandleEvents(sf::Event Event)

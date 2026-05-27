@@ -47,11 +47,11 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     // Initializes GUI elements.
     _selection = new SelectRect(this);
 
-    _play = new ButtonChange(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 500, this);
+    _play = new ToggleButton(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 500, this);
     _play->SetAnchorage(false, true, true, false);
     _play->Resize(this);
 
-    _screenPointer = new ScreenPointer(this);
+    _screenPointer = new CoordinateSelector(this);
     _keyboardImage.loadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
     _mouseImage.loadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
     _helpImage.loadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
@@ -266,7 +266,7 @@ void FractalCanvas::SetJuliaMode(const bool mode)
     {
         _juliaMode = true;
         if (_screenPointer == nullptr)
-            _screenPointer = new ScreenPointer(this);
+            _screenPointer = new CoordinateSelector(this);
     }
     // If deactivated, deletes it.
     else
@@ -421,7 +421,7 @@ void FractalCanvas::SetOrbitMode(const bool mode)
     {
         _target->SetOrbitMode(true);
         if (_screenPointer == nullptr)
-            _screenPointer = new ScreenPointer(this);
+            _screenPointer = new CoordinateSelector(this);
     }
     else
     {
@@ -439,7 +439,7 @@ void FractalCanvas::SetSliderMode(const bool mode)
     if (_sliderMode)
     {
         if (_screenPointer == nullptr)
-            _screenPointer = new ScreenPointer(this);
+            _screenPointer = new CoordinateSelector(this);
         _target->SetJuliaMode(true);
     }
     else
