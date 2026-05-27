@@ -2,7 +2,7 @@
 #include "FixedPoint3.h"
 using namespace std;
 
-FixedPoint3::FixedPoint3(sf::RenderWindow* Window):Fractal(Window)
+FixedPoint3::FixedPoint3(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -3.76339;
@@ -36,6 +36,8 @@ FixedPoint3::FixedPoint3(const int width, const int height) : Fractal(width, hei
     _minY = -2.39204;
     _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
     this->SetOutermostZoom();
+
+    minStep = 0.001;
 
     _type = FractalType::FixedPoint3;
     myRender = new RenderFixedPoint3[_threadNumber];

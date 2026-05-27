@@ -12,7 +12,7 @@ private:
     RenderCell* myRender;
     double bailout;
 public:
-    Cell(sf::RenderWindow* Window);
+    Cell(const sf::RenderWindow* window);
     Cell(int width, int height);
     ~Cell();
 

@@ -2,7 +2,7 @@
 #include "Cell.h"
 using namespace std;
 
-Cell::Cell(sf::RenderWindow* Window) : Fractal(Window)
+Cell::Cell(const sf::RenderWindow* window) : Fractal(window)
 {
     _minX = -1.95533;
     _maxX = 1.91967;
@@ -57,7 +57,9 @@ Cell::~Cell()
 }
 void Cell::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(bailout);
+    for (unsigned int i=0; i<_threadNumber; i++)
+        myRender[i].SetParams(bailout);
+
     this->TRender<RenderCell>(myRender);
 }
 void Cell::DrawOrbit()
@@ -71,10 +73,10 @@ void Cell::DrawOrbit()
     bool outOfSet = false;
     double squaredBail = bailout*bailout;
 
-    for(unsigned n=0; n<_maxIter; n++)
+    for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > squaredBail)
+        if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
         {
             outOfSet = true;
             break;
@@ -82,11 +84,9 @@ void Cell::DrawOrbit()
         b /= c;
         z = z*c + b/z;
     }
-    sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
 
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
+    for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
     _orbitDrawn = true;

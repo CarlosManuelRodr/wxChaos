@@ -10,7 +10,7 @@ class BurningShip : public Fractal
 {
     RenderBurningShip* myRender;
 public:
-    explicit BurningShip(sf::RenderWindow* Window);
+    explicit BurningShip(const sf::RenderWindow* window);
     BurningShip(int width, int height);
     ~BurningShip() override;
 

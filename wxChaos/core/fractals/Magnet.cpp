@@ -2,7 +2,7 @@
 #include "Magnet.h"
 using namespace std;
 
-Magnet::Magnet(sf::RenderWindow* window) : Fractal(window)
+Magnet::Magnet(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -1.8;
@@ -25,7 +25,7 @@ Magnet::Magnet(sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithm::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
-Magnet::Magnet(int width, int height) : Fractal(width, height)
+Magnet::Magnet(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.05;
@@ -68,12 +68,8 @@ void Magnet::DrawOrbit()
         }
         z = pow((pow(z, 2) + constant - complex<double>(1, 0))/(complex<double>(2, 0)*z + constant - complex<double>(2,0)), 2);
     }
-    sf::Color color;
-    if (outOfSet)
-        color = sf::Color(255, 0, 0);
-    else
-        color = sf::Color(0, 255, 0);
 
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
     for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 

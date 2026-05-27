@@ -1,7 +1,7 @@
 #include "DoublePendulum.h"
 using namespace std;
 
-DoublePendulum::DoublePendulum(sf::RenderWindow* Window):Fractal(Window)
+DoublePendulum::DoublePendulum(const sf::RenderWindow* window):Fractal(window)
 {
     // Adjust the scale.
     _minX = -5.57488;
@@ -99,7 +99,7 @@ DoublePendulum::~DoublePendulum()
 }
 void DoublePendulum::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++)
+    for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(th1Bailout, th2Bailout, th1NumBailout, th2NumBailout, dt, m1, m2, l, g, referenced, rungeKutta);
     this->TRender<RenderDPendulum>(myRender);
 }
@@ -166,12 +166,7 @@ void DoublePendulum::DrawOrbit()
         }
     }
 
-    sf::Color color;
-    if (insideSet)
-        color = sf::Color(0, 255, 0);
-    else
-        color = sf::Color(255, 0, 0);
-
+    const auto color = insideSet ? sf::Color(0, 255, 0) : sf::Color(255, 0, 0);
     for (unsigned int i=0; i<th1Vector.size()-1; i++)
         this->DrawLine(th1Vector[i], th2Vector[i], th1Vector[i+1], th2Vector[i+1], color, true);
 

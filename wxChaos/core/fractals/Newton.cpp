@@ -2,7 +2,7 @@
 #include "Newton.h"
 using namespace std;
 
-Newton::Newton(sf::RenderWindow* window):Fractal(window)
+Newton::Newton(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -1.5721;
@@ -78,7 +78,9 @@ void Newton::DrawOrbit()
 }
 void Newton::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(minStep);
+    for (unsigned int i=0; i<_threadNumber; i++)
+        myRender[i].SetParams(minStep);
+
     this->TRender<RenderNewton>(myRender);
 }
 void Newton::CopyOptFromPanel()

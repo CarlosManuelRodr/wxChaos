@@ -11,7 +11,7 @@ class Newton : public Fractal
     RenderNewton* myRender;
     double minStep;
 public:
-    explicit Newton(sf::RenderWindow* window);
+    explicit Newton(const sf::RenderWindow* window);
     Newton(int width, int height);
     ~Newton() override;
 

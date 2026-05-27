@@ -2,7 +2,7 @@
 #include "FixedPoint4.h"
 using namespace std;
 
-FixedPoint4::FixedPoint4(sf::RenderWindow* window):Fractal(window)
+FixedPoint4::FixedPoint4(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -1.8713;
@@ -37,6 +37,8 @@ FixedPoint4::FixedPoint4(const int width, const int height) : Fractal(width, hei
     _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
     this->SetOutermostZoom();
 
+    minStep = 0.001;
+
     _type = FractalType::FixedPoint4;
     myRender = new RenderFixedPoint4[_threadNumber];
     SetWatchdog<RenderFixedPoint4>(myRender, &_watchdog, _threadNumber);
@@ -48,7 +50,9 @@ FixedPoint4::~FixedPoint4()
 }
 void FixedPoint4::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(minStep);
+    for (unsigned int i=0; i<_threadNumber; i++)
+        myRender[i].SetParams(minStep);
+
     this->TRender<RenderFixedPoint4>(myRender);
 }
 void FixedPoint4::DrawOrbit()

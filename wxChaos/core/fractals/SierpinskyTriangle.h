@@ -10,7 +10,7 @@ class SierpinskyTriangle : public Fractal
 {
     RenderSierpinskyTriangle* myRender;
 public:
-    explicit SierpinskyTriangle(sf::RenderWindow* Window);
+    explicit SierpinskyTriangle(const sf::RenderWindow* window);
     SierpinskyTriangle(int width, int height);
 
     void Render() override;

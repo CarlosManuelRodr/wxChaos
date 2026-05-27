@@ -2,7 +2,7 @@
 #include "ManowarJulia.h"
 using namespace std;
 
-ManowarJulia::ManowarJulia(sf::RenderWindow* window) : Fractal(window)
+ManowarJulia::ManowarJulia(const sf::RenderWindow* window) : Fractal(window)
 {
     _minX = -2.0;
     _maxX = 1.0;
@@ -25,7 +25,7 @@ ManowarJulia::ManowarJulia(sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
-ManowarJulia::ManowarJulia(int width, int height) : Fractal(width, height)
+ManowarJulia::ManowarJulia(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -2.0;
@@ -75,12 +75,8 @@ void ManowarJulia::DrawOrbit()
         z = pow(z, 2) + man + k;
         man = temp;
     }
-    sf::Color color;
-    if (outOfSet)
-        color = sf::Color(255, 0, 0);
-    else
-        color = sf::Color(0, 255, 0);
 
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
     for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 

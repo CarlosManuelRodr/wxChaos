@@ -2,7 +2,7 @@
 #include "FixedPoint2.h"
 using namespace std;
 
-FixedPoint2::FixedPoint2(sf::RenderWindow* Window):Fractal(Window)
+FixedPoint2::FixedPoint2(const sf::RenderWindow* window):Fractal(window)
 {
     // Adjust the scale.
     _minX = -5.88462;
@@ -28,7 +28,7 @@ FixedPoint2::FixedPoint2(sf::RenderWindow* Window):Fractal(Window)
     _algorithm = RenderingAlgorithm::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
-FixedPoint2::FixedPoint2(int width, int height) : Fractal(width, height)
+FixedPoint2::FixedPoint2(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -5.88462;
@@ -36,6 +36,8 @@ FixedPoint2::FixedPoint2(int width, int height) : Fractal(width, height)
     _minY = -4;
     _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
     this->SetOutermostZoom();
+
+    minStep = 0.001;
 
     _type = FractalType::FixedPoint2;
     myRender = new RenderFixedPoint2[_threadNumber];
@@ -48,7 +50,9 @@ FixedPoint2::~FixedPoint2()
 }
 void FixedPoint2::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(minStep);
+    for (unsigned int i=0; i<_threadNumber; i++)
+        myRender[i].SetParams(minStep);
+
     this->TRender<RenderFixedPoint2>(myRender);
 }
 void FixedPoint2::DrawOrbit()

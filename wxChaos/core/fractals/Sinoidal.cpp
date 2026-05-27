@@ -2,7 +2,7 @@
 #include "Sinoidal.h"
 using namespace std;
 
-Sinoidal::Sinoidal(sf::RenderWindow* window) : Fractal(window)
+Sinoidal::Sinoidal(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -8;

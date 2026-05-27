@@ -1,7 +1,7 @@
 #include "SierpinskyTriangle.h"
 using namespace std;
 
-SierpinskyTriangle::SierpinskyTriangle(sf::RenderWindow* Window) : Fractal(Window)
+SierpinskyTriangle::SierpinskyTriangle(const sf::RenderWindow* window) : Fractal(window)
 {
     _minX = -0.5;
     _maxX = 1.5;
@@ -17,7 +17,7 @@ SierpinskyTriangle::SierpinskyTriangle(sf::RenderWindow* Window) : Fractal(Windo
 
     _type = FractalType::SierpinskyTriangle;
 }
-SierpinskyTriangle::SierpinskyTriangle(int width, int height) : Fractal(width, height)
+SierpinskyTriangle::SierpinskyTriangle(const int width, const int height) : Fractal(width, height)
 {
     _minX = -0.5;
     _maxX = 1.5;

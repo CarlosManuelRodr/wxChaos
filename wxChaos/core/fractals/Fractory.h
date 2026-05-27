@@ -11,7 +11,7 @@ class Fractory : public Fractal
 private:
     RenderFractory *myRender;
 public:
-    Fractory(sf::RenderWindow* Window);
+    Fractory(const sf::RenderWindow* window);
     Fractory(int width, int height);
     ~Fractory();
 

@@ -2,7 +2,7 @@
 #include "Manowar.h"
 using namespace std;
 
-Manowar::Manowar(sf::RenderWindow* window) : Fractal(window)
+Manowar::Manowar(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -0.4795;
@@ -26,7 +26,7 @@ Manowar::Manowar(sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
-Manowar::Manowar(int width, int height) : Fractal(width, height)
+Manowar::Manowar(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -0.20;
@@ -73,12 +73,8 @@ void Manowar::DrawOrbit()
         z = pow(z, 2) + man + constant;
         man = temp;
     }
-    sf::Color color;
-    if (outOfSet)
-        color = sf::Color(255, 0, 0);
-    else
-        color = sf::Color(0, 255, 0);
 
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
     for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 

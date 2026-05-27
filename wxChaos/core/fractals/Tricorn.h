@@ -11,7 +11,7 @@ class Tricorn : public Fractal
 private:
     RenderTricorn* myRender;
 public:
-    Tricorn(sf::RenderWindow* Window);
+    Tricorn(const sf::RenderWindow* window);
     Tricorn(int width, int height);
     ~Tricorn();
 

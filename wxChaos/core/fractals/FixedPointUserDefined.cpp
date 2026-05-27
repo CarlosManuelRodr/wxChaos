@@ -3,7 +3,7 @@
 #include "FPUserDefined.h"
 using namespace std;
 
-FPUserDefined::FPUserDefined(sf::RenderWindow* Window) : Fractal(Window)
+FPUserDefined::FPUserDefined(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -1.8713;
@@ -29,7 +29,7 @@ FPUserDefined::FPUserDefined(sf::RenderWindow* Window) : Fractal(Window)
     _algorithm = RenderingAlgorithm::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithm::ConvergenceTest);
 }
-FPUserDefined::FPUserDefined(int width, int height) : Fractal(width, height)
+FPUserDefined::FPUserDefined(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8713;
@@ -50,7 +50,7 @@ FPUserDefined::~FPUserDefined()
 }
 void FPUserDefined::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++)
+    for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(minStep);
 
     this->TRender<RenderFPUserDefined>(myRender);
@@ -58,12 +58,11 @@ void FPUserDefined::Render()
 void FPUserDefined::SetFormula(FormulaOpt formula)
 {
     _userFormula = formula;
-    for(unsigned int i=0; i<_threadNumber; i++)
+    for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetFormula(formula);
 }
 void FPUserDefined::DrawOrbit()
 {
-    vector<complex<double>> zVector;
     mup::ParserX parser;
     parser.SetExpr(_userFormula.userFormula.wc_str());
 
@@ -74,22 +73,20 @@ void FPUserDefined::DrawOrbit()
 
     try
     {
-        for(unsigned n=0; n<_maxIter; n++)
+        vector<complex<double>> zVector;
+        for (unsigned n=0; n<_maxIter; n++)
         {
-            zVector.push_back(complex<double>(zVal.GetFloat(),zVal.GetImag()));
+            zVector.emplace_back(zVal.GetFloat(),zVal.GetImag());
             zVal = parser.Eval();
         }
 
-        sf::Color color = sf::Color(0, 255, 0);
-        for(unsigned int i=0; i<zVector.size()-1; i++)
+        const auto color = sf::Color(0, 255, 0);
+        for (unsigned int i=0; i<zVector.size()-1; i++)
             this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
         _orbitDrawn = true;
     }
-    catch(mup::ParserError&)
-    {
-        return;
-    }
+    catch (mup::ParserError&) {}
 }
 void FPUserDefined::CopyOptFromPanel()
 {
@@ -97,11 +94,11 @@ void FPUserDefined::CopyOptFromPanel()
 }
 void FPUserDefined::PostRender()
 {
-    if(myRender[0].IsThereError())
+    if (myRender[0].IsThereError())
     {
-        wxString out = wxString(wxT("Fatal error in formula.\n")) + myRender[0].GetErrorInfo() + wxT("\n");
+        const wxString out = wxString(wxT("Fatal error in formula.\n")) + myRender[0].GetErrorInfo() + wxT("\n");
         myRender[0].ClearErrorInfo();
-        wxMessageDialog errorDialog(NULL, out, wxT("Error"), wxOK | wxICON_ERROR);
+        wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }
 }

@@ -10,7 +10,7 @@ class Julia: public Fractal
 {
     RenderJulia* myRender;
 public:
-    Julia(sf::RenderWindow* Window);
+    Julia(const sf::RenderWindow* window);
     Julia(int width, int height);
     ~Julia();
 

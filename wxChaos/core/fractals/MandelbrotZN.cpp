@@ -2,7 +2,7 @@
 #include "MandelbrotZN.h"
 using namespace std;
 
-MandelbrotZN::MandelbrotZN(sf::RenderWindow* window):Fractal(window)
+MandelbrotZN::MandelbrotZN(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -1.87078;
@@ -36,7 +36,7 @@ MandelbrotZN::MandelbrotZN(sf::RenderWindow* window):Fractal(window)
     n = 3;
     bailout = 2;
 }
-MandelbrotZN::MandelbrotZN(int width, int height) : Fractal(width, height)
+MandelbrotZN::MandelbrotZN(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.5;
@@ -69,7 +69,9 @@ MandelbrotZN::~MandelbrotZN()
 }
 void MandelbrotZN::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(n, bailout);
+    for (unsigned int i=0; i<_threadNumber; i++)
+        myRender[i].SetParams(n, bailout);
+
     this->TRender<RenderMandelbrotZN>(myRender);
 }
 void MandelbrotZN::DrawOrbit()
@@ -79,21 +81,19 @@ void MandelbrotZN::DrawOrbit()
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned i=0; i<_maxIter; i++)
+    for (unsigned i=0; i<_maxIter; i++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4)
+        if (z.real()*z.real() + z.imag()*z.imag() > 4)
         {
             outOfSet = true;
             break;
         }
         z = pow(z, n) + c;
     }
-    sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
 
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
+    for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
     _orbitDrawn = true;

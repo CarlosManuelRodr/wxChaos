@@ -13,7 +13,7 @@ private:
     double bailout;
     RenderMandelbrotZN* myRender;
 public:
-    explicit MandelbrotZN(sf::RenderWindow* window);
+    explicit MandelbrotZN(const sf::RenderWindow* window);
     MandelbrotZN(int width, int height);
     ~MandelbrotZN() override;
 

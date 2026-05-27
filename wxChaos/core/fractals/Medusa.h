@@ -10,7 +10,7 @@ class Medusa : public Fractal
 {
     RenderMedusa* myRender;
 public:
-    explicit Medusa(sf::RenderWindow* window);
+    explicit Medusa(const sf::RenderWindow* window);
     Medusa(int width, int height);
     ~Medusa() override;
 

@@ -2,7 +2,7 @@
 #include "BurningShip.h"
 using namespace std;
 
-BurningShip::BurningShip(sf::RenderWindow* Window) : Fractal(Window)
+BurningShip::BurningShip(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -2.36;
@@ -59,21 +59,19 @@ void BurningShip::DrawOrbit()
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<_maxIter; n++)
+    for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4)
+        if (z.real()*z.real() + z.imag()*z.imag() > 4)
         {
             outOfSet = true;
             break;
         }
         z = pow( complex< double >(abs(z.real()), abs(z.imag())), 2 ) + c;
     }
-    sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
 
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
+    for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
     _orbitDrawn = true;

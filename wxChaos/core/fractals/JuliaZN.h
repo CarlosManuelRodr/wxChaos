@@ -12,7 +12,7 @@ class JuliaZN: public Fractal
     int n;
     double bailout;
 public:
-    explicit JuliaZN(sf::RenderWindow* window);
+    explicit JuliaZN(const sf::RenderWindow* window);
     JuliaZN(int width, int height);
     ~JuliaZN() override;
 

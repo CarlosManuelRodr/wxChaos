@@ -2,7 +2,7 @@
 #include "Medusa.h"
 using namespace std;
 
-Medusa::Medusa(sf::RenderWindow* window) : Fractal(window)
+Medusa::Medusa(const sf::RenderWindow* window) : Fractal(window)
 {
     _minX = -1.1342;
     _maxX = 1.7251;
@@ -29,7 +29,7 @@ Medusa::Medusa(sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithm::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
 }
-Medusa::Medusa(int width, int height) : Fractal(width, height)
+Medusa::Medusa(const int width, const int height) : Fractal(width, height)
 {
     _minX = -1.1342;
     _maxX = 1.7251;
@@ -65,21 +65,19 @@ void Medusa::DrawOrbit()
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<_maxIter; n++)
+    for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4)
+        if (z.real()*z.real() + z.imag()*z.imag() > 4)
         {
             outOfSet = true;
             break;
         }
         z = pow(z, 1.5) + k;
     }
-    sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
 
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
+    for (unsigned int i=0; i<zVector.size()-1; i++)
     {
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
     }

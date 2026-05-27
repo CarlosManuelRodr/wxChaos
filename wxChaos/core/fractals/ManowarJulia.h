@@ -10,7 +10,7 @@ class ManowarJulia : public Fractal
 {
     RenderManowarJulia* myRender;
 public:
-    explicit ManowarJulia(sf::RenderWindow* window);
+    explicit ManowarJulia(const sf::RenderWindow* window);
     ManowarJulia(int width, int height);
     ~ManowarJulia() override;
 

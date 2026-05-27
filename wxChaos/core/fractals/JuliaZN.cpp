@@ -2,7 +2,7 @@
 #include "JuliaZN.h"
 using namespace std;
 
-JuliaZN::JuliaZN(sf::RenderWindow* window) : Fractal(window)
+JuliaZN::JuliaZN(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -1.77437;
@@ -74,14 +74,14 @@ JuliaZN::~JuliaZN()
 void JuliaZN::DrawOrbit()
 {
     complex<double> z(_orbitX, _orbitY);
-    complex<double> k(_kReal, _kImaginary);
+    const complex<double> k(_kReal, _kImaginary);
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned i=0; i<_maxIter; i++)
+    for (unsigned i=0; i<_maxIter; i++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > bailout*bailout)
+        if (z.real()*z.real() + z.imag()*z.imag() > bailout*bailout)
         {
             outOfSet = true;
             break;
@@ -89,18 +89,17 @@ void JuliaZN::DrawOrbit()
         z = pow(z, n) + k;
     }
 
-    sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
-
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
+    for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
     _orbitDrawn = true;
 }
 void JuliaZN::Render()
 {
-    for(unsigned int i=0; i<_threadNumber; i++) myRender[i].SetParams(n, bailout);
+    for (unsigned int i=0; i<_threadNumber; i++)
+        myRender[i].SetParams(n, bailout);
+
     this->TRender<RenderJuliaZN>(myRender);
 }
 void JuliaZN::CopyOptFromPanel()

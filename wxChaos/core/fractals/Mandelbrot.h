@@ -11,7 +11,7 @@ class Mandelbrot : public Fractal
     RenderMandelbrot* myRender;
     int buddhaRandomP;
 public:
-    explicit Mandelbrot(sf::RenderWindow* window);
+    explicit Mandelbrot(const sf::RenderWindow* window);
     Mandelbrot(int width, int height);
     ~Mandelbrot() override;
 

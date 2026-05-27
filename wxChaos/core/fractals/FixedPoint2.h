@@ -11,7 +11,7 @@ class FixedPoint2 : public Fractal
     RenderFixedPoint2* myRender;
     double minStep;
 public:
-    explicit FixedPoint2(sf::RenderWindow* Window);
+    explicit FixedPoint2(const sf::RenderWindow* window);
     FixedPoint2(int width, int height);
     ~FixedPoint2() override;
 

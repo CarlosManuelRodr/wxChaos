@@ -4,7 +4,7 @@
 #include "../../scripting/AngelscriptBindings.h"
 using namespace std;
 
-ScriptFractal::ScriptFractal(sf::RenderWindow* window, const ScriptData &scriptData) : Fractal(window)
+ScriptFractal::ScriptFractal(const sf::RenderWindow* window, const ScriptData &scriptData) : Fractal(window)
 {
     // Adjust the scale.
     _minX = scriptData.minX;
@@ -32,11 +32,11 @@ ScriptFractal::ScriptFractal(sf::RenderWindow* window, const ScriptData &scriptD
     }
     SetWatchdog<RenderScriptFractal>(_myRender, &_watchdog, _threadNumber);
 }
-ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData, int renderThreads) 
-    : Fractal(width, height)
+ScriptFractal::ScriptFractal(const int width, const int height, const ScriptData& scriptData, const int renderThreads)
+                             : Fractal(width, height)
 {
     if (renderThreads != -1)
-        _threadNumber = (unsigned) renderThreads;
+        _threadNumber = static_cast<unsigned>(renderThreads);
 
     // Adjust the scale.
     _minX = scriptData.minX;
@@ -59,12 +59,12 @@ ScriptFractal::ScriptFractal(int width, int height, ScriptData scriptData, int r
     _myRender = new RenderScriptFractal[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
     {
-        _myRender[i].SetParams(i);
+        _myRender[i].SetParams(static_cast<int>(i));
         _myRender[i].SetPath(scriptData.file);
     }
     SetWatchdog<RenderScriptFractal>(_myRender, &_watchdog, _threadNumber);
 }
-ScriptFractal::ScriptFractal(int width, int height, string scriptPath) : Fractal(width, height)
+ScriptFractal::ScriptFractal(const int width, const int height, const string& scriptPath) : Fractal(width, height)
 {
     _path = scriptPath;
     AngelscriptConfigurationEngine configEngine;
@@ -115,7 +115,7 @@ void ScriptFractal::PostRender()
     if (errorLog.size() != 0)
     {
         wxString out = wxString(wxT("Fatal error in script.\n")) + errorLog;
-        wxMessageDialog errorDialog(NULL, out, wxT("Error"), wxOK | wxICON_ERROR);
+        wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }
 }

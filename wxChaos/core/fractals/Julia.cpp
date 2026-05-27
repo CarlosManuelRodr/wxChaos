@@ -2,7 +2,7 @@
 #include "Julia.h"
 using namespace std;
 
-Julia::Julia(sf::RenderWindow* Window):Fractal(Window)
+Julia::Julia(const sf::RenderWindow* window) : Fractal(window)
 {
     // Adjust the scale.
     _minX = -1.77437;
@@ -32,7 +32,7 @@ Julia::Julia(sf::RenderWindow* Window):Fractal(Window)
     _availableAlg.push_back(RenderingAlgorithm::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithm::TriangleInequality);
 }
-Julia::Julia(int width, int height) : Fractal(width, height)
+Julia::Julia(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.77437;
@@ -60,14 +60,14 @@ Julia::~Julia()
 void Julia::DrawOrbit()
 {
     complex<double> z(_orbitX, _orbitY);
-    complex<double> k(_kReal, _kImaginary);
+    const complex<double> k(_kReal, _kImaginary);
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for(unsigned n=0; n<_maxIter; n++)
+    for (unsigned n=0; n<_maxIter; n++)
     {
         zVector.push_back(z);
-        if(z.real()*z.real() + z.imag()*z.imag() > 4)
+        if (z.real()*z.real() + z.imag()*z.imag() > 4)
         {
             outOfSet = true;
             break;
@@ -75,11 +75,8 @@ void Julia::DrawOrbit()
         z = pow(z, 2) + k;
     }
 
-    sf::Color color;
-    if(outOfSet) color = sf::Color(255, 0, 0);
-    else color = sf::Color(0, 255, 0);
-
-    for(unsigned int i=0; i<zVector.size()-1; i++)
+    const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
+    for (unsigned int i=0; i<zVector.size()-1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
     _orbitDrawn = true;

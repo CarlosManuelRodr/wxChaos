@@ -16,7 +16,7 @@ class DoublePendulum : public Fractal
     bool rungeKutta;
     RenderDPendulum* myRender;
 public:
-    explicit DoublePendulum(sf::RenderWindow* Window);
+    explicit DoublePendulum(const sf::RenderWindow* window);
     DoublePendulum(int width, int height);
     ~DoublePendulum() override;
 

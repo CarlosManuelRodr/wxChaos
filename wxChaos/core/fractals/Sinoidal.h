@@ -10,7 +10,7 @@ class Sinoidal : public Fractal
 {
     RenderSinoidal* myRender;
 public:
-    explicit Sinoidal(sf::RenderWindow* window);
+    explicit Sinoidal(const sf::RenderWindow* window);
     Sinoidal(int width, int height);
     ~Sinoidal() override;
 
