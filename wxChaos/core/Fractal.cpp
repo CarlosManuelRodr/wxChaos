@@ -12,7 +12,6 @@ constexpr int stdSpeed = 1;
 constexpr ColorPalettes defaultGradientStyle = Retro;
 const wxString defaultGradientString = wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);");
 
-
 inline double CalcSquaredDist(const double x1, const double y1, const double x2, const double y2)
 {
     return ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -23,220 +22,6 @@ inline double CalcDist(const double x1, const double y1, const double x2, const 
     return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
-
-/////////////////////////////////////////
-////        BEGINS FRACTAL          /////
-/////////////////////////////////////////
-
-void Fractal::SaveZoom()
-{
-    _zoom[0].push_back(_minX);
-    _zoom[1].push_back(_maxX);
-    _zoom[2].push_back(_minY);
-    _zoom[3].push_back(_maxY);
-}
-void Fractal::SetOutermostZoom()
-{
-    _outermostZoom = Rect(_minX, _minY, _maxX, _maxY);
-}
-sf::Color Fractal::CalcColor(int colorNum) const
-{
-    if (colorNum <= 0)
-        colorNum = 0;
-
-    colorNum = colorNum % _paletteSize;
-    const wxColour& color = _palette[colorNum];
-    return {color.Red(), color.Green(), color.Blue(), color.Alpha()};
-}
-void Fractal::RebuildPalette()
-{
-    for (int i = 0; i < _paletteSize; i++)
-    {
-        wxColour myWxColor = _gradient.getColorAt(i);
-        _palette[i] = myWxColor;
-    }
-    this->RedrawMaps();
-}
-// Color operations.
-void Fractal::RedrawMaps()
-{
-    _maxColorMapVal = 0;
-
-    if (_relativeColor)
-    {
-        // Search for color maximum.
-        for (int i = 0; i < _screenWidth; i++)
-        {
-            for (int j = 0; j < _screenHeight; j++)
-            {
-                if (_colorMap[i][j] > _maxColorMapVal)
-                    _maxColorMapVal = _colorMap[i][j];
-            }
-        }
-    }
-    if (_maxColorMapVal == 0)
-        _maxColorMapVal = 1;
-    _refreshImage = true;
-}
-void Fractal::SetDefaultOptions()
-{
-    _renderJobComp = true;
-    _changeFractalProp = false;
-    _geomFigure = false;
-    _onWxCtrl = false;
-
-    for (bool & i : _movement)
-        i = false;
-}
-
-void Fractal::ConfigureRenderer(Renderer& renderer) const
-{
-    renderer.SetOptions(this->GetOptions());
-    renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
-    renderer.SetK(_kReal, _kImaginary);
-}
-
-std::vector<RenderRegion> Fractal::BuildRenderRegions() const
-{
-    std::vector<RenderRegion> regions;
-    const int screenWidth = static_cast<int>(_screenWidth);
-    const int screenHeight = static_cast<int>(_screenHeight);
-
-    if (_xMoved == 0 && _yMoved == 0)
-    {
-        regions.emplace_back(0, 0, screenWidth, screenHeight);
-        return regions;
-    }
-
-    if ((abs(_xMoved) >= screenWidth) || (abs(_yMoved) >= screenHeight))
-    {
-        regions.emplace_back(0, 0, screenWidth, screenHeight);
-        return regions;
-    }
-
-    int yStart = 0;
-    int yEnd = screenHeight;
-
-    if (_yMoved > 0)
-    {
-        regions.emplace_back(0, 0, screenWidth, _yMoved);
-        yStart = _yMoved;
-    }
-    else if (_yMoved < 0)
-    {
-        yEnd = screenHeight + _yMoved;
-        regions.emplace_back(0, yEnd, screenWidth, screenHeight);
-    }
-
-    if (_xMoved > 0)
-    {
-        regions.emplace_back(0, yStart, _xMoved, yEnd);
-    }
-    else if (_xMoved < 0)
-    {
-        regions.emplace_back(screenWidth + _xMoved, yStart, screenWidth, yEnd);
-    }
-
-    return regions;
-}
-
-std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>& regions, const int tileHeight) const
-{
-    std::vector<RenderJob> jobs;
-
-    const unsigned int threadNumber = std::max(1U, _threadNumber);
-    const int screenWidth = static_cast<int>(_screenWidth);
-    const int screenHeight = static_cast<int>(_screenHeight);
-    int totalArea = 0;
-
-    if (tileHeight <= 0 && regions.size() > threadNumber)
-    {
-        jobs.emplace_back(RenderRegion(0, 0, screenWidth, screenHeight));
-
-        while (jobs.size() < threadNumber)
-            jobs.emplace_back();
-
-        return jobs;
-    }
-
-    for (const RenderRegion& region : regions)
-        totalArea += region.GetArea();
-
-    if (totalArea == 0)
-    {
-        while (jobs.size() < threadNumber)
-            jobs.emplace_back();
-
-        return jobs;
-    }
-
-    if (tileHeight > 0)
-    {
-        for (const RenderRegion& region : regions)
-        {
-            for (int top = region.GetTop(); top < region.GetBottom(); top += tileHeight)
-            {
-                const int bottom = std::min(top + tileHeight, region.GetBottom());
-                jobs.emplace_back(RenderRegion(region.GetLeft(), top, region.GetRight(), bottom));
-            }
-        }
-
-        return jobs;
-    }
-
-    unsigned int remainingJobs = threadNumber;
-    int remainingArea = totalArea;
-
-    for (unsigned int regionIndex = 0; regionIndex < regions.size(); regionIndex++)
-    {
-        const RenderRegion& region = regions[regionIndex];
-        const auto remainingRegions = static_cast<unsigned int>(regions.size() - regionIndex);
-        unsigned int regionJobs = 1;
-
-        if (remainingRegions == 1)
-        {
-            regionJobs = remainingJobs;
-        }
-        else if (region.GetArea() > 0)
-        {
-            regionJobs = static_cast<unsigned int>(std::max(1.0,
-                std::round(static_cast<double>(remainingJobs) * region.GetArea() / remainingArea)));
-            regionJobs = std::min(regionJobs, remainingJobs - remainingRegions + 1);
-        }
-
-        remainingJobs -= regionJobs;
-        remainingArea -= region.GetArea();
-
-        int currentTop = region.GetTop();
-        const int height = region.GetHeight();
-
-        for (unsigned int jobIndex = 0; jobIndex < regionJobs; jobIndex++)
-        {
-            const unsigned int remainingRegionJobs = regionJobs - jobIndex;
-            const int rows = remainingRegionJobs > 0
-                ? (region.GetBottom() - currentTop) / static_cast<int>(remainingRegionJobs)
-                : 0;
-            const int bottom = jobIndex + 1 == regionJobs ? region.GetBottom() : currentTop + rows;
-
-            if (height <= 0 || rows <= 0)
-            {
-                jobs.emplace_back();
-            }
-            else
-            {
-                jobs.emplace_back(RenderRegion(region.GetLeft(), currentTop, region.GetRight(), bottom));
-                currentTop = bottom;
-            }
-        }
-    }
-
-    while (jobs.size() < threadNumber)
-        jobs.emplace_back();
-
-    return jobs;
-}
-
-// Basic methods.
 Fractal::Fractal(const int width, const int height)
 {
     // System.
@@ -441,6 +226,215 @@ Fractal::~Fractal()
     delete[] _colorMap;
     delete[] _auxMap;
 }
+
+void Fractal::SaveZoom()
+{
+    _zoom[0].push_back(_minX);
+    _zoom[1].push_back(_maxX);
+    _zoom[2].push_back(_minY);
+    _zoom[3].push_back(_maxY);
+}
+void Fractal::SetOutermostZoom()
+{
+    _outermostZoom = Rect(_minX, _minY, _maxX, _maxY);
+}
+sf::Color Fractal::CalcColor(int colorNum) const
+{
+    if (colorNum <= 0)
+        colorNum = 0;
+
+    colorNum = colorNum % _paletteSize;
+    const wxColour& color = _palette[colorNum];
+    return {color.Red(), color.Green(), color.Blue(), color.Alpha()};
+}
+void Fractal::RebuildPalette()
+{
+    for (int i = 0; i < _paletteSize; i++)
+    {
+        const wxColour myWxColor = _gradient.getColorAt(i);
+        _palette[i] = myWxColor;
+    }
+    this->RedrawMaps();
+}
+// Color operations.
+void Fractal::RedrawMaps()
+{
+    _maxColorMapVal = 0;
+
+    if (_relativeColor)
+    {
+        // Search for color maximum.
+        for (int i = 0; i < _screenWidth; i++)
+        {
+            for (int j = 0; j < _screenHeight; j++)
+            {
+                if (_colorMap[i][j] > _maxColorMapVal)
+                    _maxColorMapVal = _colorMap[i][j];
+            }
+        }
+    }
+    if (_maxColorMapVal == 0)
+        _maxColorMapVal = 1;
+    _refreshImage = true;
+}
+void Fractal::SetDefaultOptions()
+{
+    _renderJobComp = true;
+    _changeFractalProp = false;
+    _geomFigure = false;
+    _onWxCtrl = false;
+
+    for (bool & i : _movement)
+        i = false;
+}
+
+void Fractal::ConfigureRenderer(Renderer& renderer) const
+{
+    renderer.SetOptions(this->GetOptions());
+    renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
+    renderer.SetK(_kReal, _kImaginary);
+}
+
+std::vector<RenderRegion> Fractal::BuildRenderRegions() const
+{
+    std::vector<RenderRegion> regions;
+    const int screenWidth = static_cast<int>(_screenWidth);
+    const int screenHeight = static_cast<int>(_screenHeight);
+
+    if (_xMoved == 0 && _yMoved == 0)
+    {
+        regions.emplace_back(0, 0, screenWidth, screenHeight);
+        return regions;
+    }
+
+    if ((abs(_xMoved) >= screenWidth) || (abs(_yMoved) >= screenHeight))
+    {
+        regions.emplace_back(0, 0, screenWidth, screenHeight);
+        return regions;
+    }
+
+    int yStart = 0;
+    int yEnd = screenHeight;
+
+    if (_yMoved > 0)
+    {
+        regions.emplace_back(0, 0, screenWidth, _yMoved);
+        yStart = _yMoved;
+    }
+    else if (_yMoved < 0)
+    {
+        yEnd = screenHeight + _yMoved;
+        regions.emplace_back(0, yEnd, screenWidth, screenHeight);
+    }
+
+    if (_xMoved > 0)
+    {
+        regions.emplace_back(0, yStart, _xMoved, yEnd);
+    }
+    else if (_xMoved < 0)
+    {
+        regions.emplace_back(screenWidth + _xMoved, yStart, screenWidth, yEnd);
+    }
+
+    return regions;
+}
+
+std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>& regions, const int tileHeight) const
+{
+    std::vector<RenderJob> jobs;
+
+    const unsigned int threadNumber = std::max(1U, _threadNumber);
+    const int screenWidth = static_cast<int>(_screenWidth);
+    const int screenHeight = static_cast<int>(_screenHeight);
+    int totalArea = 0;
+
+    if (tileHeight <= 0 && regions.size() > threadNumber)
+    {
+        jobs.emplace_back(RenderRegion(0, 0, screenWidth, screenHeight));
+
+        while (jobs.size() < threadNumber)
+            jobs.emplace_back();
+
+        return jobs;
+    }
+
+    for (const RenderRegion& region : regions)
+        totalArea += region.GetArea();
+
+    if (totalArea == 0)
+    {
+        while (jobs.size() < threadNumber)
+            jobs.emplace_back();
+
+        return jobs;
+    }
+
+    if (tileHeight > 0)
+    {
+        for (const RenderRegion& region : regions)
+        {
+            for (int top = region.GetTop(); top < region.GetBottom(); top += tileHeight)
+            {
+                const int bottom = std::min(top + tileHeight, region.GetBottom());
+                jobs.emplace_back(RenderRegion(region.GetLeft(), top, region.GetRight(), bottom));
+            }
+        }
+
+        return jobs;
+    }
+
+    unsigned int remainingJobs = threadNumber;
+    int remainingArea = totalArea;
+
+    for (unsigned int regionIndex = 0; regionIndex < regions.size(); regionIndex++)
+    {
+        const RenderRegion& region = regions[regionIndex];
+        const auto remainingRegions = static_cast<unsigned int>(regions.size() - regionIndex);
+        unsigned int regionJobs = 1;
+
+        if (remainingRegions == 1)
+        {
+            regionJobs = remainingJobs;
+        }
+        else if (region.GetArea() > 0)
+        {
+            regionJobs = static_cast<unsigned int>(std::max(1.0,
+                std::round(static_cast<double>(remainingJobs) * region.GetArea() / remainingArea)));
+            regionJobs = std::min(regionJobs, remainingJobs - remainingRegions + 1);
+        }
+
+        remainingJobs -= regionJobs;
+        remainingArea -= region.GetArea();
+
+        int currentTop = region.GetTop();
+        const int height = region.GetHeight();
+
+        for (unsigned int jobIndex = 0; jobIndex < regionJobs; jobIndex++)
+        {
+            const unsigned int remainingRegionJobs = regionJobs - jobIndex;
+            const int rows = remainingRegionJobs > 0
+                ? (region.GetBottom() - currentTop) / static_cast<int>(remainingRegionJobs)
+                : 0;
+            const int bottom = jobIndex + 1 == regionJobs ? region.GetBottom() : currentTop + rows;
+
+            if (height <= 0 || rows <= 0)
+            {
+                jobs.emplace_back();
+            }
+            else
+            {
+                jobs.emplace_back(RenderRegion(region.GetLeft(), currentTop, region.GetRight(), bottom));
+                currentTop = bottom;
+            }
+        }
+    }
+
+    while (jobs.size() < threadNumber)
+        jobs.emplace_back();
+
+    return jobs;
+}
+
 void Fractal::Resize(const int width, const int height)
 {
     // Stop threads if they are still rendering.
@@ -562,7 +556,7 @@ void Fractal::Move()
 {
     if (_rendered)
     {
-        // If any movement button is pressed move the image and accelerate the movement.
+        // If any movement button is pressed, move the image and speed up the movement.
         if (_movement[Left])
             _xVel += stdSpeed;
         if (_movement[Right])
@@ -584,13 +578,13 @@ void Fractal::Move()
         // Updates the coordinates.
         if (_xVel != 0 || _yVel != 0)
         {
-            double FX = (_maxX - _minX) / _screenWidth;
-            double FY = (_maxY - _minY) / _screenHeight;
+            const double fx = (_maxX - _minX) / _screenWidth;
+            const double fy = (_maxY - _minY) / _screenHeight;
 
-            _minX -= _xVel * FX;
-            _maxX -= _xVel * FX;
-            _minY += _yVel * FY;
-            _maxY += _yVel * FY;
+            _minX -= _xVel * fx;
+            _maxX -= _xVel * fx;
+            _minY += _yVel * fy;
+            _maxY += _yVel * fy;
 
             _posX += _xVel;
             _posY += _yVel;
@@ -737,22 +731,11 @@ bool Fractal::IsPaused() const
     return _paused;
 }
 // Virtual methods.
-void Fractal::PreRender()
-{
-    // Do nothing.
-}
-void Fractal::PreDrawMaps()
-{
-    // Do nothing.
-}
-void Fractal::PostRender()
-{
-    // Do nothing.
-}
-void Fractal::PreRestartRender()
-{
-    // Do nothing.
-}
+void Fractal::PreRender() {}
+void Fractal::PreDrawMaps() {}
+void Fractal::PostRender() {}
+void Fractal::PreRestartRender() {}
+void Fractal::CopyOptFromPanel() {}
 bool Fractal::IsRendering()
 {
     if (_waitRoutine)
@@ -763,10 +746,7 @@ void Fractal::SetFormula(FormulaOpt formula)
 {
     _userFormula = std::move(formula);
 }
-void Fractal::CopyOptFromPanel()
-{
-    // Do nothing.
-}
+
 // Communication methods.
 double Fractal::GetX(const int pixelX) const
 {
@@ -860,7 +840,7 @@ Options Fractal::GetOptions() const
 
     return opt;
 }
-void Fractal::SetRendered(bool mode)
+void Fractal::SetRendered(const bool mode)
 {
     _rendered = mode;
 }
@@ -899,63 +879,63 @@ void Fractal::SetOnWxCtrl(bool mode)
 {
     _onWxCtrl = mode;
 }
-void Fractal::SetMovement(Direction dir)
+void Fractal::SetMovement(const Direction direction)
 {
-    switch (dir)
+    switch (direction)
     {
-    case Up:
-        {
-            _yVel -= stdSpeed;
-            _movement[Up] = true;
-            break;
-        }
-    case Down:
-        {
-            _yVel += stdSpeed;
-            _movement[Down] = true;
-            break;
-        }
-    case Left:
-        {
-            _xVel -= stdSpeed;
-            _movement[Left] = true;
-            break;
-        }
-    case Right:
-        {
-            _xVel += stdSpeed;
-            _movement[Right] = true;
-            break;
-        }
-    default: break;
+        case Up:
+            {
+                _yVel -= stdSpeed;
+                _movement[Up] = true;
+                break;
+            }
+        case Down:
+            {
+                _yVel += stdSpeed;
+                _movement[Down] = true;
+                break;
+            }
+        case Left:
+            {
+                _xVel -= stdSpeed;
+                _movement[Left] = true;
+                break;
+            }
+        case Right:
+            {
+                _xVel += stdSpeed;
+                _movement[Right] = true;
+                break;
+            }
+        default: break;
     }
 }
 
-void Fractal::ReleaseMovement(Direction dir)
+void Fractal::ReleaseMovement(const Direction direction)
 {
-    switch (dir)
+    switch (direction)
     {
-    case Up:
-        {
-            _movement[Up] = false;
-            break;
-        }
-    case Down:
-        {
-            _movement[Down] = false;
-            break;
-        }
-    case Left:
-        {
-            _movement[Left] = false;
-            break;
-        }
-    case Right:
-        {
-            _movement[Right] = false;
-            break;
-        }
-    default: break;
+        case Up:
+            {
+                _movement[Up] = false;
+                break;
+            }
+        case Down:
+            {
+                _movement[Down] = false;
+                break;
+            }
+        case Left:
+            {
+                _movement[Left] = false;
+                break;
+            }
+        case Right:
+            {
+                _movement[Right] = false;
+                break;
+            }
+        default: break;
     }
 }
 // Save image.
@@ -1023,7 +1003,7 @@ sf::Image Fractal::GetRenderedImage()
 }
 wxBitmap Fractal::GetRenderedWxBitmap()
 {
-    sf::Image renderedImage = this->GetRenderedImage();
+    const sf::Image renderedImage = this->GetRenderedImage();
     const sf::Vector2u imageSize = renderedImage.getSize();
     const sf::Uint8* rgbaPixels = renderedImage.getPixelsPtr();
     auto* rgbPixels = new unsigned char[imageSize.x * imageSize.y * 3];
@@ -1051,7 +1031,7 @@ void Fractal::RenderBMP(const string& filename)
         this->Render();
     }
     this->PreDrawMaps();
-    BMPPixel* data = new BMPPixel[_screenWidth];
+    const auto data = new BMPPixel[_screenWidth];
 
     _maxColorMapVal = 0;
     if (_relativeColor)
@@ -1113,11 +1093,11 @@ void Fractal::RenderBMP(const string& filename)
     delete[] data;
 }
 
-void Fractal::PrepareSnapshot(bool mode)
+void Fractal::PrepareSnapshot(const bool mode)
 {
     _onSnapshot = mode;
 }
-void Fractal::SetColorPalette(ColorPalettes gradStyle)
+void Fractal::SetColorPalette(const ColorPalettes gradStyle)
 {
     _gradStyle = gradStyle;
 }
@@ -1136,7 +1116,7 @@ wxGradient* Fractal::GetGradient()
     return &_gradient;
 }
 
-void Fractal::SetExtColorMode(bool mode)
+void Fractal::SetExtColorMode(const bool mode)
 {
     // Changes external color mode.
     if (_colorMode != mode)
@@ -1145,7 +1125,7 @@ void Fractal::SetExtColorMode(bool mode)
         this->RedrawMaps();
     }
 }
-void Fractal::SetFractalSetColorMode(bool mode)
+void Fractal::SetFractalSetColorMode(const bool mode)
 {
     // Changes internal color mode.
     if (_colorSet != mode)
@@ -1172,7 +1152,7 @@ void Fractal::ChangeVarGradient()
 {
     _varGradient = !_varGradient;
 }
-void Fractal::SetPaletteSize(int size)
+void Fractal::SetPaletteSize(const int size)
 {
     this->SetGradientSize(size);
 }
@@ -1180,7 +1160,7 @@ int Fractal::GetPaletteSize() const
 {
     return _paletteSize;
 }
-void Fractal::SetGradient(wxGradient grad)
+void Fractal::SetGradient(const wxGradient& grad)
 {
     // Copy gradient.
     _gradient = grad;
@@ -1189,7 +1169,7 @@ void Fractal::SetGradient(wxGradient grad)
     _varGradientStep = _paletteSize / 60;
     this->RebuildPalette();
 }
-void Fractal::SetGradientSize(unsigned int size)
+void Fractal::SetGradientSize(const unsigned int size)
 {
     _gradient.setMax(size);
     _gradPaletteSize = _paletteSize = size;
@@ -1207,7 +1187,7 @@ bool Fractal::GetRelativeColorMode() const
 {
     return _relativeColor;
 }
-void Fractal::SetVarGradient(int n)
+void Fractal::SetVarGradient(const int n)
 {
     _varGradChange = true;
     _changeGradient = n % _paletteSize;
@@ -1306,9 +1286,7 @@ bool Fractal::OrbitTrapActivated() const
 void Fractal::SetSmoothRender(const bool mode)
 {
     if (_hasSmoothRender)
-    {
         _smoothRender = mode;
-    }
 }
 
 bool Fractal::HasSmoothRenderMode() const

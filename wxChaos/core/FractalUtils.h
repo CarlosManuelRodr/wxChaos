@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 
 constexpr int trapFactor = 1;
 
@@ -14,7 +15,7 @@ inline double gaussianIntDist(const double x, const double y)
     return sqrt((x - gint_x) * (x - gint_x) + (y - gint_y) * (y - gint_y));
 }
 
-inline double TIA(const double zRe, double zIm, const double cRe, const double cIm,
+inline double TIA(const double zRe, const double zIm, const double cRe, const double cIm,
                   const double tiaPrevX, const double tiaPrevY)
 {
     const double z_mag = sqrt(tiaPrevX * tiaPrevX + tiaPrevY * tiaPrevY);

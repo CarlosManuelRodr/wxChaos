@@ -282,8 +282,8 @@ public:
     void SetFractalPropChanged();
     bool GetChangeFractalProp();
     void SetOnWxCtrl(bool mode);
-    void SetMovement(Direction dir);
-    void ReleaseMovement(Direction dir);
+    void SetMovement(Direction direction);
+    void ReleaseMovement(Direction direction);
 
     // Save image.
     sf::Image GetRenderedImage();
@@ -306,7 +306,7 @@ public:
     void ChangeVarGradient();
     void SetPaletteSize(int size);
     int GetPaletteSize() const;
-    void SetGradient(wxGradient grad);
+    void SetGradient(const wxGradient& grad);
     void SetGradientSize(unsigned int size);
     void SetRelativeColor(bool mode);
     bool GetRelativeColorMode() const;
@@ -409,9 +409,7 @@ template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer*
     _watchdog.launch();
 
     if (_waitRoutine)
-    {
         _watchdog.wait();
-    }
 }
 
 #endif
