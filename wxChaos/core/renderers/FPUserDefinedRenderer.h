@@ -13,6 +13,7 @@ class FPUserDefinedRenderer : public Renderer
     double _minStep;
     wxString _errorInfo;
     wxString _parserFormula;
+
 public:
     FPUserDefinedRenderer();
 

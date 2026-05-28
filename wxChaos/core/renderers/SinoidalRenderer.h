@@ -11,6 +11,7 @@ class SinoidalRenderer : public Renderer
     void GaussianIntRender();
     void EscapeAngleRender();
     void EscapeTimeWithOrbitTrapRender();
+
 public:
     SinoidalRenderer();
 

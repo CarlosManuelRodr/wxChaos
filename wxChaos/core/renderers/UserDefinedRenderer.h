@@ -12,6 +12,7 @@ class UserDefinedRenderer : public Renderer
     bool julia;
     wxString errorInfo;
     wxString parserFormula;
+
 public:
     UserDefinedRenderer();
 

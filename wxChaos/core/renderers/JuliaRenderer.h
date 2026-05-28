@@ -13,6 +13,7 @@ class JuliaRenderer : public Renderer
     void TriangleInequalityRender();
     void EscapeTimeSmoothRender();
     void EscapeTimeWithOrbitTrapRender();
+
 public:
     JuliaRenderer();
     void Render() override;

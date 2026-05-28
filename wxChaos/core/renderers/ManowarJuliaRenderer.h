@@ -11,6 +11,7 @@ class ManowarJuliaRenderer : public Renderer
     void GaussianIntRender();
     void EscapeAngleRender();
     void EscapeTimeWithOrbitTrapRender();
+
 public:
     ManowarJuliaRenderer();
 

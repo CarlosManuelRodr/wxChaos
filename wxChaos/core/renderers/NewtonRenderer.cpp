@@ -6,11 +6,10 @@ NewtonRenderer::NewtonRenderer()
 {
     minStep = 0.001;
 }
+
 void NewtonRenderer::ConvergenceTestRender()
 {
     double re, im;
-
-    // Creates fractal.
     unsigned n;
     for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
@@ -73,16 +72,12 @@ void NewtonRenderer::ConvergenceTestWithOrbitTrapRender()
 
                 z_prev = z;
 
-                if (_myOpt.orbitTrapMode)
-                {
-                    if (abs(z.imag()) < distY) distY = abs(z.imag());
-                    if (abs(z.real()) < distX) distX = abs(z.real());
-                }
+                if (abs(z.imag()) < distY)
+                    distY = abs(z.imag());
+                if (abs(z.real()) < distX)
+                    distX = abs(z.real());
             }
-            if (_myOpt.orbitTrapMode)
-                _colorMap[_x][_y] = static_cast<unsigned int>(n + log(1/distX) + log(1/distY));
-            else
-                _colorMap[_x][_y] = n;
+            _colorMap[_x][_y] = static_cast<unsigned int>(n + log(1/distX) + log(1/distY));
         }
     }
 }

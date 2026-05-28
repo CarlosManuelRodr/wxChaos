@@ -10,6 +10,7 @@ class FractoryRenderer : public Renderer
     void EscapeTimeRender();
     void GaussianIntRender();
     void EscapeAngleRender();
+
 public:
     FractoryRenderer();
     void Render() override;

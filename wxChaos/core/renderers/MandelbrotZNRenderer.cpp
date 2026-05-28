@@ -10,158 +10,119 @@ MandelbrotZNRenderer::MandelbrotZNRenderer()
 }
 void MandelbrotZNRenderer::EscapeTimeRender()
 {
-    double c_im;
-    bool insideSet;
-
-    // Creates fractal.
     unsigned i;
-    complex<double> z, c;
+    complex<double> c;
     const double squaredBail = _bailout*_bailout;
 
-        for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    {
+        double c_im = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            c_im = _maxY - _y*_yFactor;
-            for (_x=_widthOrigin; _x<_widthFinal; _x++)
+            complex<double> z = c = complex<double>(_minX + _x * _xFactor, c_im);
+            bool insideSet = true;
+
+            for (i=0; i<_maxIter; i++)
             {
-                z = c = complex<double>(_minX + _x*_xFactor, c_im);
-                insideSet = true;
-
-                for (i=0; i<_maxIter; i++)
+                z = pow(z,_n) + c;
+                if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
                 {
-                    z = pow(z,_n) + c;
-                    if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
-                    {
-                        insideSet = false;
-                        break;
-                    }
+                    insideSet = false;
+                    break;
                 }
-                if (insideSet)
-                    _setMap[_x][_y] = true;
-
-                _colorMap[_x][_y] = i;
             }
-        }
+            if (insideSet)
+                _setMap[_x][_y] = true;
 
+            _colorMap[_x][_y] = i;
+        }
+    }
 }
 
 void MandelbrotZNRenderer::GaussianIntRender()
 {
-    double c_im;
-    bool insideSet;
-
     // Creates fractal.
-    unsigned i;
-    complex<double> z, c;
     const double squaredBail = _bailout*_bailout;
+    double distance1 = 0;
+    const double log2 = log(2.0);
+    const double loglog2 = log(log2);
 
-        double distance1 = 0;
-        const double log2 = log(2.0);
-        const double loglog2 = log(log2);
-
-        for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    {
+        double c_im = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            c_im = _maxY - _y*_yFactor;
-            for (_x=_widthOrigin; _x<_widthFinal; _x++)
+            complex<double> z = complex<double>(0, 0);
+            complex<double> c = complex<double>(_minX + _x * _xFactor, c_im);
+            bool insideSet = true;
+            double distance = 99;
+            double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
+
+            for (unsigned i = 0; i<_maxIter && insideSet; i++)
             {
-                z = complex<double>(0,0);
-                c = complex<double>(_minX + _x*_xFactor, c_im);
-                insideSet = true;
-                double distance = 99;
-                double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
-
-                for (i=0; i<_maxIter && insideSet; i++)
+                const double zNorm = z.real() * z.real() + z.imag() * z.imag();
+                if (zNorm > squaredBail)
                 {
-                    const double zNorm = z.real() * z.real() + z.imag() * z.imag();
-                    if (zNorm > squaredBail)
-                    {
-                        mu = (loglog2 - log(log(sqrt(zNorm))))/log2 + 1;
-                        insideSet = false;
-                    }
-                    z = pow(z,_n) + c;
-
-                    distance1 = distance;
-                    distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
+                    mu = (loglog2 - log(log(sqrt(zNorm))))/log2 + 1;
+                    insideSet = false;
                 }
-                if (insideSet)
-                    _setMap[_x][_y] = true;
+                z = pow(z,_n) + c;
 
-                _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
+                distance1 = distance;
+                distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
             }
-        }
+            if (insideSet)
+                _setMap[_x][_y] = true;
 
+            _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
+        }
+    }
 }
 
 void MandelbrotZNRenderer::EscapeAngleRender()
 {
-    double c_im;
-    bool insideSet;
-
-    // Creates fractal.
     unsigned i;
-    complex<double> z, c;
+    complex<double> c;
     const double squaredBail = _bailout*_bailout;
 
-        // ReSharper disable once CppTooWideScope
-        constexpr int color1 = 1;
-        const int color2 = 0.25 * _myOpt.paletteSize;
-        const int color3 = 0.50 * _myOpt.paletteSize;
-        const int color4 = 0.75 * _myOpt.paletteSize;
+    // ReSharper disable once CppTooWideScope
+    constexpr int color1 = 1;
+    const int color2 = 0.25 * _myOpt.paletteSize;
+    const int color3 = 0.50 * _myOpt.paletteSize;
+    const int color4 = 0.75 * _myOpt.paletteSize;
 
-        for (_y=_heightOrigin; _y<_heightFinal; _y++)
-        {
-            c_im = _maxY - _y*_yFactor;
-            for (_x=_widthOrigin; _x<_widthFinal; _x++)
-            {
-                z = c = complex<double>(_minX + _x*_xFactor, c_im);
-                insideSet = true;
-
-                for (i=0; i<_maxIter; i++)
-                {
-                    z = pow(z,_n) + c;
-                    if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
-                    {
-                        insideSet = false;
-                        break;
-                    }
-                }
-                if (insideSet)
-                    _setMap[_x][_y] = true;
-
-                if (z.real() > 0 && z.imag() > 0)
-                    _colorMap[_x][_y] = i + color1;
-                else if (z.real() <= 0 && z.imag() > 0)
-                    _colorMap[_x][_y] = i + color2;
-                else if (z.real() <= 0 && z.imag() < 0)
-                    _colorMap[_x][_y] = i + color3;
-                else
-                    _colorMap[_x][_y] = i + color4;
-            }
-        }
-
-}
-
-void MandelbrotZNRenderer::Render()
-{
-    switch (_myOpt.alg)
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
-        case RenderingAlgorithmType::EscapeTime:
-            if (_myOpt.orbitTrapMode)
-                EscapeTimeWithOrbitTrapRender();
-            else if (_myOpt.smoothRender)
-                EscapeTimeSmoothRender();
+        double c_im = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        {
+            complex<double> z = c = complex<double>(_minX + _x * _xFactor, c_im);
+            bool insideSet = true;
+
+            for (i=0; i<_maxIter; i++)
+            {
+                z = pow(z,_n) + c;
+                if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
+                {
+                    insideSet = false;
+                    break;
+                }
+            }
+            if (insideSet)
+                _setMap[_x][_y] = true;
+
+            if (z.real() > 0 && z.imag() > 0)
+                _colorMap[_x][_y] = i + color1;
+            else if (z.real() <= 0 && z.imag() > 0)
+                _colorMap[_x][_y] = i + color2;
+            else if (z.real() <= 0 && z.imag() < 0)
+                _colorMap[_x][_y] = i + color3;
             else
-                EscapeTimeRender();
-            break;
-        case RenderingAlgorithmType::GaussianInt:
-            GaussianIntRender();
-            break;
-        case RenderingAlgorithmType::EscapeAngle:
-            EscapeAngleRender();
-            break;
-        default:
-            break;
+                _colorMap[_x][_y] = i + color4;
+        }
     }
 }
+
 void MandelbrotZNRenderer::EscapeTimeSmoothRender()
 {
     EscapeTimeWithOrbitTrapRender();
@@ -270,7 +231,31 @@ void MandelbrotZNRenderer::EscapeTimeWithOrbitTrapRender()
         }
     }
 }
-void MandelbrotZNRenderer::SetParams(int n, double bailout)
+
+void MandelbrotZNRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else if (_myOpt.smoothRender)
+                EscapeTimeSmoothRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
+    }
+}
+
+void MandelbrotZNRenderer::SetParams(const int n, const double bailout)
 {
     _n = n;
     _bailout = bailout;

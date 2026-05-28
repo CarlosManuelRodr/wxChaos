@@ -9,6 +9,7 @@ class MagnetRenderer : public Renderer
 {
     void EscapeTimeRender();
     void EscapeAngleRender();
+
 public:
     MagnetRenderer();
     void Render() override;

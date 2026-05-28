@@ -11,6 +11,7 @@ class ManowarRenderer : public Renderer
     void GaussianIntRender();
     void EscapeAngleRender();
     void EscapeTimeWithOrbitTrapRender();
+
 public:
     ManowarRenderer();
     void Render() override;

@@ -2,7 +2,8 @@
 #include "SierpinskyTriangleRenderer.h"
 using namespace std;
 
-SierpinskyTriangleRenderer::SierpinskyTriangleRenderer() {}
+SierpinskyTriangleRenderer::SierpinskyTriangleRenderer() = default;
+
 void SierpinskyTriangleRenderer::Render()
 {
     for (_y=_heightOrigin; _y<_heightFinal; _y++)

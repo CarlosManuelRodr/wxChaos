@@ -7,13 +7,15 @@
 */
 class MandelbrotZNRenderer : public Renderer
 {
+    int _n;
+    double _bailout;
+
     void EscapeTimeRender();
     void GaussianIntRender();
     void EscapeAngleRender();
-    int _n;
-    double _bailout;
     void EscapeTimeSmoothRender();
     void EscapeTimeWithOrbitTrapRender();
+
 public:
     MandelbrotZNRenderer();
 

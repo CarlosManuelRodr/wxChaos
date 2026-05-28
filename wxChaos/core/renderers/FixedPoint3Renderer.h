@@ -8,6 +8,7 @@
 class FixedPoint3Renderer : public Renderer
 {
     double _minStep;
+
 public:
     FixedPoint3Renderer();
 

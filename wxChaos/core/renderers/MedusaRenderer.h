@@ -11,6 +11,7 @@ class MedusaRenderer : public Renderer
     void GaussianIntRender();
     void EscapeAngleRender();
     void EscapeTimeWithOrbitTrapRender();
+
 public:
     MedusaRenderer();
 

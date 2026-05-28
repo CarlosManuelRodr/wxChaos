@@ -10,6 +10,7 @@ class BurningShipRenderer : public Renderer
     void EscapeTimeRender();
     void GaussianIntRender();
     void EscapeAngleRender();
+
 public:
     BurningShipRenderer();
     void Render() override;
