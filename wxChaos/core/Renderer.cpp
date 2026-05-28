@@ -54,10 +54,7 @@ void Renderer::run()
     _threadRunning = true;
     _stopped = false;
 
-    if (_specialRenderMode)
-        this->SpecialRender();
-    else
-        this->Render();
+    this->Render();
 
     _threadRunning = false;
 }
@@ -74,7 +71,7 @@ void Renderer::Stop()
         _y = _heightFinal - 1;
     }
 }
-void Renderer::SetSpecialRenderMode(bool mode)
+void Renderer::SetSpecialRenderMode(const bool mode)
 {
     _specialRenderMode = mode;
 }
