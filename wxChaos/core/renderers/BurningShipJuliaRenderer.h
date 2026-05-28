@@ -7,6 +7,9 @@
 */
 class BurningShipJuliaRenderer : public Renderer
 {
+    void EscapeTimeRender();
+    void GaussianIntRender();
+    void EscapeAngleRender();
 public:
     BurningShipJuliaRenderer();
     void Render() override;

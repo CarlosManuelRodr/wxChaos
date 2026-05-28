@@ -93,7 +93,6 @@ void Fractal::ConfigureRenderer(Renderer& renderer) const
 {
     renderer.SetOptions(this->GetOptions());
     renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
-    renderer.SetSpecialRenderMode(_orbitTrapMode || _smoothRender);
     renderer.SetK(_kReal, _kImaginary);
 }
 

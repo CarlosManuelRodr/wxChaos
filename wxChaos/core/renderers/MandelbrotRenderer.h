@@ -21,7 +21,6 @@ public:
     MandelbrotRenderer();
 
     void Render() override;
-    void SpecialRender() override;
     unsigned int GetProgress() override;
 
     ///@brief Number of random points that will launch in Buddhabrot mode.

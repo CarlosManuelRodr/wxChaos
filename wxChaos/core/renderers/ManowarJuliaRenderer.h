@@ -7,9 +7,12 @@
 */
 class ManowarJuliaRenderer : public Renderer
 {
+    void EscapeTimeRender();
+    void GaussianIntRender();
+    void EscapeAngleRender();
+    void EscapeTimeWithOrbitTrapRender();
 public:
     ManowarJuliaRenderer();
 
     void Render() override;
-    void SpecialRender() override;
 };

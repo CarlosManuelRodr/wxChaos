@@ -7,8 +7,13 @@
 */
 class JuliaRenderer : public Renderer
 {
+    void EscapeTimeRender();
+    void GaussianIntRender();
+    void EscapeAngleRender();
+    void TriangleInequalityRender();
+    void EscapeTimeSmoothRender();
+    void EscapeTimeWithOrbitTrapRender();
 public:
     JuliaRenderer();
     void Render() override;
-    void SpecialRender() override;
 };

@@ -4,7 +4,7 @@
 using namespace std;
 
 JuliaRenderer::JuliaRenderer() {}
-void JuliaRenderer::Render()
+void JuliaRenderer::EscapeTimeRender()
 {
     double c_im;
     double Z_re;
@@ -14,8 +14,7 @@ void JuliaRenderer::Render()
     bool insideSet;
 
     // Creates fractal.
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         unsigned n;
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
@@ -44,9 +43,20 @@ void JuliaRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void JuliaRenderer::GaussianIntRender()
+{
+    double c_im;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
+
+    // Creates fractal.
+
         double distanceTemp = 0;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -87,9 +97,20 @@ void JuliaRenderer::Render()
                 _colorMap[_x][_y] = static_cast<int>(abs(((mu*distance + (1-mu)*distanceTemp)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void JuliaRenderer::EscapeAngleRender()
+{
+    double c_im;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
+
+    // Creates fractal.
+
         unsigned n;
         constexpr int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
@@ -127,9 +148,20 @@ void JuliaRenderer::Render()
                     _colorMap[_x][_y] = n + color4;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::TriangleInequality)
-    {
+
+}
+
+void JuliaRenderer::TriangleInequalityRender()
+{
+    double c_im;
+    double Z_re;
+    double Z_im;
+    double Z_re2;
+    double Z_im2;
+    bool insideSet;
+
+    // Creates fractal.
+
         unsigned n;
         double distance1 = 0;
         const double log2 = log(2.0);
@@ -178,9 +210,40 @@ void JuliaRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*700)));
             }
         }
+
+}
+
+void JuliaRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else if (_myOpt.smoothRender)
+                EscapeTimeSmoothRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        case RenderingAlgorithmType::TriangleInequality:
+            TriangleInequalityRender();
+            break;
+        default:
+            break;
     }
 }
-void JuliaRenderer::SpecialRender()
+void JuliaRenderer::EscapeTimeSmoothRender()
+{
+    EscapeTimeWithOrbitTrapRender();
+}
+
+void JuliaRenderer::EscapeTimeWithOrbitTrapRender()
 {
     bool insideSet;
     const double log2 = log(2.0);

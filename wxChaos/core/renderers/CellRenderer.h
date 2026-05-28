@@ -7,6 +7,8 @@
 */
 class CellRenderer : public Renderer
 {
+    void EscapeTimeRender();
+    void GaussianIntRender();
     double _bailout;
 public:
     CellRenderer();

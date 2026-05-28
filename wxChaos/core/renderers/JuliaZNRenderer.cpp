@@ -8,15 +8,14 @@ JuliaZNRenderer::JuliaZNRenderer()
     _n = 0;
     _bailout = 0;
 }
-void JuliaZNRenderer::Render()
+void JuliaZNRenderer::EscapeTimeRender()
 {
     double c_im;
     bool insideSet;
     unsigned i;
 
     // Creates fractal.
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         const complex<double> k = complex<double>(_kReal, _kImaginary);
         const double squaredBail = _bailout*_bailout;
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
@@ -42,9 +41,17 @@ void JuliaZNRenderer::Render()
                 _colorMap[_x][_y] = i;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void JuliaZNRenderer::GaussianIntRender()
+{
+    double c_im;
+    bool insideSet;
+    unsigned i;
+
+    // Creates fractal.
+
         const complex<double> k = complex<double>(_kReal, _kImaginary);
         double distance1 = 0;
         const double log2 = log(2.0);
@@ -80,9 +87,17 @@ void JuliaZNRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void JuliaZNRenderer::EscapeAngleRender()
+{
+    double c_im;
+    bool insideSet;
+    unsigned i;
+
+    // Creates fractal.
+
         constexpr int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
         const int color3 = 0.50 * _myOpt.paletteSize;
@@ -120,9 +135,37 @@ void JuliaZNRenderer::Render()
                     _colorMap[_x][_y] = _n + color4;
             }
         }
+
+}
+
+void JuliaZNRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else if (_myOpt.smoothRender)
+                EscapeTimeSmoothRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
-void JuliaZNRenderer::SpecialRender()
+void JuliaZNRenderer::EscapeTimeSmoothRender()
+{
+    EscapeTimeWithOrbitTrapRender();
+}
+
+void JuliaZNRenderer::EscapeTimeWithOrbitTrapRender()
 {
     double c_im;
     bool insideSet;

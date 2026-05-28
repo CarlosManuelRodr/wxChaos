@@ -4,15 +4,14 @@
 using namespace std;
 
 ManowarJuliaRenderer::ManowarJuliaRenderer() {}
-void ManowarJuliaRenderer::Render()
+void ManowarJuliaRenderer::EscapeTimeRender()
 {
     // Creates fractal.
     bool insideSet;
     double z_re, z_im, z_re2, z_im2, man_re, man_im;
     double z_y_init;
 
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         unsigned n;
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
@@ -45,9 +44,17 @@ void ManowarJuliaRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void ManowarJuliaRenderer::GaussianIntRender()
+{
+    // Creates fractal.
+    bool insideSet;
+    double z_re, z_im, z_re2, z_im2, man_re, man_im;
+    double z_y_init;
+
+
         double distance1 = 0;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -90,9 +97,17 @@ void ManowarJuliaRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void ManowarJuliaRenderer::EscapeAngleRender()
+{
+    // Creates fractal.
+    bool insideSet;
+    double z_re, z_im, z_re2, z_im2, man_re, man_im;
+    double z_y_init;
+
+
         unsigned n;
         constexpr int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
@@ -137,9 +152,30 @@ void ManowarJuliaRenderer::Render()
                     _colorMap[_x][_y] = n + color4;
             }
         }
+
+}
+
+void ManowarJuliaRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
-void ManowarJuliaRenderer::SpecialRender()
+void ManowarJuliaRenderer::EscapeTimeWithOrbitTrapRender()
 {
     // Creates fractal.
     complex<double> z;

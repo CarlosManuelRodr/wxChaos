@@ -4,7 +4,7 @@
 using namespace std;
 
 SinoidalRenderer::SinoidalRenderer() {}
-void SinoidalRenderer::Render()
+void SinoidalRenderer::EscapeTimeRender()
 {
     // Creates fractal.
     unsigned n;
@@ -13,8 +13,7 @@ void SinoidalRenderer::Render()
     bool insideSet;
     double c_im;
 
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
             c_im = _maxY - _y*_yFactor;
@@ -38,9 +37,19 @@ void SinoidalRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void SinoidalRenderer::GaussianIntRender()
+{
+    // Creates fractal.
+    unsigned n;
+    complex<double> z;
+    const complex<double> k(_kReal, _kImaginary);
+    bool insideSet;
+    double c_im;
+
+
         double distance1 = 0;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -74,9 +83,19 @@ void SinoidalRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void SinoidalRenderer::EscapeAngleRender()
+{
+    // Creates fractal.
+    unsigned n;
+    complex<double> z;
+    const complex<double> k(_kReal, _kImaginary);
+    bool insideSet;
+    double c_im;
+
+
         const int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
         const int color3 = 0.50 * _myOpt.paletteSize;
@@ -112,9 +131,30 @@ void SinoidalRenderer::Render()
                     _colorMap[_x][_y] = n + color4;
             }
         }
+
+}
+
+void SinoidalRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
-void SinoidalRenderer::SpecialRender()
+void SinoidalRenderer::EscapeTimeWithOrbitTrapRender()
 {
     // Creates fractal.
     const complex<double> constant(_kReal, _kImaginary);

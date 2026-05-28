@@ -7,15 +7,14 @@ CellRenderer::CellRenderer()
 {
     _bailout = 1.0;
 }
-void CellRenderer::Render()
+void CellRenderer::EscapeTimeRender()
 {
     // Creates fractal.
     const double squaredBail = _bailout*_bailout;
     complex<double> z, b, c;
     double c_im;
     bool insideSet;
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         unsigned n;
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
@@ -43,9 +42,17 @@ void CellRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void CellRenderer::GaussianIntRender()
+{
+    // Creates fractal.
+    const double squaredBail = _bailout*_bailout;
+    complex<double> z, b, c;
+    double c_im;
+    bool insideSet;
+
         double distance1 = 0;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -82,6 +89,21 @@ void CellRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
+
+}
+
+void CellRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        default:
+            break;
     }
 }
 void CellRenderer::SetParams(double bailout)

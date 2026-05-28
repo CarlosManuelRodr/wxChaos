@@ -15,7 +15,7 @@ DoublePendulumRenderer::DoublePendulumRenderer()
     _rungeKutta = false;
 }
 
-void DoublePendulumRenderer::Render()
+void DoublePendulumRenderer::EscapeTimeRender()
 {
     //Crea fractal
     double th1, th2, vth1, vth2;
@@ -38,8 +38,7 @@ void DoublePendulumRenderer::Render()
     part5 = _l*2*_m1+_m2;
     part6 = _l*_m2;
 
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         if (_rungeKutta)
         {
             double k11, k12, k13, k14;
@@ -178,9 +177,33 @@ void DoublePendulumRenderer::Render()
                 }
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void DoublePendulumRenderer::EscapeAngleRender()
+{
+    //Crea fractal
+    double th1, th2, vth1, vth2;
+    double ecMov1, ecMov2;
+    bool insideSet;
+    unsigned n;
+    double den;
+    double minTh1 = _minX;
+    double maxTh2 = _maxY;
+    double th1Factor = _xFactor;
+    double th2Factor = _yFactor;
+    double th1_init, th2_init;
+
+    double part0, part1, part2, part3, part4, part5, part6;
+    part0 = _m1+_m2;
+    part1 = -_g*(2*_m1+_m2);
+    part2 = 2*_m2;
+    part3 = _m2*_g;
+    part4 = _g*(_m1+_m2);
+    part5 = _l*2*_m1+_m2;
+    part6 = _l*_m2;
+
+
         int color1, color2, color3, color4;
         color1 = 1;
         color2 = 0.25*_myOpt.paletteSize;
@@ -241,6 +264,21 @@ void DoublePendulumRenderer::Render()
                     _colorMap[_x][_y] = color4;
             }
         }
+
+}
+
+void DoublePendulumRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
 void DoublePendulumRenderer::SetParams(const bool th1B, const bool th2B, const double th1NB, const double th2NB,

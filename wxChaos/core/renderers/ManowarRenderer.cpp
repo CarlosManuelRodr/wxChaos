@@ -2,7 +2,7 @@
 #include "FractalUtils.h"
 
 ManowarRenderer::ManowarRenderer() {}
-void ManowarRenderer::Render()
+void ManowarRenderer::EscapeTimeRender()
 {
     // Creates fractal.
     bool insideSet;
@@ -10,8 +10,7 @@ void ManowarRenderer::Render()
     double c_re, c_im, temp_re, temp_im;
     double z_y_init;
 
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         unsigned n = 0;
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
@@ -45,9 +44,18 @@ void ManowarRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void ManowarRenderer::GaussianIntRender()
+{
+    // Creates fractal.
+    bool insideSet;
+    double z_re, z_im, z_re2, z_im2, man_re, man_im;
+    double c_re, c_im, temp_re, temp_im;
+    double z_y_init;
+
+
         double distance1 = 0.0;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -91,9 +99,18 @@ void ManowarRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void ManowarRenderer::EscapeAngleRender()
+{
+    // Creates fractal.
+    bool insideSet;
+    double z_re, z_im, z_re2, z_im2, man_re, man_im;
+    double c_re, c_im, temp_re, temp_im;
+    double z_y_init;
+
+
         // ReSharper disable once CppTooWideScope
         constexpr int color1 = 1;
         const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
@@ -139,9 +156,30 @@ void ManowarRenderer::Render()
                     _colorMap[_x][_y] = n + color4;
             }
         }
+
+}
+
+void ManowarRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
-void ManowarRenderer::SpecialRender()
+void ManowarRenderer::EscapeTimeWithOrbitTrapRender()
 {
     // Creates fractal.
     double z_re, z_im;

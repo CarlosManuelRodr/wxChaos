@@ -7,7 +7,7 @@ MedusaRenderer::MedusaRenderer()
 {
 
 }
-void MedusaRenderer::Render()
+void MedusaRenderer::EscapeTimeRender()
 {
     // Creates fractal.
     unsigned n;
@@ -15,8 +15,7 @@ void MedusaRenderer::Render()
     complex<double> z;
     const auto k = complex<double>(_kReal, _kImaginary);
     double c_im;
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
             c_im = _maxY - _y*_yFactor;
@@ -40,9 +39,18 @@ void MedusaRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void MedusaRenderer::GaussianIntRender()
+{
+    // Creates fractal.
+    unsigned n;
+    bool insideSet;
+    complex<double> z;
+    const auto k = complex<double>(_kReal, _kImaginary);
+    double c_im;
+
         double distance1 = 0;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -77,9 +85,18 @@ void MedusaRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void MedusaRenderer::EscapeAngleRender()
+{
+    // Creates fractal.
+    unsigned n;
+    bool insideSet;
+    complex<double> z;
+    const auto k = complex<double>(_kReal, _kImaginary);
+    double c_im;
+
         const int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
         const int color3 = 0.50 * _myOpt.paletteSize;
@@ -124,9 +141,30 @@ void MedusaRenderer::Render()
                 }
             }
         }
+
+}
+
+void MedusaRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
-void MedusaRenderer::SpecialRender()
+void MedusaRenderer::EscapeTimeWithOrbitTrapRender()
 {
     // Creates fractal.
     const complex<double> constant(_kReal, _kImaginary);

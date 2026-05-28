@@ -7,15 +7,14 @@ FractoryRenderer::FractoryRenderer()
 {
 
 }
-void FractoryRenderer::Render()
+void FractoryRenderer::EscapeTimeRender()
 {
     // Creates fractal.
     unsigned n;
     complex<double> z, b, c;
     double c_im;
     bool insideSet;
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
             c_im = _maxY - _y*_yFactor;
@@ -42,9 +41,17 @@ void FractoryRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void FractoryRenderer::GaussianIntRender()
+{
+    // Creates fractal.
+    unsigned n;
+    complex<double> z, b, c;
+    double c_im;
+    bool insideSet;
+
         double distance1;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -81,9 +88,17 @@ void FractoryRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void FractoryRenderer::EscapeAngleRender()
+{
+    // Creates fractal.
+    unsigned n;
+    complex<double> z, b, c;
+    double c_im;
+    bool insideSet;
+
         const int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
         const int color3 = 0.50 * _myOpt.paletteSize;
@@ -122,6 +137,24 @@ void FractoryRenderer::Render()
                     _colorMap[_x][_y] = n + color4;
             }
         }
+
+}
+
+void FractoryRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
 

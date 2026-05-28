@@ -6,7 +6,7 @@ NewtonRenderer::NewtonRenderer()
 {
     minStep = 0.001;
 }
-void NewtonRenderer::Render()
+void NewtonRenderer::ConvergenceTestRender()
 {
     double re, im;
 
@@ -46,7 +46,7 @@ void NewtonRenderer::Render()
         }
     }
 }
-void NewtonRenderer::SpecialRender()
+void NewtonRenderer::ConvergenceTestWithOrbitTrapRender()
 {
     // Creates fractal.
     unsigned n;
@@ -86,6 +86,14 @@ void NewtonRenderer::SpecialRender()
         }
     }
 }
+void NewtonRenderer::Render()
+{
+    if (_myOpt.orbitTrapMode)
+        ConvergenceTestWithOrbitTrapRender();
+    else
+        ConvergenceTestRender();
+}
+
 void NewtonRenderer::SetParams(double _minStep)
 {
     minStep = _minStep;

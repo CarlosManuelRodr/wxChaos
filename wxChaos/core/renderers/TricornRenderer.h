@@ -7,6 +7,9 @@
 */
 class TricornRenderer : public Renderer
 {
+    void EscapeTimeRender();
+    void GaussianIntRender();
+    void EscapeAngleRender();
 public:
     TricornRenderer();
     void Render() override;

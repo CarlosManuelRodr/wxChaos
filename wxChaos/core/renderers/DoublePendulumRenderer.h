@@ -7,6 +7,8 @@
 */
 class DoublePendulumRenderer : public Renderer
 {
+    void EscapeTimeRender();
+    void EscapeAngleRender();
     bool _th1Bailout, _th2Bailout;
     double _th1NumBailout, _th2NumBailout;
     double _m1, _m2, _l, _g;

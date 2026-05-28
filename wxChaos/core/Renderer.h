@@ -24,7 +24,6 @@ protected:
 
     bool _threadRunning;
     bool _stopped;
-    bool _specialRenderMode;
     Options _myOpt;
 
     FractalType _type;
@@ -44,7 +43,6 @@ public:
     virtual ~Renderer() = default;
 
     virtual void Render() = 0;
-    virtual void SpecialRender() {}
     virtual void Stop();
 
     void run();
@@ -52,7 +50,6 @@ public:
     void SetLimits(int widthOrigin, int heightOrigin, int widthFinal, int heightFinal);
     void SetOldHeightOrigin(int oldHeightOrigin);
     void UpdateLimits(int heightOrigin);
-    void SetSpecialRenderMode(bool mode);
     void SetOptions(const Options& opt);
     Options GetOptions();
     void SetRenderOut(bool** outSetMap, int** outColorMap, unsigned int** outAux = nullptr);

@@ -8,7 +8,7 @@ MandelbrotZNRenderer::MandelbrotZNRenderer()
     _n = 0;
     _bailout = 0;
 }
-void MandelbrotZNRenderer::Render()
+void MandelbrotZNRenderer::EscapeTimeRender()
 {
     double c_im;
     bool insideSet;
@@ -17,8 +17,7 @@ void MandelbrotZNRenderer::Render()
     unsigned i;
     complex<double> z, c;
     const double squaredBail = _bailout*_bailout;
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
             c_im = _maxY - _y*_yFactor;
@@ -42,9 +41,19 @@ void MandelbrotZNRenderer::Render()
                 _colorMap[_x][_y] = i;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void MandelbrotZNRenderer::GaussianIntRender()
+{
+    double c_im;
+    bool insideSet;
+
+    // Creates fractal.
+    unsigned i;
+    complex<double> z, c;
+    const double squaredBail = _bailout*_bailout;
+
         double distance1 = 0;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -79,9 +88,19 @@ void MandelbrotZNRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void MandelbrotZNRenderer::EscapeAngleRender()
+{
+    double c_im;
+    bool insideSet;
+
+    // Creates fractal.
+    unsigned i;
+    complex<double> z, c;
+    const double squaredBail = _bailout*_bailout;
+
         // ReSharper disable once CppTooWideScope
         constexpr int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
@@ -118,9 +137,37 @@ void MandelbrotZNRenderer::Render()
                     _colorMap[_x][_y] = i + color4;
             }
         }
+
+}
+
+void MandelbrotZNRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else if (_myOpt.smoothRender)
+                EscapeTimeSmoothRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
-void MandelbrotZNRenderer::SpecialRender()
+void MandelbrotZNRenderer::EscapeTimeSmoothRender()
+{
+    EscapeTimeWithOrbitTrapRender();
+}
+
+void MandelbrotZNRenderer::EscapeTimeWithOrbitTrapRender()
 {
     double c_im;
     bool insideSet;

@@ -8,9 +8,10 @@
 class NewtonRenderer : public Renderer
 {
     double minStep;
+    void ConvergenceTestRender();
+    void ConvergenceTestWithOrbitTrapRender();
 public:
     NewtonRenderer();
     void Render() override;
-    void SpecialRender() override;
     void SetParams(double _minStep);
 };

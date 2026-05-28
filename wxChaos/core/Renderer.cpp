@@ -10,7 +10,6 @@ Renderer::Renderer() : _myOpt()
     _threadProgress = 0;
     _widthOrigin = _heightOrigin = _widthFinal = _heightFinal = _oldHeightOrigin = 0;
 
-    _specialRenderMode = false;
     _stopped = false;
     _threadRunning = false;
 
@@ -70,10 +69,6 @@ void Renderer::Stop()
         _x = _widthFinal - 1;
         _y = _heightFinal - 1;
     }
-}
-void Renderer::SetSpecialRenderMode(const bool mode)
-{
-    _specialRenderMode = mode;
 }
 void Renderer::SetRenderOut(bool** outSetMap, int** outColorMap, unsigned int** outAux)
 {

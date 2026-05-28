@@ -7,9 +7,12 @@
 */
 class SinoidalRenderer : public Renderer
 {
+    void EscapeTimeRender();
+    void GaussianIntRender();
+    void EscapeAngleRender();
+    void EscapeTimeWithOrbitTrapRender();
 public:
     SinoidalRenderer();
 
     void Render() override;
-    void SpecialRender() override;
 };

@@ -6,7 +6,7 @@ MagnetRenderer::MagnetRenderer()
 {
 
 }
-void MagnetRenderer::Render()
+void MagnetRenderer::EscapeTimeRender()
 {
     // Creates fractal.
     complex<double> z;
@@ -15,8 +15,7 @@ void MagnetRenderer::Render()
     bool insideSet;
     double c_im;
 
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
             c_im = _maxY - _y*_yFactor;
@@ -41,9 +40,19 @@ void MagnetRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void MagnetRenderer::EscapeAngleRender()
+{
+    // Creates fractal.
+    complex<double> z;
+    complex<double> c;
+    unsigned n;
+    bool insideSet;
+    double c_im;
+
+
         constexpr int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
         const int color3 = 0.50 * _myOpt.paletteSize;
@@ -80,6 +89,21 @@ void MagnetRenderer::Render()
                     _colorMap[_x][_y] = n + color4;
             }
         }
+
+}
+
+void MagnetRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
 

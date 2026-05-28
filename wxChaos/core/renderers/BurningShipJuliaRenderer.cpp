@@ -5,7 +5,7 @@ BurningShipJuliaRenderer::BurningShipJuliaRenderer()
 {
 
 }
-void BurningShipJuliaRenderer::Render()
+void BurningShipJuliaRenderer::EscapeTimeRender()
 {
     double Z_re, Z_im, Z_re2, Z_im2;
     bool insideSet;
@@ -13,8 +13,7 @@ void BurningShipJuliaRenderer::Render()
     const double c_re = _kReal;
 
     // Creates fractal.
-    if (_myOpt.alg == RenderingAlgorithmType::EscapeTime)
-    {
+
         unsigned n;
         for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
@@ -44,9 +43,18 @@ void BurningShipJuliaRenderer::Render()
                 _colorMap[_x][_y] = n;
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::GaussianInt)
-    {
+
+}
+
+void BurningShipJuliaRenderer::GaussianIntRender()
+{
+    double Z_re, Z_im, Z_re2, Z_im2;
+    bool insideSet;
+    const double c_im = _kImaginary;
+    const double c_re = _kReal;
+
+    // Creates fractal.
+
         double distance1;
         const double log2 = log(2.0);
         const double loglog2 = log(log2);
@@ -86,9 +94,18 @@ void BurningShipJuliaRenderer::Render()
                 _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
             }
         }
-    }
-    else if (_myOpt.alg == RenderingAlgorithmType::EscapeAngle)
-    {
+
+}
+
+void BurningShipJuliaRenderer::EscapeAngleRender()
+{
+    double Z_re, Z_im, Z_re2, Z_im2;
+    bool insideSet;
+    const double c_im = _kImaginary;
+    const double c_re = _kReal;
+
+    // Creates fractal.
+
         unsigned n;
         const int color1 = 1;
         const int color2 = 0.25 * _myOpt.paletteSize;
@@ -130,6 +147,24 @@ void BurningShipJuliaRenderer::Render()
                     _colorMap[_x][_y] = n + color4;
             }
         }
+
+}
+
+void BurningShipJuliaRenderer::Render()
+{
+    switch (_myOpt.alg)
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        default:
+            break;
     }
 }
 

@@ -312,9 +312,6 @@ void MandelbrotRenderer::Render()
             break;
     }
 }
-void MandelbrotRenderer::SpecialRender()
-{
-}
 void MandelbrotRenderer::SetBuddhaRandomP(int n)
 {
     _buddhaRandomP = n;
