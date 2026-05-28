@@ -607,7 +607,7 @@ void SFMLFractal::Show(sf::RenderWindow* window)
     if (_fractal == nullptr || window == nullptr)
         return;
 
-    if (_fractal->_xVel != 0 || _fractal->_yVel != 0)
+    if (_fractal->_rendered && (_fractal->_xVel != 0 || _fractal->_yVel != 0))
     {
         // While panning, only draw the shifted render output. Showing the
         // cached preview sprite here leaves stale pixels in the newly exposed area.

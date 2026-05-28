@@ -885,25 +885,21 @@ void Fractal::SetMovement(const Direction direction)
     {
         case Up:
             {
-                _yVel -= stdSpeed;
                 _movement[Up] = true;
                 break;
             }
         case Down:
             {
-                _yVel += stdSpeed;
                 _movement[Down] = true;
                 break;
             }
         case Left:
             {
-                _xVel -= stdSpeed;
                 _movement[Left] = true;
                 break;
             }
         case Right:
             {
-                _xVel += stdSpeed;
                 _movement[Right] = true;
                 break;
             }

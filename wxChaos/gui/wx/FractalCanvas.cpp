@@ -614,6 +614,12 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnKeyDown(wxKeyEvent& event)
 {
+    if (_target->IsRendering())
+    {
+        event.Skip();
+        return;
+    }
+
     switch (event.GetKeyCode())
     {
         case WXK_UP:
