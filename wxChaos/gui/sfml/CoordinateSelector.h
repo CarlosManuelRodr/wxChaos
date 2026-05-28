@@ -21,6 +21,8 @@ class CoordinateSelector
     bool inSelection;
 
     void Render();
+    void SetPosition(int newX, int newY);
+    static int ClampCoordinate(int value, unsigned int size);
 
 public:
     explicit CoordinateSelector(const sf::RenderWindow* window);

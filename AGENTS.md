@@ -1,5 +1,9 @@
 # Agent Notes
 
+## Code Style
+
+- For helper logic that exists only to support a class, prefer a private member function over an anonymous-namespace free function. Avoid adding namespace-scope helper functions unless the behavior is genuinely shared outside a single class.
+
 ## Build Environment
 
 This project is built on Windows with CMake, Ninja, MSVC, wxWidgets, and SFML 2.6 from CMake FetchContent.

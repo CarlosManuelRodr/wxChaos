@@ -1,12 +1,23 @@
 #include "CoordinateSelector.h"
 #include "Fractal.h"
 
+int CoordinateSelector::ClampCoordinate(const int value, const unsigned int size)
+{
+    if (size == 0)
+        return 0;
+    if (value < 0)
+        return 0;
+    const int maxValue = static_cast<int>(size - 1);
+    if (value > maxValue)
+        return maxValue;
+    return value;
+}
+
 CoordinateSelector::CoordinateSelector(const sf::RenderWindow* window)
 {
     screenWidth = window->getSize().x;
     screenHeight = window->getSize().y;
-    x = window->getSize().x / 2;
-    y = window->getSize().y / 2;
+    this->SetPosition(static_cast<int>(window->getSize().x / 2), static_cast<int>(window->getSize().y / 2));
 
     color = sf::Color(0, 0, 0);
     textureImage.create(screenWidth, screenHeight, sf::Color(255, 255, 255, 0));
@@ -28,6 +39,7 @@ void CoordinateSelector::Show(sf::RenderWindow* window)
 void CoordinateSelector::Render()
 {
     textureImage.create(screenWidth, screenHeight, sf::Color(255, 255, 255, 0));
+    this->SetPosition(x, y);
     for (unsigned int i = 0; i < screenWidth; i++)
         textureImage.setPixel(i, y, color);
     for (unsigned int j = 0; j < screenHeight; j++)
@@ -36,14 +48,19 @@ void CoordinateSelector::Render()
     rendered = true;
 }
 
+void CoordinateSelector::SetPosition(const int newX, const int newY)
+{
+    x = ClampCoordinate(newX, screenWidth);
+    y = ClampCoordinate(newY, screenHeight);
+}
+
 bool CoordinateSelector::HandleEvents(const sf::Event& event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
         if (event.mouseButton.button == sf::Mouse::Left)
         {
-            y = event.mouseButton.y;
-            x = event.mouseButton.x;
+            this->SetPosition(event.mouseButton.x, event.mouseButton.y);
             rendered = false;
             inSelection = true;
         }
@@ -51,8 +68,7 @@ bool CoordinateSelector::HandleEvents(const sf::Event& event)
 
     if (event.type == sf::Event::MouseMoved && inSelection)
     {
-        x = event.mouseMove.x;
-        y = event.mouseMove.y;
+        this->SetPosition(event.mouseMove.x, event.mouseMove.y);
         rendered = false;
         return true;
     }
@@ -73,8 +89,7 @@ bool CoordinateSelector::ClickEvent(wxMouseEvent& event)
 {
     if (event.ButtonDown(wxMOUSE_BTN_LEFT))
     {
-        y = event.GetPosition().y;
-        x = event.GetPosition().x;
+        this->SetPosition(event.GetPosition().x, event.GetPosition().y);
         rendered = false;
         inSelection = true;
         return true;
@@ -94,10 +109,11 @@ bool CoordinateSelector::MoveEvent(wxMouseEvent& event)
 {
     if (inSelection)
     {
-        if (x != event.GetPosition().x || y != event.GetPosition().y)
+        const int newX = ClampCoordinate(event.GetPosition().x, screenWidth);
+        const int newY = ClampCoordinate(event.GetPosition().y, screenHeight);
+        if (x != newX || y != newY)
         {
-            y = event.GetPosition().y;
-            x = event.GetPosition().x;
+            this->SetPosition(newX, newY);
             rendered = false;
             return true;
         }
@@ -109,8 +125,7 @@ void CoordinateSelector::Resize(const sf::RenderWindow* window)
 {
     screenWidth = window->getSize().x;
     screenHeight = window->getSize().y;
-    x = screenWidth / 2;
-    y = screenHeight / 2;
+    this->SetPosition(static_cast<int>(screenWidth / 2), static_cast<int>(screenHeight / 2));
     this->Render();
     inSelection = false;
 
@@ -132,6 +147,5 @@ double CoordinateSelector::GetY(const Fractal* target) const
 
 void CoordinateSelector::AdjustPosition(const Fractal* target, const double numX, const double numY)
 {
-    x = target->GetPixelX(numX);
-    y = target->GetPixelY(numY);
+    this->SetPosition(target->GetPixelX(numX), target->GetPixelY(numY));
 }
