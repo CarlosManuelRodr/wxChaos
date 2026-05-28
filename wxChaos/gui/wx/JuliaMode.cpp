@@ -15,6 +15,7 @@ JuliaMode::JuliaMode(FractalCanvas* ptr, FractalType fractalType, const Options&
     _window = nullptr;
     _selection = nullptr;
     _play = nullptr;
+    _closeRequested.store(false);
 }
 
 JuliaMode::~JuliaMode()
@@ -153,6 +154,13 @@ void JuliaMode::Run()
 
     while (_window->isOpen())
     {
+        if (_closeRequested.load())
+        {
+            _juliaFractal.GetFractalPtr()->StopRender();
+            _window->close();
+            break;
+        }
+
         HandleEvent();
     }
     juliaModeState = false; // Signal that the window is closed
@@ -173,11 +181,7 @@ void JuliaMode::Terminate()
     m_thread.terminate();
 }
 
-void JuliaMode::Close() const
+void JuliaMode::Close()
 {
-    if (_window)
-        {
-        _juliaFractal.GetFractalPtr()->StopRender();
-        _window->close();
-    }
+    _closeRequested.store(true);
 }

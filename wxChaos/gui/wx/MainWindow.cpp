@@ -1174,11 +1174,6 @@ void MainFrame::UpdateJuliaMode()
     {
         juliaMode->Check(false);
         juliaModePtr->Close();
-        juliaModePtr->Wait();
-        delete juliaModePtr;
-        juliaModeState = false;
-        changeJuliaMode = false;
-        fractalCanvas->SetJuliaMode(false);
     }
     // Creates Julia fractal with parameters from the main fractal.
     else

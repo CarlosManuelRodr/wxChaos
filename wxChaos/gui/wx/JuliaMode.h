@@ -8,6 +8,7 @@
 */
 
 #pragma once
+#include <atomic>
 #include <SFML/System.hpp>
 #include "FractalCanvas.h"
 #include "FractalTypes.h"
@@ -32,6 +33,7 @@ class JuliaMode
 
     sf::Event _event;
     sf::Thread m_thread; // Thread for the rendering loop
+    std::atomic_bool _closeRequested;
 
     ///@brief Handles the window's events.
     void HandleEvent();
@@ -58,5 +60,5 @@ public:
     void Terminate();
 
     ///@brief Signals the window to close.
-    void Close() const;
+    void Close();
 };
