@@ -435,10 +435,11 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
     return jobs;
 }
 
-void Fractal::Resize(const int width, const int height)
+void Fractal::Resize(const unsigned int width, const unsigned int height)
 {
     // Stop threads if they are still rendering.
     this->StopRender();
+    _paused = false;
 
     // Frees memory.
     for (int i = 0; i < _backScreenWidth; i++)
@@ -446,10 +447,16 @@ void Fractal::Resize(const int width, const int height)
         delete[] _setMap[i];
         delete[] _colorMap[i];
         delete[] _auxMap[i];
+        _setMap[i] = nullptr;
+        _colorMap[i] = nullptr;
+        _auxMap[i] = nullptr;
     }
     delete[] _setMap;
     delete[] _colorMap;
     delete[] _auxMap;
+    _setMap = nullptr;
+    _colorMap = nullptr;
+    _auxMap = nullptr;
 
     // Copy window properties.
     _screenHeight = height;
@@ -477,9 +484,14 @@ void Fractal::Resize(const int width, const int height)
         }
     }
 
-    // Sets SFML variables and scales.
+    _maxY = _minY + (_maxX - _minX) * static_cast<double>(_screenHeight) / _screenWidth;
     _xFactor = (_maxX - _minX) / (_screenWidth - 1);
     _yFactor = (_maxY - _minY) / (_screenHeight - 1);
+
+    SetOutermostZoom();
+
+    for (unsigned int i = 0; i < _zoom[3].size(); i++)
+        _zoom[3][i] = _zoom[2][i] + (_zoom[1][i] - _zoom[0][i]) * static_cast<double>(_screenHeight) / _screenWidth;
 }
 void Fractal::PrepareRender()
 {

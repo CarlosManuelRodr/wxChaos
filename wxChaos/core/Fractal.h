@@ -180,7 +180,7 @@ public:
     ///@brief SetAreaOfView to a specified size.
     ///@param width New width.
     ///@param height New height.
-    void Resize(int width, int height);
+    void Resize(unsigned int width, unsigned int height);
 
     ///@brief Perform some adjustments needed before the rendering starts.
     void PrepareRender();

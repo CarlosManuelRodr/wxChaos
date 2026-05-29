@@ -169,14 +169,14 @@ void SFMLFractal::HandleEvent(const sf::Event& event)
     {
         switch (event.key.code)
         {
-        case sf::Keyboard::L:
-            IncreaseIterations();
-            break;
-        case sf::Keyboard::K:
-            DecreaseIterations();
-            break;
-        default:
-            break;
+            case sf::Keyboard::L:
+                IncreaseIterations();
+                break;
+            case sf::Keyboard::K:
+                DecreaseIterations();
+                break;
+            default:
+                break;
         }
     }
 
@@ -192,65 +192,14 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
     if (_fractal == nullptr || window == nullptr)
         return;
 
-    _fractal->StopRender();
-    _fractal->_paused = false;
-
-    for (int i = 0; i < _fractal->_backScreenWidth; i++)
-    {
-        delete[] _fractal->_setMap[i];
-        delete[] _fractal->_colorMap[i];
-        delete[] _fractal->_auxMap[i];
-        _fractal->_setMap[i] = nullptr;
-        _fractal->_colorMap[i] = nullptr;
-        _fractal->_auxMap[i] = nullptr;
-    }
-    delete[] _fractal->_setMap;
-    delete[] _fractal->_colorMap;
-    delete[] _fractal->_auxMap;
-    _fractal->_setMap = nullptr;
-    _fractal->_colorMap = nullptr;
-    _fractal->_auxMap = nullptr;
-
-    _fractal->_screenHeight = window->getSize().y;
-    _fractal->_backScreenWidth = _fractal->_screenWidth = window->getSize().x;
     _dontDrawTempImage = true;
-
-    _fractal->_setMap = new bool* [_fractal->_screenWidth];
-    _fractal->_colorMap = new int* [_fractal->_screenWidth];
-    _fractal->_auxMap = new unsigned int* [_fractal->_screenWidth];
-    for (int i = 0; i < _fractal->_screenWidth; i++)
-    {
-        _fractal->_setMap[i] = new bool[_fractal->_screenHeight];
-        _fractal->_colorMap[i] = new int[_fractal->_screenHeight];
-        _fractal->_auxMap[i] = new unsigned int[_fractal->_screenHeight];
-    }
-
-    for (int i = 0; i < _fractal->_screenWidth; i++)
-    {
-        for (int j = 0; j < _fractal->_screenHeight; j++)
-        {
-            _fractal->_setMap[i][j] = false;
-            _fractal->_colorMap[i][j] = -1;
-            _fractal->_auxMap[i][j] = 0;
-        }
-    }
-
-    _fractal->_maxY = _fractal->_minY + (_fractal->_maxX - _fractal->_minX) * (double)_fractal->_screenHeight / _fractal->_screenWidth;
-    _fractal->_xFactor = (_fractal->_maxX - _fractal->_minX) / (_fractal->_screenWidth - 1);
-    _fractal->_yFactor = (_fractal->_maxY - _fractal->_minY) / (_fractal->_screenHeight - 1);
-    _fractal->SetOutermostZoom();
-
+    _fractal->Resize(window->getSize().x, window->getSize().y);
     _fractal->_rendered = false;
     _fractal->_rendering = false;
-    ClearImageCache();
     _fractal->_orbitDrawn = false;
-
-    for (unsigned int i = 0; i < _fractal->_zoom[3].size(); i++)
-    {
-        _fractal->_zoom[3][i] = _fractal->_zoom[2][i] + (_fractal->_zoom[1][i] - _fractal->_zoom[0][i]) * (double)_fractal->_screenHeight / _fractal->_screenWidth;
-    }
-
+    ClearImageCache();
     ResetDisplayImages();
+
     _tempSprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(_fractal->_screenWidth), static_cast<int>(_fractal->_screenHeight)));
     sf::IntRect size;
     size.width = static_cast<int>(_fractal->_screenWidth);
