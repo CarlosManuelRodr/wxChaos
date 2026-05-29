@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <string>
 #include <utility>
 #include "Fractal.h"
@@ -67,7 +68,7 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
 SFMLFractal::SFMLFractal()
 {
     _fractal = nullptr;
-    _changeFractalIter = false;
+    _changeFractalIter = true;
     _imgInVector = false;
     _usingRenderImage = false;
     _zoomingBack = false;
@@ -76,7 +77,7 @@ SFMLFractal::SFMLFractal()
 
 SFMLFractal::SFMLFractal(Fractal* fractal)
 {
-    _changeFractalIter = false;
+    _changeFractalIter = true;
     _imgInVector = false;
     _usingRenderImage = false;
     _zoomingBack = false;
@@ -89,9 +90,10 @@ SFMLFractal::SFMLFractal(Fractal* fractal)
 void SFMLFractal::SetFractal(Fractal* fractal)
 {
     _fractal = fractal;
+    _changeFractalIter = true;
+    _dontDrawTempImage = true;
     EnsureFontLoaded();
     ClearImageCache();
-    _dontDrawTempImage = true;
     ResetDisplayImages();
 }
 
@@ -136,6 +138,26 @@ void SFMLFractal::ClearImageCache()
     _imgInVector = false;
     _usingRenderImage = false;
     _zoomingBack = false;
+}
+
+void SFMLFractal::UpdateIterationsOverlay()
+{
+    constexpr float horizontalPadding = 8.0F;
+    constexpr float verticalPadding = 4.0F;
+
+    _iterationsText.setCharacterSize(25);
+    _iterationsText.setString("Iterations: " + std::to_string(_fractal->_maxIter));
+
+    const sf::FloatRect textBounds = _iterationsText.getLocalBounds();
+    const auto overlayWidth = static_cast<unsigned int>(std::ceil(textBounds.width + horizontalPadding * 2.0F));
+    const auto overlayHeight = static_cast<unsigned int>(std::ceil(textBounds.height + verticalPadding * 2.0F));
+
+    _iterationsOverlay.setFillColor(sf::Color(0, 0, 0, 100));
+    _iterationsOverlay.setSize(sf::Vector2f(static_cast<float>(overlayWidth), static_cast<float>(overlayHeight)));
+    _iterationsOverlay.setPosition(0.0F, 0.0F);
+
+    _iterationsText.setPosition(horizontalPadding - textBounds.left, verticalPadding - textBounds.top);
+    _changeFractalIter = false;
 }
 
 void SFMLFractal::HandleEvent(const sf::Event& event)
@@ -706,30 +728,10 @@ void SFMLFractal::Show(sf::RenderWindow* window)
 
     if (!_fractal->_onSnapshot && !_fractal->_rendering)
     {
-        static sf::Image iterationsOverlayImage;
-        static sf::Texture iterationsOverlayTexture;
-        static sf::Sprite iterationsOverlaySprite;
         if (_changeFractalIter)
-        {
-            unsigned int number = _fractal->_maxIter;
-            int digits = 1;
-            while (number >= 10)
-            {
-                number /= 10;
-                digits++;
-            }
+            UpdateIterationsOverlay();
 
-            iterationsOverlayImage.create(148 + (12 * digits), 35, sf::Color(0, 0, 0, 100));
-            iterationsOverlayTexture.loadFromImage(iterationsOverlayImage);
-            iterationsOverlaySprite.setTexture(iterationsOverlayTexture);
-            iterationsOverlaySprite.setPosition(0, 0);
-
-            _iterationsText.setString(" Iterations: " + std::to_string(_fractal->_maxIter));
-            _iterationsText.setCharacterSize(25);
-            _iterationsText.setPosition(0, 0);
-            _changeFractalIter = false;
-        }
-        window->draw(iterationsOverlaySprite);
+        window->draw(_iterationsOverlay);
         window->draw(_iterationsText);
     }
 }

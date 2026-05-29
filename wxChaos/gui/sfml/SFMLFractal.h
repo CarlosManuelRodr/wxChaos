@@ -31,6 +31,7 @@ class SFMLFractal
     sf::Image _geomImage;                ///< Image layer for orbit and geometry overlays.
     sf::Texture _geomTexture;            ///< Texture backing the geometry overlay.
     sf::Sprite _outGeom;                 ///< Sprite used to draw the geometry overlay.
+    sf::RectangleShape _iterationsOverlay; ///< Background shape for the iteration-count overlay.
     bool _changeFractalIter;
     bool _imgInVector;                   ///< True when there are cached images available for zoom-back.
     bool _usingRenderImage;              ///< True when the current frame came from a cached zoom-back image.
@@ -53,6 +54,9 @@ class SFMLFractal
 
     ///@brief Clears cached images used for zoom-back.
     void ClearImageCache();
+
+    ///@brief Updates the iteration-count text and background from the measured rendered text bounds.
+    void UpdateIterationsOverlay();
 
 public:
     ///@brief Constructs an empty SFML fractal presenter.
