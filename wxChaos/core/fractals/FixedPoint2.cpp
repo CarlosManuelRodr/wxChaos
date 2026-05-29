@@ -2,7 +2,7 @@
 #include "FixedPoint2.h"
 using namespace std;
 
-FixedPoint2::FixedPoint2(const sf::RenderWindow* window):Fractal(window)
+FixedPoint2::FixedPoint2(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -5.88462;
@@ -27,21 +27,6 @@ FixedPoint2::FixedPoint2(const sf::RenderWindow* window):Fractal(window)
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
-}
-FixedPoint2::FixedPoint2(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -5.88462;
-    _maxX = 6.11538;
-    _minY = -4;
-    _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
-    this->SetOutermostZoom();
-
-    minStep = 0.001;
-
-    _type = FractalType::FixedPoint2;
-    myRender = new FixedPoint2Renderer[_threadNumber];
-    SetWatchdog<FixedPoint2Renderer>(myRender, &_watchdog, _threadNumber);
 }
 FixedPoint2::~FixedPoint2()
 {
@@ -83,4 +68,3 @@ void FixedPoint2::CopyOptFromPanel()
 {
     minStep = *_panelOpt.GetDoubleElement(0);
 }
-

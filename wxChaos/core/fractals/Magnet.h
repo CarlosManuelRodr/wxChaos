@@ -11,7 +11,6 @@ class Magnet : public Fractal
 {
     MagnetRenderer* myRender;
 public:
-    explicit Magnet(const sf::RenderWindow* window);
     Magnet(int width, int height);
     ~Magnet() override;
 

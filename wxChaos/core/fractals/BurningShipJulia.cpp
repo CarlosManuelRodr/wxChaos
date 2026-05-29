@@ -2,29 +2,6 @@
 #include "BurningShipJulia.h"
 using namespace std;
 
-BurningShipJulia::BurningShipJulia(const sf::RenderWindow* window) : Fractal(window)
-{
-    _minX = -2.77051;
-    _maxX = 2.77682;
-    _minY = -1.75939;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    _juliaVariety = true;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _hasOrbit = true;
-    _type = FractalType::BurningShip;
-    myRender = new BurningShipJuliaRenderer[_threadNumber];
-    SetWatchdog<BurningShipJuliaRenderer>(myRender, &_watchdog, _threadNumber);
-
-    // Specify algorithms.
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
 BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, height)
 {
     _minX = -2.77051;
@@ -76,4 +53,3 @@ void BurningShipJulia::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

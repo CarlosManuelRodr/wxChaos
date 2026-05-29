@@ -40,9 +40,7 @@ public:
     FractalHandler();
     ~FractalHandler();
 
-    void CreateFractal(FractalType type, sf::RenderWindow* Window);
     void CreateFractal(FractalType type, int width, int height);
-    void CreateScriptFractal(sf::RenderWindow* Window, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, ScriptData scriptData);
     void CreateScriptFractal(int width, int height, std::string scriptPath);
     void SetFormula(FormulaOpt formula) const;

@@ -95,6 +95,10 @@ class FractalCanvas : public wxSFMLCanvas
 protected:
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
 
+private:
+    void CreateFractal(FractalType type);
+    void CreateScriptFractal(const ScriptData& scriptData);
+
 public:
     ///@brief Constructor
     ///@param status Pointer to the status bar of the MainFrame.

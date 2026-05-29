@@ -2,7 +2,7 @@
 #include "UserDefined.h"
 using namespace std;
 
-UserDefined::UserDefined(const sf::RenderWindow* window) : Fractal(window)
+UserDefined::UserDefined(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -2.5;
@@ -22,19 +22,6 @@ UserDefined::UserDefined(const sf::RenderWindow* window) : Fractal(window)
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
-}
-UserDefined::UserDefined(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -2.5;
-    _maxX = 2.5;
-    _minY = -1.5;
-    _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
-    this->SetOutermostZoom();
-
-    _type = FractalType::UserDefined;
-    myRender = new UserDefinedRenderer[_threadNumber];
-    SetWatchdog<UserDefinedRenderer>(myRender, &_watchdog, _threadNumber);
 }
 UserDefined::~UserDefined()
 {
@@ -105,4 +92,3 @@ void UserDefined::PostRender()
         errorDialog.ShowModal();
     }
 }
-

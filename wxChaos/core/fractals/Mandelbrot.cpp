@@ -2,7 +2,7 @@
 #include "Mandelbrot.h"
 using namespace std;
 
-Mandelbrot::Mandelbrot(const sf::RenderWindow* window) : Fractal(window)
+Mandelbrot::Mandelbrot(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -2.45296;
@@ -33,30 +33,6 @@ Mandelbrot::Mandelbrot(const sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
-}
-Mandelbrot::Mandelbrot(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -1.89;
-    _maxX = 0.55;
-    _minY = -1.12;
-    _maxY = _minY+(_maxX-_minX);
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    // Creates panel.
-    _panelOpt.SetForceShow(false);
-    _panelOpt.LinkInt(PanelOptionType::Spin, wxT("Number of buddhabrot\nrandom points:"), &buddhaRandomP, wxT("1000000"));
-    buddhaRandomP = 1000000;
-
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _hasSmoothRender = true;
-    _hasOrbitTrap = true;
-    _type = FractalType::Mandelbrot;
-    myRender = new MandelbrotRenderer[_threadNumber];
-    SetWatchdog<MandelbrotRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Mandelbrot::~Mandelbrot()
 {
@@ -104,4 +80,3 @@ void Mandelbrot::PreRender()
 void Mandelbrot::PreDrawMaps()
 {
 }
-

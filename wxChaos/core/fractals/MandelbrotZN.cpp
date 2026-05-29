@@ -2,7 +2,7 @@
 #include "MandelbrotZN.h"
 using namespace std;
 
-MandelbrotZN::MandelbrotZN(const sf::RenderWindow* window) : Fractal(window)
+MandelbrotZN::MandelbrotZN(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.87078;
@@ -35,32 +35,6 @@ MandelbrotZN::MandelbrotZN(const sf::RenderWindow* window) : Fractal(window)
     _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     n = 3;
     bailout = 2;
-}
-MandelbrotZN::MandelbrotZN(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -1.5;
-    _maxX = 1.25;
-    _minY = -1.3;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    // Creates panel.
-    _panelOpt.SetForceShow(true);
-    _panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("3"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
-    n = 3;
-    bailout = 2;
-
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _hasSmoothRender = false;
-    _hasOrbitTrap = true;
-    _type = FractalType::MandelbrotZN;
-    myRender = new MandelbrotZNRenderer[_threadNumber];
-    SetWatchdog<MandelbrotZNRenderer>(myRender, &_watchdog, _threadNumber);
 }
 MandelbrotZN::~MandelbrotZN()
 {
@@ -103,4 +77,3 @@ void MandelbrotZN::CopyOptFromPanel()
     n = *_panelOpt.GetIntElement(0);
     bailout = *_panelOpt.GetDoubleElement(0);
 }
-

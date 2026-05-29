@@ -12,7 +12,6 @@ private:
     CellRenderer* myRender;
     double bailout;
 public:
-    Cell(const sf::RenderWindow* window);
     Cell(int width, int height);
     ~Cell();
 

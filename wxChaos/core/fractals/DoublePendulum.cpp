@@ -1,54 +1,6 @@
 #include "DoublePendulum.h"
 using namespace std;
 
-DoublePendulum::DoublePendulum(const sf::RenderWindow* window):Fractal(window)
-{
-    // Adjust the scale.
-    _minX = -5.57488;
-    _maxX = 5.43961;
-    _minY = -3.57502;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-    _maxIter = 4000;
-    _hasOrbit = true;
-
-    _type = FractalType::DoublePendulum;
-    myRender = new DoublePendulumRenderer[_threadNumber];
-    SetWatchdog<DoublePendulumRenderer>(myRender, &_watchdog, _threadNumber);
-
-    // Creates panel.
-    _panelOpt.SetForceShow(true);
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" θ1 Bailout"), &th1Bailout, wxT("true"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Value: "), &th1NumBailout, wxT("3.14159"));
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" θ2 Bailout"), &th2Bailout, wxT("true"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Value: "), &th2NumBailout, wxT("3.14159"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("DeltaT: "), &dt, wxT("0.005"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m1: "), &m1, wxT("10"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m2: "), &m2, wxT("10"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Longitude: "), &l, wxT("20"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Gravity: "), &g, wxT("9.81"));
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Relative angles"), &referenced, wxT("false"));
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Runge-Kutta"), &rungeKutta, wxT("false"));
-    th1Bailout = true;
-    th2Bailout = true;
-    th1NumBailout = 3.14159;
-    th2NumBailout = 3.14159;
-    dt = 0.005;
-    m1 = 10;
-    m2 = 10;
-    l = 20;
-    g = 9.81;
-    referenced = false;
-    rungeKutta = false;
-
-    // Specify algorithms.
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
 DoublePendulum::DoublePendulum(int width, int height) : Fractal(width, height)
 {
     // Adjust the scale.
@@ -172,4 +124,3 @@ void DoublePendulum::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

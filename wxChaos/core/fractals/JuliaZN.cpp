@@ -2,7 +2,7 @@
 #include "JuliaZN.h"
 using namespace std;
 
-JuliaZN::JuliaZN(const sf::RenderWindow* window) : Fractal(window)
+JuliaZN::JuliaZN(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.77437;
@@ -37,34 +37,6 @@ JuliaZN::JuliaZN(const sf::RenderWindow* window) : Fractal(window)
     _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
     n = 2;
     bailout = 2;
-}
-JuliaZN::JuliaZN(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -1.77437;
-    _maxX = 1.6912;
-    _minY = -1.06769;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-
-    // Creates panel.
-    _panelOpt.SetForceShow(true);
-    _panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
-    n = 2;
-    bailout = 2;
-
-    _hasOrbitTrap = true;
-    _hasSmoothRender = true;
-    _juliaVariety = true;
-    _type = FractalType::JuliaZN;
-    myRender = new JuliaZNRenderer[_threadNumber];
-    SetWatchdog<JuliaZNRenderer>(myRender, &_watchdog, _threadNumber);
 }
 JuliaZN::~JuliaZN()
 {
@@ -107,4 +79,3 @@ void JuliaZN::CopyOptFromPanel()
     n = *_panelOpt.GetIntElement(0);
     bailout = *_panelOpt.GetDoubleElement(0);
 }
-

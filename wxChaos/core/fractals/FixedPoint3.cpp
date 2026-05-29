@@ -2,7 +2,7 @@
 #include "FixedPoint3.h"
 using namespace std;
 
-FixedPoint3::FixedPoint3(const sf::RenderWindow* window) : Fractal(window)
+FixedPoint3::FixedPoint3(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -3.76339;
@@ -27,21 +27,6 @@ FixedPoint3::FixedPoint3(const sf::RenderWindow* window) : Fractal(window)
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
-}
-FixedPoint3::FixedPoint3(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -3.76339;
-    _maxX = 3.59018;
-    _minY = -2.39204;
-    _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
-    this->SetOutermostZoom();
-
-    minStep = 0.001;
-
-    _type = FractalType::FixedPoint3;
-    myRender = new FixedPoint3Renderer[_threadNumber];
-    SetWatchdog<FixedPoint3Renderer>(myRender, &_watchdog, _threadNumber);
 }
 FixedPoint3::~FixedPoint3()
 {
@@ -84,4 +69,3 @@ void FixedPoint3::CopyOptFromPanel()
 {
     minStep = *_panelOpt.GetDoubleElement(0);
 }
-

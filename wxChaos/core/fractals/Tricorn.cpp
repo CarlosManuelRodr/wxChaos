@@ -2,7 +2,7 @@
 #include "Tricorn.h"
 using namespace std;
 
-Tricorn::Tricorn(const sf::RenderWindow* window) : Fractal(window)
+Tricorn::Tricorn(const int width, const int height) : Fractal(width, height)
 {
     _minX = -3;
     _maxX = 3;
@@ -23,25 +23,6 @@ Tricorn::Tricorn(const sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
-}
-Tricorn::Tricorn(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -2.5;
-    _maxX = 2.5;
-    _minY = -2.5;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _hasOrbit = true;
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-
-    _type = FractalType::Tricorn;
-    myRender = new TricornRenderer[_threadNumber];
-    SetWatchdog<TricornRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Tricorn::~Tricorn()
 {
@@ -79,4 +60,3 @@ void Tricorn::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

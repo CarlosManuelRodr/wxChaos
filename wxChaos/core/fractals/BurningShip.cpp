@@ -2,29 +2,6 @@
 #include "BurningShip.h"
 using namespace std;
 
-BurningShip::BurningShip(const sf::RenderWindow* window) : Fractal(window)
-{
-    // Adjust the scale.
-    _minX = -2.36;
-    _maxX = 1.79;
-    _minY = -1.94;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _hasOrbit = true;
-    _type = FractalType::BurningShip;
-    myRender = new BurningShipRenderer[_threadNumber];
-    SetWatchdog<BurningShipRenderer>(myRender, &_watchdog, _threadNumber);
-
-    // Specify algorithms.
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
-    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
 BurningShip::BurningShip(int width, int height) : Fractal(width, height)
 {
     // Adjust the scale.
@@ -76,4 +53,3 @@ void BurningShip::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

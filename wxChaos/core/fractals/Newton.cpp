@@ -2,7 +2,7 @@
 #include "Newton.h"
 using namespace std;
 
-Newton::Newton(const sf::RenderWindow* window) : Fractal(window)
+Newton::Newton(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.5721;
@@ -28,27 +28,6 @@ Newton::Newton(const sf::RenderWindow* window) : Fractal(window)
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
-}
-Newton::Newton(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -1.5721;
-    _maxX = 1.4086;
-    _minY = -1;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    // Creates panel.
-    _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
-    minStep = 0.001;
-
-    _type = FractalType::NewtonRaphsonMethod;
-    myRender = new NewtonRenderer[_threadNumber];
-    SetWatchdog<NewtonRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Newton::~Newton()
 {
@@ -87,4 +66,3 @@ void Newton::CopyOptFromPanel()
 {
     minStep = *_panelOpt.GetDoubleElement(0);
 }
-

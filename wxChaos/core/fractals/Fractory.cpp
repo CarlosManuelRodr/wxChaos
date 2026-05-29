@@ -2,7 +2,7 @@
 #include "Fractory.h"
 using namespace std;
 
-Fractory::Fractory(const sf::RenderWindow* window) : Fractal(window)
+Fractory::Fractory(const int width, const int height) : Fractal(width, height)
 {
     _minX = 0.837154;
     _maxX = 1.14419;
@@ -23,24 +23,6 @@ Fractory::Fractory(const sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
-Fractory::Fractory(const int width, const int height) : Fractal(width, height)
-{
-    _minX = 0.837154;
-    _maxX = 1.14419;
-    _minY = -0.102209;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _hasOrbit = true;
-
-    _type = FractalType::Fractory;
-    myRender = new FractoryRenderer[_threadNumber];
-    SetWatchdog<FractoryRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Fractory::~Fractory()
 {
@@ -78,4 +60,3 @@ void Fractory::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

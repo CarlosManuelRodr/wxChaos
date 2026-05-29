@@ -4,34 +4,6 @@
 #include "../../scripting/AngelscriptBindings.h"
 using namespace std;
 
-ScriptFractal::ScriptFractal(const sf::RenderWindow* window, const ScriptData &scriptData) : Fractal(window)
-{
-    // Adjust the scale.
-    _minX = scriptData.minX;
-    _maxX = scriptData.maxX;
-    _minY = scriptData.minY;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _maxIter = scriptData.defaultIter;
-    _juliaVariety = scriptData.juliaVariety;
-    _redrawAlways = scriptData.redrawAlways;
-    this->SetExtColorMode(scriptData.extColor);
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _path = scriptData.file;
-    _myScriptData = scriptData;
-    _type = FractalType::ScriptFractal;
-    _myRender = new ScriptFractalRenderer[_threadNumber];
-    for (unsigned int i=0; i<_threadNumber; i++)
-    {
-        _myRender[i].SetParams(i);
-        _myRender[i].SetPath(scriptData.file);
-    }
-    SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
-}
 ScriptFractal::ScriptFractal(const int width, const int height, const ScriptData& scriptData, const int renderThreads)
                              : Fractal(width, height)
 {
@@ -59,7 +31,7 @@ ScriptFractal::ScriptFractal(const int width, const int height, const ScriptData
     _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
     {
-        _myRender[i].SetParams(static_cast<int>(i));
+        _myRender[i].SetParams(i);
         _myRender[i].SetPath(scriptData.file);
     }
     SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
@@ -148,4 +120,3 @@ string ScriptFractal::GetPath()
 {
     return _path;
 }
-

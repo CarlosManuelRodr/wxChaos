@@ -2,7 +2,7 @@
 #include "FixedPoint4.h"
 using namespace std;
 
-FixedPoint4::FixedPoint4(const sf::RenderWindow* window) : Fractal(window)
+FixedPoint4::FixedPoint4(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8713;
@@ -27,21 +27,6 @@ FixedPoint4::FixedPoint4(const sf::RenderWindow* window) : Fractal(window)
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
-}
-FixedPoint4::FixedPoint4(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -1.8713;
-    _maxX = 1.82101;
-    _minY = -1.22781;
-    _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
-    this->SetOutermostZoom();
-
-    minStep = 0.001;
-
-    _type = FractalType::FixedPoint4;
-    myRender = new FixedPoint4Renderer[_threadNumber];
-    SetWatchdog<FixedPoint4Renderer>(myRender, &_watchdog, _threadNumber);
 }
 FixedPoint4::~FixedPoint4()
 {
@@ -84,4 +69,3 @@ void FixedPoint4::CopyOptFromPanel()
 {
     minStep = *_panelOpt.GetDoubleElement(0);
 }
-

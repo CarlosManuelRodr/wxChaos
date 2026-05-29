@@ -2,7 +2,7 @@
 #include "Sinoidal.h"
 using namespace std;
 
-Sinoidal::Sinoidal(const sf::RenderWindow* window) : Fractal(window)
+Sinoidal::Sinoidal(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -8;
@@ -30,27 +30,6 @@ Sinoidal::Sinoidal(const sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
-Sinoidal::Sinoidal(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -6;
-    _maxX = 4;
-    _minY = -4.5;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _kReal = 1;
-    _kImaginary = 0.25;
-    _juliaVariety = true;
-
-    _type = FractalType::Sinoidal;
-    myRender = new SinoidalRenderer[_threadNumber];
-    SetWatchdog<SinoidalRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Sinoidal::~Sinoidal()
 {
@@ -89,4 +68,3 @@ void Sinoidal::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

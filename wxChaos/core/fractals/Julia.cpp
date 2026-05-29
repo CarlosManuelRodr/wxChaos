@@ -2,7 +2,7 @@
 #include "Julia.h"
 using namespace std;
 
-Julia::Julia(const sf::RenderWindow* window) : Fractal(window)
+Julia::Julia(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.77437;
@@ -31,26 +31,6 @@ Julia::Julia(const sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
-}
-Julia::Julia(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -1.77437;
-    _maxX = 1.6912;
-    _minY = -1.06769;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _hasOrbitTrap = true;
-    _hasSmoothRender = true;
-    _juliaVariety = true;
-    _type = FractalType::Julia;
-    myRender = new JuliaRenderer[_threadNumber];
-    SetWatchdog<JuliaRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Julia::~Julia()
 {
@@ -85,4 +65,3 @@ void Julia::Render()
 {
     this->SetRendererBounds<JuliaRenderer>(myRender);
 }
-

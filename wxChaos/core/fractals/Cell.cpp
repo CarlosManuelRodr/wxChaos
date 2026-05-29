@@ -2,32 +2,6 @@
 #include "Cell.h"
 using namespace std;
 
-Cell::Cell(const sf::RenderWindow* window) : Fractal(window)
-{
-    _minX = -1.95533;
-    _maxX = 1.91967;
-    _minY = -1.2495;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _hasOrbit = true;
-    _type = FractalType::Cell;
-    myRender = new CellRenderer[_threadNumber];
-    SetWatchdog<CellRenderer>(myRender, &_watchdog, _threadNumber);
-
-    // Creates panel.
-    _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
-    bailout = 2;
-
-    // Specify algorithms.
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
-}
 Cell::Cell(int width, int height) : Fractal(width, height)
 {
     _minX = -1.3;
@@ -95,4 +69,3 @@ void Cell::CopyOptFromPanel()
 {
     bailout = *_panelOpt.GetDoubleElement(0);
 }
-

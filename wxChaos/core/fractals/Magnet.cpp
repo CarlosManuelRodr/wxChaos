@@ -2,7 +2,7 @@
 #include "Magnet.h"
 using namespace std;
 
-Magnet::Magnet(const sf::RenderWindow* window) : Fractal(window)
+Magnet::Magnet(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8;
@@ -24,23 +24,6 @@ Magnet::Magnet(const sf::RenderWindow* window) : Fractal(window)
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
-Magnet::Magnet(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -1.05;
-    _maxX = 3.35;
-    _minY = -2.2;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-    _type = FractalType::Magnetic;
-    myRender = new MagnetRenderer[_threadNumber];
-    SetWatchdog<MagnetRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Magnet::~Magnet()
 {
@@ -75,4 +58,3 @@ void Magnet::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

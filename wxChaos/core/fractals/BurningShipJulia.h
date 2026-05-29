@@ -11,7 +11,6 @@ class BurningShipJulia : public Fractal
 private:
     BurningShipJuliaRenderer *myRender;
 public:
-    BurningShipJulia(const sf::RenderWindow* window);
     BurningShipJulia(int width, int height);
     ~BurningShipJulia();
 

@@ -2,7 +2,7 @@
 #include "ManowarJulia.h"
 using namespace std;
 
-ManowarJulia::ManowarJulia(const sf::RenderWindow* window) : Fractal(window)
+ManowarJulia::ManowarJulia(const int width, const int height) : Fractal(width, height)
 {
     _minX = -2.0;
     _maxX = 1.0;
@@ -24,27 +24,6 @@ ManowarJulia::ManowarJulia(const sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
-ManowarJulia::ManowarJulia(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -2.0;
-    _maxX = 1.0;
-    _minY = -1.2;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-    this->SetOutermostZoom();
-
-    _kReal = 0.0272873;
-    _kImaginary = -0.0432547;
-
-    _juliaVariety = true;
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-
-    _type = FractalType::ManowarJulia;
-    myRender = new ManowarJuliaRenderer[_threadNumber];
-    SetWatchdog<ManowarJuliaRenderer>(myRender, &_watchdog, _threadNumber);
 }
 ManowarJulia::~ManowarJulia()
 {
@@ -82,4 +61,3 @@ void ManowarJulia::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

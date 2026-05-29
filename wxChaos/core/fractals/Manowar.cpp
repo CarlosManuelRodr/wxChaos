@@ -2,7 +2,7 @@
 #include "Manowar.h"
 using namespace std;
 
-Manowar::Manowar(const sf::RenderWindow* window) : Fractal(window)
+Manowar::Manowar(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -0.4795;
@@ -25,24 +25,6 @@ Manowar::Manowar(const sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
-Manowar::Manowar(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -0.20;
-    _maxX = 0.11;
-    _minY = -0.15;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-
-    _type = FractalType::Manowar;
-    myRender = new ManowarRenderer[_threadNumber];
-    SetWatchdog<ManowarRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Manowar::~Manowar()
 {
@@ -80,4 +62,3 @@ void Manowar::DrawOrbit()
 
     _orbitDrawn = true;
 }
-

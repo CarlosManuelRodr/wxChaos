@@ -117,101 +117,6 @@ Fractal::Fractal(const int width, const int height)
 
     this->SetOutermostZoom();
 }
-Fractal::Fractal(const sf::RenderWindow* window)
-{
-    this->SetDefaultOptions();
-
-    // System.
-    _threadNumber = Get_Cores();
-
-    // Copy window properties.
-    _screenHeight = window->getSize().y;
-    _backScreenWidth = _screenWidth = window->getSize().x;
-
-    // Set position and velocities.
-    _xVel = 0;
-    _yVel = 0;
-    _posX = 0;
-    _posY = 0;
-    _xMoved = 0;
-    _yMoved = 0;
-
-    _fSetColor = wxColour(0, 0, 0);
-
-    // Set fractal properties.
-    _minX = -2.0;
-    _maxX = 1.0;
-    _minY = -1.2;
-    _maxY = _minY + (_maxX - _minX) * (double)_screenHeight / _screenWidth;
-    _xFactor = (_maxX - _minX) / (_screenWidth - 1);
-    _yFactor = (_maxY - _minY) / (_screenHeight - 1);
-    _kReal = 0;
-    _kImaginary = 0;
-    _magnification = 0;
-    _changeGradient = 0;
-    _rendered = false;
-    _varGradient = false;
-    _colorMode = true;
-    _juliaMode = false;
-    _hasOrbit = false;
-    _orbitMode = false;
-    _orbitDrawn = false;
-    _onSnapshot = false;
-    _juliaVariety = false;
-    _colorSet = true;
-    _orbitTrapMode = false;
-    _hasOrbitTrap = false;
-    _smoothRender = false;
-    _hasSmoothRender = false;
-    _waitRoutine = false;
-    _maxIter = 100;
-    _moving = false;
-    _redrawAll = false;
-    _redrawAlways = false;
-    _rendering = false;
-    _paused = false;
-    _pausing = false;
-    _justLaunchThreads = false;
-    _varGradChange = false;
-    _refreshImage = false;
-
-    // Allocates memory for the maps.
-    _setMap = new bool* [_screenWidth];
-    _colorMap = new int* [_screenWidth];
-    _auxMap = new unsigned int* [_screenWidth];
-    for (int i = 0; i < _screenWidth; i++)
-    {
-        _setMap[i] = new bool[_screenHeight];
-        _colorMap[i] = new int[_screenHeight];
-        _auxMap[i] = new unsigned int[_screenHeight];
-    }
-
-    // Initializes maps.
-    for (int i = 0; i < _screenWidth; i++)
-    {
-        for (int j = 0; j < _screenHeight; j++)
-        {
-            _setMap[i][j] = false;
-            _colorMap[i][j] = -1;
-            _auxMap[i][j] = 0;
-        }
-    }
-
-    // Creates default color palette.
-    _relativeColor = false;
-    _gradPaletteSize = _paletteSize = 300;
-    _algorithm = RenderingAlgorithmType::Other;
-    _gradStyle = defaultGradientStyle;
-    _gradient.fromString(defaultGradientString);
-    _gradient.setMin(0);
-    _gradient.setMax(_gradPaletteSize);
-
-    _palette.resize(_paletteSize);
-    _varGradientStep = _paletteSize / 60;
-    this->RebuildPalette();
-
-    this->SetOutermostZoom();
-}
 Fractal::~Fractal()
 {
     // Cleanup.
@@ -1354,5 +1259,3 @@ void Fractal::DrawCircle(double x_center, double y_center, double radius, sf::Co
     _circles.push_back(data);
     _geomFigure = true;
 }
-
-

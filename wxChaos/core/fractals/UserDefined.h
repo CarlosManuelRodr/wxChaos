@@ -11,7 +11,6 @@ class UserDefined : public Fractal
 private:
     UserDefinedRenderer* myRender;
 public:
-    UserDefined(const sf::RenderWindow* window);
     UserDefined(int width, int height);
     ~UserDefined();
 

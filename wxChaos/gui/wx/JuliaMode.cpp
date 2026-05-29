@@ -143,7 +143,8 @@ void JuliaMode::Run()
     if (icon.loadFromFile("Resources/iconPNG.png"))
         _window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-    _juliaFractal.CreateFractal(_type, _window);
+    const sf::Vector2u size = _window->getSize();
+    _juliaFractal.CreateFractal(_type, static_cast<int>(size.x), static_cast<int>(size.y));
     _sfmlFractal.SetFractal(_juliaFractal.GetFractalPtr());
     _juliaFractal.GetFractalPtr()->SetOptions(_myJuliaOpt, true);
     _juliaFractal.GetFractalPtr()->SetJuliaMode(true);

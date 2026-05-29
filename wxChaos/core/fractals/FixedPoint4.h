@@ -11,7 +11,6 @@ class FixedPoint4 : public Fractal
     FixedPoint4Renderer* myRender;
     double minStep;
 public:
-    explicit FixedPoint4(const sf::RenderWindow* window);
     FixedPoint4(int width, int height);
     ~FixedPoint4() override;
 

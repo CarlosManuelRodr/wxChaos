@@ -2,7 +2,7 @@
 #include "Medusa.h"
 using namespace std;
 
-Medusa::Medusa(const sf::RenderWindow* window) : Fractal(window)
+Medusa::Medusa(const int width, const int height) : Fractal(width, height)
 {
     _minX = -1.1342;
     _maxX = 1.7251;
@@ -28,26 +28,6 @@ Medusa::Medusa(const sf::RenderWindow* window) : Fractal(window)
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
-}
-Medusa::Medusa(const int width, const int height) : Fractal(width, height)
-{
-    _minX = -1.1342;
-    _maxX = 1.7251;
-    _minY = -0.90215;
-    _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
-
-    _xFactor = (_maxX-_minX)/(_screenWidth-1);
-    _yFactor = (_maxY-_minY)/(_screenHeight-1);
-
-    _kReal = -0.2;
-    _kImaginary = 0;
-    _juliaVariety = true;
-    _algorithm = RenderingAlgorithmType::EscapeTime;
-
-    _type = FractalType::Medusa;
-    myRender = new MedusaRenderer[_threadNumber];
-    SetWatchdog<MedusaRenderer>(myRender, &_watchdog, _threadNumber);
 }
 Medusa::~Medusa()
 {
@@ -83,4 +63,3 @@ void Medusa::DrawOrbit()
     }
     _orbitDrawn = true;
 }
-

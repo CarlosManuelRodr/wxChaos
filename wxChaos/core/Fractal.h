@@ -166,14 +166,10 @@ protected:
 public:
 
     // Basic methods.
-    ///@brief Construct a fractal that will not be drawn to the screen. Used to save a image.
+    ///@brief Construct a fractal for the given render dimensions.
     ///@param width Image width.
     ///@param height Image height.
     Fractal(int width, int height);
-
-    ///@brief Construct a fractal that will be drawn to the screen.
-    ///@param window Window to draw the fractal.
-    explicit Fractal(const sf::RenderWindow* window);
 
     virtual ~Fractal();
 

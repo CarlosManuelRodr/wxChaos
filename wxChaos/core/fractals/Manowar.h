@@ -10,7 +10,6 @@ class Manowar : public Fractal
 {
     ManowarRenderer* myRender;
 public:
-    explicit Manowar(const sf::RenderWindow* window);
     Manowar(int width, int height);
     ~Manowar() override;
 

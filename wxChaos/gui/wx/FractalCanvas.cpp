@@ -37,7 +37,7 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     _userFormula.type = FormulaType::Complex;
 
     // Create fractal.
-    _fractalHandler.CreateFractal(fractalType, this);
+    this->CreateFractal(fractalType);
     _target = _fractalHandler.GetFractalPtr();
     _sfmlFractal.SetFractal(_target);
 
@@ -86,6 +86,16 @@ FractalCanvas::~FractalCanvas()
     _fractalHandler.DeleteFractal();
     delete _play;
     delete _screenPointer;
+}
+void FractalCanvas::CreateFractal(const FractalType type)
+{
+    const sf::Vector2u size = this->getSize();
+    _fractalHandler.CreateFractal(type, static_cast<int>(size.x), static_cast<int>(size.y));
+}
+void FractalCanvas::CreateScriptFractal(const ScriptData& scriptData)
+{
+    const sf::Vector2u size = this->getSize();
+    _fractalHandler.CreateScriptFractal(static_cast<int>(size.x), static_cast<int>(size.y), scriptData);
 }
 void FractalCanvas::OnUpdate()
 {
@@ -317,7 +327,7 @@ FractalType FractalCanvas::GetFractalType() const
 void FractalCanvas::ChangeType(const FractalType type)
 {
     // Deletes old fractal and creates a new one.
-    _fractalHandler.CreateFractal(type, this);
+    this->CreateFractal(type);
     _type = type;
     _target = _fractalHandler.GetFractalPtr();
     _sfmlFractal.SetFractal(_target);
@@ -346,7 +356,7 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
     // Deletes old fractal and creates a new one.
     _type = FractalType::ScriptFractal;
     _scriptData = scriptData;
-    _fractalHandler.CreateScriptFractal(this, _scriptData);
+    this->CreateScriptFractal(_scriptData);
     _target = _fractalHandler.GetFractalPtr();
     _sfmlFractal.SetFractal(_target);
     _target->SetOnWxCtrl(true);
@@ -398,9 +408,9 @@ void FractalCanvas::Reset()
         _target->StopRender();
 
     if (_type == FractalType::ScriptFractal)
-        _fractalHandler.CreateScriptFractal(this, _scriptData);
+        this->CreateScriptFractal(_scriptData);
     else
-        _fractalHandler.CreateFractal(_type, this);
+        this->CreateFractal(_type);
 
     _target = _fractalHandler.GetFractalPtr();
     _sfmlFractal.SetFractal(_target);

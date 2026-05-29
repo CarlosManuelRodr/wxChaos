@@ -3,7 +3,7 @@
 #include "FPUserDefined.h"
 using namespace std;
 
-FPUserDefined::FPUserDefined(const sf::RenderWindow* window) : Fractal(window)
+FPUserDefined::FPUserDefined(const int width, const int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8713;
@@ -28,20 +28,6 @@ FPUserDefined::FPUserDefined(const sf::RenderWindow* window) : Fractal(window)
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
-}
-FPUserDefined::FPUserDefined(const int width, const int height) : Fractal(width, height)
-{
-    // Adjust the scale.
-    _minX = -1.8713;
-    _maxX = 1.82101;
-    _minY = -1.22781;
-    _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
-    this->SetOutermostZoom();
-
-    minStep = 0.001;
-    _type = FractalType::FixedPointUserDefined;
-    myRender = new FPUserDefinedRenderer[_threadNumber];
-    SetWatchdog<FPUserDefinedRenderer>(myRender, &_watchdog, _threadNumber);
 }
 FPUserDefined::~FPUserDefined()
 {
@@ -102,4 +88,3 @@ void FPUserDefined::PostRender()
         errorDialog.ShowModal();
     }
 }
-

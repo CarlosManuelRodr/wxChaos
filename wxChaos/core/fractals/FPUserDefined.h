@@ -12,7 +12,6 @@ private:
     FPUserDefinedRenderer* myRender;
     double minStep;
 public:
-    FPUserDefined(const sf::RenderWindow* window);
     FPUserDefined(int width, int height);
     ~FPUserDefined();
 
