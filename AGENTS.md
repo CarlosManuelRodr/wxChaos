@@ -1,5 +1,8 @@
 # Agent Notes
 
+Overview: This project is a C++ fractal generator with a GUI using wxWidgets and SFML. It aims to provide a visually appealing and interactive experience for exploring fractal patterns.
+The author of this project created it circa 2012 as a learning exercise and to explore the capabilities of C++ and GUI libraries. As such you will often encounter outdated practices and awful code.
+
 ## Code Style
 
 - For helper logic that exists only to support a class, prefer a private member function over an anonymous-namespace free function. Avoid adding namespace-scope helper functions unless the behavior is genuinely shared outside a single class.
