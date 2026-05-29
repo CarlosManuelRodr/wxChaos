@@ -144,7 +144,7 @@ protected:
     ///@brief Looks into the color palette for the corresponding color.
     ///@param colorNum Color parameter.
     ///@return A struct with the color.
-    sf::Color CalcColor(int colorNum) const;
+    sf::Color GetColorFromPalette(int colorNum) const;
 
     ///@brief Rebuilds the color palette
     void RebuildPalette();

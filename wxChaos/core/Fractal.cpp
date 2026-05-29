@@ -238,7 +238,7 @@ void Fractal::SetOutermostZoom()
 {
     _outermostZoom = Rect(_minX, _minY, _maxX, _maxY);
 }
-sf::Color Fractal::CalcColor(int colorNum) const
+sf::Color Fractal::GetColorFromPalette(int colorNum) const
 {
     if (colorNum <= 0)
         colorNum = 0;
@@ -982,10 +982,10 @@ sf::Image Fractal::GetRenderedImage()
                         const double colorMapValue = _colorMap[i][j];
                         const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
                         const double ratio = colorMapValue / doubleMaxColorMapValue;
-                        color = CalcColor(static_cast<int>(ratio * _paletteSize + _changeGradient));
+                        color = GetColorFromPalette(static_cast<int>(ratio * _paletteSize + _changeGradient));
                     }
                     else
-                        color = CalcColor(_colorMap[i][j] + _changeGradient);
+                        color = GetColorFromPalette(_colorMap[i][j] + _changeGradient);
 
                     image.setPixel(i, j, color);
                 }
@@ -1063,14 +1063,14 @@ void Fractal::RenderBMP(const string& filename)
                     const double colorMapValue = _colorMap[i][j];
                     const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
                     const double ratio = colorMapValue / doubleMaxColorMapValue;
-                    const sf::Color c = CalcColor(static_cast<int>(ratio * _paletteSize + _changeGradient));
+                    const sf::Color c = GetColorFromPalette(static_cast<int>(ratio * _paletteSize + _changeGradient));
                     data[i].r = c.r;
                     data[i].g = c.g;
                     data[i].b = c.b;
                 }
                 else
                 {
-                    sf::Color c = CalcColor(_colorMap[i][j] + _changeGradient);
+                    sf::Color c = GetColorFromPalette(_colorMap[i][j] + _changeGradient);
                     data[i].r = c.r;
                     data[i].g = c.g;
                     data[i].b = c.b;

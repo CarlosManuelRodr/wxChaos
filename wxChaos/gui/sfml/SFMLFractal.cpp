@@ -1,9 +1,8 @@
-#include "SFMLFractal.h"
-
+#include <algorithm>
 #include <string>
 #include <utility>
-
 #include "Fractal.h"
+#include "SFMLFractal.h"
 #include "Filesystem.h"
 
 /**
@@ -19,78 +18,49 @@
 template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,
                                   const int moveX, const int moveY)
 {
+    if (matrix == nullptr || matrixWidth == 0 || matrixHeight == 0)
+        return;
+
+    if (std::abs(moveX) >= static_cast<int>(matrixWidth) || std::abs(moveY) >= static_cast<int>(matrixHeight))
+    {
+        for (unsigned int i = 0; i < matrixHeight; i++)
+            std::fill(matrix[i], matrix[i] + matrixWidth, M{});
+
+        return;
+    }
+
     if (moveX > 0)
     {
-        const int displacement = moveX;
+        const auto displacement = static_cast<unsigned int>(moveX);
         for (unsigned int i = 0; i < matrixHeight; i++)
         {
-            int iterations = matrixWidth - displacement;
-            for (int j = matrixWidth - 1; j >= 0; j--)
-            {
-                if (iterations > 0)
-                {
-                    matrix[i][j] = matrix[i][j - displacement];
-                    iterations--;
-                }
-                else
-                    matrix[i][j] = 0;
-            }
+            std::move_backward(matrix[i], matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth);
+            std::fill(matrix[i], matrix[i] + displacement, M{});
         }
     }
     else if (moveX < 0)
     {
-        const int displacement = -moveX;
+        const auto displacement = static_cast<unsigned int>(-moveX);
         for (unsigned int i = 0; i < matrixHeight; i++)
         {
-            int iterations = matrixWidth - displacement;
-            for (unsigned int j = 0; j < matrixWidth; j++)
-            {
-                if (iterations > 0)
-                {
-                    matrix[i][j] = matrix[i][j + displacement];
-                    iterations--;
-                }
-                else
-                    matrix[i][j] = 0;
-            }
+            std::move(matrix[i] + displacement, matrix[i] + matrixWidth, matrix[i]);
+            std::fill(matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth, M{});
         }
     }
 
     if (moveY > 0)
     {
-        const int displacement = moveY;
-        for (unsigned int j = 0; j < matrixWidth; j++)
-        {
-            int iterations = matrixHeight - displacement;
-            for (int i = matrixHeight - 1; i >= 0; i--)
-            {
-                if (iterations > 0)
-                {
-                    matrix[i][j] = matrix[i - displacement][j];
-                    iterations--;
-                }
-                else
-                    matrix[i][j] = 0;
-            }
-        }
+        const auto displacement = static_cast<unsigned int>(moveY);
+        std::rotate(matrix, matrix + matrixHeight - displacement, matrix + matrixHeight);
+        for (unsigned int i = 0; i < displacement; i++)
+            std::fill(matrix[i], matrix[i] + matrixWidth, M{});
     }
     else if (moveY < 0)
     {
-        const int displacement = -moveY;
-        for (unsigned int j = 0; j < matrixWidth; j++)
-        {
-            int iterations = matrixHeight - displacement;
-            for (unsigned int i = 0; i < matrixHeight; i++)
-            {
-                if (iterations > 0)
-                {
-                    matrix[i][j] = matrix[i + displacement][j];
-                    iterations--;
-                }
-                else
-                    matrix[i][j] = 0;
-            }
-        }
+        const auto displacement = static_cast<unsigned int>(-moveY);
+        std::rotate(matrix, matrix + displacement, matrix + matrixHeight);
+        for (unsigned int i = matrixHeight - displacement; i < matrixHeight; i++)
+            std::fill(matrix[i], matrix[i] + matrixWidth, M{});
     }
 }
 
@@ -106,6 +76,11 @@ SFMLFractal::SFMLFractal()
 
 SFMLFractal::SFMLFractal(Fractal* fractal)
 {
+    _changeFractalIter = false;
+    _imgInVector = false;
+    _usingRenderImage = false;
+    _zoomingBack = false;
+    _dontDrawTempImage = false;
     _fractal = fractal;
     EnsureFontLoaded();
     ResetDisplayImages();
@@ -536,12 +511,13 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
                 {
                     if (_fractal->_colorMap[i][j] >= 0)
                     {
-                        const sf::Color color = _fractal->CalcColor(((double)_fractal->_colorMap[i][j] / (double)_fractal->_maxColorMapVal) * _fractal->_paletteSize + _fractal->_changeGradient);
+                        double calculatedColor = (static_cast<double>(_fractal->_colorMap[i][j]) / static_cast<double>(_fractal->_maxColorMapVal)) * _fractal->_paletteSize + _fractal->_changeGradient;
+                        const sf::Color color = _fractal->GetColorFromPalette(static_cast<int>(calculatedColor));
                         _image.setPixel(i, j, color);
                     }
                     else if (_zoomingBack || _dontDrawTempImage)
                     {
-                        _image.setPixel(i, j, _fractal->CalcColor(_fractal->_changeGradient));
+                        _image.setPixel(i, j, _fractal->GetColorFromPalette(_fractal->_changeGradient));
                     }
                 }
             }
@@ -558,9 +534,9 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
                 else if (_fractal->_colorMode)
                 {
                     if (_fractal->_colorMap[i][j] >= 0)
-                        _image.setPixel(i, j, _fractal->CalcColor(_fractal->_colorMap[i][j] + _fractal->_changeGradient));
+                        _image.setPixel(i, j, _fractal->GetColorFromPalette(_fractal->_colorMap[i][j] + _fractal->_changeGradient));
                     else if (_zoomingBack || _dontDrawTempImage)
-                        _image.setPixel(i, j, _fractal->CalcColor(_fractal->_changeGradient));
+                        _image.setPixel(i, j, _fractal->GetColorFromPalette(_fractal->_changeGradient));
                 }
             }
         }
@@ -686,7 +662,7 @@ void SFMLFractal::Show(sf::RenderWindow* window)
 
             if (_fractal->_rendered)
             {
-                const double coef = (double)_fractal->_paletteSize / (double)_fractal->_maxColorMapVal;
+                const double coef = static_cast<double>(_fractal->_paletteSize) / static_cast<double>(_fractal->_maxColorMapVal);
                 for (int i = 0; i < _fractal->_screenWidth; i++)
                 {
                     for (int j = 0; j < _fractal->_screenHeight; j++)
@@ -695,9 +671,9 @@ void SFMLFractal::Show(sf::RenderWindow* window)
                         {
                             sf::Color color;
                             if (_fractal->_relativeColor)
-                                color = _fractal->CalcColor(_fractal->_colorMap[i][j] * coef + _fractal->_changeGradient);
+                                color = _fractal->GetColorFromPalette(static_cast<int>(_fractal->_colorMap[i][j] * coef + _fractal->_changeGradient));
                             else
-                                color = _fractal->CalcColor(_fractal->_colorMap[i][j] + _fractal->_changeGradient);
+                                color = _fractal->GetColorFromPalette(_fractal->_colorMap[i][j] + _fractal->_changeGradient);
 
                             _image.setPixel(i, j, color);
                         }
@@ -735,7 +711,7 @@ void SFMLFractal::Show(sf::RenderWindow* window)
         static sf::Sprite iterationsOverlaySprite;
         if (_changeFractalIter)
         {
-            int number = _fractal->_maxIter;
+            unsigned int number = _fractal->_maxIter;
             int digits = 1;
             while (number >= 10)
             {
