@@ -41,8 +41,8 @@ public:
     ~FractalHandler();
 
     void CreateFractal(FractalType type, int width, int height);
-    void CreateScriptFractal(int width, int height, ScriptData scriptData);
-    void CreateScriptFractal(int width, int height, std::string scriptPath);
+    void CreateScriptFractal(int width, int height, const ScriptData& scriptData);
+    void CreateScriptFractal(int width, int height, const std::string& scriptPath);
     void SetFormula(FormulaOpt formula) const;
     void DeleteFractal();
     Fractal* GetFractalPtr() const;
