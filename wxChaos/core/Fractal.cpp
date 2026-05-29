@@ -1293,14 +1293,11 @@ bool Fractal::SmoothRenderActivated() const
 {
     return _smoothRender;
 }
-void Fractal::SetIterations(const int number)
+void Fractal::SetIterations(const unsigned int iterations)
 {
-    if (number > 0)
-    {
-        _redrawAll = true;
-        _maxIter = static_cast<unsigned int>(number);
-        _rendered = false;
-    }
+    _redrawAll = true;
+    _maxIter = iterations;
+    _rendered = false;
 }
 
 unsigned int Fractal::GetIterations() const

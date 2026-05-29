@@ -341,7 +341,7 @@ public:
     bool SmoothRenderActivated() const;
 
     // Menu operations.
-    void SetIterations(int number);
+    void SetIterations(unsigned int iterations);
     unsigned int GetIterations() const;
 
     // Option panel.

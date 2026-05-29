@@ -331,7 +331,10 @@ void SFMLFractal::Redraw()
         _tempImage = _image;
         _tempTexture.loadFromImage(_tempImage);
         _tempSprite.setOrigin(0, 0);
-        _tempSprite.setScale((float)_fractal->_screenWidth / _tempImage.getSize().x, (float)_fractal->_screenHeight / _tempImage.getSize().y);
+
+        const float xFactor = static_cast<float>(_fractal->_screenWidth) / static_cast<float>(_tempImage.getSize().x);
+        const float yFactor = static_cast<float>(_fractal->_screenHeight) / static_cast<float>(_tempImage.getSize().y);
+        _tempSprite.setScale(xFactor, yFactor);
     }
 
     _fractal->Redraw();
@@ -347,7 +350,7 @@ void SFMLFractal::IncreaseIterations()
         return;
 
     ClearImageCache();
-    const int change = _fractal->GetIterations() + 100;
+    const unsigned change = _fractal->GetIterations() + 100;
     _fractal->SetIterations(change);
 }
 
@@ -360,9 +363,11 @@ void SFMLFractal::DecreaseIterations()
 
     ClearImageCache();
 
-    const int change = _fractal->GetIterations() - 100;
-    if (change > 0)
+    if (_fractal->GetIterations() > 100)
+    {
+        const unsigned int change = _fractal->GetIterations() - 100;
         _fractal->SetIterations(change);
+    }
 }
 
 void SFMLFractal::ChangeIterations(const int iterations)
@@ -385,13 +390,13 @@ void SFMLFractal::SetK(const double real, const double imaginary)
     _fractal->SetK(real, imaginary);
 }
 
-void SFMLFractal::SetGradient(wxGradient gradient)
+void SFMLFractal::SetGradient(const wxGradient& gradient)
 {
     if (_fractal == nullptr)
         return;
 
     ClearImageCache();
-    _fractal->SetGradient(std::move(gradient));
+    _fractal->SetGradient(gradient);
 }
 
 void SFMLFractal::SetGradientSize(const unsigned int size)
@@ -565,38 +570,38 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
     window->draw(_output);
 }
 
-void SFMLFractal::DrawGeometry(sf::RenderWindow* window)
+void SFMLFractal::DrawGeometry(sf::RenderWindow* window) const
 {
-    for (unsigned int i = 0; i < _fractal->_lines.size(); i++)
+    for (auto & _line : _fractal->_lines)
     {
-        const float x1 = (_fractal->_lines[i].x1 - _fractal->_minX) / _fractal->_xFactor;
-        const float y1 = (_fractal->_maxY - _fractal->_lines[i].y1) / _fractal->_yFactor;
-        const float x2 = (_fractal->_lines[i].x2 - _fractal->_minX) / _fractal->_xFactor;
-        const float y2 = (_fractal->_maxY - _fractal->_lines[i].y2) / _fractal->_yFactor;
-        sf::Vertex line[] = { sf::Vertex(sf::Vector2f(x1, y1), _fractal->_lines[i].color), sf::Vertex(sf::Vector2f(x2, y2), _fractal->_lines[i].color) };
+        const auto x1 = static_cast<float>((_line.x1 - _fractal->_minX) / _fractal->_xFactor);
+        const auto y1 = static_cast<float>((_fractal->_maxY - _line.y1) / _fractal->_yFactor);
+        const auto x2 = static_cast<float>((_line.x2 - _fractal->_minX) / _fractal->_xFactor);
+        const auto y2 = static_cast<float>((_fractal->_maxY - _line.y2) / _fractal->_yFactor);
+        sf::Vertex line[] = { sf::Vertex(sf::Vector2f(x1, y1), _line.color), sf::Vertex(sf::Vector2f(x2, y2), _line.color) };
         window->draw(line, 2, sf::Lines);
     }
 
-    for (unsigned int i = 0; i < _fractal->_orbitLines.size(); i++)
+    for (auto & _orbitLine : _fractal->_orbitLines)
     {
-        const float x1 = (_fractal->_orbitLines[i].x1 - _fractal->_minX) / _fractal->_xFactor;
-        const float y1 = (_fractal->_maxY - _fractal->_orbitLines[i].y1) / _fractal->_yFactor;
-        const float x2 = (_fractal->_orbitLines[i].x2 - _fractal->_minX) / _fractal->_xFactor;
-        const float y2 = (_fractal->_maxY - _fractal->_orbitLines[i].y2) / _fractal->_yFactor;
-        sf::Vertex line[] = { sf::Vertex(sf::Vector2f(x1, y1), _fractal->_orbitLines[i].color), sf::Vertex(sf::Vector2f(x2, y2), _fractal->_orbitLines[i].color) };
+        const auto x1 = static_cast<float>((_orbitLine.x1 - _fractal->_minX) / _fractal->_xFactor);
+        const auto y1 = static_cast<float>((_fractal->_maxY - _orbitLine.y1) / _fractal->_yFactor);
+        const auto x2 = static_cast<float>((_orbitLine.x2 - _fractal->_minX) / _fractal->_xFactor);
+        const auto y2 = static_cast<float>((_fractal->_maxY - _orbitLine.y2) / _fractal->_yFactor);
+        sf::Vertex line[] = { sf::Vertex(sf::Vector2f(x1, y1), _orbitLine.color), sf::Vertex(sf::Vector2f(x2, y2), _orbitLine.color) };
         window->draw(line, 2, sf::Lines);
     }
 
-    for (unsigned int i = 0; i < _fractal->_circles.size(); i++)
+    for (auto & _circle : _fractal->_circles)
     {
-        const float x0 = (_fractal->_circles[i].xCenter - _fractal->_minX) / _fractal->_xFactor;
-        const float y0 = (_fractal->_maxY - _fractal->_circles[i].yCenter) / _fractal->_yFactor;
-        const float right = (_fractal->_circles[i].xCenter + _fractal->_circles[i].radius - _fractal->_minX) / _fractal->_xFactor;
+        const auto x0 = static_cast<float>((_circle.xCenter - _fractal->_minX) / _fractal->_xFactor);
+        const auto y0 = static_cast<float>((_fractal->_maxY - _circle.yCenter) / _fractal->_yFactor);
+        const auto right = static_cast<float>((_circle.xCenter + _circle.radius - _fractal->_minX) / _fractal->_xFactor);
         const float r = right - x0;
         sf::CircleShape circle(r);
         circle.setPosition(x0 - r, y0 - r);
         circle.setFillColor(sf::Color::Transparent);
-        circle.setOutlineColor(_fractal->_circles[i].color);
+        circle.setOutlineColor(_circle.color);
         circle.setOutlineThickness(2);
         window->draw(circle);
     }

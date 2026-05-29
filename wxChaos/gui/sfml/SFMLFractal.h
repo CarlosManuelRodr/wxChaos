@@ -43,7 +43,7 @@ class SFMLFractal
 
     ///@brief Draws orbit lines, normal lines, and circles over the fractal.
     ///@param window Target window.
-    void DrawGeometry(sf::RenderWindow* window);
+    void DrawGeometry(sf::RenderWindow* window) const;
 
     ///@brief Loads the overlay font if it has not been loaded yet.
     void EnsureFontLoaded();
@@ -109,7 +109,7 @@ public:
 
     ///@brief Sets the gradient and invalidates cached images.
     ///@param gradient New gradient.
-    void SetGradient(wxGradient gradient);
+    void SetGradient(const wxGradient& gradient);
 
     ///@brief Sets the gradient palette size and invalidates cached images.
     ///@param size New palette size.
