@@ -13,11 +13,11 @@
 #ifndef _fractalCanvas
 #define _fractalCanvas
 
+#include "wxSFMLCanvas.h"
 #include "sfml/ToggleButton.h"
 #include "sfml/SelectionRect.h"
-#include "wxSFMLCanvas.h"
-#include "../sfml/SFMLFractal.h"
-#include "../sfml/CoordinateSelector.h"
+#include "sfml/SFMLFractal.h"
+#include "sfml/CoordinateSelector.h"
 #include "../../core/FractalHandler.h"
 
 /**

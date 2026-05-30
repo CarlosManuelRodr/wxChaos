@@ -303,7 +303,7 @@ void ScriptEditor::FetchUserScripts()
     scriptsListBox->Clear();
     loadedScripts = GetAllUserScripts();
 
-    for (ScriptData d : loadedScripts)
+    for (const ScriptData d : loadedScripts)
         scriptsListBox->Append(GetFileBaseName(d.file));
 
     if (!loadedScripts.empty())
@@ -395,6 +395,7 @@ void ScriptEditor::OnCodeChange(wxKeyEvent& event)
         saveChangesButton->Enable(true);
     event.Skip();
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnValidateScript(wxCommandEvent&)
 {
     this->ConsolePrepareInput(wxT("Validate script"));
@@ -410,6 +411,7 @@ void ScriptEditor::OnValidateScript(wxCommandEvent&)
     if (configEngine.GetStatus() == EngineStatus::Ok)
         this->ConsoleSetText(wxString("No errors found."));
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnRunScript(wxCommandEvent&)
 {
     this->ConsolePrepareInput(wxT("Run script"));
@@ -433,7 +435,7 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
         scriptFractal.ClearErrorInfo();
     }
     else
-        this->ConsoleSetText(wxString("Time ellapsed: ") << elapsed.count() << wxT(" milliseconds"));
+        this->ConsoleSetText(wxString("Time elapsed: ") << elapsed.count() << wxT(" milliseconds"));
 }
 void ScriptEditor::OnDebugPanel(wxCollapsiblePaneEvent&)
 {
