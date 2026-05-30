@@ -93,6 +93,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
 {
     isActive = active;
     currentScriptIndex = -1;
+    debugCollapsiblePaneBestHeight = 0;
 
     this->SetSizeHints(wxSize(1200, 760), wxDefaultSize);
 
@@ -186,7 +187,8 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     panelSizer->Fit(scriptPanel);
     mainPanelSizer->Add(scriptPanel, 1, wxEXPAND | wxALL, 5);
 
-    debugCollapsiblePane = new wxCollapsiblePane(mainPanel, wxID_ANY, wxT("Debugger"), wxDefaultPosition, wxDefaultSize, wxCP_DEFAULT_STYLE);
+    debugCollapsiblePane = new wxCollapsiblePane(mainPanel, wxID_ANY, wxT("Debugger"), wxDefaultPosition, wxDefaultSize,
+                                                 wxCP_DEFAULT_STYLE | wxCP_NO_TLW_RESIZE);
     debugCollapsiblePane->Collapse(true);
     debugCollapsiblePane->SetMinSize(wxSize(750, -1));
 
@@ -238,6 +240,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     debugCollapsiblePane->GetPane()->SetSizer(debugSizer);
     debugCollapsiblePane->GetPane()->Layout();
     debugSizer->Fit(debugCollapsiblePane->GetPane());
+    debugCollapsiblePaneBestHeight = debugCollapsiblePane->GetBestSize().GetHeight();
     mainPanelSizer->Add(debugCollapsiblePane, 0, wxALL | wxEXPAND, 5);
 
 
@@ -439,6 +442,17 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
 }
 void ScriptEditor::OnDebugPanel(wxCollapsiblePaneEvent&)
 {
+    const int newDebugPaneBestHeight = debugCollapsiblePane->GetBestSize().GetHeight();
+    const int heightDelta = newDebugPaneBestHeight - debugCollapsiblePaneBestHeight;
+    debugCollapsiblePaneBestHeight = newDebugPaneBestHeight;
+
+    if (heightDelta != 0)
+    {
+        wxSize clientSize = this->GetClientSize();
+        clientSize.IncBy(0, heightDelta);
+        this->SetClientSize(clientSize);
+    }
+
     this->Layout();
     this->Update();
 }

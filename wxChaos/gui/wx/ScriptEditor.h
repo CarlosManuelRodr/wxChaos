@@ -53,6 +53,7 @@ class ScriptEditor : public wxFrame
 
     std::vector<ScriptData> loadedScripts;
     int currentScriptIndex;
+    int debugCollapsiblePaneBestHeight;
 
     void SetUpLexer() const;
     void FetchUserScripts();
