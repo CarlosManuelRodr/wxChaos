@@ -59,9 +59,6 @@ class SFMLFractal
     void UpdateIterationsOverlay();
 
 public:
-    ///@brief Constructs an empty SFML fractal presenter.
-    SFMLFractal();
-
     ///@brief Constructs an SFML fractal presenter bound to a fractal.
     ///@param fractal Fractal model to present.
     explicit SFMLFractal(Fractal* fractal);

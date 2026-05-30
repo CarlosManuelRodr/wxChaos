@@ -53,7 +53,7 @@ class FractalCanvas : public wxSFMLCanvas
 {
     // Fractal
     FractalHandler _fractalHandler;
-    SFMLFractal _sfmlFractal;
+    SFMLFractal* _sfmlFractal;
     SelectionRect* _selection;
     ToggleButton* _play;
     CoordinateSelector* _screenPointer;
@@ -144,7 +144,7 @@ public:
     Fractal* GetFractalPtr() const;
 
     ///@return A pointer to the SFML fractal presenter.
-    SFMLFractal* GetSFMLFractalPtr();
+    SFMLFractal* GetSFMLFractalPtr() const;
 
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;

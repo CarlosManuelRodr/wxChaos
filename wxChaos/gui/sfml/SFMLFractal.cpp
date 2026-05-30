@@ -65,16 +65,6 @@ template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, co
     }
 }
 
-SFMLFractal::SFMLFractal()
-{
-    _fractal = nullptr;
-    _changeFractalIter = true;
-    _imgInVector = false;
-    _usingRenderImage = false;
-    _zoomingBack = false;
-    _dontDrawTempImage = false;
-}
-
 SFMLFractal::SFMLFractal(Fractal* fractal)
 {
     _changeFractalIter = true;
@@ -113,9 +103,6 @@ void SFMLFractal::EnsureFontLoaded()
 
 void SFMLFractal::ResetDisplayImages()
 {
-    if (_fractal == nullptr)
-        return;
-
     const sf::Color white(255, 255, 255);
     const sf::Color transparent(255, 255, 255, 0);
     _image.create(_fractal->_screenWidth, _fractal->_screenHeight, white);
@@ -162,9 +149,6 @@ void SFMLFractal::UpdateIterationsOverlay()
 
 void SFMLFractal::HandleEvent(const sf::Event& event)
 {
-    if (_fractal == nullptr)
-        return;
-
     if (!_fractal->IsRendering() && event.type == sf::Event::KeyPressed)
     {
         switch (event.key.code)
@@ -189,9 +173,6 @@ void SFMLFractal::HandleEvent(const sf::Event& event)
 
 void SFMLFractal::Resize(const sf::RenderWindow* window)
 {
-    if (_fractal == nullptr || window == nullptr)
-        return;
-
     _dontDrawTempImage = true;
     _fractal->Resize(window->getSize().x, window->getSize().y);
     _fractal->_rendered = false;
@@ -210,9 +191,6 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
 
 void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 {
-    if (_fractal == nullptr)
-        return;
-
     if (_fractal->_paused)
     {
         ClearImageCache();
@@ -241,9 +219,6 @@ void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 
 void SFMLFractal::ZoomBack()
 {
-    if (_fractal == nullptr)
-        return;
-
     const bool stillRendering = _fractal->IsRendering();
     _fractal->ZoomBack();
 
@@ -269,9 +244,6 @@ void SFMLFractal::ZoomBack()
 
 void SFMLFractal::Redraw()
 {
-    if (_fractal == nullptr)
-        return;
-
     if (_fractal->_colorMode)
     {
         _tempImage = _image;
@@ -292,9 +264,6 @@ void SFMLFractal::IncreaseIterations()
 {
     _changeFractalIter = true;
 
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     const unsigned change = _fractal->GetIterations() + 100;
     _fractal->SetIterations(change);
@@ -303,9 +272,6 @@ void SFMLFractal::IncreaseIterations()
 void SFMLFractal::DecreaseIterations()
 {
     _changeFractalIter = true;
-
-    if (_fractal == nullptr)
-        return;
 
     ClearImageCache();
 
@@ -320,126 +286,84 @@ void SFMLFractal::ChangeIterations(const int iterations)
 {
     _changeFractalIter = true;
 
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetIterations(iterations);
 }
 
 void SFMLFractal::SetK(const double real, const double imaginary)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetK(real, imaginary);
 }
 
 void SFMLFractal::SetGradient(const wxGradient& gradient)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetGradient(gradient);
 }
 
 void SFMLFractal::SetGradientSize(const unsigned int size)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetGradientSize(size);
 }
 
 void SFMLFractal::SetColorPalette(const ColorPalettes palette)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetColorPalette(palette);
 }
 
 void SFMLFractal::SetExteriorColorMode(const bool mode)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetExtColorMode(mode);
 }
 
 void SFMLFractal::SetFractalSetColorMode(const bool mode)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetFractalSetColorMode(mode);
 }
 
 void SFMLFractal::SetFractalSetColor(const sf::Color color)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetFractalSetColor(color);
 }
 
 void SFMLFractal::SetRelativeColor(const bool mode)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetRelativeColor(mode);
 }
 
 void SFMLFractal::ChangeVarGradient()
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->ChangeVarGradient();
 }
 
 void SFMLFractal::SetVarGradient(const int offset)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetVarGradient(offset);
 }
 
 void SFMLFractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetAlgorithm(algorithm);
 }
 
 void SFMLFractal::SetOrbitTrapMode(const bool mode)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetOrbitTrapMode(mode);
 }
 
 void SFMLFractal::SetSmoothRender(const bool mode)
 {
-    if (_fractal == nullptr)
-        return;
-
     ClearImageCache();
     _fractal->SetSmoothRender(mode);
 }
@@ -556,9 +480,6 @@ void SFMLFractal::DrawGeometry(sf::RenderWindow* window) const
 
 void SFMLFractal::Show(sf::RenderWindow* window)
 {
-    if (_fractal == nullptr || window == nullptr)
-        return;
-
     if (_fractal->_rendered && (_fractal->_xVel != 0 || _fractal->_yVel != 0))
     {
         // While panning, only draw the shifted render output. Showing the

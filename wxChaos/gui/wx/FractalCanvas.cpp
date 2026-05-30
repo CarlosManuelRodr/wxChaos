@@ -39,7 +39,7 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     // Create fractal.
     this->CreateFractal(fractalType);
     _target = _fractalHandler.GetFractalPtr();
-    _sfmlFractal.SetFractal(_target);
+    _sfmlFractal = new SFMLFractal(_target);
 
     _fractalHandler.SetFormula(_userFormula);
     _target->SetOnWxCtrl(true);
@@ -83,6 +83,7 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
 FractalCanvas::~FractalCanvas()
 {
     // Cleanup.
+    delete _sfmlFractal;
     _fractalHandler.DeleteFractal();
     delete _play;
     delete _screenPointer;
@@ -105,7 +106,7 @@ void FractalCanvas::OnUpdate()
         // Size change event.
         if (_event.type == sf::Event::Resized)
         {
-            _sfmlFractal.Resize(this);
+            _sfmlFractal->Resize(this);
             _play->Resize(this);
 
             if (_screenPointer != nullptr)
@@ -128,13 +129,13 @@ void FractalCanvas::OnUpdate()
                 else
                     btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
 
-                _sfmlFractal.Redraw();
+                _sfmlFractal->Redraw();
             }
         }
 
-        _sfmlFractal.HandleEvent(_event);
+        _sfmlFractal->HandleEvent(_event);
         if (!_target->IsRendering() && _play->HandleEvents(_event))
-            _sfmlFractal.ChangeVarGradient();
+            _sfmlFractal->ChangeVarGradient();
 
         // Keyboard event.
         if (_event.type == sf::Event::KeyPressed)
@@ -171,7 +172,7 @@ void FractalCanvas::OnUpdate()
             }
             if (_event.key.code == sf::Keyboard::F5)  // Redraw canvas.
             {
-                _sfmlFractal.Redraw();
+                _sfmlFractal->Redraw();
             }
             if (_event.key.code == sf::Keyboard::P)  // Pause shortcut.
             {
@@ -206,10 +207,10 @@ void FractalCanvas::OnUpdate()
     if (_orbitMode)
         _target->SetOrbitPoint(_kReal, _kImaginary);
     if (_sliderMode && _pointerChange)
-        _sfmlFractal.SetK(_kReal, _kImaginary);
+        _sfmlFractal->SetK(_kReal, _kImaginary);
 
     _target->Move();
-    _sfmlFractal.Show(this);
+    _sfmlFractal->Show(this);
 
     // Avoid drawing GUI elements if the fractal is rendering.
     if (!_target->IsRendering())
@@ -316,9 +317,9 @@ Fractal* FractalCanvas::GetFractalPtr() const
 {
     return _target;
 }
-SFMLFractal* FractalCanvas::GetSFMLFractalPtr()
+SFMLFractal* FractalCanvas::GetSFMLFractalPtr() const
 {
-    return &_sfmlFractal;
+    return _sfmlFractal;
 }
 FractalType FractalCanvas::GetFractalType() const
 {
@@ -330,7 +331,7 @@ void FractalCanvas::ChangeType(const FractalType type)
     this->CreateFractal(type);
     _type = type;
     _target = _fractalHandler.GetFractalPtr();
-    _sfmlFractal.SetFractal(_target);
+    _sfmlFractal->SetFractal(_target);
     _fractalHandler.SetFormula(_userFormula);
     _target->SetOnWxCtrl(true);
 
@@ -358,7 +359,7 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
     _scriptData = scriptData;
     this->CreateScriptFractal(_scriptData);
     _target = _fractalHandler.GetFractalPtr();
-    _sfmlFractal.SetFractal(_target);
+    _sfmlFractal->SetFractal(_target);
     _target->SetOnWxCtrl(true);
 
     // Deletes screen pointer if active.
@@ -413,7 +414,7 @@ void FractalCanvas::Reset()
         this->CreateFractal(_type);
 
     _target = _fractalHandler.GetFractalPtr();
-    _sfmlFractal.SetFractal(_target);
+    _sfmlFractal->SetFractal(_target);
     _fractalHandler.SetFormula(_userFormula);
     _target->SetOnWxCtrl(true);
     _play->Reset();
@@ -532,7 +533,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
 
     if (event.ButtonDown(wxMOUSE_BTN_RIGHT))
     {
-        _sfmlFractal.ZoomBack();
+        _sfmlFractal->ZoomBack();
         if (btn->state && !_target->IsPaused())
         {
             btn->state = false;
@@ -561,9 +562,9 @@ void FractalCanvas::OnUnClick(wxMouseEvent& event)
                         btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
                     else
                         btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
-                    _sfmlFractal.Redraw();
+                    _sfmlFractal->Redraw();
                 }
-                _sfmlFractal.SetAreaOfView(_selection->GetSelection());
+                _sfmlFractal->SetAreaOfView(_selection->GetSelection());
             }
         }
     }
