@@ -2,7 +2,7 @@
 #include "FixedPoint1.h"
 using namespace std;
 
-FixedPoint1::FixedPoint1(const int width, const int height) : Fractal(width, height)
+FixedPoint1::FixedPoint1(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -6.15385;

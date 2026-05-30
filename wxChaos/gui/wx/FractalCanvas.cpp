@@ -90,12 +90,12 @@ FractalCanvas::~FractalCanvas()
 void FractalCanvas::CreateFractal(const FractalType type)
 {
     const sf::Vector2u size = this->getSize();
-    _fractalHandler.CreateFractal(type, static_cast<int>(size.x), static_cast<int>(size.y));
+    _fractalHandler.CreateFractal(type, size.x, size.y);
 }
 void FractalCanvas::CreateScriptFractal(const ScriptData& scriptData)
 {
     const sf::Vector2u size = this->getSize();
-    _fractalHandler.CreateScriptFractal(static_cast<int>(size.x), static_cast<int>(size.y), scriptData);
+    _fractalHandler.CreateScriptFractal(size.x, size.y, scriptData);
 }
 void FractalCanvas::OnUpdate()
 {

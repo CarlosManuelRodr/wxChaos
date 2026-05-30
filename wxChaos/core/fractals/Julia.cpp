@@ -2,7 +2,7 @@
 #include "Julia.h"
 using namespace std;
 
-Julia::Julia(const int width, const int height) : Fractal(width, height)
+Julia::Julia(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.77437;

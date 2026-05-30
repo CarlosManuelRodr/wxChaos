@@ -2,7 +2,7 @@
 #include "Magnet.h"
 using namespace std;
 
-Magnet::Magnet(const int width, const int height) : Fractal(width, height)
+Magnet::Magnet(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8;

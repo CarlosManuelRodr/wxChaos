@@ -12,7 +12,7 @@ private:
     CellRenderer* myRender;
     double bailout;
 public:
-    Cell(int width, int height);
+    Cell(unsigned int width, unsigned int height);
     ~Cell();
 
     void Render();

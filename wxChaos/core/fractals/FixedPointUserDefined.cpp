@@ -3,7 +3,7 @@
 #include "FPUserDefined.h"
 using namespace std;
 
-FPUserDefined::FPUserDefined(const int width, const int height) : Fractal(width, height)
+FPUserDefined::FPUserDefined(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8713;

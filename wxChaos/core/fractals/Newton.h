@@ -11,7 +11,7 @@ class Newton : public Fractal
     NewtonRenderer* myRender;
     double minStep;
 public:
-    Newton(int width, int height);
+    Newton(unsigned int width, unsigned int height);
     ~Newton() override;
 
     void Render() override;

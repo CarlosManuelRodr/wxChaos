@@ -16,7 +16,7 @@ class DoublePendulum : public Fractal
     bool rungeKutta;
     DoublePendulumRenderer* myRender;
 public:
-    DoublePendulum(int width, int height);
+    DoublePendulum(unsigned int width, unsigned int height);
     ~DoublePendulum() override;
 
     void Render() override;

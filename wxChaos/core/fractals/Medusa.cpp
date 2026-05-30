@@ -2,7 +2,7 @@
 #include "Medusa.h"
 using namespace std;
 
-Medusa::Medusa(const int width, const int height) : Fractal(width, height)
+Medusa::Medusa(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     _minX = -1.1342;
     _maxX = 1.7251;

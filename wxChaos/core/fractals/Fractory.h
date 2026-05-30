@@ -11,7 +11,7 @@ class Fractory : public Fractal
 private:
     FractoryRenderer *myRender;
 public:
-    Fractory(int width, int height);
+    Fractory(unsigned int width, unsigned int height);
     ~Fractory();
 
     void Render();

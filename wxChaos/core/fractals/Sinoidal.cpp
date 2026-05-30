@@ -2,7 +2,7 @@
 #include "Sinoidal.h"
 using namespace std;
 
-Sinoidal::Sinoidal(const int width, const int height) : Fractal(width, height)
+Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -8;

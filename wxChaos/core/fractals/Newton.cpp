@@ -2,7 +2,7 @@
 #include "Newton.h"
 using namespace std;
 
-Newton::Newton(const int width, const int height) : Fractal(width, height)
+Newton::Newton(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.5721;

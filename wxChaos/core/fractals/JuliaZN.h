@@ -12,7 +12,7 @@ class JuliaZN: public Fractal
     int n;
     double bailout;
 public:
-    JuliaZN(int width, int height);
+    JuliaZN(unsigned int width, unsigned int height);
     ~JuliaZN() override;
 
     void CopyOptFromPanel() override;

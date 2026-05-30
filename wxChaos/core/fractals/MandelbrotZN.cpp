@@ -2,7 +2,7 @@
 #include "MandelbrotZN.h"
 using namespace std;
 
-MandelbrotZN::MandelbrotZN(const int width, const int height) : Fractal(width, height)
+MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.87078;

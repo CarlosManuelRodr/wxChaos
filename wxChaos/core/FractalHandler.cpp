@@ -35,7 +35,7 @@ FractalHandler::~FractalHandler()
 {
     this->DeleteFractal();
 }
-void FractalHandler::CreateFractal(const FractalType type, const int width, const int height)
+void FractalHandler::CreateFractal(const FractalType type, const unsigned int width, const unsigned int height)
 {
     this->DeleteFractal();
     _type = type;
@@ -159,11 +159,11 @@ void FractalHandler::CreateFractal(const FractalType type, const int width, cons
         default: break;
     }
 }
-void FractalHandler::CreateScriptFractal(const int width, const int height, const ScriptData& scriptData)
+void FractalHandler::CreateScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData)
 {
     _target = _scriptFractal = new ScriptFractal(width, height, scriptData);
 }
-void FractalHandler::CreateScriptFractal(const int width, const int height, const string& scriptPath)
+void FractalHandler::CreateScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath)
 {
     _target = _scriptFractal = new ScriptFractal(width, height, scriptPath);
 }

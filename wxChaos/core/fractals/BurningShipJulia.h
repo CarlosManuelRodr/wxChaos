@@ -11,7 +11,7 @@ class BurningShipJulia : public Fractal
 private:
     BurningShipJuliaRenderer *myRender;
 public:
-    BurningShipJulia(int width, int height);
+    BurningShipJulia(unsigned int width, unsigned int height);
     ~BurningShipJulia();
 
     void Render();

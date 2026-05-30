@@ -10,7 +10,7 @@ class Medusa : public Fractal
 {
     MedusaRenderer* myRender;
 public:
-    Medusa(int width, int height);
+    Medusa(unsigned int width, unsigned int height);
     ~Medusa() override;
 
     void Render() override;

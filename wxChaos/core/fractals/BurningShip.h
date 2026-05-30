@@ -10,7 +10,7 @@ class BurningShip : public Fractal
 {
     BurningShipRenderer* myRender;
 public:
-    BurningShip(int width, int height);
+    BurningShip(unsigned int width, unsigned int height);
     ~BurningShip() override;
 
     void Render() override;

@@ -10,7 +10,7 @@ class Sinoidal : public Fractal
 {
     SinoidalRenderer* myRender;
 public:
-    Sinoidal(int width, int height);
+    Sinoidal(unsigned int width, unsigned int height);
     ~Sinoidal() override;
 
     void Render() override;

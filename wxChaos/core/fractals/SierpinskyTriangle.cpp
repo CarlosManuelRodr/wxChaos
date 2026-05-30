@@ -1,7 +1,7 @@
 #include "SierpinskyTriangle.h"
 using namespace std;
 
-SierpinskyTriangle::SierpinskyTriangle(const int width, const int height) : Fractal(width, height)
+SierpinskyTriangle::SierpinskyTriangle(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     _minX = -0.5;
     _maxX = 1.5;

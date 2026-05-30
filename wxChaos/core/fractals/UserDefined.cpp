@@ -2,7 +2,7 @@
 #include "UserDefined.h"
 using namespace std;
 
-UserDefined::UserDefined(const int width, const int height) : Fractal(width, height)
+UserDefined::UserDefined(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -2.5;

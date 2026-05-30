@@ -1,7 +1,7 @@
 #include "DoublePendulum.h"
 using namespace std;
 
-DoublePendulum::DoublePendulum(int width, int height) : Fractal(width, height)
+DoublePendulum::DoublePendulum(unsigned int width, unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -3.5;

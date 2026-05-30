@@ -11,7 +11,7 @@ class Mandelbrot : public Fractal
     MandelbrotRenderer* myRender;
     int buddhaRandomP;
 public:
-    Mandelbrot(int width, int height);
+    Mandelbrot(unsigned int width, unsigned int height);
     ~Mandelbrot() override;
 
     void Render() override;     ///< Launch threads.

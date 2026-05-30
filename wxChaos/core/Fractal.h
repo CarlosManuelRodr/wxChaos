@@ -169,7 +169,7 @@ public:
     ///@brief Construct a fractal for the given render dimensions.
     ///@param width Image width.
     ///@param height Image height.
-    Fractal(int width, int height);
+    Fractal(unsigned int width, unsigned int height);
 
     virtual ~Fractal();
 

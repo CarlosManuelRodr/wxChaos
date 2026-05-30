@@ -2,7 +2,7 @@
 #include "BurningShipJulia.h"
 using namespace std;
 
-BurningShipJulia::BurningShipJulia(int width, int height) : Fractal(width, height)
+BurningShipJulia::BurningShipJulia(unsigned int width, unsigned int height) : Fractal(width, height)
 {
     _minX = -2.77051;
     _maxX = 2.77682;

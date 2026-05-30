@@ -11,7 +11,7 @@ class Magnet : public Fractal
 {
     MagnetRenderer* myRender;
 public:
-    Magnet(int width, int height);
+    Magnet(unsigned int width, unsigned int height);
     ~Magnet() override;
 
     void Render() override;

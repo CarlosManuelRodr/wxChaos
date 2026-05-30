@@ -10,7 +10,7 @@ class SierpinskyTriangle : public Fractal
 {
     SierpinskyTriangleRenderer* myRender;
 public:
-    SierpinskyTriangle(int width, int height);
+    SierpinskyTriangle(unsigned int width, unsigned int height);
 
     void Render() override;
 };

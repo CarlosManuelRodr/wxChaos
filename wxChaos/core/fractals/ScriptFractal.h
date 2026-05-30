@@ -13,8 +13,8 @@ class ScriptFractal : public Fractal
     ScriptData _myScriptData;
     ScriptFractalRenderer* _myRender;
 public:
-    ScriptFractal(int width, int height, const ScriptData& scriptData, int renderThreads = -1);
-    ScriptFractal(int width, int height, const std::string& scriptPath);
+    ScriptFractal(unsigned int width, unsigned int height, const ScriptData& scriptData, int renderThreads = -1);
+    ScriptFractal(unsigned int width, unsigned int height, const std::string& scriptPath);
     ~ScriptFractal() override;
 
     void Render() override;

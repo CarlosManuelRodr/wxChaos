@@ -12,7 +12,7 @@ private:
     FPUserDefinedRenderer* myRender;
     double minStep;
 public:
-    FPUserDefined(int width, int height);
+    FPUserDefined(unsigned int width, unsigned int height);
     ~FPUserDefined();
 
     void Render();

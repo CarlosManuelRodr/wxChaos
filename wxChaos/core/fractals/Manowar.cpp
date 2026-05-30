@@ -2,7 +2,7 @@
 #include "Manowar.h"
 using namespace std;
 
-Manowar::Manowar(const int width, const int height) : Fractal(width, height)
+Manowar::Manowar(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -0.4795;

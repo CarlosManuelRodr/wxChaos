@@ -10,7 +10,7 @@ class Julia: public Fractal
 {
     JuliaRenderer* myRender;
 public:
-    Julia(int width, int height);
+    Julia(unsigned int width, unsigned int height);
     ~Julia();
 
     void Render();

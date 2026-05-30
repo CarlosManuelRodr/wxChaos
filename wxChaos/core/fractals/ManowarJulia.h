@@ -10,7 +10,7 @@ class ManowarJulia : public Fractal
 {
     ManowarJuliaRenderer* myRender;
 public:
-    ManowarJulia(int width, int height);
+    ManowarJulia(unsigned int width, unsigned int height);
     ~ManowarJulia() override;
 
     void Render() override;

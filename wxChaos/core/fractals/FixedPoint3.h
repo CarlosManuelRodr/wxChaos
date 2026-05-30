@@ -11,7 +11,7 @@ class FixedPoint3 : public Fractal
     FixedPoint3Renderer* myRender;
     double minStep;
 public:
-    FixedPoint3(int width, int height);
+    FixedPoint3(unsigned int width, unsigned int height);
     ~FixedPoint3() override;
 
     void Render() override;

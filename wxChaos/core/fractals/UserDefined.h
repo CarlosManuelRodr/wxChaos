@@ -11,7 +11,7 @@ class UserDefined : public Fractal
 private:
     UserDefinedRenderer* myRender;
 public:
-    UserDefined(int width, int height);
+    UserDefined(unsigned int width, unsigned int height);
     ~UserDefined();
 
     void Render();

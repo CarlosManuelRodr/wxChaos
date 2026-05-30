@@ -11,7 +11,7 @@ class Tricorn : public Fractal
 private:
     TricornRenderer* myRender;
 public:
-    Tricorn(int width, int height);
+    Tricorn(unsigned int width, unsigned int height);
     ~Tricorn();
 
     void Render();

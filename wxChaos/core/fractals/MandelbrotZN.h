@@ -13,7 +13,7 @@ private:
     double bailout;
     MandelbrotZNRenderer* myRender;
 public:
-    MandelbrotZN(int width, int height);
+    MandelbrotZN(unsigned int width, unsigned int height);
     ~MandelbrotZN() override;
 
     void Render() override;

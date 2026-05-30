@@ -4,7 +4,7 @@
 #include "../../scripting/AngelscriptBindings.h"
 using namespace std;
 
-ScriptFractal::ScriptFractal(const int width, const int height, const ScriptData& scriptData, const int renderThreads)
+ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData, const int renderThreads)
                              : Fractal(width, height)
 {
     if (renderThreads != -1)
@@ -36,7 +36,7 @@ ScriptFractal::ScriptFractal(const int width, const int height, const ScriptData
     }
     SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
 }
-ScriptFractal::ScriptFractal(const int width, const int height, const string& scriptPath) : Fractal(width, height)
+ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath) : Fractal(width, height)
 {
     _path = scriptPath;
     AngelscriptConfigurationEngine configEngine;

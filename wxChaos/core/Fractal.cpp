@@ -22,7 +22,7 @@ inline double CalcDist(const double x1, const double y1, const double x2, const 
     return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
-Fractal::Fractal(const int width, const int height)
+Fractal::Fractal(const unsigned int width, const unsigned int height)
 {
     // System.
     _threadNumber = Get_Cores();
