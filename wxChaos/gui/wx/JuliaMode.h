@@ -30,6 +30,7 @@ class JuliaMode
     ToggleButton* _play;
     FractalType _type;
     wxWindow* _parent;
+    wxSize _size;
 
     sf::Event _event;
     sf::Thread m_thread; // Thread for the rendering loop
@@ -43,11 +44,13 @@ class JuliaMode
 
 public:
     ///@brief Constructor
+    ///@param parent Parent wxWidget window.
     ///@param ptr Pointer to the fractalCanvas.
     ///@param fractalType Type of Julia fractal to be created.
     ///@param juliaOpt Options to copy from the parent fractal.
-    ///@param parent Parent wxWidget window.
-    JuliaMode(FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt, wxWindow* parent = nullptr);
+    ///@param size
+    JuliaMode(wxWindow* parent, FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt,
+              const wxSize& size = wxSize(640, 480));
     ~JuliaMode();
 
     ///@brief Launches the thread.

@@ -1201,7 +1201,7 @@ void MainFrame::UpdateJuliaMode()
             juliaType = FractalType::Julia;
         };
 
-        juliaModePtr = new JuliaMode(fractalCanvas, juliaType, fractalCanvas->GetFractalPtr()->GetOptions(), this);
+        juliaModePtr = new JuliaMode(this, fractalCanvas, juliaType, fractalCanvas->GetFractalPtr()->GetOptions());
         juliaModePtr->Launch();
         fractalCanvas->SetJuliaMode(true);
     }

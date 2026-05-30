@@ -4,18 +4,22 @@ using namespace std;
 
 bool juliaModeState;
 
-JuliaMode::JuliaMode(FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt, wxWindow* parent)
-                    : _event(), m_thread(&JuliaMode::Run, this)
+JuliaMode::JuliaMode(wxWindow* parent, FractalCanvas* ptr, const FractalType fractalType, const Options& juliaOpt,
+                     const wxSize& size) : _event(), m_thread(&JuliaMode::Run, this)
 {
     _parent = parent;
     _myJuliaOpt = juliaOpt;
     _type = fractalType;
+    _size = size;
     _target = ptr;
 
     _window = nullptr;
     _selection = nullptr;
     _play = nullptr;
     _closeRequested.store(false);
+
+    _juliaFractal.CreateFractal(_type, _size.GetWidth(), _size.GetHeight());
+    _sfmlFractal.SetFractal(_juliaFractal.GetFractalPtr());
 }
 
 JuliaMode::~JuliaMode()
@@ -130,7 +134,7 @@ void JuliaMode::HandleEvent()
 void JuliaMode::Run()
 {
     // The window must be created in the same thread that will execute it.
-    _window = new sf::RenderWindow(sf::VideoMode(640, 480), "Julia mode");
+    _window = new sf::RenderWindow(sf::VideoMode(_size.GetWidth(), _size.GetHeight()), "Julia mode");
 
     // Calculate position using wxWidgets and convert to sf::Vector2i
     const wxPoint parentPos = _parent->GetPosition();
@@ -143,9 +147,6 @@ void JuliaMode::Run()
     if (icon.loadFromFile("Resources/iconPNG.png"))
         _window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-    const sf::Vector2u size = _window->getSize();
-    _juliaFractal.CreateFractal(_type, size.x, size.y);
-    _sfmlFractal.SetFractal(_juliaFractal.GetFractalPtr());
     _juliaFractal.GetFractalPtr()->SetOptions(_myJuliaOpt, true);
     _juliaFractal.GetFractalPtr()->SetJuliaMode(true);
 
