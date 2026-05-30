@@ -19,13 +19,14 @@ JuliaMode::JuliaMode(wxWindow* parent, FractalCanvas* ptr, const FractalType fra
     _closeRequested.store(false);
 
     _juliaFractal.CreateFractal(_type, _size.GetWidth(), _size.GetHeight());
-    _sfmlFractal.SetFractal(_juliaFractal.GetFractalPtr());
+    _sfmlFractal = new SFMLFractal(_juliaFractal.GetFractalPtr());
 }
 
 JuliaMode::~JuliaMode()
 {
     delete _selection;
     delete _play;
+    delete _sfmlFractal;
     _juliaFractal.DeleteFractal();
     delete _window;
 }
@@ -45,7 +46,7 @@ void JuliaMode::HandleEvent()
         {
             sf::View View(sf::FloatRect(0, 0, static_cast<float>(_event.size.width), static_cast<float>(_event.size.height)));
             _window->setView(View);
-            _sfmlFractal.Resize(_window);
+            _sfmlFractal->Resize(_window);
             _play->Resize(_window);
         }
 
@@ -54,11 +55,11 @@ void JuliaMode::HandleEvent()
         // Fortunately, the event structure members they use are mostly compatible.
         if (_selection->HandleEvents(_event))
         {
-            _sfmlFractal.SetAreaOfView(_selection->GetSelection());
+            _sfmlFractal->SetAreaOfView(_selection->GetSelection());
         }
         if (_play->HandleEvents(_event))
         {
-            _sfmlFractal.ChangeVarGradient();
+            _sfmlFractal->ChangeVarGradient();
         }
 
         // Keyboad events.
@@ -80,7 +81,7 @@ void JuliaMode::HandleEvent()
             }
             if (_event.key.code == sf::Keyboard::F5)  // Redraw fractal.
             {
-                _sfmlFractal.Redraw();
+                _sfmlFractal->Redraw();
             }
             // Handle movement
             switch (_event.key.code)
@@ -114,18 +115,18 @@ void JuliaMode::HandleEvent()
             }
         }
 
-        _sfmlFractal.HandleEvent(_event);
+        _sfmlFractal->HandleEvent(_event);
     }
 
     if (_target->ChangeInPointer())
     {
-        _sfmlFractal.SetK(_target->GetKReal(), _target->GetKImaginary());
+        _sfmlFractal->SetK(_target->GetKReal(), _target->GetKImaginary());
     }
 
     // Updates window.
     _window->clear();
     _juliaFractal.GetFractalPtr()->Move(); // Move no longer takes sf::Input
-    _sfmlFractal.Show(_window);
+    _sfmlFractal->Show(_window);
     _selection->Show(_window);
     _play->Show(_window);
     _window->display();

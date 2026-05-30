@@ -23,13 +23,14 @@ class JuliaMode
 {
     sf::RenderWindow* _window;
     FractalCanvas* _target;
-    FractalHandler _juliaFractal;
-    SFMLFractal _sfmlFractal;
+    SFMLFractal* _sfmlFractal;
     SelectionRect* _selection;
-    Options _myJuliaOpt;
     ToggleButton* _play;
-    FractalType _type;
     wxWindow* _parent;
+
+    FractalHandler _juliaFractal;
+    Options _myJuliaOpt;
+    FractalType _type;
     wxSize _size;
 
     sf::Event _event;
