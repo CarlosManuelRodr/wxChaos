@@ -93,7 +93,7 @@ protected:
     bool _refreshImage;
 
     // Status variables.
-    bool _movement[4];
+    bool _movement[4]{};
     bool _moving;                           ///< Movement status.
     bool _rendered;
     bool _rendering;
@@ -106,7 +106,7 @@ protected:
     bool _redrawAlways;
     bool _justLaunchThreads;
     bool _varGradChange;
-    bool _renderJobComp;                    ///< Fractal compatible with renderJobs.
+    bool _renderJobCompatible;               ///< Fractal compatible with renderJobs.
     bool _changeFractalProp;
     bool _onWxCtrl;
     std::vector<Vector2Int> _endPoints;
@@ -151,8 +151,6 @@ protected:
 
     ///@brief If some minor change was made like a color adjustment, redraws the maps.
     void RedrawMaps();
-
-    void SetDefaultOptions();
 
     ///@brief Copies the current fractal state into a renderer before launch.
     void ConfigureRenderer(Renderer& renderer) const;
@@ -354,7 +352,7 @@ public:
 template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer* myRender)
 {
     const std::vector<RenderRegion> regions = this->BuildRenderRegions();
-    const bool useRenderPool = _renderJobComp && !_justLaunchThreads;
+    const bool useRenderPool = _renderJobCompatible && !_justLaunchThreads;
     const int tileHeight = useRenderPool ? 16 : 0;
     const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions, tileHeight);
     const bool relaunchExistingWork = _justLaunchThreads && _xMoved == 0 && _yMoved == 0;

@@ -62,16 +62,15 @@ ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const 
     this->Centre(wxBOTH);
 
     // Connect Events
-    buttonsSizerCancel->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnCancel), NULL, this);
-    buttonsSizerOK->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnOk), NULL, this);
+    buttonsSizerCancel->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnCancel), nullptr, this);
+    buttonsSizerOK->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnOk), nullptr, this);
 }
 
 ScriptNameDialog::~ScriptNameDialog()
 {
     // Disconnect Events
-    buttonsSizerCancel->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnCancel), NULL, this);
-    buttonsSizerOK->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnOk), NULL, this);
-
+    buttonsSizerCancel->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnCancel), nullptr, this);
+    buttonsSizerOK->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnOk), nullptr, this);
 }
 
 void ScriptNameDialog::OnCancel(wxCommandEvent&)
@@ -111,7 +110,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     const auto scriptListSizer = new wxStaticBoxSizer(new wxStaticBox(scriptPanel, wxID_ANY, wxT("Scripts")), wxVERTICAL);
 
     scriptListSizer->SetMinSize(wxSize(250, -1));
-    scriptsListBox = new wxListBox(scriptListSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_ALWAYS_SB | wxLB_HSCROLL);
+    scriptsListBox = new wxListBox(scriptListSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, wxLB_ALWAYS_SB | wxLB_HSCROLL);
     scriptListSizer->Add(scriptsListBox, 1, wxALL | wxEXPAND, 5);
 
     saveChangesButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, wxT("Save Changes"), wxDefaultPosition, wxDefaultSize, 0);
@@ -306,7 +305,7 @@ void ScriptEditor::FetchUserScripts()
     scriptsListBox->Clear();
     loadedScripts = GetAllUserScripts();
 
-    for (const ScriptData d : loadedScripts)
+    for (const ScriptData& d : loadedScripts)
         scriptsListBox->Append(GetFileBaseName(d.file));
 
     if (!loadedScripts.empty())
@@ -316,12 +315,12 @@ void ScriptEditor::FetchUserScripts()
         currentScriptIndex = 0;
     }
 }
-void ScriptEditor::LoadScript(unsigned index)
+void ScriptEditor::LoadScript(const unsigned index)
 {
-    if (loadedScripts.size() > 0 && index < loadedScripts.size())
+    if (!loadedScripts.empty() && index < loadedScripts.size())
     {
         codeEditor->LoadFile(loadedScripts[index].file);
-        currentScriptIndex = index;
+        currentScriptIndex = static_cast<int>(index);
     }
 }
 void ScriptEditor::SetBlackPreview() const
@@ -333,7 +332,7 @@ void ScriptEditor::SetBlackPreview() const
 }
 int ScriptEditor::GetScriptIndex(const wxString& scriptName) const
 {
-    for (unsigned i = 0; i < scriptsListBox->GetCount(); i++)
+    for (int i = 0; i < scriptsListBox->GetCount(); i++)
     {
         if (scriptsListBox->GetString(i) == GetFileBaseName(scriptName))
             return i;

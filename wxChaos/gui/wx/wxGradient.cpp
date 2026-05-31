@@ -6,6 +6,7 @@ wxGradient::wxGradient(std::vector<wxColor> stops, int min, int max)
 {
     Create(stops, min, max);
 }
+
 bool wxGradient::Create(std::vector<wxColor> stops, int min, int max)
 {
     m_stops = stops;
@@ -13,7 +14,8 @@ bool wxGradient::Create(std::vector<wxColor> stops, int min, int max)
     m_max = max;
     return true;
 }
-wxGradient::~wxGradient(){}
+wxGradient::~wxGradient() = default;
+
 wxColour wxGradient::getColorAt(int value)
 {
     if (value<m_min)

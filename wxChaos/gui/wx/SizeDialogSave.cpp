@@ -16,7 +16,6 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     this->SetSizeHints(wxSize(480, 180), wxSize(480, 180));
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
-
     const auto progressSizer = new wxBoxSizer(wxVERTICAL);
 
     _myType = _myFractal->GetType();
@@ -72,8 +71,8 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent&)
         // Updates progress gauge.
         if (_myFractal->GetType() != FractalType::ScriptFractal)
         {
-            int progressValue = _myFractal->GetRenderProgress();
-            _progressLabel->SetLabel(wxString(wxT("Rendering: ")) + num_to_string(progressValue) + wxT("%"));    // Txt: "Rendering... "
+            const int progressValue = _myFractal->GetRenderProgress();
+            _progressLabel->SetLabel(wxString(wxT("Rendering: ")) + num_to_string(progressValue) + wxT("%"));
 
             _progress->SetValue(progressValue);
             if (progressValue >= 100 && !_myFractal->IsRendering())
@@ -132,7 +131,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, const string& filePath, 
 
     widthSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
     bSizer6->Add(widthSpin, 0, wxALL, 5);
-    widthSpin->SetValue(opt.screenWidth);
+    widthSpin->SetValue(static_cast<int>(opt.screenWidth));
     sizeSizer->Add(bSizer6, 1, wxEXPAND, 5);
 
     const auto bSizer8 = new wxBoxSizer(wxVERTICAL);
@@ -147,7 +146,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, const string& filePath, 
 
     heightSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
     bSizer8->Add(heightSpin, 0, wxALL, 5);
-    heightSpin->SetValue(opt.screenHeight);
+    heightSpin->SetValue(static_cast<int>(opt.screenHeight));
 
     sizeSizer->Add(bSizer8, 1, wxEXPAND, 5);
     panelSizer->Add(sizeSizer, 1, wxEXPAND, 5);
@@ -160,7 +159,7 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, const string& filePath, 
 
     iterationsSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000000, 1);
     okSizer->Add(iterationsSpin, 0, wxALL, 5);
-    iterationsSpin->SetValue(opt.maxIter);
+    iterationsSpin->SetValue(static_cast<int>(opt.maxIter));
 
     okButton = new wxButton(mainPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Ok"
     okSizer->Add(okButton, 0, wxALL, 5);
@@ -190,16 +189,16 @@ SizeDialogSave::~SizeDialogSave()
 // ReSharper disable once CppMemberFunctionMayBeConst
 void SizeDialogSave::ChangeWidth(wxSpinEvent&)
 {
-    int value = widthSpin->GetValue();
+    double value = widthSpin->GetValue();
     value /= screenRatio;
-    heightSpin->SetValue(value);
+    heightSpin->SetValue(static_cast<int>(value));
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void SizeDialogSave::ChangeHeight(wxSpinEvent&)
 {
-    int value = heightSpin->GetValue();
+    double value = heightSpin->GetValue();
     value *= screenRatio;
-    widthSpin->SetValue(value);
+    widthSpin->SetValue(static_cast<int>(value));
 }
 void SizeDialogSave::OnOk(wxCommandEvent&)
 {
@@ -227,9 +226,7 @@ void SizeDialogSave::OnOk(wxCommandEvent&)
             const sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
             const bool result = out.saveToFile(path);
             if (!result)
-            {
                 wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
-            }
         }
         else  // BMP
         {

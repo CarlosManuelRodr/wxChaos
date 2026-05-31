@@ -27,6 +27,6 @@ bool is_there_substr(const wxString &cad, const wxString &cadBus);
 bool is_there_substr(const std::string &cad, const std::string &cadBus);
 std::string replace_ext(const std::string &filepath, const std::string &newExt);
 bool check_ext(const std::string &filename, const std::string &ext);
-std::vector<int> get_int_list(wxString in);
+std::vector<int> get_int_list(const wxString& in);
 
 #endif

@@ -25,7 +25,7 @@ inline double CalcDist(const double x1, const double y1, const double x2, const 
 Fractal::Fractal(const unsigned int width, const unsigned int height)
 {
     // System.
-    _threadNumber = Get_Cores();
+    _threadNumber = Get_Cores() - 1;
 
     // Copy window properties.
     _screenHeight = height;
@@ -65,7 +65,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height)
     _yMoved = 0;
 
     // Set fractal properties.
-    this->SetDefaultOptions();
+    _type = FractalType::None;
     _minX = -2.0;
     _maxX = 1.0;
     _minY = -1.2;
@@ -101,6 +101,16 @@ Fractal::Fractal(const unsigned int width, const unsigned int height)
     _moving = false;
     _varGradChange = false;
     _refreshImage = false;
+    _maxColorMapVal = 0;
+    _renderJobCompatible = false;
+    _orbitX = _orbitY = 0.0;
+    _renderJobCompatible = true;
+    _changeFractalProp = false;
+    _geomFigure = false;
+    _onWxCtrl = false;
+
+    for (bool & i : _movement)
+        i = false;
 
     // Creates default color palette.
     _relativeColor = false;
@@ -181,16 +191,6 @@ void Fractal::RedrawMaps()
     if (_maxColorMapVal == 0)
         _maxColorMapVal = 1;
     _refreshImage = true;
-}
-void Fractal::SetDefaultOptions()
-{
-    _renderJobComp = true;
-    _changeFractalProp = false;
-    _geomFigure = false;
-    _onWxCtrl = false;
-
-    for (bool & i : _movement)
-        i = false;
 }
 
 void Fractal::ConfigureRenderer(Renderer& renderer) const
@@ -609,7 +609,7 @@ void Fractal::PauseContinue()
         this->PreRestartRender();
         _rendered = false;
         _rendering = true;
-        if (_renderJobComp)
+        if (_renderJobCompatible)
             this->Render();
         else
         {

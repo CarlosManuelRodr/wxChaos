@@ -2,6 +2,7 @@
 
 enum class FractalType
 {
+    None,
     Mandelbrot,
     MandelbrotZN,
     Julia,

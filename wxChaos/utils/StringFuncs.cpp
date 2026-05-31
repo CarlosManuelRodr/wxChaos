@@ -18,7 +18,7 @@ string str_num_to_string(const double d)
 
 string str_bool_to_string(const bool d)
 {
-    return string(d ? "True" : "False");
+    return d ? "True" : "False";
 }
 
 wxString num_to_string(const int d)
@@ -71,10 +71,10 @@ int string_to_int(const string& s)
 
 bool is_there_substr(const wxString &cad, const wxString &cadBus)
 {
-    const int nCad = cad.length();
-    int nCadBus = cadBus.length();
+    const size_t nCad = cad.length();
+    const size_t nCadBus = cadBus.length();
 
-    for (int i=0; i<=nCad-nCadBus; i++)
+    for (size_t i=0; i<=nCad-nCadBus; i++)
     {
         wxString subCad = cad.substr(i, nCadBus);
         if (subCad == cadBus)
@@ -85,10 +85,10 @@ bool is_there_substr(const wxString &cad, const wxString &cadBus)
 
 bool is_there_substr(const string &cad, const string &cadBus)
 {
-    int nCad = cad.length();
-    const int nCadBus = cadBus.length();
+    const size_t nCad = cad.length();
+    const size_t nCadBus = cadBus.length();
 
-    for (int i=0; i<=nCad-nCadBus; i++)
+    for (size_t i=0; i<=nCad-nCadBus; i++)
     {
         string subCad = cad.substr(i, nCadBus);
         if (subCad == cadBus)
@@ -123,17 +123,17 @@ bool check_ext(const string &filename, const string &ext)
     return false;
 }
 
-vector<int> get_int_list(const wxString in)
+vector<int> get_int_list(const wxString& in)
 {
     vector<int> out;
-    int firstPos = 0;
+    unsigned int firstPos = 0;
 
     for (unsigned int i=0; i<in.length(); i++)
     {
         if (in[i] == ',')
         {
             out.push_back(string_to_int(in.substr(firstPos, i-firstPos)));
-            firstPos = i+1;
+            firstPos = i + 1;
         }
     }
 

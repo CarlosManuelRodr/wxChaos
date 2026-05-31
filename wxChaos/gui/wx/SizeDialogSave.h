@@ -8,8 +8,8 @@
 */
 
 #pragma once
-#ifndef __sizeDiag
-#define __sizeDiag
+#ifndef _sizeDialog
+#define _sizeDialog
 
 #include <wx/wx.h>
 #include <wx/statline.h>
