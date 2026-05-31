@@ -25,8 +25,8 @@ extern bool dimensionFrameState;
 void GetDesktopResolution(int& width, int& height);
 
 /**
-* @enum FRACTAL_TYPE
-* @brief Enumerates the fractals available for selection on the DimensionFrame.
+* @enum FractalList
+* @brief Lists the fractals available for selection on the DimensionFrame.
 */
 
 enum FractalList
@@ -56,24 +56,24 @@ enum FractalList
 
 class DimensionCalculator
 {
-    int ho, hf;            ///< Work area of the thread.
-    bool** map;            ///< Fractal target.
-    int size, div;
-    bool running;
-    int N;                ///< Number of counted boxes.
+    int _ho, _hf;      ///< Work area of the thread.
+    bool** _map;       ///< Fractal target.
+    int _size, _div;
+    bool _running;
+    int _boxCountN;    ///< Number of counted boxes.
 
 public:
     DimensionCalculator();    ///< Constructor.
 
     ///@brief Sets the map of the fractal target.
-    ///@param _map Pointer to a fractal map.
-    ///@param _size Size of the map (it will always be a square map).
-    ///@param _ho Upper limit of the work area.
-    ///@param _hf Lower limit of the work area.
-    void SetMap(bool** _map, int _size, int _ho, int _hf);
+    ///@param map Pointer to a fractal map.
+    ///@param size Size of the map (it will always be a square map).
+    ///@param ho Upper limit of the work area.
+    ///@param hf Lower limit of the work area.
+    void SetMap(bool** map, int size, int ho, int hf);
 
-    void SetDiv(int _div);     ///< Set the number of grid divisions.
-    void Run();                ///< The worker function for the thread.
+    void SetDiv(int div);     ///< Set the number of grid divisions.
+    void Run();               ///< The worker function for the thread.
     int GetBoxCount() const;
     bool IsRunning() const;
     void Terminate(); // To signal the thread to stop
@@ -86,47 +86,47 @@ public:
 
 class ImagePanel : public wxPanel
 {
-    bool** map;        ///< Fractal target.
-    int size;
-    int div;
+    bool** _map;        ///< Fractal target.
+    int _size;
+    int _div;
 
 public:
-    ImagePanel(wxWindow* parent, int id, int _size);
+    ImagePanel(wxWindow* parent, int id, int size);
     ~ImagePanel() override;
-    void OnPaint(wxPaintEvent&);
+    void OnPaintEvent(wxPaintEvent&);
 
     ///@brief Sets the map of the fractal target.
-    ///@param _map Pointer to a fractal map.
-    ///@param _div Number of grid divisions to draw.
-    void SetMap(bool** _map, int _div);
+    ///@param map Pointer to a fractal map.
+    ///@param div Number of grid divisions to draw.
+    void SetMap(bool** map, int div);
 };
 
 /**
-* @class ConfFractOptDialog
+* @class ConfigFractalOptionsDialog
 * @brief A fractal options dialog.
 *
-* This works just as the Fractal options on the main frame.
+* This behaves just as the Fractal options on the main frame.
 */
-class ConfFractOptDialog : public wxDialog
+class ConfigFractalOptionsDialog : public wxDialog
 {
-    wxScrolledWindow* mainScroll;
-    wxBoxSizer* optionsBoxxy;
-    wxStaticText* kRealLabel;
-    wxTextCtrl* kRealCtrl;
-    wxStaticText* kImaginaryLabel;
-    wxTextCtrl* kImaginaryCtrl;
-    wxStaticLine* staticLine;
-    wxButton* okButton;
-    wxButton* applyButton;
-    Fractal* target;
+    wxScrolledWindow* _mainScroll;
+    wxBoxSizer* _optionsBox;
+    wxStaticText* _kRealLabel;
+    wxTextCtrl* _kRealCtrl;
+    wxStaticText* _kImaginaryLabel;
+    wxTextCtrl* _kImaginaryCtrl;
+    wxStaticLine* _staticLine;
+    wxButton* _okButton;
+    wxButton* _applyButton;
+    Fractal* _target;
 
     // Elements of the option panel.
-    std::vector<int> foundLabels, foundTextControls;
-    std::vector<int> foundSpinControls, foundCheckBoxes;
-    std::vector<wxStaticText*> labels;
-    std::vector<wxTextCtrl*> textControls;
-    std::vector<wxSpinCtrl*> spinControls;
-    std::vector<wxCheckBox*> checkBoxes;
+    std::vector<int> _foundLabels, _foundTextControls;
+    std::vector<int> _foundSpinControls, _foundCheckBoxes;
+    std::vector<wxStaticText*> _labels;
+    std::vector<wxTextCtrl*> _textControls;
+    std::vector<wxSpinCtrl*> _spinControls;
+    std::vector<wxCheckBox*> _checkBoxes;
 
     void OnOk(wxCommandEvent&);
     void OnApply(wxCommandEvent&);
@@ -134,13 +134,13 @@ class ConfFractOptDialog : public wxDialog
     void DeleteOptPanel();        ///< Deletes all the elements in the option panel.
 
 public:
-    ConfFractOptDialog(Fractal* _target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Fractal options"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 560), long style = wxCAPTION);
-    ~ConfFractOptDialog();
+    ConfigFractalOptionsDialog(Fractal* target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Fractal options"),
+                               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 560), long style = wxCAPTION);
+    ~ConfigFractalOptionsDialog() override;
 
-    ///@brief Set new fractal target.
-    ///@param _target Pointer to new fractal.
-    void SetNewTarget(Fractal* _target);
+    ///@brief Set a new fractal target.
+    ///@param target Pointer to new fractal.
+    void SetNewTarget(Fractal* target);
 };
 
 /**
@@ -158,10 +158,10 @@ struct LineParams
 */
 class LinePlotter : public mpFX
 {
-    LineParams params;
+    LineParams _params;
 public:
-    LinePlotter(LineParams _params);
-    virtual double GetY(double x);
+    explicit LinePlotter(LineParams params);
+    double GetY(double x) override;
 };
 
 
@@ -171,14 +171,14 @@ public:
 */
 class PlotWindow : public wxFrame
 {
-    mpWindow* m_plot;
-    wxWindowID id_;
+    mpWindow* _plot;
+    wxWindowID _id;
 
 public:
     PlotWindow(const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     PlotWindow(LineParams params, const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~PlotWindow() override;
 };
 
@@ -190,74 +190,74 @@ public:
 */
 class DimensionFrame : public wxFrame
 {
-    wxScrolledWindow* mainPanel;
-    wxChoice* fractalChoice;
-    wxStaticText* minXTxt;
-    wxTextCtrl* minXCtrl;
-    wxStaticText* maxXTxt;
-    wxTextCtrl* maxXCtrl;
-    wxStaticText* minYTxt;
-    wxTextCtrl* minYCtrl;
-    wxCheckBox* manualMaxYChk;
-    wxStaticText* maxYTxt;
-    wxTextCtrl* maxYCtrl;
-    wxStaticText* iterTxt;
-    wxTextCtrl* iterCtrl;
-    wxStaticText* sizeTxt;
-    wxTextCtrl* sizeCtrl;
-    wxButton* fOptButton;
-    wxStaticText* nDivTxt;
-    wxSpinCtrl* nDivSpin;
-    wxButton* previewButton;
-    wxStaticText* divTxt;
-    wxNotebook* divNotebook;
-    wxPanel* byFunctionPanel;
-    wxStaticText* funcTxt;
-    wxStaticText* fDeclTxt;
-    wxTextCtrl* funcCtrl;
-    wxStaticLine* funcLine;
-    wxStaticText* goesFromTxt;
-    wxSpinCtrl* xMinSpin;
-    wxStaticText* goesToTxt;
-    wxSpinCtrl* xMaxSpin;
-    wxPanel* byListPanel;
-    wxTextCtrl* listCtrl;
-    wxCheckBox* dumpCheck;
-    wxTextCtrl* filePathCtrl;
-    wxButton* calcButton;
-    wxButton* closeButton;
-    wxStaticLine* outLine;
-    wxRichTextCtrl* logCtrl;
-    wxGauge* progressBar;
-    wxStaticText* progressTxt;
-    wxButton* savePreviewButton;
-    wxCheckBox* dataCheck;
-    wxCheckBox* dataFitCheck;
-    wxBitmapButton* helpButton;
+    wxScrolledWindow* _mainPanel;
+    wxChoice* _fractalChoice;
+    wxStaticText* _minXTxt;
+    wxTextCtrl* _minXCtrl;
+    wxStaticText* _maxXTxt;
+    wxTextCtrl* _maxXCtrl;
+    wxStaticText* _minYTxt;
+    wxTextCtrl* _minYCtrl;
+    wxCheckBox* _manualMaxYChk;
+    wxStaticText* _maxYTxt;
+    wxTextCtrl* _maxYCtrl;
+    wxStaticText* _iterTxt;
+    wxTextCtrl* _iterCtrl;
+    wxStaticText* _sizeTxt;
+    wxTextCtrl* _sizeCtrl;
+    wxButton* _fractalOptionsButton;
+    wxStaticText* _nDivTxt;
+    wxSpinCtrl* _nDivSpin;
+    wxButton* _previewButton;
+    wxStaticText* _divTxt;
+    wxNotebook* _divNotebook;
+    wxPanel* _byFunctionPanel;
+    wxStaticText* _funcTxt;
+    wxStaticText* _fDeclTxt;
+    wxTextCtrl* _funcCtrl;
+    wxStaticLine* _funcLine;
+    wxStaticText* _goesFromTxt;
+    wxSpinCtrl* _xMinSpin;
+    wxStaticText* _goesToTxt;
+    wxSpinCtrl* _xMaxSpin;
+    wxPanel* _byListPanel;
+    wxTextCtrl* _listCtrl;
+    wxCheckBox* _dumpCheck;
+    wxTextCtrl* _filePathCtrl;
+    wxButton* _calcButton;
+    wxButton* _closeButton;
+    wxStaticLine* _outLine;
+    wxRichTextCtrl* _logCtrl;
+    wxGauge* _progressBar;
+    wxStaticText* _progressTxt;
+    wxButton* _savePreviewButton;
+    wxCheckBox* _dataCheck;
+    wxCheckBox* _dataFitCheck;
+    wxBitmapButton* _helpButton;
 
-    ConfFractOptDialog* confFractOptDialog;     ///< Fractal options dialog.
-    Fractal* target;                            ///< The fractal target.
-    FractalHandler fractalHandler;              ///< The fractal handler.
-    ImagePanel* previewImage;                   ///< Panel to show a preview of the dimension calculator.
-    Options myOpt;                              ///< Fractal options.
-    DimensionCalculator* dimCalculator;               ///< An array of DimCalculator.
-    sf::Thread** dimThreads;                    ///< An array of sf::Thread pointers.
-    std::vector<int> div;                       ///< Vector to hold the number of divisions.
-    std::vector<double> epsilon;                ///< Vector to hold the epsilon values.
-    std::vector<int> boxCount;                  ///< Vector to hold the box counting.
-    std::vector<ScriptData> loadedScripts;      ///< Parameters and location of user scripts.
-    int divIndex;                               ///< Division index.
-    int threadNumber;                           ///< Number of render threads.
-    std::vector<int> scriptList;                ///< List of script fractals.
-    bool scriptSelected;
-    bool firstRender;
+    ConfigFractalOptionsDialog* _confFractOptDialog; ///< Fractal options dialog.
+    Fractal* _target;                                ///< The fractal target.
+    FractalHandler _fractalHandler;                  ///< The fractal handler.
+    ImagePanel* _previewImage;                       ///< Panel to show a preview of the dimension calculator.
+    Options _myOpt;                                  ///< Fractal options.
+    DimensionCalculator* _dimensionCalculator;       ///< An array of DimCalculator.
+    sf::Thread** _dimThreads;                        ///< An array of sf::Thread pointers.
+    std::vector<int> _div;                           ///< Vector to hold the number of divisions.
+    std::vector<double> _epsilon;                    ///< Vector to hold the epsilon values.
+    std::vector<int> _boxCount;                      ///< Vector to hold the box counting.
+    std::vector<ScriptData> _loadedScripts;          ///< Parameters and location of user scripts.
+    std::vector<int> _scriptList;                    ///< List of script fractals.
+    int _divIndex;                                   ///< Division index.
+    int _threadNumber;                               ///< Number of render threads.
+    bool _scriptSelected;
+    bool _firstRender;
 
-    int previewSize;
-    int size;
+    int _previewSize;
+    int _size;
 
-    bool renderingPreview, calculatingDimension;
-    int progress;
-    sf::Clock clock;
+    bool _renderingPreview, _calculatingDimension;
+    int _progress;
+    sf::Clock _clock;
 
     void OnChangeFractal(wxCommandEvent&);
     void OnRenderPreview(wxCommandEvent&);
@@ -271,13 +271,13 @@ class DimensionFrame : public wxFrame
     void OnSavePreview(wxCommandEvent& );
     void OnHelp(wxCommandEvent&);
 
-    void CreateFractal(int pSize);
-    void GetScriptFractals();        ///< Creates the menu elements corresponding to the script fractals.
-    void WriteText(const wxString &txt) const;    ///< Writes text to the output panel.
+    void CreateFractal(int size);
+    void GetScriptFractals();                   ///< Creates the menu elements corresponding to the script fractals.
+    void WriteText(const wxString &txt) const;  ///< Writes text to the output panel.
 public:
-    DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Calculate Dimension"),
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
-        long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+    explicit DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Calculate Dimension"),
+                            const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
+                            long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~DimensionFrame() override;
 };
 
