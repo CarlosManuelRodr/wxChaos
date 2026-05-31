@@ -118,8 +118,8 @@ endif()
 add_custom_command(
         TARGET wxChaos POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_SOURCE_DIR}/app_resources/English"
-        "$<TARGET_FILE_DIR:wxChaos>/English"
+        "${CMAKE_SOURCE_DIR}/app_resources/"
+        "$<TARGET_FILE_DIR:wxChaos>/"
         COMMENT "Copying application resources..."
 )
 
