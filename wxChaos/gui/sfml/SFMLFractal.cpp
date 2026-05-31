@@ -1,29 +1,12 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
-#include <unordered_map>
 #include <utility>
 #include "Fractal.h"
 #include "SFMLFractal.h"
 #include "Filesystem.h"
 
 constexpr int stdSpeed = 1;
-
-namespace
-{
-    struct ZoomState
-    {
-        std::vector<Rect> history;
-        Rect outermostZoom;
-    };
-
-    std::unordered_map<const SFMLFractal*, ZoomState> zoomStates;
-
-    ZoomState& GetZoomState(const SFMLFractal* fractal)
-    {
-        return zoomStates[fractal];
-    }
-}
 
 /**
 * @brief Moves matrix elements and fills with zeros.
@@ -205,14 +188,13 @@ void SFMLFractal::ApplyView(const Rect& view)
 
 void SFMLFractal::SaveZoom()
 {
-    GetZoomState(this).history.push_back(CaptureCurrentView());
+    _zoomHistory.push_back(CaptureCurrentView());
 }
 
 void SFMLFractal::ResetZoomHistory()
 {
-    ZoomState& zoomState = GetZoomState(this);
-    zoomState.history.clear();
-    zoomState.outermostZoom = CaptureCurrentView();
+    _zoomHistory.clear();
+    _outermostZoom = CaptureCurrentView();
 }
 
 void SFMLFractal::ExpandCurrentView()
@@ -228,7 +210,7 @@ void SFMLFractal::ExpandCurrentView()
         static_cast<double>(_fractal->_screenHeight) / _fractal->_screenWidth;
 
     ApplyView(view);
-    GetZoomState(this).outermostZoom = CaptureCurrentView();
+    _outermostZoom = CaptureCurrentView();
 }
 
 void SFMLFractal::Move()
@@ -361,10 +343,9 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
     _dontDrawTempImage = true;
     ResetMovement();
     _fractal->Resize(window->getSize().x, window->getSize().y);
-    ZoomState& zoomState = GetZoomState(this);
-    zoomState.outermostZoom = CaptureCurrentView();
+    _outermostZoom = CaptureCurrentView();
 
-    for (Rect& view : zoomState.history)
+    for (Rect& view : _zoomHistory)
     {
         view._top = view._bottom + (view._right - view._left) *
             static_cast<double>(_fractal->_screenHeight) / _fractal->_screenWidth;
@@ -435,12 +416,11 @@ void SFMLFractal::ZoomBack()
     const bool stillRendering = _fractal->IsRendering();
     _fractal->StopRender();
     ResetMovement();
-    ZoomState& zoomState = GetZoomState(this);
 
-    if (!zoomState.history.empty())
+    if (!_zoomHistory.empty())
     {
-        ApplyView(zoomState.history.back());
-        zoomState.history.pop_back();
+        ApplyView(_zoomHistory.back());
+        _zoomHistory.pop_back();
     }
     else
     {
@@ -474,7 +454,7 @@ void SFMLFractal::ZoomBack()
 
 Rect SFMLFractal::GetOutermostZoom() const
 {
-    return GetZoomState(this).outermostZoom;
+    return _outermostZoom;
 }
 
 Rect SFMLFractal::GetCurrentZoom() const
@@ -569,7 +549,7 @@ void SFMLFractal::SetColorPalette(const ColorPalettes palette)
 void SFMLFractal::SetExteriorColorMode(const bool mode)
 {
     ClearImageCache();
-    _fractal->SetExtColorMode(mode);
+    _fractal->SetExteriorColorMode(mode);
 }
 
 void SFMLFractal::SetFractalSetColorMode(const bool mode)

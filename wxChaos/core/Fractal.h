@@ -261,7 +261,7 @@ public:
     // Color operations.
     sf::Color GetSetColor() const;
     wxGradient* GetGradient();
-    void SetExtColorMode(bool mode);
+    void SetExteriorColorMode(bool mode);
     void SetFractalSetColorMode(bool mode);
     void SetFractalSetColor(sf::Color color);
     bool GetExteriorColorMode() const;

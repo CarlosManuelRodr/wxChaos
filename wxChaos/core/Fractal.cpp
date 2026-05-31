@@ -788,7 +788,7 @@ wxGradient* Fractal::GetGradient()
     return &_gradient;
 }
 
-void Fractal::SetExtColorMode(const bool mode)
+void Fractal::SetExteriorColorMode(const bool mode)
 {
     // Changes external color mode.
     if (_colorMode != mode)

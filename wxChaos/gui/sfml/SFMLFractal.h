@@ -21,32 +21,34 @@ class Fractal;
 */
 class SFMLFractal
 {
-    Fractal* _fractal;                   ///< Fractal model currently being displayed.
-    sf::Font _font;                      ///< Font used by SFML text overlays.
-    sf::Text _iterationsText;            ///< Iteration-count overlay text.
-    sf::Image _image;                    ///< Current rendered fractal image.
-    sf::Texture _texture;                ///< Texture backing the rendered fractal sprite.
-    sf::Sprite _output;                  ///< Sprite used to draw the rendered fractal image.
-    std::vector<sf::Image> _imgCache;    ///< Cached rendered images used when zooming back.
-    sf::Image _tempImage;                ///< Temporary image shown while a new zoom render is running.
-    sf::Texture _tempTexture;            ///< Texture backing the temporary zoom image.
-    sf::Sprite _tempSprite;              ///< Sprite used to draw the temporary zoom image.
-    sf::Image _geomImage;                ///< Image layer for orbit and geometry overlays.
-    sf::Texture _geomTexture;            ///< Texture backing the geometry overlay.
-    sf::Sprite _outGeom;                 ///< Sprite used to draw the geometry overlay.
+    Fractal* _fractal;                     ///< Fractal model currently being displayed.
+    sf::Font _font;                        ///< Font used by SFML text overlays.
+    sf::Text _iterationsText;              ///< Iteration-count overlay text.
+    sf::Image _image;                      ///< Current rendered fractal image.
+    sf::Texture _texture;                  ///< Texture backing the rendered fractal sprite.
+    sf::Sprite _output;                    ///< Sprite used to draw the rendered fractal image.
+    std::vector<sf::Image> _imgCache;      ///< Cached rendered images used when zooming back.
+    sf::Image _tempImage;                  ///< Temporary image shown while a new zoom render is running.
+    sf::Texture _tempTexture;              ///< Texture backing the temporary zoom image.
+    sf::Sprite _tempSprite;                ///< Sprite used to draw the temporary zoom image.
+    sf::Image _geomImage;                  ///< Image layer for orbit and geometry overlays.
+    sf::Texture _geomTexture;              ///< Texture backing the geometry overlay.
+    sf::Sprite _outGeom;                   ///< Sprite used to draw the geometry overlay.
     sf::RectangleShape _iterationsOverlay; ///< Background shape for the iteration-count overlay.
-    bool _movement[4]{};                 ///< Active keyboard movement state.
+    std::vector<Rect> _zoomHistory;        ///< World-coordinate views available for zoom-back.
+    Rect _outermostZoom;                   ///< Farthest world-coordinate view reached by zoom-back.
+    bool _movement[4]{};                   ///< Active keyboard movement state.
     int _xVel;
     int _yVel;
     int _posX;
     int _posY;
-    Vector2Int _committedPanOffset;      ///< Settled pan offset waiting for map reuse.
+    Vector2Int _committedPanOffset;        ///< Settled pan offset waiting for map reuse.
     bool _hasCommittedPanOffset;
     bool _changeFractalIter;
-    bool _imgInVector;                   ///< True when there are cached images available for zoom-back.
-    bool _usingRenderImage;              ///< True when the current frame came from a cached zoom-back image.
-    bool _zoomingBack;                   ///< True while the view is being redrawn after zooming back.
-    bool _dontDrawTempImage;             ///< Suppresses drawing the temporary image layer when it would be stale.
+    bool _imgInVector;                     ///< True when there are cached images available for zoom-back.
+    bool _usingRenderImage;                ///< True when the current frame came from a cached zoom-back image.
+    bool _zoomingBack;                     ///< True while the view is being redrawn after zooming back.
+    bool _dontDrawTempImage;               ///< Suppresses drawing the temporary image layer when it would be stale.
 
     ///@brief Draws fractal maps into the SFML image and then draws the output sprite.
     ///@param window Target window.

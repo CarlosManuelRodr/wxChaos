@@ -19,7 +19,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     _maxIter = scriptData.defaultIter;
     _juliaVariety = scriptData.juliaVariety;
     _redrawAlways = scriptData.redrawAlways;
-    this->SetExtColorMode(scriptData.extColor);
+    this->SetExteriorColorMode(scriptData.extColor);
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
