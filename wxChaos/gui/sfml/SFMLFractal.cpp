@@ -6,6 +6,8 @@
 #include "SFMLFractal.h"
 #include "Filesystem.h"
 
+constexpr int stdSpeed = 1;
+
 /**
 * @brief Moves matrix elements and fills with zeros.
 *
@@ -16,8 +18,8 @@
 * @param moveX Elements to move in the X axis.
 * @param moveY Elements to move in the Y axis.
 */
-template<class M> void MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,
-                                  const int moveX, const int moveY)
+template<class M> void SFMLFractal::MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,
+                                               const int moveX, const int moveY)
 {
     if (matrix == nullptr || matrixWidth == 0 || matrixHeight == 0)
         return;
@@ -73,6 +75,7 @@ SFMLFractal::SFMLFractal(Fractal* fractal)
     _zoomingBack = false;
     _dontDrawTempImage = false;
     _fractal = fractal;
+    ResetMovement();
     EnsureFontLoaded();
     ResetDisplayImages();
 }
@@ -82,6 +85,7 @@ void SFMLFractal::SetFractal(Fractal* fractal)
     _fractal = fractal;
     _changeFractalIter = true;
     _dontDrawTempImage = true;
+    ResetMovement();
     EnsureFontLoaded();
     ClearImageCache();
     ResetDisplayImages();
@@ -147,6 +151,130 @@ void SFMLFractal::UpdateIterationsOverlay()
     _changeFractalIter = false;
 }
 
+void SFMLFractal::ResetMovement()
+{
+    for (bool& direction : _movement)
+        direction = false;
+
+    _xVel = 0;
+    _yVel = 0;
+    _posX = 0;
+    _posY = 0;
+    _committedPanOffset = {0, 0};
+    _hasCommittedPanOffset = false;
+}
+
+void SFMLFractal::MoveMaps()
+{
+    MoveMatrix<bool>(_fractal->_setMap, _fractal->_screenHeight, _fractal->_screenWidth,
+        _committedPanOffset.y, _committedPanOffset.x);
+    MoveMatrix<int>(_fractal->_colorMap, _fractal->_screenHeight, _fractal->_screenWidth,
+        _committedPanOffset.y, _committedPanOffset.x);
+    MoveMatrix<unsigned int>(_fractal->_auxMap, _fractal->_screenHeight, _fractal->_screenWidth,
+        _committedPanOffset.y, _committedPanOffset.x);
+}
+
+void SFMLFractal::Move()
+{
+    if (!_fractal->_rendered)
+        return;
+
+    if (_movement[Left])
+        _xVel += stdSpeed;
+    if (_movement[Right])
+        _xVel -= stdSpeed;
+    if (_movement[Up])
+        _yVel += stdSpeed;
+    if (_movement[Down])
+        _yVel -= stdSpeed;
+
+    if (!_movement[Left] && !_movement[Right] && !_movement[Up] && !_movement[Down])
+    {
+        if (_xVel > 0) _xVel -= stdSpeed;
+        if (_xVel < 0) _xVel += stdSpeed;
+        if (_yVel > 0) _yVel -= stdSpeed;
+        if (_yVel < 0) _yVel += stdSpeed;
+    }
+
+    if (_xVel != 0 || _yVel != 0)
+    {
+        const double fx = (_fractal->_maxX - _fractal->_minX) / _fractal->_screenWidth;
+        const double fy = (_fractal->_maxY - _fractal->_minY) / _fractal->_screenHeight;
+
+        _fractal->_minX -= _xVel * fx;
+        _fractal->_maxX -= _xVel * fx;
+        _fractal->_minY += _yVel * fy;
+        _fractal->_maxY += _yVel * fy;
+
+        _posX += _xVel;
+        _posY += _yVel;
+    }
+    else if (_posX != 0 || _posY != 0)
+    {
+        if (_fractal->_paused && !_fractal->_pausing)
+        {
+            _fractal->_rendering = false;
+            _fractal->_rendered = false;
+            _fractal->_paused = false;
+            ResetMovement();
+        }
+        else
+        {
+            _committedPanOffset = {_posX, _posY};
+            _hasCommittedPanOffset = true;
+            _posX = 0;
+            _posY = 0;
+        }
+    }
+}
+
+bool SFMLFractal::IsMoving() const
+{
+    return _xVel != 0 || _yVel != 0;
+}
+
+void SFMLFractal::SetMovement(const Direction direction)
+{
+    switch (direction)
+    {
+        case Up:
+            _movement[Up] = true;
+            break;
+        case Down:
+            _movement[Down] = true;
+            break;
+        case Left:
+            _movement[Left] = true;
+            break;
+        case Right:
+            _movement[Right] = true;
+            break;
+        default:
+            break;
+    }
+}
+
+void SFMLFractal::ReleaseMovement(const Direction direction)
+{
+    switch (direction)
+    {
+        case Up:
+            _movement[Up] = false;
+            break;
+        case Down:
+            _movement[Down] = false;
+            break;
+        case Left:
+            _movement[Left] = false;
+            break;
+        case Right:
+            _movement[Right] = false;
+            break;
+        default:
+            break;
+    }
+}
+
 void SFMLFractal::HandleEvent(const sf::Event& event)
 {
     if (!_fractal->IsRendering() && event.type == sf::Event::KeyPressed)
@@ -165,7 +293,7 @@ void SFMLFractal::HandleEvent(const sf::Event& event)
     }
 
     if (!_fractal->_onWxCtrl && event.type == sf::Event::MouseButtonPressed &&
-        event.mouseButton.button == sf::Mouse::Right && _fractal->_xVel == 0 && _fractal->_yVel == 0)
+        event.mouseButton.button == sf::Mouse::Right && !IsMoving())
     {
         ZoomBack();
     }
@@ -174,6 +302,7 @@ void SFMLFractal::HandleEvent(const sf::Event& event)
 void SFMLFractal::Resize(const sf::RenderWindow* window)
 {
     _dontDrawTempImage = true;
+    ResetMovement();
     _fractal->Resize(window->getSize().x, window->getSize().y);
     _fractal->_rendered = false;
     _fractal->_rendering = false;
@@ -191,6 +320,8 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
 
 void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 {
+    ResetMovement();
+
     if (_fractal->_paused)
     {
         ClearImageCache();
@@ -221,6 +352,7 @@ void SFMLFractal::ZoomBack()
 {
     const bool stillRendering = _fractal->IsRendering();
     _fractal->ZoomBack();
+    ResetMovement();
 
     if (_imgInVector && !_fractal->_varGradient && !_imgCache.empty() && !stillRendering)
     {
@@ -244,6 +376,8 @@ void SFMLFractal::ZoomBack()
 
 void SFMLFractal::Redraw()
 {
+    ResetMovement();
+
     if (_fractal->_colorMode)
     {
         _tempImage = _image;
@@ -480,21 +614,22 @@ void SFMLFractal::DrawGeometry(sf::RenderWindow* window) const
 
 void SFMLFractal::Show(sf::RenderWindow* window)
 {
-    if (_fractal->_rendered && (_fractal->_xVel != 0 || _fractal->_yVel != 0))
+    if (_fractal->_rendered && IsMoving())
     {
         // While panning, only draw the shifted render output. Showing the
         // cached preview sprite here leaves stale pixels in the newly exposed area.
         _dontDrawTempImage = true;
-        _output.setPosition(static_cast<float>(_fractal->_posX), static_cast<float>(_fractal->_posY));
+        _output.setPosition(static_cast<float>(_posX), static_cast<float>(_posY));
     }
     else
     {
-        if (_fractal->_moving)
+        Vector2Int renderOffset = {0, 0};
+
+        if (_hasCommittedPanOffset)
         {
-            MoveMatrix<bool>(_fractal->_setMap, _fractal->_screenHeight, _fractal->_screenWidth, _fractal->_yMoved, _fractal->_xMoved);
-            MoveMatrix<int>(_fractal->_colorMap, _fractal->_screenHeight, _fractal->_screenWidth, _fractal->_yMoved, _fractal->_xMoved);
-            MoveMatrix<unsigned int>(_fractal->_auxMap, _fractal->_screenHeight, _fractal->_screenWidth, _fractal->_yMoved, _fractal->_xMoved);
-            _fractal->_moving = false;
+            renderOffset = _committedPanOffset;
+            MoveMaps();
+            _hasCommittedPanOffset = false;
             _fractal->_rendered = false;
         }
 
@@ -502,21 +637,20 @@ void SFMLFractal::Show(sf::RenderWindow* window)
         {
             if (_usingRenderImage)
             {
-                _fractal->_moving = false;
                 _usingRenderImage = false;
-                _fractal->_xMoved = 0;
-                _fractal->_yMoved = 0;
+                renderOffset = {0, 0};
+                _committedPanOffset = {0, 0};
+                _hasCommittedPanOffset = false;
             }
 
             if (!_fractal->_rendering)
             {
                 _fractal->_rendering = true;
-                _fractal->PrepareRender();
+                _fractal->PrepareRender(renderOffset);
                 _fractal->Render();
             }
 
-            _fractal->_xMoved = 0;
-            _fractal->_yMoved = 0;
+            _committedPanOffset = {0, 0};
 
             DrawMaps(window);
 

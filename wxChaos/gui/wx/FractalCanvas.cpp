@@ -209,7 +209,7 @@ void FractalCanvas::OnUpdate()
     if (_sliderMode && _pointerChange)
         _sfmlFractal->SetK(_kReal, _kImaginary);
 
-    _target->Move();
+    _sfmlFractal->Move();
     _sfmlFractal->Show(this);
 
     // Avoid drawing GUI elements if the fractal is rendering.
@@ -521,7 +521,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         }
     }
     // Selection event.
-    else if (!_target->IsRendering() && !_target->IsMoving())
+    else if (!_target->IsRendering() && !_sfmlFractal->IsMoving())
         _selection->ClickEvent(event);
 
     // Mouse event.
@@ -551,7 +551,7 @@ void FractalCanvas::OnUnClick(wxMouseEvent& event)
         _screenPointer->UnClickEvent(event);
     else
     {
-        if (!_target->IsRendering() && !_target->IsMoving())
+        if (!_target->IsRendering() && !_sfmlFractal->IsMoving())
         {
             if (_selection->UnClickEvent(event))
             {
@@ -592,7 +592,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     }
     else
     {
-        if (!_target->IsRendering() && !_target->IsMoving())
+        if (!_target->IsRendering() && !_sfmlFractal->IsMoving())
             _selection->MoveEvent(event);
     }
 
@@ -635,22 +635,22 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     {
         case WXK_UP:
         {
-            _target->SetMovement(Up);
+            _sfmlFractal->SetMovement(Up);
             break;
         }
         case WXK_DOWN:
         {
-            _target->SetMovement(Down);
+            _sfmlFractal->SetMovement(Down);
             break;
         }
         case WXK_LEFT:
         {
-            _target->SetMovement(Left);
+            _sfmlFractal->SetMovement(Left);
             break;
         }
         case WXK_RIGHT:
         {
-            _target->SetMovement(Right);
+            _sfmlFractal->SetMovement(Right);
             break;
         }
         default: break;
@@ -658,13 +658,13 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
 
     const wxChar key = event.GetUnicodeKey();
     if (key == wxT('W') || key == wxT('w'))
-        _target->SetMovement(Up);
+        _sfmlFractal->SetMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
-        _target->SetMovement(Down);
+        _sfmlFractal->SetMovement(Down);
     else if (key == wxT('A') || key == wxT('a'))
-        _target->SetMovement(Left);
+        _sfmlFractal->SetMovement(Left);
     else if (key == wxT('D') || key == wxT('d'))
-        _target->SetMovement(Right);
+        _sfmlFractal->SetMovement(Right);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
@@ -674,22 +674,22 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
     {
         case WXK_UP:
         {
-            _target->ReleaseMovement(Up);
+            _sfmlFractal->ReleaseMovement(Up);
             break;
         }
         case WXK_DOWN:
         {
-            _target->ReleaseMovement(Down);
+            _sfmlFractal->ReleaseMovement(Down);
             break;
         }
         case WXK_LEFT:
         {
-            _target->ReleaseMovement(Left);
+            _sfmlFractal->ReleaseMovement(Left);
             break;
         }
         case WXK_RIGHT:
         {
-            _target->ReleaseMovement(Right);
+            _sfmlFractal->ReleaseMovement(Right);
             break;
         }
         default: break;
@@ -697,11 +697,11 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 
     const wxChar key = event.GetUnicodeKey();
     if (key == wxT('W') || key == wxT('w'))
-        _target->ReleaseMovement(Up);
+        _sfmlFractal->ReleaseMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
-        _target->ReleaseMovement(Down);
+        _sfmlFractal->ReleaseMovement(Down);
     else if (key == wxT('A') || key == wxT('a'))
-        _target->ReleaseMovement(Left);
+        _sfmlFractal->ReleaseMovement(Left);
     else if (key == wxT('D') || key == wxT('d'))
-        _target->ReleaseMovement(Right);
+        _sfmlFractal->ReleaseMovement(Right);
 }

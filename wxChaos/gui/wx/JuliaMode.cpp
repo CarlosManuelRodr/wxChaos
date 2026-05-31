@@ -87,13 +87,13 @@ void JuliaMode::HandleEvent()
             switch (_event.key.code)
             {
                 case sf::Keyboard::W:
-                case sf::Keyboard::Up:    _juliaFractal.GetFractalPtr()->SetMovement(Up); break;
+                case sf::Keyboard::Up:    _sfmlFractal->SetMovement(Up); break;
                 case sf::Keyboard::S:
-                case sf::Keyboard::Down:  _juliaFractal.GetFractalPtr()->SetMovement(Down); break;
+                case sf::Keyboard::Down:  _sfmlFractal->SetMovement(Down); break;
                 case sf::Keyboard::A:
-                case sf::Keyboard::Left:  _juliaFractal.GetFractalPtr()->SetMovement(Left); break;
+                case sf::Keyboard::Left:  _sfmlFractal->SetMovement(Left); break;
                 case sf::Keyboard::D:
-                case sf::Keyboard::Right: _juliaFractal.GetFractalPtr()->SetMovement(Right); break;
+                case sf::Keyboard::Right: _sfmlFractal->SetMovement(Right); break;
                 default: break;
             }
         }
@@ -104,13 +104,13 @@ void JuliaMode::HandleEvent()
             switch (_event.key.code)
             {
                 case sf::Keyboard::W:
-                case sf::Keyboard::Up:    _juliaFractal.GetFractalPtr()->ReleaseMovement(Up); break;
+                case sf::Keyboard::Up:    _sfmlFractal->ReleaseMovement(Up); break;
                 case sf::Keyboard::S:
-                case sf::Keyboard::Down:  _juliaFractal.GetFractalPtr()->ReleaseMovement(Down); break;
+                case sf::Keyboard::Down:  _sfmlFractal->ReleaseMovement(Down); break;
                 case sf::Keyboard::A:
-                case sf::Keyboard::Left:  _juliaFractal.GetFractalPtr()->ReleaseMovement(Left); break;
+                case sf::Keyboard::Left:  _sfmlFractal->ReleaseMovement(Left); break;
                 case sf::Keyboard::D:
-                case sf::Keyboard::Right: _juliaFractal.GetFractalPtr()->ReleaseMovement(Right); break;
+                case sf::Keyboard::Right: _sfmlFractal->ReleaseMovement(Right); break;
                 default: break;
             }
         }
@@ -125,7 +125,7 @@ void JuliaMode::HandleEvent()
 
     // Updates window.
     _window->clear();
-    _juliaFractal.GetFractalPtr()->Move(); // Move no longer takes sf::Input
+    _sfmlFractal->Move();
     _sfmlFractal->Show(_window);
     _selection->Show(_window);
     _play->Show(_window);

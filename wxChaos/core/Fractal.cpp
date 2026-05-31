@@ -8,7 +8,6 @@
 #include "SystemUtils.h"
 using namespace std;
 
-constexpr int stdSpeed = 1;
 constexpr ColorPalettes defaultGradientStyle = Retro;
 const wxString defaultGradientString = wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);");
 
@@ -56,13 +55,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height)
         }
     }
 
-    // Set position and velocities.
-    _xVel = 0;
-    _yVel = 0;
-    _posX = 0;
-    _posY = 0;
-    _xMoved = 0;
-    _yMoved = 0;
+    _pendingRenderOffset = {0, 0};
 
     // Set fractal properties.
     _type = FractalType::None;
@@ -98,7 +91,6 @@ Fractal::Fractal(const unsigned int width, const unsigned int height)
     _pausing = false;
     _justLaunchThreads = false;
     _maxIter = 100;
-    _moving = false;
     _varGradChange = false;
     _refreshImage = false;
     _maxColorMapVal = 0;
@@ -108,9 +100,6 @@ Fractal::Fractal(const unsigned int width, const unsigned int height)
     _changeFractalProp = false;
     _geomFigure = false;
     _onWxCtrl = false;
-
-    for (bool & i : _movement)
-        i = false;
 
     // Creates default color palette.
     _relativeColor = false;
@@ -206,13 +195,13 @@ std::vector<RenderRegion> Fractal::BuildRenderRegions() const
     const int screenWidth = static_cast<int>(_screenWidth);
     const int screenHeight = static_cast<int>(_screenHeight);
 
-    if (_xMoved == 0 && _yMoved == 0)
+    if (_pendingRenderOffset.x == 0 && _pendingRenderOffset.y == 0)
     {
         regions.emplace_back(0, 0, screenWidth, screenHeight);
         return regions;
     }
 
-    if ((abs(_xMoved) >= screenWidth) || (abs(_yMoved) >= screenHeight))
+    if ((abs(_pendingRenderOffset.x) >= screenWidth) || (abs(_pendingRenderOffset.y) >= screenHeight))
     {
         regions.emplace_back(0, 0, screenWidth, screenHeight);
         return regions;
@@ -221,24 +210,24 @@ std::vector<RenderRegion> Fractal::BuildRenderRegions() const
     int yStart = 0;
     int yEnd = screenHeight;
 
-    if (_yMoved > 0)
+    if (_pendingRenderOffset.y > 0)
     {
-        regions.emplace_back(0, 0, screenWidth, _yMoved);
-        yStart = _yMoved;
+        regions.emplace_back(0, 0, screenWidth, _pendingRenderOffset.y);
+        yStart = _pendingRenderOffset.y;
     }
-    else if (_yMoved < 0)
+    else if (_pendingRenderOffset.y < 0)
     {
-        yEnd = screenHeight + _yMoved;
+        yEnd = screenHeight + _pendingRenderOffset.y;
         regions.emplace_back(0, yEnd, screenWidth, screenHeight);
     }
 
-    if (_xMoved > 0)
+    if (_pendingRenderOffset.x > 0)
     {
-        regions.emplace_back(0, yStart, _xMoved, yEnd);
+        regions.emplace_back(0, yStart, _pendingRenderOffset.x, yEnd);
     }
-    else if (_xMoved < 0)
+    else if (_pendingRenderOffset.x < 0)
     {
-        regions.emplace_back(screenWidth + _xMoved, yStart, screenWidth, yEnd);
+        regions.emplace_back(screenWidth + _pendingRenderOffset.x, yStart, screenWidth, yEnd);
     }
 
     return regions;
@@ -398,16 +387,17 @@ void Fractal::Resize(const unsigned int width, const unsigned int height)
     for (unsigned int i = 0; i < _zoom[3].size(); i++)
         _zoom[3][i] = _zoom[2][i] + (_zoom[1][i] - _zoom[0][i]) * static_cast<double>(_screenHeight) / _screenWidth;
 }
-void Fractal::PrepareRender()
+void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
 {
     this->PreRender();
+    _pendingRenderOffset = reusedMapOffset;
 
     // Checks if the movement is valid.
-    if ((abs(_xMoved) >= _screenWidth) || (abs(_yMoved) >= _screenHeight))
+    if ((abs(_pendingRenderOffset.x) >= _screenWidth) || (abs(_pendingRenderOffset.y) >= _screenHeight))
         _redrawAll = true;
 
     // Clear maps.
-    if ((!_xMoved && !_yMoved) || _redrawAll || _redrawAlways)
+    if ((!_pendingRenderOffset.x && !_pendingRenderOffset.y) || _redrawAll || _redrawAlways)
     {
         for (int i = 0; i < _screenWidth; i++)
         {
@@ -418,8 +408,7 @@ void Fractal::PrepareRender()
                 _auxMap[i][j] = 0;
             }
         }
-        _xMoved = 0;
-        _yMoved = 0;
+        _pendingRenderOffset = {0, 0};
         _redrawAll = false;
     }
 }
@@ -446,9 +435,7 @@ void Fractal::SetAreaOfView(const sf::Rect<int> pixelCoordinates)
     _rendered = false;
     _rendering = false;
 
-    _posY = _posX = 0;
-    _yVel = _xVel = 0;
-    _yMoved = _xMoved = 0;
+    _pendingRenderOffset = {0, 0};
 
     _orbitDrawn = false;
 }
@@ -465,72 +452,7 @@ void Fractal::SetAreaOfView(const Rect& worldCoordinates)
     _rendered = false;
     _rendering = false;
 
-    _posY = _posX = 0;
-    _yVel = _xVel = 0;
-    _yMoved = _xMoved = 0;
-}
-void Fractal::Move()
-{
-    if (_rendered)
-    {
-        // If any movement button is pressed, move the image and speed up the movement.
-        if (_movement[Left])
-            _xVel += stdSpeed;
-        if (_movement[Right])
-            _xVel -= stdSpeed;
-        if (_movement[Up])
-            _yVel += stdSpeed;
-        if (_movement[Down])
-            _yVel -= stdSpeed;
-
-        // If isn't pressed slow down the image.
-        if (!_movement[Left] && !_movement[Right] && !_movement[Up] && !_movement[Down])
-        {
-            if (_xVel > 0) _xVel -= stdSpeed;
-            if (_xVel < 0) _xVel += stdSpeed;
-            if (_yVel > 0) _yVel -= stdSpeed;
-            if (_yVel < 0) _yVel += stdSpeed;
-        }
-
-        // Updates the coordinates.
-        if (_xVel != 0 || _yVel != 0)
-        {
-            const double fx = (_maxX - _minX) / _screenWidth;
-            const double fy = (_maxY - _minY) / _screenHeight;
-
-            _minX -= _xVel * fx;
-            _maxX -= _xVel * fx;
-            _minY += _yVel * fy;
-            _maxY += _yVel * fy;
-
-            _posX += _xVel;
-            _posY += _yVel;
-
-            // A new render is needed.
-            //rendered = false;
-            _moving = true;
-        }
-        else if (_posX != 0 || _posY != 0)
-        {
-            if (_paused && !_pausing)
-            {
-                _rendering = false;
-                _rendered = false;
-                _paused = false;
-                _xMoved = 0;
-                _yMoved = 0;
-                _moving = false;
-            }
-            // If the image has stopped saves the total amount of movement.
-            else
-            {
-                _xMoved = _posX;
-                _yMoved = _posY;
-                _posX = 0;
-                _posY = 0;
-            }
-        }
-    }
+    _pendingRenderOffset = {0, 0};
 }
 void Fractal::ZoomBack()
 {
@@ -575,10 +497,7 @@ void Fractal::ZoomBack()
     _orbitDrawn = false;
     _paused = false;
 
-    _xMoved = 0;
-    _yMoved = 0;
-    _posX = 0;
-    _posY = 0;
+    _pendingRenderOffset = {0, 0};
 
     _orbitDrawn = false;
 }
@@ -777,11 +696,6 @@ bool** Fractal::GetSetMap() const
 {
     return _setMap;
 }
-bool Fractal::IsMoving() const
-{
-    return _xVel != 0 || _yVel != 0;
-}
-
 void Fractal::SetFractalPropChanged()
 {
     _changeFractalProp = true;
@@ -795,61 +709,6 @@ bool Fractal::GetChangeFractalProp()
 void Fractal::SetOnWxCtrl(const bool mode)
 {
     _onWxCtrl = mode;
-}
-void Fractal::SetMovement(const Direction direction)
-{
-    switch (direction)
-    {
-        case Up:
-            {
-                _movement[Up] = true;
-                break;
-            }
-        case Down:
-            {
-                _movement[Down] = true;
-                break;
-            }
-        case Left:
-            {
-                _movement[Left] = true;
-                break;
-            }
-        case Right:
-            {
-                _movement[Right] = true;
-                break;
-            }
-        default: break;
-    }
-}
-
-void Fractal::ReleaseMovement(const Direction direction)
-{
-    switch (direction)
-    {
-        case Up:
-            {
-                _movement[Up] = false;
-                break;
-            }
-        case Down:
-            {
-                _movement[Down] = false;
-                break;
-            }
-        case Left:
-            {
-                _movement[Left] = false;
-                break;
-            }
-        case Right:
-            {
-                _movement[Right] = false;
-                break;
-            }
-        default: break;
-    }
 }
 // Save image.
 sf::Image Fractal::GetRenderedImage()

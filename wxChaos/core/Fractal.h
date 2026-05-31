@@ -9,7 +9,6 @@
 #include "wx/wxGradient.h"
 #include "types/FractalType.h"
 #include "types/RenderingAlgorithmType.h"
-#include "types/Direction.h"
 #include "geometry/LineData.h"
 #include "geometry/CircleData.h"
 #include "geometry/Vector2Int.h"
@@ -63,11 +62,6 @@ protected:
     double _kReal;
     double _kImaginary;
 
-    // Image properties.
-    int _xVel, _yVel;                 ///< Speed of movement of the fractal image.
-    int _posX, _posY;                 ///< Position of the fractal image.
-    int _xMoved, _yMoved;             ///< Total movement of the image. Used just before redering a new area.
-
     std::vector<double> _zoom[4];     ///< Saves the performed zooms.
     Rect _outermostZoom;
     unsigned int _screenWidth;
@@ -93,8 +87,7 @@ protected:
     bool _refreshImage;
 
     // Status variables.
-    bool _movement[4]{};
-    bool _moving;                           ///< Movement status.
+    Vector2Int _pendingRenderOffset;        ///< Reused map offset used to render only newly exposed areas.
     bool _rendered;
     bool _rendering;
     bool _paused;
@@ -177,7 +170,7 @@ public:
     void Resize(unsigned int width, unsigned int height);
 
     ///@brief Perform some adjustments needed before the rendering starts.
-    void PrepareRender();
+    void PrepareRender(Vector2Int reusedMapOffset = {0, 0});
 
     ///@brief Resizes the viewing area of the fractal.
     ///@param pixelCoordinates Selection area in pixel coordinates.
@@ -187,7 +180,6 @@ public:
     ///@param worldCoordinates Selection area in world coordinates.
     void SetAreaOfView(const Rect& worldCoordinates);
 
-    void Move();                       ///< Moves the fractal image.
     void ZoomBack();                   ///< Does a zoom-back in the selection area.
     void Redraw();                     ///< Redraws the fractal.
 
@@ -272,12 +264,9 @@ public:
     ///@brief Returns a pointer to the set map.
     bool** GetSetMap() const;
 
-    bool IsMoving() const;
     void SetFractalPropChanged();
     bool GetChangeFractalProp();
     void SetOnWxCtrl(bool mode);
-    void SetMovement(Direction direction);
-    void ReleaseMovement(Direction direction);
 
     // Save image.
     sf::Image GetRenderedImage();
@@ -355,7 +344,8 @@ template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer*
     const bool useRenderPool = _renderJobCompatible && !_justLaunchThreads;
     const int tileHeight = useRenderPool ? 16 : 0;
     const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions, tileHeight);
-    const bool relaunchExistingWork = _justLaunchThreads && _xMoved == 0 && _yMoved == 0;
+    const bool relaunchExistingWork = _justLaunchThreads && _pendingRenderOffset.x == 0 && _pendingRenderOffset.y == 0;
+    _pendingRenderOffset = {0, 0};
 
     if (useRenderPool)
     {

@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "ColorPalettes.h"
+#include "geometry/Vector2Int.h"
+#include "types/Direction.h"
 #include "types/RenderingAlgorithmType.h"
 #include "wx/wxGradient.h"
 
@@ -32,6 +34,13 @@ class SFMLFractal
     sf::Texture _geomTexture;            ///< Texture backing the geometry overlay.
     sf::Sprite _outGeom;                 ///< Sprite used to draw the geometry overlay.
     sf::RectangleShape _iterationsOverlay; ///< Background shape for the iteration-count overlay.
+    bool _movement[4]{};                 ///< Active keyboard movement state.
+    int _xVel;
+    int _yVel;
+    int _posX;
+    int _posY;
+    Vector2Int _committedPanOffset;      ///< Settled pan offset waiting for map reuse.
+    bool _hasCommittedPanOffset;
     bool _changeFractalIter;
     bool _imgInVector;                   ///< True when there are cached images available for zoom-back.
     bool _usingRenderImage;              ///< True when the current frame came from a cached zoom-back image.
@@ -58,6 +67,16 @@ class SFMLFractal
     ///@brief Updates the iteration-count text and background from the measured rendered text bounds.
     void UpdateIterationsOverlay();
 
+    ///@brief Resets panning input, velocity, and pending render offset.
+    void ResetMovement();
+
+    ///@brief Moves matrix elements and fills the exposed area with zero values.
+    template<class M>
+    void MoveMatrix(M** matrix, unsigned int matrixWidth, unsigned int matrixHeight, int moveX, int moveY);
+
+    ///@brief Shifts the rendered maps after panning settles.
+    void MoveMaps();
+
 public:
     ///@brief Constructs an SFML fractal presenter bound to a fractal.
     ///@param fractal Fractal model to present.
@@ -74,6 +93,20 @@ public:
     ///@brief Handles SFML input events that affect the fractal view.
     ///@param event SFML event to process.
     void HandleEvent(const sf::Event& event);
+
+    ///@brief Updates inertial panning state for one frame.
+    void Move();
+
+    ///@brief Returns true while the fractal is actively panning.
+    bool IsMoving() const;
+
+    ///@brief Starts movement in the given direction.
+    ///@param direction Direction to activate.
+    void SetMovement(Direction direction);
+
+    ///@brief Stops movement in the given direction.
+    ///@param direction Direction to deactivate.
+    void ReleaseMovement(Direction direction);
 
     ///@brief Resizes the fractal maps and SFML presentation layers to match the window.
     ///@param window Window whose size will be copied.
