@@ -22,31 +22,30 @@
 class wxGradient
 {
 protected:
-	wxColor lerp(wxColor c1, wxColor c2, double value);
-	std::vector<wxColor> m_stops;
+	static wxColour Lerp(const wxColour& c1, const wxColour& c2, double value);
+	std::vector<wxColour> m_stops;
 	int m_min, m_max;
 
 public:
 	wxGradient();
-	wxGradient(std::vector<wxColor> stops, int min, int max);
-	bool Create(std::vector<wxColor> stops, int min, int max);
+	wxGradient(const std::vector<wxColour>& stops, int min, int max);
 	virtual ~wxGradient();
-	wxColour getColorAt(int value);
-	void addColorStop(wxColor col);
-	void insertColorStop(int index, wxColour col);
-	void removeColorStop(int index);
-	void editColorStop(int index, wxColour col);
-	void setMin(int min);
-	int getMin();
-	void setMax(int max);
-	int getMax();
-	void setStops(std::vector<wxColor> stops);
+	wxColour GetColorAt(int value) const;
+	void AddColorStop(const wxColour& col);
+	void InsertColorStop(int index, const wxColour& col);
+	void RemoveColorStop(int index);
+	void EditColorStop(int index, const wxColour& col);
+	void SetMin(int min);
+	int GetMin() const;
+	void SetMax(int max);
+	int GetMax() const;
+	void SetStops(const std::vector<wxColour>& stops);
+	std::vector<wxColour> GetStops();
 
 	///@brief Creates gradient from wxString.
 	///@param str An example of gradient wxString would be: rgb(255,255,255);rgb(34,92,12);rgb(0,0,0);.
-	void fromString(wxString str);
-	wxString toString();
-	std::vector<wxColor> getStops();
+	void FromString(wxString str);
+	wxString ToString();
 };
 
 #endif

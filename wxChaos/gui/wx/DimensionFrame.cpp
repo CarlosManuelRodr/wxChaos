@@ -1386,8 +1386,8 @@ void DimensionFrame::OnFractalOpt(wxCommandEvent&)
 }
 void DimensionFrame::OnSavePreview(wxCommandEvent&)
 {
-    wxFileDialog* openFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
-        wxT("dimension_preview.bmp"), wxT("BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
+    auto openFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
+                               wxT("dimension_preview.bmp"), wxT("BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
     if (openFileDialog->ShowModal() == wxID_OK)
     {
         wxString wxFileName = openFileDialog->GetPath();

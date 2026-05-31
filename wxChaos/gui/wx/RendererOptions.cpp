@@ -239,7 +239,7 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
 
     _gradPalSize = new wxSpinCtrl(_gradientLabel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 20000, 300);
     gradSizer->Add(_gradPalSize, 0, wxALL, 5);
-    _gradPalSize->SetValue(_target->GetGradient()->getMax() - _target->GetGradient()->getMin());
+    _gradPalSize->SetValue(_target->GetGradient()->GetMax() - _target->GetGradient()->GetMin());
 
     _gradientLabel->SetSizer(gradSizer);
     _gradientLabel->Layout();
@@ -453,9 +453,9 @@ void RendererOptions::GradientColorChangeSelection(wxCommandEvent&)
     // Changes the gradStyle.
     _gradFractalColor.SetStyle(static_cast<ColorPalettes>(_gradStylesChoice->GetCurrentSelection()));
     wxGradient myGrad;
-    myGrad.setMin(0);
-    myGrad.setMax(_gradFractalColor.paletteSize);
-    myGrad.fromString(_gradFractalColor.grad);
+    myGrad.SetMin(0);
+    myGrad.SetMax(_gradFractalColor.paletteSize);
+    myGrad.FromString(_gradFractalColor.grad);
     _presenter->SetColorPalette(static_cast<ColorPalettes>(_gradStylesChoice->GetCurrentSelection()));
     _presenter->SetGradient(myGrad);
     _gradPalSize->SetValue(_gradFractalColor.paletteSize);
@@ -588,12 +588,12 @@ wxBitmap RendererOptions::PaintGradient() const
 {
     wxBufferedDC dc;
     wxGradient m_gradient = *_target->GetGradient();
-    m_gradient.setMax(300);
-    const auto gradientBmp = new wxBitmap(m_gradient.getMax()-m_gradient.getMin(), 75);
+    m_gradient.SetMax(300);
+    const auto gradientBmp = new wxBitmap(m_gradient.GetMax()-m_gradient.GetMin(), 75);
     dc.SelectObject(*gradientBmp);
-    for (int i = m_gradient.getMin(); i<m_gradient.getMax(); i++)
+    for (int i = m_gradient.GetMin(); i<m_gradient.GetMax(); i++)
     {
-        dc.SetPen(wxPen(m_gradient.getColorAt(i), 1));
+        dc.SetPen(wxPen(m_gradient.GetColorAt(i), 1));
         dc.DrawLine(i, 0, i, 75);
     }
     dc.SelectObject(wxNullBitmap);

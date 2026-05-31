@@ -420,9 +420,9 @@ void MainFrame::SetUpGUI()
     fractalCanvas = new FractalCanvas(statusData, &pauseBtn, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
 
     wxGradient grad;
-    grad.setMin(0);
-    grad.setMax(opt.paletteSize);
-    grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
+    grad.SetMin(0);
+    grad.SetMax(opt.paletteSize);
+    grad.FromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
     fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
 
     fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(opt.maxIterations);
@@ -574,9 +574,9 @@ void MainFrame::OnReset(wxCommandEvent &event)
 {
     fractalCanvas->Reset();
     wxGradient grad;
-    grad.fromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
-    grad.setMin(0);
-    grad.setMax(opt.paletteSize);
+    grad.FromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
+    grad.SetMin(0);
+    grad.SetMax(opt.paletteSize);
     fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
     this->UpdateMenu();
 }

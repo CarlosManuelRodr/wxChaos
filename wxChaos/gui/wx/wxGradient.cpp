@@ -1,112 +1,120 @@
 #include "wxGradient.h"
 
-wxGradient::wxGradient() {}
-
-wxGradient::wxGradient(std::vector<wxColor> stops, int min, int max)
+wxGradient::wxGradient()
 {
-    Create(stops, min, max);
+    m_min = m_max = 0;
 }
 
-bool wxGradient::Create(std::vector<wxColor> stops, int min, int max)
+wxGradient::wxGradient(const std::vector<wxColour>& stops, const int min, const int max)
 {
     m_stops = stops;
     m_min = min;
     m_max = max;
-    return true;
 }
+
 wxGradient::~wxGradient() = default;
 
-wxColour wxGradient::getColorAt(int value)
+wxColour wxGradient::GetColorAt(const int value) const
 {
-    if (value<m_min)
+    if (value < m_min)
     {
         return m_min;
     }
-    else if (value>m_max)
+    if (value > m_max)
     {
         return m_max;
     }
-    else
-    {
-        int range = m_max - m_min;
-        int v = value - m_min;
-        double step = range / (double)(m_stops.size()-1);
-        int bin = (int)(v / step);
-        double normalized_v = (v - bin*step) / step;
-        return lerp(m_stops[bin], m_stops[bin+1], normalized_v);
-    }
+
+    const int range = m_max - m_min;
+    const int v = value - m_min;
+    const double step = range / static_cast<double>(m_stops.size() - 1);
+    const int bin = static_cast<int>(v / step);
+    const double normalized_v = (v - bin*step) / step;
+    return Lerp(m_stops[bin], m_stops[bin+1], normalized_v);
 }
-void wxGradient::addColorStop(wxColor col)
+
+void wxGradient::AddColorStop(const wxColour& col)
 {
     m_stops.push_back(col);
 }
-void wxGradient::insertColorStop(int index, wxColor col)
+
+void wxGradient::InsertColorStop(const int index, const wxColour& col)
 {
-    if (index>(int)m_stops.size())
-        addColorStop(col);
+    if (index > static_cast<int>(m_stops.size()))
+        AddColorStop(col);
     else
         m_stops.insert(m_stops.begin() + index, col);
 }
-void wxGradient::removeColorStop(int index)
+
+void wxGradient::RemoveColorStop(const int index)
 {
     m_stops.erase(m_stops.begin() + index);
 }
-void wxGradient::editColorStop(int index, wxColor col)
+
+void wxGradient::EditColorStop(const int index, const wxColour& col)
 {
     m_stops[index] = col;
 }
-void wxGradient::setMin(int min)
+
+void wxGradient::SetMin(const int min)
 {
     m_min = min;
 }
-int wxGradient::getMin()
+
+int wxGradient::GetMin() const
 {
     return m_min;
 }
-void wxGradient::setMax(int max)
+
+void wxGradient::SetMax(const int max)
 {
     m_max = max;
 }
-int wxGradient::getMax()
+
+int wxGradient::GetMax() const
 {
     return m_max;
 }
-void wxGradient::setStops(std::vector<wxColor> stops)
+
+void wxGradient::SetStops(const std::vector<wxColour>& stops)
 {
     m_stops = stops;
 }
-std::vector<wxColor> wxGradient::getStops()
+
+std::vector<wxColour> wxGradient::GetStops()
 {
     return m_stops;
 }
-void wxGradient::fromString(wxString str)
+
+void wxGradient::FromString(wxString str)
 {
     if (str.length()<=1)
     {
-        addColorStop(wxColour(0,0,0));
-        addColorStop(wxColour(255,255,255));
+        AddColorStop(wxColour(0,0,0));
+        AddColorStop(wxColour(255,255,255));
     }
     while(str.length()>1)
     {
-        addColorStop(wxColour(str.BeforeFirst(';')));
+        AddColorStop(wxColour(str.BeforeFirst(';')));
         str = str.AfterFirst(';');
     }
 }
-wxString wxGradient::toString()
+
+wxString wxGradient::ToString()
 {
-    std::vector<wxColour>::iterator itr;
     wxString str = wxT("");
-    for (itr = m_stops.begin(); itr!=m_stops.end(); ++itr)
+    for (auto itr = m_stops.begin(); itr!=m_stops.end(); ++itr)
     {
         str.Append(itr->GetAsString(wxC2S_CSS_SYNTAX));
         str.Append(';');
     }
     return str;
 }
-wxColor wxGradient::lerp(wxColor c1, wxColor c2, double value)
+
+wxColour wxGradient::Lerp(const wxColour& c1, const wxColour& c2, const double value)
 {
-    unsigned char R = (1.0 - value)*c1.Red() + value*c2.Red();
-    unsigned char G = (1.0 - value)*c1.Green() + value*c2.Green();
-    unsigned char B = (1.0 - value)*c1.Blue() + value*c2.Blue();
-    return wxColor(R,G,B);
+    const unsigned char R = static_cast<char>((1.0 - value)*c1.Red() + value*c2.Red());
+    const unsigned char G = static_cast<char>((1.0 - value)*c1.Green() + value*c2.Green());
+    const unsigned char B = static_cast<char>((1.0 - value)*c1.Blue() + value*c2.Blue());
+    return {R,G,B};
 }

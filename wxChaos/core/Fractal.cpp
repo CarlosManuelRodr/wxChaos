@@ -117,9 +117,9 @@ Fractal::Fractal(const unsigned int width, const unsigned int height)
     _gradPaletteSize = _paletteSize = 300;
     _algorithm = RenderingAlgorithmType::Other;
     _gradStyle = defaultGradientStyle;
-    _gradient.fromString(defaultGradientString);
-    _gradient.setMin(0);
-    _gradient.setMax(_gradPaletteSize);
+    _gradient.FromString(defaultGradientString);
+    _gradient.SetMin(0);
+    _gradient.SetMax(_gradPaletteSize);
 
     _palette.resize(_paletteSize);
     _varGradientStep = _paletteSize / 60;
@@ -166,7 +166,7 @@ void Fractal::RebuildPalette()
 {
     for (int i = 0; i < _paletteSize; i++)
     {
-        const wxColour myWxColor = _gradient.getColorAt(i);
+        const wxColour myWxColor = _gradient.GetColorAt(i);
         _palette[i] = myWxColor;
     }
     this->RedrawMaps();
@@ -1077,14 +1077,14 @@ void Fractal::SetGradient(const wxGradient& grad)
 {
     // Copy gradient.
     _gradient = grad;
-    _gradPaletteSize = _paletteSize = _gradient.getMax() - _gradient.getMin();
+    _gradPaletteSize = _paletteSize = _gradient.GetMax() - _gradient.GetMin();
     _palette.resize(_paletteSize);
     _varGradientStep = _paletteSize / 60;
     this->RebuildPalette();
 }
 void Fractal::SetGradientSize(const unsigned int size)
 {
-    _gradient.setMax(size);
+    _gradient.SetMax(size);
     _gradPaletteSize = _paletteSize = size;
     _palette.resize(_paletteSize);
     _varGradientStep = _paletteSize / 60;

@@ -85,12 +85,12 @@ void wxGradientDialog::paintGradient()
 {
     wxBufferedDC dc;
     wxGradient temp = *m_gradient;
-    temp.setMax(300);
+    temp.SetMax(300);
     gradientBmp = new wxBitmap(gradientStatBmp->GetSize().GetWidth(), gradientStatBmp->GetSize().GetHeight());
     dc.SelectObject(*gradientBmp);
-    for (int i = temp.getMin(); i<temp.getMax(); i++)
+    for (int i = temp.GetMin(); i<temp.GetMax(); i++)
     {
-        dc.SetPen(wxPen(temp.getColorAt(i), 1));
+        dc.SetPen(wxPen(temp.GetColorAt(i), 1));
         dc.DrawLine(i, 0, i, gradientStatBmp->GetSize().GetHeight());
     }
     dc.SelectObject(wxNullBitmap);
@@ -98,7 +98,7 @@ void wxGradientDialog::paintGradient()
 }
 void wxGradientDialog::paintStops()
 {
-    m_displayedStops = m_gradient->getStops();
+    m_displayedStops = m_gradient->GetStops();
     int ctr = 0;
     int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
     wxBufferedDC dc;
@@ -146,7 +146,7 @@ void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
         }
         ctr++;
     }
-    m_displayedStops = m_gradient->getStops();
+    m_displayedStops = m_gradient->GetStops();
     if (selectedColorStop!=-1)
     {
         colorStatBmp->SetBackgroundColour(m_displayedStops[selectedColorStop]);
@@ -156,9 +156,9 @@ void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
     else
     {
         int insertAt = m_displayedStops.size() - (gradientStatBmp->GetSize().GetWidth() - event.GetX())/dist - 1;
-        m_gradient->insertColorStop(insertAt, *wxBLACK);
+        m_gradient->InsertColorStop(insertAt, *wxBLACK);
         selectedColorStop = insertAt;
-        m_displayedStops = m_gradient->getStops();
+        m_displayedStops = m_gradient->GetStops();
         dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
         colorStatBmp->SetBackgroundColour(m_displayedStops[selectedColorStop]);
         colorStatBmp->ClearBackground();
@@ -192,7 +192,7 @@ void wxGradientDialog::OnEditColor(wxCommandEvent& WXUNUSED(event))
     {
         colorStatBmp->SetBackgroundColour(dialog.GetColourData().GetColour());
         colorStatBmp->ClearBackground();
-        m_gradient->editColorStop(selectedColorStop, dialog.GetColourData().GetColour());
+        m_gradient->EditColorStop(selectedColorStop, dialog.GetColourData().GetColour());
         paintGradient();
         paintStops();
 
@@ -211,7 +211,7 @@ void wxGradientDialog::OnDeleteColor(wxCommandEvent& WXUNUSED(event))
 {
     if (selectedColorStop!=-1 && m_displayedStops.size()>2)
     {
-        m_gradient->removeColorStop(selectedColorStop);
+        m_gradient->RemoveColorStop(selectedColorStop);
         paintGradient();
         paintStops();
         selectedColorStop=-1;
