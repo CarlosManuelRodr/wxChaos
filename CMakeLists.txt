@@ -122,17 +122,3 @@ add_custom_command(
         "$<TARGET_FILE_DIR:wxChaos>/"
         COMMENT "Copying application resources..."
 )
-
-# -------------------------------------------------------------------
-# Optional: OpenAL DLL for SFML on Windows
-# -------------------------------------------------------------------
-if(WIN32)
-    add_custom_command(
-            TARGET wxChaos
-            PRE_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            "${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll"
-            "$<TARGET_FILE_DIR:wxChaos>"
-            COMMENT "Copying OpenAL DLL"
-    )
-endif()
