@@ -1,12 +1,29 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include "Fractal.h"
 #include "SFMLFractal.h"
 #include "Filesystem.h"
 
 constexpr int stdSpeed = 1;
+
+namespace
+{
+    struct ZoomState
+    {
+        std::vector<Rect> history;
+        Rect outermostZoom;
+    };
+
+    std::unordered_map<const SFMLFractal*, ZoomState> zoomStates;
+
+    ZoomState& GetZoomState(const SFMLFractal* fractal)
+    {
+        return zoomStates[fractal];
+    }
+}
 
 /**
 * @brief Moves matrix elements and fills with zeros.
@@ -76,6 +93,7 @@ SFMLFractal::SFMLFractal(Fractal* fractal)
     _dontDrawTempImage = false;
     _fractal = fractal;
     ResetMovement();
+    ResetZoomHistory();
     EnsureFontLoaded();
     ResetDisplayImages();
 }
@@ -86,6 +104,7 @@ void SFMLFractal::SetFractal(Fractal* fractal)
     _changeFractalIter = true;
     _dontDrawTempImage = true;
     ResetMovement();
+    ResetZoomHistory();
     EnsureFontLoaded();
     ClearImageCache();
     ResetDisplayImages();
@@ -172,6 +191,44 @@ void SFMLFractal::MoveMaps()
         _committedPanOffset.y, _committedPanOffset.x);
     MoveMatrix<unsigned int>(_fractal->_auxMap, _fractal->_screenHeight, _fractal->_screenWidth,
         _committedPanOffset.y, _committedPanOffset.x);
+}
+
+Rect SFMLFractal::CaptureCurrentView() const
+{
+    return {_fractal->_minX, _fractal->_minY, _fractal->_maxX, _fractal->_maxY};
+}
+
+void SFMLFractal::ApplyView(const Rect& view)
+{
+    _fractal->SetView(view);
+}
+
+void SFMLFractal::SaveZoom()
+{
+    GetZoomState(this).history.push_back(CaptureCurrentView());
+}
+
+void SFMLFractal::ResetZoomHistory()
+{
+    ZoomState& zoomState = GetZoomState(this);
+    zoomState.history.clear();
+    zoomState.outermostZoom = CaptureCurrentView();
+}
+
+void SFMLFractal::ExpandCurrentView()
+{
+    Rect view = CaptureCurrentView();
+    const double scaleX = std::abs(view._right - view._left);
+    const double scaleY = std::abs(view._top - view._bottom);
+
+    view._left -= scaleX;
+    view._right += scaleX;
+    view._bottom -= scaleY;
+    view._top = view._bottom + (view._right - view._left) *
+        static_cast<double>(_fractal->_screenHeight) / _fractal->_screenWidth;
+
+    ApplyView(view);
+    GetZoomState(this).outermostZoom = CaptureCurrentView();
 }
 
 void SFMLFractal::Move()
@@ -304,6 +361,15 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
     _dontDrawTempImage = true;
     ResetMovement();
     _fractal->Resize(window->getSize().x, window->getSize().y);
+    ZoomState& zoomState = GetZoomState(this);
+    zoomState.outermostZoom = CaptureCurrentView();
+
+    for (Rect& view : zoomState.history)
+    {
+        view._top = view._bottom + (view._right - view._left) *
+            static_cast<double>(_fractal->_screenHeight) / _fractal->_screenWidth;
+    }
+
     _fractal->_rendered = false;
     _fractal->_rendering = false;
     _fractal->_orbitDrawn = false;
@@ -334,7 +400,23 @@ void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
         _dontDrawTempImage = false;
     }
 
-    _fractal->SetAreaOfView(pixelCoordinates);
+    if (_fractal->_paused)
+        _fractal->_paused = false;
+
+    SaveZoom();
+
+    const double xFactor = (_fractal->_maxX - _fractal->_minX) / _fractal->_screenWidth;
+    const double yFactor = (_fractal->_maxY - _fractal->_minY) / _fractal->_screenHeight;
+
+    Rect view;
+    view._right = _fractal->_minX + (pixelCoordinates.left + pixelCoordinates.width) * xFactor;
+    view._left = _fractal->_minX + pixelCoordinates.left * xFactor;
+    view._bottom = _fractal->_maxY - (pixelCoordinates.top + pixelCoordinates.height) * yFactor;
+    view._top = view._bottom + (view._right - view._left) *
+        static_cast<double>(_fractal->_screenHeight) / _fractal->_screenWidth;
+
+    ApplyView(view);
+    _fractal->_orbitDrawn = false;
     _tempImage = _image;
     _tempTexture.loadFromImage(_tempImage);
     _tempSprite.setTexture(_tempTexture);
@@ -351,8 +433,24 @@ void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 void SFMLFractal::ZoomBack()
 {
     const bool stillRendering = _fractal->IsRendering();
-    _fractal->ZoomBack();
+    _fractal->StopRender();
     ResetMovement();
+    ZoomState& zoomState = GetZoomState(this);
+
+    if (!zoomState.history.empty())
+    {
+        ApplyView(zoomState.history.back());
+        zoomState.history.pop_back();
+    }
+    else
+    {
+        ExpandCurrentView();
+    }
+
+    _fractal->_rendered = false;
+    _fractal->_rendering = false;
+    _fractal->_paused = false;
+    _fractal->_orbitDrawn = false;
 
     if (_imgInVector && !_fractal->_varGradient && !_imgCache.empty() && !stillRendering)
     {
@@ -372,6 +470,26 @@ void SFMLFractal::ZoomBack()
         _fractal->SetRendered(false);
         _zoomingBack = true;
     }
+}
+
+Rect SFMLFractal::GetOutermostZoom() const
+{
+    return GetZoomState(this).outermostZoom;
+}
+
+Rect SFMLFractal::GetCurrentZoom() const
+{
+    return CaptureCurrentView();
+}
+
+bool SFMLFractal::HasZoomed() const
+{
+    const Rect currentZoom = GetCurrentZoom();
+    const Rect outermostZoom = GetOutermostZoom();
+    return outermostZoom._left != currentZoom._left ||
+        outermostZoom._right != currentZoom._right ||
+        outermostZoom._bottom != currentZoom._bottom ||
+        outermostZoom._top != currentZoom._top;
 }
 
 void SFMLFractal::Redraw()

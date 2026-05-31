@@ -8,7 +8,6 @@ Tricorn::Tricorn(const unsigned int width, const unsigned int height) : Fractal(
     _maxX = 3;
     _minY = -1.94;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);

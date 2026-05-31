@@ -8,7 +8,6 @@ BurningShipJulia::BurningShipJulia(unsigned int width, unsigned int height) : Fr
     _maxX = 2.77682;
     _minY = -1.75939;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
     _juliaVariety = true;
     _hasOrbit = true;
 

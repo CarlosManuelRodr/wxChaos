@@ -15,7 +15,6 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     _maxX = scriptData.maxX;
     _minY = scriptData.minY;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
 
     _maxIter = scriptData.defaultIter;
     _juliaVariety = scriptData.juliaVariety;
@@ -47,7 +46,6 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
         _maxX = params.maxX;
         _minY = params.minY;
         _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
-        this->SetOutermostZoom();
     }
 
     _type = FractalType::ScriptFractal;

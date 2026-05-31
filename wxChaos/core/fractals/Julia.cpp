@@ -9,7 +9,6 @@ Julia::Julia(const unsigned int width, const unsigned int height) : Fractal(widt
     _maxX = 1.6912;
     _minY = -1.06769;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);

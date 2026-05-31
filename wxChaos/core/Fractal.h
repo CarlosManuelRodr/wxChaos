@@ -29,8 +29,8 @@ class SFMLFractal;
 * @class Fractal
 * @brief Provides an interface to do the fractal rendering and draw the result to the screen.
 *
-* This is an abstract class. Its purpose is to provide a set of methods to do the fractal navigation routines, render the result
-* to the screen, allocate memory for the rendering maps, provide a color palette for the drawing, and perform zooming operations.
+* This is an abstract class. Its purpose is to provide a set of methods to render the fractal,
+* allocate memory for the rendering maps, and provide color data for the drawing.
 */
 class Fractal
 {
@@ -62,13 +62,10 @@ protected:
     double _kReal;
     double _kImaginary;
 
-    std::vector<double> _zoom[4];     ///< Saves the performed zooms.
-    Rect _outermostZoom;
     unsigned int _screenWidth;
     unsigned int _screenHeight;
     unsigned int _backScreenWidth;
     int _changeGradient;
-    double _magnification;
 
     // Color properties.
     RenderingAlgorithmType _algorithm;
@@ -128,12 +125,6 @@ protected:
     bool _smoothRender;
 
     // Internal methods.
-    ///@brief Saves the rendering area limits to be able to do a zoom-back later.
-    void SaveZoom();
-
-    ///@brief Called in child class after constructor.
-    void SetOutermostZoom();
-
     ///@brief Looks into the color palette for the corresponding color.
     ///@param colorNum Color parameter.
     ///@return A struct with the color.
@@ -172,15 +163,10 @@ public:
     ///@brief Perform some adjustments needed before the rendering starts.
     void PrepareRender(Vector2Int reusedMapOffset = {0, 0});
 
-    ///@brief Resizes the viewing area of the fractal.
-    ///@param pixelCoordinates Selection area in pixel coordinates.
-    void SetAreaOfView(sf::Rect<int> pixelCoordinates);
+    ///@brief Sets the fractal render viewport.
+    ///@param worldCoordinates Viewport in world coordinates.
+    void SetView(const Rect& worldCoordinates);
 
-    ///@brief Resizes the viewing area of the fractal.
-    ///@param worldCoordinates Selection area in world coordinates.
-    void SetAreaOfView(const Rect& worldCoordinates);
-
-    void ZoomBack();                   ///< Does a zoom-back in the selection area.
     void Redraw();                     ///< Redraws the fractal.
 
     // Thread control.
@@ -251,12 +237,6 @@ public:
 
     ///@brief Forces the fractal to acquire a "rendered" status.
     void SetRendered(bool mode);
-
-    ///@brief Return the farthest zoom viewed by the user.
-    Rect GetOutermostZoom() const;
-
-    ///@brief Return the current zoom rect.
-    Rect GetCurrentZoom() const;
 
     ///@brief Gets the type of the fractal.
     FractalType GetType() const;

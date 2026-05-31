@@ -41,8 +41,8 @@ protected:
         fractalOptions.xFactor = (fractalOptions.maxX - fractalOptions.minX) / (fractalOptions.screenWidth - 1);
         fractalOptions.yFactor = (fractalOptions.maxY - fractalOptions.minY) / (fractalOptions.screenHeight - 1);
 
-        outermostZoom = fractalCanvasPtr->GetFractalPtr()->GetOutermostZoom();
-        innermostZoom = fractalCanvasPtr->GetFractalPtr()->GetCurrentZoom();
+        outermostZoom = fractalCanvasPtr->GetSFMLFractalPtr()->GetOutermostZoom();
+        innermostZoom = fractalCanvasPtr->GetSFMLFractalPtr()->GetCurrentZoom();
 
         if (fractalType == FractalType::ScriptFractal)
         {
@@ -69,7 +69,7 @@ protected:
             viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeed * t / totalFrames)) * (innermostLo - outermostLo));
             viewport.SetUpperBound(outermostHi - (1 - exp(-zoomSpeed * t / totalFrames)) * (outermostHi - innermostHi));
 
-            fractalHandler.GetFractalPtr()->SetAreaOfView(viewport);
+            fractalHandler.GetFractalPtr()->SetView(viewport);
 
             if (colorSpeed != -1)
                 fractalHandler.GetFractalPtr()->SetVarGradient(colorSpeed * t);
@@ -133,7 +133,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, const wxWi
     // Fractal handler initialization
     fractalCanvasPtr = mFCanvas;
     this->CreateFractalHandler();
-    fractalHandler.GetFractalPtr()->SetAreaOfView(outermostZoom);
+    fractalHandler.GetFractalPtr()->SetView(outermostZoom);
 
     // UI initialization
     this->SetSizeHints(wxSize(900, 680), wxSize(1400, 900));
@@ -296,8 +296,8 @@ void ZoomRecorder::CreateFractalHandler()
     fractalOptions.xFactor = (fractalOptions.maxX - fractalOptions.minX) / (fractalOptions.screenWidth - 1);
     fractalOptions.yFactor = (fractalOptions.maxY - fractalOptions.minY) / (fractalOptions.screenHeight - 1);
 
-    outermostZoom = fractalCanvasPtr->GetFractalPtr()->GetOutermostZoom();
-    innermostZoom = fractalCanvasPtr->GetFractalPtr()->GetCurrentZoom();
+    outermostZoom = fractalCanvasPtr->GetSFMLFractalPtr()->GetOutermostZoom();
+    innermostZoom = fractalCanvasPtr->GetSFMLFractalPtr()->GetCurrentZoom();
 
     if (fractalType == FractalType::ScriptFractal)
     {
@@ -327,7 +327,7 @@ void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const doub
     viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (innermostLo - outermostLo));
     viewport.SetUpperBound(outermostHi - (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (outermostHi - innermostHi));
 
-    fractalHandler.GetFractalPtr()->SetAreaOfView(viewport);
+    fractalHandler.GetFractalPtr()->SetView(viewport);
 
     if (colorSpeed != -1)
         fractalHandler.GetFractalPtr()->SetVarGradient(colorSpeed * t);

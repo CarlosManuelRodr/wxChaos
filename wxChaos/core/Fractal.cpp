@@ -67,7 +67,6 @@ Fractal::Fractal(const unsigned int width, const unsigned int height)
     _yFactor = (_maxY - _minY) / (_screenHeight - 1);
     _kReal = 0;
     _kImaginary = 0;
-    _magnification = 0;
     _changeGradient = 0;
     _rendered = false;
     _varGradient = false;
@@ -113,8 +112,6 @@ Fractal::Fractal(const unsigned int width, const unsigned int height)
     _palette.resize(_paletteSize);
     _varGradientStep = _paletteSize / 60;
     this->RebuildPalette();
-
-    this->SetOutermostZoom();
 }
 Fractal::~Fractal()
 {
@@ -131,17 +128,6 @@ Fractal::~Fractal()
     delete[] _auxMap;
 }
 
-void Fractal::SaveZoom()
-{
-    _zoom[0].push_back(_minX);
-    _zoom[1].push_back(_maxX);
-    _zoom[2].push_back(_minY);
-    _zoom[3].push_back(_maxY);
-}
-void Fractal::SetOutermostZoom()
-{
-    _outermostZoom = Rect(_minX, _minY, _maxX, _maxY);
-}
 sf::Color Fractal::GetColorFromPalette(int colorNum) const
 {
     if (colorNum <= 0)
@@ -382,10 +368,6 @@ void Fractal::Resize(const unsigned int width, const unsigned int height)
     _xFactor = (_maxX - _minX) / (_screenWidth - 1);
     _yFactor = (_maxY - _minY) / (_screenHeight - 1);
 
-    SetOutermostZoom();
-
-    for (unsigned int i = 0; i < _zoom[3].size(); i++)
-        _zoom[3][i] = _zoom[2][i] + (_zoom[1][i] - _zoom[0][i]) * static_cast<double>(_screenHeight) / _screenWidth;
 }
 void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
 {
@@ -412,34 +394,7 @@ void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
         _redrawAll = false;
     }
 }
-void Fractal::SetAreaOfView(const sf::Rect<int> pixelCoordinates)
-{
-    if (_paused)
-    {
-        _paused = false;
-    }
-    this->SaveZoom();
-
-    // Changes the scale.
-    const double FX = (_maxX - _minX) / _screenWidth;
-    const double FY = (_maxY - _minY) / _screenHeight;
-
-    _maxX = _minX + (pixelCoordinates.left + pixelCoordinates.width) * FX;
-    _minX = _minX + pixelCoordinates.left * FX;
-    _minY = _maxY - (pixelCoordinates.top + pixelCoordinates.height) * FY;
-
-    _maxY = _minY + (_maxX - _minX) * static_cast<double>(_screenHeight) / _screenWidth;
-    _xFactor = (_maxX - _minX) / (_screenWidth - 1);
-    _yFactor = (_maxY - _minY) / (_screenHeight - 1);
-
-    _rendered = false;
-    _rendering = false;
-
-    _pendingRenderOffset = {0, 0};
-
-    _orbitDrawn = false;
-}
-void Fractal::SetAreaOfView(const Rect& worldCoordinates)
+void Fractal::SetView(const Rect& worldCoordinates)
 {
     _minX = worldCoordinates._left;
     _maxX = worldCoordinates._right;
@@ -453,53 +408,6 @@ void Fractal::SetAreaOfView(const Rect& worldCoordinates)
     _rendering = false;
 
     _pendingRenderOffset = {0, 0};
-}
-void Fractal::ZoomBack()
-{
-    this->StopRender();
-
-    // Looks for previous zoom coordinates.
-    bool thereIsZoom = true;
-    for (const auto & i : _zoom)
-    {
-        if (i.empty())
-            thereIsZoom = false;
-    }
-
-    // If they exist, use them.
-    if (thereIsZoom)
-    {
-        _minX = _zoom[0][_zoom[0].size() - 1];
-        _maxX = _zoom[1][_zoom[1].size() - 1];
-        _minY = _zoom[2][_zoom[2].size() - 1];
-        _maxY = _zoom[3][_zoom[3].size() - 1];
-
-        for (auto & i : _zoom)
-            i.pop_back();
-    }
-    // If they don't, expand the drawing area.
-    else
-    {
-        const double scaleX = abs(_maxX - _minX);
-        const double scaleY = abs(_maxY - _minY);
-        _minX -= scaleX;
-        _maxX += scaleX;
-        _minY -= scaleY;
-        _maxY = _minY + (_maxX - _minX) * static_cast<double>(_screenHeight) / _screenWidth;
-        this->SetOutermostZoom();
-    }
-
-    _xFactor = (_maxX - _minX) / (_screenWidth - 1);
-    _yFactor = (_maxY - _minY) / (_screenHeight - 1);
-
-    _rendered = false;
-    _magnification = 3 / (_maxX - _minX);
-    _orbitDrawn = false;
-    _paused = false;
-
-    _pendingRenderOffset = {0, 0};
-
-    _orbitDrawn = false;
 }
 void Fractal::Redraw()
 {
@@ -679,14 +587,6 @@ Options Fractal::GetOptions() const
 void Fractal::SetRendered(const bool mode)
 {
     _rendered = mode;
-}
-Rect Fractal::GetOutermostZoom() const
-{
-    return _outermostZoom;
-}
-Rect Fractal::GetCurrentZoom() const
-{
-    return {_minX, _minY, _maxX, _maxY};
 }
 FractalType Fractal::GetType() const
 {

@@ -9,7 +9,6 @@ BurningShip::BurningShip(unsigned int width, unsigned int height) : Fractal(widt
     _maxX = 1.79;
     _minY = -1.94;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);

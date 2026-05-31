@@ -9,7 +9,6 @@ Manowar::Manowar(const unsigned int width, const unsigned int height) : Fractal(
     _maxX = 0.26108;
     _minY = -0.2375;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);

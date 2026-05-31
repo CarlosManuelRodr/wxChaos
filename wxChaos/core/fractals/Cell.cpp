@@ -8,7 +8,6 @@ Cell::Cell(unsigned int width, unsigned int height) : Fractal(width, height)
     _maxX = 1.3;
     _minY = -1.2495;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);

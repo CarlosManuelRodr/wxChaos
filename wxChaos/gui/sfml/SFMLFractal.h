@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "ColorPalettes.h"
+#include "geometry/Rect.h"
 #include "geometry/Vector2Int.h"
 #include "types/Direction.h"
 #include "types/RenderingAlgorithmType.h"
@@ -77,6 +78,21 @@ class SFMLFractal
     ///@brief Shifts the rendered maps after panning settles.
     void MoveMaps();
 
+    ///@brief Returns the fractal's current world-coordinate view.
+    Rect CaptureCurrentView() const;
+
+    ///@brief Applies a world-coordinate view to the fractal.
+    void ApplyView(const Rect& view);
+
+    ///@brief Saves the current view for zoom-back.
+    void SaveZoom();
+
+    ///@brief Clears zoom-back state and captures the current view as the outermost zoom.
+    void ResetZoomHistory();
+
+    ///@brief Expands the current view when zoom-back has no saved view.
+    void ExpandCurrentView();
+
 public:
     ///@brief Constructs an SFML fractal presenter bound to a fractal.
     ///@param fractal Fractal model to present.
@@ -122,6 +138,15 @@ public:
 
     ///@brief Restores the previous zoom level, using a cached image when possible.
     void ZoomBack();
+
+    ///@brief Return the farthest zoom viewed by the user.
+    Rect GetOutermostZoom() const;
+
+    ///@brief Return the current zoom rect.
+    Rect GetCurrentZoom() const;
+
+    ///@brief Returns true when the current view differs from the outermost zoom.
+    bool HasZoomed() const;
 
     ///@brief Forces a redrawing and clears cached zoom-back images.
     void Redraw();

@@ -9,7 +9,6 @@ UserDefined::UserDefined(const unsigned int width, const unsigned int height) : 
     _maxX = 2.5;
     _minY = -1.5;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);

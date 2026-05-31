@@ -9,7 +9,6 @@ MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) 
     _maxX = 1.74458;
     _minY = -1.169;
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
-    this->SetOutermostZoom();
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);

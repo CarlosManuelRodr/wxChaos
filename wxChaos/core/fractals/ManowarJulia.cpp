@@ -8,7 +8,6 @@ ManowarJulia::ManowarJulia(const unsigned int width, const unsigned int height) 
     _maxX = 1.0;
     _minY = -1.2;
     _maxY = _minY + (_maxX - _minX) * _screenHeight / _screenWidth;
-    this->SetOutermostZoom();
 
     _kReal = 0.0272873;
     _kImaginary = -0.0432547;
