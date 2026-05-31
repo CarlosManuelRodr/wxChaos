@@ -792,7 +792,7 @@ bool Fractal::GetChangeFractalProp()
     _changeFractalProp = false;
     return temp;
 }
-void Fractal::SetOnWxCtrl(bool mode)
+void Fractal::SetOnWxCtrl(const bool mode)
 {
     _onWxCtrl = mode;
 }
@@ -1047,7 +1047,7 @@ void Fractal::SetFractalSetColorMode(const bool mode)
         this->RedrawMaps();
     }
 }
-void Fractal::SetFractalSetColor(sf::Color color)
+void Fractal::SetFractalSetColor(const sf::Color color)
 {
     // Changes the color of the set.
     _fSetColor = wxColour(color.r, color.g, color.b, color.a);
@@ -1133,7 +1133,7 @@ void Fractal::SetJuliaMode(const bool mode)
 }
 
 // Julia mode operations.
-void Fractal::SetK(double real, double imaginary)
+void Fractal::SetK(const double real, const double imaginary)
 {
     this->StopRender();
 
