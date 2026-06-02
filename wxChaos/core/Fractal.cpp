@@ -98,7 +98,6 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _renderJobCompatible = true;
     _changeFractalProp = false;
     _geomFigure = false;
-    _onWxCtrl = false;
 
     // Creates default color palette.
     _relativeColor = false;
@@ -605,10 +604,6 @@ bool Fractal::GetChangeFractalProp()
     bool temp = _changeFractalProp;
     _changeFractalProp = false;
     return temp;
-}
-void Fractal::SetOnWxCtrl(const bool mode)
-{
-    _onWxCtrl = mode;
 }
 // Save image.
 sf::Image Fractal::GetRenderedImage()

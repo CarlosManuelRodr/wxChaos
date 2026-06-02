@@ -42,9 +42,9 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     this->CreateFractal(fractalType);
     _target = _fractalHandler.GetFractalPtr();
     _sfmlFractal = new SFMLFractal(_target);
+    _sfmlFractal->SetHandleRightClickZoomBack(false);
 
     _fractalHandler.SetFormula(_userFormula);
-    _target->SetOnWxCtrl(true);
 
     // Initialize GUI elements.
     _selection = new SelectionRect();
@@ -343,8 +343,8 @@ void FractalCanvas::ChangeType(const FractalType type)
     _type = type;
     _target = _fractalHandler.GetFractalPtr();
     _sfmlFractal->SetFractal(_target);
+    _sfmlFractal->SetHandleRightClickZoomBack(false);
     _fractalHandler.SetFormula(_userFormula);
-    _target->SetOnWxCtrl(true);
 
     // Deletes screen pointer if active.
     if (_orbitMode || _sliderMode)
@@ -369,7 +369,7 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
     this->CreateScriptFractal(_scriptData);
     _target = _fractalHandler.GetFractalPtr();
     _sfmlFractal->SetFractal(_target);
-    _target->SetOnWxCtrl(true);
+    _sfmlFractal->SetHandleRightClickZoomBack(false);
 
     // Deletes screen pointer if active.
     if (_orbitMode || _sliderMode)
@@ -431,8 +431,8 @@ void FractalCanvas::Reset()
 
     _target = _fractalHandler.GetFractalPtr();
     _sfmlFractal->SetFractal(_target);
+    _sfmlFractal->SetHandleRightClickZoomBack(false);
     _fractalHandler.SetFormula(_userFormula);
-    _target->SetOnWxCtrl(true);
     _play->Reset();
 
     // Deactivates screen pointer.

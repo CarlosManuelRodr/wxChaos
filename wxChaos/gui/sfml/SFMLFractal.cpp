@@ -74,6 +74,7 @@ SFMLFractal::SFMLFractal(Fractal* fractal) : _committedPanOffset(Vector2Int::Zer
     _usingRenderImage = false;
     _zoomingBack = false;
     _dontDrawTempImage = false;
+    _setHandleRightClickZoomBack = true;
     _fractal = fractal;
     _xVel = 0.0f;
     _yVel = 0.0f;
@@ -101,6 +102,10 @@ void SFMLFractal::SetFractal(Fractal* fractal)
 Fractal* SFMLFractal::GetFractal() const
 {
     return _fractal;
+}
+void SFMLFractal::SetHandleRightClickZoomBack(const bool mode)
+{
+    _setHandleRightClickZoomBack = mode;
 }
 
 void SFMLFractal::EnsureFontLoaded()
@@ -336,7 +341,7 @@ void SFMLFractal::HandleEvent(const sf::Event& event)
         }
     }
 
-    if (!_fractal->_onWxCtrl && event.type == sf::Event::MouseButtonPressed &&
+    if (_setHandleRightClickZoomBack && event.type == sf::Event::MouseButtonPressed &&
         event.mouseButton.button == sf::Mouse::Right && !IsMoving())
     {
         ZoomBack();

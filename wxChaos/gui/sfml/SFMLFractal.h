@@ -49,6 +49,7 @@ class SFMLFractal
     bool _usingRenderImage;                ///< True when the current frame came from a cached zoom-back image.
     bool _zoomingBack;                     ///< True while the view is being redrawn after zooming back.
     bool _dontDrawTempImage;               ///< Suppresses drawing the temporary image layer when it would be stale.
+    bool _setHandleRightClickZoomBack;      ///< True when SFML right-click events should zoom back.
 
     ///@brief Draws fractal maps into the SFML image and then draws the output sprite.
     ///@param window Target window.
@@ -107,6 +108,10 @@ public:
     ///@brief Gets the fractal model currently shown by this presenter.
     ///@return Pointer to the current fractal model.
     Fractal* GetFractal() const;
+
+    ///@brief Sets whether SFML right-click events should zoom back.
+    ///@param mode True to handle right-click zoom-back in SFML.
+    void SetHandleRightClickZoomBack(bool mode);
 
     ///@brief Handles SFML input events that affect the fractal view.
     ///@param event SFML event to process.

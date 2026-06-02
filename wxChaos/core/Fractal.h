@@ -98,7 +98,6 @@ protected:
     bool _varGradChange;
     bool _renderJobCompatible;               ///< Fractal compatible with renderJobs.
     bool _changeFractalProp;
-    bool _onWxCtrl;
     std::vector<Vector2Int> _endPoints;
     std::vector<Vector2Int> _startPoints;
     std::vector<Vector2Int> _pausePoints;
@@ -246,7 +245,6 @@ public:
 
     void SetFractalPropChanged();
     bool GetChangeFractalProp();
-    void SetOnWxCtrl(bool mode);
 
     // Save image.
     sf::Image GetRenderedImage();
