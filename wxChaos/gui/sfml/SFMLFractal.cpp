@@ -67,7 +67,7 @@ template<class M> void SFMLFractal::MoveMatrix(M** matrix, const unsigned int ma
     }
 }
 
-SFMLFractal::SFMLFractal(Fractal* fractal)
+SFMLFractal::SFMLFractal(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
 {
     _changeFractalIter = true;
     _imgInVector = false;
@@ -75,6 +75,11 @@ SFMLFractal::SFMLFractal(Fractal* fractal)
     _zoomingBack = false;
     _dontDrawTempImage = false;
     _fractal = fractal;
+    _xVel = 0.0f;
+    _yVel = 0.0f;
+    _posX = 0;
+    _posY = 0;
+    _hasCommittedPanOffset = false;
     ResetMovement();
     ResetZoomHistory();
     EnsureFontLoaded();
