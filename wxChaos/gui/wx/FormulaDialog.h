@@ -1,6 +1,6 @@
 /**
 * @file FormulaDialog.h
-* @brief This header file contains the user formula related dialogs.
+* @brief This header file contains the user formula-related dialogs.
 *
 * @copyright GNU Public License.
 * @author Carlos Manuel Rodriguez y Martinez
@@ -8,8 +8,8 @@
 */
 
 #pragma once
-#ifndef __formulaDialog
-#define __formulaDialog
+#ifndef _formulaDialog
+#define _formulaDialog
 
 #include <wx/wx.h>
 #include "FractalCanvas.h"
@@ -20,9 +20,9 @@
 */
 class FuncDialog : public wxDialog
 {
-    wxPanel* mainPanel;
-    wxTextCtrl* text;
-    wxButton* closeButton;
+    wxPanel* _mainPanel;
+    wxTextCtrl* _text;
+    wxButton* _closeButton;
 
     void OnClose(wxCommandEvent& event);
 
@@ -41,23 +41,23 @@ public:
 */
 class FormulaDialog : public wxDialog
 {
-    wxPanel* mainPanel;
-    wxTextCtrl* formulaCtrl;
-    wxStaticText* bailText;
-    wxStaticText* typeText;
-    wxTextCtrl* bailCtrl;
-    wxCheckBox* juliaCheck;
-    wxButton* acceptButton;
-    wxButton* applyButton;
-    wxButton* funcButton;
-    wxChoice* typeChoice;
-    FractalCanvas* fCanvas;
-    wxWindow* parent;
+    wxPanel* _mainPanel;
+    wxTextCtrl* _formulaCtrl;
+    wxStaticText* _bailText;
+    wxStaticText* _typeText;
+    wxTextCtrl* _bailCtrl;
+    wxCheckBox* _juliaCheck;
+    wxButton* _acceptButton;
+    wxButton* _applyButton;
+    wxButton* _funcButton;
+    wxChoice* _typeChoice;
+    FractalCanvas* _fCanvas;
+    wxWindow* _parent;
 
-    wxMenuItem* slider;
-    wxMenuItem* manual;
-    bool* active;
-    int userDefinedID, FPuserDefinedID;
+    wxMenuItem* _slider;
+    wxMenuItem* _manual;
+    bool* _active;
+    int _userDefinedId, _fpUserDefinedId;
 
     void OnAccept(wxCommandEvent& event);
     void OnApply(wxCommandEvent& event);
@@ -66,8 +66,8 @@ class FormulaDialog : public wxDialog
     void OnChoice(wxCommandEvent& event);
 
 public:
-    FormulaDialog(int _userDefinedID, int _FPuserDefinedID, wxMenuItem* juliaSlider,
-                  wxMenuItem* juliaManual, bool* Active, FractalCanvas* _fCanvas, wxWindow* _parent,
+    FormulaDialog(int userDefinedId, int fPUserDefinedId, wxMenuItem* juliaSlider,
+                  wxMenuItem* juliaManual, bool* active, FractalCanvas* fCanvas, wxWindow* parent,
                   wxWindowID id = wxID_ANY, const wxString& title = wxT("User formula"), const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
     ~FormulaDialog() override;

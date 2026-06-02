@@ -24,7 +24,7 @@ inline double CalcDist(const double x1, const double y1, const double x2, const 
 Fractal::Fractal(const unsigned int width, const unsigned int height) : _pendingRenderOffset(Vector2Int::Zero())
 {
     // System.
-    _threadNumber = Get_Cores() - 1;
+    _threadNumber = max(Get_Cores() - 1, 1);
 
     // Copy window properties.
     _screenHeight = height;

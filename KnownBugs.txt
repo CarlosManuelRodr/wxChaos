@@ -1,1 +1,2 @@
 - Zoom breaks when changing the palette size
+- Toggle button of JuliaMode inits in a wrong position
