@@ -165,6 +165,7 @@ class MainFrame : public wxFrame
     void ConnectEvents();
     void CloseAll();
     void DestroyJuliaMode(bool requestClose);
+    void DestroyDimensionFrame();
     void ShowFirstUseDialog();
     void AddScriptMenuElement(const ScriptData& scriptData, int index);
     void RemoveScriptMenuElements();
@@ -180,6 +181,7 @@ public :
     void OnQuit(wxCommandEvent& event);
     void OnResize(wxSizeEvent& event);                     ///< Resizes the frame.
     void OnJuliaModeClosed(wxCommandEvent& event);         ///< Handles the Julia window closed event.
+    void OnDimensionFrameClosed(wxCommandEvent& event);    ///< Handles the dimension window closed event.
     void ChangeMandelbrot(wxCommandEvent& event);
     void ChangeMandelbrotZN(wxCommandEvent& event);
     void ChangeJulia(wxCommandEvent& event);

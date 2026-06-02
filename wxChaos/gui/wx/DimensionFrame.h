@@ -21,7 +21,7 @@
 #include <mathplot.h>
 #include "FractalHandler.h"
 
-extern bool dimensionFrameState;
+wxDECLARE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
 void GetDesktopResolution(int& width, int& height);
 
 /**

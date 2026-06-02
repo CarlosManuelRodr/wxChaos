@@ -135,6 +135,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     this->SetUpGUI();
 
     juliaModePtr = nullptr;
+    dimensionCalculator = nullptr;
     changeKeyboardGuide = false;
     rendererOptionsActive = false;
     introConstActive = false;
@@ -188,6 +189,7 @@ void MainFrame::ConnectEvents()
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(MainFrame::OnResize));
     this->Connect(ID_JULIA_MODE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnJuliaMode));
     this->Connect(wxEVT_JULIA_MODE_CLOSED, wxCommandEventHandler(MainFrame::OnJuliaModeClosed));
+    this->Connect(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEventHandler(MainFrame::OnDimensionFrameClosed));
     this->Connect(ID_WELCOME_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnWelcomeDialog));
     this->Connect(ID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbout));
     this->Connect(ID_KEYBOARDGUIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnKeybGuide));
@@ -442,6 +444,7 @@ void MainFrame::OnQuit(wxCommandEvent &event)
 void MainFrame::CloseAll()
 {
     DestroyJuliaMode(true);
+    DestroyDimensionFrame();
     delete fractalCanvas;
 }
 void MainFrame::DestroyJuliaMode(const bool requestClose)
@@ -470,6 +473,19 @@ void MainFrame::OnJuliaMode(wxCommandEvent &event)
 void MainFrame::OnJuliaModeClosed(wxCommandEvent &event)
 {
     DestroyJuliaMode(false);
+}
+void MainFrame::DestroyDimensionFrame()
+{
+    if (dimensionCalculator == nullptr)
+        return;
+
+    DimensionFrame* frame = dimensionCalculator;
+    dimensionCalculator = nullptr;
+    frame->Close(true);
+}
+void MainFrame::OnDimensionFrameClosed(wxCommandEvent &event)
+{
+    dimensionCalculator = nullptr;
 }
 void MainFrame::OnWelcomeDialog(wxCommandEvent& event)
 {
@@ -763,9 +779,8 @@ void MainFrame::OnZoomRecorder(wxCommandEvent& event)
 }
 void MainFrame::OnDimensionCalculator(wxCommandEvent& event)
 {
-    if (!dimensionFrameState)
+    if (dimensionCalculator == nullptr)
     {
-        dimensionFrameState = true;
         dimensionCalculator = new DimensionFrame(this);
         dimensionCalculator->Show(true);
     }

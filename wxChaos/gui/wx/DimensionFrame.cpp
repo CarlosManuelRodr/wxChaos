@@ -11,7 +11,7 @@
 #include "SystemUtils.h"
 using namespace std;
 
-bool dimensionFrameState = false;
+wxDEFINE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
 
 double GetMaxElement(const vector<double> &in)
 {
@@ -1039,7 +1039,6 @@ void DimensionFrame::OnChangeDump(wxCommandEvent&)
 void DimensionFrame::OnClose(wxCommandEvent&)
 {
     this->Close(true);
-    this->Destroy();
 }
 void DimensionFrame::OnCalculate(wxCommandEvent&)
 {
@@ -1361,7 +1360,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
 }
 void DimensionFrame::OnDestroy(wxCloseEvent&)
 {
-    dimensionFrameState = false;
+    wxQueueEvent(GetParent(), new wxCommandEvent(wxEVT_DIMENSION_FRAME_CLOSED));
     this->Destroy();
 }
 void DimensionFrame::WriteText(const wxString &txt) const
