@@ -94,7 +94,6 @@ class MainFrame : public wxFrame
     DimensionFrame* dimensionCalculator;
     
     MainWindowStatus statusData;
-    bool changeJuliaMode;
     bool changeKeyboardGuide;
     bool rendererOptionsActive;
     bool introConstActive;
@@ -165,6 +164,7 @@ class MainFrame : public wxFrame
     void GetScriptFractals();             ///< Creates the menu elements corresponding to the script fractals.
     void ConnectEvents();
     void CloseAll();
+    void DestroyJuliaMode(bool requestClose);
     void ShowFirstUseDialog();
     void AddScriptMenuElement(const ScriptData& scriptData, int index);
     void RemoveScriptMenuElements();
@@ -179,7 +179,7 @@ public :
     void OnClose(wxCloseEvent& event);                     ///< Closes the frame.
     void OnQuit(wxCommandEvent& event);
     void OnResize(wxSizeEvent& event);                     ///< Resizes the frame.
-    void JuliaHandle(wxUpdateUIEvent& event);              ///< Keeps track of the Julia window.
+    void OnJuliaModeClosed(wxCommandEvent& event);         ///< Handles the Julia window closed event.
     void ChangeMandelbrot(wxCommandEvent& event);
     void ChangeMandelbrotZN(wxCommandEvent& event);
     void ChangeJulia(wxCommandEvent& event);

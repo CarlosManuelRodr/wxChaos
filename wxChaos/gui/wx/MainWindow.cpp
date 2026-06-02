@@ -134,8 +134,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     this->GetParserOpt();    // Gets configuration from config.ini.
     this->SetUpGUI();
 
-    juliaModeState = false;
-    changeJuliaMode = false;
+    juliaModePtr = nullptr;
     changeKeyboardGuide = false;
     rendererOptionsActive = false;
     introConstActive = false;
@@ -188,7 +187,7 @@ void MainFrame::ConnectEvents()
     this->Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnQuit));
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(MainFrame::OnResize));
     this->Connect(ID_JULIA_MODE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnJuliaMode));
-    this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::JuliaHandle));
+    this->Connect(wxEVT_JULIA_MODE_CLOSED, wxCommandEventHandler(MainFrame::OnJuliaModeClosed));
     this->Connect(ID_WELCOME_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnWelcomeDialog));
     this->Connect(ID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbout));
     this->Connect(ID_KEYBOARDGUIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnKeybGuide));
@@ -442,16 +441,22 @@ void MainFrame::OnQuit(wxCommandEvent &event)
 }
 void MainFrame::CloseAll()
 {
-    if (juliaModeState)
-    {
-        juliaMode->Check(false);
-        juliaModePtr->Terminate();
-        delete juliaModePtr;
-        juliaModeState = false;
-        changeJuliaMode = false;
-        fractalCanvas->SetJuliaMode(false);
-    }
+    DestroyJuliaMode(true);
     delete fractalCanvas;
+}
+void MainFrame::DestroyJuliaMode(const bool requestClose)
+{
+    if (juliaModePtr == nullptr)
+        return;
+
+    if (requestClose)
+        juliaModePtr->Close();
+
+    juliaModePtr->Wait();
+    delete juliaModePtr;
+    juliaModePtr = nullptr;
+    juliaMode->Check(false);
+    fractalCanvas->SetJuliaMode(false);
 }
 void MainFrame::OnResize(wxSizeEvent &event)
 {
@@ -462,20 +467,9 @@ void MainFrame::OnJuliaMode(wxCommandEvent &event)
     // Opens the Julia mode.
     this->UpdateJuliaMode();
 }
-void MainFrame::JuliaHandle(wxUpdateUIEvent &event)
+void MainFrame::OnJuliaModeClosed(wxCommandEvent &event)
 {
-    // Waits until the Julia window is closed to delete it.
-    if (changeJuliaMode && !juliaModeState)
-    {
-        juliaMode->Check(false);
-        juliaModePtr->Close();
-        juliaModePtr->Wait();
-
-        delete juliaModePtr;
-        juliaModeState = false;
-        changeJuliaMode = false;
-        fractalCanvas->SetJuliaMode(false);
-    }
+    DestroyJuliaMode(false);
 }
 void MainFrame::OnWelcomeDialog(wxCommandEvent& event)
 {
@@ -1156,21 +1150,13 @@ void MainFrame::UpdateMenu()
         pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
 
     // If Julia mode is opened closes it.
-    if (juliaModeState)
-    {
-        juliaMode->Check(false);
-        juliaModePtr->Terminate();
-        delete juliaModePtr;
-        juliaModeState = false;
-        changeJuliaMode = false;
-        fractalCanvas->SetJuliaMode(false);
-    }
+    DestroyJuliaMode(true);
     this->UpdateOptPanel();
 }
 void MainFrame::UpdateJuliaMode()
 {
     // Destroy Julia window.
-    if (juliaModeState)
+    if (juliaModePtr != nullptr)
     {
         juliaMode->Check(false);
         juliaModePtr->Close();
@@ -1179,8 +1165,6 @@ void MainFrame::UpdateJuliaMode()
     else
     {
         juliaMode->Check(true);
-        juliaModeState = true;
-        changeJuliaMode = true;
 
         FractalType juliaType;
         switch(fractalType)

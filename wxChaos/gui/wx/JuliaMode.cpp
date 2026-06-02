@@ -2,7 +2,7 @@
 #include "SizeDialogSave.h"
 using namespace std;
 
-bool juliaModeState;
+wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
 JuliaMode::JuliaMode(wxWindow* parent, FractalCanvas* ptr, const FractalType fractalType, const Options& juliaOpt,
                      const wxSize& size) : _event(), m_thread(&JuliaMode::Run, this)
@@ -166,7 +166,7 @@ void JuliaMode::Run()
 
         HandleEvent();
     }
-    juliaModeState = false; // Signal that the window is closed
+    wxQueueEvent(_parent, new wxCommandEvent(wxEVT_JULIA_MODE_CLOSED));
 }
 
 void JuliaMode::Launch()
@@ -177,11 +177,6 @@ void JuliaMode::Launch()
 void JuliaMode::Wait()
 {
     m_thread.wait();
-}
-
-void JuliaMode::Terminate()
-{
-    m_thread.terminate();
 }
 
 void JuliaMode::Close()

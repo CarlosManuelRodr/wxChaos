@@ -13,7 +13,7 @@
 #include "FractalCanvas.h"
 #include "FractalTypes.h"
 
-extern bool juliaModeState;
+wxDECLARE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
 /**
 * @class JuliaMode
@@ -59,9 +59,6 @@ public:
 
     ///@brief Waits for the thread to finish.
     void Wait();
-
-    ///@brief Forcibly terminates the thread.
-    void Terminate();
 
     ///@brief Signals the window to close.
     void Close();
