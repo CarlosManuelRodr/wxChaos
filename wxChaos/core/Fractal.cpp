@@ -62,7 +62,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _minX = -2.0;
     _maxX = 1.0;
     _minY = -1.2;
-    _maxY = _minY + (_maxX - _minX) * (double)_screenHeight / _screenWidth;
+    _maxY = _minY + (_maxX - _minX) * static_cast<double>(_screenHeight) / _screenWidth;
     _xFactor = (_maxX - _minX) / (_screenWidth - 1);
     _yFactor = (_maxY - _minY) / (_screenHeight - 1);
     _kReal = 0;
@@ -112,6 +112,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _varGradientStep = _paletteSize / 60;
     this->RebuildPalette();
 }
+
 Fractal::~Fractal()
 {
     // Cleanup.
@@ -127,13 +128,13 @@ Fractal::~Fractal()
     delete[] _auxMap;
 }
 
-sf::Color Fractal::GetColorFromPalette(int colorNum) const
+sf::Color Fractal::GetColorFromPalette(unsigned int index) const
 {
-    if (colorNum <= 0)
-        colorNum = 0;
+    if (index <= 0)
+        index = 0;
 
-    colorNum = colorNum % _paletteSize;
-    const wxColour& color = _palette[colorNum];
+    index = index % _paletteSize;
+    const wxColour& color = _palette[index];
     return {color.Red(), color.Green(), color.Blue(), color.Alpha()};
 }
 void Fractal::RebuildPalette()
@@ -145,6 +146,7 @@ void Fractal::RebuildPalette()
     }
     this->RedrawMaps();
 }
+
 // Color operations.
 void Fractal::RedrawMaps()
 {
@@ -166,14 +168,12 @@ void Fractal::RedrawMaps()
         _maxColorMapVal = 1;
     _refreshImage = true;
 }
-
 void Fractal::ConfigureRenderer(Renderer& renderer) const
 {
     renderer.SetOptions(this->GetOptions());
     renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
     renderer.SetK(_kReal, _kImaginary);
 }
-
 std::vector<RenderRegion> Fractal::BuildRenderRegions() const
 {
     std::vector<RenderRegion> regions;
@@ -278,7 +278,7 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
         else if (region.GetArea() > 0)
         {
             regionJobs = static_cast<unsigned int>(std::max(1.0,
-                std::round(static_cast<double>(remainingJobs) * region.GetArea() / remainingArea)));
+                                                            std::round(static_cast<double>(remainingJobs) * region.GetArea() / remainingArea)));
             regionJobs = std::min(regionJobs, remainingJobs - remainingRegions + 1);
         }
 
@@ -292,8 +292,8 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
         {
             const unsigned int remainingRegionJobs = regionJobs - jobIndex;
             const int rows = remainingRegionJobs > 0
-                ? (region.GetBottom() - currentTop) / static_cast<int>(remainingRegionJobs)
-                : 0;
+                                 ? (region.GetBottom() - currentTop) / static_cast<int>(remainingRegionJobs)
+                                 : 0;
             const int bottom = jobIndex + 1 == regionJobs ? region.GetBottom() : currentTop + rows;
 
             if (height <= 0 || rows <= 0)
@@ -478,7 +478,6 @@ void Fractal::PreRender() {}
 void Fractal::PreDrawMaps() {}
 void Fractal::PostRender() {}
 void Fractal::PreRestartRender() {}
-void Fractal::CopyOptFromPanel() {}
 bool Fractal::IsRendering()
 {
     if (_waitRoutine)
@@ -489,6 +488,7 @@ void Fractal::SetFormula(FormulaOpt formula)
 {
     _userFormula = std::move(formula);
 }
+void Fractal::CopyOptFromPanel() {}
 
 // Communication methods.
 double Fractal::GetX(const int pixelX) const
@@ -683,7 +683,7 @@ wxBitmap Fractal::GetRenderedWxBitmap()
         rgbPixels[j + 2] = rgbaPixels[i + 2];
     }
 
-    wxImage wxImage(imageSize.x, imageSize.y, rgbPixels, true);
+    const wxImage wxImage(static_cast<int>(imageSize.x), static_cast<int>(imageSize.y), rgbPixels, true);
     wxBitmap output(wxImage);
     return output;
 }
@@ -717,11 +717,12 @@ void Fractal::RenderBMP(const string& filename)
         _maxColorMapVal = 1;
 
     // Copy maps values to BMPWriter.
-    for (int j = _screenHeight - 1; j >= 0; j--)
+    for (unsigned int j = _screenHeight; j > 0; j--)
     {
+        const unsigned int row = j - 1;
         for (int i = 0; i < _screenWidth; i++)
         {
-            if (_setMap[i][j] != 0 && _colorSet)
+            if (_setMap[i][row] != 0 && _colorSet)
             {
                 data[i].r = 0;
                 data[i].g = 0;
@@ -731,7 +732,7 @@ void Fractal::RenderBMP(const string& filename)
             {
                 if (_relativeColor)
                 {
-                    const double colorMapValue = _colorMap[i][j];
+                    const double colorMapValue = _colorMap[i][row];
                     const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
                     const double ratio = colorMapValue / doubleMaxColorMapValue;
                     const sf::Color c = GetColorFromPalette(static_cast<int>(ratio * _paletteSize + _changeGradient));
@@ -741,7 +742,7 @@ void Fractal::RenderBMP(const string& filename)
                 }
                 else
                 {
-                    sf::Color c = GetColorFromPalette(_colorMap[i][j] + _changeGradient);
+                    sf::Color c = GetColorFromPalette(_colorMap[i][row] + _changeGradient);
                     data[i].r = c.r;
                     data[i].g = c.g;
                     data[i].b = c.b;
@@ -819,11 +820,11 @@ void Fractal::ChangeVarGradient()
 {
     _varGradient = !_varGradient;
 }
-void Fractal::SetPaletteSize(const int size)
+void Fractal::SetPaletteSize(const unsigned int size)
 {
     this->SetGradientSize(size);
 }
-int Fractal::GetPaletteSize() const
+unsigned int Fractal::GetPaletteSize() const
 {
     return _paletteSize;
 }
@@ -854,7 +855,7 @@ bool Fractal::GetRelativeColorMode() const
 {
     return _relativeColor;
 }
-void Fractal::SetVarGradient(const int n)
+void Fractal::SetVarGradient(const unsigned int n)
 {
     _varGradChange = true;
     _changeGradient = n % _paletteSize;
@@ -906,7 +907,7 @@ double Fractal::GetKImaginary() const
     return _kImaginary;
 }
 // Orbit mode operations.
-void Fractal::SetOrbitMode(bool mode)
+void Fractal::SetOrbitMode(const bool mode)
 {
     if (_hasOrbit)
     {
@@ -916,7 +917,7 @@ void Fractal::SetOrbitMode(bool mode)
         _orbitLines.clear();
     }
 }
-void Fractal::SetOrbitPoint(double x, double y)
+void Fractal::SetOrbitPoint(const double x, const double y)
 {
     if (!_orbitDrawn)
     {
@@ -986,7 +987,8 @@ PanelOptions* Fractal::GetOptPanel()
 }
 
 // Geometry operations.
-void Fractal::DrawLine(double x1, double y1, double x2, double y2, sf::Color color, bool orbitLine)
+void Fractal::DrawLine(const double x1, const double y1, const double x2, const double y2, const sf::Color color,
+                       const bool orbitLine)
 {
     LineData data;
     data.x1 = x1;
@@ -1003,11 +1005,11 @@ void Fractal::DrawLine(double x1, double y1, double x2, double y2, sf::Color col
     _geomFigure = true;
 }
 
-void Fractal::DrawCircle(double x_center, double y_center, double radius, sf::Color color)
+void Fractal::DrawCircle(const double xCenter, const double yCenter, const double radius, const sf::Color color)
 {
     CircleData data;
-    data.xCenter = x_center;
-    data.yCenter = y_center;
+    data.xCenter = xCenter;
+    data.yCenter = yCenter;
     data.radius = radius;
     data.color = color;
     _circles.push_back(data);

@@ -65,7 +65,7 @@ protected:
     unsigned int _screenWidth;
     unsigned int _screenHeight;
     unsigned int _backScreenWidth;
-    int _changeGradient;
+    unsigned int _changeGradient;
 
     // Color properties.
     RenderingAlgorithmType _algorithm;
@@ -77,10 +77,10 @@ protected:
     bool _colorSet;                         ///< Activates internal coloring.
     bool _colorMode;                        ///< Activates external coloring.
     ColorPalettes _gradStyle;               ///< Grad color palette to be used.
-    int _paletteSize;
-    int _gradPaletteSize;
-    int _varGradientStep;
-    int _maxColorMapVal;
+    unsigned int _paletteSize;
+    unsigned int _gradPaletteSize;
+    unsigned int _varGradientStep;
+    unsigned int _maxColorMapVal;
     bool _refreshImage;
 
     // Status variables.
@@ -125,9 +125,9 @@ protected:
 
     // Internal methods.
     ///@brief Looks into the color palette for the corresponding color.
-    ///@param colorNum Color parameter.
+    ///@param index Color parameter.
     ///@return A struct with the color.
-    sf::Color GetColorFromPalette(int colorNum) const;
+    sf::Color GetColorFromPalette(unsigned int index) const;
 
     ///@brief Rebuilds the color palette
     void RebuildPalette();
@@ -265,13 +265,13 @@ public:
     bool GetExteriorColorMode() const;
     bool GetInteriorColorMode() const;
     void ChangeVarGradient();
-    void SetPaletteSize(int size);
-    int GetPaletteSize() const;
+    void SetPaletteSize(unsigned int size);
+    unsigned int GetPaletteSize() const;
     void SetGradient(const wxGradient& grad);
     void SetGradientSize(unsigned int size);
     void SetRelativeColor(bool mode);
     bool GetRelativeColorMode() const;
-    void SetVarGradient(int n);
+    void SetVarGradient(unsigned int n);
 
     // Algorithm.
     RenderingAlgorithmType GetCurrentAlg() const;
@@ -312,7 +312,7 @@ public:
     // Geometry.
     ///@brief Draws a simple line. Used in orbit mode.
     void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
-    void DrawCircle(double x_center, double y_center, double radius, sf::Color color = sf::Color(0, 0, 0));
+    void DrawCircle(double xCenter, double yCenter, double radius, sf::Color color = sf::Color(0, 0, 0));
     virtual void DrawOrbit() {}
 };
 

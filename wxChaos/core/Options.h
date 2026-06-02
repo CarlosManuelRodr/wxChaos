@@ -14,12 +14,12 @@ struct Options
     double xFactor;
     double yFactor;
     unsigned maxIter;
-    int changeGradient;
+    unsigned int changeGradient;
     wxGradient gradient;
     RenderingAlgorithmType alg;
     FractalType type;
-    int paletteSize;
-    int gradPaletteSize;
+    unsigned int paletteSize;
+    unsigned int gradPaletteSize;
     PanelOptions panelOpt;
 
     double kReal;

@@ -5,7 +5,7 @@ wxGradient::wxGradient()
     m_min = m_max = 0;
 }
 
-wxGradient::wxGradient(const std::vector<wxColour>& stops, const int min, const int max)
+wxGradient::wxGradient(const std::vector<wxColour>& stops, const unsigned int min, const unsigned int max)
 {
     m_stops = stops;
     m_min = min;
@@ -14,19 +14,15 @@ wxGradient::wxGradient(const std::vector<wxColour>& stops, const int min, const 
 
 wxGradient::~wxGradient() = default;
 
-wxColour wxGradient::GetColorAt(const int value) const
+wxColour wxGradient::GetColorAt(const unsigned int value) const
 {
     if (value < m_min)
-    {
         return m_min;
-    }
     if (value > m_max)
-    {
         return m_max;
-    }
 
-    const int range = m_max - m_min;
-    const int v = value - m_min;
+    const unsigned int range = m_max - m_min;
+    const unsigned int v = value - m_min;
     const double step = range / static_cast<double>(m_stops.size() - 1);
     const int bin = static_cast<int>(v / step);
     const double normalized_v = (v - bin*step) / step;
@@ -38,7 +34,7 @@ void wxGradient::AddColorStop(const wxColour& col)
     m_stops.push_back(col);
 }
 
-void wxGradient::InsertColorStop(const int index, const wxColour& col)
+void wxGradient::InsertColorStop(const unsigned int index, const wxColour& col)
 {
     if (index > static_cast<int>(m_stops.size()))
         AddColorStop(col);
@@ -46,32 +42,32 @@ void wxGradient::InsertColorStop(const int index, const wxColour& col)
         m_stops.insert(m_stops.begin() + index, col);
 }
 
-void wxGradient::RemoveColorStop(const int index)
+void wxGradient::RemoveColorStop(const unsigned int index)
 {
     m_stops.erase(m_stops.begin() + index);
 }
 
-void wxGradient::EditColorStop(const int index, const wxColour& col)
+void wxGradient::EditColorStop(const unsigned int index, const wxColour& col)
 {
     m_stops[index] = col;
 }
 
-void wxGradient::SetMin(const int min)
+void wxGradient::SetMin(const unsigned int min)
 {
     m_min = min;
 }
 
-int wxGradient::GetMin() const
+unsigned int wxGradient::GetMin() const
 {
     return m_min;
 }
 
-void wxGradient::SetMax(const int max)
+void wxGradient::SetMax(const unsigned int max)
 {
     m_max = max;
 }
 
-int wxGradient::GetMax() const
+unsigned int wxGradient::GetMax() const
 {
     return m_max;
 }

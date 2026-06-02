@@ -16,18 +16,20 @@ bool dimensionFrameState = false;
 double GetMaxElement(const vector<double> &in)
 {
     double max = -std::numeric_limits<double>::infinity();
-    for (unsigned int i = 0; i < in.size(); i++)
+    for (const double i : in)
     {
-        if (in[i] > max) max = in[i];
+        if (i > max)
+            max = i;
     }
     return max;
 }
 double GetMinElement(const vector<double> &in)
 {
     double min = std::numeric_limits<double>::infinity();
-    for (unsigned int i = 0; i < in.size(); i++)
+    for (const double i : in)
     {
-        if (in[i] < min) min = in[i];
+        if (i < min)
+            min = i;
     }
     return min;
 }
@@ -56,8 +58,8 @@ void DimensionCalculator::Run()
 
     _boxCountN = 0;
     const double epsilon = static_cast<double>(_size) / static_cast<double>(_div);
-    const int ey_init = static_cast<double>(_ho) / epsilon;
-    const int ey_end = static_cast<double>(_hf) / epsilon;
+    const int ey_init = static_cast<int>(static_cast<double>(_ho) / epsilon);
+    const int ey_end = static_cast<int>(static_cast<double>(_hf) / epsilon);
 
     // Iterate through the boxes.
     for (int ey = ey_init; ey < ey_end; ey++)
@@ -321,8 +323,8 @@ void ConfigFractalOptionsDialog::AdjustOptPanel()
     // If there are elements in pOptions creates panel.
     if (pOptions->GetElementsSize() > 0)
     {
-        int labelIndex;
-        int index;
+        size_t labelIndex;
+        size_t index;
 
         // Creates elements of each kind.
         for (int i = 0; i < pOptions->GetElementsSize(); i++)
