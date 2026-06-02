@@ -186,7 +186,7 @@ Rect SFMLFractal::CaptureCurrentView() const
     return {_fractal->_minX, _fractal->_minY, _fractal->_maxX, _fractal->_maxY};
 }
 
-void SFMLFractal::ApplyView(const Rect& view)
+void SFMLFractal::ApplyView(const Rect& view) const
 {
     _fractal->SetView(view);
 }
@@ -274,7 +274,7 @@ void SFMLFractal::Move()
 
 bool SFMLFractal::IsMoving() const
 {
-    return _xVel != 0 || _yVel != 0;
+    return _xVel != 0 || _yVel != 0 || _movement[Up] || _movement[Down] || _movement[Left] || _movement[Right];
 }
 
 void SFMLFractal::SetMovement(const Direction direction)

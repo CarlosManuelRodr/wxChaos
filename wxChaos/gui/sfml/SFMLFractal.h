@@ -84,7 +84,7 @@ class SFMLFractal
     Rect CaptureCurrentView() const;
 
     ///@brief Applies a world-coordinate view to the fractal.
-    void ApplyView(const Rect& view);
+    void ApplyView(const Rect& view) const;
 
     ///@brief Saves the current view for zoom-back.
     void SaveZoom();

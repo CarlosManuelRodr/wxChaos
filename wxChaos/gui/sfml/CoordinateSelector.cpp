@@ -97,7 +97,7 @@ bool CoordinateSelector::ClickEvent(wxMouseEvent& event)
     return false;
 }
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
-void CoordinateSelector::UnClickEvent(wxMouseEvent& event)
+void CoordinateSelector::ReleaseClickEvent(wxMouseEvent& event)
 {
     if (event.ButtonUp(wxMOUSE_BTN_LEFT))
     {

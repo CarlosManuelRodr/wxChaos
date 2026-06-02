@@ -22,6 +22,8 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     _juliaMode = false;
     _kReal = 0;
     _kImaginary = 0;
+    _prevKReal = 0;
+    _prevKImag = 0;
     _pointerChange = false;
     _keyboardGuide = false;
     _keyboardGuideMode = false;
@@ -44,7 +46,7 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     _fractalHandler.SetFormula(_userFormula);
     _target->SetOnWxCtrl(true);
 
-    // Initializes GUI elements.
+    // Initialize GUI elements.
     _selection = new SelectionRect();
 
     _play = new ToggleButton(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 4, this);
@@ -74,8 +76,8 @@ FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton
     this->Connect(wxEVT_MOTION, wxMouseEventHandler(FractalCanvas::OnMoveMouse));
     this->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(FractalCanvas::OnClick));
     this->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(FractalCanvas::OnClick));
-    this->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(FractalCanvas::OnUnClick));
-    this->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(FractalCanvas::OnUnClick));
+    this->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(FractalCanvas::OnReleaseClick));
+    this->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(FractalCanvas::OnReleaseClick));
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(FractalCanvas::OnResize));
     this->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(FractalCanvas::OnKeyDown));
     this->Connect(wxEVT_KEY_UP, wxKeyEventHandler(FractalCanvas::OnKeyUp));
@@ -116,8 +118,11 @@ void FractalCanvas::OnUpdate()
             {
                 if (this->getSize().y > 300 || this->getSize().x > 300)
                 {
-                    _outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
-                    _outMouse.setPosition(this->getSize().x - 90, 0);
+                    _outKeyboard.setPosition(
+                        static_cast<float>(this->getSize().x - 120),
+                        static_cast<float>(this->getSize().y - 80)
+                        );
+                    _outMouse.setPosition(static_cast<float>(this->getSize().x - 90), 0);
                 }
             }
 
@@ -198,7 +203,7 @@ void FractalCanvas::OnUpdate()
     }
 
     // This is here because the binding between SFML and wxWidgets makes SFML to incorrectly handle a resolution change.
-    const sf::View view(sf::FloatRect(0, 0, _canvasSize.GetX(), _canvasSize.GetY()));
+    const sf::View view(sf::FloatRect(0, 0, static_cast<float>(_canvasSize.GetX()), static_cast<float>(_canvasSize.GetY())));
     this->setView(view);
 
     // Clears the screen and draw GUI elements and fractal.
@@ -261,8 +266,8 @@ void FractalCanvas::SetWxSize(const wxSize size)
     {
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            _outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
-            _outMouse.setPosition(this->getSize().x - 90, 0);
+            _outKeyboard.setPosition(static_cast<float>(this->getSize().x - 120), static_cast<float>(this->getSize().y - 80));
+            _outMouse.setPosition(static_cast<float>(this->getSize().x - 90), 0);
             _keyboardGuide = true;
         }
         else
@@ -270,8 +275,14 @@ void FractalCanvas::SetWxSize(const wxSize size)
     }
     if (_helpImageMode)
     {
-        _outKeyboard.setPosition(this->getSize().x - _keyboardImage.getSize().x, this->getSize().y - _keyboardImage.getSize().y);
-        _outHelp.setPosition((this->getSize().x - _helpImage.getSize().x) / 2, (this->getSize().y - _helpImage.getSize().y) / 2);
+        _outKeyboard.setPosition(
+            static_cast<float>(this->getSize().x - _keyboardImage.getSize().x),
+            static_cast<float>(this->getSize().y - _keyboardImage.getSize().y)
+            );
+        _outHelp.setPosition(
+            static_cast<float>((this->getSize().x - _helpImage.getSize().x) / 2.0),
+            static_cast<float>((this->getSize().y - _helpImage.getSize().y) / 2.0)
+            );
     }
 }
 void FractalCanvas::SetJuliaMode(const bool mode)
@@ -342,9 +353,7 @@ void FractalCanvas::ChangeType(const FractalType type)
         _sliderMode = false;
         if (!_juliaMode)
         {
-            if (_screenPointer != nullptr)
-                delete _screenPointer;
-
+            delete _screenPointer;
             _screenPointer = nullptr;
         }
     }
@@ -369,9 +378,7 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
         _sliderMode = false;
         if (!_juliaMode)
         {
-            if (_screenPointer != nullptr)
-                delete _screenPointer;
-
+            delete _screenPointer;
             _screenPointer = nullptr;
         }
     }
@@ -386,8 +393,11 @@ void FractalCanvas::SetKeyboardGuide(const bool mode)
         // Adjust position of the keyboard guide.
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            _outKeyboard.setPosition(this->getSize().x - _keyboardImage.getSize().x, this->getSize().y - _keyboardImage.getSize().y);
-            _outMouse.setPosition(this->getSize().x - _mouseImage.getSize().x, 0);
+            _outKeyboard.setPosition(
+                static_cast<float>(this->getSize().x - _keyboardImage.getSize().x),
+                static_cast<float>(this->getSize().y - _keyboardImage.getSize().y)
+                );
+            _outMouse.setPosition(static_cast<float>(this->getSize().x - _mouseImage.getSize().x), 0);
             _keyboardGuide = true;
         }
         else
@@ -398,8 +408,14 @@ void FractalCanvas::SetKeyboardGuide(const bool mode)
 }
 void FractalCanvas::ShowHelpImage()
 {
-    _outKeyboard.setPosition(this->getSize().x - _keyboardImage.getSize().x, this->getSize().y - _keyboardImage.getSize().y);
-    _outHelp.setPosition((this->getSize().x - _helpImage.getSize().x) / 2, (this->getSize().y - _helpImage.getSize().y) / 2);
+    _outKeyboard.setPosition(
+        static_cast<float>(this->getSize().x - _keyboardImage.getSize().x),
+        static_cast<float>(this->getSize().y - _keyboardImage.getSize().y)
+        );
+    _outHelp.setPosition(
+        static_cast<float>((this->getSize().x - _helpImage.getSize().x) / 2.0),
+        static_cast<float>((this->getSize().y - _helpImage.getSize().y) / 2.0)
+        );
     _helpImageMode = true;
 }
 void FractalCanvas::Reset()
@@ -485,8 +501,8 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
     {
         if (this->getSize().y > 300 || this->getSize().x > 300)
         {
-            _outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
-            _outMouse.setPosition(this->getSize().x - 90, 0);
+            _outKeyboard.setPosition(static_cast<float>(this->getSize().x - 120), static_cast<float>(this->getSize().y - 80));
+            _outMouse.setPosition(static_cast<float>(this->getSize().x - 90), 0);
             _keyboardGuide = true;
         }
         else
@@ -494,8 +510,11 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
     }
     if (_helpImageMode)
     {
-        _outKeyboard.setPosition(this->getSize().x - 120, this->getSize().y - 80);
-        _outHelp.setPosition((this->getSize().x - _helpImage.getSize().x) / 2, (this->getSize().y - _helpImage.getSize().y) / 2);
+        _outKeyboard.setPosition(static_cast<float>(this->getSize().x - 120), static_cast<float>(this->getSize().y - 80));
+        _outHelp.setPosition(
+            static_cast<float>((this->getSize().x - _helpImage.getSize().x) / 2.0),
+            static_cast<float>((this->getSize().y - _helpImage.getSize().y) / 2.0)
+            );
     }
 }
 
@@ -531,7 +550,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
             _helpImageMode = false;
     }
 
-    if (event.ButtonDown(wxMOUSE_BTN_RIGHT))
+    if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_sfmlFractal->IsMoving())
     {
         _sfmlFractal->ZoomBack();
         if (btn->state && !_target->IsPaused())
@@ -544,11 +563,12 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         }
     }
 }
-void FractalCanvas::OnUnClick(wxMouseEvent& event)
+// ReSharper disable once CppMemberFunctionMayBeConst
+void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 {
     // Selection event.
     if (_juliaMode || _orbitMode || _sliderMode)
-        _screenPointer->UnClickEvent(event);
+        _screenPointer->ReleaseClickEvent(event);
     else
     {
         if (!_target->IsRendering() && !_sfmlFractal->IsMoving())

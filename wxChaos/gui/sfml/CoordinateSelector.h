@@ -32,7 +32,7 @@ public:
 
     // WX events
     bool ClickEvent(wxMouseEvent& event);
-    void UnClickEvent(wxMouseEvent& event);
+    void ReleaseClickEvent(wxMouseEvent& event);
     bool MoveEvent(wxMouseEvent& event);
 
     double GetX(const Fractal* target) const;

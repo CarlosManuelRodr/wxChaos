@@ -73,7 +73,7 @@ class FractalCanvas : public wxSFMLCanvas
     FormulaOpt _userFormula;
     ScriptData _scriptData;
 
-    sf::Event _event;
+    sf::Event _event{};
     wxSize _canvasSize;                     ///< Size of the fractalCanvas.
 
     bool _juliaMode;                        ///< State of the Julia mode.
@@ -89,7 +89,7 @@ class FractalCanvas : public wxSFMLCanvas
     bool _sliderMode;
     bool _onUpdate;
 
-    MainWindowStatus statusData;
+    MainWindowStatus statusData{};
     PauseContinueButton* btn;
 
 protected:
@@ -102,7 +102,7 @@ private:
 public:
     ///@brief Constructor
     ///@param status Pointer to the status bar of the MainFrame.
-    ///@param pcb Pointer to struct that holds the adress of the pause button and its status.
+    ///@param pcb Pointer to struct that holds the address of the pause button and its status.
     ///@param fractalType Type of the fractal to be created.
     ///@param parent
     ///@param id
@@ -110,8 +110,8 @@ public:
     ///@param size
     ///@param style
     ///@param parent Parent wxWindow.
-    FractalCanvas(const MainWindowStatus &status, PauseContinueButton* pcb, FractalType fractalType, wxWindow* parent, wxWindowID id,
-                  const wxPoint& position, const wxSize& size, long style = 0);
+    FractalCanvas(const MainWindowStatus &status, PauseContinueButton* pcb, FractalType fractalType, wxWindow* parent,
+                  wxWindowID id, const wxPoint& position, const wxSize& size, long style = 0);
     ~FractalCanvas() override;
 
     ///@brief Changes the size of the canvas.
@@ -180,7 +180,7 @@ public:
     void OnMoveMouse(wxMouseEvent& event);
 
     void OnClick(wxMouseEvent& event);
-    void OnUnClick(wxMouseEvent& event);
+    void OnReleaseClick(wxMouseEvent& event);
 
     ///@brief Resizes the frame.
     void OnResize(wxSizeEvent& event);
