@@ -4,15 +4,11 @@
 #include "Filesystem.h"
 using namespace std;
 
-FractalCanvas* fractalCanvasPtr = nullptr;
-
 // Fractal Canvas
 FractalCanvas::FractalCanvas(const MainWindowStatus &status, PauseContinueButton* pcb, const FractalType fractalType,
                              wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                              const long style) : wxSFMLCanvas(parent, id, position, size, style)
 {
-    fractalCanvasPtr = this;
-
     statusData = status;
     btn = pcb;
     _type = fractalType;

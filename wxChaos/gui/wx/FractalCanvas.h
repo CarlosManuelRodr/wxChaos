@@ -189,6 +189,4 @@ public:
     void OnKeyUp(wxKeyEvent& event);
 };
 
-extern FractalCanvas* fractalCanvasPtr;
-
 #endif
