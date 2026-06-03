@@ -65,7 +65,7 @@ public:
 
     ///@brief Returns render progress for the current batch.
     ///@return A value from 0 to 100.
-    int GetProgress();
+    int GetProgress() const;
 };
 
 #endif

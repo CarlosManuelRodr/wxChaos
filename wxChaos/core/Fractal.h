@@ -40,7 +40,7 @@ protected:
     bool** _setMap;                             ///< Stores the points that belong to the fractal set.
     int** _colorMap;                            ///< Store the color map.
     unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
-    ThreadWatchdog<Renderer> _watchdog;    ///< Watch over the render threads.
+    ThreadWatchdog<Renderer> _watchdog;         ///< Watch over the render threads.
     RenderThreadPool _renderPool;               ///< Reusable pool for render jobs.
 
     // Fractal properties.
@@ -354,17 +354,11 @@ template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer*
         const RenderRegion& region = job.GetRegion();
 
         if (relaunchExistingWork)
-        {
             myRender[i].SetOldHeightOrigin(job.GetProgressOriginY());
-        }
         else if (job.IsEmpty())
-        {
             myRender[i].SetLimits(0, 0, 0, 1);
-        }
         else
-        {
             myRender[i].SetLimits(region.GetLeft(), region.GetTop(), region.GetRight(), region.GetBottom());
-        }
     }
 
     _watchdog.LaunchThreads();

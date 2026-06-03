@@ -39,7 +39,7 @@ void RenderThreadPool::SetThreadNumber(const unsigned int threadNumber)
     }
 
     for (unsigned int i = 0; i < threadNumber; i++)
-        _workers.push_back(std::thread(&RenderThreadPool::WorkerLoop, this, i));
+        _workers.emplace_back(&RenderThreadPool::WorkerLoop, this, i);
 }
 
 void RenderThreadPool::Render(const std::vector<Renderer*>& renderers, const std::vector<RenderJob>& jobs)
@@ -118,14 +118,14 @@ bool RenderThreadPool::IsRunning() const
     return _running || _activeWorkers > 0;
 }
 
-int RenderThreadPool::GetProgress()
+int RenderThreadPool::GetProgress() const
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
     if (_totalJobs == 0)
         return _running ? 0 : 100;
 
-    int progress = static_cast<int>(_completedJobs * 100);
+    unsigned int progress = static_cast<int>(_completedJobs * 100);
 
     for (unsigned int i = 0; i < _renderers.size(); i++)
     {
@@ -133,7 +133,7 @@ int RenderThreadPool::GetProgress()
             progress += _renderers[i]->GetProgress();
     }
 
-    return std::min(100, std::max(0, progress / static_cast<int>(_totalJobs)));
+    return std::min(100, std::max(0, static_cast<int>(progress / _totalJobs)));
 }
 
 void RenderThreadPool::WorkerLoop(const unsigned int workerIndex)

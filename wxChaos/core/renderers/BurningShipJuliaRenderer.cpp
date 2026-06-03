@@ -1,3 +1,4 @@
+// ReSharper disable CppTooWideScope
 #include "BurningShipJuliaRenderer.h"
 #include "FractalUtils.h"
 
@@ -33,7 +34,7 @@ void BurningShipJuliaRenderer::EscapeTimeRender()
             if (insideSet)
                 _setMap[_x][_y] = true;
 
-            _colorMap[_x][_y] = n;
+            _colorMap[_x][_y] = static_cast<int>(n);
         }
     }
 
@@ -79,7 +80,7 @@ void BurningShipJuliaRenderer::GaussianIntRender()
             if (insideSet)
                 _setMap[_x][_y] = true;
 
-            _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
+            _colorMap[_x][_y] = static_cast<int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
         }
     }
 
@@ -90,10 +91,10 @@ void BurningShipJuliaRenderer::EscapeAngleRender()
     const double c_im = _kImaginary;
     const double c_re = _kReal;
     unsigned n;
-    const int color1 = 1;
-    const int color2 = 0.25 * _myOpt.paletteSize;
-    const int color3 = 0.50 * _myOpt.paletteSize;
-    const int color4 = 0.75 * _myOpt.paletteSize;
+    constexpr int color1 = 1;
+    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
+    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
+    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
 
     for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
@@ -121,13 +122,13 @@ void BurningShipJuliaRenderer::EscapeAngleRender()
                 _setMap[_x][_y] = true;
 
             if (Z_re > 0 && Z_im > 0)
-                _colorMap[_x][_y] = n + color1;
+                _colorMap[_x][_y] = static_cast<int>(n + color1);
             else if (Z_re <= 0 && Z_im > 0)
-                _colorMap[_x][_y] = n + color2;
+                _colorMap[_x][_y] = static_cast<int>(n + color2);
             else if (Z_re <= 0 && Z_im < 0)
-                _colorMap[_x][_y] = n + color3;
+                _colorMap[_x][_y] = static_cast<int>(n + color3);
             else
-                _colorMap[_x][_y] = n + color4;
+                _colorMap[_x][_y] = static_cast<int>(n + color4);
         }
     }
 

@@ -89,21 +89,17 @@ template<class MT> ThreadWatchdog<MT>::~ThreadWatchdog()
 template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(const unsigned int threadNumber)
 {
     if (_threadList != nullptr)
-    {
         delete[] _threadList;
-    }
 
     delete[] _sfmlThreads;
 
     _threadCounter = 0;
     _threadRunning = false;
 
-    _threadList = new MT * [threadNumber];
-    _sfmlThreads = new Thread * [threadNumber]; // Allocate for sf::Thread pointers
+    _threadList = new MT* [threadNumber];
+    _sfmlThreads = new Thread* [threadNumber]; // Allocate for sf::Thread pointers
     for (int i = 0; i < threadNumber; ++i)
-    {
-        _sfmlThreads[i] = nullptr; // Initialize to null
-    }
+        _sfmlThreads[i] = nullptr;
 }
 template<class MT> void ThreadWatchdog<MT>::SetThread(MT* threadAddress)
 {
