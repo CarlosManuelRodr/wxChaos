@@ -23,10 +23,10 @@ enum AnchorType
 class Button {
 protected:
     /// Width of the button texture in pixels.
-    int _width;
+    unsigned int _width;
 
     /// Height of the button texture in pixels.
-    int _height;
+    unsigned int _height;
 
     /// Current pressed/toggled state.
     bool _pressed;

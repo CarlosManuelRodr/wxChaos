@@ -15,43 +15,45 @@ int CoordinateSelector::ClampCoordinate(const int value, const unsigned int size
 
 CoordinateSelector::CoordinateSelector(const sf::RenderWindow* window)
 {
-    screenWidth = window->getSize().x;
-    screenHeight = window->getSize().y;
+    _x = 0;
+    _y = 0;
+    _screenWidth = window->getSize().x;
+    _screenHeight = window->getSize().y;
     this->SetPosition(static_cast<int>(window->getSize().x / 2), static_cast<int>(window->getSize().y / 2));
 
-    color = sf::Color(0, 0, 0);
-    textureImage.create(screenWidth, screenHeight, sf::Color(255, 255, 255, 0));
-    texture.loadFromImage(textureImage);
-    output.setTexture(texture);
+    _color = sf::Color(0, 0, 0);
+    _textureImage.create(_screenWidth, _screenHeight, sf::Color(255, 255, 255, 0));
+    _texture.loadFromImage(_textureImage);
+    _output.setTexture(_texture);
 
     this->Render();
-    rendered = true;
-    inSelection = false;
+    _rendered = true;
+    _inSelection = false;
 }
 
 void CoordinateSelector::Show(sf::RenderWindow* window)
 {
-    if (!rendered)
+    if (!_rendered)
         this->Render();
-    window->draw(output);
+    window->draw(_output);
 }
 
 void CoordinateSelector::Render()
 {
-    textureImage.create(screenWidth, screenHeight, sf::Color(255, 255, 255, 0));
-    this->SetPosition(x, y);
-    for (unsigned int i = 0; i < screenWidth; i++)
-        textureImage.setPixel(i, y, color);
-    for (unsigned int j = 0; j < screenHeight; j++)
-        textureImage.setPixel(x, j, color);
-    texture.loadFromImage(textureImage);
-    rendered = true;
+    _textureImage.create(_screenWidth, _screenHeight, sf::Color(255, 255, 255, 0));
+    this->SetPosition(_x, _y);
+    for (unsigned int i = 0; i < _screenWidth; i++)
+        _textureImage.setPixel(i, _y, _color);
+    for (unsigned int j = 0; j < _screenHeight; j++)
+        _textureImage.setPixel(_x, j, _color);
+    _texture.loadFromImage(_textureImage);
+    _rendered = true;
 }
 
 void CoordinateSelector::SetPosition(const int newX, const int newY)
 {
-    x = ClampCoordinate(newX, screenWidth);
-    y = ClampCoordinate(newY, screenHeight);
+    _x = ClampCoordinate(newX, _screenWidth);
+    _y = ClampCoordinate(newY, _screenHeight);
 }
 
 bool CoordinateSelector::HandleEvents(const sf::Event& event)
@@ -61,15 +63,15 @@ bool CoordinateSelector::HandleEvents(const sf::Event& event)
         if (event.mouseButton.button == sf::Mouse::Left)
         {
             this->SetPosition(event.mouseButton.x, event.mouseButton.y);
-            rendered = false;
-            inSelection = true;
+            _rendered = false;
+            _inSelection = true;
         }
     }
 
-    if (event.type == sf::Event::MouseMoved && inSelection)
+    if (event.type == sf::Event::MouseMoved && _inSelection)
     {
         this->SetPosition(event.mouseMove.x, event.mouseMove.y);
-        rendered = false;
+        _rendered = false;
         return true;
     }
 
@@ -77,7 +79,7 @@ bool CoordinateSelector::HandleEvents(const sf::Event& event)
     {
         if (event.mouseButton.button == sf::Mouse::Left)
         {
-            inSelection = false;
+            _inSelection = false;
             return true;
         }
     }
@@ -90,8 +92,8 @@ bool CoordinateSelector::ClickEvent(wxMouseEvent& event)
     if (event.ButtonDown(wxMOUSE_BTN_LEFT))
     {
         this->SetPosition(event.GetPosition().x, event.GetPosition().y);
-        rendered = false;
-        inSelection = true;
+        _rendered = false;
+        _inSelection = true;
         return true;
     }
     return false;
@@ -101,20 +103,20 @@ void CoordinateSelector::ReleaseClickEvent(wxMouseEvent& event)
 {
     if (event.ButtonUp(wxMOUSE_BTN_LEFT))
     {
-        inSelection = false;
+        _inSelection = false;
     }
 }
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 bool CoordinateSelector::MoveEvent(wxMouseEvent& event)
 {
-    if (inSelection)
+    if (_inSelection)
     {
-        const int newX = ClampCoordinate(event.GetPosition().x, screenWidth);
-        const int newY = ClampCoordinate(event.GetPosition().y, screenHeight);
-        if (x != newX || y != newY)
+        const int newX = ClampCoordinate(event.GetPosition().x, _screenWidth);
+        const int newY = ClampCoordinate(event.GetPosition().y, _screenHeight);
+        if (_x != newX || _y != newY)
         {
             this->SetPosition(newX, newY);
-            rendered = false;
+            _rendered = false;
             return true;
         }
     }
@@ -123,26 +125,26 @@ bool CoordinateSelector::MoveEvent(wxMouseEvent& event)
 
 void CoordinateSelector::Resize(const sf::RenderWindow* window)
 {
-    screenWidth = window->getSize().x;
-    screenHeight = window->getSize().y;
-    this->SetPosition(static_cast<int>(screenWidth / 2), static_cast<int>(screenHeight / 2));
+    _screenWidth = window->getSize().x;
+    _screenHeight = window->getSize().y;
+    this->SetPosition(static_cast<int>(_screenWidth / 2), static_cast<int>(_screenHeight / 2));
     this->Render();
-    inSelection = false;
+    _inSelection = false;
 
-    sf::IntRect Size;
-    Size.width = screenWidth;
-    Size.height = screenHeight;
-    output.setTextureRect(Size);
+    sf::IntRect size;
+    size.width = static_cast<int>(_screenWidth);
+    size.height = static_cast<int>(_screenHeight);
+    _output.setTextureRect(size);
 }
 
 double CoordinateSelector::GetX(const Fractal* target) const
 {
-    return target->GetX(x);
+    return target->GetX(_x);
 }
 
 double CoordinateSelector::GetY(const Fractal* target) const
 {
-    return target->GetY(y);
+    return target->GetY(_y);
 }
 
 void CoordinateSelector::AdjustPosition(const Fractal* target, const double numX, const double numY)

@@ -10,15 +10,15 @@ class Fractal; // forward declaration
  */
 class CoordinateSelector
 {
-    int x, y;
-    unsigned int screenWidth;
-    unsigned int screenHeight;
-    sf::Image textureImage;
-    sf::Texture texture;
-    sf::Sprite output;
-    sf::Color color;
-    bool rendered;
-    bool inSelection;
+    int _x, _y;
+    unsigned int _screenWidth;
+    unsigned int _screenHeight;
+    sf::Image _textureImage;
+    sf::Texture _texture;
+    sf::Sprite _output;
+    sf::Color _color;
+    bool _rendered;
+    bool _inSelection;
 
     void Render();
     void SetPosition(int newX, int newY);

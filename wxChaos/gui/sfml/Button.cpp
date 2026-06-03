@@ -36,8 +36,8 @@ void Button::Resize(const sf::RenderWindow* window)
             return;
         }
 
-        float x = static_cast<float>(_leftMargin);
-        float y = static_cast<float>(_topMargin);
+        auto x = static_cast<float>(_leftMargin);
+        auto y = static_cast<float>(_topMargin);
 
         if (_anchorType == BottomLeft || _anchorType == BottomRight)
             y = static_cast<float>(window->getSize().y - _bottomMargin - _height);
@@ -97,9 +97,11 @@ bool Button::HandleEvents(const sf::Event event)
     {
         if (event.mouseButton.button == sf::Mouse::Left)
         {
-            if (event.mouseButton.x >= _area.left && event.mouseButton.x <= _area.left + _area.width)
+            const auto mousePositionX = static_cast<float>(event.mouseButton.x);
+            const auto mousePositionY = static_cast<float>(event.mouseButton.y);
+            if (mousePositionX >= _area.left && mousePositionX <= _area.left + _area.width)
             {
-                if (event.mouseButton.y >= _area.top && event.mouseButton.y <= _area.top + _area.height)
+                if (mousePositionY >= _area.top && mousePositionY <= _area.top + _area.height)
                 {
                     _pressed = !_pressed;
                     _sprite.setColor(_pressed ? sf::Color(0, 255, 0, 100) : sf::Color(255, 255, 255, 100));

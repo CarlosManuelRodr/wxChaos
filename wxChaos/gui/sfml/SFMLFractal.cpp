@@ -17,6 +17,7 @@ constexpr int stdSpeed = 1;
 * @param matrixHeight The total number of elements in the Y axis.
 * @param moveX Elements to move in the X axis.
 * @param moveY Elements to move in the Y axis.
+* @param fillValue The value to fill the matrix with when moving elements.
 */
 template<class M> void SFMLFractal::MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,
                                                const int moveX, const int moveY, const M fillValue)

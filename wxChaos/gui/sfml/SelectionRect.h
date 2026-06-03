@@ -7,13 +7,14 @@
 * @brief A selection rectangle used to zoom into the fractal.
 */
 class SelectionRect {
-    sf::IntRect pos;
-    sf::IntRect select;
-    sf::RectangleShape output;
-    int x, y;
-    int xSelect, ySelect;
-    sf::Color color;
-    bool inSelection;
+    int _x, _y;
+    int _xSelect, _ySelect;
+    bool _inSelection;
+    sf::IntRect _pos;
+    sf::IntRect _select;
+    sf::RectangleShape _output;
+    sf::Color _color;
+
 public:
     explicit SelectionRect();
     void Show(sf::RenderWindow* window);
