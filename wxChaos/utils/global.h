@@ -11,6 +11,6 @@
 #ifndef _global
 #define _global
 
-constexpr char APP_VERSION[] = "1.2.0";
+constexpr char APP_VERSION[] = "2.0.0";
 
 #endif

@@ -77,7 +77,7 @@ class SizeDialogSave : public wxDialog
     void OnOk(wxCommandEvent& event);             ///< Creates fractal with the parameters from the dialog and saves image.
 
 public:
-    SizeDialogSave(FractalCanvas* mFCanvas, const std::string& filePath, int ext, FractalType type, Fractal* target, wxWindow* parent,
+    SizeDialogSave(FractalCanvas* mFCanvas, const std::string& filePath, int ext, FractalType type, const Fractal* target, wxWindow* parent,
                    const std::string& scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 300),
                    long style = wxDEFAULT_DIALOG_STYLE);

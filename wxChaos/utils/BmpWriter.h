@@ -59,8 +59,8 @@ struct BMPPixel
 * @class BMPWriter
 * @brief Class to write BMP files.
 *
-* Although SFML has it's own methods to save image files these have memory allocation problems if the
-* user tries to save a oversized image (10000x10000 pixels for example). This class it's designed to avoid
+* Although SFML has its own methods to save image files, these have memory allocation problems if the
+* user tries to save an oversized image (10000x10000 pixels, for example). This class it's designed to avoid
 * these problems by writing the BMP line by line.
 */
 class BMPWriter
@@ -76,7 +76,7 @@ class BMPWriter
 
 public:
     ///@brief Constructor.
-    ///@param filepath Path of file to save.
+    ///@param filepath Path of a file to save.
     ///@param width Width of the image.
     ///@param height Height of the image.
     BMPWriter(const char* filepath, unsigned int width, unsigned int height);

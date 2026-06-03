@@ -14,18 +14,18 @@ BMPWriter::BMPWriter(const char* filepath, unsigned int width, unsigned int heig
     myBmpHdr = new BMPHeader;
     myDibHdr = new DIBHeader;
 
-    myBmpHdr->identifier = SwitchEndianess16(0x424d);    // Windows
+    myBmpHdr->identifier = SwitchEndianness16(0x424d);    // Windows
     myBmpHdr->appSpecific1 = 0x0000;
     myBmpHdr->appSpecific2 = 0x0000;
 
     myDibHdr->width = width;
     myDibHdr->height = height;
-    myDibHdr->nPlanes = SwitchEndianess16(0x0100);
-    myDibHdr->colorDepth = SwitchEndianess16(0x1800);
+    myDibHdr->nPlanes = SwitchEndianness16(0x0100);
+    myDibHdr->colorDepth = SwitchEndianness16(0x1800);
     myDibHdr->compression = 0x00000000;
-    myDibHdr->bmpBytes = SwitchEndianess32(0x10000000);
-    myDibHdr->hRes = SwitchEndianess32(0x130B0000);
-    myDibHdr->vRes = SwitchEndianess32(0x130B0000);
+    myDibHdr->bmpBytes = SwitchEndianness32(0x10000000);
+    myDibHdr->hRes = SwitchEndianness32(0x130B0000);
+    myDibHdr->vRes = SwitchEndianness32(0x130B0000);
     myDibHdr->nColors = 0x00000000;
     myDibHdr->nImpColors = 0x00000000;
 

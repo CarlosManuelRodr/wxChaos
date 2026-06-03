@@ -1,3 +1,4 @@
+// ReSharper disable CppEnumeratorNeverUsed
 #include "MainWindow.h"
 #include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
@@ -19,11 +20,11 @@ enum ProcessDpiAwarenessValue
 
 void EnableHighDpiSupport()
 {
-    HMODULE user32 = LoadLibraryW(L"user32.dll");
+    const HMODULE user32 = LoadLibraryW(L"user32.dll");
     if (user32)
     {
         using SetProcessDpiAwarenessContextFn = BOOL(WINAPI*)(HANDLE);
-        auto setDpiAwarenessContext = reinterpret_cast<SetProcessDpiAwarenessContextFn>(
+        const auto setDpiAwarenessContext = reinterpret_cast<SetProcessDpiAwarenessContextFn>(
             GetProcAddress(user32, "SetProcessDpiAwarenessContext"));
 
         if (setDpiAwarenessContext &&
@@ -34,11 +35,11 @@ void EnableHighDpiSupport()
         }
     }
 
-    HMODULE shcore = LoadLibraryW(L"Shcore.dll");
+    const HMODULE shcore = LoadLibraryW(L"Shcore.dll");
     if (shcore)
     {
         using SetProcessDpiAwarenessFn = HRESULT(WINAPI*)(ProcessDpiAwarenessValue);
-        auto setProcessDpiAwareness = reinterpret_cast<SetProcessDpiAwarenessFn>(
+        const auto setProcessDpiAwareness = reinterpret_cast<SetProcessDpiAwarenessFn>(
             GetProcAddress(shcore, "SetProcessDpiAwareness"));
 
         if (setProcessDpiAwareness)
@@ -53,7 +54,7 @@ void EnableHighDpiSupport()
     if (user32)
     {
         using SetProcessDPIAwareFn = BOOL(WINAPI*)();
-        auto setProcessDPIAware = reinterpret_cast<SetProcessDPIAwareFn>(
+        const auto setProcessDPIAware = reinterpret_cast<SetProcessDPIAwareFn>(
             GetProcAddress(user32, "SetProcessDPIAware"));
 
         if (setProcessDPIAware)
@@ -119,7 +120,7 @@ const std::string exec(const char* cmd)
 #endif
 
 // Fractal Frame
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPosition, wxSize(1180, 820))
+MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPosition, wxSize(1180, 820))
 {
     // Init handlers.
     wxImage::AddHandler(new wxPNGHandler);
@@ -129,7 +130,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
     mainFramePtr = this;
     this->SetSizeHints(wxSize(900, 650), wxDefaultSize);
 
-    wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
     this->GetParserOpt();    // Gets configuration from config.ini.
     this->SetUpGUI();
@@ -176,10 +177,16 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("wxChaos"), wxDefaultPositi
 }
 void MainFrame::ShowFirstUseDialog()
 {
-    HTMLViewer* diag = new HTMLViewer(GetWxAbsPath({ "Resources", "Tutorials", "mainTut.html" }), this, wxID_ANY,
-        wxString(wxT("Welcome to wxChaos")), wxDefaultPosition, wxSize(960, 700));
+    const auto firstUseDialog = new HTMLViewer(
+        GetWxAbsPath({ "Resources", "Tutorials", "mainTut.html" }),
+        this,
+        wxID_ANY,
+        wxString(wxT("Welcome to wxChaos")),
+        wxDefaultPosition,
+        wxSize(960, 700)
+        );
 
-    diag->Show(true);
+    firstUseDialog->Show(true);
     fractalCanvas->ShowHelpImage();
 }
 void MainFrame::ConnectEvents()
@@ -192,7 +199,7 @@ void MainFrame::ConnectEvents()
     this->Connect(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEventHandler(MainFrame::OnDimensionFrameClosed));
     this->Connect(ID_WELCOME_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnWelcomeDialog));
     this->Connect(ID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbout));
-    this->Connect(ID_KEYBOARDGUIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnKeybGuide));
+    this->Connect(ID_KEYBOARDGUIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnKeyboardGuide));
     this->Connect(ID_SAVE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnSave));
     this->Connect(ID_PALETTE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnPalette));
     this->Connect(ID_MANDELBROT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeMandelbrot));
@@ -214,7 +221,7 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_BURNING_SHIP_JULIA, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeBurningShipJulia));
     this->Connect(ID_FRACTORY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFractory));
     this->Connect(ID_CELL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeCell));
-    this->Connect(ID_SIERP_TRIANGLE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeSierpTriangle));
+    this->Connect(ID_SIERP_TRIANGLE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeSierpinskyTriangle));
     this->Connect(ID_DPENDULUM, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeDPendulum));
     this->Connect(ID_USER_DEFINED, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeUserDefined));
     this->Connect(ID_FPUSER_DEFINED, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFPUserDefined));
@@ -350,7 +357,7 @@ void MainFrame::SetUpGUI()
     toolMenu->Append(ID_ZOOM_RECORDER, wxT("Zoom recorder"), wxT("Record a video zoom."));
     toolMenu->Append(ID_DIMENSION_CALCULATOR, wxT("Dimension calculator"), wxT("Calculate fractal dimension."));
 
-    // Iteracions.
+    // Iterations.
     itManual = new wxMenuItem(iterationsMenu, ID_IT_MANUAL, wxString(wxT("Manual iterations")), wxEmptyString, wxITEM_NORMAL);
     iterationsMenu->Append(itManual);
     MoreIter = new wxMenuItem(iterationsMenu, ID_INCREASE_IT, wxString(wxT("Increase iterations")) + wxT('\t') + wxT("L"), wxEmptyString, wxITEM_NORMAL);
@@ -363,7 +370,7 @@ void MainFrame::SetUpGUI()
     fractOptItem = new wxMenuItem(fractalMenu, ID_OPTPANEL, wxString(wxT("Fractal options")), wxEmptyString, wxITEM_CHECK);    // Txt: "Fractal options"
     fractalMenu->Append(fractOptItem);
     fractalMenu->Append(ID_FORMULA_DIALOG, wxT("Enter user formula")); // Txt: "Enter user formula"
-    wxMenuItem* separador = fractalMenu->AppendSeparator();
+    fractalMenu->AppendSeparator();
 
     pauseBtn.pauseContinue = fractalMenu->Append(ID_PAUSE_CONTINUE, wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: Pause
     pauseBtn.state = false;
@@ -391,7 +398,7 @@ void MainFrame::SetUpGUI()
     fractalSizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(fractalSizer, 7, wxEXPAND, 5);
 
-    wxBoxSizer* panelSizer = new wxBoxSizer(wxVERTICAL);
+    const auto panelSizer = new wxBoxSizer(wxVERTICAL);
 
     // Option panel.
     optionPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
@@ -432,12 +439,12 @@ void MainFrame::SetUpGUI()
     fractalSizer->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
 }
 
-void MainFrame::OnClose(wxCloseEvent& event)
+void MainFrame::OnClose(wxCloseEvent&)
 {
     this->CloseAll();
     this->Destroy();
 }
-void MainFrame::OnQuit(wxCommandEvent &event)
+void MainFrame::OnQuit(wxCommandEvent&)
 {
     Close(true);
 }
@@ -461,16 +468,16 @@ void MainFrame::DestroyJuliaMode(const bool requestClose)
     juliaMode->Check(false);
     fractalCanvas->SetJuliaMode(false);
 }
-void MainFrame::OnResize(wxSizeEvent &event)
+void MainFrame::OnResize(wxSizeEvent&)
 {
     this->Layout();
 }
-void MainFrame::OnJuliaMode(wxCommandEvent &event)
+void MainFrame::OnJuliaMode(wxCommandEvent&)
 {
     // Opens the Julia mode.
     this->UpdateJuliaMode();
 }
-void MainFrame::OnJuliaModeClosed(wxCommandEvent &event)
+void MainFrame::OnJuliaModeClosed(wxCommandEvent&)
 {
     DestroyJuliaMode(false);
 }
@@ -483,18 +490,18 @@ void MainFrame::DestroyDimensionFrame()
     dimensionCalculator = nullptr;
     frame->Close(true);
 }
-void MainFrame::OnDimensionFrameClosed(wxCommandEvent &event)
+void MainFrame::OnDimensionFrameClosed(wxCommandEvent&)
 {
     dimensionCalculator = nullptr;
 }
-void MainFrame::OnWelcomeDialog(wxCommandEvent& event)
+void MainFrame::OnWelcomeDialog(wxCommandEvent&)
 {
     this->ShowFirstUseDialog();
 }
-void MainFrame::OnAbout(wxCommandEvent &event)
+void MainFrame::OnAbout(wxCommandEvent&)
 {
     // About dialog.
-    AboutDialog *dlg = new AboutDialog(this);
+    const auto dlg = new AboutDialog(this);
     dlg->SetAppName(wxT("wxChaos"));
     dlg->SetVersion(wxString::FromUTF8(APP_VERSION));
     dlg->SetCopyright(wxString::Format(wxT("%s"),
@@ -507,29 +514,35 @@ void MainFrame::OnAbout(wxCommandEvent &event)
     dlg->ShowModal();
     dlg->Destroy();
 }
-void MainFrame::OnSave(wxCommandEvent &event)
+void MainFrame::OnSave(wxCommandEvent&)
 {
     // Saves the fractal image.
-    wxFileDialog* saveFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
-                                    wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
-    wxString fileName;
+    const auto saveFileDialog = new wxFileDialog(
+        this,
+        wxT("Select file name"),
+        wxT(""),
+        wxT("fractal.png"),
+        wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"),
+        wxFD_SAVE
+        );
+
     if (saveFileDialog->ShowModal() == wxID_OK)
     {
-        fileName = saveFileDialog->GetPath();
-        int ext = saveFileDialog->GetFilterIndex();
-        string path = string(fileName.mb_str());
-        SizeDialogSave* diag;
+        const wxString fileName = saveFileDialog->GetPath();
+        const int ext = saveFileDialog->GetFilterIndex();
+        const auto path = string(fileName.mb_str());
+        SizeDialogSave* sizeDialogSave;
 
         if (fractalType == FractalType::ScriptFractal)
-            diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, loadedScripts[selectedScriptIndex].file);
+            sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, loadedScripts[selectedScriptIndex].file);
         else
-            diag = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this);
+            sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this);
 
-        diag->Show(true);
+        sizeDialogSave->Show(true);
     }
     saveFileDialog->Destroy();
 }
-void MainFrame::OnPalette(wxCommandEvent &event)
+void MainFrame::OnPalette(wxCommandEvent&)
 {
     // Color palette frame.
     if (!rendererOptionsActive)
@@ -547,7 +560,7 @@ void MainFrame::OnPalette(wxCommandEvent &event)
     else
         rendererOptions->SetFocus();
 }
-void MainFrame::OnFormulaDialog(wxCommandEvent &event)
+void MainFrame::OnFormulaDialog(wxCommandEvent&)
 {
     // User formula menu.
     if (!formDiagActive)
@@ -567,7 +580,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent &event)
     else
         formDialog->SetFocus();
 }
-void MainFrame::OnRedraw(wxCommandEvent &event)
+void MainFrame::OnRedraw(wxCommandEvent&)
 {
     if (pauseBtn.state)
     {
@@ -580,7 +593,7 @@ void MainFrame::OnRedraw(wxCommandEvent &event)
     }
     fractalCanvas->GetSFMLFractalPtr()->Redraw();
 }
-void MainFrame::OnReset(wxCommandEvent &event)
+void MainFrame::OnReset(wxCommandEvent&)
 {
     fractalCanvas->Reset();
     wxGradient grad;
@@ -590,21 +603,24 @@ void MainFrame::OnReset(wxCommandEvent &event)
     fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
     this->UpdateMenu();
 }
-void MainFrame::OnMoreIt(wxCommandEvent &event)
+// ReSharper disable once CppMemberFunctionMayBeConst
+void MainFrame::OnMoreIt(wxCommandEvent&)
 {
     fractalCanvas->GetSFMLFractalPtr()->IncreaseIterations();
 }
-void MainFrame::OnLessIt(wxCommandEvent &event)
+// ReSharper disable once CppMemberFunctionMayBeConst
+void MainFrame::OnLessIt(wxCommandEvent&)
 {
     fractalCanvas->GetSFMLFractalPtr()->DecreaseIterations();
 }
-void MainFrame::OnShowOrbit(wxCommandEvent &event)
+// ReSharper disable once CppMemberFunctionMayBeConst
+void MainFrame::OnShowOrbit(wxCommandEvent&)
 {
-    bool modo = showOrbit->IsChecked();
+    const bool modo = showOrbit->IsChecked();
     fractalCanvas->SetOrbitMode(modo);
     showOrbit->Check(modo);
 }
-void MainFrame::OnManIntroConst(wxCommandEvent &event)
+void MainFrame::OnManIntroConst(wxCommandEvent&)
 {
     // Manual constant.
     if (!introConstActive)
@@ -620,21 +636,22 @@ void MainFrame::OnManIntroConst(wxCommandEvent &event)
         delete diag;
     }
 }
-void MainFrame::OnSldIntroConst(wxCommandEvent &event)
+// ReSharper disable once CppMemberFunctionMayBeConst
+void MainFrame::OnSldIntroConst(wxCommandEvent&)
 {
     // Slider constant.
-    bool modo = slider->IsChecked();
+    const bool modo = slider->IsChecked();
     fractalCanvas->SetSliderMode(modo);
     slider->Check(modo);
 }
-void MainFrame::OnKeybGuide(wxCommandEvent &event)
+void MainFrame::OnKeyboardGuide(wxCommandEvent&)
 {
     // Keyboard guide.
     changeKeyboardGuide = !changeKeyboardGuide;
     fractalCanvas->SetKeyboardGuide(changeKeyboardGuide);
     keyboardGuide->Check(changeKeyboardGuide);
 }
-void MainFrame::OnItManual(wxCommandEvent &event)
+void MainFrame::OnItManual(wxCommandEvent&)
 {
     // Manual iterations.
     if (!iterDiagActive)
@@ -650,7 +667,7 @@ void MainFrame::OnItManual(wxCommandEvent &event)
         delete iterDiag;
     }
 }
-void MainFrame::OnPauseContinue(wxCommandEvent &event)
+void MainFrame::OnPauseContinue(wxCommandEvent&)
 {
     // Pauses the rendering.
     if (pauseBtn.state)
@@ -671,14 +688,14 @@ void MainFrame::OnPauseContinue(wxCommandEvent &event)
     }
     fractalCanvas->GetFractalPtr()->PauseContinue();
 }
-void MainFrame::OnFractalOptions(wxCommandEvent &event)
+void MainFrame::OnFractalOptions(wxCommandEvent&)
 {
-    // Ajust the panel.
+    // Adjust the panel.
     if (!showOptPanel)
     {
         fractOptItem->Check(true);
         optionPanel->Show();
-        wxSize windowSize = this->GetSize();
+        const wxSize windowSize = this->GetSize();
         if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
 
@@ -689,17 +706,17 @@ void MainFrame::OnFractalOptions(wxCommandEvent &event)
     {
         fractOptItem->Check(false);
         optionPanel->Hide();
-        wxSize windowSize = this->GetSize();
+        const wxSize windowSize = this->GetSize();
         if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()-175, windowSize.GetHeight());
         this->GetSizer()->Layout();
         showOptPanel = false;
     }
 }
-void MainFrame::OnApplyPanelOpt(wxCommandEvent& event)
+void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
 {
     // Pass parameters to the fractal and redraws it.
-    PanelOptions* pOptions = fractalCanvas->GetFractalPtr()->GetOptPanel();
+    const PanelOptions* pOptions = fractalCanvas->GetFractalPtr()->GetOptPanel();
     for (unsigned int i=0; i<foundTextControls.size(); i++)
         *pOptions->GetDoubleElement(i) = string_to_double(textControls[i]->GetValue());
 
@@ -726,17 +743,18 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent& event)
     fractalCanvas->SetFocus();
     fractalCanvas->GetSFMLFractalPtr()->Redraw();
 }
-void MainFrame::OnUserManual(wxCommandEvent &event)
+// ReSharper disable once CppMemberFunctionMayBeStatic
+void MainFrame::OnUserManual(wxCommandEvent&)
 {
     // Open pdf.
 #ifdef _WIN32
     string filePath = GetAbsPath({ "Doc", "User_Manual.pdf" });
-    ShellExecute(NULL, _T("open"), std::wstring(filePath.begin(), filePath.end()).c_str(), _T(""), _T("C:\\"), SW_SHOWNORMAL);
+    ShellExecute(nullptr, _T("open"), std::wstring(filePath.begin(), filePath.end()).c_str(), _T(""), _T("C:\\"), SW_SHOWNORMAL);
 #elif __linux__
     // Implement with XDG_Open
 #endif
 }
-void MainFrame::OnScriptEditor(wxCommandEvent& event)
+void MainFrame::OnScriptEditor(wxCommandEvent&)
 {
     if (!scriptEditorActive)
     {
@@ -751,9 +769,9 @@ void MainFrame::OnScriptEditor(wxCommandEvent& event)
         delete scriptEditor;
     }
 }
-void MainFrame::OnZoomRecorder(wxCommandEvent& event)
+void MainFrame::OnZoomRecorder(wxCommandEvent&)
 {
-    SFMLFractal* fractal = fractalCanvas->GetSFMLFractalPtr();
+    const SFMLFractal* fractal = fractalCanvas->GetSFMLFractalPtr();
     const Rect outermostZoom = fractal->GetOutermostZoom();
     const Rect currentZoom = fractal->GetCurrentZoom();
 
@@ -777,7 +795,7 @@ void MainFrame::OnZoomRecorder(wxCommandEvent& event)
     ZoomRecorder zoomRecorder(fractalCanvas, this);
     zoomRecorder.ShowModal();
 }
-void MainFrame::OnDimensionCalculator(wxCommandEvent& event)
+void MainFrame::OnDimensionCalculator(wxCommandEvent&)
 {
     if (dimensionCalculator == nullptr)
     {
@@ -790,108 +808,106 @@ void MainFrame::OnDimensionCalculator(wxCommandEvent& event)
 
 
 // Changes the fractal type.
-void MainFrame::ChangeMandelbrot(wxCommandEvent& event)
+void MainFrame::ChangeMandelbrot(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Mandelbrot, true);
 }
-void MainFrame::ChangeMandelbrotZN(wxCommandEvent& event)
+void MainFrame::ChangeMandelbrotZN(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::MandelbrotZN, true);
 }
-void MainFrame::ChangeJulia(wxCommandEvent& event)
+void MainFrame::ChangeJulia(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Julia, false);
 }
-void MainFrame::ChangeJuliaZN(wxCommandEvent& event)
+void MainFrame::ChangeJuliaZN(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::JuliaZN, false);
 }
-void MainFrame::ChangeNewton(wxCommandEvent& event)
+void MainFrame::ChangeNewton(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::NewtonRaphsonMethod, false);
 }
-void MainFrame::ChangeSinoidal(wxCommandEvent& event)
+void MainFrame::ChangeSinoidal(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Sinoidal, false);
 }
-void MainFrame::ChangeMagnet(wxCommandEvent& event)
+void MainFrame::ChangeMagnet(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Magnetic, false);
 }
-void MainFrame::ChangeMedusa(wxCommandEvent& event)
+void MainFrame::ChangeMedusa(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Medusa, false);
 }
-void MainFrame::ChangeManowar(wxCommandEvent& event)
+void MainFrame::ChangeManowar(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Manowar, true);
 }
-void MainFrame::ChangeManowarJulia(wxCommandEvent& event)
+void MainFrame::ChangeManowarJulia(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::ManowarJulia, false);
 }
-void MainFrame::ChangeSierpTriangle(wxCommandEvent& event)
+void MainFrame::ChangeSierpinskyTriangle(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::SierpinskyTriangle, false);
 }
-void MainFrame::ChangeFixedPoint1(wxCommandEvent& event)
+void MainFrame::ChangeFixedPoint1(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::FixedPoint1, false);
 }
-void MainFrame::ChangeFixedPoint2(wxCommandEvent& event)
+void MainFrame::ChangeFixedPoint2(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::FixedPoint2, false);
 }
-void MainFrame::ChangeFixedPoint3(wxCommandEvent& event)
+void MainFrame::ChangeFixedPoint3(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::FixedPoint3, false);
 }
-void MainFrame::ChangeFixedPoint4(wxCommandEvent& event)
+void MainFrame::ChangeFixedPoint4(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::FixedPoint4, false);
 }
-void MainFrame::ChangeTricorn(wxCommandEvent& event)
+void MainFrame::ChangeTricorn(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Tricorn, false);
 }
-void MainFrame::ChangeBurningShip(wxCommandEvent& event)
+void MainFrame::ChangeBurningShip(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::BurningShip, true);
 }
-void MainFrame::ChangeBurningShipJulia(wxCommandEvent& event)
+void MainFrame::ChangeBurningShipJulia(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::BurningShipJulia, false);
 }
-void MainFrame::ChangeFractory(wxCommandEvent& event)
+void MainFrame::ChangeFractory(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Fractory, false);
 }
-void MainFrame::ChangeCell(wxCommandEvent& event)
+void MainFrame::ChangeCell(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Cell, false);
 }
-void MainFrame::ChangeDPendulum(wxCommandEvent& event)
+void MainFrame::ChangeDPendulum(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::DoublePendulum, false);
 }
-void MainFrame::ChangeUserDefined(wxCommandEvent& event)
+void MainFrame::ChangeUserDefined(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::UserDefined, false);
 }
-void MainFrame::ChangeFPUserDefined(wxCommandEvent& event)
+void MainFrame::ChangeFPUserDefined(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::FixedPointUserDefined, false);
 }
-void MainFrame::ChangeFractal(FractalType fType, bool enableJulia)
+void MainFrame::ChangeFractal(const FractalType fType, const bool enableJulia)
 {
     selectedScriptIndex = -1;  // Deselect the script fractal.
     if (fractalType != fType || fractalType == FractalType::UserDefined || fractalType == FractalType::FixedPointUserDefined)
     {
-        Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
+        const Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
         fractalCanvas->ChangeType(fType);
-
         fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
-
         fractalType = fType;
         this->UpdateMenu();
         juliaMode->Enable(enableJulia);
@@ -899,13 +915,13 @@ void MainFrame::ChangeFractal(FractalType fType, bool enableJulia)
 }
 void MainFrame::ChangeScriptItem(wxCommandEvent& event)
 {
-    unsigned int id = static_cast<unsigned int>(event.GetId() - SCRIPT_ID_INDEX);
+    const unsigned int id = static_cast<unsigned int>(event.GetId() - SCRIPT_ID_INDEX);
     selectedScriptIndex = id;
 
     if (fractalCanvas->GetFractalPtr()->IsRendering())
         fractalCanvas->GetFractalPtr()->PauseContinue();
 
-    Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
+    const Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
     fractalCanvas->ChangeToScript(loadedScripts[id]);
     fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
 
@@ -927,11 +943,12 @@ void MainFrame::GetParserOpt()
 void MainFrame::UpdateOptPanel()
 {
     PanelOptions* pOptions = fractalCanvas->GetFractalPtr()->GetOptPanel();
-    int index, labelIndex;
 
     // If there are elements in pOptions creates panel.
     if (pOptions->GetElementsSize() > 0)
     {
+        int labelIndex;
+        int index;
         fractOptItem->Enable(true);
         if (labels.size() != 0 || textControls.size() != 0 || spinControls.size() != 0 || checkBoxes.size() != 0)
         {
@@ -943,7 +960,7 @@ void MainFrame::UpdateOptPanel()
         {
             fractOptItem->Check(true);
             optionPanel->Show();
-            wxSize windowSize = this->GetSize();
+            const wxSize windowSize = this->GetSize();
             if (!this->IsMaximized())
                 this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
 
@@ -1012,7 +1029,7 @@ void MainFrame::UpdateOptPanel()
         // Creates button to apply options.
         panelButton = new wxButton(optionPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
         optionSizer->Add(panelButton, 0, wxALL, 5);
-        panelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnApplyPanelOpt), NULL, this);
+        panelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnApplyPanelOpt), nullptr, this);
         optionSizer->Layout();
         optionPanel->SetScrollbars(20, 20, 0, 50);
     }
@@ -1049,13 +1066,13 @@ void MainFrame::DeleteOptPanel()
     foundCheckBoxes.clear();
 
     // Erase button, disconnect event and hide panel.
-    panelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnApplyPanelOpt), NULL, this);
+    panelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnApplyPanelOpt), nullptr, this);
     delete panelButton;
 
     if (showOptPanel)
     {
         optionPanel->Hide();
-        wxSize windowSize = this->GetSize();
+        const wxSize windowSize = this->GetSize();
 
         if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()-175, windowSize.GetHeight());
@@ -1107,7 +1124,7 @@ void MainFrame::RemoveScriptMenuElements()
 }
 void MainFrame::GetScriptFractals()
 {
-    vector<ScriptData> userScriptsData = GetValidUserScripts();
+    const vector<ScriptData> userScriptsData = GetValidUserScripts();
     for (unsigned i = 0; i < userScriptsData.size(); i++)
         AddScriptMenuElement(userScriptsData[i], i);
 }
@@ -1220,12 +1237,12 @@ void MainFrame::ReloadScripts()
 */
 class MainApp : public wxApp
 {
-    virtual bool OnInit()
+    bool OnInit() override
     {
 #ifdef _WIN32
        EnableHighDpiSupport();
 #endif
-       MainFrame* main = new MainFrame;
+       const auto main = new MainFrame;
        main->Show();
        return true;
     }

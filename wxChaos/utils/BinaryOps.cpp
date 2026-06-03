@@ -5,13 +5,12 @@ char* ToByte(void* ptr)
     return static_cast<char*>(ptr);
 }
 
-uint16_t SwitchEndianess16(uint16_t data)
+uint16_t SwitchEndianness16(uint16_t data)
 {
-    uint16_t temp;
     uint16_t out = 0x0000;
     uint16_t pos = 0x00FF;
 
-    temp = data & pos;
+    uint16_t temp = data & pos;
     temp <<= 8;
     out |= temp;
     pos <<= 8;
@@ -23,13 +22,12 @@ uint16_t SwitchEndianess16(uint16_t data)
     return out;
 }
 
-uint32_t SwitchEndianess32(uint32_t data)
+uint32_t SwitchEndianness32(uint32_t data)
 {
-    uint32_t temp;
     uint32_t out = 0x00000000;
     uint32_t pos = 0x000000FF;
 
-    temp = data & pos;
+    uint32_t temp = data & pos;
     temp <<= 24;
     out |= temp;
     pos <<= 8;
@@ -49,28 +47,22 @@ uint32_t SwitchEndianess32(uint32_t data)
 }
 
 // Conversion operations.
-void BoolToChar(char& target, bool in)
+void BoolToChar(char& target, const bool in)
 {
-    if (in)
-        target = 0x01;
-    else
-        target = 0x00;
+    target = in ? 0x01 : 0x00;
 }
 
-void CharToBool(bool& target, char in)
+void CharToBool(bool& target, const char in)
 {
-    if (in == 0x00)
-        target = false;
-    else
-        target = true;
+    target = in != 0x00;
 }
 
 void UInt32ToChar(char* target, uint32_t in)
 {
-    in = SwitchEndianess32(in);
-    uint32_t temp = 0x000000FF;
+    in = SwitchEndianness32(in);
     for (unsigned int i=0; i<sizeof(uint32_t); i++)
     {
+        constexpr uint32_t temp = 0x000000FF;
         target[i] = in & temp;
         in >>= 8;
     }
@@ -78,35 +70,33 @@ void UInt32ToChar(char* target, uint32_t in)
 
 void Int32ToChar(char* target, int32_t in)
 {
-    in = SwitchEndianess32(in);
-    int32_t temp = 0x000000FF;
+    in = SwitchEndianness32(in);
     for (unsigned int i=0; i<sizeof(int32_t); i++)
     {
+        constexpr int32_t temp = 0x000000FF;
         target[i] = in & temp;
         in >>= 8;
     }
 }
 
-void CharToUInt32(uint32_t& target, char* in)
+void CharToUInt32(uint32_t& target, const char* in)
 {
     target = 0x00000000;
-    uint32_t temp;
     for (unsigned int i=0; i<sizeof(uint32_t); i++)
     {
-        temp = in[i] & 0x000000FF;
+        const uint32_t temp = in[i] & 0x000000FF;
         target |= temp;
         if (i != 3)
             target <<= 8;
     }
 }
 
-void CharToInt32(int32_t& target, char* in)
+void CharToInt32(int32_t& target, const char* in)
 {
     target = 0x00000000;
-    int32_t temp;
     for (unsigned int i=0; i<sizeof(int32_t); i++)
     {
-        temp = in[i] & 0x000000FF;
+        const int32_t temp = in[i] & 0x000000FF;
         target |= temp;
         if (i != 3) target <<= 8;
     }

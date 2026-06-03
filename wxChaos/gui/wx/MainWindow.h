@@ -192,7 +192,7 @@ public :
     void ChangeMedusa(wxCommandEvent& event);
     void ChangeManowar(wxCommandEvent& event);
     void ChangeManowarJulia(wxCommandEvent& event);
-    void ChangeSierpTriangle(wxCommandEvent& event);
+    void ChangeSierpinskyTriangle(wxCommandEvent& event);
     void ChangeFixedPoint1(wxCommandEvent& event);
     void ChangeFixedPoint2(wxCommandEvent& event);
     void ChangeFixedPoint3(wxCommandEvent& event);
@@ -206,7 +206,7 @@ public :
     void ChangeUserDefined(wxCommandEvent& event);
     void ChangeFPUserDefined(wxCommandEvent& event);
     void ChangeScriptItem(wxCommandEvent& event);
-    void OnKeybGuide(wxCommandEvent& event);
+    void OnKeyboardGuide(wxCommandEvent& event);
     void OnPauseContinue(wxCommandEvent& event);
     void OnRedraw(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);

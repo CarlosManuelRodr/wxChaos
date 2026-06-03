@@ -3,8 +3,8 @@
 #include "Filesystem.h"
 
 IterationsDialog::IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id, const wxString& title,
-                       const wxPoint& pos, const wxSize& size, long style)
-    : wxFrame(parent, id, title, pos, size, style)
+                                   const wxPoint& pos, const wxSize& size, const long style)
+                                   : wxFrame(parent, id, title, pos, size, style)
 {
     // WX Frame.
     const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);

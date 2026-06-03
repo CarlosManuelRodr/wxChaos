@@ -1,2 +1,6 @@
 - Zoom breaks when changing the palette size
 - Toggle button of JuliaMode inits in a wrong position
+
+Improvements:
+- Does FractalCanvas really need all that pointer acrobatics?
+- Change anonymous namespace functions from AppConfigStore and MainWindows to private member functions.

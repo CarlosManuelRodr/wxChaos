@@ -315,7 +315,7 @@ ConfigFractalOptionsDialog::~ConfigFractalOptionsDialog()
 
 void ConfigFractalOptionsDialog::AdjustOptPanel()
 {
-    // If there are elements from a previous panel deletes them.
+    // If there are elements from a previous panel, deletes them.
     this->DeleteOptPanel();
 
     PanelOptions* pOptions = _target->GetOptPanel();
@@ -803,7 +803,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _maxXCtrl->SetValue(num_to_string(_myOpt.maxX));
     _minYCtrl->SetValue(num_to_string(_myOpt.minY));
     _maxYCtrl->SetValue(num_to_string(_myOpt.maxY));
-    _iterCtrl->SetValue(num_to_string((int)_myOpt.maxIter));
+    _iterCtrl->SetValue(num_to_string(static_cast<int>(_myOpt.maxIter)));
 
     // Connect Events.
     this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(DimensionFrame::OnDestroy));
@@ -1018,7 +1018,7 @@ void DimensionFrame::OnChangeFractal(wxCommandEvent&)
     _maxXCtrl->SetValue(num_to_string(_myOpt.maxX));
     _minYCtrl->SetValue(num_to_string(_myOpt.minY));
     _maxYCtrl->SetValue(num_to_string(_myOpt.maxY));
-    _iterCtrl->SetValue(num_to_string((int)_myOpt.maxIter));
+    _iterCtrl->SetValue(num_to_string(static_cast<int>(_myOpt.maxIter)));
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void DimensionFrame::OnManualMaxY(wxCommandEvent&)

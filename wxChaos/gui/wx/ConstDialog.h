@@ -7,13 +7,12 @@
 * @date 7/18/2012
 */
 
-#ifndef __constdiag
-#define __constdiag
+#ifndef _const_dialog
+#define _const_dialog
 
 #include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/dialog.h>
-#include "Fractal.h"
 #include "sfml/SFMLFractal.h"
 
 /**

@@ -21,7 +21,7 @@ bool wxGradientDialog::Create(wxWindow* parent, const wxGradient& grad)
     if (!wxDialog::Create(parent, wxID_ANY, wxT("Gradient editor")))
         return false;
     CreateWidgets();
-    stopsStatBmp->Connect(ID_STOPS_AREA, wxEVT_LEFT_DOWN, wxMouseEventHandler(wxGradientDialog::OnStopsAreaClick), NULL, this);
+    stopsStatBmp->Connect(ID_STOPS_AREA, wxEVT_LEFT_DOWN, wxMouseEventHandler(wxGradientDialog::OnStopsAreaClick), nullptr, this);
     selectedColorStop = -1;
     m_gradient = new wxGradient(grad);
     paintGradient();
@@ -75,7 +75,6 @@ void wxGradientDialog::CreateWidgets()
     buttonSizer = CreateButtonSizer( wxOK | wxCANCEL );
     if (buttonSizer)
         topSizer->Add(buttonSizer, wxSizerFlags().Expand().DoubleBorder());
-    
 
     this->SetSizer(topSizer);
     GetSizer()->Fit(this); 
@@ -100,18 +99,18 @@ void wxGradientDialog::paintStops()
 {
     m_displayedStops = m_gradient->GetStops();
     int ctr = 0;
-    int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
+    const int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
     wxBufferedDC dc;
     stopsBmp = new wxBitmap(stopsStatBmp->GetSize().GetWidth(), stopsStatBmp->GetSize().GetHeight());
     dc.SelectObject(*stopsBmp);
     dc.SetBackground(wxBrush(GetBackgroundColour()));
     dc.Clear();
-    for (std::vector<wxColor>::iterator itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
+    for (auto itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
     {
         // Draw triangle.
         dc.SetPen(wxPen(*wxBLACK));
         dc.SetBrush(wxBrush(wxNullColour, wxBRUSHSTYLE_TRANSPARENT));
-        wxPoint triangle[] = {wxPoint(ctr, 5), wxPoint(ctr+5, 0), wxPoint(ctr+10, 5)};
+        const wxPoint triangle[] = {wxPoint(ctr, 5), wxPoint(ctr+5, 0), wxPoint(ctr+10, 5)};
         dc.DrawPolygon(3, triangle);
 
         // Draw color.
@@ -137,7 +136,7 @@ void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
     selectedColorStop = -1;
     int ctr = 0;
     int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
-    for (std::vector<wxColor>::iterator itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
+    for (auto itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
     {
         if (event.GetX() >= ctr*dist && event.GetX() <= ctr*dist + 11)
         {
@@ -155,7 +154,7 @@ void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
     }
     else
     {
-        int insertAt = m_displayedStops.size() - (gradientStatBmp->GetSize().GetWidth() - event.GetX())/dist - 1;
+        const int insertAt = m_displayedStops.size() - (gradientStatBmp->GetSize().GetWidth() - event.GetX())/dist - 1;
         m_gradient->InsertColorStop(insertAt, *wxBLACK);
         selectedColorStop = insertAt;
         m_displayedStops = m_gradient->GetStops();
@@ -171,7 +170,7 @@ void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
     dc.SelectObject(*stopsBmp);
     dc.SetPen(wxPen(*wxLIGHT_GREY));
     dc.SetBrush(wxBrush(*wxBLACK));
-    wxPoint triangle[] = {wxPoint(selectedColorStop*dist, 5), wxPoint(selectedColorStop*dist+5, 0), wxPoint(selectedColorStop*dist+10, 5)};
+    const wxPoint triangle[] = {wxPoint(selectedColorStop*dist, 5), wxPoint(selectedColorStop*dist+5, 0), wxPoint(selectedColorStop*dist+10, 5)};
     dc.DrawPolygon(3, triangle);
     dc.SelectObject(wxNullBitmap);
     stopsStatBmp->SetBitmap(*stopsBmp);

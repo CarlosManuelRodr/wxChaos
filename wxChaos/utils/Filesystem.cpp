@@ -49,7 +49,7 @@ bool DirectoryExists(std::string path)
     return false;
 #endif
 }
-bool FileExists(std::string fileName)
+bool FileExists(const std::string& fileName)
 {
     std::ifstream infile(fileName.c_str());
     bool res = infile.is_open();
@@ -67,7 +67,7 @@ void FSCreateDirectory(std::string directory_name)
     CreateDirectory(w_arg.c_str(), NULL);
 #endif
 }
-void FSDeleteFile(const std::string arg)
+void FSDeleteFile(const std::string& arg)
 {
 #if defined(__linux__) || defined(__APPLE__)
     ::remove(arg.c_str());
@@ -117,10 +117,10 @@ string GetAbsPath(std::vector<std::string> pathList)
     }
     return path;
 }
-wxString GetWxAbsPath(vector<string> pathList)
+wxString GetWxAbsPath(const vector<string>& pathList)
 {
     string path = GetWorkingDirectory();
-    for (string element : pathList)
+    for (const string element : pathList)
     {
 #ifdef __linux__
         path += "/";
@@ -131,7 +131,7 @@ wxString GetWxAbsPath(vector<string> pathList)
     }
     return wxString(path.c_str(), wxConvUTF8);
 }
-string GetFileExtension(const string filename)
+string GetFileExtension(const string& filename)
 {
     size_t lastDotPosition = filename.find_last_of(".");
     if (lastDotPosition != string::npos)
@@ -139,7 +139,7 @@ string GetFileExtension(const string filename)
     else
         return string("");
 }
-wxString GetFileExtension(const wxString filename)
+wxString GetFileExtension(const wxString& filename)
 {
     size_t lastDotPosition = filename.find_last_of(".");
     if (lastDotPosition != wxString::npos)
@@ -147,7 +147,7 @@ wxString GetFileExtension(const wxString filename)
     else
         return wxT("");
 }
-string GetFileBaseName(const string filename)
+string GetFileBaseName(const string& filename)
 {
 #ifdef __linux__
     const string slash = "/";
@@ -162,7 +162,7 @@ string GetFileBaseName(const string filename)
     else
         return string();
 }
-wxString GetFileBaseName(const wxString filename)
+wxString GetFileBaseName(const wxString& filename)
 {
     size_t lastDotPosition = filename.find_last_of(".");
 
@@ -171,7 +171,7 @@ wxString GetFileBaseName(const wxString filename)
     else
         return wxT("");
 }
-vector<string> FindFilesWithExtension(string path, string ext)
+vector<string> FindFilesWithExtension(const string& path, string ext)
 {
     FileGetter fg(path.c_str());
 
@@ -200,7 +200,7 @@ std::vector<wxString> FindFilesWithExtension(wxString path, std::string ext)
 
     return filesInDirectory;
 }
-std::string FileNameJoin(std::vector<std::string> pathList)
+std::string FileNameJoin(const std::vector<std::string>& pathList)
 {
     string path = "";
     for (unsigned i = 0; i < pathList.size(); i++)

@@ -13,14 +13,14 @@
 
 #include <cstdint>
 
-uint16_t SwitchEndianess16(uint16_t data);
-uint32_t SwitchEndianess32(uint32_t data);
+uint16_t SwitchEndianness16(uint16_t data);
+uint32_t SwitchEndianness32(uint32_t data);
 char* ToByte(void* ptr);
 void BoolToChar(char& target, bool in);
 void CharToBool(bool& target, char in);
 void UInt32ToChar(char* target, uint32_t in);
 void Int32ToChar(char* target, int32_t in);
-void CharToUInt32(uint32_t& target, char* in);
-void CharToInt32(int32_t& target, char* in);
+void CharToUInt32(uint32_t& target, const char* in);
+void CharToInt32(int32_t& target, const char* in);
 
 #endif

@@ -33,20 +33,20 @@ class AboutDialog: public wxDialog
 public:
     // Constructors
     AboutDialog();
-    AboutDialog(wxWindow* parent, 
-        wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME, 
-        const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE, 
-        const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION, 
-        const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE, 
-        long style = SYMBOL_ABOUTDIALOG_STYLE);
+    explicit AboutDialog(wxWindow* parent,
+                         wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME,
+                         const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE,
+                         const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION,
+                         const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE,
+                         long style = SYMBOL_ABOUTDIALOG_STYLE);
 
     // Creation
     bool Create(wxWindow* parent, 
-        wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME, 
-        const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE, 
-        const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION, 
-        const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE,
-        long style = SYMBOL_ABOUTDIALOG_STYLE );
+                wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME,
+                const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE,
+                const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION,
+                const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE,
+                long style = SYMBOL_ABOUTDIALOG_STYLE );
 
     // Destructor
     ~AboutDialog() override;
@@ -90,12 +90,6 @@ public:
         m_CustomBuildInfo = value;
     }
 
-    // Retrieves bitmap resources
-    wxBitmap GetBitmapResource(const wxString& name);
-
-    // Retrieves icon resources
-    wxIcon GetIconResource(const wxString& name);
-
     //helper functions
     enum wxBuildInfoFormat 
     {
@@ -104,18 +98,18 @@ public:
     };
 
     static wxString GetBuildInfo(wxBuildInfoFormat format);
-    
-    void SetHeaderBitmap(const wxBitmap & value);
+
+    void SetHeaderBitmap(const wxBitmap & value) const;
     void ApplyInfo();
 
 private:
     //AboutDialog member variables
-    wxPanel* m_ContentPanel;
-    wxStaticBitmap* m_HeaderStaticBitmap;
-    wxStaticText* m_AppNameStaticText;
-    wxStaticText* m_CopyrightStaticText;
-    wxStaticText* m_VersionStaticText;
-    wxStaticText* m_BuildInfoStaticText;
+    wxPanel* m_ContentPanel{};
+    wxStaticBitmap* m_HeaderStaticBitmap{};
+    wxStaticText* m_AppNameStaticText{};
+    wxStaticText* m_CopyrightStaticText{};
+    wxStaticText* m_VersionStaticText{};
+    wxStaticText* m_BuildInfoStaticText{};
     wxString m_AppName;
     wxString m_Version;
     wxString m_Copyright;

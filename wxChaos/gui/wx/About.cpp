@@ -12,12 +12,16 @@ AboutDialog::AboutDialog()
 {
     Init();
 }
-AboutDialog::AboutDialog(wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style)
+
+AboutDialog::AboutDialog(wxWindow* parent, const wxWindowID id, const wxString& caption, const wxPoint& pos,
+                         const wxSize& size, const long style)
 {
     Init();
     Create(parent, id, caption, pos, size, style);
 }
-bool AboutDialog::Create(wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style)
+
+bool AboutDialog::Create(wxWindow* parent, const wxWindowID id, const wxString& caption, const wxPoint& pos,
+                         const wxSize& size, const long style)
 {
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     wxDialog::Create(parent, id, caption, pos, size, style);
@@ -29,10 +33,9 @@ bool AboutDialog::Create(wxWindow* parent, wxWindowID id, const wxString& captio
     Centre();
     return true;
 }
-AboutDialog::~AboutDialog()
-{
 
-}
+AboutDialog::~AboutDialog() = default;
+
 void AboutDialog::Init()
 {
     m_ContentPanel = nullptr;
@@ -101,40 +104,30 @@ void AboutDialog::CreateControls()
 
     m_BuildInfoStaticText->SetLabel(GetBuildInfo(wxBUILDINFO_LONG));
 }
-wxBitmap AboutDialog::GetBitmapResource(const wxString& name)
-{
-    wxUnusedVar(name);
-    return wxNullBitmap;
-}
-wxIcon AboutDialog::GetIconResource(const wxString& name)
-{
-    wxUnusedVar(name);
-    return wxNullIcon;
-}
 wxString AboutDialog::GetBuildInfo(wxBuildInfoFormat format)
 {
-    wxString wxbuild(wxVERSION_STRING);
+    wxString wxBuild(wxVERSION_STRING);
 
     if (format == wxBUILDINFO_LONG)
     {
 #if defined(__WXMSW__)
-        wxbuild << _T("-Windows");
+        wxBuild << _T("-Windows");
 #elif defined(__WXMAC__)
-        wxbuild << _T("-Mac");
+        wxBuild << _T("-Mac");
 #elif defined(__UNIX__)
-        wxbuild << _T("-Linux");
+        wxBuild << _T("-Linux");
 #endif
 
 #if wxUSE_UNICODE
-        wxbuild << _T("-Unicode");
+        wxBuild << _T("-Unicode");
 #else
-        wxbuild << _T("-ANSI");
+        wxBuild << _T("-ANSI");
 #endif // wxUSE_UNICODE
     }
-    wxbuild << _(" build");
-    return wxbuild;
+    wxBuild << _(" build");
+    return wxBuild;
 }
-void AboutDialog::SetHeaderBitmap(const wxBitmap & value)
+void AboutDialog::SetHeaderBitmap(const wxBitmap & value) const
 {
     m_HeaderStaticBitmap->SetBitmap(value);
 }

@@ -8,6 +8,7 @@
 #include "types/Direction.h"
 #include "types/RenderingAlgorithmType.h"
 #include "wx/wxGradient.h"
+#include "Fractal.h"
 
 class Fractal;
 
