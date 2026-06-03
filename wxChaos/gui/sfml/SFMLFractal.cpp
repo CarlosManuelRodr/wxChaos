@@ -2,9 +2,9 @@
 #include <cmath>
 #include <string>
 #include <utility>
+#include "AppPaths.h"
 #include "Fractal.h"
 #include "SFMLFractal.h"
-#include "Filesystem.h"
 
 constexpr int stdSpeed = 1;
 
@@ -114,7 +114,7 @@ void SFMLFractal::EnsureFontLoaded()
     if (!_font.getInfo().family.empty())
         return;
 
-    _font.loadFromFile(GetAbsPath({ "Resources", "PublicSans-Regular.otf" }));
+    _font.loadFromFile(AppPaths::ResourceFileStd({wxT("PublicSans-Regular.otf")}));
     _iterationsText.setFont(_font);
 }
 

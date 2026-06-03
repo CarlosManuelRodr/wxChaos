@@ -1,7 +1,7 @@
+#include "AppPaths.h"
 #include "FractalCanvas.h"
 #include "StringFuncs.h"
 #include "SizeDialogSave.h"
-#include "Filesystem.h"
 using namespace std;
 
 // Fractal Canvas
@@ -45,14 +45,19 @@ FractalCanvas::FractalCanvas(const MainWindowStatus& status, PauseContinueButton
     // Initialize GUI elements.
     _selection = new SelectionRect();
 
-    _play = new ToggleButton(GetAbsPath({ "Resources", "Play.tga" }), GetAbsPath({ "Resources", "Stop.tga" }), 0, 4, this);
+    _play = new ToggleButton(
+        AppPaths::ResourceFileStd({wxT("Play.tga")}),
+        AppPaths::ResourceFileStd({wxT("Stop.tga")}),
+        0,
+        4,
+        this);
     _play->SetAnchor(false, true, true, false);
     _play->Resize(this);
 
     _screenPointer = new CoordinateSelector(this);
-    _keyboardImage.loadFromFile(GetAbsPath({ "Resources", "keyboard.png" }));
-    _mouseImage.loadFromFile(GetAbsPath({ "Resources", "mouse.png" }));
-    _helpImage.loadFromFile(GetAbsPath({ "Resources","HelpImage.png" }));
+    _keyboardImage.loadFromFile(AppPaths::ResourceFileStd({wxT("keyboard.png")}));
+    _mouseImage.loadFromFile(AppPaths::ResourceFileStd({wxT("mouse.png")}));
+    _helpImage.loadFromFile(AppPaths::ResourceFileStd({wxT("HelpImage.png")}));
 
     _keyboardTexture.loadFromImage(_keyboardImage);
     _mouseTexture.loadFromImage(_mouseImage);

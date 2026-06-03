@@ -1,7 +1,7 @@
 #include <chrono>
 #include <fstream>
+#include "AppPaths.h"
 #include "ScriptEditor.h"
-#include "Filesystem.h"
 #include "FractalTypes.h"
 #include "global.h"
 #include "MainWindow.h"
@@ -96,7 +96,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
 
     this->SetSizeHints(wxSize(1200, 760), wxDefaultSize);
 
-    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -205,7 +205,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
 
     runButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, wxT("Run"), wxDefaultPosition, wxDefaultSize, 0);
 
-    runButton->SetBitmap(wxBitmap(GetWxAbsPath({ "Resources", "play.png" }), wxBITMAP_TYPE_ANY));
+    runButton->SetBitmap(wxBitmap(AppPaths::ResourceFile({wxT("play.png")}), wxBITMAP_TYPE_ANY));
     debugButtonsSizer->Add(runButton, 0, wxALL | wxEXPAND, 5);
     debugElementsSizer->Add(debugButtonsSizer, 0, wxEXPAND, 5);
 
@@ -225,7 +225,7 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(debugPanel, wxID_ANY, wxT("Preview")), wxVERTICAL);
 
     renderPreviewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY, 
-                                             wxBitmap(GetWxAbsPath({ "Resources", "fractal_thumbnail.png" }), wxBITMAP_TYPE_ANY), 
+                                             wxBitmap(AppPaths::ResourceFile({wxT("fractal_thumbnail.png")}), wxBITMAP_TYPE_ANY),
                                              wxDefaultPosition, wxDefaultSize, 0);
     previewSizer->Add(renderPreviewBitmap, 0, wxALL, 5);
     debugElementsSizer->Add(previewSizer, 0, wxEXPAND, 5);
@@ -306,7 +306,7 @@ void ScriptEditor::FetchUserScripts()
     loadedScripts = GetAllUserScripts();
 
     for (const ScriptData& d : loadedScripts)
-        scriptsListBox->Append(GetFileBaseName(d.file));
+        scriptsListBox->Append(AppPaths::BaseName(wxString::FromUTF8(d.file.c_str())));
 
     if (!loadedScripts.empty())
     {
@@ -334,7 +334,7 @@ int ScriptEditor::GetScriptIndex(const wxString& scriptName) const
 {
     for (int i = 0; i < scriptsListBox->GetCount(); i++)
     {
-        if (scriptsListBox->GetString(i) == GetFileBaseName(scriptName))
+        if (scriptsListBox->GetString(i) == AppPaths::BaseName(scriptName))
             return i;
     }
     return -1;
@@ -360,7 +360,8 @@ void ScriptEditor::OnNewScript(wxCommandEvent&)
     if (nameDialog.ShowModal())
     {
         const string scriptFileName = nameDialog.GetScriptName().ToStdString() + ".as";
-        const string newFilePath = GetAbsPath({"UserScripts", scriptFileName });
+        AppPaths::EnsureDirectory(AppPaths::UserScriptsDir());
+        const string newFilePath = AppPaths::UserScriptFileStd(wxString::FromUTF8(scriptFileName.c_str()));
         ofstream ofs(newFilePath, std::ofstream::out);
         ofs << newScriptTemplate;
         ofs.close();
@@ -379,7 +380,7 @@ void ScriptEditor::OnDeleteScript(wxCommandEvent&)
     if (messageDialog.ShowModal() == wxID_YES)
     {
         int deleteIndex = scriptsListBox->GetSelection();
-        FSDeleteFile(loadedScripts[deleteIndex].file);
+        AppPaths::RemoveFile(loadedScripts[deleteIndex].file);
         this->FetchUserScripts();
     }
 }

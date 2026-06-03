@@ -1,13 +1,13 @@
 #include <limits>
 #include <fstream>
 #include <mpParser.h>
+#include "AppPaths.h"
 #include "DimensionFrame.h"
 #include "StringFuncs.h"
 #include "SizeDialogSave.h"
 #include "BmpWriter.h"
 #include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
-#include "Filesystem.h"
 #include "SystemUtils.h"
 using namespace std;
 
@@ -475,7 +475,7 @@ PlotWindow::PlotWindow(const vector<double> &xList, const vector<double> &yList,
                        const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                        : wxFrame(parent, id, title, pos, size, style)
 {
-    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
@@ -724,11 +724,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _dumpCheck = new wxCheckBox(_mainPanel, wxID_ANY, wxT("Dump results to file"), wxDefaultPosition, wxDefaultSize, 0);
     dumpBoxSizer->Add(_dumpCheck, 0, wxALL, 5);
 
-    // Gets the current directory.
-    string outFilePath = GetWorkingDirectory();
-    outFilePath += "\\dump.csv";
-
-    _filePathCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, wxString(outFilePath.c_str(), wxConvUTF8), wxDefaultPosition, wxDefaultSize, 0);
+    _filePathCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, AppPaths::DumpFile(), wxDefaultPosition, wxDefaultSize, 0);
     _filePathCtrl->Enable(false);
 
     dumpBoxSizer->Add(_filePathCtrl, 0, wxALL | wxEXPAND, 5);
@@ -751,7 +747,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _closeButton = new wxButton(_mainPanel, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0);
     buttonBoxSizer->Add(_closeButton, 1, wxALL | wxALIGN_BOTTOM, 5);
 
-    _helpButton = new wxBitmapButton(_mainPanel, wxID_ANY, wxBitmap(GetWxAbsPath({ "Resources", "help.png" }),
+    _helpButton = new wxBitmapButton(_mainPanel, wxID_ANY, wxBitmap(AppPaths::ResourceFile({wxT("help.png")}),
                                     wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
     buttonBoxSizer->Add(_helpButton, 0, wxALIGN_BOTTOM | wxALL, 5);
 
@@ -1560,7 +1556,7 @@ void DimensionFrame::GetScriptFractals()
 }
 void DimensionFrame::OnHelp(wxCommandEvent&)
 {
-    const auto diag = new HTMLViewer(GetWxAbsPath({ "Resources", "Tutorials", "dimTut.html" }),
+    const auto diag = new HTMLViewer(AppPaths::ResourceFile({wxT("Tutorials"), wxT("dimTut.html")}),
                                 this, wxID_ANY, wxString(wxT("Calculate dimension help")));
     diag->ShowModal();
     diag->Destroy();

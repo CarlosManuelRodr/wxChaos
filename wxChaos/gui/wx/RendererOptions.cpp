@@ -1,8 +1,8 @@
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
+#include "AppPaths.h"
 #include "RendererOptions.h"
 #include "StringFuncs.h"
-#include "Filesystem.h"
 
 ColorPalette::ColorPalette()
 {
@@ -95,7 +95,7 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
                                  : wxFrame(parent, id, title, pos, size, windowStyle)
 {
     // Constructs the ColorFrame. Gets color values from the target fractal so the frame parameters match the fractal parameters.
-    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     _active = active;

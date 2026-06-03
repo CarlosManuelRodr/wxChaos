@@ -1,5 +1,5 @@
+#include "AppPaths.h"
 #include "HTMLViewer.h"
-#include "Filesystem.h"
 
 // TextViewer
 HTMLViewer::HTMLViewer(const wxString& htmlFile, wxWindow* parent, const wxWindowID id, const wxString& title,
@@ -7,7 +7,7 @@ HTMLViewer::HTMLViewer(const wxString& htmlFile, wxWindow* parent, const wxWindo
 {
     this->SetSizeHints(wxSize(900, 620), wxDefaultSize);
 
-    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);

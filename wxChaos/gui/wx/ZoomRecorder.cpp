@@ -11,8 +11,8 @@
 #include <iomanip>
 #include <cstdlib>
 #include "SFML/System.hpp"
+#include "AppPaths.h"
 #include "ZoomRecorder.h"
-#include "Filesystem.h"
 using namespace std;
 
 /**
@@ -27,6 +27,20 @@ class ZoomRenderer : public wxThread
     int width, height;
     double zoomSpeed, colorSpeed;
     string filepath;
+
+    static string QuoteCommandArg(const string& value)
+    {
+        string quoted = "\"";
+        for (const char ch : value)
+        {
+            if (ch == '"')
+                quoted += "\\\"";
+            else
+                quoted += ch;
+        }
+        quoted += "\"";
+        return quoted;
+    }
 
 protected:
     ExitCode Entry() override {
@@ -78,19 +92,19 @@ protected:
 
             sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
             string filename = "frame_" + FixedLengthToString(currentFrame, outputFileDigits) + ".jpg";
-            string fullPath = FileNameJoin({ filepath, filename });
+            string fullPath = AppPaths::JoinStd(filepath, filename);
 
             // ReSharper disable once CppExpressionWithoutSideEffects
             out.saveToFile(fullPath);
         }
 
         // Render video from frames.
-        const string ffmpegPath = GetAbsPath({ "FFmpeg", "ffmpeg.exe" });
+        const string ffmpegPath = AppPaths::FfmpegFileStd();
         const string fileTemplate = "frame_%0" + to_string(outputFileDigits) + "d.jpg";
-        const string inputFrames = FileNameJoin({ filepath, fileTemplate });
-        const string outputVideo = FileNameJoin({ filepath, "Zoom.mp4" });
-        const string renderVideoCommand = ffmpegPath + " -i " + inputFrames +
-            " -c:v libx264 -vf fps=30 -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\" -pix_fmt yuv420p " + outputVideo;
+        const string inputFrames = AppPaths::JoinStd(filepath, fileTemplate);
+        const string outputVideo = AppPaths::JoinStd(filepath, "Zoom.mp4");
+        const string renderVideoCommand = QuoteCommandArg(ffmpegPath) + " -i " + QuoteCommandArg(inputFrames) +
+            " -c:v libx264 -vf fps=30 -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\" -pix_fmt yuv420p " + QuoteCommandArg(outputVideo);
 
         system(renderVideoCommand.c_str());
 
@@ -138,7 +152,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, const wxWi
     // UI initialization
     this->SetSizeHints(wxSize(900, 680), wxSize(1400, 900));
 
-    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);

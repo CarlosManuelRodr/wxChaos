@@ -4,8 +4,8 @@
 #include <limits>
 #include "AngelscriptBindings.h"
 #include "AngelscriptConfigurationEngine.h"
+#include "AppPaths.h"
 #include "StringFuncs.h"
-#include "Filesystem.h"
 #include "Complex.h"
 
 using namespace std;
@@ -29,12 +29,12 @@ string consoleText;
 std::vector<ScriptData> GetValidUserScripts()
 {
     vector<ScriptData> output;
-    vector<string> scriptFiles = FindFilesWithExtension(GetAbsPath({"UserScripts"}), "as");
+    vector<string> scriptFiles = AppPaths::UserScriptFilenames();
 
     for (auto & scriptFile : scriptFiles)
     {
         AngelscriptConfigurationEngine configEngine;
-        const string filePath = GetAbsPath({"UserScripts", scriptFile});
+        const string filePath = AppPaths::UserScriptFileStd(wxString::FromUTF8(scriptFile.c_str()));
 
         if (!configEngine.CompileFromPath(filePath))
             continue;
@@ -51,12 +51,12 @@ std::vector<ScriptData> GetValidUserScripts()
 std::vector<ScriptData> GetAllUserScripts()
 {
     vector<ScriptData> output;
-    vector<string> scriptFiles = FindFilesWithExtension(GetAbsPath({"UserScripts"}), "as");
+    vector<string> scriptFiles = AppPaths::UserScriptFilenames();
 
     for (auto & scriptFile : scriptFiles)
     {
         AngelscriptConfigurationEngine configEngine;
-        const string filePath = GetAbsPath({"UserScripts", scriptFile});
+        const string filePath = AppPaths::UserScriptFileStd(wxString::FromUTF8(scriptFile.c_str()));
 
         if (!configEngine.CompileFromPath(filePath))
         {

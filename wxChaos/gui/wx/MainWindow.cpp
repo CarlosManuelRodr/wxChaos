@@ -1,8 +1,8 @@
 // ReSharper disable CppEnumeratorNeverUsed
 #include "MainWindow.h"
 #include "AngelscriptBindings.h"
+#include "AppPaths.h"
 #include "HTMLViewer.h"
-#include "Filesystem.h"
 #include "StringFuncs.h"
 #include "global.h"
 
@@ -130,7 +130,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     mainFramePtr = this;
     this->SetSizeHints(wxSize(900, 650), wxDefaultSize);
 
-    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
     this->GetParserOpt();    // Gets configuration from config.ini.
     this->SetUpGUI();
@@ -178,7 +178,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
 void MainFrame::ShowFirstUseDialog()
 {
     const auto firstUseDialog = new HTMLViewer(
-        GetWxAbsPath({ "Resources", "Tutorials", "mainTut.html" }),
+        AppPaths::ResourceFile({wxT("Tutorials"), wxT("mainTut.html")}),
         this,
         wxID_ANY,
         wxString(wxT("Welcome to wxChaos")),
@@ -407,7 +407,7 @@ void MainFrame::SetUpGUI()
     showOptPanel = false;
     optionSizer = new wxBoxSizer(wxVERTICAL);
 
-    propBitmap = new wxStaticBitmap(optionPanel, wxID_ANY, wxBitmap(GetWxAbsPath({ "Resources", "prop.png" }), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
+    propBitmap = new wxStaticBitmap(optionPanel, wxID_ANY, wxBitmap(AppPaths::ResourceFile({wxT("prop.png")}), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
     optionSizer->Add(propBitmap, 0, wxALL, 0);
 
     optionPanel->SetSizer(optionSizer);
@@ -509,7 +509,7 @@ void MainFrame::OnAbout(wxCommandEvent&)
     dlg->SetCustomBuildInfo(wxString::Format(wxT("%s. %s"),
         AboutDialog::GetBuildInfo(AboutDialog::wxBUILDINFO_LONG).GetData(),
         wxT("")));
-    dlg->SetHeaderBitmap(wxBitmap(GetWxAbsPath({ "Resources","wxChaosAbout.bmp" }), wxBITMAP_TYPE_ANY));
+    dlg->SetHeaderBitmap(wxBitmap(AppPaths::ResourceFile({wxT("wxChaosAbout.bmp")}), wxBITMAP_TYPE_ANY));
     dlg->ApplyInfo();
     dlg->ShowModal();
     dlg->Destroy();
@@ -746,13 +746,7 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeStatic
 void MainFrame::OnUserManual(wxCommandEvent&)
 {
-    // Open pdf.
-#ifdef _WIN32
-    string filePath = GetAbsPath({ "Doc", "User_Manual.pdf" });
-    ShellExecute(nullptr, _T("open"), std::wstring(filePath.begin(), filePath.end()).c_str(), _T(""), _T("C:\\"), SW_SHOWNORMAL);
-#elif __linux__
-    // Implement with XDG_Open
-#endif
+    wxLaunchDefaultApplication(AppPaths::DocFile(wxT("User_Manual.pdf")));
 }
 void MainFrame::OnScriptEditor(wxCommandEvent&)
 {
@@ -933,10 +927,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
 // Methods to adjust the menu.
 void MainFrame::GetParserOpt()
 {
-    string dir = GetWorkingDirectory();
-    dir += "/config.ini";
-
-    const AppConfigStore configStore(dir);
+    const AppConfigStore configStore(AppPaths::ToStdPath(AppPaths::ConfigFile()));
     opt = configStore.Load();
     configStore.SetFirstUse(false);
 }

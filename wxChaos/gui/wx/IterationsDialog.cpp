@@ -1,13 +1,13 @@
+#include "AppPaths.h"
 #include "IterationsDialog.h"
 #include "StringFuncs.h"
-#include "Filesystem.h"
 
 IterationsDialog::IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id, const wxString& title,
                                    const wxPoint& pos, const wxSize& size, const long style)
                                    : wxFrame(parent, id, title, pos, size, style)
 {
     // WX Frame.
-    const wxIcon icon(GetWxAbsPath({ "Resources", "icon.ico" }), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     _active = Active;
