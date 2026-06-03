@@ -1,7 +1,7 @@
 #include <wx/gdicmn.h>
 #include <wx/statbox.h>
 #include "ConstDialog.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 
 ConstDialog::ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, const wxWindowID id, const wxString& title,
                          const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
@@ -20,7 +20,7 @@ ConstDialog::ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent,
     const auto realSizer = new wxStaticBoxSizer(new wxStaticBox(_dumbPanel, wxID_ANY, wxT("Real value")), wxVERTICAL);
     
     _lastReal = _target->GetKReal();
-    wxString text = num_to_string(_target->GetKReal());
+    wxString text = TextUtils::ToWxString(_target->GetKReal());
     _realText = new wxTextCtrl(_dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     realSizer->Add(_realText, 0, wxALL|wxEXPAND, 5);
     sizer->Add(realSizer, 2, wxEXPAND, 5);
@@ -28,7 +28,7 @@ ConstDialog::ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent,
     const auto imSizer = new wxStaticBoxSizer(new wxStaticBox(_dumbPanel, wxID_ANY, wxT("Imaginary value")), wxVERTICAL);
     
     _lastIm = _target->GetKImaginary();
-    text = num_to_string(_target->GetKImaginary());
+    text = TextUtils::ToWxString(_target->GetKImaginary());
     _imText = new wxTextCtrl(_dumbPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     imSizer->Add(_imText, 0, wxALL|wxEXPAND, 5);
     
@@ -71,8 +71,8 @@ ConstDialog::~ConstDialog()
 
 void ConstDialog::OnOk(wxCommandEvent&)
 {
-    const double real = string_to_double(_realText->GetLineText(0));
-    const double imag = string_to_double(_imText->GetLineText(0));
+    const double real = TextUtils::ToDouble(_realText->GetLineText(0));
+    const double imag = TextUtils::ToDouble(_imText->GetLineText(0));
 
     if (real != _lastReal || imag != _lastIm)
         _presenter->SetK(real, imag);
@@ -82,8 +82,8 @@ void ConstDialog::OnOk(wxCommandEvent&)
 }
 void ConstDialog::OnApply(wxCommandEvent&)
 {
-    const double real = string_to_double(_realText->GetLineText(0));
-    const double imag = string_to_double(_imText->GetLineText(0));
+    const double real = TextUtils::ToDouble(_realText->GetLineText(0));
+    const double imag = TextUtils::ToDouble(_imText->GetLineText(0));
 
     _lastReal = real;
     _lastIm = imag;

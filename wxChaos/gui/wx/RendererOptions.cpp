@@ -2,7 +2,7 @@
 #include <wx/dcbuffer.h>
 #include "AppPaths.h"
 #include "RendererOptions.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 
 ColorPalette::ColorPalette()
 {
@@ -166,7 +166,7 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
 
     wxString text = L"Red: ";
     _setColor = _target->GetSetColor();
-    text += num_to_string(_setColor.r);
+    text += TextUtils::ToWxString(_setColor.r);
     _redSetText = new wxStaticText(_mPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     _redSetText->Wrap(-1);
     colorSetSizer->Add(_redSetText, 0, wxALL, 5);
@@ -175,7 +175,7 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
     colorSetSizer->Add(_redSetSld, 0, wxALL|wxEXPAND, 5);
 
     text = wxT("Green: ");
-    text += num_to_string(_setColor.g);
+    text += TextUtils::ToWxString(_setColor.g);
     _greenSetText = new wxStaticText(_mPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     _greenSetText->Wrap(-1);
     colorSetSizer->Add(_greenSetText, 0, wxALL, 5);
@@ -184,7 +184,7 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
     colorSetSizer->Add(_greenSetSld, 0, wxALL|wxEXPAND, 5);
 
     text = wxT("Blue: ");
-    text += num_to_string(_setColor.b);
+    text += TextUtils::ToWxString(_setColor.b);
     _blueSetText = new wxStaticText(_mPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     _blueSetText->Wrap(-1);
     colorSetSizer->Add(_blueSetText, 0, wxALL, 5);
@@ -547,7 +547,7 @@ void RendererOptions::OnSetRed(wxScrollEvent&)
     _setColor.r = value;
     _presenter->SetFractalSetColor(_setColor);
     wxString text = L"Red: ";
-    text += num_to_string(value);
+    text += TextUtils::ToWxString(value);
     _redSetText->SetLabel(wxString(text));
 }
 void RendererOptions::OnSetGreen(wxScrollEvent&)
@@ -556,7 +556,7 @@ void RendererOptions::OnSetGreen(wxScrollEvent&)
     _setColor.g = value;
     _presenter->SetFractalSetColor(_setColor);
     wxString text = L"Green: ";
-    text += num_to_string(value);
+    text += TextUtils::ToWxString(value);
     _greenSetText->SetLabel(wxString(text));
 }
 void RendererOptions::OnSetBlue(wxScrollEvent&)
@@ -565,7 +565,7 @@ void RendererOptions::OnSetBlue(wxScrollEvent&)
     _setColor.b = value;
     _presenter->SetFractalSetColor(_setColor);
     wxString text = L"Blue: ";
-    text += num_to_string(value);
+    text += TextUtils::ToWxString(value);
     _blueSetText->SetLabel(wxString(text));
 }
 void RendererOptions::OnClose(wxCloseEvent&)

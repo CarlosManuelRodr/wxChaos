@@ -1,6 +1,6 @@
 #include <wx/spinctrl.h>
 #include "SizeDialogSave.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 using namespace std;
 
 // SaveProgressDiag
@@ -72,7 +72,7 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent&)
         if (_myFractal->GetType() != FractalType::ScriptFractal)
         {
             const int progressValue = _myFractal->GetRenderProgress();
-            _progressLabel->SetLabel(wxString(wxT("Rendering: ")) + num_to_string(progressValue) + wxT("%"));
+            _progressLabel->SetLabel(wxString(wxT("Rendering: ")) + TextUtils::ToWxString(progressValue) + wxT("%"));
 
             _progress->SetValue(progressValue);
             if (progressValue >= 100 && !_myFractal->IsRendering())

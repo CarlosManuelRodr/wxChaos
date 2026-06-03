@@ -1,6 +1,6 @@
 #include "AppPaths.h"
 #include "FractalCanvas.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 #include "SizeDialogSave.h"
 using namespace std;
 
@@ -622,23 +622,23 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     if (_type == FractalType::DoublePendulum)
     {
         text = wxT("θ2: ");
-        text += num_to_string(_target->GetX(event.GetPosition().x));
+        text += TextUtils::ToWxString(_target->GetX(event.GetPosition().x));
         text += wxT("   θ1: ");
-        text += num_to_string(_target->GetY(event.GetPosition().y));
+        text += TextUtils::ToWxString(_target->GetY(event.GetPosition().y));
     }
     else if (_type == FractalType::SierpinskyTriangle || _type == FractalType::ScriptFractal)
     {
         text = wxT("x: ");
-        text += num_to_string(_target->GetX(event.GetPosition().x));
+        text += TextUtils::ToWxString(_target->GetX(event.GetPosition().x));
         text += wxT("   y: ");
-        text += num_to_string(_target->GetY(event.GetPosition().y));
+        text += TextUtils::ToWxString(_target->GetY(event.GetPosition().y));
     }
     else
     {
         text = wxT("Real: ");
-        text += num_to_string(_target->GetX(event.GetPosition().x));
+        text += TextUtils::ToWxString(_target->GetX(event.GetPosition().x));
         text += wxT("   Imaginary: ");
-        text += num_to_string(_target->GetY(event.GetPosition().y));
+        text += TextUtils::ToWxString(_target->GetY(event.GetPosition().y));
     }
     statusData.status->SetStatusText(text);
 }

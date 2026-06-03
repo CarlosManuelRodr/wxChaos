@@ -5,7 +5,7 @@
 #include "AngelscriptBindings.h"
 #include "AngelscriptConfigurationEngine.h"
 #include "AppPaths.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 #include "Complex.h"
 
 using namespace std;
@@ -60,7 +60,7 @@ std::vector<ScriptData> GetAllUserScripts()
 
         if (!configEngine.CompileFromPath(filePath))
         {
-            ScriptData errorScript = ScriptData(ScriptDataType::Error);
+            auto errorScript = ScriptData(ScriptDataType::Error);
             errorScript.file = filePath;
             output.push_back(errorScript);
             continue;
@@ -73,7 +73,7 @@ std::vector<ScriptData> GetAllUserScripts()
         }
         else
         {
-            ScriptData errorScript = ScriptData(ScriptDataType::Error);
+            auto errorScript = ScriptData(ScriptDataType::Error);
             errorScript.file = filePath;
             output.push_back(errorScript);
         }
@@ -188,22 +188,22 @@ static void asPrintString(string& str)
 
 static void asPrintInt(int num)
 {
-    consoleText.empty() ? consoleText = str_num_to_string(num) : consoleText += str_num_to_string(num);
+    consoleText.empty() ? consoleText = TextUtils::ToString(num) : consoleText += TextUtils::ToString(num);
     thereIsConsoleText = true;
 }
 
 static void asPrintFloat(double num)
 {
-    consoleText.empty() ? consoleText = str_num_to_string(num) : consoleText += str_num_to_string(num);
+    consoleText.empty() ? consoleText = TextUtils::ToString(num) : consoleText += TextUtils::ToString(num);
     thereIsConsoleText = true;
 }
 
 void asPrintComplex(const Complex& num)
 {
-    string temp = str_num_to_string(num.complexNum.real());
+    string temp = TextUtils::ToString(num.complexNum.real());
 
     temp += num.complexNum.imag() >= 0 ? "+i" : "-i";
-    temp += str_num_to_string(abs(num.complexNum.imag()));
+    temp += TextUtils::ToString(abs(num.complexNum.imag()));
     consoleText.empty() ? consoleText = temp : consoleText += temp;
 
     thereIsConsoleText = true;
@@ -247,9 +247,9 @@ void MessageCallback(const asSMessageInfo* msg, void* param)
     consoleText = "";
     consoleText += msg->section;
     consoleText += " (";
-    consoleText += str_num_to_string(msg->row);
+    consoleText += TextUtils::ToString(msg->row);
     consoleText += ", ";
-    consoleText += str_num_to_string(msg->col);
+    consoleText += TextUtils::ToString(msg->col);
     consoleText += ") : ";
     consoleText += type;
     consoleText += " : ";

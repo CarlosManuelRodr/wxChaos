@@ -1,5 +1,5 @@
 #include "ScriptFractal.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 #include "../../scripting/AngelscriptConfigurationEngine.h"
 #include "../../scripting/AngelscriptBindings.h"
 using namespace std;
@@ -75,7 +75,7 @@ void ScriptFractal::PostRender()
         if (_myRender[i].IsThereError())
         {
             errorLog += wxT("Thread ");
-            errorLog += num_to_string((int)i);
+            errorLog += TextUtils::ToWxString((int)i);
             errorLog += wxT(" says:\n");
             errorLog += _myRender[i].GetErrorInfo();
             errorLog += wxT("\n");

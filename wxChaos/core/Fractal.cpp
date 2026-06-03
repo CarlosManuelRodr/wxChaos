@@ -4,7 +4,6 @@
 #include <mpParser.h>
 #include "Fractal.h"
 #include "BmpWriter.h"
-#include "StringFuncs.h"
 #include "SystemUtils.h"
 using namespace std;
 

@@ -3,7 +3,7 @@
 #include <mpParser.h>
 #include "AppPaths.h"
 #include "DimensionFrame.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 #include "SizeDialogSave.h"
 #include "BmpWriter.h"
 #include "AngelscriptBindings.h"
@@ -227,7 +227,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
         dc.SetTextForeground(wxColour(255, 255, 255));
         dc.DrawRectangle(0, 383, 60 + extra, 17);
         wxString outText = wxT("N = ");
-        outText += num_to_string(boxes);
+        outText += TextUtils::ToWxString(boxes);
         dc.DrawText(outText, 5, 383);
     }
 }
@@ -420,9 +420,9 @@ void ConfigFractalOptionsDialog::SetNewTarget(Fractal* target)
     if (_target->IsJuliaVariety())
     {
         _kRealCtrl->Enable(true);
-        _kRealCtrl->SetValue(num_to_string(target->GetKReal()));
+        _kRealCtrl->SetValue(TextUtils::ToWxString(target->GetKReal()));
         _kImaginaryCtrl->Enable(true);
-        _kImaginaryCtrl->SetValue(num_to_string(target->GetKImaginary()));
+        _kImaginaryCtrl->SetValue(TextUtils::ToWxString(target->GetKImaginary()));
     }
     else
     {
@@ -442,7 +442,7 @@ void ConfigFractalOptionsDialog::OnApply(wxCommandEvent&)
     PanelOptions* pOptions = _target->GetOptPanel();
     for (unsigned int i = 0; i < _foundTextControls.size(); i++)
     {
-        *pOptions->GetDoubleElement(i) = string_to_double(_textControls[i]->GetValue());
+        *pOptions->GetDoubleElement(i) = TextUtils::ToDouble(_textControls[i]->GetValue());
     }
     for (unsigned int i = 0; i < _foundSpinControls.size(); i++)
     {
@@ -456,7 +456,7 @@ void ConfigFractalOptionsDialog::OnApply(wxCommandEvent&)
             *pOptions->GetBoolElement(i) = false;
     }
     if (_target->IsJuliaVariety())
-        _target->SetK(string_to_double(_kRealCtrl->GetValue()), string_to_double(_kImaginaryCtrl->GetValue()));
+        _target->SetK(TextUtils::ToDouble(_kRealCtrl->GetValue()), TextUtils::ToDouble(_kImaginaryCtrl->GetValue()));
     _target->SetFractalPropChanged();
 }
 
@@ -795,11 +795,11 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _fractalChoice->SetSelection(0);
     this->CreateFractal(_previewSize);
     _myOpt = _target->GetOptions();
-    _minXCtrl->SetValue(num_to_string(_myOpt.minX));
-    _maxXCtrl->SetValue(num_to_string(_myOpt.maxX));
-    _minYCtrl->SetValue(num_to_string(_myOpt.minY));
-    _maxYCtrl->SetValue(num_to_string(_myOpt.maxY));
-    _iterCtrl->SetValue(num_to_string(static_cast<int>(_myOpt.maxIter)));
+    _minXCtrl->SetValue(TextUtils::ToWxString(_myOpt.minX));
+    _maxXCtrl->SetValue(TextUtils::ToWxString(_myOpt.maxX));
+    _minYCtrl->SetValue(TextUtils::ToWxString(_myOpt.minY));
+    _maxYCtrl->SetValue(TextUtils::ToWxString(_myOpt.maxY));
+    _iterCtrl->SetValue(TextUtils::ToWxString(static_cast<int>(_myOpt.maxIter)));
 
     // Connect Events.
     this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(DimensionFrame::OnDestroy));
@@ -964,16 +964,16 @@ void DimensionFrame::OnRenderPreview(wxCommandEvent&)
         _target->Resize(_previewSize, _previewSize);
         _myOpt = _target->GetOptions();
 
-        _myOpt.minX = string_to_double(_minXCtrl->GetValue());
-        _myOpt.maxX = string_to_double(_maxXCtrl->GetValue());
-        _myOpt.minY = string_to_double(_minYCtrl->GetValue());
+        _myOpt.minX = TextUtils::ToDouble(_minXCtrl->GetValue());
+        _myOpt.maxX = TextUtils::ToDouble(_maxXCtrl->GetValue());
+        _myOpt.minY = TextUtils::ToDouble(_minYCtrl->GetValue());
 
         if (_manualMaxYChk->GetValue())
-            _myOpt.maxY = string_to_double(_maxYCtrl->GetValue());
+            _myOpt.maxY = TextUtils::ToDouble(_maxYCtrl->GetValue());
         else
             _myOpt.maxY = _myOpt.minY + (_myOpt.maxX - _myOpt.minX);
 
-        _myOpt.maxIter = string_to_int(_iterCtrl->GetValue());
+        _myOpt.maxIter = TextUtils::ToInt(_iterCtrl->GetValue());
 
         _target->SetOptions(_myOpt);
         _target->PrepareRender();
@@ -1010,11 +1010,11 @@ void DimensionFrame::OnChangeFractal(wxCommandEvent&)
     // Set default parameters.
     this->CreateFractal(_previewSize);
     _myOpt = _target->GetOptions();
-    _minXCtrl->SetValue(num_to_string(_myOpt.minX));
-    _maxXCtrl->SetValue(num_to_string(_myOpt.maxX));
-    _minYCtrl->SetValue(num_to_string(_myOpt.minY));
-    _maxYCtrl->SetValue(num_to_string(_myOpt.maxY));
-    _iterCtrl->SetValue(num_to_string(static_cast<int>(_myOpt.maxIter)));
+    _minXCtrl->SetValue(TextUtils::ToWxString(_myOpt.minX));
+    _maxXCtrl->SetValue(TextUtils::ToWxString(_myOpt.maxX));
+    _minYCtrl->SetValue(TextUtils::ToWxString(_myOpt.minY));
+    _maxYCtrl->SetValue(TextUtils::ToWxString(_myOpt.maxY));
+    _iterCtrl->SetValue(TextUtils::ToWxString(static_cast<int>(_myOpt.maxIter)));
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void DimensionFrame::OnManualMaxY(wxCommandEvent&)
@@ -1074,7 +1074,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
         else
         {
             wxString listNumbers = _listCtrl->GetValue();
-            _div = get_int_list(listNumbers);
+            _div = TextUtils::ParseIntList(listNumbers);
             if (_div.size() == 0)
                 errorStatus = true;
         }
@@ -1082,18 +1082,18 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
         if (!errorStatus)
         {
             // Create fractal.
-            _size = string_to_int(wxString(_sizeCtrl->GetValue()));
+            _size = TextUtils::ToInt(wxString(_sizeCtrl->GetValue()));
             _myOpt = _target->GetOptions();
-            _myOpt.minX = string_to_double(_minXCtrl->GetValue());
-            _myOpt.maxX = string_to_double(_maxXCtrl->GetValue());
-            _myOpt.minY = string_to_double(_minYCtrl->GetValue());
+            _myOpt.minX = TextUtils::ToDouble(_minXCtrl->GetValue());
+            _myOpt.maxX = TextUtils::ToDouble(_maxXCtrl->GetValue());
+            _myOpt.minY = TextUtils::ToDouble(_minYCtrl->GetValue());
 
             if (_manualMaxYChk->GetValue())
-                _myOpt.maxY = string_to_double(_maxYCtrl->GetValue());
+                _myOpt.maxY = TextUtils::ToDouble(_maxYCtrl->GetValue());
             else
                 _myOpt.maxY = _myOpt.minY + (_myOpt.maxX - _myOpt.minX);
 
-            _myOpt.maxIter = string_to_int(_iterCtrl->GetValue());
+            _myOpt.maxIter = TextUtils::ToInt(_iterCtrl->GetValue());
 
             // Compare with previous options.
             Options tempOpt = _target->GetOptions();
@@ -1173,7 +1173,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                 else
                 {
                     _progressBar->SetValue(_progress);
-                    _progressTxt->SetLabel(wxString(wxT("Progress: ")) + num_to_string(_progress) + wxT("%"));
+                    _progressTxt->SetLabel(wxString(wxT("Progress: ")) + TextUtils::ToWxString(_progress) + wxT("%"));
                 }
             }
             else
@@ -1238,7 +1238,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         // Update progress bar.
                         _progress = 50 * (1 + static_cast<double>(_divIndex) / static_cast<double>(_div.size()));
                         _progressBar->SetValue(_progress);
-                        _progressTxt->SetLabel(wxString(wxT("Progress: ")) + num_to_string(_progress) + wxT("%"));
+                        _progressTxt->SetLabel(wxString(wxT("Progress: ")) + TextUtils::ToWxString(_progress) + wxT("%"));
 
                         // Get box count.
                         int boxNumber = 0;
@@ -1249,9 +1249,9 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         _boxCount.push_back(boxNumber);
 
                         // Update log text.
-                        wxString logOut = num_to_string(_epsilon[_divIndex]);
+                        wxString logOut = TextUtils::ToWxString(_epsilon[_divIndex]);
                         logOut += wxT(", ");
-                        logOut += num_to_string(_boxCount[_divIndex]);
+                        logOut += TextUtils::ToWxString(_boxCount[_divIndex]);
                         logOut += wxT("\n");
                         this->WriteText(logOut);
 
@@ -1296,7 +1296,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         }
                         double dimensionFit = (n * sumXY - sumX * sumY) / (n * sumXSquared - pow(sumX, 2));
                         this->WriteText(wxT("Dimension = "));
-                        this->WriteText(num_to_string(dimensionFit));
+                        this->WriteText(TextUtils::ToWxString(dimensionFit));
                         this->WriteText(wxT("\n"));
 
                         // Least squares for b.
@@ -1347,7 +1347,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                 else
                 {
                     _progressBar->SetValue(_progress);
-                    _progressTxt->SetLabel(wxString(wxT("Progress: ")) + num_to_string(_progress) + wxT("%"));
+                    _progressTxt->SetLabel(wxString(wxT("Progress: ")) + TextUtils::ToWxString(_progress) + wxT("%"));
                 }
             }
         }
@@ -1391,19 +1391,19 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         wxString fileName = wxFileName.c_str();
 
         // Render the fractal.
-        _size = string_to_int(wxString(_sizeCtrl->GetValue().c_str()));
+        _size = TextUtils::ToInt(wxString(_sizeCtrl->GetValue().c_str()));
         _target->Resize(_size, _size);
         _myOpt = _target->GetOptions();
-        _myOpt.minX = string_to_double(_minXCtrl->GetValue());
-        _myOpt.maxX = string_to_double(_maxXCtrl->GetValue());
-        _myOpt.minY = string_to_double(_minYCtrl->GetValue());
+        _myOpt.minX = TextUtils::ToDouble(_minXCtrl->GetValue());
+        _myOpt.maxX = TextUtils::ToDouble(_maxXCtrl->GetValue());
+        _myOpt.minY = TextUtils::ToDouble(_minYCtrl->GetValue());
 
         if (_manualMaxYChk->GetValue())
-            _myOpt.maxY = string_to_double(_maxYCtrl->GetValue());
+            _myOpt.maxY = TextUtils::ToDouble(_maxYCtrl->GetValue());
         else
             _myOpt.maxY = _myOpt.minY + (_myOpt.maxX - _myOpt.minX);
 
-        _myOpt.maxIter = string_to_int(_iterCtrl->GetValue());
+        _myOpt.maxIter = TextUtils::ToInt(_iterCtrl->GetValue());
 
         _target->SetOptions(_myOpt);
         _target->PrepareRender();

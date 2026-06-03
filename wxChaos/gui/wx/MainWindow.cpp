@@ -3,7 +3,7 @@
 #include "AngelscriptBindings.h"
 #include "AppPaths.h"
 #include "HTMLViewer.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 #include "global.h"
 
 #ifdef _WIN32
@@ -718,7 +718,7 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
     // Pass parameters to the fractal and redraws it.
     const PanelOptions* pOptions = fractalCanvas->GetFractalPtr()->GetOptPanel();
     for (unsigned int i=0; i<foundTextControls.size(); i++)
-        *pOptions->GetDoubleElement(i) = string_to_double(textControls[i]->GetValue());
+        *pOptions->GetDoubleElement(i) = TextUtils::ToDouble(textControls[i]->GetValue());
 
     for (unsigned int i=0; i<foundSpinControls.size(); i++)
         *pOptions->GetIntElement(i) = spinControls[i]->GetValue();

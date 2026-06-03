@@ -1,5 +1,5 @@
 #include "FormulaDialog.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 
 // FuncDialog
 FuncDialog::FuncDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
@@ -83,7 +83,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     _bailText->Wrap(-1);
     bailoutSizer->Add(_bailText, 0, wxALL, 5);
 
-    _bailCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, num_to_string(_fCanvas->GetFormula().bailout), wxDefaultPosition, wxDefaultSize, 0);
+    _bailCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, TextUtils::ToWxString(_fCanvas->GetFormula().bailout), wxDefaultPosition, wxDefaultSize, 0);
     bailoutSizer->Add(_bailCtrl, 0, wxALL|wxEXPAND, 5);
     optionSizer->Add(bailoutSizer, 1, wxEXPAND, 5);
 
@@ -167,7 +167,7 @@ void FormulaDialog::OnApply(wxCommandEvent&)
     // Creates fractal with the formula.
     FormulaOpt options;
     options.userFormula = _formulaCtrl->GetValue();
-    options.bailout = string_to_int(_bailCtrl->GetValue());
+    options.bailout = TextUtils::ToInt(_bailCtrl->GetValue());
     options.julia = _juliaCheck->GetValue();
 
     if (_typeChoice->GetCurrentSelection() == 0)

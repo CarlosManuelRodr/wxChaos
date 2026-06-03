@@ -1,6 +1,6 @@
 #include "AppPaths.h"
 #include "IterationsDialog.h"
-#include "StringFuncs.h"
+#include "TextUtils.h"
 
 IterationsDialog::IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id, const wxString& title,
                                    const wxPoint& pos, const wxSize& size, const long style)
@@ -23,7 +23,7 @@ IterationsDialog::IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindo
     const auto  textSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, wxT("Iterations")), wxHORIZONTAL);
 
     _number = _target->GetIterations();
-    _text = num_to_string(static_cast<int>(_number));
+    _text = TextUtils::ToWxString(static_cast<int>(_number));
     _textCtrl = new wxTextCtrl(_panel, wxID_ANY, _text, wxDefaultPosition, wxDefaultSize, 0);
     textSizer->Add(_textCtrl, 0, wxALL, 5);
 
@@ -71,7 +71,7 @@ void IterationsDialog::OnPlus(wxCommandEvent&)
 {
     // Increases iterations.
     _number++;
-    _text = num_to_string(static_cast<int>(_number));
+    _text = TextUtils::ToWxString(static_cast<int>(_number));
     _textCtrl->SetValue(_text);
     _presenter->ChangeIterations(_number);
 }
@@ -80,7 +80,7 @@ void IterationsDialog::OnMinus(wxCommandEvent&)
     // Decreases iterations.
     if (_number - 1 > 0)
         _number--;
-    _text = num_to_string(static_cast<int>(_number));
+    _text = TextUtils::ToWxString(static_cast<int>(_number));
     _textCtrl->SetValue(_text);
     _presenter->ChangeIterations(_number);
 }
@@ -94,13 +94,13 @@ void IterationsDialog::OnApply(wxCommandEvent&)
 {
     // Redraw fractal.
     _text = _textCtrl->GetValue();
-    _number = string_to_int(_text);
+    _number = TextUtils::ToInt(_text);
     _presenter->ChangeIterations(_number);
 }
 void IterationsDialog::SetTarget(SFMLFractal* presenter)
 {
     _presenter = presenter;
     _target = _presenter->GetFractal();
-    _textCtrl->SetValue(num_to_string(static_cast<int>(_target->GetIterations())));
+    _textCtrl->SetValue(TextUtils::ToWxString(static_cast<int>(_target->GetIterations())));
     _number = _target->GetIterations();
 }
