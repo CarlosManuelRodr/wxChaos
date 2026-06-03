@@ -5,7 +5,7 @@
 #include "DimensionFrame.h"
 #include "TextUtils.h"
 #include "SizeDialogSave.h"
-#include "BmpWriter.h"
+#include "BmpImageWriter.h"
 #include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
 #include "SystemUtils.h"
@@ -1495,11 +1495,13 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
                 tempSetMap[_size - 1][y] = true;
 
             // Write BMP.
-            BMPWriter writer(fileName.mb_str(), _size, _size);
-            auto data = new BMPPixel[_size];
+            const std::string outputPath(fileName.mb_str());
+            BmpImageWriter writer(outputPath, _size, _size);
+            std::vector<BmpPixel> data(_size);
+            bool writeSuccess = writer.IsOpen();
 
-            // Copy maps values to BMPWriter.
-            for (int j = _size - 1; j >= 0; j--)
+            // Copy maps values to BmpImageWriter.
+            for (int j = 0; j < _size && writeSuccess; j++)
             {
                 for (int i = 0; i < _size; i++)
                 {
@@ -1522,10 +1524,11 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
                         data[i].b = static_cast<unsigned>(0xFF);
                     }
                 }
-                writer.WriteLine(data);
+                writeSuccess = writer.WriteRow(data);
             }
-            writer.CloseBMP();
-            delete[] data;
+            writeSuccess = writer.Close() && writeSuccess;
+            if (!writeSuccess)
+                wxMessageBox("Failed to save image to file: " + outputPath, "Error", wxOK | wxICON_ERROR);
 
             // Cleanup.
             for (int i = 0; i < _size; i++)

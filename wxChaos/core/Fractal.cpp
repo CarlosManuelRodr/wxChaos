@@ -3,7 +3,7 @@
 #include <utility>
 #include <mpParser.h>
 #include "Fractal.h"
-#include "BmpWriter.h"
+#include "BmpImageWriter.h"
 #include "SystemUtils.h"
 using namespace std;
 
@@ -610,6 +610,25 @@ bool Fractal::GetChangeFractalProp()
     return temp;
 }
 // Save image.
+sf::Color Fractal::GetRenderedPixelColor(const unsigned int x, const unsigned int y) const
+{
+    if (_setMap[x][y] && _colorSet)
+        return GetSetColor();
+
+    if (!_colorMode || _colorMap[x][y] == InvalidColor)
+        return sf::Color::White;
+
+    if (_relativeColor)
+    {
+        const double colorMapValue = _colorMap[x][y];
+        const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
+        const double ratio = colorMapValue / doubleMaxColorMapValue;
+        return GetColorFromPalette(static_cast<int>(ratio * _paletteSize + _changeGradient));
+    }
+
+    return GetColorFromPalette(_colorMap[x][y] + _changeGradient);
+}
+
 sf::Image Fractal::GetRenderedImage()
 {
     _onSnapshot = true;
@@ -626,35 +645,10 @@ sf::Image Fractal::GetRenderedImage()
 
     this->UpdateMaxColorMapValue();
 
-    for (int i = 0; i < _screenWidth; i++)
+    for (unsigned int i = 0; i < _screenWidth; i++)
     {
-        for (int j = 0; j < _screenHeight; j++)
-        {
-            if (_setMap[i][j] == true && _colorSet)
-                image.setPixel(i, j, GetSetColor());
-            else
-            {
-                if (_colorMode)
-                {
-                    if (_colorMap[i][j] == InvalidColor)
-                        continue;
-
-                    // Color pixel.
-                    sf::Color color;
-                    if (_relativeColor)
-                    {
-                        const double colorMapValue = _colorMap[i][j];
-                        const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
-                        const double ratio = colorMapValue / doubleMaxColorMapValue;
-                        color = GetColorFromPalette(static_cast<int>(ratio * _paletteSize + _changeGradient));
-                    }
-                    else
-                        color = GetColorFromPalette(_colorMap[i][j] + _changeGradient);
-
-                    image.setPixel(i, j, color);
-                }
-            }
-        }
+        for (unsigned int j = 0; j < _screenHeight; j++)
+            image.setPixel(i, j, GetRenderedPixelColor(i, j));
     }
 
     _onSnapshot = false;
@@ -680,72 +674,49 @@ wxBitmap Fractal::GetRenderedWxBitmap()
     wxBitmap output(wxImage);
     return output;
 }
-void Fractal::RenderBMP(const string& filename)
+bool Fractal::SaveBmp(const string& filename)
 {
     _waitRoutine = true;
     _onSnapshot = true;
-    BMPWriter writer(filename.c_str(), _screenWidth, _screenHeight);
+
+    BmpImageWriter writer(filename, _screenWidth, _screenHeight);
+    if (!writer.IsOpen())
+    {
+        _onSnapshot = false;
+        _waitRoutine = false;
+        return false;
+    }
+
     if (!_rendered)
     {
         this->PrepareRender();
         this->Render();
     }
     this->PreDrawMaps();
-    const auto data = new BMPPixel[_screenWidth];
 
     this->UpdateMaxColorMapValue();
 
-    // Copy maps values to BMPWriter.
-    for (unsigned int j = _screenHeight; j > 0; j--)
+    std::vector<BmpPixel> row(_screenWidth);
+    bool success = true;
+    for (unsigned int y = 0; y < _screenHeight; y++)
     {
-        const unsigned int row = j - 1;
-        for (int i = 0; i < _screenWidth; i++)
+        for (unsigned int x = 0; x < _screenWidth; x++)
         {
-            if (_setMap[i][row] != 0 && _colorSet)
-            {
-                data[i].r = 0;
-                data[i].g = 0;
-                data[i].b = 0;
-            }
-            else if (_colorMode)
-            {
-                if (_colorMap[i][row] == InvalidColor)
-                {
-                    data[i].r = static_cast<unsigned>(0xFF);
-                    data[i].g = static_cast<unsigned>(0xFF);
-                    data[i].b = static_cast<unsigned>(0xFF);
-                    continue;
-                }
-
-                if (_relativeColor)
-                {
-                    const double colorMapValue = _colorMap[i][row];
-                    const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
-                    const double ratio = colorMapValue / doubleMaxColorMapValue;
-                    const sf::Color c = GetColorFromPalette(static_cast<int>(ratio * _paletteSize + _changeGradient));
-                    data[i].r = c.r;
-                    data[i].g = c.g;
-                    data[i].b = c.b;
-                }
-                else
-                {
-                    sf::Color c = GetColorFromPalette(_colorMap[i][row] + _changeGradient);
-                    data[i].r = c.r;
-                    data[i].g = c.g;
-                    data[i].b = c.b;
-                }
-            }
-            else
-            {
-                data[i].r = static_cast<unsigned>(0xFF);
-                data[i].g = static_cast<unsigned>(0xFF);
-                data[i].b = static_cast<unsigned>(0xFF);
-            }
+            const sf::Color color = GetRenderedPixelColor(x, y);
+            row[x] = {color.r, color.g, color.b};
         }
-        writer.WriteLine(data);
+
+        if (!writer.WriteRow(row))
+        {
+            success = false;
+            break;
+        }
     }
-    writer.CloseBMP();
-    delete[] data;
+
+    success = writer.Close() && success;
+    _onSnapshot = false;
+    _waitRoutine = false;
+    return success;
 }
 
 void Fractal::PrepareSnapshot(const bool mode)

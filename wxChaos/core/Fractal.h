@@ -139,6 +139,9 @@ protected:
     ///@brief Recalculates the maximum rendered color-map value.
     void UpdateMaxColorMapValue();
 
+    ///@brief Gets the display color for a rendered pixel.
+    sf::Color GetRenderedPixelColor(unsigned int x, unsigned int y) const;
+
     ///@brief Copies the current fractal state into a renderer before launch.
     void ConfigureRenderer(Renderer& renderer) const;
 
@@ -254,7 +257,7 @@ public:
     // Save image.
     sf::Image GetRenderedImage();
     wxBitmap GetRenderedWxBitmap();
-    void RenderBMP(const std::string& filename);
+    bool SaveBmp(const std::string& filename);
     void PrepareSnapshot(bool mode);
 
     // Color styles.

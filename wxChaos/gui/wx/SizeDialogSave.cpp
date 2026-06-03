@@ -231,7 +231,9 @@ void SizeDialogSave::OnOk(wxCommandEvent&)
         else  // BMP
         {
             fractalHandler.GetFractalPtr()->SetRendered(true);
-            fractalHandler.GetFractalPtr()->RenderBMP(path);
+            const bool result = fractalHandler.GetFractalPtr()->SaveBmp(path);
+            if (!result)
+                wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
         }
     }
 
