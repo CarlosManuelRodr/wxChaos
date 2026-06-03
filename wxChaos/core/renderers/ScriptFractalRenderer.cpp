@@ -7,10 +7,8 @@ ScriptFractalRenderer::ScriptFractalRenderer()
     threadIndex = 0;
     hasEnded = true;
 }
-ScriptFractalRenderer::~ScriptFractalRenderer()
-{
+ScriptFractalRenderer::~ScriptFractalRenderer() = default;
 
-}
 void ScriptFractalRenderer::SetPath(const string& scriptPath)
 {
     path = scriptPath;

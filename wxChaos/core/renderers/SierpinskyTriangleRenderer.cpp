@@ -12,7 +12,7 @@ void SierpinskyTriangleRenderer::Render()
         {
             auto z = complex<double>(_minX + _x * _xFactor, _maxY - _y * _yFactor);
             bool insideSet = true;
-            int iterations = 0;
+            unsigned int iterations = 0;
             for (unsigned n=0; n<_maxIter; n++)
             {
                 if (z.real()*z.real() + z.imag()*z.imag() > 4)

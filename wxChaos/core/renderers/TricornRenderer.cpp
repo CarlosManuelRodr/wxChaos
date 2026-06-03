@@ -2,10 +2,8 @@
 #include "TricornRenderer.h"
 #include "FractalUtils.h"
 
-TricornRenderer::TricornRenderer()
-{
+TricornRenderer::TricornRenderer() = default;
 
-}
 void TricornRenderer::EscapeTimeRender()
 {
     double c_re;
