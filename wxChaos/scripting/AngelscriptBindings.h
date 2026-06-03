@@ -4,7 +4,6 @@
 #include <string>
 #include <angelscript.h>
 #include "ScriptData.h"
-#include "Complex.h"
 
 extern bool** asSetMap;
 extern int** asColorMap;
@@ -20,4 +19,4 @@ void RegisterScriptMathComplex(asIScriptEngine* engine);
 void RegisterWxChaosInterface(asIScriptEngine* engine);
 void MessageCallback(const asSMessageInfo* msg, void* param);
 ScriptData FetchScriptData(const std::string& fileName);
-void asPrintComplex(const Complex& num);
+

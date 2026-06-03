@@ -1,10 +1,11 @@
 // ReSharper disable CppParameterMayBeConst
 // ReSharper disable CppParameterMayBeConstPtrOrRef
+#include <cassert>
 #include "AngelscriptBindings.h"
 #include "AngelscriptConfigurationEngine.h"
 #include "StringFuncs.h"
 #include "Filesystem.h"
-#include <cassert>
+#include "Complex.h"
 
 using namespace std;
 
