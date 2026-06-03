@@ -74,9 +74,9 @@ class SFMLFractal
     ///@brief Resets panning input, velocity, and pending render offset.
     void ResetMovement();
 
-    ///@brief Moves matrix elements and fills the exposed area with zero values.
+    ///@brief Moves matrix elements and fills the exposed area with a default value.
     template<class M>
-    void MoveMatrix(M** matrix, unsigned int matrixWidth, unsigned int matrixHeight, int moveX, int moveY);
+    void MoveMatrix(M** matrix, unsigned int matrixWidth, unsigned int matrixHeight, int moveX, int moveY, M fillValue = M{});
 
     ///@brief Shifts the rendered maps after panning settles.
     void MoveMaps();

@@ -1,3 +1,4 @@
+// ReSharper disable CppTooWideScope
 #include <complex>
 #include "JuliaZNRenderer.h"
 #include "FractalUtils.h"
@@ -80,9 +81,9 @@ void JuliaZNRenderer::GaussianIntRender()
 void JuliaZNRenderer::EscapeAngleRender()
 {
     constexpr int color1 = 1;
-    const int color2 = 0.25 * _myOpt.paletteSize;
-    const int color3 = 0.50 * _myOpt.paletteSize;
-    const int color4 = 0.75 * _myOpt.paletteSize;
+    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
+    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
+    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
     const auto k = complex<double>(_kReal, _kImaginary);
     const double squaredBail = _bailout*_bailout;
 
@@ -125,105 +126,68 @@ void JuliaZNRenderer::EscapeTimeSmoothRender()
 
 void JuliaZNRenderer::EscapeTimeWithOrbitTrapRender()
 {
-    double c_im;
-    bool insideSet;
-    complex<double> z;
     const auto k = complex<double>(_kReal, _kImaginary);
     const double log2 = log(2.0);
     unsigned i;
-    int out;
+    const double squaredBail = _bailout*_bailout;
+    double Z_im2 = 0;
+    double Z_re2 = 0;
+    const double bailFourPower = squaredBail*squaredBail;
 
-    if (_myOpt.orbitTrapMode)
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
-        const double squaredBail = _bailout*_bailout;
-        double Z_im2 = 0;
-        double Z_re2 = 0;
-        const double bailFourPower = squaredBail*squaredBail;
-
-        for (_y=_heightOrigin; _y<_heightFinal; _y++)
+        double c_im = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            c_im = _maxY - _y*_yFactor;
-            for (_x=_widthOrigin; _x<_widthFinal; _x++)
+            complex<double> z = complex<double>(_minX + _x * _xFactor, c_im);
+
+            double distX = abs(z.real());
+            double distY = abs(z.imag());
+
+            bool insideSet = true;
+            unsigned int iterations = 0;
+
+            for (i=0; i<_maxIter; i++)
             {
-                z = complex<double>(_minX + _x*_xFactor, c_im);
-
-                double distX = abs(z.real());
-                double distY = abs(z.imag());
-
-                insideSet = true;
-                int iterations = 0;
-
-                for (i=0; i<_maxIter; i++)
+                z = pow(z, _n) + k;
+                Z_re2 = z.real()*z.real();
+                Z_im2 = z.imag()*z.imag();
+                if (Z_re2 + Z_im2 > squaredBail)
                 {
-                    z = pow(z, _n) + k;
-                    Z_re2 = z.real()*z.real();
-                    Z_im2 = z.imag()*z.imag();
-                    if (Z_re2 + Z_im2 > squaredBail)
+                    insideSet = false;
+                    if (Z_re2 + Z_im2 > bailFourPower)
                     {
-                        insideSet = false;
-                        if (Z_re2 + Z_im2 > bailFourPower)
-                        {
-                            if (abs(z.imag()) < distY) distY = abs(z.imag());
-                            if (abs(z.real()) < distX) distX = abs(z.real());
-                            break;
-                        }
-                    }
-                    else iterations = i;
-
-                    if (abs(z.imag()) < distY)
-                        distY = abs(z.imag());
-                    if (abs(z.real()) < distX)
-                        distX = abs(z.real());
-                }
-                if (distX == 0)
-                    distX = 0.000001;
-                if (distY == 0)
-                    distY = 0.000001;
-
-                if (insideSet)
-                    _setMap[_x][_y] = true;
-                if (_myOpt.smoothRender)
-                {
-                    out = static_cast<int>(abs(4.0*(iterations -  log(log(Z_re2+Z_im2))/log2) + 4.0*(log(1/distX) + log(1/distY))));
-                    if (out < 0)
-                        out = 0;
-                    if (!insideSet)
-                        _colorMap[_x][_y] = out;
-                    else
-                        _colorMap[_x][_y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distX) + log(1/distY)))));
-                }
-                else
-                    _colorMap[_x][_y] = static_cast<int>(abs(iterations + log(1/distX) + log(1/distY)));
-            }
-        }
-    }
-    else if (_myOpt.smoothRender)
-    {
-        const double squaredBail = _bailout*_bailout;
-        for (_y=_heightOrigin; _y<_heightFinal; _y++)
-        {
-            c_im = _maxY - _y*_yFactor;
-            for (_x=_widthOrigin; _x<_widthFinal; _x++)
-            {
-                z = complex<double>(_minX + _x*_xFactor, c_im);
-                insideSet = true;
-
-                for (i=0; i<_maxIter; i++)
-                {
-                    z = pow(z,_n) + k;
-                    if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
-                    {
-                        insideSet = false;
+                        if (abs(z.imag()) < distY) distY = abs(z.imag());
+                        if (abs(z.real()) < distX) distX = abs(z.real());
                         break;
                     }
                 }
-                if (insideSet)
-                    _setMap[_x][_y] = true;
+                else
+                    iterations = i;
 
-                out = static_cast<int>(abs(4.0*(i -  log(log(z.real()*z.real()+z.imag()*z.imag()))/log2)));
-                if (out < 0) out = 0;
-                _colorMap[_x][_y] = out;
+                if (abs(z.imag()) < distY)
+                    distY = abs(z.imag());
+                if (abs(z.real()) < distX)
+                    distX = abs(z.real());
             }
+            if (distX == 0)
+                distX = 0.000001;
+            if (distY == 0)
+                distY = 0.000001;
+
+            if (insideSet)
+                _setMap[_x][_y] = true;
+            if (_myOpt.smoothRender)
+            {
+                const unsigned int out = ToColorMapValue(
+                    abs(4.0 * (iterations - log(log(Z_re2 + Z_im2)) / log2) + 4.0 * (log(1 / distX) + log(1 / distY))));
+                if (!insideSet)
+                    _colorMap[_x][_y] = out;
+                else
+                    _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations + 4.0 * (log(1 / distX) + log(1 / distY)))));
+            }
+            else
+                _colorMap[_x][_y] = ToColorMapValue(abs(iterations + log(1 / distX) + log(1 / distY)));
         }
     }
 }

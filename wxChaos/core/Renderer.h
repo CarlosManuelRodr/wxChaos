@@ -2,6 +2,7 @@
 #ifndef RENDER_FRACTAL_H
 #define RENDER_FRACTAL_H
 
+#include <limits>
 #include "types/FractalType.h"
 #include "geometry/Vector2Int.h"
 #include "Options.h"
@@ -9,8 +10,10 @@
 class Renderer
 {
 protected:
+    static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
+
     bool** _setMap;
-    int** _colorMap;
+    unsigned int** _colorMap;
     unsigned int** _auxMap;
     int _x;
     int _y;
@@ -38,6 +41,8 @@ protected:
     double _kReal;
     double _kImaginary;
 
+    static unsigned int ToColorMapValue(double value);
+
 public:
     Renderer();
     virtual ~Renderer() = default;
@@ -52,7 +57,7 @@ public:
     void UpdateLimits(int heightOrigin);
     void SetOptions(const Options& opt);
     Options GetOptions();
-    void SetRenderOut(bool** outSetMap, int** outColorMap, unsigned int** outAux = nullptr);
+    void SetRenderOut(bool** outSetMap, unsigned int** outColorMap, unsigned int** outAux = nullptr);
     void SetK(double re, double im);
     void Reset();
     virtual void PreTerminate();

@@ -190,7 +190,7 @@ void ManowarJuliaRenderer::EscapeTimeWithOrbitTrapRender()
             if (distY == 0)
                 distY = 0.000001;
 
-            _colorMap[_x][_y] = static_cast<unsigned int>(iterations + log(1/distX) + log(1/distY));
+            _colorMap[_x][_y] = ToColorMapValue(iterations + log(1 / distX) + log(1 / distY));
         }
     }
 }

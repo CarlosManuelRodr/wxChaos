@@ -193,12 +193,12 @@ void MandelbrotZNRenderer::EscapeTimeWithOrbitTrapRender()
                 if (_myOpt.smoothRender)
                 {
                     if (!insideSet)
-                        _colorMap[_x][_y] = static_cast<int>(abs(4.0*(iterations -  log(log(Z_re2+Z_im2))/log2) + 4.0*(log(1/distanceX) + log(1/distanceY))));
+                        _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations - log(log(Z_re2 + Z_im2)) / log2) + 4.0 * (log(1 / distanceX) + log(1 / distanceY))));
                     else
-                        _colorMap[_x][_y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distanceX) + log(1/distanceY)))));
+                        _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations + 4.0 * (log(1 / distanceX) + log(1 / distanceY)))));
                 }
                 else
-                    _colorMap[_x][_y] = static_cast<int>(abs(iterations + log(1/distanceX) + log(1/distanceY)));
+                    _colorMap[_x][_y] = ToColorMapValue(abs(iterations + log(1 / distanceX) + log(1 / distanceY)));
             }
         }
     }
@@ -226,7 +226,7 @@ void MandelbrotZNRenderer::EscapeTimeWithOrbitTrapRender()
                 if (insideSet)
                     _setMap[_x][_y] = true;
 
-                _colorMap[_x][_y] = static_cast<int>(abs(4.0*(i -  log(log(z.real()*z.real()+z.imag()*z.imag()))/log2)));
+                _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (i - log(log(z.real() * z.real() + z.imag() * z.imag())) / log2)));
             }
         }
     }

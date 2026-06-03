@@ -84,6 +84,6 @@ void FPUserDefinedRenderer::ClearErrorInfo()
 
 bool FPUserDefinedRenderer::IsThereError() const
 {
-    return !(_errorInfo.size() == 0);
+    return _errorInfo.size() != 0;
 }
 

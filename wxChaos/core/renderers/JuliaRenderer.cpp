@@ -1,3 +1,4 @@
+// ReSharper disable CppTooWideScope
 #include <complex>
 #include "JuliaRenderer.h"
 #include "FractalUtils.h"
@@ -76,7 +77,7 @@ void JuliaRenderer::GaussianIntRender()
             if (insideSet)
                 _setMap[_x][_y] = true;
 
-            _colorMap[_x][_y] = static_cast<int>(abs(((mu*distance + (1-mu)*distanceTemp)*_myOpt.paletteSize)));
+            _colorMap[_x][_y] = ToColorMapValue(abs(((mu * distance + (1 - mu) * distanceTemp) * _myOpt.paletteSize)));
         }
     }
 }
@@ -85,9 +86,9 @@ void JuliaRenderer::EscapeAngleRender()
 {
     unsigned n;
     constexpr int color1 = 1;
-    const int color2 = 0.25 * _myOpt.paletteSize;
-    const int color3 = 0.50 * _myOpt.paletteSize;
-    const int color4 = 0.75 * _myOpt.paletteSize;
+    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
+    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
+    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
     const auto k = complex<double>(_kReal, _kImaginary);
 
     for (_y=_heightOrigin; _y<_heightFinal; _y++)
@@ -203,7 +204,7 @@ void JuliaRenderer::EscapeTimeWithOrbitTrapRender()
                 double distX = abs(re);
                 double distY = abs(im);
                 insideSet = true;
-                int iterations = 0;
+                unsigned int iterations = 0;
 
                 for (unsigned n=0; n<_maxIter; n++)
                 {
@@ -234,18 +235,16 @@ void JuliaRenderer::EscapeTimeWithOrbitTrapRender()
                 {
                     if (!insideSet)
                     {
-                        int out = static_cast<int>(abs(
+                        const unsigned int out = ToColorMapValue(abs(
                             4.0 * (iterations - log(log(pow(temp.real(), 2) + pow(temp.imag(), 2))) / log2) + 4.0 * (log(1 / distX) +
                                 log(1 / distY))));
-                        if (out < 0)
-                            out = 0;
                         _colorMap[_x][_y] = out;
                     }
                     else
-                        _colorMap[_x][_y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distX) + log(1/distY)))));
+                        _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations + 4.0 * (log(1 / distX) + log(1 / distY)))));
                 }
                 else
-                    _colorMap[_x][_y] = static_cast<int>(abs(iterations + log(1/distX) + log(1/distY)));
+                    _colorMap[_x][_y] = ToColorMapValue(abs(iterations + log(1 / distX) + log(1 / distY)));
             }
         }
     }
@@ -278,9 +277,7 @@ void JuliaRenderer::EscapeTimeWithOrbitTrapRender()
                 }
                 if (insideSet)
                     _setMap[_x][_y] = true;
-                int out = static_cast<int>(abs(4.0 * (n - log(log(Z_re2 + Z_im2)) / log2)));
-                if (out < 0)
-                    out = 0;
+                const unsigned int out = ToColorMapValue(abs(4.0 * (n - log(log(Z_re2 + Z_im2)) / log2)));
                 _colorMap[_x][_y] = out;
             }
         }
@@ -291,24 +288,24 @@ void JuliaRenderer::Render()
 {
     switch (_myOpt.alg)
     {
-    case RenderingAlgorithmType::EscapeTime:
-        if (_myOpt.orbitTrapMode)
-            EscapeTimeWithOrbitTrapRender();
-        else if (_myOpt.smoothRender)
-            EscapeTimeSmoothRender();
-        else
-            EscapeTimeRender();
-        break;
-    case RenderingAlgorithmType::GaussianInt:
-        GaussianIntRender();
-        break;
-    case RenderingAlgorithmType::EscapeAngle:
-        EscapeAngleRender();
-        break;
-    case RenderingAlgorithmType::TriangleInequality:
-        TriangleInequalityRender();
-        break;
-    default:
-        break;
+        case RenderingAlgorithmType::EscapeTime:
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else if (_myOpt.smoothRender)
+                EscapeTimeSmoothRender();
+            else
+                EscapeTimeRender();
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender();
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender();
+            break;
+        case RenderingAlgorithmType::TriangleInequality:
+            TriangleInequalityRender();
+            break;
+        default:
+            break;
     }
 }

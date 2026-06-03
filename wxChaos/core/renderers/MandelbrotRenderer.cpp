@@ -135,12 +135,12 @@ void MandelbrotRenderer::EscapeTimeWithOrbitTrapRender()
             if (_myOpt.smoothRender)
             {
                 if (!insideSet)
-                    _colorMap[_x][_y] = static_cast<int>(abs(4.0*(iterations -  log(log(Z_re2+Z_im2))/log2) + 4.0*(log(1/distX) + log(1/distY))));
+                    _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations - log(log(Z_re2 + Z_im2)) / log2) + 4.0 * (log(1 / distX) + log(1 / distY))));
                 else
-                    _colorMap[_x][_y] = static_cast<int>(abs(4.0*(iterations + 4.0*(log(1/distX) + log(1/distY)))));
+                    _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations + 4.0 * (log(1 / distX) + log(1 / distY)))));
             }
             else
-                _colorMap[_x][_y] = static_cast<int>(iterations + log(1/distX) + log(1/distY));
+                _colorMap[_x][_y] = ToColorMapValue(iterations + log(1 / distX) + log(1 / distY));
         }
     }
 }

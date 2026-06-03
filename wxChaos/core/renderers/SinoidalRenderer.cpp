@@ -1,3 +1,4 @@
+// ReSharper disable CppTooWideScope
 #include <complex>
 #include "SinoidalRenderer.h"
 #include "FractalUtils.h"
@@ -76,10 +77,10 @@ void SinoidalRenderer::EscapeAngleRender()
 {
     unsigned n;
     const complex<double> k(_kReal, _kImaginary);
-    const int color1 = 1;
-    const int color2 = 0.25 * _myOpt.paletteSize;
-    const int color3 = 0.50 * _myOpt.paletteSize;
-    const int color4 = 0.75 * _myOpt.paletteSize;
+    constexpr int color1 = 1;
+    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
+    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
+    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
 
     for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
@@ -129,7 +130,7 @@ void SinoidalRenderer::EscapeTimeWithOrbitTrapRender()
             double distanceY = abs(im);
 
             bool insideSet = true;
-            int iterations = 0;
+            unsigned int iterations = 0;
 
             for (unsigned n=0; n<_maxIter; n++)
             {
@@ -151,7 +152,7 @@ void SinoidalRenderer::EscapeTimeWithOrbitTrapRender()
 
             if (insideSet)
                 _setMap[_x][_y] = true;
-            _colorMap[_x][_y] = static_cast<unsigned int>(abs(iterations + log(1/distanceX) + log(1/distanceY)));
+            _colorMap[_x][_y] = ToColorMapValue(abs(iterations + log(1 / distanceX) + log(1 / distanceY)));
         }
     }
 }

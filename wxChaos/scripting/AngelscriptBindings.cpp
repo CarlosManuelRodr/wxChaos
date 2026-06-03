@@ -1,6 +1,7 @@
 // ReSharper disable CppParameterMayBeConst
 // ReSharper disable CppParameterMayBeConstPtrOrRef
 #include <cassert>
+#include <limits>
 #include "AngelscriptBindings.h"
 #include "AngelscriptConfigurationEngine.h"
 #include "StringFuncs.h"
@@ -10,7 +11,8 @@
 using namespace std;
 
 bool** asSetMap;
-int** asColorMap;
+unsigned int** asColorMap;
+static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
 static string name;
 static ScriptCategory scriptCategory;
 static double minX, maxX, minY;
@@ -175,7 +177,7 @@ static void asNoSetMap(bool mode)
 static void asSetPoint(int x, int y, bool setVal, int colorVal)
 {
     asSetMap[x][y] = setVal;
-    asColorMap[x][y] = colorVal;
+    asColorMap[x][y] = colorVal < 0 ? InvalidColor : static_cast<unsigned int>(colorVal);
 }
 
 static void asPrintString(string& str)

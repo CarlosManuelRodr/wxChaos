@@ -163,7 +163,7 @@ void MedusaRenderer::EscapeTimeWithOrbitTrapRender()
             {
                 _setMap[_x][_y] = true;
             }
-            _colorMap[_x][_y] = static_cast<unsigned int>(iterations + log(1/distX) + log(1/distY));
+            _colorMap[_x][_y] = ToColorMapValue(iterations + log(1 / distX) + log(1 / distY));
         }
     }
 }

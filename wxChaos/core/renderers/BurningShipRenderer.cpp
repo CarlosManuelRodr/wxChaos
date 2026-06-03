@@ -1,3 +1,4 @@
+// ReSharper disable CppTooWideScope
 #include "BurningShipRenderer.h"
 #include "FractalUtils.h"
 
@@ -87,10 +88,10 @@ void BurningShipRenderer::GaussianIntRender()
 void BurningShipRenderer::EscapeAngleRender()
 {
     unsigned n;
-    const int color1 = 1;
-    const int color2 = 0.25 * _myOpt.paletteSize;
-    const int color3 = 0.50 * _myOpt.paletteSize;
-    const int color4 = 0.75 * _myOpt.paletteSize;
+    constexpr int color1 = 1;
+    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
+    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
+    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
 
     for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {

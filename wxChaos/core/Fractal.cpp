@@ -35,12 +35,12 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
 
     // Allocates memory for the maps.
     _setMap = new bool* [_screenWidth];
-    _colorMap = new int* [_screenWidth];
+    _colorMap = new unsigned int* [_screenWidth];
     _auxMap = new unsigned int* [_screenWidth];
     for (int i = 0; i < _screenWidth; i++)
     {
         _setMap[i] = new bool[_screenHeight];
-        _colorMap[i] = new int[_screenHeight];
+        _colorMap[i] = new unsigned int[_screenHeight];
         _auxMap[i] = new unsigned int[_screenHeight];
     }
 
@@ -50,7 +50,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
         for (int j = 0; j < _screenHeight; j++)
         {
             _setMap[i][j] = false;
-            _colorMap[i][j] = -1;
+            _colorMap[i][j] = InvalidColor;
             _auxMap[i][j] = 0;
         }
     }
@@ -150,6 +150,12 @@ void Fractal::RebuildPalette()
 // Color operations.
 void Fractal::RedrawMaps()
 {
+    this->UpdateMaxColorMapValue();
+    _refreshImage = true;
+}
+
+void Fractal::UpdateMaxColorMapValue()
+{
     _maxColorMapVal = 0;
 
     if (_relativeColor)
@@ -159,14 +165,13 @@ void Fractal::RedrawMaps()
         {
             for (int j = 0; j < _screenHeight; j++)
             {
-                if (_colorMap[i][j] > _maxColorMapVal)
+                if (_colorMap[i][j] != InvalidColor && _colorMap[i][j] > _maxColorMapVal)
                     _maxColorMapVal = _colorMap[i][j];
             }
         }
     }
     if (_maxColorMapVal == 0)
         _maxColorMapVal = 1;
-    _refreshImage = true;
 }
 void Fractal::ConfigureRenderer(Renderer& renderer) const
 {
@@ -343,12 +348,12 @@ void Fractal::Resize(const unsigned int width, const unsigned int height)
 
     // Allocate memory.
     _setMap = new bool* [_screenWidth];
-    _colorMap = new int* [_screenWidth];
+    _colorMap = new unsigned int* [_screenWidth];
     _auxMap = new unsigned int* [_screenWidth];
     for (int i = 0; i < _screenWidth; i++)
     {
         _setMap[i] = new bool[_screenHeight];
-        _colorMap[i] = new int[_screenHeight];
+        _colorMap[i] = new unsigned int[_screenHeight];
         _auxMap[i] = new unsigned int[_screenHeight];
     }
 
@@ -358,7 +363,7 @@ void Fractal::Resize(const unsigned int width, const unsigned int height)
         for (int j = 0; j < _screenHeight; j++)
         {
             _setMap[i][j] = false;
-            _colorMap[i][j] = -1;
+            _colorMap[i][j] = InvalidColor;
             _auxMap[i][j] = 0;
         }
     }
@@ -385,7 +390,7 @@ void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
             for (int j = 0; j < _screenHeight; j++)
             {
                 _setMap[i][j] = false;
-                _colorMap[i][j] = -1;
+                _colorMap[i][j] = InvalidColor;
                 _auxMap[i][j] = 0;
             }
         }
@@ -620,21 +625,7 @@ sf::Image Fractal::GetRenderedImage()
     sf::Image image;
     image.create(_screenWidth, _screenHeight, sf::Color(255, 255, 255));
 
-    _maxColorMapVal = 0;
-    if (_relativeColor)
-    {
-        // Search for a color maximum value.
-        for (int i = 0; i < _screenWidth; i++)
-        {
-            for (int j = 0; j < _screenHeight; j++)
-            {
-                if (_colorMap[i][j] > _maxColorMapVal)
-                    _maxColorMapVal = _colorMap[i][j];
-            }
-        }
-    }
-    if (_maxColorMapVal == 0)
-        _maxColorMapVal = 1;
+    this->UpdateMaxColorMapValue();
 
     for (int i = 0; i < _screenWidth; i++)
     {
@@ -646,6 +637,9 @@ sf::Image Fractal::GetRenderedImage()
             {
                 if (_colorMode)
                 {
+                    if (_colorMap[i][j] == InvalidColor)
+                        continue;
+
                     // Color pixel.
                     sf::Color color;
                     if (_relativeColor)
@@ -700,21 +694,7 @@ void Fractal::RenderBMP(const string& filename)
     this->PreDrawMaps();
     const auto data = new BMPPixel[_screenWidth];
 
-    _maxColorMapVal = 0;
-    if (_relativeColor)
-    {
-        // Search for a color maximum value.
-        for (int i = 0; i < _screenWidth; i++)
-        {
-            for (int j = 0; j < _screenHeight; j++)
-            {
-                if (_colorMap[i][j] > _maxColorMapVal)
-                    _maxColorMapVal = _colorMap[i][j];
-            }
-        }
-    }
-    if (_maxColorMapVal == 0)
-        _maxColorMapVal = 1;
+    this->UpdateMaxColorMapValue();
 
     // Copy maps values to BMPWriter.
     for (unsigned int j = _screenHeight; j > 0; j--)
@@ -730,6 +710,14 @@ void Fractal::RenderBMP(const string& filename)
             }
             else if (_colorMode)
             {
+                if (_colorMap[i][row] == InvalidColor)
+                {
+                    data[i].r = static_cast<unsigned>(0xFF);
+                    data[i].g = static_cast<unsigned>(0xFF);
+                    data[i].b = static_cast<unsigned>(0xFF);
+                    continue;
+                }
+
                 if (_relativeColor)
                 {
                     const double colorMapValue = _colorMap[i][row];

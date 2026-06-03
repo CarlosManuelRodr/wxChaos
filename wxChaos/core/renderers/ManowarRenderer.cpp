@@ -194,7 +194,7 @@ void ManowarRenderer::EscapeTimeWithOrbitTrapRender()
             if (insideSet)
                 _setMap[_x][_y] = 1;
 
-            _colorMap[_x][_y] = static_cast<unsigned int>(iterations + log(1/distX) + log(1/distY));
+            _colorMap[_x][_y] = ToColorMapValue(iterations + log(1 / distX) + log(1 / distY));
         }
     }
 }

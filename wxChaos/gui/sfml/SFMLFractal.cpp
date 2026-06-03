@@ -9,7 +9,7 @@
 constexpr int stdSpeed = 1;
 
 /**
-* @brief Moves matrix elements and fills with zeros.
+* @brief Moves matrix elements and fills with a default value.
 *
 * When the fractal image is moved, it needs to move the elements in the maps so the program doesn't have to redraw the whole screen.
 * @param matrix Matrix to move.
@@ -19,7 +19,7 @@ constexpr int stdSpeed = 1;
 * @param moveY Elements to move in the Y axis.
 */
 template<class M> void SFMLFractal::MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,
-                                               const int moveX, const int moveY)
+                                               const int moveX, const int moveY, const M fillValue)
 {
     if (matrix == nullptr || matrixWidth == 0 || matrixHeight == 0)
         return;
@@ -27,7 +27,7 @@ template<class M> void SFMLFractal::MoveMatrix(M** matrix, const unsigned int ma
     if (std::abs(moveX) >= static_cast<int>(matrixWidth) || std::abs(moveY) >= static_cast<int>(matrixHeight))
     {
         for (unsigned int i = 0; i < matrixHeight; i++)
-            std::fill(matrix[i], matrix[i] + matrixWidth, M{});
+            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
 
         return;
     }
@@ -38,7 +38,7 @@ template<class M> void SFMLFractal::MoveMatrix(M** matrix, const unsigned int ma
         for (unsigned int i = 0; i < matrixHeight; i++)
         {
             std::move_backward(matrix[i], matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth);
-            std::fill(matrix[i], matrix[i] + displacement, M{});
+            std::fill(matrix[i], matrix[i] + displacement, fillValue);
         }
     }
     else if (moveX < 0)
@@ -47,7 +47,7 @@ template<class M> void SFMLFractal::MoveMatrix(M** matrix, const unsigned int ma
         for (unsigned int i = 0; i < matrixHeight; i++)
         {
             std::move(matrix[i] + displacement, matrix[i] + matrixWidth, matrix[i]);
-            std::fill(matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth, M{});
+            std::fill(matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth, fillValue);
         }
     }
 
@@ -56,14 +56,14 @@ template<class M> void SFMLFractal::MoveMatrix(M** matrix, const unsigned int ma
         const auto displacement = static_cast<unsigned int>(moveY);
         std::rotate(matrix, matrix + matrixHeight - displacement, matrix + matrixHeight);
         for (unsigned int i = 0; i < displacement; i++)
-            std::fill(matrix[i], matrix[i] + matrixWidth, M{});
+            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
     }
     else if (moveY < 0)
     {
         const auto displacement = static_cast<unsigned int>(-moveY);
         std::rotate(matrix, matrix + displacement, matrix + matrixHeight);
         for (unsigned int i = matrixHeight - displacement; i < matrixHeight; i++)
-            std::fill(matrix[i], matrix[i] + matrixWidth, M{});
+            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
     }
 }
 
@@ -180,8 +180,8 @@ void SFMLFractal::MoveMaps()
 {
     MoveMatrix<bool>(_fractal->_setMap, _fractal->_screenHeight, _fractal->_screenWidth,
         _committedPanOffset.y, _committedPanOffset.x);
-    MoveMatrix<int>(_fractal->_colorMap, _fractal->_screenHeight, _fractal->_screenWidth,
-        _committedPanOffset.y, _committedPanOffset.x);
+    MoveMatrix<unsigned int>(_fractal->_colorMap, _fractal->_screenHeight, _fractal->_screenWidth,
+        _committedPanOffset.y, _committedPanOffset.x, Fractal::InvalidColor);
     MoveMatrix<unsigned int>(_fractal->_auxMap, _fractal->_screenHeight, _fractal->_screenWidth,
         _committedPanOffset.y, _committedPanOffset.x);
 }
@@ -625,18 +625,7 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
     _output.setPosition(0, 0);
     if (_fractal->_relativeColor)
     {
-        _fractal->_maxColorMapVal = 0;
-        for (int i = 0; i < _fractal->_screenWidth; i++)
-        {
-            for (int j = 0; j < _fractal->_screenHeight; j++)
-            {
-                if (_fractal->_colorMap[i][j] > _fractal->_maxColorMapVal)
-                    _fractal->_maxColorMapVal = _fractal->_colorMap[i][j];
-            }
-        }
-
-        if (_fractal->_maxColorMapVal == 0)
-            _fractal->_maxColorMapVal = 1;
+        _fractal->UpdateMaxColorMapValue();
 
         for (int i = 0; i < _fractal->_screenWidth; i++)
         {
@@ -646,7 +635,7 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
                     _image.setPixel(i, j, _fractal->GetSetColor());
                 else if (_fractal->_colorMode)
                 {
-                    if (_fractal->_colorMap[i][j] >= 0)
+                    if (_fractal->_colorMap[i][j] != Fractal::InvalidColor)
                     {
                         double calculatedColor = (static_cast<double>(_fractal->_colorMap[i][j]) / static_cast<double>(_fractal->_maxColorMapVal)) * _fractal->_paletteSize + _fractal->_changeGradient;
                         const sf::Color color = _fractal->GetColorFromPalette(static_cast<int>(calculatedColor));
@@ -670,7 +659,7 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
                     _image.setPixel(i, j, _fractal->GetSetColor());
                 else if (_fractal->_colorMode)
                 {
-                    if (_fractal->_colorMap[i][j] >= 0)
+                    if (_fractal->_colorMap[i][j] != Fractal::InvalidColor)
                         _image.setPixel(i, j, _fractal->GetColorFromPalette(_fractal->_colorMap[i][j] + _fractal->_changeGradient));
                     else if (_zoomingBack || _dontDrawTempImage)
                         _image.setPixel(i, j, _fractal->GetColorFromPalette(_fractal->_changeGradient));
@@ -796,12 +785,14 @@ void SFMLFractal::Show(sf::RenderWindow* window)
 
             if (_fractal->_rendered)
             {
+                _fractal->UpdateMaxColorMapValue();
                 const double coef = static_cast<double>(_fractal->_paletteSize) / static_cast<double>(_fractal->_maxColorMapVal);
                 for (int i = 0; i < _fractal->_screenWidth; i++)
                 {
                     for (int j = 0; j < _fractal->_screenHeight; j++)
                     {
-                        if (_fractal->_setMap[i][j] == false || !_fractal->_colorSet)
+                        if ((_fractal->_setMap[i][j] == false || !_fractal->_colorSet) &&
+                            _fractal->_colorMap[i][j] != Fractal::InvalidColor)
                         {
                             sf::Color color;
                             if (_fractal->_relativeColor)

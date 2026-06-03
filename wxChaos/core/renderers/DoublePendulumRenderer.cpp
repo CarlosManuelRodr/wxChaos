@@ -1,3 +1,4 @@
+// ReSharper disable CppTooWideScope
 #include "DoublePendulumRenderer.h"
 
 DoublePendulumRenderer::DoublePendulumRenderer()
@@ -196,10 +197,10 @@ void DoublePendulumRenderer::EscapeAngleRender()
     const double part5 = _l * 2 * _m1 + _m2;
     const double part6 = _l * _m2;
 
-    const int color1 = 1;
-    const int color2 = 0.25 * _myOpt.paletteSize;
-    const int color3 = 0.50 * _myOpt.paletteSize;
-    const int color4 = 0.75 * _myOpt.paletteSize;
+    constexpr int color1 = 1;
+    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
+    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
+    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
 
     for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {

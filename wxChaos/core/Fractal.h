@@ -1,6 +1,7 @@
 #pragma once
 #ifndef FRACTAL_H
 #define FRACTAL_H
+#include <limits>
 #include <vector>
 #include <wx/bitmap.h>
 #include <wx/colour.h>
@@ -38,7 +39,7 @@ class Fractal
 
 protected:
     bool** _setMap;                             ///< Stores the points that belong to the fractal set.
-    int** _colorMap;                            ///< Store the color map.
+    unsigned int** _colorMap;                   ///< Store the color map.
     unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
     ThreadWatchdog<Renderer> _watchdog;         ///< Watch over the render threads.
     RenderThreadPool _renderPool;               ///< Reusable pool for render jobs.
@@ -135,6 +136,9 @@ protected:
     ///@brief If some minor change was made like a color adjustment, redraws the maps.
     void RedrawMaps();
 
+    ///@brief Recalculates the maximum rendered color-map value.
+    void UpdateMaxColorMapValue();
+
     ///@brief Copies the current fractal state into a renderer before launch.
     void ConfigureRenderer(Renderer& renderer) const;
 
@@ -145,6 +149,7 @@ protected:
     std::vector<RenderJob> BuildRenderJobs(const std::vector<RenderRegion>& regions, int tileHeight) const;
 
 public:
+    static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
 
     // Basic methods.
     ///@brief Construct a fractal for the given render dimensions.

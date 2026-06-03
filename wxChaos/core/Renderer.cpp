@@ -70,7 +70,7 @@ void Renderer::Stop()
         _y = _heightFinal - 1;
     }
 }
-void Renderer::SetRenderOut(bool** outSetMap, int** outColorMap, unsigned int** outAux)
+void Renderer::SetRenderOut(bool** outSetMap, unsigned int** outColorMap, unsigned int** outAux)
 {
     _setMap = outSetMap;
     _colorMap = outColorMap;
@@ -80,6 +80,10 @@ void Renderer::SetK(const double re, const double im)
 {
     _kReal = re;
     _kImaginary = im;
+}
+unsigned int Renderer::ToColorMapValue(const double value)
+{
+    return value < 0 ? InvalidColor : static_cast<unsigned int>(value);
 }
 void Renderer::Reset()
 {

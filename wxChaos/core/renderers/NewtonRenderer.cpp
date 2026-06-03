@@ -77,7 +77,7 @@ void NewtonRenderer::ConvergenceTestWithOrbitTrapRender()
                 if (abs(z.real()) < distX)
                     distX = abs(z.real());
             }
-            _colorMap[_x][_y] = static_cast<unsigned int>(n + log(1/distX) + log(1/distY));
+            _colorMap[_x][_y] = ToColorMapValue(n + log(1 / distX) + log(1 / distY));
         }
     }
 }
