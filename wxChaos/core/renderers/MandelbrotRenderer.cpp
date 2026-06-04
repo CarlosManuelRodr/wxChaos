@@ -1,4 +1,5 @@
 #include <complex>
+#include <random>
 #include "MandelbrotRenderer.h"
 #include "FractalUtils.h"
 
@@ -288,10 +289,13 @@ void MandelbrotRenderer::TriangleInequalityRender()
     }
 }
 
-void MandelbrotRenderer::BuddhabrotRender()
+void MandelbrotRenderer::BuddhabrotRender() const
 {
     sf::Mutex mutex;
-    srand(static_cast<unsigned int>(time(nullptr)));
+    std::random_device randomDevice;
+    std::mt19937 randomEngine(randomDevice());
+    std::uniform_real_distribution<> randomX(_minX, _maxX);
+    std::uniform_real_distribution<> randomY(_minY, _maxY);
 
     std::complex<double> c;
     auto* cmpArray = new std::complex<double>[static_cast<unsigned int>(_maxIter)];
@@ -304,10 +308,7 @@ void MandelbrotRenderer::BuddhabrotRender()
     {
         bool out = false;
 
-        // By default, uses LGC, which isn't very good.
-        std::complex<double> z = c = std::complex<double>(
-            ((static_cast<double>(rand()) / static_cast<double>(RAND_MAX)) * (_maxX - _minX)) + _minX,
-            ((static_cast<double>(rand()) / static_cast<double>(RAND_MAX)) * (_maxY - _minY)) + _minY);
+        std::complex<double> z = c = std::complex<double>(randomX(randomEngine), randomY(randomEngine));
         if
         (
            (z.real() >  -1.2 && z.real() <=  -1.1 && z.imag() >  -0.1 && z.imag() < 0.1)
