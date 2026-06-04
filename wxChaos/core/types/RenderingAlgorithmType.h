@@ -9,5 +9,6 @@ enum class RenderingAlgorithmType
     ChaoticMap,
     Lyapunov,
     ConvergenceTest,
+    Buddhabrot,
     Other
 };

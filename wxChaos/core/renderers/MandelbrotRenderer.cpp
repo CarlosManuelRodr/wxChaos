@@ -1,10 +1,10 @@
+#include <complex>
 #include "MandelbrotRenderer.h"
 #include "FractalUtils.h"
 
 MandelbrotRenderer::MandelbrotRenderer()
 {
     _buddhaRandomP = 0;
-    _bd = 0;
 }
 void MandelbrotRenderer::EscapeTimeRender()
 {
@@ -287,6 +287,84 @@ void MandelbrotRenderer::TriangleInequalityRender()
         }
     }
 }
+
+void MandelbrotRenderer::BuddhabrotRender()
+{
+    sf::Mutex mutex;
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    std::complex<double> c;
+    auto* cmpArray = new std::complex<double>[static_cast<unsigned int>(_maxIter)];
+    int topIter = 0;
+
+    for (int i=0; i<_maxIter; i++)
+        cmpArray[i] = std::complex<double>(0, 0);
+
+    for (int _bd=0; _bd<_buddhaRandomP; _bd++)
+    {
+        bool out = false;
+
+        // By default, uses LGC, which isn't very good.
+        std::complex<double> z = c = std::complex<double>(
+            ((static_cast<double>(rand()) / static_cast<double>(RAND_MAX)) * (_maxX - _minX)) + _minX,
+            ((static_cast<double>(rand()) / static_cast<double>(RAND_MAX)) * (_maxY - _minY)) + _minY);
+        if
+        (
+           (z.real() >  -1.2 && z.real() <=  -1.1 && z.imag() >  -0.1 && z.imag() < 0.1)
+            || (z.real() >  -1.1 && z.real() <=  -0.9 && z.imag() >  -0.2 && z.imag() < 0.2)
+            || (z.real() >  -0.9 && z.real() <=  -0.8 && z.imag() >  -0.1 && z.imag() < 0.1)
+            || (z.real() > -0.69 && z.real() <= -0.61 && z.imag() >  -0.2 && z.imag() < 0.2)
+            || (z.real() > -0.61 && z.real() <=  -0.5 && z.imag() > -0.37 && z.imag() < 0.37)
+            || (z.real() >  -0.5 && z.real() <= -0.39 && z.imag() > -0.48 && z.imag() < 0.48)
+            || (z.real() > -0.39 && z.real() <=  0.14 && z.imag() > -0.55 && z.imag() < 0.55)
+            || (z.real() >  0.14 && z.real() <   0.29 && z.imag() > -0.42 && z.imag() < -0.07)
+            || (z.real() >  0.14 && z.real() <   0.29 && z.imag() >  0.07 && z.imag() < 0.42)
+        ) continue; // "if" taken from Wikipedia description.
+
+        for (int i=0; i<_maxIter; i++)
+        {
+            if (z.real()*z.real() + z.imag()*z.imag() > 6)
+            {
+                out = true;
+                topIter = i;
+                break;
+            }
+            cmpArray[i] = z;
+            z = pow(z, 2) + c;
+        }
+        if (out)
+        {
+            for (int i=0; i<=topIter; i++)
+            {
+                const int indexI = static_cast<int>((cmpArray[i].real()-_minX)/_xFactor);
+                const int indexJ = static_cast<int>((_maxY-cmpArray[i].imag())/_yFactor);
+                if ((indexI >= 0 && indexI < _myOpt.screenWidth) && (indexJ >=0 && indexJ < _myOpt.screenHeight))
+                {
+                    mutex.lock();
+                    _auxMap[indexI][indexJ]++;
+                    mutex.unlock();
+                }
+            }
+
+            // Takes advantage of the simmetry.
+            z = c = std::complex<double>(c.real(), -c.imag());
+            for (int i=0; i<_maxIter; i++)
+            {
+                z = pow(z,2) + c;
+                int indexI = static_cast<int>((z.real()-_minX)/_xFactor);
+                int indexJ = static_cast<int>((_maxY-z.imag())/_yFactor);
+                if ((indexI >= 0 && indexI < _myOpt.screenWidth) && (indexJ >=0 && indexJ < _myOpt.screenHeight))
+                {
+                    mutex.lock();
+                    _auxMap[indexI][indexJ]++;
+                    mutex.unlock();
+                }
+            }
+        }
+    }
+    delete[] cmpArray;
+}
+
 void MandelbrotRenderer::Render()
 {
     switch (_myOpt.alg)
@@ -308,11 +386,14 @@ void MandelbrotRenderer::Render()
         case RenderingAlgorithmType::TriangleInequality:
             TriangleInequalityRender();
             break;
+        case RenderingAlgorithmType::Buddhabrot:
+            BuddhabrotRender();
+            break;
         default:
             break;
     }
 }
-void MandelbrotRenderer::SetBuddhaRandomP(int n)
+void MandelbrotRenderer::SetBuddhaRandomP(const int n)
 {
     _buddhaRandomP = n;
 }

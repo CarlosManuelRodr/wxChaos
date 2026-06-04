@@ -222,7 +222,7 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
         wxT("Rainbow Fire"),
         wxT("Custom")
     };
-    int gradStyleChoiceNChoices = sizeof(gradStyleChoiceChoices) / sizeof(wxString);
+    constexpr int gradStyleChoiceNChoices = sizeof(gradStyleChoiceChoices) / sizeof(wxString);
     _gradStylesChoice = new wxChoice(_gradientLabel, wxID_ANY, wxDefaultPosition, wxDefaultSize, gradStyleChoiceNChoices, gradStyleChoiceChoices, 0);
     _gradStylesChoice->SetSelection(_target->GetColorPalette());
     gradSizer->Add(_gradStylesChoice, 0, wxALL, 5);
@@ -239,7 +239,8 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
 
     _gradPalSize = new wxSpinCtrl(_gradientLabel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 20000, 300);
     gradSizer->Add(_gradPalSize, 0, wxALL, 5);
-    _gradPalSize->SetValue(_target->GetGradient()->GetMax() - _target->GetGradient()->GetMin());
+    const auto gradientSize = static_cast<int>(_target->GetGradient()->GetMax() - _target->GetGradient()->GetMin());
+    _gradPalSize->SetValue(gradientSize);
 
     _gradientLabel->SetSizer(gradSizer);
     _gradientLabel->Layout();
@@ -365,6 +366,11 @@ void RendererOptions::SetAlgorithmChoices()
                     _algorithmChoice->Append(wxT("Convergence test"));
                     _convergenceTestIndex = static_cast<int>(i);
                 }
+            case RenderingAlgorithmType::Buddhabrot:
+                {
+                    _algorithmChoice->Append(wxT("Buddhabrot"));
+                    _buddhabrotIndex = static_cast<int>(i);
+                }
             case RenderingAlgorithmType::Other:
                 break;
         };
@@ -404,7 +410,7 @@ void RendererOptions::SetTarget(SFMLFractal* presenter)
     // Sets the new target fractal.
     _presenter = presenter;
     _target = _presenter->GetFractal();
-    _gradPalSize->SetValue(_target->GetPaletteSize());
+    _gradPalSize->SetValue(static_cast<int>(_target->GetPaletteSize()));
     _orbitTrap->Enable(_target->HasOrbitTrapMode());
     _orbitTrap->SetValue(_target->OrbitTrapActivated());
     _smoothRender->SetValue(_target->SmoothRenderActivated());
@@ -417,16 +423,27 @@ void RendererOptions::SetTarget(SFMLFractal* presenter)
     _escapeAngleIndex = -1;
     this->SetAlgorithmChoices();
 
-    if (_target->GetCurrentAlg() == RenderingAlgorithmType::EscapeTime)
-        _algorithmChoice->SetSelection(_escapeTimeIndex);
-    else if (_target->GetCurrentAlg() == RenderingAlgorithmType::GaussianInt)
-        _algorithmChoice->SetSelection(_gaussIntIndex);
-    else if (_target->GetCurrentAlg() == RenderingAlgorithmType::EscapeAngle)
-        _algorithmChoice->SetSelection(_escapeAngleIndex);
-    else if (_target->GetCurrentAlg() == RenderingAlgorithmType::ConvergenceTest)
-        _algorithmChoice->SetSelection(_convergenceTestIndex);
-    else
-        _algorithmChoice->SetSelection(0);
+    switch (_target->GetCurrentAlg())
+    {
+        case RenderingAlgorithmType::EscapeTime:
+            _algorithmChoice->SetSelection(_escapeTimeIndex);
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            _algorithmChoice->SetSelection(_gaussIntIndex);
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            _algorithmChoice->SetSelection(_escapeAngleIndex);
+            break;
+        case RenderingAlgorithmType::ConvergenceTest:
+            _algorithmChoice->SetSelection(_convergenceTestIndex);
+            break;
+        case RenderingAlgorithmType::Buddhabrot:
+            _algorithmChoice->SetSelection(_buddhabrotIndex);
+            break;
+        default:
+            _algorithmChoice->SetSelection(0);
+            break;
+    }
 
     _typeNotebook->ChangeSelection(0);
     _relativeCheck->SetValue(_target->GetRelativeColorMode());
@@ -489,18 +506,10 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
         _presenter->SetSmoothRender(false);
     }
 
-    if (selection == _gaussIntIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithmType::GaussianInt);
-    else if (selection == _escapeAngleIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithmType::EscapeAngle);
-    else if (selection == _triangleIneqIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithmType::TriangleInequality);
-    else if (selection == _chaoticMapIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithmType::ChaoticMap);
-    else if (selection == _lyapunovIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithmType::Lyapunov);
-    else if (selection == _convergenceTestIndex)
-        _presenter->SetAlgorithm(RenderingAlgorithmType::ConvergenceTest);
+    // Map the selection index directly to the algorithm type from the available list
+    const auto& availableAlgorithms = _target->GetAvailableAlg();
+    if (selection >= 0 && static_cast<size_t>(selection) < availableAlgorithms.size())
+        _presenter->SetAlgorithm(availableAlgorithms[selection]);
 }
 
 // Option to change methods.
@@ -589,12 +598,15 @@ wxBitmap RendererOptions::PaintGradient() const
     wxBufferedDC dc;
     wxGradient m_gradient = *_target->GetGradient();
     m_gradient.SetMax(300);
-    const auto gradientBmp = new wxBitmap(m_gradient.GetMax()-m_gradient.GetMin(), 75);
+
+    const auto gradientSize = static_cast<int>(m_gradient.GetMax() - m_gradient.GetMin());
+    const auto gradientBmp = new wxBitmap(gradientSize, 75);
     dc.SelectObject(*gradientBmp);
-    for (int i = m_gradient.GetMin(); i<m_gradient.GetMax(); i++)
+    for (unsigned int i = m_gradient.GetMin(); i<m_gradient.GetMax(); i++)
     {
         dc.SetPen(wxPen(m_gradient.GetColorAt(i), 1));
-        dc.DrawLine(i, 0, i, 75);
+        const auto gradientPosition = static_cast<int>(i);
+        dc.DrawLine(gradientPosition, 0, gradientPosition, 75);
     }
     dc.SelectObject(wxNullBitmap);
     return *gradientBmp;

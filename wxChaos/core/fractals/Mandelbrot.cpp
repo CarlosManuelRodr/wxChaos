@@ -32,6 +32,7 @@ Mandelbrot::Mandelbrot(const unsigned int width, const unsigned int height) : Fr
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
+    _availableAlg.push_back(RenderingAlgorithmType::Buddhabrot);
 }
 Mandelbrot::~Mandelbrot()
 {

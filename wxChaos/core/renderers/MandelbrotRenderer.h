@@ -8,7 +8,6 @@
 class MandelbrotRenderer : public Renderer
 {
     int _buddhaRandomP;
-    int _bd;
 
     void EscapeTimeRender();
     void EscapeTimeSmoothRender();
@@ -16,6 +15,7 @@ class MandelbrotRenderer : public Renderer
     void GaussianIntRender();
     void EscapeAngleRender();
     void TriangleInequalityRender();
+    void BuddhabrotRender();
 
 public:
     MandelbrotRenderer();
