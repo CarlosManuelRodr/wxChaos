@@ -225,7 +225,7 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_DPENDULUM, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeDPendulum));
     this->Connect(ID_USER_DEFINED, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeUserDefined));
     this->Connect(ID_FPUSER_DEFINED, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFPUserDefined));
-    this->Connect(ID_PAUSE_CONTINUE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnPauseContinue));
+    this->Connect(ID_PAUSE_CONTINUE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbortRender));
     this->Connect(ID_RESET, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnReset));
     this->Connect(ID_REDRAW, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnRedraw));
     this->Connect(ID_INCREASE_IT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnMoreIt));
@@ -372,8 +372,9 @@ void MainFrame::SetUpGUI()
     fractalMenu->Append(ID_FORMULA_DIALOG, wxT("Enter user formula")); // Txt: "Enter user formula"
     fractalMenu->AppendSeparator();
 
-    pauseBtn.pauseContinue = fractalMenu->Append(ID_PAUSE_CONTINUE, wxString(wxT("Pause")) + wxT('\t') + wxT("P"));    // Txt: Pause
+    pauseBtn.pauseContinue = fractalMenu->Append(ID_PAUSE_CONTINUE, wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
     pauseBtn.state = false;
+    pauseBtn.pauseContinue->Enable(false);
     fractalMenu->Append(ID_REDRAW, wxString(wxT("Redraw")) + wxT('\t') + wxT("F5"));
     fractalMenu->Append(ID_RESET, wxString(wxT("Reset")));
     rendererMenu->Append(ID_PALETTE, wxT("Renderer options"));
@@ -582,15 +583,8 @@ void MainFrame::OnFormulaDialog(wxCommandEvent&)
 }
 void MainFrame::OnRedraw(wxCommandEvent&)
 {
-    if (pauseBtn.state)
-    {
-        pauseBtn.state = false;
-        if (fractalType == FractalType::ScriptFractal)
-            pauseBtn.pauseContinue->SetItemLabel(wxT("Abort"));
-        else
-            pauseBtn.pauseContinue->SetItemLabel(wxT("Pause"));
-
-    }
+    pauseBtn.state = false;
+    pauseBtn.pauseContinue->Enable(false);
     fractalCanvas->GetSFMLFractalPtr()->Redraw();
 }
 void MainFrame::OnReset(wxCommandEvent&)
@@ -667,26 +661,13 @@ void MainFrame::OnItManual(wxCommandEvent&)
         delete iterDiag;
     }
 }
-void MainFrame::OnPauseContinue(wxCommandEvent&)
+void MainFrame::OnAbortRender(wxCommandEvent&)
 {
-    // Pauses the rendering.
-    if (pauseBtn.state)
-    {
-        if (fractalType == FractalType::ScriptFractal)
-            pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
-        else
-            pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
-        pauseBtn.state = false;
-    }
-    else
-    {
-        if (fractalType == FractalType::ScriptFractal)
-            pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Relaunch script"))+ wxT('\t') + wxT("P"));
-        else
-            pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Continue"))+ wxT('\t') + wxT("P"));
-        pauseBtn.state = true;
-    }
-    fractalCanvas->GetFractalPtr()->PauseContinue();
+    Fractal* fractal = fractalCanvas->GetFractalPtr();
+    fractal->StopRender();
+    fractal->SetRendered(true);
+    pauseBtn.state = false;
+    pauseBtn.pauseContinue->Enable(false);
 }
 void MainFrame::OnFractalOptions(wxCommandEvent&)
 {
@@ -730,15 +711,8 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
         else
             *pOptions->GetBoolElement(i) = false;
     }
-    if (pauseBtn.state)
-    {
-        pauseBtn.state = false;
-        if (fractalType == FractalType::ScriptFractal)
-            pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
-        else
-            pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
-
-    }
+    pauseBtn.state = false;
+    pauseBtn.pauseContinue->Enable(false);
 
     fractalCanvas->SetFocus();
     fractalCanvas->GetSFMLFractalPtr()->Redraw();
@@ -913,7 +887,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     selectedScriptIndex = id;
 
     if (fractalCanvas->GetFractalPtr()->IsRendering())
-        fractalCanvas->GetFractalPtr()->PauseContinue();
+        fractalCanvas->GetFractalPtr()->StopRender();
 
     const Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
     fractalCanvas->ChangeToScript(loadedScripts[id]);
@@ -1167,10 +1141,9 @@ void MainFrame::UpdateMenu()
         }
     }
 
-    if (fractalType == FractalType::ScriptFractal)
-        pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
-    else
-        pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Pause"))+ wxT('\t') + wxT("P"));
+    pauseBtn.state = false;
+    pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
+    pauseBtn.pauseContinue->Enable(false);
 
     // If Julia mode is opened closes it.
     DestroyJuliaMode(true);

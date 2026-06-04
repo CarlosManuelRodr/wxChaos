@@ -207,7 +207,7 @@ public :
     void ChangeFPUserDefined(wxCommandEvent& event);
     void ChangeScriptItem(wxCommandEvent& event);
     void OnKeyboardGuide(wxCommandEvent& event);
-    void OnPauseContinue(wxCommandEvent& event);
+    void OnAbortRender(wxCommandEvent& event);
     void OnRedraw(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);
     void OnMoreIt(wxCommandEvent& event);

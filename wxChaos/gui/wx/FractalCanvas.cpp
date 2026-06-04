@@ -130,10 +130,7 @@ void FractalCanvas::OnUpdate()
             if (btn->state)
             {
                 btn->state = false;
-                if (_type == FractalType::ScriptFractal)
-                    btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
-                else
-                    btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
+                btn->pauseContinue->Enable(false);
 
                 _sfmlFractal->Redraw();
             }
@@ -180,25 +177,16 @@ void FractalCanvas::OnUpdate()
             {
                 _sfmlFractal->Redraw();
             }
-            if (_event.key.code == sf::Keyboard::P)  // Pause shortcut.
+            if (_event.key.code == sf::Keyboard::P)  // Abort shortcut.
             {
-                if (btn->state)
+                if (_target->IsRendering())
                 {
-                    btn->state = false;
-                    if (_type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
-                    else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
+                    _target->StopRender();
+                    _target->SetRendered(true);
                 }
-                else
-                {
-                    btn->state = true;
-                    if (_type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Relaunch script")) + wxT('\t') + wxT("P"));
-                    else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Continue")) + wxT('\t') + wxT("P"));
-                }
-                _target->PauseContinue();
+
+                btn->state = false;
+                btn->pauseContinue->Enable(false);
             }
         }
     }
@@ -223,17 +211,10 @@ void FractalCanvas::OnUpdate()
     {
         _selection->Show(this);
 
-        if (btn->pauseContinue->IsEnabled() && !_target->IsPaused())
+        if (btn->pauseContinue->IsEnabled())
             btn->pauseContinue->Enable(false);
 
-        if (btn->state && !_target->IsPaused())
-        {
-            btn->state = false;
-            if (_type == FractalType::ScriptFractal)
-                btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
-            else
-                btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
-        }
+        btn->state = false;
 
         if (_keyboardGuide && _keyboardGuideMode)
         {
@@ -251,8 +232,9 @@ void FractalCanvas::OnUpdate()
         if (_juliaMode || _orbitMode || _sliderMode)
             _screenPointer->Show(this);
     }
-    else if (!btn->pauseContinue->IsEnabled() && _type != FractalType::SierpinskyTriangle) // Triangle and Logistic don't use threads, so they cannot be paused.
+    else if (!btn->pauseContinue->IsEnabled() && _type != FractalType::SierpinskyTriangle)
     {
+        btn->state = true;
         btn->pauseContinue->Enable(true);
     }
 
@@ -554,14 +536,8 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_sfmlFractal->IsMoving())
     {
         _sfmlFractal->ZoomBack();
-        if (btn->state && !_target->IsPaused())
-        {
-            btn->state = false;
-            if (_type == FractalType::ScriptFractal)
-                btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
-            else
-                btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
-        }
+        btn->state = false;
+        btn->pauseContinue->Enable(false);
     }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -579,10 +555,7 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
                 if (btn->state)
                 {
                     btn->state = false;
-                    if (_type == FractalType::ScriptFractal)
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
-                    else
-                        btn->pauseContinue->SetItemLabel(wxString(wxT("Pause")) + wxT('\t') + wxT("P"));
+                    btn->pauseContinue->Enable(false);
                     _sfmlFractal->Redraw();
                 }
                 _sfmlFractal->SetAreaOfView(_selection->GetSelection());
