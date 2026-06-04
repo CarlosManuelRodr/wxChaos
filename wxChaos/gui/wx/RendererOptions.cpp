@@ -405,6 +405,19 @@ void RendererOptions::SetAlgorithmChoices()
         _presenter->SetSmoothRender(false);
     }
 }
+int RendererOptions::GetPaletteSizeForAlgorithm(const RenderingAlgorithmType algorithm, const int paletteSize) const
+{
+    if (algorithm == RenderingAlgorithmType::Buddhabrot)
+        return BuddhabrotPaletteSize;
+
+    return paletteSize;
+}
+void RendererOptions::ApplyPaletteSize(const int paletteSize)
+{
+    _presenter->SetGradientSize(paletteSize);
+    _gradPalSize->SetValue(paletteSize);
+    _colorVarSlider->SetRange(0, paletteSize);
+}
 void RendererOptions::SetTarget(SFMLFractal* presenter)
 {
     // Sets the new target fractal.
@@ -471,12 +484,13 @@ void RendererOptions::GradientColorChangeSelection(wxCommandEvent&)
     _gradFractalColor.SetStyle(static_cast<ColorPalettes>(_gradStylesChoice->GetCurrentSelection()));
     wxGradient myGrad;
     myGrad.SetMin(0);
-    myGrad.SetMax(_gradFractalColor.paletteSize);
+    const int paletteSize = GetPaletteSizeForAlgorithm(_target->GetCurrentAlg(), _gradFractalColor.paletteSize);
+    myGrad.SetMax(paletteSize);
     myGrad.FromString(_gradFractalColor.grad);
     _presenter->SetColorPalette(static_cast<ColorPalettes>(_gradStylesChoice->GetCurrentSelection()));
     _presenter->SetGradient(myGrad);
-    _gradPalSize->SetValue(_gradFractalColor.paletteSize);
-    _colorVarSlider->SetRange(0, _gradFractalColor.paletteSize);
+    _gradPalSize->SetValue(paletteSize);
+    _colorVarSlider->SetRange(0, paletteSize);
     _gradientMap->SetBitmap(PaintGradient());
     _gradientMap->SetWindowStyle(wxSIMPLE_BORDER);
     _gradientMap->Refresh();
@@ -509,7 +523,12 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
     // Map the selection index directly to the algorithm type from the available list
     const auto& availableAlgorithms = _target->GetAvailableAlg();
     if (selection >= 0 && static_cast<size_t>(selection) < availableAlgorithms.size())
-        _presenter->SetAlgorithm(availableAlgorithms[selection]);
+    {
+        const auto algorithm = availableAlgorithms[selection];
+        _presenter->SetAlgorithm(algorithm);
+        if (algorithm == RenderingAlgorithmType::Buddhabrot)
+            ApplyPaletteSize(BuddhabrotPaletteSize);
+    }
 }
 
 // Option to change methods.

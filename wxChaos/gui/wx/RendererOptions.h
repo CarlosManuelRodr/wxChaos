@@ -28,6 +28,8 @@
 */
 class RendererOptions : public wxFrame
 {
+    static constexpr int BuddhabrotPaletteSize = 1500;
+
     wxScrolledWindow* _mPanel;
     wxStaticText* _algorithmText;
     wxChoice* _algorithmChoice;
@@ -82,6 +84,8 @@ class RendererOptions : public wxFrame
 
     void ConnectEvents();
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
+    int GetPaletteSizeForAlgorithm(RenderingAlgorithmType algorithm, int paletteSize) const;
+    void ApplyPaletteSize(int paletteSize);
     wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
 
 
