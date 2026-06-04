@@ -1,5 +1,8 @@
+// ReSharper disable CppDFAConstantConditions
+// ReSharper disable CppTooWideScope
 #include <complex>
 #include <random>
+#include <vector>
 #include "MandelbrotRenderer.h"
 #include "FractalUtils.h"
 
@@ -97,7 +100,7 @@ void MandelbrotRenderer::EscapeTimeWithOrbitTrapRender()
             double distY = abs(Z_im);
 
             bool insideSet = true;
-            int iterations = 0;
+            unsigned int iterations = 0;
 
             for (unsigned n=0; n<_maxIter; n++)
             {
@@ -115,7 +118,8 @@ void MandelbrotRenderer::EscapeTimeWithOrbitTrapRender()
                         break;
                     }
                 }
-                else iterations = n;
+                else
+                    iterations = n;
 
                 Z_im = 2*Z_re*Z_im + c_im;
                 Z_re = Z_re2 - Z_im2 + c_re;
@@ -193,10 +197,10 @@ void MandelbrotRenderer::GaussianIntRender()
 void MandelbrotRenderer::EscapeAngleRender()
 {
     unsigned n;
-    const int color1 = 1;
-    const int color2 = 0.25 * _myOpt.paletteSize;
-    const int color3 = 0.50 * _myOpt.paletteSize;
-    const int color4 = 0.75 * _myOpt.paletteSize;
+    constexpr int color1 = 1;
+    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
+    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
+    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
 
     for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
@@ -289,7 +293,7 @@ void MandelbrotRenderer::TriangleInequalityRender()
     }
 }
 
-void MandelbrotRenderer::BuddhabrotRender() const
+void MandelbrotRenderer::BuddhabrotRender()
 {
     sf::Mutex mutex;
     std::random_device randomDevice;
@@ -298,14 +302,17 @@ void MandelbrotRenderer::BuddhabrotRender() const
     std::uniform_real_distribution<> randomY(_minY, _maxY);
 
     std::complex<double> c;
-    auto* cmpArray = new std::complex<double>[static_cast<unsigned int>(_maxIter)];
+    std::vector<std::complex<double>> cmpArray(static_cast<unsigned int>(_maxIter));
     int topIter = 0;
 
     for (int i=0; i<_maxIter; i++)
         cmpArray[i] = std::complex<double>(0, 0);
 
-    for (int _bd=0; _bd<_buddhaRandomP; _bd++)
+    for (int bd=0; bd<_buddhaRandomP && !_stopped; bd++)
     {
+        if (bd % 1000 == 0)
+            _threadProgress = static_cast<unsigned int>(100.0 * (static_cast<double>(bd) / static_cast<double>(_buddhaRandomP)));
+
         bool out = false;
 
         std::complex<double> z = c = std::complex<double>(randomX(randomEngine), randomY(randomEngine));
@@ -322,7 +329,7 @@ void MandelbrotRenderer::BuddhabrotRender() const
             || (z.real() >  0.14 && z.real() <   0.29 && z.imag() >  0.07 && z.imag() < 0.42)
         ) continue; // "if" taken from Wikipedia description.
 
-        for (int i=0; i<_maxIter; i++)
+        for (int i=0; i<_maxIter && !_stopped; i++)
         {
             if (z.real()*z.real() + z.imag()*z.imag() > 6)
             {
@@ -333,9 +340,9 @@ void MandelbrotRenderer::BuddhabrotRender() const
             cmpArray[i] = z;
             z = pow(z, 2) + c;
         }
-        if (out)
+        if (out && !_stopped)
         {
-            for (int i=0; i<=topIter; i++)
+            for (int i=0; i<=topIter && !_stopped; i++)
             {
                 const int indexI = static_cast<int>((cmpArray[i].real()-_minX)/_xFactor);
                 const int indexJ = static_cast<int>((_maxY-cmpArray[i].imag())/_yFactor);
@@ -349,7 +356,7 @@ void MandelbrotRenderer::BuddhabrotRender() const
 
             // Takes advantage of the simmetry.
             z = c = std::complex<double>(c.real(), -c.imag());
-            for (int i=0; i<_maxIter; i++)
+            for (int i=0; i<_maxIter && !_stopped; i++)
             {
                 z = pow(z,2) + c;
                 const int indexI = static_cast<int>((z.real()-_minX)/_xFactor);
@@ -363,7 +370,9 @@ void MandelbrotRenderer::BuddhabrotRender() const
             }
         }
     }
-    delete[] cmpArray;
+
+    if (!_stopped)
+        _threadProgress = 100;
 }
 
 void MandelbrotRenderer::Render()
@@ -400,6 +409,9 @@ void MandelbrotRenderer::SetBuddhaRandomP(const int n)
 }
 unsigned int MandelbrotRenderer::GetProgress()
 {
+    if (_myOpt.alg == RenderingAlgorithmType::Buddhabrot)
+        return _threadProgress;
+
     if (!_stopped)
     {
         _threadProgress = static_cast<int>(100.0 * (static_cast<double>(_y + 1 - _oldHeightOrigin) / static_cast<double>(_heightFinal - _oldHeightOrigin)));

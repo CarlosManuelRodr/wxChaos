@@ -15,7 +15,7 @@ class MandelbrotRenderer : public Renderer
     void GaussianIntRender();
     void EscapeAngleRender();
     void TriangleInequalityRender();
-    void BuddhabrotRender() const;
+    void BuddhabrotRender();
 
 public:
     MandelbrotRenderer();
