@@ -341,7 +341,7 @@ void MandelbrotRenderer::BuddhabrotRender()
                 if ((indexI >= 0 && indexI < _myOpt.screenWidth) && (indexJ >=0 && indexJ < _myOpt.screenHeight))
                 {
                     mutex.lock();
-                    _auxMap[indexI][indexJ]++;
+                    _colorMap[indexI][indexJ]++;
                     mutex.unlock();
                 }
             }
@@ -351,12 +351,12 @@ void MandelbrotRenderer::BuddhabrotRender()
             for (int i=0; i<_maxIter; i++)
             {
                 z = pow(z,2) + c;
-                int indexI = static_cast<int>((z.real()-_minX)/_xFactor);
-                int indexJ = static_cast<int>((_maxY-z.imag())/_yFactor);
+                const int indexI = static_cast<int>((z.real()-_minX)/_xFactor);
+                const int indexJ = static_cast<int>((_maxY-z.imag())/_yFactor);
                 if ((indexI >= 0 && indexI < _myOpt.screenWidth) && (indexJ >=0 && indexJ < _myOpt.screenHeight))
                 {
                     mutex.lock();
-                    _auxMap[indexI][indexJ]++;
+                    _colorMap[indexI][indexJ]++;
                     mutex.unlock();
                 }
             }
