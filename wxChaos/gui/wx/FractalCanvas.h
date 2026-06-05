@@ -5,7 +5,7 @@
 * FractalCanvas is the class used to draw the fractal, the play button, the selection rect, and
 * the screen pointer.
 *
-* @author Carlos Manuel Rodriguez y Martinez
+* @author Carlos Manuel Rodriguez Martinez
 * @date 7/19/2012
 */
 

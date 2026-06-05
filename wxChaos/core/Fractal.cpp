@@ -1,7 +1,6 @@
 #include <complex>
 #include <algorithm>
 #include <utility>
-#include <mpParser.h>
 #include "Fractal.h"
 #include "BmpImageWriter.h"
 #include "SystemUtils.h"

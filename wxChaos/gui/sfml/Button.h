@@ -66,7 +66,7 @@ public:
     virtual ~Button() = default;
 
     /// @brief Updates the sprite position and clickable area after a window resize.
-    /// @param window Render window that owns the button.
+    /// @param window Render a window that owns the button.
     void Resize(const sf::RenderWindow* window);
 
     /// @brief Creates a button from an image file.

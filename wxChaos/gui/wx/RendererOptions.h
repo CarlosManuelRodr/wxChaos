@@ -1,8 +1,8 @@
 /**
-* @file ColorFrame.h
-* @brief This header contains the ColorFrame.
+* @file RendererOptions.h
+* @brief This header contains the RendererOptions.
 *
-* @author Carlos Manuel Rodriguez y Martinez
+* @author Carlos Manuel Rodriguez Martinez
 *
 * @date 7/19/2012
 */
