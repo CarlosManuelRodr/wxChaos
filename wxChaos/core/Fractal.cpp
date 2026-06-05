@@ -420,6 +420,244 @@ void Fractal::Redraw()
     _rendering = false;
     _paused = false;
 }
+
+sf::Vector2u Fractal::GetScreenSize() const
+{
+    return {_screenWidth, _screenHeight};
+}
+
+Rect Fractal::GetView() const
+{
+    return {_minX, _minY, _maxX, _maxY};
+}
+
+Rect Fractal::GetViewForPixelRect(const sf::Rect<int>& pixelCoordinates) const
+{
+    const double xFactor = (_maxX - _minX) / _screenWidth;
+    const double yFactor = (_maxY - _minY) / _screenHeight;
+
+    Rect view;
+    view._right = _minX + (pixelCoordinates.left + pixelCoordinates.width) * xFactor;
+    view._left = _minX + pixelCoordinates.left * xFactor;
+    view._bottom = _maxY - (pixelCoordinates.top + pixelCoordinates.height) * yFactor;
+    view._top = view._bottom + (view._right - view._left) * static_cast<double>(_screenHeight) / _screenWidth;
+    return view;
+}
+
+Rect Fractal::GetExpandedView(const double scale) const
+{
+    Rect view = GetView();
+    const double scaleX = std::abs(view._right - view._left) * scale;
+    const double scaleY = std::abs(view._top - view._bottom) * scale;
+
+    view._left -= scaleX;
+    view._right += scaleX;
+    view._bottom -= scaleY;
+    view._top = view._bottom + (view._right - view._left) * static_cast<double>(_screenHeight) / _screenWidth;
+    return view;
+}
+
+void Fractal::PanViewByPixels(const int pixelDeltaX, const int pixelDeltaY)
+{
+    const double fx = (_maxX - _minX) / _screenWidth;
+    const double fy = (_maxY - _minY) / _screenHeight;
+
+    _minX -= pixelDeltaX * fx;
+    _maxX -= pixelDeltaX * fx;
+    _minY += pixelDeltaY * fy;
+    _maxY += pixelDeltaY * fy;
+}
+
+bool Fractal::IsRendered() const
+{
+    return _rendered;
+}
+
+bool Fractal::IsRenderStarted() const
+{
+    return _rendering;
+}
+
+void Fractal::MarkRenderStarted()
+{
+    _rendering = true;
+}
+
+void Fractal::MarkRenderComplete()
+{
+    _rendered = true;
+    _rendering = false;
+}
+
+void Fractal::MarkRenderDirty()
+{
+    _rendered = false;
+}
+
+void Fractal::MarkRenderInterrupted()
+{
+    _rendered = false;
+    _rendering = false;
+    _paused = false;
+}
+
+void Fractal::ResumeFromPausedPan()
+{
+    _rendering = false;
+    _rendered = false;
+    _paused = false;
+}
+
+bool Fractal::IsPausedForPresentation() const
+{
+    return _paused;
+}
+
+bool Fractal::ShouldResumeFromPausedPan() const
+{
+    return _paused && !_pausing;
+}
+
+bool Fractal::ConsumePausePresentationRefresh()
+{
+    if (!_pausing)
+        return false;
+
+    _pausing = false;
+    _refreshImage = false;
+    return true;
+}
+
+bool Fractal::ConsumeImageRefreshRequest()
+{
+    if (!_refreshImage)
+        return false;
+
+    _refreshImage = false;
+    return true;
+}
+
+void Fractal::ReuseRenderedMaps(const Vector2Int reusedMapOffset)
+{
+    MoveMatrix<bool>(_setMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x);
+    MoveMatrix<unsigned int>(_colorMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x, InvalidColor);
+    MoveMatrix<unsigned int>(_auxMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x);
+}
+
+void Fractal::PrepareDisplayColorLookup()
+{
+    UpdateMaxColorMapValue();
+}
+
+bool Fractal::HasDisplayPixelColor(const unsigned int x, const unsigned int y) const
+{
+    if (_setMap[x][y] && _colorSet)
+        return true;
+
+    return _colorMode && _colorMap[x][y] != InvalidColor;
+}
+
+sf::Color Fractal::GetInvalidPixelColor() const
+{
+    return GetColorFromPalette(_changeGradient);
+}
+
+bool Fractal::IsExteriorColorEnabled() const
+{
+    return _colorMode;
+}
+
+bool Fractal::IsRelativeColorEnabled() const
+{
+    return _relativeColor;
+}
+
+bool Fractal::IsSetColorEnabled() const
+{
+    return _colorSet;
+}
+
+bool Fractal::IsGradientAnimating() const
+{
+    return _varGradient;
+}
+
+bool Fractal::ConsumeGradientChangeRequest()
+{
+    const bool changed = _varGradChange;
+    _varGradChange = false;
+    return changed;
+}
+
+void Fractal::AdvanceGradientOffset()
+{
+    if (_changeGradient < _paletteSize)
+        _changeGradient += _varGradientStep;
+    else
+        _changeGradient = 0;
+}
+
+void Fractal::RefreshAnimatedColors(sf::Image& image)
+{
+    UpdateMaxColorMapValue();
+
+    for (unsigned int i = 0; i < _screenWidth; i++)
+    {
+        for (unsigned int j = 0; j < _screenHeight; j++)
+        {
+            if ((_setMap[i][j] || !_colorSet) && _colorMap[i][j] == InvalidColor)
+                continue;
+
+            if ((_setMap[i][j] == false || !_colorSet) && _colorMap[i][j] != InvalidColor)
+                image.setPixel(i, j, GetRenderedPixelColor(i, j));
+        }
+    }
+}
+
+bool Fractal::ShouldDrawOrbit() const
+{
+    return _orbitMode;
+}
+
+bool Fractal::IsOrbitDrawn() const
+{
+    return _orbitDrawn;
+}
+
+void Fractal::ClearOrbitLines()
+{
+    _orbitLines.clear();
+}
+
+void Fractal::MarkOrbitDirty()
+{
+    _orbitDrawn = false;
+}
+
+bool Fractal::HasGeometryFigures() const
+{
+    return _geomFigure;
+}
+
+bool Fractal::IsSnapshotActive() const
+{
+    return _onSnapshot;
+}
+
+const std::vector<LineData>& Fractal::GetLines() const
+{
+    return _lines;
+}
+
+const std::vector<LineData>& Fractal::GetOrbitLines() const
+{
+    return _orbitLines;
+}
+
+const std::vector<CircleData>& Fractal::GetCircles() const
+{
+    return _circles;
+}
 // Thread control
 ThreadWatchdog<Renderer>* Fractal::GetWatchdog()
 {

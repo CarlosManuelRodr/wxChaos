@@ -1,6 +1,7 @@
 #pragma once
 #ifndef FRACTAL_H
 #define FRACTAL_H
+#include <algorithm>
 #include <limits>
 #include <vector>
 #include <wx/bitmap.h>
@@ -24,8 +25,6 @@
 #include "rendering/RenderThreadPool.h"
 #include "../gui/wx/PanelOptions.h"
 
-class SFMLFractal;
-
 /**
 * @class Fractal
 * @brief Provides an interface to do the fractal rendering and draw the result to the screen.
@@ -35,8 +34,6 @@ class SFMLFractal;
 */
 class Fractal
 {
-    friend class SFMLFractal;
-
 protected:
     bool** _setMap;                             ///< Stores the points that belong to the fractal set.
     unsigned int** _colorMap;                   ///< Store the color map.
@@ -139,9 +136,6 @@ protected:
     ///@brief Recalculates the maximum rendered color-map value.
     void UpdateMaxColorMapValue();
 
-    ///@brief Gets the display color for a rendered pixel.
-    sf::Color GetRenderedPixelColor(unsigned int x, unsigned int y) const;
-
     ///@brief Copies the current fractal state into a renderer before launch.
     void ConfigureRenderer(Renderer& renderer) const;
 
@@ -150,6 +144,10 @@ protected:
 
     ///@brief Splits render regions into jobs used by the selected render backend.
     std::vector<RenderJob> BuildRenderJobs(const std::vector<RenderRegion>& regions, int tileHeight) const;
+
+    ///@brief Moves matrix elements and fills the exposed area with a default value.
+    template<class M>
+    void MoveMatrix(M** matrix, unsigned int matrixWidth, unsigned int matrixHeight, int moveX, int moveY, M fillValue = M{});
 
 public:
     static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
@@ -175,6 +173,87 @@ public:
     void SetView(const Rect& worldCoordinates);
 
     void Redraw();                     ///< Redraws the fractal.
+
+    ///@brief Gets the current render dimensions.
+    sf::Vector2u GetScreenSize() const;
+
+    ///@brief Gets the current world-coordinate view.
+    Rect GetView() const;
+
+    ///@brief Converts a pixel rectangle into a world-coordinate view with the current aspect ratio.
+    Rect GetViewForPixelRect(const sf::Rect<int>& pixelCoordinates) const;
+
+    ///@brief Gets a view expanded around the current one.
+    Rect GetExpandedView(double scale = 1.0) const;
+
+    ///@brief Pans the current view by a pixel delta.
+    void PanViewByPixels(int pixelDeltaX, int pixelDeltaY);
+
+    ///@brief Returns true once the current image has completed rendering.
+    bool IsRendered() const;
+
+    ///@brief Returns true when rendering has been started by the presenter.
+    bool IsRenderStarted() const;
+
+    ///@brief Marks the presenter-driven render pass as started.
+    void MarkRenderStarted();
+
+    ///@brief Marks the presenter-driven render pass as complete.
+    void MarkRenderComplete();
+
+    ///@brief Marks the rendered image as stale.
+    void MarkRenderDirty();
+
+    ///@brief Clears active render and pause presentation state.
+    void MarkRenderInterrupted();
+
+    ///@brief Resumes from a paused pan by clearing pause and render flags.
+    void ResumeFromPausedPan();
+
+    ///@brief Returns true when the presenter should treat the fractal as paused.
+    bool IsPausedForPresentation() const;
+
+    ///@brief Returns true when a settled pan should leave the paused state.
+    bool ShouldResumeFromPausedPan() const;
+
+    ///@brief Consumes the one-frame pause refresh request.
+    bool ConsumePausePresentationRefresh();
+
+    ///@brief Consumes the one-frame image refresh request.
+    bool ConsumeImageRefreshRequest();
+
+    ///@brief Shifts the rendered maps after panning settles.
+    void ReuseRenderedMaps(Vector2Int reusedMapOffset);
+
+    ///@brief Prepares color lookup values before drawing rendered pixels.
+    void PrepareDisplayColorLookup();
+
+    ///@brief Returns true when the rendered maps have a display color at the pixel.
+    bool HasDisplayPixelColor(unsigned int x, unsigned int y) const;
+
+    ///@brief Gets the display color for a rendered pixel.
+    sf::Color GetRenderedPixelColor(unsigned int x, unsigned int y) const;
+
+    ///@brief Gets the color used for missing rendered pixels.
+    sf::Color GetInvalidPixelColor() const;
+
+    bool IsExteriorColorEnabled() const;
+    bool IsRelativeColorEnabled() const;
+    bool IsSetColorEnabled() const;
+    bool IsGradientAnimating() const;
+    bool ConsumeGradientChangeRequest();
+    void AdvanceGradientOffset();
+    void RefreshAnimatedColors(sf::Image& image);
+
+    bool ShouldDrawOrbit() const;
+    bool IsOrbitDrawn() const;
+    void ClearOrbitLines();
+    void MarkOrbitDirty();
+    bool HasGeometryFigures() const;
+    bool IsSnapshotActive() const;
+    const std::vector<LineData>& GetLines() const;
+    const std::vector<LineData>& GetOrbitLines() const;
+    const std::vector<CircleData>& GetCircles() const;
 
     // Thread control.
     ///@brief Calculate drawing limits of each thread and launches them.
@@ -374,6 +453,55 @@ template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer*
 
     if (_waitRoutine)
         _watchdog.wait();
+}
+
+template<class M> void Fractal::MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,
+                                           const int moveX, const int moveY, const M fillValue)
+{
+    if (matrix == nullptr || matrixWidth == 0 || matrixHeight == 0)
+        return;
+
+    if (std::abs(moveX) >= static_cast<int>(matrixWidth) || std::abs(moveY) >= static_cast<int>(matrixHeight))
+    {
+        for (unsigned int i = 0; i < matrixHeight; i++)
+            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
+
+        return;
+    }
+
+    if (moveX > 0)
+    {
+        const auto displacement = static_cast<unsigned int>(moveX);
+        for (unsigned int i = 0; i < matrixHeight; i++)
+        {
+            std::move_backward(matrix[i], matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth);
+            std::fill(matrix[i], matrix[i] + displacement, fillValue);
+        }
+    }
+    else if (moveX < 0)
+    {
+        const auto displacement = static_cast<unsigned int>(-moveX);
+        for (unsigned int i = 0; i < matrixHeight; i++)
+        {
+            std::move(matrix[i] + displacement, matrix[i] + matrixWidth, matrix[i]);
+            std::fill(matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth, fillValue);
+        }
+    }
+
+    if (moveY > 0)
+    {
+        const auto displacement = static_cast<unsigned int>(moveY);
+        std::rotate(matrix, matrix + matrixHeight - displacement, matrix + matrixHeight);
+        for (unsigned int i = 0; i < displacement; i++)
+            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
+    }
+    else if (moveY < 0)
+    {
+        const auto displacement = static_cast<unsigned int>(-moveY);
+        std::rotate(matrix, matrix + displacement, matrix + matrixHeight);
+        for (unsigned int i = matrixHeight - displacement; i < matrixHeight; i++)
+            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
+    }
 }
 
 #endif
