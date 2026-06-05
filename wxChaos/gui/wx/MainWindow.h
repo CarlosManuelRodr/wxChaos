@@ -93,7 +93,6 @@ class MainFrame : public wxFrame
     ScriptEditor* scriptEditor;
     DimensionFrame* dimensionCalculator;
     
-    MainWindowStatus statusData;
     bool changeKeyboardGuide;
     bool rendererOptionsActive;
     bool introConstActive;
@@ -207,8 +206,11 @@ public :
     void ChangeFPUserDefined(wxCommandEvent& event);
     void ChangeScriptItem(wxCommandEvent& event);
     void OnKeyboardGuide(wxCommandEvent& event);
+    void OnCanvasStatusText(wxCommandEvent& event);
     void OnAbortRender(wxCommandEvent& event);
     void OnUpdateAbortRender(wxUpdateUIEvent& event);
+    void OnUpdateShowOrbit(wxUpdateUIEvent& event);
+    void OnUpdateSliderMode(wxUpdateUIEvent& event);
     void OnRedraw(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);
     void OnMoreIt(wxCommandEvent& event);

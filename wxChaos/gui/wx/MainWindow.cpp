@@ -194,6 +194,7 @@ void MainFrame::ConnectEvents()
     this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainFrame::OnClose));
     this->Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnQuit));
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(MainFrame::OnResize));
+    this->Connect(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEventHandler(MainFrame::OnCanvasStatusText));
     this->Connect(ID_JULIA_MODE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnJuliaMode));
     this->Connect(wxEVT_JULIA_MODE_CLOSED, wxCommandEventHandler(MainFrame::OnJuliaModeClosed));
     this->Connect(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEventHandler(MainFrame::OnDimensionFrameClosed));
@@ -232,8 +233,10 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_INCREASE_IT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnMoreIt));
     this->Connect(ID_DECREASE_IT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnLessIt));
     this->Connect(ID_SHOW_ORBIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnShowOrbit));
+    this->Connect(ID_SHOW_ORBIT, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::OnUpdateShowOrbit));
     this->Connect(ID_ENTER_MAN_CONSTANT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnManIntroConst));
     this->Connect(ID_ENTER_SLD_CONSTANT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnSldIntroConst));
+    this->Connect(ID_ENTER_SLD_CONSTANT, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::OnUpdateSliderMode));
     this->Connect(ID_IT_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnItManual));
     this->Connect(ID_FORMULA_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFormulaDialog));
     this->Connect(ID_OPTPANEL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFractalOptions));
@@ -333,7 +336,7 @@ void MainFrame::SetUpGUI()
     introConstant->Append(manual);
     manual->Enable(false);
 
-    statusData.slider = slider = new wxMenuItem(introConstant, ID_ENTER_SLD_CONSTANT, wxString(wxT("Slider")) + wxT('\t') + wxT("F1"), wxEmptyString, wxITEM_CHECK);
+    slider = new wxMenuItem(introConstant, ID_ENTER_SLD_CONSTANT, wxString(wxT("Slider")) + wxT('\t') + wxT("F1"), wxEmptyString, wxITEM_CHECK);
     introConstant->Append(slider);
     slider->Enable(false);
     slider->Check(false);
@@ -341,7 +344,7 @@ void MainFrame::SetUpGUI()
 
     // Julia constant and show orbit.
     juliaMode = new wxMenuItem(fractalMenu, ID_JULIA_MODE, wxString(wxT("Julia mode")), wxEmptyString, wxITEM_CHECK);
-    statusData.showOrbit = showOrbit = new wxMenuItem(fractalMenu, ID_SHOW_ORBIT, wxString(wxT("Show orbit")) + wxT('\t') + wxT("F2"), wxEmptyString, wxITEM_CHECK);
+    showOrbit = new wxMenuItem(fractalMenu, ID_SHOW_ORBIT, wxString(wxT("Show orbit")) + wxT('\t') + wxT("F2"), wxEmptyString, wxITEM_CHECK);
 
     fractalMenu->Append(juliaMode);
 
@@ -420,13 +423,13 @@ void MainFrame::SetUpGUI()
     this->SetSizer(sizer);
     this->Layout();
     this->Centre(wxVERTICAL);
-    statusData.status = status = this->CreateStatusBar(1, wxST_SIZEGRIP, wxID_ANY);
+    status = this->CreateStatusBar(1, wxST_SIZEGRIP, wxID_ANY);
 
     size = fractalSizer->GetSize();
 
     // Creates fractalCanvas.
     fractalType = opt.type;
-    fractalCanvas = new FractalCanvas(statusData, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
+    fractalCanvas = new FractalCanvas(fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
 
     wxGradient grad;
     grad.SetMin(0);
@@ -643,6 +646,10 @@ void MainFrame::OnKeyboardGuide(wxCommandEvent&)
     fractalCanvas->SetKeyboardGuide(changeKeyboardGuide);
     keyboardGuide->Check(changeKeyboardGuide);
 }
+void MainFrame::OnCanvasStatusText(wxCommandEvent& event)
+{
+    status->SetStatusText(event.GetString());
+}
 void MainFrame::OnItManual(wxCommandEvent&)
 {
     // Manual iterations.
@@ -666,6 +673,14 @@ void MainFrame::OnAbortRender(wxCommandEvent&)
 void MainFrame::OnUpdateAbortRender(wxUpdateUIEvent& event)
 {
     event.Enable(fractalCanvas != nullptr && fractalCanvas->CanAbortRender());
+}
+void MainFrame::OnUpdateShowOrbit(wxUpdateUIEvent& event)
+{
+    event.Check(fractalCanvas != nullptr && fractalCanvas->IsOrbitMode());
+}
+void MainFrame::OnUpdateSliderMode(wxUpdateUIEvent& event)
+{
+    event.Check(fractalCanvas != nullptr && fractalCanvas->IsSliderMode());
 }
 void MainFrame::OnFractalOptions(wxCommandEvent&)
 {

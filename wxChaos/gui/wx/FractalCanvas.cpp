@@ -4,12 +4,13 @@
 #include "SizeDialogSave.h"
 using namespace std;
 
+wxDEFINE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
+
 // Fractal Canvas
-FractalCanvas::FractalCanvas(const MainWindowStatus& status, const FractalType fractalType,
+FractalCanvas::FractalCanvas(const FractalType fractalType,
                              wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                              const long style) : wxSFMLCanvas(parent, id, position, size, style)
 {
-    statusData = status;
     _type = fractalType;
 
     // Status variables.
@@ -139,15 +140,11 @@ void FractalCanvas::OnUpdate()
             {
                 if (_event.key.code == sf::Keyboard::F1)  // Open or close slider.
                 {
-                    const bool mode = !statusData.slider->IsChecked();
-                    this->SetSliderMode(mode);
-                    statusData.slider->Check(mode);
+                    this->SetSliderMode(!_sliderMode);
                 }
                 if (_event.key.code == sf::Keyboard::F2)  // Shows or hides fractal orbit.
                 {
-                    const bool mode = !statusData.showOrbit->IsChecked();
-                    this->SetOrbitMode(mode);
-                    statusData.showOrbit->Check(mode);
+                    this->SetOrbitMode(!_orbitMode);
                 }
                 if (_event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
@@ -433,6 +430,10 @@ void FractalCanvas::SetOrbitMode(const bool mode)
         }
     }
 }
+bool FractalCanvas::IsOrbitMode() const
+{
+    return _orbitMode;
+}
 void FractalCanvas::SetSliderMode(const bool mode)
 {
     _sliderMode = mode;
@@ -451,6 +452,10 @@ void FractalCanvas::SetSliderMode(const bool mode)
         }
         _target->SetJuliaMode(false);
     }
+}
+bool FractalCanvas::IsSliderMode() const
+{
+    return _sliderMode;
 }
 void FractalCanvas::SetUserFormula(const FormulaOpt &userFormula)
 {
@@ -591,7 +596,10 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
         text += wxT("   Imaginary: ");
         text += TextUtils::ToWxString(_target->GetY(event.GetPosition().y));
     }
-    statusData.status->SetStatusText(text);
+    wxCommandEvent statusEvent(wxEVT_FRACTAL_CANVAS_STATUS_TEXT);
+    statusEvent.SetEventObject(this);
+    statusEvent.SetString(text);
+    this->GetParent()->GetEventHandler()->ProcessEvent(statusEvent);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 // ReSharper disable once CppParameterMayBeConstPtrOrRef

@@ -20,17 +20,7 @@
 #include "sfml/CoordinateSelector.h"
 #include "../../core/FractalHandler.h"
 
-/**
-* @struct MainWindowStatus
-* @brief Pointers to menu items.
-*/
-struct MainWindowStatus
-{
-    wxStatusBar* status;
-    wxMenuItem* showOrbit;
-    wxMenuItem* slider;
-};
-
+wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 
 /**
 * @class FractalCanvas
@@ -79,8 +69,6 @@ class FractalCanvas : public wxSFMLCanvas
     bool _sliderMode;
     bool _onUpdate;
 
-    MainWindowStatus statusData{};
-
 protected:
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
 
@@ -90,7 +78,6 @@ private:
 
 public:
     ///@brief Constructor
-    ///@param status Pointer to the status bar of the MainFrame.
     ///@param fractalType Type of the fractal to be created.
     ///@param parent
     ///@param id
@@ -98,7 +85,7 @@ public:
     ///@param size
     ///@param style
     ///@param parent Parent wxWindow.
-    FractalCanvas(const MainWindowStatus &status, FractalType fractalType, wxWindow* parent,
+    FractalCanvas(FractalType fractalType, wxWindow* parent,
                   wxWindowID id, const wxPoint& position, const wxSize& size, long style = 0);
     ~FractalCanvas() override;
 
@@ -157,9 +144,15 @@ public:
     ///@param mode New mode.
     void SetOrbitMode(bool mode);
 
+    ///@return true if orbit mode is active.
+    bool IsOrbitMode() const;
+
     ///@brief Sets the slider mode.
     ///@param mode New mode.
     void SetSliderMode(bool mode);
+
+    ///@return true if slider mode is active.
+    bool IsSliderMode() const;
 
     ///@brief Sets the user formula.
     ///@param userFormula Formula specified by the user.
