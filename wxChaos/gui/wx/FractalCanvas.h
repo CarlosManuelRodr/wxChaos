@@ -21,16 +21,6 @@
 #include "../../core/FractalHandler.h"
 
 /**
-* @struct PauseContinueButton
-* @brief Holds a pointer to the pause menu item and it's state.
-*/
-struct PauseContinueButton
-{
-    wxMenuItem* pauseContinue;
-    bool state;
-};
-
-/**
 * @struct MainWindowStatus
 * @brief Pointers to menu items.
 */
@@ -90,7 +80,6 @@ class FractalCanvas : public wxSFMLCanvas
     bool _onUpdate;
 
     MainWindowStatus statusData{};
-    PauseContinueButton* btn;
 
 protected:
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
@@ -102,7 +91,6 @@ private:
 public:
     ///@brief Constructor
     ///@param status Pointer to the status bar of the MainFrame.
-    ///@param pcb Pointer to struct that holds the address of the pause button and its status.
     ///@param fractalType Type of the fractal to be created.
     ///@param parent
     ///@param id
@@ -110,7 +98,7 @@ public:
     ///@param size
     ///@param style
     ///@param parent Parent wxWindow.
-    FractalCanvas(const MainWindowStatus &status, PauseContinueButton* pcb, FractalType fractalType, wxWindow* parent,
+    FractalCanvas(const MainWindowStatus &status, FractalType fractalType, wxWindow* parent,
                   wxWindowID id, const wxPoint& position, const wxSize& size, long style = 0);
     ~FractalCanvas() override;
 
@@ -148,6 +136,12 @@ public:
 
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;
+
+    ///@return true if the current render can be aborted.
+    bool CanAbortRender() const;
+
+    ///@brief Aborts the active render, leaving the partial image visible.
+    void AbortRender() const;
 
     ///@brief Sets the keyboard guide mode.
     ///@param mode New mode.

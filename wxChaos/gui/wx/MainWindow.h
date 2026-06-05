@@ -57,7 +57,7 @@ enum IDS
     ID_JULIA_MODE,
     ID_ABOUT,
     ID_KEYBOARDGUIDE,
-    ID_PAUSE_CONTINUE,
+    ID_ABORT_RENDER,
     ID_REDRAW,
     ID_RESET,
     ID_INCREASE_IT,
@@ -128,7 +128,7 @@ class MainFrame : public wxFrame
     wxStaticBitmap* propBitmap;
     wxBoxSizer* fractalSizer;
     wxBoxSizer* optionSizer;
-    PauseContinueButton pauseBtn;
+    wxMenuItem* abortRenderItem;
     wxBoxSizer* sizer;
     wxSize size;
     wxStatusBar* status;
@@ -208,6 +208,7 @@ public :
     void ChangeScriptItem(wxCommandEvent& event);
     void OnKeyboardGuide(wxCommandEvent& event);
     void OnAbortRender(wxCommandEvent& event);
+    void OnUpdateAbortRender(wxUpdateUIEvent& event);
     void OnRedraw(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);
     void OnMoreIt(wxCommandEvent& event);

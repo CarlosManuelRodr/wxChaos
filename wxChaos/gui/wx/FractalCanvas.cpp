@@ -5,12 +5,11 @@
 using namespace std;
 
 // Fractal Canvas
-FractalCanvas::FractalCanvas(const MainWindowStatus& status, PauseContinueButton* pcb, const FractalType fractalType,
+FractalCanvas::FractalCanvas(const MainWindowStatus& status, const FractalType fractalType,
                              wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                              const long style) : wxSFMLCanvas(parent, id, position, size, style)
 {
     statusData = status;
-    btn = pcb;
     _type = fractalType;
 
     // Status variables.
@@ -127,13 +126,6 @@ void FractalCanvas::OnUpdate()
                 }
             }
 
-            if (btn->state)
-            {
-                btn->state = false;
-                btn->pauseContinue->Enable(false);
-
-                _sfmlFractal->Redraw();
-            }
         }
 
         _sfmlFractal->HandleEvent(_event);
@@ -179,14 +171,7 @@ void FractalCanvas::OnUpdate()
             }
             if (_event.key.code == sf::Keyboard::P)  // Abort shortcut.
             {
-                if (_target->IsRendering())
-                {
-                    _target->StopRender();
-                    _target->SetRendered(true);
-                }
-
-                btn->state = false;
-                btn->pauseContinue->Enable(false);
+                this->AbortRender();
             }
         }
     }
@@ -211,11 +196,6 @@ void FractalCanvas::OnUpdate()
     {
         _selection->Show(this);
 
-        if (btn->pauseContinue->IsEnabled())
-            btn->pauseContinue->Enable(false);
-
-        btn->state = false;
-
         if (_keyboardGuide && _keyboardGuideMode)
         {
             this->draw(_outKeyboard);
@@ -232,12 +212,6 @@ void FractalCanvas::OnUpdate()
         if (_juliaMode || _orbitMode || _sliderMode)
             _screenPointer->Show(this);
     }
-    else if (!btn->pauseContinue->IsEnabled() && _type != FractalType::SierpinskyTriangle)
-    {
-        btn->state = true;
-        btn->pauseContinue->Enable(true);
-    }
-
     _play->Show(this);
 }
 void FractalCanvas::SetWxSize(const wxSize size)
@@ -318,6 +292,18 @@ SFMLFractal* FractalCanvas::GetSFMLFractalPtr() const
 FractalType FractalCanvas::GetFractalType() const
 {
     return _type;
+}
+bool FractalCanvas::CanAbortRender() const
+{
+    return _target != nullptr && _target->IsRendering() && _type != FractalType::SierpinskyTriangle;
+}
+void FractalCanvas::AbortRender() const
+{
+    if (!this->CanAbortRender())
+        return;
+
+    _target->StopRender();
+    _target->SetRendered(true);
 }
 void FractalCanvas::ChangeType(const FractalType type)
 {
@@ -536,8 +522,6 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_sfmlFractal->IsMoving())
     {
         _sfmlFractal->ZoomBack();
-        btn->state = false;
-        btn->pauseContinue->Enable(false);
     }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -552,12 +536,6 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
         {
             if (_selection->UnClickEvent(event))
             {
-                if (btn->state)
-                {
-                    btn->state = false;
-                    btn->pauseContinue->Enable(false);
-                    _sfmlFractal->Redraw();
-                }
                 _sfmlFractal->SetAreaOfView(_selection->GetSelection());
             }
         }

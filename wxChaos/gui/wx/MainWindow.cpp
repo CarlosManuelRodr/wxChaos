@@ -225,7 +225,8 @@ void MainFrame::ConnectEvents()
     this->Connect(ID_DPENDULUM, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeDPendulum));
     this->Connect(ID_USER_DEFINED, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeUserDefined));
     this->Connect(ID_FPUSER_DEFINED, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFPUserDefined));
-    this->Connect(ID_PAUSE_CONTINUE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbortRender));
+    this->Connect(ID_ABORT_RENDER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbortRender));
+    this->Connect(ID_ABORT_RENDER, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::OnUpdateAbortRender));
     this->Connect(ID_RESET, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnReset));
     this->Connect(ID_REDRAW, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnRedraw));
     this->Connect(ID_INCREASE_IT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnMoreIt));
@@ -372,9 +373,8 @@ void MainFrame::SetUpGUI()
     fractalMenu->Append(ID_FORMULA_DIALOG, wxT("Enter user formula")); // Txt: "Enter user formula"
     fractalMenu->AppendSeparator();
 
-    pauseBtn.pauseContinue = fractalMenu->Append(ID_PAUSE_CONTINUE, wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
-    pauseBtn.state = false;
-    pauseBtn.pauseContinue->Enable(false);
+    abortRenderItem = fractalMenu->Append(ID_ABORT_RENDER, wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
+    abortRenderItem->Enable(false);
     fractalMenu->Append(ID_REDRAW, wxString(wxT("Redraw")) + wxT('\t') + wxT("F5"));
     fractalMenu->Append(ID_RESET, wxString(wxT("Reset")));
     rendererMenu->Append(ID_PALETTE, wxT("Renderer options"));
@@ -426,7 +426,7 @@ void MainFrame::SetUpGUI()
 
     // Creates fractalCanvas.
     fractalType = opt.type;
-    fractalCanvas = new FractalCanvas(statusData, &pauseBtn, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
+    fractalCanvas = new FractalCanvas(statusData, fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
 
     wxGradient grad;
     grad.SetMin(0);
@@ -583,8 +583,6 @@ void MainFrame::OnFormulaDialog(wxCommandEvent&)
 }
 void MainFrame::OnRedraw(wxCommandEvent&)
 {
-    pauseBtn.state = false;
-    pauseBtn.pauseContinue->Enable(false);
     fractalCanvas->GetSFMLFractalPtr()->Redraw();
 }
 void MainFrame::OnReset(wxCommandEvent&)
@@ -663,11 +661,11 @@ void MainFrame::OnItManual(wxCommandEvent&)
 }
 void MainFrame::OnAbortRender(wxCommandEvent&)
 {
-    Fractal* fractal = fractalCanvas->GetFractalPtr();
-    fractal->StopRender();
-    fractal->SetRendered(true);
-    pauseBtn.state = false;
-    pauseBtn.pauseContinue->Enable(false);
+    fractalCanvas->AbortRender();
+}
+void MainFrame::OnUpdateAbortRender(wxUpdateUIEvent& event)
+{
+    event.Enable(fractalCanvas != nullptr && fractalCanvas->CanAbortRender());
 }
 void MainFrame::OnFractalOptions(wxCommandEvent&)
 {
@@ -711,9 +709,6 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
         else
             *pOptions->GetBoolElement(i) = false;
     }
-    pauseBtn.state = false;
-    pauseBtn.pauseContinue->Enable(false);
-
     fractalCanvas->SetFocus();
     fractalCanvas->GetSFMLFractalPtr()->Redraw();
 }
@@ -1141,9 +1136,8 @@ void MainFrame::UpdateMenu()
         }
     }
 
-    pauseBtn.state = false;
-    pauseBtn.pauseContinue->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
-    pauseBtn.pauseContinue->Enable(false);
+    abortRenderItem->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
+    abortRenderItem->Enable(false);
 
     // If Julia mode is opened closes it.
     DestroyJuliaMode(true);
