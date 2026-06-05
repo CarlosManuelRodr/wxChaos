@@ -79,10 +79,18 @@ void SFMLFractal::ResetDisplayImages()
 
 void SFMLFractal::ClearImageCache()
 {
+    const bool usingCachedRenderImage = _usingRenderImage;
+
     _imgCache.clear();
     _imgInVector = false;
     _usingRenderImage = false;
     _zoomingBack = false;
+
+    if (usingCachedRenderImage)
+    {
+        _fractal->MarkRenderDirty();
+        _dontDrawTempImage = true;
+    }
 }
 
 void SFMLFractal::UpdateIterationsOverlay()
