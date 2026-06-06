@@ -54,17 +54,17 @@ void UserDefined::DrawOrbit()
     parser.DefineVar("Z", mup::Variable(&zVal));
     parser.DefineVar("C",  mup::Variable(&cVal));
     if (julia) cVal = mup::cmplx_type(_kReal, _kImaginary);
-    bool outOfSet = false;
 
     zVal = mup::cmplx_type(_orbitX, _orbitY);
     if (!julia) cVal = mup::cmplx_type(_orbitX, _orbitY);
 
     try
     {
+        bool outOfSet = false;
         vector< complex<double> > zVector;
         for (unsigned n=0; n<_maxIter; n++)
         {
-            zVector.push_back(complex<double>(zVal.GetFloat(),zVal.GetImag()));
+            zVector.emplace_back(zVal.GetFloat(),zVal.GetImag());
             if (zVal.GetFloat()*zVal.GetFloat() + zVal.GetImag()*zVal.GetImag() > bailout*bailout)
             {
                 outOfSet = true;

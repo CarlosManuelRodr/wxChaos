@@ -70,9 +70,9 @@ void DimensionCalculator::Run()
             bool found = false;
 
             // And count the elements of the map that belong to the set.
-            for (int w = ex * epsilon; w < (ex + 1) * epsilon && !found; w++)
+            for (int w = static_cast<int>(ex * epsilon); w < (ex + 1) * epsilon && !found; w++)
             {
-                for (int h = ey * epsilon; h < (ey + 1) * epsilon; h++)
+                for (int h = static_cast<int>(ey * epsilon); h < (ey + 1) * epsilon; h++)
                 {
                     if (w < _size && h < _size)
                     {
@@ -160,9 +160,9 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
                 bool found = false;
 
                 // And count the elements of the map that belong to the set.
-                for (int w = ex * epsilon; w < (ex + 1) * epsilon && !found; w++)
+                for (int w = static_cast<int>(ex * epsilon); w < (ex + 1) * epsilon && !found; w++)
                 {
-                    for (int h = ey * epsilon; h < (ey + 1) * epsilon; h++)
+                    for (int h = static_cast<int>(ey * epsilon); h < (ey + 1) * epsilon; h++)
                     {
                         if (w < _size && h < _size)
                         {
@@ -170,7 +170,9 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
                             {
                                 found = true;
                                 boxes++;
-                                dc.DrawRectangle(ex * epsilon, ey * epsilon, ceil(epsilon), ceil(epsilon));
+                                const auto xPosition = static_cast<wxCoord>(ex * epsilon);
+                                const auto yPosition = static_cast<wxCoord>(ey * epsilon);
+                                dc.DrawRectangle(xPosition, yPosition, ceil(epsilon), ceil(epsilon));
                                 break;
                             }
                         }
@@ -184,7 +186,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
         dc.SetPen(wxColour(0, 0, 0));
         for (int ey = 0; ey < _div; ey++)
         {
-            int y = ey * epsilon;
+            int y = static_cast<int>(ey * epsilon);
             dc.DrawLine(0, y, _size, y);
         }
         dc.DrawLine(0, _size - 1, _size, _size - 1);
@@ -192,7 +194,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
         // Vertical lines.
         for (int ex = 0; ex < _div; ex++)
         {
-            int x = ex * epsilon;
+            int x = static_cast<int>(ex * epsilon);
             dc.DrawLine(x, 0, x, _size);
         }
         dc.DrawLine(_size - 1, 0, _size - 1, _size);
@@ -245,9 +247,9 @@ void ImagePanel::SetMap(bool** map, const int div)
 }
 
 // ConfFractOptDialog
-ConfigFractalOptionsDialog::ConfigFractalOptionsDialog(Fractal* target, wxWindow* parent, const wxWindowID id, const wxString& title,
-                                       const wxPoint& pos, const wxSize& size, const long style)
-                                       : wxDialog(parent, id, title, pos, size, style)
+ConfigFractalOptionsDialog::ConfigFractalOptionsDialog(Fractal* target, wxWindow* parent, const wxWindowID id,
+                                                       const wxString& title, const wxPoint& pos, const wxSize& size,
+                                                       const long style) : wxDialog(parent, id, title, pos, size, style)
 {
     _target = target;
     this->SetSizeHints(DimensionFrameSize, wxDefaultSize);
@@ -318,10 +320,8 @@ void ConfigFractalOptionsDialog::AdjustOptPanel()
     // If there are elements from a previous panel, deletes them.
     this->DeleteOptPanel();
 
-    PanelOptions* pOptions = _target->GetOptPanel();
-
     // If there are elements in pOptions creates panel.
-    if (pOptions->GetElementsSize() > 0)
+    if (PanelOptions* pOptions = _target->GetOptPanel(); pOptions->GetElementsSize() > 0)
     {
         size_t labelIndex;
         size_t index;
@@ -389,28 +389,24 @@ void ConfigFractalOptionsDialog::AdjustOptPanel()
 void ConfigFractalOptionsDialog::DeleteOptPanel()
 {
     // Deletes panel elements.
-    for (unsigned int i = 0; i < _labels.size(); i++)
-    {
-        _labels[i]->Destroy();
-    }
+    for (auto & _label : _labels)
+        _label->Destroy();
+
     _labels.clear();
     _foundLabels.clear();
-    for (unsigned int i = 0; i < _textControls.size(); i++)
-    {
-        _textControls[i]->Destroy();
-    }
+    for (auto & _textControl : _textControls)
+        _textControl->Destroy();
+
     _textControls.clear();
     _foundTextControls.clear();
-    for (unsigned int i = 0; i < _spinControls.size(); i++)
-    {
-        _spinControls[i]->Destroy();
-    }
+    for (auto & _spinControl : _spinControls)
+        _spinControl->Destroy();
+
     _spinControls.clear();
     _foundSpinControls.clear();
-    for (unsigned int i = 0; i < _checkBoxes.size(); i++)
-    {
-        _checkBoxes[i]->Destroy();
-    }
+    for (auto & _checkBoxe : _checkBoxes)
+        _checkBoxe->Destroy();
+
     _checkBoxes.clear();
     _foundCheckBoxes.clear();
 }
@@ -461,7 +457,7 @@ void ConfigFractalOptionsDialog::OnApply(wxCommandEvent&)
 }
 
 // LinePlotter
-LinePlotter::LinePlotter(LineParams params) : mpFX(wxT("Fit"))
+LinePlotter::LinePlotter(const LineParams params) : mpFX(wxT("Fit"))
 {
     _params = params;
 }
@@ -1047,8 +1043,8 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
 
         mup::Value xVal;
         parser.DefineVar("x", mup::Variable(&xVal));
-        int xMin = _xMinSpin->GetValue();
-        int xMax = _xMaxSpin->GetValue();
+        const int xMin = _xMinSpin->GetValue();
+        const int xMax = _xMaxSpin->GetValue();
 
         bool errorStatus = false;
         if (_divNotebook->GetSelection() == 0)

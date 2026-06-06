@@ -30,15 +30,15 @@ public:
 	wxGradient();
 	wxGradient(const std::vector<wxColour>& stops, unsigned int min, unsigned int max);
 	virtual ~wxGradient();
-	wxColour GetColorAt(unsigned int value) const;
+	[[nodiscard]] wxColour GetColorAt(unsigned int value) const;
 	void AddColorStop(const wxColour& col);
 	void InsertColorStop(unsigned int index, const wxColour& col);
 	void RemoveColorStop(unsigned int index);
 	void EditColorStop(unsigned int index, const wxColour& col);
 	void SetMin(unsigned int min);
-	unsigned int GetMin() const;
+	[[nodiscard]] unsigned int GetMin() const;
 	void SetMax(unsigned int max);
-	unsigned int GetMax() const;
+	[[nodiscard]] unsigned int GetMax() const;
 	void SetStops(const std::vector<wxColour>& stops);
 	std::vector<wxColour> GetStops();
 

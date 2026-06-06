@@ -69,10 +69,7 @@ class FractalCanvas : public wxSFMLCanvas
     bool _sliderMode;
     bool _onUpdate;
 
-protected:
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
-
-private:
     void CreateFractal(FractalType type);
     void CreateScriptFractal(const ScriptData& scriptData);
 

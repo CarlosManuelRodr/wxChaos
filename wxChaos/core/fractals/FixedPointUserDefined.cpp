@@ -40,7 +40,7 @@ void FPUserDefined::Render()
 
     this->SetRendererBounds<FPUserDefinedRenderer>(myRender);
 }
-void FPUserDefined::SetFormula(FormulaOpt formula)
+void FPUserDefined::SetFormula(const FormulaOpt formula)
 {
     _userFormula = formula;
     for (unsigned int i=0; i<_threadNumber; i++)

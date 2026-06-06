@@ -5,7 +5,8 @@
 enum class PanelOptionType { Label, TextCtrl, Spin, CheckBox };
 enum class LinkTo { ToInt, ToDouble, ToBool };
 
-class PanelOptions {
+class PanelOptions
+{
     std::vector<PanelOptionType> type;
     std::vector<wxString> label;
     std::vector<wxString> defaults;
@@ -19,14 +20,14 @@ public:
     void LinkInt(PanelOptionType pType, const wxString& labelTxt, int* linkInt, const wxString& defaultVal);
     void LinkDbl(PanelOptionType pType, const wxString& labelTxt, double* linkDbl, const wxString& defaultVal);
     void LinkBool(PanelOptionType pType, const wxString& labelTxt, bool* linkBool, const wxString& defaultVal);
-    int GetElementsSize() const;
-    LinkTo GetLinkType(int index) const;
+    [[nodiscard]] int GetElementsSize() const;
+    [[nodiscard]] LinkTo GetLinkType(int index) const;
     wxString GetLabelElement(int index);
-    int* GetIntElement(int index) const;
-    double* GetDoubleElement(int index) const;
-    bool* GetBoolElement(int index) const;
+    [[nodiscard]] int* GetIntElement(int index) const;
+    [[nodiscard]] double* GetDoubleElement(int index) const;
+    [[nodiscard]] bool* GetBoolElement(int index) const;
     wxString GetDefault(int index);
-    PanelOptionType GetPanelOptType(int index) const;
+    [[nodiscard]] PanelOptionType GetPanelOptType(int index) const;
     void SetForceShow(bool mode);
-    bool GetForceShow() const;
+    [[nodiscard]] bool GetForceShow() const;
 };
