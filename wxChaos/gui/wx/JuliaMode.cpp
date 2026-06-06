@@ -154,6 +154,7 @@ void JuliaMode::Run()
     _selection = new SelectionRect();
     _play = new ToggleButton("Resources/Play.tga", "Resources/Stop.tga", 0, 4, _window);
     _play->SetAnchor(false, true, true, false);
+    _play->Resize(_window);
 
     while (_window->isOpen())
     {
