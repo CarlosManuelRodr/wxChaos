@@ -729,7 +729,7 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
     fractalCanvas->GetSFMLFractalPtr()->Redraw();
 }
 // ReSharper disable once CppMemberFunctionMayBeStatic
-void MainFrame::OnUserManual(wxCommandEvent&)
+void MainFrame::OnUserManual(wxCommandEvent&) // NOLINT(*-convert-member-functions-to-static)
 {
     wxLaunchDefaultApplication(AppPaths::DocFile(wxT("User_Manual.pdf")));
 }
