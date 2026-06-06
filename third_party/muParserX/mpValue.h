@@ -8,12 +8,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -80,62 +76,60 @@ MUP_NAMESPACE_START
 
     virtual ~Value();
  
-    virtual IValue& At(int nRow, int nCol = 0);
-    virtual IValue& At(const IValue &row, const IValue &col);
+    virtual IValue& At(int nRow, int nCol = 0) override;
+    virtual IValue& At(const IValue &row, const IValue &col) override;
 
-    virtual IValue& operator=(int_type a_iVal);
-    virtual IValue& operator=(float_type a_fVal);
-    virtual IValue& operator=(string_type a_sVal);
-    virtual IValue& operator=(bool val);
-    virtual IValue& operator=(const matrix_type &a_vVal);
-    virtual IValue& operator=(const cmplx_type &val);
+    virtual IValue& operator=(int_type a_iVal) override;
+    virtual IValue& operator=(float_type a_fVal) override;
+    virtual IValue& operator=(string_type a_sVal) override;
+    virtual IValue& operator=(bool val) override;
+    virtual IValue& operator=(const matrix_type &a_vVal) override;
+    virtual IValue& operator=(const cmplx_type &val) override;
     virtual IValue& operator=(const char_type *a_szVal);
-    virtual IValue& operator+=(const IValue &val);
-    virtual IValue& operator-=(const IValue &val);
-    virtual IValue& operator*=(const IValue &val);
+    virtual IValue& operator+=(const IValue &val) override;
+    virtual IValue& operator-=(const IValue &val) override;
+    virtual IValue& operator*=(const IValue &val) override;
 
-    virtual char_type GetType() const;
-    virtual int_type GetInteger() const;
-    virtual float_type GetFloat() const;
-    virtual float_type GetImag() const;
-    virtual bool GetBool() const;
-    virtual const cmplx_type& GetComplex() const;
-    virtual const string_type& GetString() const;
-    virtual const matrix_type& GetArray() const;
-    virtual int GetRows() const;
-    virtual int GetCols() const;
+    virtual char_type GetType() const override;
+    virtual int_type GetInteger() const override;
+    virtual float_type GetFloat() const override;
+    virtual float_type GetImag() const override;
+    virtual bool GetBool() const override;
+    virtual const cmplx_type& GetComplex() const override;
+    virtual const string_type& GetString() const override;
+    virtual const matrix_type& GetArray() const override;
+    virtual int GetRows() const override;
+    virtual int GetCols() const override;
 
-    virtual bool IsVolatile() const;
-    virtual IToken* Clone() const;
-    virtual Value* AsValue();
+    virtual bool IsVariable() const override;
 
-    virtual string_type AsciiDump() const;
+    virtual IToken* Clone() const override;
+    virtual Value* AsValue() override;
+
+    virtual string_type AsciiDump() const override;
     void BindToCache(ValueCache *pCache);
 	
-	// Conversion operators
-	operator cmplx_type();
-	operator int ();
-	operator string_type();
-	operator float_type();
-	operator bool();
+    // Conversion operators
+    operator cmplx_type();
+    operator int_type();
+    operator string_type();
+    operator float_type();
+    operator bool();
 
   private:
 
     cmplx_type   m_val;    ///< Member variable for storing the value of complex, float, int and boolean values
     string_type *m_psVal;  ///< Variable for storing a string value
-    matrix_type  *m_pvVal;  ///< A Vector for storing array variable content
+    matrix_type *m_pvVal;  ///< A Vector for storing array variable content
     char_type    m_cType;  ///< A byte indicating the type os the represented value
     EFlags       m_iFlags; ///< Additional flags
     ValueCache  *m_pCache; ///< Pointer to the Value Cache
-
-    int m_nCols;    ///< Number of columns in this value (for matrices)
-    int m_nRows;    ///< Number of Rows in this value (for matrices)
 
     void CheckType(char_type a_cType) const;
     void Assign(const Value &a_Val);
     void Reset();
 
-    virtual void Release();
+    virtual void Release() override;
   }; // class Value
 
 

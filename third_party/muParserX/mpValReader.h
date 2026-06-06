@@ -8,12 +8,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -47,7 +43,7 @@ MUP_NAMESPACE_START
 
   //------------------------------------------------------------------------------
   //
-  //  Reader for double values
+  //  Reader for floating point values
   //
   //------------------------------------------------------------------------------
 
@@ -59,8 +55,8 @@ MUP_NAMESPACE_START
   public:    
       DblValReader();
       virtual ~DblValReader();
-      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal);
-      virtual IValueReader* Clone(TokenReader *pTokenReader) const;
+      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal) override;
+      virtual IValueReader* Clone(TokenReader *pTokenReader) const override;
   };
 
   //------------------------------------------------------------------------------
@@ -77,8 +73,8 @@ MUP_NAMESPACE_START
   public:    
       BoolValReader();
       virtual ~BoolValReader();
-      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal);
-      virtual IValueReader* Clone(TokenReader *pTokenReader) const;
+      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal) override;
+      virtual IValueReader* Clone(TokenReader *pTokenReader) const override;
   };
 
   //------------------------------------------------------------------------------
@@ -94,8 +90,8 @@ MUP_NAMESPACE_START
   {
   public:    
       HexValReader();
-      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal);
-      virtual IValueReader* Clone(TokenReader *pTokenReader) const;
+      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal) override;
+      virtual IValueReader* Clone(TokenReader *pTokenReader) const override;
   };
 
   //------------------------------------------------------------------------------
@@ -112,8 +108,8 @@ MUP_NAMESPACE_START
   public:    
       BinValReader();
       virtual ~BinValReader();
-      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal);
-      virtual IValueReader* Clone(TokenReader *pTokenReader) const;
+      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal) override;
+      virtual IValueReader* Clone(TokenReader *pTokenReader) const override;
   };
 
   //------------------------------------------------------------------------------
@@ -130,8 +126,8 @@ MUP_NAMESPACE_START
   public:    
       StrValReader();
       virtual ~StrValReader();
-      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal);
-      virtual IValueReader* Clone(TokenReader *pTokenReader) const;
+      virtual bool IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_fVal) override;
+      virtual IValueReader* Clone(TokenReader *pTokenReader) const override;
 
   private:
       string_type Unescape(const char_type *szExpr, int &len);

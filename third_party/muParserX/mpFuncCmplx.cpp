@@ -8,11 +8,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -57,8 +57,8 @@ MUP_NAMESPACE_START
   //
   //-----------------------------------------------------------------------
 
-  FunCmplxReal::FunCmplxReal(IPackage *package)
-    :ICallback(cmFUNC, _T("real"), 1, package)
+  FunCmplxReal::FunCmplxReal()
+    :ICallback(cmFUNC, _T("real"), 1)
   {}
 
   //-----------------------------------------------------------------------
@@ -218,12 +218,12 @@ MUP_NAMESPACE_START
   {
     if (a_pArg[0]->IsNonComplexScalar())
     {
-      *ret = cos(a_pArg[0]->GetFloat());
+      *ret = std::cos(a_pArg[0]->GetFloat());
     }
     else
     {
       cmplx_type v(a_pArg[0]->GetFloat(), a_pArg[0]->GetImag());
-      *ret = cos(v);
+      *ret = std::cos(v);
     }
   }
 
@@ -254,12 +254,12 @@ MUP_NAMESPACE_START
   {
     if (a_pArg[0]->IsNonComplexScalar())
     {
-      *ret = sin(a_pArg[0]->GetFloat());
+      *ret = std::sin(a_pArg[0]->GetFloat());
     }
     else
     {
       cmplx_type v(a_pArg[0]->GetFloat(), a_pArg[0]->GetImag());
-      *ret = sin(v);
+      *ret = std::sin(v);
     }
   }
 
@@ -348,12 +348,12 @@ MUP_NAMESPACE_START
   {
     if (a_pArg[0]->IsNonComplexScalar())
     {
-      *ret = tan(a_pArg[0]->GetFloat());
+      *ret = std::tan(a_pArg[0]->GetFloat());
     }
     else
     {
       cmplx_type v(a_pArg[0]->GetFloat(), a_pArg[0]->GetImag());
-      *ret = tan(v);
+      *ret = std::tan(v);
     }
   }
 
@@ -425,6 +425,7 @@ MUP_NAMESPACE_START
   {
     return new FunCmplxSqrt(*this);
   }
+
 
   //-----------------------------------------------------------------------
   //
@@ -498,7 +499,7 @@ MUP_NAMESPACE_START
   void FunCmplxLog::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int)
   {
     cmplx_type v(a_pArg[0]->GetFloat(), a_pArg[0]->GetImag());
-    *ret = log10(v);
+    *ret = log(v);
   }
 
 
@@ -557,7 +558,7 @@ MUP_NAMESPACE_START
   void FunCmplxLog2::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int)
   {
     std::complex<float_type> v(a_pArg[0]->GetFloat(), a_pArg[0]->GetImag());
-    *ret = log(v) * (float_type)1.0/log((float_type)2.0);
+    *ret = std::log(v) * (float_type)1.0/std::log((float_type)2.0);
   }
 
   //-----------------------------------------------------------------------
@@ -601,5 +602,34 @@ MUP_NAMESPACE_START
   {
     return new FunCmplxAbs(*this);
   }
+
+  //-----------------------------------------------------------------------
+  //
+  //  class FunCmplxPow
+  //
+  //-----------------------------------------------------------------------
+
+  FunCmplxPow::FunCmplxPow()
+    :ICallback(cmFUNC, _T("pow"), 2)
+  {}
+
+  //-----------------------------------------------------------------------
+  void FunCmplxPow::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int)
+  {
+    *ret = std::pow(a_pArg[0]->GetComplex(), a_pArg[1]->GetComplex());
+  }
+
+  //-----------------------------------------------------------------------
+  const char_type* FunCmplxPow::GetDesc() const
+  {
+    return _T("pox(x, y) - Raise x to the power of y.");
+  }
+
+  //-----------------------------------------------------------------------
+  IToken* FunCmplxPow::Clone() const
+  {
+    return new FunCmplxPow(*this);
+  }
+
 
 MUP_NAMESPACE_END

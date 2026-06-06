@@ -8,11 +8,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -47,11 +47,9 @@ MUP_NAMESPACE_START
   //------------------------------------------------------------------------------
   ICallback::ICallback(ECmdCode a_iCode, 
                        const char_type *a_szName, 
-                       int a_nArgc,
-                       const IPackage *a_pPackage)
+                       int a_nArgc)
     :IToken(a_iCode, a_szName)
-    ,m_pParent(NULL)
-    ,m_pPackage(a_pPackage)
+    ,m_pParent(nullptr)
     ,m_nArgc(a_nArgc)
     ,m_nArgsPresent(-1)
   {}
@@ -69,13 +67,7 @@ MUP_NAMESPACE_START
   //---------------------------------------------------------------------------
   IValue* ICallback::AsIValue()
   {
-    return NULL;
-  }
-
-  //------------------------------------------------------------------------------
-  bool ICallback::IsVolatile() const
-  {
-    return false;
+    return nullptr;
   }
 
   //------------------------------------------------------------------------------
@@ -95,7 +87,7 @@ MUP_NAMESPACE_START
   }
 
   //------------------------------------------------------------------------------
-  /** \brief Returns the m´number of arguments required by this callback. 
+  /** \brief Returns the mÂ´number of arguments required by this callback. 
       \return Number of arguments or -1 if the number of arguments is variable.  
   */
   int ICallback::GetArgc() const
@@ -124,8 +116,9 @@ MUP_NAMESPACE_START
 
     ss << g_sCmdCode[ GetCode() ];
     ss << _T(" [addr=0x") << std::hex << this << std::dec;
-    ss << _T("; ident=\"") << GetIdent() << "\"";
-    ss << _T("; argc=") << GetArgc() << " (present: " << m_nArgsPresent << ")";
+    ss << _T("; pos=") << GetExprPos();
+    ss << _T("; id=\"") << GetIdent() << "\"";
+    ss << _T("; argc=") << GetArgc() << " (found: " << m_nArgsPresent << ")";
     ss << _T("]");
 
     return ss.str();

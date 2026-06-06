@@ -9,11 +9,7 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
-                                       All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023 Ingo Berg, et al.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -76,14 +72,15 @@ MUP_NAMESPACE_START
 
     int ExtractToken(const char_type *a_szCharSet, string_type &a_sTok, int a_iPos) const;
 
+    void SkipCommentsAndWhitespaces();
     bool IsBuiltIn(ptr_tok_type &t);
     bool IsEOF(ptr_tok_type &t);
     bool IsNewline(ptr_tok_type &a_Tok);
-    bool IsNewLine(ptr_tok_type &t);
     bool IsInfixOpTok(ptr_tok_type &t);
     bool IsFunTok(ptr_tok_type &t);
     bool IsPostOpTok(ptr_tok_type &t);
     bool IsOprt(ptr_tok_type &t);
+    bool IsShortCutOprt(ptr_tok_type &a_Tok);
     bool IsValTok(ptr_tok_type &t);
     bool IsVarOrConstTok(ptr_tok_type &t);
     bool IsUndefVarTok(ptr_tok_type &t);
@@ -96,6 +93,7 @@ MUP_NAMESPACE_START
     int  m_nPos;             ///< Current parsing position in the expression
     int  m_nNumBra;          ///< Number of open parenthesis
     int  m_nNumIndex;        ///< Number of open index paranethesis    
+	int  m_nNumCurly;        ///< Number of open curly brackets
     int  m_nNumIfElse;       ///< Coubter for if-then-else levels
     int  m_nSynFlags;        ///< Flags to controll the syntax flow
 
@@ -103,7 +101,8 @@ MUP_NAMESPACE_START
     ECmdCode m_eLastTokCode;
 
     mutable fun_maptype  *m_pFunDef;
-    mutable oprt_bin_multimap *m_pOprtDef;
+    mutable oprt_bin_maptype *m_pOprtDef;
+    mutable oprt_bin_shortcut_maptype *m_pOprtShortcutDef;
     mutable oprt_ifx_maptype *m_pInfixOprtDef;
     mutable oprt_pfx_maptype *m_pPostOprtDef;
     mutable val_maptype  *m_pConstDef;
@@ -122,7 +121,6 @@ MUP_NAMESPACE_START
     
     void AddValueReader(IValueReader *a_pReader);
     void AddSynFlags(int flag);
-    //void SetVarCreator(facfun_type a_pFactory);
     int GetPos() const;
     const string_type& GetExpr() const;
     const var_maptype& GetUsedVar() const;

@@ -8,12 +8,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -54,14 +50,14 @@ MUP_NAMESPACE_START
     {                                                                      \
     public:                                                                \
       CLASS();                                                             \
-      virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc);  \
-      virtual const char_type* GetDesc() const;                            \
-      virtual IToken* Clone() const;                                       \
+      virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc) override;  \
+      virtual const char_type* GetDesc() const override;                   \
+      virtual IToken* Clone() const override;                              \
     }; 
 
-    MUP_UNARY_FUNC_DEF(FunTan)
-    MUP_UNARY_FUNC_DEF(FunCos)
     MUP_UNARY_FUNC_DEF(FunSin)
+    MUP_UNARY_FUNC_DEF(FunCos)
+    MUP_UNARY_FUNC_DEF(FunTan)
     // arcus functions
     MUP_UNARY_FUNC_DEF(FunASin)
     MUP_UNARY_FUNC_DEF(FunACos)
@@ -81,9 +77,28 @@ MUP_NAMESPACE_START
     MUP_UNARY_FUNC_DEF(FunLn)
     // square root
     MUP_UNARY_FUNC_DEF(FunSqrt)
+    MUP_UNARY_FUNC_DEF(FunCbrt)
     MUP_UNARY_FUNC_DEF(FunExp)
     MUP_UNARY_FUNC_DEF(FunAbs)
 #undef MUP_UNARY_FUNC_DEF
+
+#define MUP_BINARY_FUNC_DEF(CLASS)                                          \
+    class CLASS : public ICallback                                         \
+    {                                                                      \
+    public:                                                                \
+      CLASS();                                                             \
+      virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc) override;  \
+      virtual const char_type* GetDesc() const override;                   \
+      virtual IToken* Clone() const override;                              \
+    };
+
+    MUP_BINARY_FUNC_DEF(FunPow)
+    MUP_BINARY_FUNC_DEF(FunHypot)
+    MUP_BINARY_FUNC_DEF(FunAtan2)
+    MUP_BINARY_FUNC_DEF(FunFmod)
+    MUP_BINARY_FUNC_DEF(FunRemainder)
+#undef MUP_BINARY_FUNC_DEF
+
 }  // namespace mu
 
 #endif

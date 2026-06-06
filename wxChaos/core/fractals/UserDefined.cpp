@@ -44,15 +44,15 @@ void UserDefined::DrawOrbit()
 {
     bool julia = _userFormula.julia;
     mup::ParserX parser;
-    parser.SetExpr(_userFormula.userFormula.wc_str());
+    parser.SetExpr(_userFormula.userFormula.utf8_string());
 
     int bailout = _userFormula.bailout;
     mup::Value zVal;
     mup::Value cVal;
-    parser.DefineVar(_T("z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("c"),  mup::Variable(&cVal));
-    parser.DefineVar(_T("Z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("C"),  mup::Variable(&cVal));
+    parser.DefineVar("z", mup::Variable(&zVal));
+    parser.DefineVar("c",  mup::Variable(&cVal));
+    parser.DefineVar("Z", mup::Variable(&zVal));
+    parser.DefineVar("C",  mup::Variable(&cVal));
     if (julia) cVal = mup::cmplx_type(_kReal, _kImaginary);
     bool outOfSet = false;
 

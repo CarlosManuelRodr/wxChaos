@@ -15,7 +15,7 @@ void UserDefinedRenderer::SetFormula(const FormulaOpt &formula)
 void UserDefinedRenderer::Render()
 {
     mup::ParserX parser;
-    parser.SetExpr(parserFormula.wc_str());
+    parser.SetExpr(parserFormula.utf8_string());
 
     int squaredBail = bailout*bailout;
 
@@ -23,10 +23,10 @@ void UserDefinedRenderer::Render()
     mup::Value zVal;
     mup::Value cVal;
     mup::Value zero = mup::cmplx_type(0, 0);
-    parser.DefineVar(_T("z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("c"),  mup::Variable(&cVal));
-    parser.DefineVar(_T("Z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("C"),  mup::Variable(&cVal));
+    parser.DefineVar("z", mup::Variable(&zVal));
+    parser.DefineVar("c",  mup::Variable(&cVal));
+    parser.DefineVar("Z", mup::Variable(&zVal));
+    parser.DefineVar("C",  mup::Variable(&cVal));
 
     if (julia)
         cVal = mup::cmplx_type(_kReal, _kImaginary);

@@ -8,11 +8,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -61,18 +61,15 @@ MUP_NAMESPACE_START
       virtual ~IOprtBin();
       virtual string_type AsciiDump() const;
 
-      virtual int GetPri() const;
-      virtual EOprtAsct GetAssociativity() const;
-
       //------------------------------------------
       // IPrecedence implementation
       //------------------------------------------
 
       virtual IPrecedence* AsIPrecedence();
+      virtual EOprtAsct GetAssociativity() const;
+      virtual int GetPri() const;
 
     private:
-
-      void CheckPrototype(const string_type &a_szProt);
       int m_nPrec;
       EOprtAsct m_eAsc;
     }; // class IOperator
@@ -95,34 +92,24 @@ MUP_NAMESPACE_START
     /** \brief Interface for unary infix operators.
         \ingroup infix
     */
-    class IOprtInfix : public ICallback
+    class IOprtInfix : public ICallback,
+                       public IPrecedence
     {
     public:
-        IOprtInfix(const char_type *a_szIdent);
-        virtual ~IOprtInfix();
-        virtual string_type AsciiDump() const;
-    }; // class IOperator
+      IOprtInfix(const char_type *a_szIdent, int nPrec);
+      virtual ~IOprtInfix();
+      virtual string_type AsciiDump() const;
 
-    //------------------------------------------------------------------------------
-    /** \brief Interface for index operator tokens.
-    */
-    class IOprtIndex : public IToken
-    {
-    public:
-        IOprtIndex(int nArgc);
-        virtual ~IOprtIndex();
-        virtual string_type AsciiDump() const;
-        virtual void At(ptr_val_type& ret, const ptr_val_type *arg, int argc) = 0;
-        virtual IOprtIndex* AsIOprtIndex();
+      //------------------------------------------
+      // IPrecedence implementation
+      //------------------------------------------
 
-        int  GetArgc() const;
-        int  GetArgsPresent() const;
-        void SetNumArgsPresent(int argc);
+      virtual IPrecedence* AsIPrecedence();
+      virtual int GetPri() const;
+      virtual EOprtAsct GetAssociativity() const;
 
     private:
-        int m_nArgc;          ///< Number of arguments needed for the index operator (dimension of the index)
-        int m_nArgsPresent;   ///< Number of arguments actually submitted
-
+      int m_nPrec;
     }; // class IOperator
 }  // namespace mu
 

@@ -5,11 +5,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (c) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -42,7 +42,7 @@ MUP_NAMESPACE_START
 
 //--------------------------------------------------------------------------------------------
     IValueReader::IValueReader()
-      :m_pTokenReader(NULL)
+      :m_pTokenReader(nullptr)
     {}
 
     //--------------------------------------------------------------------------------------------
@@ -67,6 +67,6 @@ MUP_NAMESPACE_START
     {
       const TokenReader::token_buf_type &buf = m_pTokenReader->GetTokens();
       std::size_t size = buf.size();
-      return (pos>=size) ? NULL : buf[size-1-pos].Get();
+      return (pos>=size) ? nullptr : buf[size-1-pos].Get();
     }
 }

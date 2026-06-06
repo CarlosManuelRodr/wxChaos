@@ -8,12 +8,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -52,11 +48,55 @@ MUP_NAMESPACE_START
   class FunMatrixOnes : public ICallback
   {
   public:
-    FunMatrixOnes(IPackage *pPackage = NULL);
+    FunMatrixOnes();
     virtual ~FunMatrixOnes();
-    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc);
-    virtual const char_type* GetDesc() const;
-    virtual IToken* Clone() const;
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
+  };
+
+  //-----------------------------------------------------------------------
+  /** \brief Parser callback object for creating matrices consisting 
+             entirely of zeros.
+      \ingroup functions
+  */
+  class FunMatrixZeros : public ICallback
+  {
+  public:
+    FunMatrixZeros();
+    virtual ~FunMatrixZeros();
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
+  };
+
+  //-----------------------------------------------------------------------
+  /** \brief Parser callback object for creating unity matrices.
+      \ingroup functions
+  */
+  class FunMatrixEye : public ICallback
+  {
+  public:
+    FunMatrixEye();
+    virtual ~FunMatrixEye();
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
+  };
+
+
+  //-----------------------------------------------------------------------
+  /** \brief Determines the dimensions of a matrix.
+      \ingroup functions
+  */
+  class FunMatrixSize : public ICallback
+  {
+  public:
+    FunMatrixSize();
+    virtual ~FunMatrixSize();
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
   };
 }  // namespace mu
 

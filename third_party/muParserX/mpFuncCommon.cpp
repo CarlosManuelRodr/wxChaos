@@ -5,11 +5,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -55,7 +55,6 @@ MUP_NAMESPACE_START
   {}
 
   //------------------------------------------------------------------------------
-  /** \brief Returns the number of elements stored in the first parameter. */
   void FunParserID::Eval(ptr_val_type &ret, const ptr_val_type * /*a_pArg*/, int /*a_iArgc*/)
   {
     string_type sVer = _T("muParserX V") + GetParent()->GetVersion();
@@ -86,12 +85,15 @@ MUP_NAMESPACE_START
   //------------------------------------------------------------------------------
   void FunMax::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc)
   {
+    if (a_iArgc < 1)
+        throw ParserError(ErrorContext(ecTOO_FEW_PARAMS, GetExprPos(), GetIdent()));
+
     float_type max(-1e30), val(0);
     for (int i=0; i<a_iArgc; ++i)
     {
       switch(a_pArg[i]->GetType())
       {
-      case 'f': val = a_pArg[i]->GetFloat();   break;
+      case 'f':
       case 'i': val = a_pArg[i]->GetFloat(); break;
       case 'n': break; // ignore not in list entries (missing parameter)
       case 'c':
@@ -139,6 +141,9 @@ MUP_NAMESPACE_START
   */
   void FunMin::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc)
   {
+    if (a_iArgc < 1)
+        throw ParserError(ErrorContext(ecTOO_FEW_PARAMS, GetExprPos(), GetIdent()));
+
     float_type min(1e30), val(min);
 
     for (int i=0; i<a_iArgc; ++i)
@@ -192,6 +197,9 @@ MUP_NAMESPACE_START
   */
   void FunSum::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc)
   {
+    if (a_iArgc < 1)
+        throw ParserError(ErrorContext(ecTOO_FEW_PARAMS, GetExprPos(), GetIdent()));
+
     float_type sum(0);
 
     for (int i=0; i<a_iArgc; ++i)
@@ -246,7 +254,7 @@ MUP_NAMESPACE_START
   void FunSizeOf::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc)
   {
     assert(a_iArgc==1);
-    *ret = (int)(a_pArg[0]->GetArray().GetRows());
+    *ret = (float_type)a_pArg[0]->GetArray().GetRows();
   }
 
   //------------------------------------------------------------------------------

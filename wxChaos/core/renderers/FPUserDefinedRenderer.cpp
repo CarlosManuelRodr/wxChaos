@@ -18,11 +18,11 @@ void FPUserDefinedRenderer::SetFormula(const FormulaOpt& formula)
 void FPUserDefinedRenderer::Render()
 {
     mup::ParserX parser;
-    parser.SetExpr(_parserFormula.wc_str());
+    parser.SetExpr(_parserFormula.utf8_string());
 
     mup::Value zVal;
-    parser.DefineVar(_T("z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("Z"), mup::Variable(&zVal));
+    parser.DefineVar("z", mup::Variable(&zVal));
+    parser.DefineVar("Z", mup::Variable(&zVal));
 
     try
     {

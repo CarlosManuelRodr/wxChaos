@@ -49,11 +49,11 @@ void FPUserDefined::SetFormula(FormulaOpt formula)
 void FPUserDefined::DrawOrbit()
 {
     mup::ParserX parser;
-    parser.SetExpr(_userFormula.userFormula.wc_str());
+    parser.SetExpr(_userFormula.userFormula.utf8_string());
 
     mup::Value zVal;
-    parser.DefineVar(_T("z"), mup::Variable(&zVal));
-    parser.DefineVar(_T("Z"), mup::Variable(&zVal));
+    parser.DefineVar("z", mup::Variable(&zVal));
+    parser.DefineVar("Z", mup::Variable(&zVal));
     zVal = mup::cmplx_type(_orbitX, _orbitY);
 
     try

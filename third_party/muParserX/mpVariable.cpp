@@ -8,12 +8,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -48,11 +44,12 @@ MUP_NAMESPACE_START
   /** \brief Create a variable and bind a value to it.
       \param pVal Pointer of the value to bind to this variable.
 
-    It is possible to create an empty variable object by setting pVal to null.
-    Such variable objects must be bound later in order to be of any use.
+    It is possible to create an empty variable object by setting pVal to nullptr.
+    Such variable objects must be bound later in order to be of any use. The parser
+    does NOT assume ownership over the pointer!
   */
   Variable::Variable(IValue *pVal)
-    :IValue(cmVAR)
+    :IValue(cmVAL)
     ,m_pVal(pVal)
   {
     AddFlags(IToken::flVOLATILE);
@@ -60,7 +57,7 @@ MUP_NAMESPACE_START
 
   //-----------------------------------------------------------------------------------------------
   Variable::Variable(const Variable &obj)
-    :IValue(cmVAR)
+    :IValue(cmVAL)
   {
     Assign(obj);
     AddFlags(IToken::flVOLATILE);
@@ -190,68 +187,140 @@ MUP_NAMESPACE_START
     return (m_pVal) ? m_pVal->GetType() : 'v';
   }
 
-  //-----------------------------------------------------------------------------------------------
-  /** \brief Returns the Value pointer bound to this variable. 
-      \throw nothrow
-  */
-  IValue* Variable::GetPtr() const
-  {
-    return m_pVal;
-  }
+    //-----------------------------------------------------------------------------------------------
+    /** \brief Returns the Value pointer bound to this variable. 
+        \throw nothrow
+    */
+    IValue* Variable::GetPtr() const
+    {
+        return m_pVal;
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  int_type Variable::GetInteger() const
-  {
-    return m_pVal->GetInteger();
-  }
+    //-----------------------------------------------------------------------------------------------
+    int_type Variable::GetInteger() const
+    {
+        try
+        {
+            return m_pVal->GetInteger();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  float_type Variable::GetFloat() const
-  {
-    return m_pVal->GetFloat();
-  }
+    //-----------------------------------------------------------------------------------------------
+    float_type Variable::GetFloat() const
+    {
+        try
+        {
+            return m_pVal->GetFloat();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  float_type Variable::GetImag() const
-  {
-    return m_pVal->GetImag();
-  }
+    //-----------------------------------------------------------------------------------------------
+    float_type Variable::GetImag() const
+    {
+        try
+        {
+            return m_pVal->GetImag();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  const cmplx_type& Variable::GetComplex() const
-  {
-    return m_pVal->GetComplex();
-  }
+    //-----------------------------------------------------------------------------------------------
+    const cmplx_type& Variable::GetComplex() const
+    {
+        try
+        {
+            return m_pVal->GetComplex();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  const string_type& Variable::GetString() const
-  {
-    return m_pVal->GetString();
-  }
+    //-----------------------------------------------------------------------------------------------
+    const string_type& Variable::GetString() const
+    {
+        try
+        {
+            return m_pVal->GetString();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  bool Variable::GetBool() const
-  {
-    return m_pVal->GetBool();
-  }
+    //-----------------------------------------------------------------------------------------------
+    bool Variable::GetBool() const
+    {
+        try
+        {
+            return m_pVal->GetBool();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  const matrix_type& Variable::GetArray() const
-  {
-    return m_pVal->GetArray();
-  }
+    //-----------------------------------------------------------------------------------------------
+    const matrix_type& Variable::GetArray() const
+    {
+        try
+        {
+            return m_pVal->GetArray();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  int Variable::GetRows() const
-  {
-    return m_pVal->GetRows();
-  }
+    //-----------------------------------------------------------------------------------------------
+    int Variable::GetRows() const
+    {
+        try
+        {
+            return m_pVal->GetRows();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
-  //-----------------------------------------------------------------------------------------------
-  int Variable::GetCols() const
-  {
-    return m_pVal->GetCols();
-  }
+    //-----------------------------------------------------------------------------------------------
+    int Variable::GetCols() const
+    {
+        try
+        {
+            return m_pVal->GetCols();
+        }
+        catch (ParserError &exc)
+        {
+            exc.GetContext().Ident = GetIdent();
+            throw;
+        }
+    }
 
   //-----------------------------------------------------------------------------------------------
   void Variable::SetFloat(float_type a_fVal)
@@ -280,8 +349,8 @@ MUP_NAMESPACE_START
     m_pVal = pValue;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  bool Variable::IsVolatile() const
+  //---------------------------------------------------------------------------
+  bool Variable::IsVariable() const
   {
     return true;
   }
@@ -295,7 +364,7 @@ MUP_NAMESPACE_START
   //-----------------------------------------------------------------------------------------------
   Value* Variable::AsValue()
   {
-    return NULL;
+    return nullptr;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -305,6 +374,7 @@ MUP_NAMESPACE_START
 
     ss << g_sCmdCode[ GetCode() ];
     ss << _T(" [addr=0x") << std::hex << this << std::dec;
+    ss << _T("; pos=") << GetExprPos();
     ss << _T("; id=\"") << GetIdent() << _T("\"");
     ss << _T("; type=\"") << GetType() << _T("\"");
     ss << _T("; val=");
@@ -317,7 +387,7 @@ MUP_NAMESPACE_START
     case 's': ss << _T("\"") << GetString() << _T("\""); break;
     }
 
-    ss << ((IsFlagSet(IToken::flVOLATILE)) ? _T("; ") : _T("; not ")) << _T("volatile");
+    ss << ((IsFlagSet(IToken::flVOLATILE)) ? _T("; ") : _T("; not ")) << _T("vol");
     ss << _T("]");
 
     return ss.str();

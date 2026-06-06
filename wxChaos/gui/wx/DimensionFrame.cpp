@@ -1043,10 +1043,10 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
         // Create divisions vector.
         _div.clear();
         mup::ParserX parser;
-        parser.SetExpr(_funcCtrl->GetValue().wc_str());
+        parser.SetExpr(_funcCtrl->GetValue().utf8_string());
 
         mup::Value xVal;
-        parser.DefineVar(_T("x"), mup::Variable(&xVal));
+        parser.DefineVar("x", mup::Variable(&xVal));
         int xMin = _xMinSpin->GetValue();
         int xMax = _xMaxSpin->GetValue();
 
@@ -1058,7 +1058,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
             {
                 for (int x = xMin; x < xMax; x++)
                 {
-                    xVal = x;
+                    xVal = static_cast<double>(x);
                     _div.push_back(parser.Eval().GetFloat());
                 }
             }

@@ -5,11 +5,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -73,6 +73,7 @@ MUP_NAMESPACE_START
 
     ss << GetIdent();
     ss << _T(" [addr=0x") << std::hex << this << std::dec;
+    ss << _T("; pos=") << GetExprPos();
     ss << _T("; offset=") << m_nOffset;
     ss << _T("]");
     return ss.str();

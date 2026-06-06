@@ -8,11 +8,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -60,16 +60,16 @@ MUP_NAMESPACE_START
       // IToken interface
       //---------------------------------------------
 
-      virtual IToken* Clone() const;
-      virtual string_type AsciiDump() const;
-      virtual IPrecedence* AsIPrecedence();
+      virtual IToken* Clone() const override;
+      virtual string_type AsciiDump() const override;
+      virtual IPrecedence* AsIPrecedence() override;
 
       //---------------------------------------------
       // IPrecedence interface
       //---------------------------------------------
 
-      virtual int GetPri() const;
-      virtual EOprtAsct GetAssociativity() const;
+      virtual int GetPri() const override;
+      virtual EOprtAsct GetAssociativity() const override;
 
   private:
       int m_nOffset;

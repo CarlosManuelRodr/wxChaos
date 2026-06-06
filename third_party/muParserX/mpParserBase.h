@@ -11,12 +11,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -47,6 +43,7 @@
 #include <memory>
 
 #include "mpIOprt.h"
+#include "mpIOprtBinShortcut.h"
 #include "mpIValReader.h"
 #include "mpIPackage.h"
 #include "mpStack.h"
@@ -73,7 +70,6 @@ MUP_NAMESPACE_START
 
   private:
 
-    //typedef Value (ParserXBase::*parse_function_type)() const;  
     typedef const IValue& (ParserXBase::*parse_function_type)() const;  
     static const char_type *c_DefaultOprt[]; 
     static bool s_bDumpStack;
@@ -95,16 +91,28 @@ MUP_NAMESPACE_START
     void AddValueReader(IValueReader *a_pReader);
 
     void AddPackage(IPackage *p);
-    void RemovePackage(IPackage *p);
 
-    void DefineFun(ICallback *a_pCallback);
-    void DefineConst(const string_type &a_sName, const Value &a_Val);
-    void DefineVar(const string_type &a_sName, const Variable &a_fVar);
-    
-    // adding operators
-    void DefineOprt(IOprtBin *a_pCallback);
-    void DefinePostfixOprt(IOprtPostfix *a_pCallback);
-    void DefineInfixOprt(IOprtInfix *a_pCallback);
+    void DefineConst(const string_type &ident, const Value &val);
+    void DefineVar(const string_type &ident, const Variable &var);
+    void DefineFun(const ptr_cal_type &fun);
+    void DefineOprt(const TokenPtr<IOprtBin> &oprt);
+    void DefineOprt(const TokenPtr<IOprtBinShortcut> &oprt);
+    void DefinePostfixOprt(const TokenPtr<IOprtPostfix> &oprt);
+    void DefineInfixOprt(const TokenPtr<IOprtInfix> &oprt);
+
+    bool IsVarDefined(const string_type &ident) const;
+    bool IsConstDefined(const string_type &ident) const;
+    bool IsFunDefined(const string_type &ident) const;
+    bool IsOprtDefined(const string_type &ident) const;
+    bool IsPostfixOprtDefined(const string_type &ident) const;
+    bool IsInfixOprtDefined(const string_type &ident) const;
+
+    void RemoveVar(const string_type &ident) ;
+    void RemoveConst(const string_type &ident);
+    void RemoveFun(const string_type &ident);
+    void RemoveOprt(const string_type &ident);
+    void RemovePostfixOprt(const string_type &ident);
+    void RemoveInfixOprt(const string_type &ident);
 
     // Clear user defined variables, constants or functions
     void ClearVar();
@@ -115,7 +123,6 @@ MUP_NAMESPACE_START
     void ClearOprt();
     void DumpRPN() const;
 
-    void RemoveVar(const string_type &a_sVarName);
     const var_maptype& GetExprVar() const;
     const var_maptype& GetVar() const;
     const val_maptype& GetConst() const;
@@ -139,32 +146,37 @@ MUP_NAMESPACE_START
                 int a_iPos = -1,
                 const IToken *a_pTok = 0) const;
 
-  protected:
-
+    // Allow clients to check syntacticaly correctnes of name against character set.
     void  CheckName(const string_type &a_sName, const string_type &a_CharSet) const;
+
+  protected:
 
     fun_maptype  m_FunDef;           ///< Function definitions
     oprt_pfx_maptype m_PostOprtDef;  ///< Postfix operator callbacks
     oprt_ifx_maptype m_InfixOprtDef; ///< Infix operator callbacks.
-    oprt_bin_multimap m_OprtDef;     ///< Binary operator callbacks
-    val_maptype  m_valConst;         ///< Definition of parser constants
-    var_maptype  m_VarDef;           ///< user defind variables.
+    oprt_bin_maptype m_OprtDef;      ///< Binary operator callbacks
+    oprt_bin_shortcut_maptype   m_OprtShortcutDef;        ///< short circuit operator definitions
+    val_maptype  m_valDef;           ///< Definition of parser constants
+    var_maptype  m_varDef;           ///< user defind variables.
 
   private:
 
     void  ReInit() const;
     void  ClearExpr();
     void  CreateRPN() const;
-    void  StackDump(const Stack<ptr_val_type> &a_stVal, 
-                     const Stack<ptr_tok_type> &a_stOprt) const;
+    void  StackDump(const Stack<ptr_tok_type> &a_stOprt) const;
+
+    // Used by by DefineVar and DefineConst methods
+    // for better checking of var/const/oprt/fun existence.
+    void CheckForEntityExistence(const string_type & ident, EErrorCodes error_code);
 
     void Assign(const ParserXBase &a_Parser);
     void InitTokenReader();
 
-    void ApplyFunc(Stack<ptr_tok_type> &a_stOpt, Stack<ptr_val_type> &a_stVal, int a_iArgCount) const;
-    void ApplyIfElse(Stack<ptr_tok_type> &a_stOpt, Stack<ptr_val_type> &a_stVal) const;
-    void ApplyRemainingOprt(Stack<ptr_tok_type> &a_stOpt,
-                                Stack<ptr_val_type> &a_stVal) const;
+    void ApplyFunc(Stack<ptr_tok_type> &a_stOpt, int a_iArgCount) const;
+    void ApplyOprtShortcut(Stack<ptr_tok_type> &a_stOpt) const;
+    void ApplyIfElse(Stack<ptr_tok_type> &a_stOpt) const;
+    void ApplyRemainingOprt(Stack<ptr_tok_type> &a_stOpt) const;
     const IValue& ParseFromString() const; 
     const IValue& ParseFromRPN() const; 
 
@@ -176,12 +188,13 @@ MUP_NAMESPACE_START
     mutable parse_function_type m_pParserEngine;
 
     /** \brief Managed pointer to the token reader object. */
-    std::auto_ptr<TokenReader> m_pTokenReader; 
+    std::unique_ptr<TokenReader> m_pTokenReader;
 
     val_vec_type m_valDynVarShadow;  ///< Value objects referenced by variables created at parser runtime
     string_type m_sNameChars;        ///< Charset for names
     string_type m_sOprtChars;        ///< Charset for postfix/ binary operator tokens
     string_type m_sInfixOprtChars;   ///< Charset for infix operator tokens
+    mutable int m_nPos;
 
     /** \brief Index of the final result in the stack array. 
     

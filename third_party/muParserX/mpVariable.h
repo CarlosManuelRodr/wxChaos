@@ -8,12 +8,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -89,11 +85,10 @@ MUP_NAMESPACE_START
     virtual int GetRows() const;
     virtual int GetCols() const;
 
-    virtual bool IsVolatile() const;
+    virtual bool IsVariable() const;
     virtual IToken* Clone() const;
     virtual Value* AsValue();
 
-    //void Set(Value &val);
     void SetFloat(float_type a_fVal);
     void SetString(const string_type &a_sVal);
     void SetBool(bool a_bVal);

@@ -8,12 +8,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -48,7 +44,7 @@ MUP_NAMESPACE_START
 /** \brief Package for installing unit postfix operators into muParserX. */
 class PackageStr : public IPackage
 {
-friend class std::auto_ptr<PackageStr>;
+friend class std::unique_ptr<PackageStr>;
 
 public:
   
@@ -59,7 +55,7 @@ public:
 
 private:
 
-  static std::auto_ptr<PackageStr> s_pInstance;
+  static std::unique_ptr<PackageStr> s_pInstance;
 };
 
 MUP_NAMESPACE_END

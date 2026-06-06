@@ -5,12 +5,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -42,12 +38,12 @@
 MUP_NAMESPACE_START
 
 //------------------------------------------------------------------------------
-std::auto_ptr<PackageStr> PackageStr::s_pInstance;
+std::unique_ptr<PackageStr> PackageStr::s_pInstance;
 
 //------------------------------------------------------------------------------
 IPackage* PackageStr::Instance()
 {
-  if (s_pInstance.get()==NULL)
+  if (s_pInstance.get()==nullptr)
   {
     s_pInstance.reset(new PackageStr);
   }
@@ -64,6 +60,7 @@ void PackageStr::AddToParser(ParserXBase *pParser)
   pParser->DefineFun(new FunStrLen());
   pParser->DefineFun(new FunStrToDbl());
   pParser->DefineFun(new FunStrToUpper());
+  pParser->DefineFun(new FunStrToLower());
 
   // Operators
   pParser->DefineOprt(new OprtStrAdd);

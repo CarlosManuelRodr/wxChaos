@@ -5,12 +5,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -43,12 +39,12 @@
 MUP_NAMESPACE_START
 
 //------------------------------------------------------------------------------
-std::auto_ptr<PackageNonCmplx> PackageNonCmplx::s_pInstance;
+std::unique_ptr<PackageNonCmplx> PackageNonCmplx::s_pInstance;
 
 //------------------------------------------------------------------------------
 IPackage* PackageNonCmplx::Instance()
 {
-  if (s_pInstance.get()==NULL)
+  if (s_pInstance.get()==nullptr)
   {
     s_pInstance.reset(new PackageNonCmplx);
   }
@@ -77,10 +73,19 @@ void PackageNonCmplx::AddToParser(ParserXBase *pParser)
   pParser->DefineFun(new FunLn());
   pParser->DefineFun(new FunExp());
   pParser->DefineFun(new FunSqrt());
+  pParser->DefineFun(new FunCbrt());
   pParser->DefineFun(new FunAbs());
+
+  // binary functions
+  pParser->DefineFun(new FunPow());
+  pParser->DefineFun(new FunHypot());
+  pParser->DefineFun(new FunAtan2());
+  pParser->DefineFun(new FunFmod());
+  pParser->DefineFun(new FunRemainder());
 
   // Operator callbacks
   pParser->DefineInfixOprt(new OprtSign());
+  pParser->DefineInfixOprt(new OprtSignPos());
   pParser->DefineOprt(new OprtAdd());
   pParser->DefineOprt(new OprtSub());
   pParser->DefineOprt(new OprtMul());

@@ -1,3 +1,6 @@
+#ifndef MUP_DEFINES_H
+#define MUP_DEFINES_H
+
 /** \file
     \brief A file containing macros used by muParserX
 
@@ -8,11 +11,7 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
-                                       All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023 Ingo Berg, et. al.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -36,21 +35,16 @@
   POSSIBILITY OF SUCH DAMAGE.
 </pre>
 */
-#ifndef MUP_DEFINES_H
-#define MUP_DEFINES_H
-
 #include <cassert>
 
-
-#if defined(_UNICODE)
+#if defined(MUP_USE_WIDE_STRING)
   #if !defined(_T)
-  #define _T(x) L##x
+    #define _T(x) L##x
   #endif // not defined _T
   #define MUP_STRING_TYPE std::wstring
 #else
   #ifndef _T
-  /** \brief Macro needed for the "unicodification" of strings.
-  */
+  /** \brief Macro needed for the "unicodification" of strings. */
   #define _T(x) x
   #endif
   
@@ -62,7 +56,7 @@
 #endif
 
 /** \brief A macro containing the version of muParserX. */
-#define MUP_PARSER_VERSION _T("2.1.6 (20121221; mayan calendar doomsday edition)")
+#define MUP_PARSER_VERSION _T("4.0.12 (2023-03-04)")
 
 /** \brief A macro for setting the parser namespace. */
 #define MUP_NAMESPACE_START namespace mup {
@@ -70,20 +64,25 @@
 /** \brief Closing bracket for the parser namespace macro. */
 #define MUP_NAMESPACE_END }
 
+/** \brief Floating point type used by the parser. */
+#define MUP_FLOAT_TYPE double
+
+#define MUP_INT_TYPE int64_t
+
 /** \brief Verifies whether a given condition is met.
 	
   If the condition is not met an exception is thrown otherwise nothing happens.
   This macro is used for implementing asserts. Unlike MUP_ASSERT, MUP_VERIFY 
   will not be removed in release builds.
 */
-#define MUP_VERIFY(COND)                          \
-        if (!(COND))                              \
-        {                                         \
-        stringstream_type ss;                     \
+#define MUP_VERIFY(COND)                         \
+        if (!(COND))                             \
+        {                                        \
+        stringstream_type ss;                    \
         ss << _T("Assertion \"") _T(#COND) _T("\" failed: ") \
-            << __FILE__ << _T(" line ")           \
-            << __LINE__ << _T(".");               \
-        throw ParserError( ss.str() );            \
+           << __FILE__ << _T(" line ")           \
+           << __LINE__ << _T(".");               \
+        throw ParserError( ss.str() );           \
         }
 
 #if defined(_DEBUG)
@@ -95,18 +94,12 @@
           bool MSG=false;  \
           assert(MSG);
 
-  #define MUP_ASSERT MUP_VERIFY
-  //#define MUP_LEAKAGE_REPORT
+  #define MUP_LEAKAGE_REPORT
 #else
   #define MUP_FAIL(MSG)
-  #define MUP_ASSERT(COND)
   #define MUP_TOK_CAST(TYPE, POINTER)  static_cast<TYPE>(POINTER);
 #endif
 
-  /** \brief Include tests for features about to be implemented in 
-             the future in the unit test.
-  */
-  //#define MUP_NICE_TO_HAVE
 #endif
 
 

@@ -5,12 +5,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -44,8 +40,6 @@
 MUP_NAMESPACE_START
 
     /** \brief Test cases for unit testing the parser framework.
-
-      (C) 2011 Ingo Berg
     */
     class ParserTester // final
     {
@@ -53,7 +47,6 @@ MUP_NAMESPACE_START
         static int c_iCount;
 
         int TestParserValue();
-        int TestNames();
         int TestErrorCodes();
         int TestStringFun();
         int TestVector();
@@ -64,9 +57,11 @@ MUP_NAMESPACE_START
         int TestMultiArg();
         int TestUndefVar();
         int TestIfElse();
-        int TestMultiLine();
         int TestMatrix();
         int TestComplex();
+        int TestScript();
+		int TestValReader();
+        int TestIssueReports();
 
         void Assessment(int a_iNumErr) const;
         void Abort() const;
@@ -74,7 +69,7 @@ MUP_NAMESPACE_START
     public:
         typedef int (ParserTester::*testfun_type)();
 
-	      ParserTester();
+        ParserTester();
 
         /** \brief Destructor (trivial). */
        ~ParserTester() {};
@@ -85,22 +80,22 @@ MUP_NAMESPACE_START
           ,m_stream(a_Obj.m_stream)
         {};
 
-	      void Run();
+        void Run();
 
     private:
         std::vector<testfun_type> m_vTestFun;
 
-#if defined(_UNICODE)
+#if defined(MUP_USE_WIDE_STRING)
         std::wostream *m_stream;
 #else
         std::ostream *m_stream;
 #endif
 
-	      void AddTest(testfun_type a_pFun);
+        void AddTest(testfun_type a_pFun);
 
         // Test Double Parser
-        int EqnTest(const string_type &a_str, Value a_val, bool a_fPass, int nExprVar = -1);
-        int ThrowTest(const string_type &a_str, int a_nErrc, int a_nPos = -1);
+        int EqnTest(const string_type &a_str, Value a_val, bool a_fPass, int nExprVar = -1, bool evaluateOnce = false);
+        int ThrowTest(const string_type &a_str, int a_nErrc, int a_nPos = -1, string_type a_sIdent = string_type());
     }; // ParserTester
 }  // namespace mu
 

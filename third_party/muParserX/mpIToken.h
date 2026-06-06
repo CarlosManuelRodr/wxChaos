@@ -6,11 +6,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -48,7 +48,7 @@ MUP_NAMESPACE_START
       \author (C) 2010 Ingo Berg 
 
       Tokens can either be Functions, operators, values, variables or necessary 
-      base tokens like brackets. ´The IToken baseclass implements reference 
+      base tokens like brackets. Â´The IToken baseclass implements reference 
       counting. Only TokenPtr<...> templates may be used as pointers to tokens.
   */
   class IToken
@@ -59,9 +59,13 @@ MUP_NAMESPACE_START
   friend class TokenPtr<IToken>;
   friend class TokenPtr<IValue>;
   friend class TokenPtr<IOprtBin>;
+  friend class TokenPtr<IOprtInfix>;
+  friend class TokenPtr<IOprtPostfix>;
   friend class TokenPtr<IFunction>;
   friend class TokenPtr<Value>;
   friend class TokenPtr<Variable>;
+  friend class TokenPtr<ICallback>;
+  friend class TokenPtr<IOprtBinShortcut>;
 
   public:
 
@@ -78,7 +82,6 @@ MUP_NAMESPACE_START
     virtual ICallback* AsICallback();
     virtual IValue* AsIValue();
     virtual IPrecedence* AsIPrecedence();
-    virtual IOprtIndex* AsIOprtIndex();
 
     virtual void Compile(const string_type &sArg);
 
@@ -138,9 +141,9 @@ MUP_NAMESPACE_START
       GenericToken(ECmdCode a_iCode, string_type a_sIdent);
       explicit GenericToken(ECmdCode a_iCode);
       GenericToken(const GenericToken &a_Tok);      
-      virtual ~GenericToken();
-      virtual IToken* Clone() const;
-      virtual string_type AsciiDump() const;
+      virtual ~GenericToken() override;
+      virtual IToken* Clone() const override;
+      virtual string_type AsciiDump() const override;
   };
 
   //------------------------------------------------------------------------------
@@ -152,7 +155,7 @@ MUP_NAMESPACE_START
       typedef T* token_type;
 
       //---------------------------------------------------------------------------
-      explicit TokenPtr(token_type p = 0)
+      TokenPtr(token_type p = 0)
         :m_pTok(p)
       {
         if (m_pTok)

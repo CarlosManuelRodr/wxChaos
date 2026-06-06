@@ -5,12 +5,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -41,12 +37,12 @@
 MUP_NAMESPACE_START
 
 //------------------------------------------------------------------------------
-std::auto_ptr<PackageMatrix> PackageMatrix::s_pInstance;
+std::unique_ptr<PackageMatrix> PackageMatrix::s_pInstance;
 
 //------------------------------------------------------------------------------
 IPackage* PackageMatrix::Instance()
 {
-  if (s_pInstance.get()==NULL)
+  if (s_pInstance.get()==nullptr)
   {
     s_pInstance.reset(new PackageMatrix);
   }
@@ -59,12 +55,16 @@ void PackageMatrix::AddToParser(ParserXBase *pParser)
 {
   // Matrix functions
   pParser->DefineFun(new FunMatrixOnes());
+  pParser->DefineFun(new FunMatrixZeros());
+  pParser->DefineFun(new FunMatrixEye());
+  pParser->DefineFun(new FunMatrixSize());
   
   // Matrix Operators
-  pParser->DefinePostfixOprt(new OprtTranspose(this));
+  pParser->DefinePostfixOprt(new OprtTranspose());
 
   // Colon operator
-  pParser->DefineOprt(new OprtColon());
+//pParser->DefineOprt(new OprtColon());
+//pParser->DefineAggregator(new AggColon());
 }
 
 //------------------------------------------------------------------------------

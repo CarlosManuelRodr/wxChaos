@@ -5,12 +5,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -60,10 +56,23 @@ MUP_NAMESPACE_START
   {
   public:
     OprtSign();
-    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc);
-    virtual const char_type* GetDesc() const;
-    virtual IToken* Clone() const;
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
   }; // class OprtSign
+
+  //---------------------------------------------------------------------------
+  /** \brief Callback for the positive sign operator for noncomplex values.
+      \ingroup infix
+  */
+  class OprtSignPos : public IOprtInfix
+  {
+  public:
+    OprtSignPos();
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
+  }; // class OprtSignPos
 
   //------------------------------------------------------------------------------
   /** \brief Parser callback for implementing an addition of two noncomplex values.
@@ -73,9 +82,9 @@ MUP_NAMESPACE_START
   {
   public:
     OprtAdd();
-    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int);
-    virtual const char_type* GetDesc() const;
-    virtual IToken* Clone() const;
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
   };
 
   //------------------------------------------------------------------------------
@@ -86,9 +95,9 @@ MUP_NAMESPACE_START
   {
   public:
     OprtSub();
-    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int);
-    virtual const char_type* GetDesc() const;
-    virtual IToken* Clone() const;
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
   };
 
   //------------------------------------------------------------------------------
@@ -99,9 +108,9 @@ MUP_NAMESPACE_START
   {
   public:
     OprtMul();
-    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int);
-    virtual const char_type* GetDesc() const;
-    virtual IToken* Clone() const;
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
   };
 
   //------------------------------------------------------------------------------
@@ -112,9 +121,9 @@ MUP_NAMESPACE_START
   {
   public:
     OprtDiv();
-    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int);
-    virtual const char_type* GetDesc() const;
-    virtual IToken* Clone() const;
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
   };
 
   //------------------------------------------------------------------------------
@@ -127,10 +136,10 @@ MUP_NAMESPACE_START
     
     OprtPow();
                                                                         
-    virtual void Eval(ptr_val_type& ret, const ptr_val_type *arg, int argc);
-    virtual const char_type* GetDesc() const;
-    virtual IToken* Clone() const;
-  }; 
+    virtual void Eval(ptr_val_type& ret, const ptr_val_type *arg, int argc) override;
+    virtual const char_type* GetDesc() const override;
+    virtual IToken* Clone() const override;
+  };
 }  // namespace mu
 
 #endif

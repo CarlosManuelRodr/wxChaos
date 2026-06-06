@@ -5,11 +5,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -63,7 +63,8 @@ MUP_NAMESPACE_START
 
     ss << g_sCmdCode[ GetCode() ];
     ss << _T(" [addr=0x") << std::hex << this << std::dec;
-    ss << _T("; ident=\"") << GetIdent() << _T("\"");
+    ss << _T("; pos=") << GetExprPos();
+    ss << _T("; id=\"") << GetIdent() << _T("\"");
     ss << _T("; prec=") << GetPri();
     ss << _T("; argc=") << GetArgc();
     ss << _T("]");
@@ -81,22 +82,6 @@ MUP_NAMESPACE_START
   EOprtAsct IOprtBin::GetAssociativity() const
   {
     return m_eAsc;
-  }
-
-  //------------------------------------------------------------------------------
-  /** \brief Verify the operator prototype.
-
-    Binary operators have the additional constraint that return type and the types
-    of both arguments must be the same. So adding to floats can not produce a string
-    and adding a number to a string is impossible.
-  */
-  void IOprtBin::CheckPrototype(const string_type &a_sProt)
-  {
-    if (a_sProt.length()!=4)
-      throw ParserError( ErrorContext(ecAPI_INVALID_PROTOTYPE, -1, GetIdent() ) ); 
-
-    //if (a_sProt[0]!=a_sProt[2] || a_sProt[0]!=a_sProt[3])
-    //  throw ParserError( ErrorContext(ecAPI_INVALID_PROTOTYPE, -1, GetIdent() ) ); 
   }
 
   //---------------------------------------------------------------------------
@@ -126,7 +111,8 @@ MUP_NAMESPACE_START
 
     ss << g_sCmdCode[ GetCode() ];
     ss << _T(" [addr=0x") << std::hex << this << std::dec;
-    ss << _T("; ident=\"") << GetIdent() << _T("\"");
+    ss << _T("; pos=") << GetExprPos();
+    ss << _T("; id=\"") << GetIdent() << _T("\"");
     ss << _T("; argc=") << GetArgc();
     ss << _T("]");
 
@@ -139,8 +125,10 @@ MUP_NAMESPACE_START
   //
   //------------------------------------------------------------------------------
 
-  IOprtInfix::IOprtInfix(const char_type *a_szIdent)
+  IOprtInfix::IOprtInfix(const char_type *a_szIdent, int nPrec)
     :ICallback(cmOPRT_INFIX, a_szIdent, 1)
+    ,IPrecedence()
+    ,m_nPrec(nPrec)
   {}
 
   //------------------------------------------------------------------------------
@@ -154,66 +142,29 @@ MUP_NAMESPACE_START
 
     ss << g_sCmdCode[ GetCode() ];
     ss << _T(" [addr=0x") << std::hex << this << std::dec;
-    ss << _T("; ident=\"") << GetIdent() << _T("\"");
+    ss << _T("; pos=") << GetExprPos();
+    ss << _T("; id=\"") << GetIdent() << _T("\"");
     ss << _T("; argc=") << GetArgc();
     ss << _T("]");
 
     return ss.str();
   }
 
-  //------------------------------------------------------------------------------
-  //
-  // Index operators
-  //
-  //------------------------------------------------------------------------------
-
-  IOprtIndex::IOprtIndex(int nArgc)
-    :IToken(cmIC, _T("[...]"))
-    ,m_nArgc(nArgc)
-  {}
-
-  //------------------------------------------------------------------------------
-  IOprtIndex::~IOprtIndex()
-  {}
-
-  //------------------------------------------------------------------------------
-  string_type IOprtIndex::AsciiDump() const
-  {
-    stringstream_type ss;
-
-    ss << g_sCmdCode[ GetCode() ];
-    ss << _T(" [addr=0x") << std::hex << this << std::dec;
-    ss << _T("; ident=\"") << GetIdent() << _T("\"");
-    ss << _T("; argc=") << GetArgc();
-    ss << _T("]");
-
-    return ss.str();
-  }
-
-  //-----------------------------------------------------------------------------------------------
-  IOprtIndex* IOprtIndex::AsIOprtIndex()
+  //---------------------------------------------------------------------------
+  IPrecedence* IOprtInfix::AsIPrecedence()
   {
     return this;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  int  IOprtIndex::GetArgc() const
+  //------------------------------------------------------------------------------
+  int IOprtInfix::GetPri() const
   {
-    return m_nArgc;
+    return m_nPrec;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  void IOprtIndex::SetNumArgsPresent(int argc)
+  //------------------------------------------------------------------------------
+  EOprtAsct IOprtInfix::GetAssociativity() const
   {
-    m_nArgsPresent = argc;
-  }
-
-  //-----------------------------------------------------------------------------------------------
-  int IOprtIndex::GetArgsPresent() const
-  {
-    if (m_nArgc!=-1)
-      return m_nArgc;
-    else
-      return m_nArgsPresent;
+    return oaNONE;
   }
 }  // namespace mu

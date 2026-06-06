@@ -5,12 +5,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023, Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -43,6 +39,13 @@
 #include "mpValue.h"
 #include "mpError.h"
 
+#ifdef _MSC_VER
+#  define SSCANF sscanf_s
+#  define SWSCANF swscanf_s
+#else
+#  define SSCANF sscanf
+#  define SWSCANF swscanf
+#endif
 
 MUP_NAMESPACE_START
 
@@ -60,7 +63,7 @@ MUP_NAMESPACE_START
   void FunStrLen::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int)
   {
     string_type str = a_pArg[0]->GetString();
-    *ret = (int)str.length();
+    *ret = (float_type)str.length();
   }
 
   //------------------------------------------------------------------------------
@@ -110,6 +113,39 @@ MUP_NAMESPACE_START
 
   //------------------------------------------------------------------------------
   //
+  // ToLower function
+  //
+  //------------------------------------------------------------------------------
+
+  FunStrToLower::FunStrToLower()
+    :ICallback(cmFUNC, _T("tolower"), 1)
+  {}
+
+  //------------------------------------------------------------------------------
+  void FunStrToLower::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int)
+  {
+    using namespace std;
+
+    string_type str = a_pArg[0]->GetString();
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+
+    *ret = str;
+  }
+
+  //------------------------------------------------------------------------------
+  const char_type* FunStrToLower::GetDesc() const
+  {
+    return _T("tolower(s) - Converts the string s to lowercase characters.");
+  }
+
+  //------------------------------------------------------------------------------
+  IToken* FunStrToLower::Clone() const
+  {
+    return new FunStrToLower(*this);
+  }
+
+  //------------------------------------------------------------------------------
+  //
   // String to double conversion
   //
   //------------------------------------------------------------------------------
@@ -123,17 +159,18 @@ MUP_NAMESPACE_START
   {
     assert(a_iArgc==1);
     string_type in;
-    float_type out;
+    double out;   // <- Ich will hier wirklich double, auch wenn der Type long double
+                  // ist. sscanf und long double geht nicht mit GCC!
 
     in = a_pArg[0]->GetString();
     
-#ifndef _UNICODE    
-    sscanf(in.c_str(), "%lf", &out);
+#ifndef MUP_USE_WIDE_STRING    
+    SSCANF(in.c_str(), "%lf", &out);
 #else
-    swscanf(in.c_str(), _T("%lf"), &out);
+    SWSCANF(in.c_str(), _T("%lf"), &out);
 #endif
 
-    *ret = out;
+    *ret = (float_type)out;
   }
 
   //------------------------------------------------------------------------------

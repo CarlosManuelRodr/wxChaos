@@ -5,11 +5,11 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
 
   muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
+  Copyright (C) 2023, Ingo Berg
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -47,7 +47,7 @@ MUP_NAMESPACE_START
   std::list<IToken*> IToken::s_Tokens;
 #endif
 
-#ifndef _UNICODE
+#ifndef MUP_USE_WIDE_STRING
 
   //---------------------------------------------------------------------------
   /** \brief Overloaded streaming operator for outputting the value type 
@@ -55,7 +55,7 @@ MUP_NAMESPACE_START
       \param a_Stream The stream object
       \param a_Val The value object to be streamed
 
-    This function is only present if _UNICODE is not defined.
+    This function is only present if MUP_USE_WIDE_STRING is not defined.
   */
   std::ostream& operator<<(std::ostream &a_Stream, const IToken &tok)
   {
@@ -70,7 +70,7 @@ MUP_NAMESPACE_START
       \param a_Stream The stream object
       \param a_Val The value object to be streamed
 
-    This function is only present if _UNICODE is defined.
+    This function is only present if MUP_USE_WIDE_STRING is defined.
   */
   std::wostream& operator<<(std::wostream &a_Stream, const IToken &tok)
   {
@@ -261,25 +261,19 @@ MUP_NAMESPACE_START
   //---------------------------------------------------------------------------
   ICallback* IToken::AsICallback()
   {
-    return NULL;
+    return nullptr;
   }
 
   //---------------------------------------------------------------------------
   IValue* IToken::AsIValue()
   {
-    return NULL;
+    return nullptr;
   }
 
   //---------------------------------------------------------------------------
   IPrecedence* IToken::AsIPrecedence()
   {
-    return NULL;
-  }
-
-  //------------------------------------------------------------------------------
-  IOprtIndex* IToken::AsIOprtIndex()
-  {
-    return NULL;
+    return nullptr;
   }
 
   //------------------------------------------------------------------------------

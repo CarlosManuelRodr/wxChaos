@@ -5,12 +5,8 @@
   |  Y Y  \  |  /    |     / __ \|  | \/\___ \\  ___/|  | \/     \ 
   |__|_|  /____/|____|    (____  /__|  /____  >\___  >__| /___/\  \
         \/                     \/           \/     \/           \_/
-                                       Copyright (C) 2012 Ingo Berg
+                                       Copyright (C) 2023 Ingo Berg
                                        All rights reserved.
-
-  muParserX - A C++ math parser library with array and string support
-  Copyright (c) 2012, Ingo Berg
-  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
   modification, are permitted provided that the following conditions are met:
@@ -43,13 +39,13 @@ MUP_NAMESPACE_START
   //------------------------------------------------------------------------------
 
   OprtSign::OprtSign()
-    :IOprtInfix( _T("-"))
+    :IOprtInfix( _T("-"), prINFIX)
   {}
 
   //------------------------------------------------------------------------------
-  void OprtSign::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc)  
+  void OprtSign::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc)
   { 
-    MUP_ASSERT(a_iArgc==1);
+      MUP_VERIFY(a_iArgc == 1);
 
     if (a_pArg[0]->IsScalar())
     {
@@ -77,13 +73,63 @@ MUP_NAMESPACE_START
   //------------------------------------------------------------------------------
   const char_type* OprtSign::GetDesc() const 
   { 
-    return _T("unit multiplicator 1e-9"); 
+    return _T("-x - negative sign operator"); 
   }
 
   //------------------------------------------------------------------------------
   IToken* OprtSign::Clone() const 
   { 
     return new OprtSign(*this); 
+  }
+
+  //------------------------------------------------------------------------------
+  //
+  //  Sign operator
+  //
+  //------------------------------------------------------------------------------
+
+  OprtSignPos::OprtSignPos()
+    :IOprtInfix( _T("+"), prINFIX)
+  {}
+
+  //------------------------------------------------------------------------------
+  void OprtSignPos::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc)
+  { 
+      MUP_VERIFY(a_iArgc == 1);
+
+    if (a_pArg[0]->IsScalar())
+    {
+      *ret = a_pArg[0]->GetFloat();
+    }
+    else if (a_pArg[0]->GetType()=='m')
+    {
+      Value v(a_pArg[0]->GetRows(), 0);
+      for (int i=0; i<a_pArg[0]->GetRows(); ++i)
+      {
+        v.At(i) = a_pArg[0]->At(i).GetFloat();
+      }
+      *ret = v;
+    }
+    else
+    {
+        ErrorContext err;
+        err.Errc = ecINVALID_TYPE;
+        err.Type1 = a_pArg[0]->GetType();
+        err.Type2 = 's';
+        throw ParserError(err);
+    }
+  }
+
+  //------------------------------------------------------------------------------
+  const char_type* OprtSignPos::GetDesc() const 
+  { 
+    return _T("+x - positive sign operator"); 
+  }
+
+  //------------------------------------------------------------------------------
+  IToken* OprtSignPos::Clone() const 
+  { 
+    return new OprtSignPos(*this); 
   }
 
 //-----------------------------------------------------------
@@ -347,22 +393,22 @@ MUP_NAMESPACE_START
     {
       switch (ib)
       {
-      case 1: *ret = a; return;
-      case 2: *ret = a*a; return;
-      case 3: *ret = a*a*a; return;
-      case 4: *ret = a*a*a*a; return;
-      case 5: *ret = a*a*a*a*a; return;
-      default: *ret = pow(a, ib); return;
+      case 1:  *ret = a; return;
+      case 2:  *ret = a*a; return;
+      case 3:  *ret = a*a*a; return;
+      case 4:  *ret = a*a*a*a; return;
+      case 5:  *ret = a*a*a*a*a; return;
+      default: *ret = std::pow(a, ib); return;
       }
     }
     else
-      *ret = pow(a, b);
+      *ret = std::pow(a, b);
   }
 
   //-----------------------------------------------------------
   const char_type* OprtPow::GetDesc() const 
   { 
-    return _T("x^y - Raises x to the power of y"); 
+    return _T("x^y - Raises x to the power of y.");
   }
 
   //-----------------------------------------------------------
