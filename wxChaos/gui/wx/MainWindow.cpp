@@ -751,10 +751,9 @@ void MainFrame::OnScriptEditor(wxCommandEvent&)
 void MainFrame::OnZoomRecorder(wxCommandEvent&)
 {
     const SFMLFractal* fractal = fractalCanvas->GetSFMLFractalPtr();
-    const Rect outermostZoom = fractal->GetOutermostZoom();
-    const Rect currentZoom = fractal->GetCurrentZoom();
 
-    if (outermostZoom._left == currentZoom._left &&
+    if (const Rect currentZoom = fractal->GetCurrentZoom(), outermostZoom = fractal->GetOutermostZoom();
+        outermostZoom._left == currentZoom._left &&
         outermostZoom._right == currentZoom._right &&
         outermostZoom._bottom == currentZoom._bottom &&
         outermostZoom._top == currentZoom._top)

@@ -1,38 +1,38 @@
 #include "PanelOptions.h"
 
-PanelOptions::PanelOptions() : forceShow(false) {}
+PanelOptions::PanelOptions() : _forceShow(false) {}
 
-void PanelOptions::LinkInt(const PanelOptionType pType, const wxString& labelTxt, int* linkInt, const wxString& defaultVal)
+void PanelOptions::LinkInt(const PanelOptionType type, const wxString& labelText, int* linkInt, const wxString& defaultValue)
 {
-    type.push_back(pType);
-    label.push_back(labelTxt);
-    defaults.push_back(defaultVal);
-    linkTo.push_back(LinkTo::ToInt);
-    intTarget.push_back(linkInt);
+    _type.push_back(type);
+    _label.push_back(labelText);
+    _defaults.push_back(defaultValue);
+    _linkTo.push_back(LinkTo::ToInt);
+    _intTarget.push_back(linkInt);
 }
-void PanelOptions::LinkDbl(const PanelOptionType pType, const wxString& labelTxt, double* linkDbl, const wxString& defaultVal)
+void PanelOptions::LinkDbl(const PanelOptionType type, const wxString& labelText, double* linkDbl, const wxString& defaultValue)
 {
-    type.push_back(pType);
-    label.push_back(labelTxt);
-    defaults.push_back(defaultVal);
-    linkTo.push_back(LinkTo::ToDouble);
-    dblTarget.push_back(linkDbl);
+    _type.push_back(type);
+    _label.push_back(labelText);
+    _defaults.push_back(defaultValue);
+    _linkTo.push_back(LinkTo::ToDouble);
+    _dblTarget.push_back(linkDbl);
 }
-void PanelOptions::LinkBool(const PanelOptionType pType, const wxString& labelTxt, bool* linkBool, const wxString& defaultVal)
+void PanelOptions::LinkBool(const PanelOptionType type, const wxString& labelText, bool* linkBool, const wxString& defaultValue)
 {
-    type.push_back(pType);
-    label.push_back(labelTxt);
-    defaults.push_back(defaultVal);
-    linkTo.push_back(LinkTo::ToBool);
-    boolTarget.push_back(linkBool);
+    _type.push_back(type);
+    _label.push_back(labelText);
+    _defaults.push_back(defaultValue);
+    _linkTo.push_back(LinkTo::ToBool);
+    _boolTarget.push_back(linkBool);
 }
-size_t PanelOptions::GetElementsSize() const { return type.size(); }
-LinkTo PanelOptions::GetLinkType(const unsigned int index) const { return linkTo.at(index); }
-wxString PanelOptions::GetLabelElement(const unsigned int index) { return label.at(index); }
-int* PanelOptions::GetIntElement(const unsigned int index) const { return intTarget.at(index); }
-double* PanelOptions::GetDoubleElement(const unsigned int index) const { return dblTarget.at(index); }
-bool* PanelOptions::GetBoolElement(const unsigned int index) const { return boolTarget.at(index); }
-wxString PanelOptions::GetDefault(const unsigned int index) { return defaults.at(index); }
-PanelOptionType PanelOptions::GetPanelOptType(const unsigned int index) const { return type.at(index); }
-void PanelOptions::SetForceShow(const bool mode) { forceShow = mode; }
-bool PanelOptions::GetForceShow() const { return forceShow; }
+size_t PanelOptions::GetElementsSize() const { return _type.size(); }
+LinkTo PanelOptions::GetLinkType(const unsigned int index) const { return _linkTo.at(index); }
+wxString PanelOptions::GetLabelElement(const unsigned int index) { return _label.at(index); }
+int* PanelOptions::GetIntElement(const unsigned int index) const { return _intTarget.at(index); }
+double* PanelOptions::GetDoubleElement(const unsigned int index) const { return _dblTarget.at(index); }
+bool* PanelOptions::GetBoolElement(const unsigned int index) const { return _boolTarget.at(index); }
+wxString PanelOptions::GetDefault(const unsigned int index) { return _defaults.at(index); }
+PanelOptionType PanelOptions::GetPanelOptType(const unsigned int index) const { return _type.at(index); }
+void PanelOptions::SetForceShow(const bool mode) { _forceShow = mode; }
+bool PanelOptions::GetForceShow() const { return _forceShow; }

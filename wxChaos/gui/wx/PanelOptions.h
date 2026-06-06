@@ -7,19 +7,20 @@ enum class LinkTo { ToInt, ToDouble, ToBool };
 
 class PanelOptions
 {
-    std::vector<PanelOptionType> type;
-    std::vector<wxString> label;
-    std::vector<wxString> defaults;
-    std::vector<LinkTo> linkTo;
-    std::vector<int*> intTarget;
-    std::vector<double*> dblTarget;
-    std::vector<bool*> boolTarget;
-    bool forceShow;
+    std::vector<PanelOptionType> _type;
+    std::vector<wxString> _label;
+    std::vector<wxString> _defaults;
+    std::vector<LinkTo> _linkTo;
+    std::vector<int*> _intTarget;
+    std::vector<double*> _dblTarget;
+    std::vector<bool*> _boolTarget;
+    bool _forceShow;
+
 public:
     PanelOptions();
-    void LinkInt(PanelOptionType pType, const wxString& labelTxt, int* linkInt, const wxString& defaultVal);
-    void LinkDbl(PanelOptionType pType, const wxString& labelTxt, double* linkDbl, const wxString& defaultVal);
-    void LinkBool(PanelOptionType pType, const wxString& labelTxt, bool* linkBool, const wxString& defaultVal);
+    void LinkInt(PanelOptionType type, const wxString& labelText, int* linkInt, const wxString& defaultValue);
+    void LinkDbl(PanelOptionType type, const wxString& labelText, double* linkDbl, const wxString& defaultValue);
+    void LinkBool(PanelOptionType type, const wxString& labelText, bool* linkBool, const wxString& defaultValue);
     [[nodiscard]] size_t GetElementsSize() const;
     [[nodiscard]] LinkTo GetLinkType(unsigned int index) const;
     wxString GetLabelElement(unsigned int index);
