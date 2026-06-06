@@ -53,10 +53,10 @@ void EnableHighDpiSupport()
 }
 
 /**
-* @class MainApp
+* @class App
 * @brief Starts the execution of the program.
 */
-class MainApp : public wxApp
+class App : public wxApp
 {
 public:
     bool OnInit() override
@@ -71,4 +71,4 @@ public:
 };
 
 // wxWidgets entry point.
-wxIMPLEMENT_APP(MainApp); // NOLINT(*-pro-type-static-cast-downcast)
+wxIMPLEMENT_APP(App); // NOLINT(*-pro-type-static-cast-downcast)
