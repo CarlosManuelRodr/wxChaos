@@ -584,6 +584,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent&)
     else
         formDialog->SetFocus();
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnRedraw(wxCommandEvent&)
 {
     fractalCanvas->GetSFMLFractalPtr()->Redraw();

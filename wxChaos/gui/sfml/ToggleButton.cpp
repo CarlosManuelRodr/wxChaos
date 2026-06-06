@@ -37,5 +37,7 @@ bool ToggleButton::ClickEvent(wxMouseEvent& event)
 
 void ToggleButton::Reset()
 {
+    _pressed = false;
     _texture.loadFromImage(_textureImage);
+    _sprite.setTexture(_texture);
 }
