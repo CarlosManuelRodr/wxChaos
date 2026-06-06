@@ -85,13 +85,13 @@ enum IDS
 */
 class MainFrame : public wxFrame
 {
-    FractalCanvas* fractalCanvas;
+    FractalCanvas* fractalCanvas{};
     JuliaMode* juliaModePtr;
     ConstDialog* diag;
-    IterationsDialog* iterDiag;
+    IterationsDialog* iterDiag{};
     RendererOptions* rendererOptions;
-    FormulaDialog* formDialog;
-    ScriptEditor* scriptEditor;
+    FormulaDialog* formDialog{};
+    ScriptEditor* scriptEditor{};
     DimensionFrame* dimensionCalculator;
     
     bool changeKeyboardGuide;
@@ -102,36 +102,36 @@ class MainFrame : public wxFrame
     bool formDiagActive;
     bool scriptEditorActive;
     bool pause;
-    bool showOptPanel;
+    bool showOptPanel{};
 
     // WX
-    wxMenuBar* menubar;
-    wxMenu* fileMenu;
-    wxMenu* fractalMenu;
-    wxMenu* iterationsMenu;
-    wxMenu* toolMenu;
-    wxMenu* rendererMenu;
-    wxMenu* helpMenu;
-    wxMenu* formula;
-    wxMenuItem* juliaMode;
-    wxMenuItem* keyboardGuide;
-    wxMenuItem* showOrbit;
-    wxMenuItem* slider;
-    wxMenuItem* manual;
-    wxMenuItem* itManual;
-    wxMenuItem* MoreIter;
-    wxMenuItem* lessIter;
-    wxMenuItem* fractOptItem;
-    wxMenu* introConstant;
-    wxMenu *typeComplex, *typeNumMet, *typePhysics, *typeOther;
-    wxScrolledWindow* optionPanel;
-    wxStaticBitmap* propBitmap;
-    wxBoxSizer* fractalSizer;
-    wxBoxSizer* optionSizer;
-    wxMenuItem* abortRenderItem;
-    wxBoxSizer* sizer;
+    wxMenuBar* menubar{};
+    wxMenu* fileMenu{};
+    wxMenu* fractalMenu{};
+    wxMenu* iterationsMenu{};
+    wxMenu* toolMenu{};
+    wxMenu* rendererMenu{};
+    wxMenu* helpMenu{};
+    wxMenu* formula{};
+    wxMenuItem* juliaMode{};
+    wxMenuItem* keyboardGuide{};
+    wxMenuItem* showOrbit{};
+    wxMenuItem* slider{};
+    wxMenuItem* manual{};
+    wxMenuItem* itManual{};
+    wxMenuItem* MoreIter{};
+    wxMenuItem* lessIter{};
+    wxMenuItem* fractOptItem{};
+    wxMenu* introConstant{};
+    wxMenu *typeComplex{}, *typeNumMet{}, *typePhysics{}, *typeOther{};
+    wxScrolledWindow* optionPanel{};
+    wxStaticBitmap* propBitmap{};
+    wxBoxSizer* fractalSizer{};
+    wxBoxSizer* optionSizer{};
+    wxMenuItem* abortRenderItem{};
+    wxBoxSizer* sizer{};
     wxSize size;
-    wxStatusBar* status;
+    wxStatusBar* status{};
 
     // Menu items from user scripts.
     std::vector<ScriptData> loadedScripts;
@@ -139,7 +139,7 @@ class MainFrame : public wxFrame
     std::optional<unsigned int> selectedScriptIndex;
 
     // Elements of the option panel.
-    wxButton* panelButton;
+    wxButton* panelButton{};
     std::vector<int> foundLabels, foundTextControls;
     std::vector<int> foundSpinControls, foundCheckBoxes;
     std::vector<wxStaticText*> labels;
@@ -167,7 +167,7 @@ class MainFrame : public wxFrame
     void DestroyJuliaMode(bool requestClose);
     void DestroyDimensionFrame();
     void ShowFirstUseDialog();
-    void AddScriptMenuElement(const ScriptData& scriptData, int index);
+    void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
 
 public :

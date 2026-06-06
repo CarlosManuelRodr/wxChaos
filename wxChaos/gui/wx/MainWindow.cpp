@@ -924,12 +924,12 @@ void MainFrame::UpdateOptionsPanel()
     // If there are elements in pOptions creates panel.
     if (pOptions->GetElementsSize() > 0)
     {
-        int labelIndex;
-        int index;
+        unsigned int labelIndex;
+        unsigned int index;
         fractOptItem->Enable(true);
         if (!labels.empty() || !textControls.empty() || !spinControls.empty() || !checkBoxes.empty())
         {
-            // If there are elements from a previous panel deletes them.
+            // If there are elements from a previous panel, deletes them.
             this->DeleteOptPanel();
         }
 
@@ -1021,23 +1021,23 @@ void MainFrame::UpdateOptionsPanel()
 void MainFrame::DeleteOptPanel()
 {
     // Deletes panel elements.
-    for (unsigned int i=0; i<labels.size(); i++)
-        labels[i]->Destroy();
+    for (auto & label : labels)
+        label->Destroy();
 
     labels.clear();
     foundLabels.clear();
-    for (unsigned int i=0; i<textControls.size(); i++)
-        textControls[i]->Destroy();
+    for (auto & textControl : textControls)
+        textControl->Destroy();
 
     textControls.clear();
     foundTextControls.clear();
-    for (unsigned int i=0; i<spinControls.size(); i++)
-        spinControls[i]->Destroy();
+    for (auto & spinControl : spinControls)
+        spinControl->Destroy();
 
     spinControls.clear();
     foundSpinControls.clear();
-    for (unsigned int i=0; i<checkBoxes.size(); i++)
-        checkBoxes[i]->Destroy();
+    for (auto & checkBoxe : checkBoxes)
+        checkBoxe->Destroy();
 
     checkBoxes.clear();
     foundCheckBoxes.clear();
@@ -1058,11 +1058,19 @@ void MainFrame::DeleteOptPanel()
         showOptPanel = false;
     }
 }
-void MainFrame::AddScriptMenuElement(const ScriptData& scriptData, int index)
+void MainFrame::AddScriptMenuElement(const ScriptData& scriptData, const unsigned int index)
 {
     loadedScripts.push_back(scriptData);
-    scriptItems.push_back(new wxMenuItem(formula, SCRIPT_ID_INDEX + index, wxString(scriptData.name.c_str(), wxConvUTF8),
-        wxEmptyString, wxITEM_NORMAL));
+    int itemIndex = static_cast<int>(SCRIPT_ID_INDEX + index);
+    scriptItems.push_back(
+        new wxMenuItem(
+            formula,
+           itemIndex,
+            wxString(scriptData.name.c_str(), wxConvUTF8),
+        wxEmptyString,
+        wxITEM_NORMAL
+        )
+        );
 
     if (scriptData.scriptCategory == ScriptCategory::Complex)
         typeComplex->Append(scriptItems[index]);
@@ -1073,7 +1081,7 @@ void MainFrame::AddScriptMenuElement(const ScriptData& scriptData, int index)
     else
         typeOther->Append(scriptItems[index]);
 
-    this->Connect(SCRIPT_ID_INDEX + index, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
+    this->Connect(itemIndex, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
 }
 void MainFrame::RemoveScriptMenuElements()
 {
@@ -1094,7 +1102,11 @@ void MainFrame::RemoveScriptMenuElements()
     // Disconnect events and delete menu items.
     for (unsigned int i = 0; i < scriptItems.size(); i++)
     {
-        this->Disconnect(SCRIPT_ID_INDEX + i, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
+        this->Disconnect(
+            static_cast<int>(SCRIPT_ID_INDEX + i),
+            wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(MainFrame::ChangeScriptItem)
+            );
         delete scriptItems[i];
     }
     scriptItems.clear();
@@ -1156,7 +1168,7 @@ void MainFrame::UpdateMenu()
     abortRenderItem->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
     abortRenderItem->Enable(false);
 
-    // If Julia mode is opened closes it.
+    // If Julia mode is opened, closes it.
     DestroyJuliaMode(true);
     this->UpdateOptionsPanel();
 }
@@ -1212,6 +1224,7 @@ void MainFrame::ReloadScripts()
 */
 class MainApp : public wxApp
 {
+public:
     bool OnInit() override
     {
 #ifdef _WIN32
