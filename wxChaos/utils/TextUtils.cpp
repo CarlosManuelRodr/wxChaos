@@ -2,17 +2,14 @@
 
 #include <sstream>
 
-namespace
+namespace TextUtils
 {
-    std::string ToStdString(const wxString& value)
+    static std::string ToStdString(const wxString& value)
     {
         const wxScopedCharBuffer buffer = value.ToUTF8();
         return buffer ? std::string(buffer.data()) : std::string();
     }
-}
 
-namespace TextUtils
-{
     std::string ToString(const int value)
     {
         return std::to_string(value);

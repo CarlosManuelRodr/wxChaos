@@ -14,6 +14,11 @@ struct BmpPixel
 
 class BmpImageWriter
 {
+    static constexpr uint32_t BmpHeaderSize = 14;
+    static constexpr uint32_t DibHeaderSize = 40;
+    static constexpr uint32_t PixelDataOffset = BmpHeaderSize + DibHeaderSize;
+    static constexpr int32_t PixelsPerMeter72Dpi = 2835;
+
     std::ofstream _file;
     unsigned int _width;
     unsigned int _height;
@@ -25,6 +30,7 @@ class BmpImageWriter
     void WriteUInt32Le(uint32_t value);
     void WriteInt32Le(int32_t value);
     void MarkFailedIfNeeded();
+    static bool TryCalculateLayout(unsigned int width, unsigned int height, unsigned int& paddingBytes, uint32_t& imageBytes, uint32_t& fileBytes);
 
 public:
     BmpImageWriter(const std::string& filepath, unsigned int width, unsigned int height);

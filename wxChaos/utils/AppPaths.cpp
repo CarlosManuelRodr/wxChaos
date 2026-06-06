@@ -5,9 +5,9 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 
-namespace
+namespace AppPaths
 {
-    wxString BuildFilePath(const wxString& baseDir, const std::vector<wxString>& pathParts)
+    static wxString BuildFilePath(const wxString& baseDir, const std::vector<wxString>& pathParts)
     {
         wxFileName fileName;
         fileName.AssignDir(baseDir);
@@ -22,7 +22,7 @@ namespace
         return fileName.GetFullPath();
     }
 
-    wxString BuildDirectoryPath(const wxString& baseDir, const std::vector<wxString>& pathParts)
+    static wxString BuildDirectoryPath(const wxString& baseDir, const std::vector<wxString>& pathParts)
     {
         wxFileName directory;
         directory.AssignDir(baseDir);
@@ -32,10 +32,7 @@ namespace
 
         return directory.GetPath();
     }
-}
 
-namespace AppPaths
-{
     wxString ExecutableDir()
     {
         wxFileName executable(wxStandardPaths::Get().GetExecutablePath());

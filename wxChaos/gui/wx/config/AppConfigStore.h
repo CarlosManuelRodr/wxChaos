@@ -1,6 +1,8 @@
 #pragma once
 
+#include <map>
 #include <string>
+#include <wx/string.h>
 #include "../../../core/types/FractalType.h"
 
 /**
@@ -52,5 +54,20 @@ public:
     void SetFirstUse(bool firstUse) const;
 
 private:
+    static const char* DefaultColorStyle();
+    static std::string Trim(const std::string& value);
+    static std::string ToLower(std::string value);
+    static bool FileExists(const std::string& filename);
+    static bool HasIniSections(const std::string& filename);
+    static std::map<std::string, std::string> ReadLegacyConfig(const std::string& filename);
+    static bool ReadBool(const std::map<std::string, std::string>& values, const std::string& key, bool defaultValue);
+    static int ReadInt(const std::map<std::string, std::string>& values, const std::string& key, int defaultValue);
+    static std::string ReadString(const std::map<std::string, std::string>& values, const std::string& key, const std::string& defaultValue);
+    static const std::map<std::string, FractalType>& FractalTypes();
+    static FractalType FractalTypeFromString(const std::string& value, FractalType defaultValue);
+    static std::string FractalTypeToString(FractalType type);
+    static AppConfig LoadLegacyConfig(const std::string& filename);
+    static wxString ToWxString(const std::string& value);
+
     std::string filename;
 };
