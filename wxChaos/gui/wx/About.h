@@ -28,7 +28,6 @@
 class AboutDialog: public wxDialog
 {    
     DECLARE_DYNAMIC_CLASS( AboutDialog )
-    DECLARE_EVENT_TABLE()
 
 public:
     // Constructors

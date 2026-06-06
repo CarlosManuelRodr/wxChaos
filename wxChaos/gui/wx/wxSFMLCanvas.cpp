@@ -1,15 +1,11 @@
 #include "wxSFMLCanvas.h"
 
-// Event table.
-BEGIN_EVENT_TABLE(wxSFMLCanvas, wxControl)
-EVT_IDLE(wxSFMLCanvas::OnIdle)
-EVT_PAINT(wxSFMLCanvas::OnPaint)
-EVT_ERASE_BACKGROUND(wxSFMLCanvas::OnEraseBackground)
-END_EVENT_TABLE()
-
 wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                            const long style) : wxControl(parent, id, position, size, style)
 {
+    Bind(wxEVT_IDLE, &wxSFMLCanvas::OnIdle, this);
+    Bind(wxEVT_PAINT, &wxSFMLCanvas::OnPaintEvent, this);
+    Bind(wxEVT_ERASE_BACKGROUND, &wxSFMLCanvas::OnEraseBackground, this);
     Window::create(wxWindow::GetHandle());
 }
 
@@ -26,7 +22,7 @@ void wxSFMLCanvas::OnIdle(wxIdleEvent&)
     Refresh();
 }
 
-void wxSFMLCanvas::OnPaint(wxPaintEvent&)
+void wxSFMLCanvas::OnPaintEvent(wxPaintEvent&)
 {
     // Prepare the control to be repainted
     wxPaintDC Dc(this);

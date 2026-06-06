@@ -22,7 +22,7 @@
 * @class wxGradientDialog
 * @brief A dialog that lets the user select a gradient.
 */
-class wxGradientDialog : wxDialog
+class wxGradientDialog : public wxDialog
 {
     void OnStopsAreaClick(wxMouseEvent& event);
     void OnEditColor(wxCommandEvent& event);
@@ -52,7 +52,6 @@ class wxGradientDialog : wxDialog
     int gradientSize;
     std::vector<wxColor> m_displayedStops;
     wxGradient* m_gradient;
-    DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxGradientDialog)
 
     enum
@@ -62,10 +61,10 @@ class wxGradientDialog : wxDialog
 
 public:
     wxGradientDialog();
-    explicit wxGradientDialog(wxWindow *parent, const wxGradient& grad = wxGradient(std::vector<wxColor>(2, *wxBLACK), 0, 100));
+    explicit wxGradientDialog(wxWindow *parent, const wxGradient& grad = wxGradient(std::vector(2, *wxBLACK), 0, 100));
     ~wxGradientDialog() override;
-    bool Create(wxWindow *parent, const wxGradient& grad = wxGradient(std::vector<wxColor>(2, *wxBLACK), 0, 100));
-    wxGradient GetGradient() const;
+    bool Create(wxWindow *parent, const wxGradient& grad = wxGradient(std::vector(2, *wxBLACK), 0, 100));
+    [[nodiscard]] wxGradient GetGradient() const;
     int ShowModal() override;
 };
 

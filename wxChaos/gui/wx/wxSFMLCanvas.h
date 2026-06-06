@@ -26,11 +26,9 @@ public:
     ~wxSFMLCanvas() override;
 
 private:
-    DECLARE_EVENT_TABLE()
-
     virtual void OnUpdate();
     void OnIdle(wxIdleEvent&);
-    void OnPaint(wxPaintEvent&);
+    void OnPaintEvent(wxPaintEvent&);
     void OnEraseBackground(wxEraseEvent&);
 };
 

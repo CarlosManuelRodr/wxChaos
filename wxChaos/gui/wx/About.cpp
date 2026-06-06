@@ -4,9 +4,6 @@
 #include "About.h"
 
 IMPLEMENT_DYNAMIC_CLASS(AboutDialog, wxDialog)
-BEGIN_EVENT_TABLE(AboutDialog, wxDialog)
-END_EVENT_TABLE()
-
 
 AboutDialog::AboutDialog()
 {
