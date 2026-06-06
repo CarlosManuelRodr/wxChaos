@@ -62,15 +62,15 @@ ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const 
     this->Centre(wxBOTH);
 
     // Connect Events
-    buttonsSizerCancel->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnCancel), nullptr, this);
-    buttonsSizerOK->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnOk), nullptr, this);
+    buttonsSizerCancel->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptNameDialog::OnCancel, this);
+    buttonsSizerOK->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptNameDialog::OnOk, this);
 }
 
 ScriptNameDialog::~ScriptNameDialog()
 {
     // Disconnect Events
-    buttonsSizerCancel->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnCancel), nullptr, this);
-    buttonsSizerOK->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptNameDialog::OnOk), nullptr, this);
+    buttonsSizerCancel->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptNameDialog::OnCancel, this);
+    buttonsSizerOK->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptNameDialog::OnOk, this);
 }
 
 void ScriptNameDialog::OnCancel(wxCommandEvent&)
@@ -256,15 +256,15 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     this->SetBlackPreview();
 
     // Connect Events
-    scriptsListBox->Connect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(ScriptEditor::OnSelectScript), nullptr, this);
-    saveChangesButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnSaveChanges), nullptr, this);
-    newButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnNewScript), nullptr, this);
-    removeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnDeleteScript), nullptr, this);
-    closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnClose), nullptr, this);
-    codeEditor->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(ScriptEditor::OnCodeChange), nullptr, this);
-    validateButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnValidateScript), nullptr, this);
-    runButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnRunScript), nullptr, this);
-    debugCollapsiblePane->Connect(wxEVT_COLLAPSIBLEPANE_CHANGED, wxCollapsiblePaneEventHandler(ScriptEditor::OnDebugPanel), nullptr, this);
+    scriptsListBox->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &ScriptEditor::OnSelectScript, this);
+    saveChangesButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnSaveChanges, this);
+    newButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewScript, this);
+    removeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
+    closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClose, this);
+    codeEditor->Bind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
+    validateButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
+    runButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
+    debugCollapsiblePane->Bind(wxEVT_COLLAPSIBLEPANE_CHANGED, &ScriptEditor::OnDebugPanel, this);
 }
 
 ScriptEditor::~ScriptEditor()
@@ -272,15 +272,15 @@ ScriptEditor::~ScriptEditor()
     *isActive = false;
 
     // Disconnect Events
-    scriptsListBox->Disconnect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(ScriptEditor::OnSelectScript), nullptr, this);
-    saveChangesButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnSaveChanges), nullptr, this);
-    newButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnNewScript), nullptr, this);
-    removeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnDeleteScript), nullptr, this);
-    closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnClose), nullptr, this);
-    codeEditor->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(ScriptEditor::OnCodeChange), nullptr, this);
-    validateButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnValidateScript), nullptr, this);
-    runButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScriptEditor::OnRunScript), nullptr, this);
-    debugCollapsiblePane->Disconnect(wxEVT_COLLAPSIBLEPANE_CHANGED, wxCollapsiblePaneEventHandler(ScriptEditor::OnDebugPanel), nullptr, this);
+    scriptsListBox->Unbind(wxEVT_COMMAND_LISTBOX_SELECTED, &ScriptEditor::OnSelectScript, this);
+    saveChangesButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnSaveChanges, this);
+    newButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewScript, this);
+    removeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
+    closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClose, this);
+    codeEditor->Unbind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
+    validateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
+    runButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
+    debugCollapsiblePane->Unbind(wxEVT_COLLAPSIBLEPANE_CHANGED, &ScriptEditor::OnDebugPanel, this);
 }
 
 void ScriptEditor::SetUpLexer() const

@@ -52,19 +52,19 @@ IterationsDialog::IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindo
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
-    _plusButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterationsDialog::OnPlus), nullptr, this);
-    _minusButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterationsDialog::OnMinus), nullptr, this);
-    _acceptButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterationsDialog::OnOk), nullptr, this);
-    _applyButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterationsDialog::OnApply), nullptr, this);
+    _plusButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnPlus, this);
+    _minusButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnMinus, this);
+    _acceptButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnOk, this);
+    _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnApply, this);
 }
 
 IterationsDialog::~IterationsDialog()
 {
     *_active = false;
-    _plusButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterationsDialog::OnPlus), nullptr, this);
-    _minusButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterationsDialog::OnMinus), nullptr, this);
-    _acceptButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterationsDialog::OnOk), nullptr, this);
-    _applyButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(IterationsDialog::OnApply), nullptr, this);
+    _plusButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnPlus, this);
+    _minusButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnMinus, this);
+    _acceptButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnOk, this);
+    _applyButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnApply, this);
 }
 
 void IterationsDialog::OnPlus(wxCommandEvent&)

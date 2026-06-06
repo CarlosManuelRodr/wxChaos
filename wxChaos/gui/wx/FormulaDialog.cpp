@@ -37,11 +37,11 @@ FuncDialog::FuncDialog(wxWindow* parent, const wxWindowID id, const wxString& ti
 
     this->Centre(wxBOTH);
 
-    _closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FuncDialog::OnClose), nullptr, this);
+    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FuncDialog::OnClose, this);
 }
 FuncDialog::~FuncDialog()
 {
-    _closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FuncDialog::OnClose), nullptr, this);
+    _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FuncDialog::OnClose, this);
 }
 void FuncDialog::OnClose(wxCommandEvent&)
 {
@@ -140,19 +140,19 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
         _bailCtrl->Enable(false);
     }
 
-    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(FormulaDialog::OnClose));
-    _typeChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(FormulaDialog::OnChoice), nullptr, this);
-    _acceptButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FormulaDialog::OnAccept), nullptr, this);
-    _applyButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FormulaDialog::OnApply), nullptr, this);
-    _funcButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FormulaDialog::OnFunc), nullptr, this);
+    this->Bind(wxEVT_CLOSE_WINDOW, &FormulaDialog::OnClose, this);
+    _typeChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &FormulaDialog::OnChoice, this);
+    _acceptButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnAccept, this);
+    _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnApply, this);
+    _funcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnFunc, this);
 }
 
 FormulaDialog::~FormulaDialog()
 {
-    _typeChoice->Disconnect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(FormulaDialog::OnChoice), nullptr, this);
-    _acceptButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FormulaDialog::OnAccept), nullptr, this);
-    _applyButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FormulaDialog::OnApply), nullptr, this);
-    _funcButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(FormulaDialog::OnFunc), nullptr, this);
+    _typeChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &FormulaDialog::OnChoice, this);
+    _acceptButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnAccept, this);
+    _applyButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnApply, this);
+    _funcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnFunc, this);
 }
 void FormulaDialog::OnAccept(wxCommandEvent&)
 {

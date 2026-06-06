@@ -74,14 +74,14 @@ FractalCanvas::FractalCanvas(const FractalType fractalType,
     this->wxWindow::SetFocus();
     this->setFramerateLimit(31);
 
-    this->Connect(wxEVT_MOTION, wxMouseEventHandler(FractalCanvas::OnMoveMouse));
-    this->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(FractalCanvas::OnClick));
-    this->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(FractalCanvas::OnClick));
-    this->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(FractalCanvas::OnReleaseClick));
-    this->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(FractalCanvas::OnReleaseClick));
-    this->Connect(wxEVT_SIZE, wxSizeEventHandler(FractalCanvas::OnResize));
-    this->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(FractalCanvas::OnKeyDown));
-    this->Connect(wxEVT_KEY_UP, wxKeyEventHandler(FractalCanvas::OnKeyUp));
+    this->Bind(wxEVT_MOTION, &FractalCanvas::OnMoveMouse, this);
+    this->Bind(wxEVT_LEFT_DOWN, &FractalCanvas::OnClick, this);
+    this->Bind(wxEVT_RIGHT_DOWN, &FractalCanvas::OnClick, this);
+    this->Bind(wxEVT_LEFT_UP, &FractalCanvas::OnReleaseClick, this);
+    this->Bind(wxEVT_RIGHT_UP, &FractalCanvas::OnReleaseClick, this);
+    this->Bind(wxEVT_SIZE, &FractalCanvas::OnResize, this);
+    this->Bind(wxEVT_KEY_DOWN, &FractalCanvas::OnKeyDown, this);
+    this->Bind(wxEVT_KEY_UP, &FractalCanvas::OnKeyUp, this);
 }
 FractalCanvas::~FractalCanvas()
 {

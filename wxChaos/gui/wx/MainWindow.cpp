@@ -191,59 +191,59 @@ void MainFrame::ShowFirstUseDialog()
 }
 void MainFrame::ConnectEvents()
 {
-    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainFrame::OnClose));
-    this->Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnQuit));
-    this->Connect(wxEVT_SIZE, wxSizeEventHandler(MainFrame::OnResize));
-    this->Connect(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEventHandler(MainFrame::OnCanvasStatusText));
-    this->Connect(ID_JULIA_MODE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnJuliaMode));
-    this->Connect(wxEVT_JULIA_MODE_CLOSED, wxCommandEventHandler(MainFrame::OnJuliaModeClosed));
-    this->Connect(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEventHandler(MainFrame::OnDimensionFrameClosed));
-    this->Connect(ID_WELCOME_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnWelcomeDialog));
-    this->Connect(ID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbout));
-    this->Connect(ID_KEYBOARDGUIDE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnKeyboardGuide));
-    this->Connect(ID_SAVE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnSave));
-    this->Connect(ID_PALETTE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnPalette));
-    this->Connect(ID_MANDELBROT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeMandelbrot));
-    this->Connect(ID_MANDELBROT_ZN, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeMandelbrotZN));
-    this->Connect(ID_JULIA, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeJulia));
-    this->Connect(ID_JULIA_ZN, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeJuliaZN));
-    this->Connect(ID_NEWTON, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeNewton));
-    this->Connect(ID_SINOIDAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeSinoidal));
-    this->Connect(ID_MAGNET, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeMagnet));
-    this->Connect(ID_MEDUSA, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeMedusa));
-    this->Connect(ID_MANOWAR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeManowar));
-    this->Connect(ID_MANOWAR_JULIA, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeManowarJulia));
-    this->Connect(ID_FIXEDPOINT1, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFixedPoint1));
-    this->Connect(ID_FIXEDPOINT2, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFixedPoint2));
-    this->Connect(ID_FIXEDPOINT3, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFixedPoint3));
-    this->Connect(ID_FIXEDPOINT4, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFixedPoint4));
-    this->Connect(ID_TRICORN, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeTricorn));
-    this->Connect(ID_BURNING_SHIP, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeBurningShip));
-    this->Connect(ID_BURNING_SHIP_JULIA, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeBurningShipJulia));
-    this->Connect(ID_FRACTORY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFractory));
-    this->Connect(ID_CELL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeCell));
-    this->Connect(ID_SIERP_TRIANGLE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeSierpinskyTriangle));
-    this->Connect(ID_DPENDULUM, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeDPendulum));
-    this->Connect(ID_USER_DEFINED, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeUserDefined));
-    this->Connect(ID_FPUSER_DEFINED, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeFPUserDefined));
-    this->Connect(ID_ABORT_RENDER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnAbortRender));
-    this->Connect(ID_ABORT_RENDER, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::OnUpdateAbortRender));
-    this->Connect(ID_RESET, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnReset));
-    this->Connect(ID_REDRAW, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnRedraw));
-    this->Connect(ID_INCREASE_IT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnMoreIt));
-    this->Connect(ID_DECREASE_IT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnLessIt));
-    this->Connect(ID_SHOW_ORBIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnShowOrbit));
-    this->Connect(ID_SHOW_ORBIT, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::OnUpdateShowOrbit));
-    this->Connect(ID_ENTER_MAN_CONSTANT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnManIntroConst));
-    this->Connect(ID_ENTER_SLD_CONSTANT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnSldIntroConst));
-    this->Connect(ID_ENTER_SLD_CONSTANT, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::OnUpdateSliderMode));
-    this->Connect(ID_IT_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnItManual));
-    this->Connect(ID_FORMULA_DIALOG, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFormulaDialog));
-    this->Connect(ID_OPTPANEL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnFractalOptions));
-    this->Connect(ID_USER_MANUAL, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnUserManual));
-    this->Connect(ID_SCRIPT_EDITOR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnScriptEditor));
-    this->Connect(ID_ZOOM_RECORDER, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnZoomRecorder));
-    this->Connect(ID_DIMENSION_CALCULATOR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnDimensionCalculator));
+    this->Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnQuit, this, wxID_EXIT);
+    this->Bind(wxEVT_SIZE, &MainFrame::OnResize, this);
+    this->Bind(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, &MainFrame::OnCanvasStatusText, this);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnJuliaMode, this, ID_JULIA_MODE);
+    this->Bind(wxEVT_JULIA_MODE_CLOSED, &MainFrame::OnJuliaModeClosed, this);
+    this->Bind(wxEVT_DIMENSION_FRAME_CLOSED, &MainFrame::OnDimensionFrameClosed, this);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnWelcomeDialog, this, ID_WELCOME_DIALOG);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, ID_ABOUT);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnKeyboardGuide, this, ID_KEYBOARDGUIDE);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSave, this, ID_SAVE);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPalette, this, ID_PALETTE);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMandelbrot, this, ID_MANDELBROT);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMandelbrotZN, this, ID_MANDELBROT_ZN);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeJulia, this, ID_JULIA);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeJuliaZN, this, ID_JULIA_ZN);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeNewton, this, ID_NEWTON);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSinoidal, this, ID_SINOIDAL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMagnet, this, ID_MAGNET);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMedusa, this, ID_MEDUSA);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeManowar, this, ID_MANOWAR);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeManowarJulia, this, ID_MANOWAR_JULIA);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint1, this, ID_FIXEDPOINT1);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint2, this, ID_FIXEDPOINT2);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint3, this, ID_FIXEDPOINT3);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint4, this, ID_FIXEDPOINT4);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeTricorn, this, ID_TRICORN);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeBurningShip, this, ID_BURNING_SHIP);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeBurningShipJulia, this, ID_BURNING_SHIP_JULIA);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFractory, this, ID_FRACTORY);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeCell, this, ID_CELL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskyTriangle, this, ID_SIERP_TRIANGLE);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DPENDULUM);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefined, this, ID_USER_DEFINED);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFPUserDefined, this, ID_FPUSER_DEFINED);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbortRender, this, ID_ABORT_RENDER);
+    this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateAbortRender, this, ID_ABORT_RENDER);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnReset, this, ID_RESET);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRedraw, this, ID_REDRAW);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMoreIt, this, ID_INCREASE_IT);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnLessIt, this, ID_DECREASE_IT);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnShowOrbit, this, ID_SHOW_ORBIT);
+    this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateShowOrbit, this, ID_SHOW_ORBIT);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnManIntroConst, this, ID_ENTER_MAN_CONSTANT);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSldIntroConst, this, ID_ENTER_SLD_CONSTANT);
+    this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateSliderMode, this, ID_ENTER_SLD_CONSTANT);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnItManual, this, ID_IT_MANUAL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFormulaDialog, this, ID_FORMULA_DIALOG);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFractalOptions, this, ID_OPTPANEL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnUserManual, this, ID_USER_MANUAL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnScriptEditor, this, ID_SCRIPT_EDITOR);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnZoomRecorder, this, ID_ZOOM_RECORDER);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnDimensionCalculator, this, ID_DIMENSION_CALCULATOR);
 }
 
 void MainFrame::SetUpGUI()
@@ -1005,7 +1005,7 @@ void MainFrame::UpdateOptionsPanel()
         // Creates button to apply options.
         panelButton = new wxButton(optionPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
         optionSizer->Add(panelButton, 0, wxALL, 5);
-        panelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnApplyPanelOpt), nullptr, this);
+        panelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MainFrame::OnApplyPanelOpt, this);
         optionSizer->Layout();
         optionPanel->SetScrollbars(20, 20, 0, 50);
     }
@@ -1042,7 +1042,7 @@ void MainFrame::DeleteOptPanel()
     foundCheckBoxes.clear();
 
     // Erase button, disconnect event and hide panel.
-    panelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnApplyPanelOpt), nullptr, this);
+    panelButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &MainFrame::OnApplyPanelOpt, this);
     delete panelButton;
 
     if (showOptPanel)
@@ -1080,7 +1080,7 @@ void MainFrame::AddScriptMenuElement(const ScriptData& scriptData, const unsigne
     else
         typeOther->Append(scriptItems[index]);
 
-    this->Connect(itemIndex, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::ChangeScriptItem));
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeScriptItem, this, itemIndex);
 }
 void MainFrame::RemoveScriptMenuElements()
 {
@@ -1101,11 +1101,7 @@ void MainFrame::RemoveScriptMenuElements()
     // Disconnect events and delete menu items.
     for (unsigned int i = 0; i < scriptItems.size(); i++)
     {
-        this->Disconnect(
-            static_cast<int>(SCRIPT_ID_INDEX + i),
-            wxEVT_COMMAND_MENU_SELECTED,
-            wxCommandEventHandler(MainFrame::ChangeScriptItem)
-            );
+        this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeScriptItem, this, static_cast<int>(SCRIPT_ID_INDEX + i));
         delete scriptItems[i];
     }
     scriptItems.clear();

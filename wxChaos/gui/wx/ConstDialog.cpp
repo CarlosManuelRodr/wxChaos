@@ -58,14 +58,14 @@ ConstDialog::ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent,
     
     this->Centre(wxBOTH);
 
-    _okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnOk), nullptr, this);
-    _applyButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnApply), nullptr, this);
-    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(ConstDialog::OnClose));
+    _okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ConstDialog::OnOk, this);
+    _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ConstDialog::OnApply, this);
+    this->Bind(wxEVT_CLOSE_WINDOW, &ConstDialog::OnClose, this);
 }
 
 ConstDialog::~ConstDialog()
 {
-    _okButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConstDialog::OnOk), nullptr, this);
+    _okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ConstDialog::OnOk, this);
     *_active = false;
 }
 

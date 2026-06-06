@@ -124,7 +124,7 @@ ImagePanel::ImagePanel(wxWindow* parent, const int id, const int size)
     }
 
     this->SetSize(_size, _size);
-    this->Connect(wxEVT_PAINT, wxPaintEventHandler(ImagePanel::OnPaintEvent));
+    this->Bind(wxEVT_PAINT, &ImagePanel::OnPaintEvent, this);
 }
 ImagePanel::~ImagePanel()
 {
@@ -305,14 +305,14 @@ ConfigFractalOptionsDialog::ConfigFractalOptionsDialog(Fractal* target, wxWindow
     this->AdjustOptPanel();
 
     // Connect Events
-    _okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConfigFractalOptionsDialog::OnOk), nullptr, this);
-    _applyButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConfigFractalOptionsDialog::OnApply), nullptr, this);
+    _okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ConfigFractalOptionsDialog::OnOk, this);
+    _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ConfigFractalOptionsDialog::OnApply, this);
 }
 ConfigFractalOptionsDialog::~ConfigFractalOptionsDialog()
 {
     // Disconnect Events
-    _okButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConfigFractalOptionsDialog::OnOk), nullptr, this);
-    _applyButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ConfigFractalOptionsDialog::OnApply), nullptr, this);
+    _okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ConfigFractalOptionsDialog::OnOk, this);
+    _applyButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ConfigFractalOptionsDialog::OnApply, this);
 }
 
 void ConfigFractalOptionsDialog::AdjustOptPanel()
@@ -798,33 +798,33 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _iterCtrl->SetValue(TextUtils::ToWxString(static_cast<int>(_myOpt.maxIter)));
 
     // Connect Events.
-    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(DimensionFrame::OnDestroy));
-    this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(DimensionFrame::OnUpdateUI));
-    this->Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(DimensionFrame::OnClose));
-    _fractalChoice->Connect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(DimensionFrame::OnChangeFractal), nullptr, this);
-    _dumpCheck->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(DimensionFrame::OnChangeDump), nullptr, this);
-    _fractalOptionsButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnFractalOpt), nullptr, this);
-    _previewButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnRenderPreview), nullptr, this);
-    _calcButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnCalculate), nullptr, this);
-    _manualMaxYChk->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(DimensionFrame::OnManualMaxY), nullptr, this);
-    _closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnClose), nullptr, this);
-    _savePreviewButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnSavePreview), nullptr, this);
-    _helpButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnHelp), nullptr, this);
+    this->Bind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
+    this->Bind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &DimensionFrame::OnClose, this, wxID_EXIT);
+    _fractalChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
+    _dumpCheck->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DimensionFrame::OnChangeDump, this);
+    _fractalOptionsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
+    _previewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnRenderPreview, this);
+    _calcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
+    _manualMaxYChk->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DimensionFrame::OnManualMaxY, this);
+    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
+    _savePreviewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnSavePreview, this);
+    _helpButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnHelp, this);
 }
 DimensionFrame::~DimensionFrame()
 {
     // Disconnect Events.
-    this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(DimensionFrame::OnDestroy));
-    this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(DimensionFrame::OnUpdateUI));
-    _fractalChoice->Disconnect(wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(DimensionFrame::OnChangeFractal), nullptr, this);
-    _dumpCheck->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(DimensionFrame::OnChangeDump), nullptr, this);
-    _fractalOptionsButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnFractalOpt), nullptr, this);
-    _previewButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnRenderPreview), nullptr, this);
-    _calcButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnCalculate), nullptr, this);
-    _manualMaxYChk->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(DimensionFrame::OnManualMaxY), nullptr, this);
-    _closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnClose), nullptr, this);
-    _savePreviewButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnSavePreview), nullptr, this);
-    _helpButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DimensionFrame::OnHelp), nullptr, this);
+    this->Unbind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
+    this->Unbind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
+    _fractalChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
+    _dumpCheck->Unbind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DimensionFrame::OnChangeDump, this);
+    _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
+    _previewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnRenderPreview, this);
+    _calcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
+    _manualMaxYChk->Unbind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DimensionFrame::OnManualMaxY, this);
+    _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
+    _savePreviewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnSavePreview, this);
+    _helpButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnHelp, this);
 
     if (_calculatingDimension)
     {

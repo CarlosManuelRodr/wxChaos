@@ -28,12 +28,12 @@ HTMLViewer::HTMLViewer(const wxString& htmlFile, wxWindow* parent, const wxWindo
     this->Centre(wxBOTH);
 
     // Connect Events.
-    _closeButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(HTMLViewer::OnClose), nullptr, this);
+    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &HTMLViewer::OnClose, this);
 }
 HTMLViewer::~HTMLViewer()
 {
     // Disconnect Events.
-    _closeButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(HTMLViewer::OnClose), nullptr, this);
+    _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &HTMLViewer::OnClose, this);
 }
 void HTMLViewer::OnClose(wxCommandEvent&)
 {

@@ -51,13 +51,13 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     this->SetSizer(mainSizer);
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
-    this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(SaveProgressDiag::CalcProgress));
-    _cancelButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SaveProgressDiag::OnCancel), nullptr, this);
+    this->Bind(wxEVT_UPDATE_UI, &SaveProgressDiag::CalcProgress, this);
+    _cancelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SaveProgressDiag::OnCancel, this);
 }
 SaveProgressDiag::~SaveProgressDiag()
 {
-    this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(SaveProgressDiag::CalcProgress));
-    _cancelButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SaveProgressDiag::OnCancel), nullptr, this);
+    this->Unbind(wxEVT_UPDATE_UI, &SaveProgressDiag::CalcProgress, this);
+    _cancelButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &SaveProgressDiag::OnCancel, this);
 }
 void SaveProgressDiag::OnCancel(wxCommandEvent&)
 {
@@ -174,16 +174,16 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, const string& filePath, 
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
-    widthSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeWidth), nullptr, this);
-    heightSpin->Connect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeHeight), nullptr, this);
-    okButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SizeDialogSave::OnOk), nullptr, this);
+    widthSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SizeDialogSave::ChangeWidth, this);
+    heightSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SizeDialogSave::ChangeHeight, this);
+    okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SizeDialogSave::OnOk, this);
 }
 
 SizeDialogSave::~SizeDialogSave()
 {
-    widthSpin->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeWidth), nullptr, this);
-    heightSpin->Disconnect(wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(SizeDialogSave::ChangeHeight), nullptr, this);
-    okButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SizeDialogSave::OnOk), nullptr, this);
+    widthSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SizeDialogSave::ChangeWidth, this);
+    heightSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SizeDialogSave::ChangeHeight, this);
+    okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &SizeDialogSave::OnOk, this);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
