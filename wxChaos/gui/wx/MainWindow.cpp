@@ -68,7 +68,7 @@ void EnableHighDpiSupport()
 
 using namespace std;
 
-const unsigned int SCRIPT_ID_INDEX = 8510;
+constexpr unsigned int SCRIPT_ID_INDEX = 8510;
 MainFrame* mainFramePtr = nullptr;
 
 /**
@@ -892,9 +892,10 @@ void MainFrame::ChangeFractal(const FractalType fType, const bool enableJulia)
         juliaMode->Enable(enableJulia);
     }
 }
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void MainFrame::ChangeScriptItem(wxCommandEvent& event)
 {
-    const unsigned int id = static_cast<unsigned int>(event.GetId() - SCRIPT_ID_INDEX);
+    const unsigned int id = event.GetId() - SCRIPT_ID_INDEX;
     selectedScriptIndex = id;
 
     if (fractalCanvas->GetFractalPtr()->IsRendering())
@@ -916,7 +917,7 @@ void MainFrame::GetParserOpt()
     opt = configStore.Load();
     configStore.SetFirstUse(false);
 }
-void MainFrame::UpdateOptPanel()
+void MainFrame::UpdateOptionsPanel()
 {
     PanelOptions* pOptions = fractalCanvas->GetFractalPtr()->GetOptPanel();
 
@@ -926,7 +927,7 @@ void MainFrame::UpdateOptPanel()
         int labelIndex;
         int index;
         fractOptItem->Enable(true);
-        if (labels.size() != 0 || textControls.size() != 0 || spinControls.size() != 0 || checkBoxes.size() != 0)
+        if (!labels.empty() || !textControls.empty() || !spinControls.empty() || !checkBoxes.empty())
         {
             // If there are elements from a previous panel deletes them.
             this->DeleteOptPanel();
@@ -1157,7 +1158,7 @@ void MainFrame::UpdateMenu()
 
     // If Julia mode is opened closes it.
     DestroyJuliaMode(true);
-    this->UpdateOptPanel();
+    this->UpdateOptionsPanel();
 }
 void MainFrame::UpdateJuliaMode()
 {

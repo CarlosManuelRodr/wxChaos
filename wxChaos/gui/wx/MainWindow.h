@@ -152,7 +152,7 @@ class MainFrame : public wxFrame
 
     void SetUpGUI();                      ///< Create the main window.
     void UpdateMenu();                    ///< Adjust menu items when a new fractal type is selected.
-    void UpdateOptPanel();                ///< Adjust the option panel when a new fractal type is selected.
+    void UpdateOptionsPanel();                ///< Adjust the option panel when a new fractal type is selected.
     void UpdateJuliaMode();               ///< Closes the Julia window when a new fractal is selected.
     ///@brief Changes the fractal type.
     ///@param fType Type of the fractal.
