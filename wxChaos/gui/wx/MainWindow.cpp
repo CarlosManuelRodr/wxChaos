@@ -145,7 +145,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     formDiagActive = false;
     scriptEditorActive = false;
     pause = false;
-    selectedScriptIndex = -1;
+    selectedScriptIndex = std::nullopt;
 
     this->UpdateMenu();
 
@@ -537,8 +537,8 @@ void MainFrame::OnSave(wxCommandEvent&)
         const auto path = string(fileName.mb_str());
         SizeDialogSave* sizeDialogSave;
 
-        if (fractalType == FractalType::ScriptFractal)
-            sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, loadedScripts[selectedScriptIndex].file);
+        if (fractalType == FractalType::ScriptFractal && selectedScriptIndex.has_value())
+            sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, loadedScripts[*selectedScriptIndex].file);
         else
             sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this);
 
@@ -881,7 +881,7 @@ void MainFrame::ChangeFPUserDefined(wxCommandEvent&)
 }
 void MainFrame::ChangeFractal(const FractalType fType, const bool enableJulia)
 {
-    selectedScriptIndex = -1;  // Deselect the script fractal.
+    selectedScriptIndex.reset();  // Deselect the script fractal.
     if (fractalType != fType || fractalType == FractalType::UserDefined || fractalType == FractalType::FixedPointUserDefined)
     {
         const Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();

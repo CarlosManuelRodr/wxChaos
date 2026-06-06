@@ -11,6 +11,7 @@
 #ifndef _mainWindow
 #define _mainWindow
 
+#include <optional>
 #include "config/AppConfigStore.h"
 #include "JuliaMode.h"
 #include "About.h"
@@ -135,7 +136,7 @@ class MainFrame : public wxFrame
     // Menu items from user scripts.
     std::vector<ScriptData> loadedScripts;
     std::vector<wxMenuItem*> scriptItems;
-    int selectedScriptIndex;
+    std::optional<unsigned int> selectedScriptIndex;
 
     // Elements of the option panel.
     wxButton* panelButton;
