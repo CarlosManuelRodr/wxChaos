@@ -1,4 +1,3 @@
-- Zoom breaks when changing the palette size
 - Toggle button of JuliaMode inits in a wrong position
 - Inconsistent previews when using the abort feature and moving the view position.
 - Inconsistent render area can be triggered by moving the view before the render completes.
