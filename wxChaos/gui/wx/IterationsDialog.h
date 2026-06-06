@@ -1,5 +1,5 @@
 /** 
-* @file IterDialog.h 
+* @file IterationsDialog.h
 * @brief Defines a dialog to change iterations.
 *
 * @author Carlos Manuel Rodriguez y Martinez
@@ -8,8 +8,8 @@
 */
 
 #pragma once
-#ifndef __Iter
-#define __Iter
+#ifndef WXCHAOS_GUI_WX_ITERATIONS_DIALOG_H
+#define WXCHAOS_GUI_WX_ITERATIONS_DIALOG_H
 
 #include <wx/wx.h>
 #include "Fractal.h"
@@ -36,8 +36,8 @@ class IterationsDialog : public wxFrame
     
 public:
     IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 180), 
-               long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
+                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 180),
+                     long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
 
     ~IterationsDialog() override;
 

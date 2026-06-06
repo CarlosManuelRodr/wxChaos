@@ -74,8 +74,8 @@ public:
 
     void SetDiv(int div);     ///< Set the number of grid divisions.
     void Run();               ///< The worker function for the thread.
-    int GetBoxCount() const;
-    bool IsRunning() const;
+    [[nodiscard]] int GetBoxCount() const;
+    [[nodiscard]] bool IsRunning() const;
     void Terminate(); // To signal the thread to stop
 };
 
@@ -172,7 +172,7 @@ public:
 class PlotWindow : public wxFrame
 {
     mpWindow* _plot;
-    wxWindowID _id;
+    wxWindowID _id{};
 
 public:
     PlotWindow(const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
@@ -246,17 +246,17 @@ class DimensionFrame : public wxFrame
     std::vector<double> _epsilon;                    ///< Vector to hold the epsilon values.
     std::vector<int> _boxCount;                      ///< Vector to hold the box counting.
     std::vector<ScriptData> _loadedScripts;          ///< Parameters and location of user scripts.
-    std::vector<int> _scriptList;                    ///< List of script fractals.
-    int _divIndex;                                   ///< Division index.
+    std::vector<unsigned int> _scriptList;           ///< List of script fractals.
+    int _divIndex{};                                 ///< Division index.
     int _threadNumber;                               ///< Number of render threads.
     bool _scriptSelected;
     bool _firstRender;
 
     int _previewSize;
-    int _size;
+    int _size{};
 
     bool _renderingPreview, _calculatingDimension;
-    int _progress;
+    int _progress{};
     sf::Clock _clock;
 
     void OnChangeFractal(wxCommandEvent&);

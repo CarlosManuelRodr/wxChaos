@@ -145,7 +145,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
 
     if (_map != nullptr)
     {
-        double epsilon = static_cast<double>(_size) / static_cast<double>(_div);
+        const double epsilon = static_cast<double>(_size) / static_cast<double>(_div);
         int boxes = 0;
 
         // Fill color squares.
@@ -186,7 +186,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
         dc.SetPen(wxColour(0, 0, 0));
         for (int ey = 0; ey < _div; ey++)
         {
-            int y = static_cast<int>(ey * epsilon);
+            const int y = static_cast<int>(ey * epsilon);
             dc.DrawLine(0, y, _size, y);
         }
         dc.DrawLine(0, _size - 1, _size, _size - 1);
@@ -194,7 +194,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
         // Vertical lines.
         for (int ex = 0; ex < _div; ex++)
         {
-            int x = static_cast<int>(ex * epsilon);
+            const int x = static_cast<int>(ex * epsilon);
             dc.DrawLine(x, 0, x, _size);
         }
         dc.DrawLine(_size - 1, 0, _size - 1, _size);
@@ -389,22 +389,22 @@ void ConfigFractalOptionsDialog::AdjustOptPanel()
 void ConfigFractalOptionsDialog::DeleteOptPanel()
 {
     // Deletes panel elements.
-    for (auto & _label : _labels)
+    for (const auto & _label : _labels)
         _label->Destroy();
 
     _labels.clear();
     _foundLabels.clear();
-    for (auto & _textControl : _textControls)
+    for (const auto & _textControl : _textControls)
         _textControl->Destroy();
 
     _textControls.clear();
     _foundTextControls.clear();
-    for (auto & _spinControl : _spinControls)
+    for (const auto & _spinControl : _spinControls)
         _spinControl->Destroy();
 
     _spinControls.clear();
     _foundSpinControls.clear();
-    for (auto & _checkBoxe : _checkBoxes)
+    for (const auto & _checkBoxe : _checkBoxes)
         _checkBoxe->Destroy();
 
     _checkBoxes.clear();
@@ -435,7 +435,7 @@ void ConfigFractalOptionsDialog::OnOk(wxCommandEvent&)
 void ConfigFractalOptionsDialog::OnApply(wxCommandEvent&)
 {
     // Pass parameters to the fractal and redraws it.
-    PanelOptions* pOptions = _target->GetOptPanel();
+    const PanelOptions* pOptions = _target->GetOptPanel();
     for (unsigned int i = 0; i < _foundTextControls.size(); i++)
     {
         *pOptions->GetDoubleElement(i) = TextUtils::ToDouble(_textControls[i]->GetValue());
@@ -457,11 +457,8 @@ void ConfigFractalOptionsDialog::OnApply(wxCommandEvent&)
 }
 
 // LinePlotter
-LinePlotter::LinePlotter(const LineParams params) : mpFX(wxT("Fit"))
-{
-    _params = params;
-}
-double LinePlotter::GetY(double x)
+LinePlotter::LinePlotter(const LineParams params) : mpFX(wxT("Fit")), _params(params) {}
+double LinePlotter::GetY(const double x)
 {
     return _params.m * x + _params.b;
 }
@@ -476,8 +473,8 @@ PlotWindow::PlotWindow(const vector<double> &xList, const vector<double> &yList,
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     _plot = new mpWindow(this, -1, wxPoint(0, 0), wxSize(500, 500), wxBORDER_NONE);
-    mpScaleX* xAxis = new mpScaleX(wxT("Epsilon"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-    mpScaleY* yAxis = new mpScaleY(wxT("N"), mpALIGN_LEFT, true);
+    auto* xAxis = new mpScaleX(wxT("Epsilon"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+    const auto yAxis = new mpScaleY(wxT("N"), mpALIGN_LEFT, true);
     xAxis->SetDrawOutsideMargins(false);
     yAxis->SetDrawOutsideMargins(false);
     xAxis->SetFont(graphFont);
@@ -486,13 +483,13 @@ PlotWindow::PlotWindow(const vector<double> &xList, const vector<double> &yList,
     _plot->SetMargins(30, 30, 50, 100);
     _plot->AddLayer(xAxis);
     _plot->AddLayer(yAxis);
-    auto vectorLayer = new mpFXYVector(_("Data"));
+    const auto vectorLayer = new mpFXYVector(_("Data"));
     vectorLayer->SetData(xList, yList);
     vectorLayer->SetPen(wxPen(*wxBLUE, 3, wxPENSTYLE_SOLID));
     _plot->AddLayer(vectorLayer);
     _plot->Fit();
 
-    auto topSizer = new wxBoxSizer(wxVERTICAL);
+    const auto topSizer = new wxBoxSizer(wxVERTICAL);
     topSizer->Add(_plot, 1, wxEXPAND);
     SetAutoLayout(TRUE);
     SetSizer(topSizer);
@@ -506,8 +503,8 @@ PlotWindow::PlotWindow(const LineParams params, const vector<double> &xList, con
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     _plot = new mpWindow(this, -1, wxPoint(0, 0), wxSize(500, 500), wxBORDER_NONE);
-    auto xAxis = new mpScaleX(wxT("Log(1/Epsilon)"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-    auto yAxis = new mpScaleY(wxT("Log(N)"), mpALIGN_LEFT, true);
+    const auto xAxis = new mpScaleX(wxT("Log(1/Epsilon)"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+    const auto yAxis = new mpScaleY(wxT("Log(N)"), mpALIGN_LEFT, true);
     xAxis->SetDrawOutsideMargins(false);
     yAxis->SetDrawOutsideMargins(false);
     xAxis->SetFont(graphFont);
@@ -516,19 +513,20 @@ PlotWindow::PlotWindow(const LineParams params, const vector<double> &xList, con
     _plot->SetMargins(30, 30, 50, 100);
     _plot->AddLayer(xAxis);
     _plot->AddLayer(yAxis);
-    auto vectorLayer = new mpFXYVector(_("Data"));
+    const auto vectorLayer = new mpFXYVector(_("Data"));
     vectorLayer->SetData(xList, yList);
     vectorLayer->SetPen(wxPen(*wxBLUE, 3, wxPENSTYLE_SOLID));
     _plot->AddLayer(new LinePlotter(params));
     _plot->AddLayer(vectorLayer);
     _plot->Fit();
 
-    wxBoxSizer* topSizer = new wxBoxSizer(wxVERTICAL);
+    auto* topSizer = new wxBoxSizer(wxVERTICAL);
     topSizer->Add(_plot, 1, wxEXPAND);
     SetAutoLayout(TRUE);
     SetSizer(topSizer);
 }
-PlotWindow::~PlotWindow() {}
+
+PlotWindow::~PlotWindow() = default;
 
 // DimensionFrame
 DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
@@ -751,7 +749,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     paramBoxSizer->Add(dimBoxSizer, 1, wxEXPAND, 5);
     subMainBoxSizer->Add(paramBoxSizer, 1, wxEXPAND, 5);
 
-    auto outputBoxSizer = new wxBoxSizer(wxVERTICAL);
+    const auto outputBoxSizer = new wxBoxSizer(wxVERTICAL);
     //
     _previewImage = new ImagePanel(_mainPanel, wxID_ANY, _previewSize);
     outputBoxSizer->Add(_previewImage, 0, wxEXPAND | wxALL, 5);
@@ -1055,12 +1053,12 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
                 for (int x = xMin; x < xMax; x++)
                 {
                     xVal = static_cast<double>(x);
-                    _div.push_back(parser.Eval().GetFloat());
+                    _div.push_back(static_cast<int>(parser.Eval().GetInteger()));
                 }
             }
             catch (mup::ParserError& error)
             {
-                wxString err = error.GetMsg();
+                const wxString err = error.GetMsg();
                 _logCtrl->WriteText(wxT("Parser error: "));
                 _logCtrl->WriteText(err);
                 _logCtrl->WriteText(wxT("\n"));
@@ -1069,9 +1067,9 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
         }
         else
         {
-            wxString listNumbers = _listCtrl->GetValue();
+            const wxString listNumbers = _listCtrl->GetValue();
             _div = TextUtils::ParseIntList(listNumbers);
-            if (_div.size() == 0)
+            if (_div.empty())
                 errorStatus = true;
         }
 
@@ -1092,7 +1090,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
             _myOpt.maxIter = TextUtils::ToInt(_iterCtrl->GetValue());
 
             // Compare with previous options.
-            Options tempOpt = _target->GetOptions();
+            const Options tempOpt = _target->GetOptions();
 
             if (tempOpt.minX != _myOpt.minX || tempOpt.maxX != _myOpt.maxX || tempOpt.minY != _myOpt.minY ||
                 tempOpt.maxY != _myOpt.maxY || tempOpt.maxIter != _myOpt.maxIter || tempOpt.screenWidth != _size ||
@@ -1107,7 +1105,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
             }
 
             // Divide thread assignment.
-            int sizeDiv = _size / _threadNumber;
+            const int sizeDiv = _size / _threadNumber;
             for (int i = 0; i < _threadNumber; i++)
             {
                 if (i < _threadNumber - 1)
@@ -1116,7 +1114,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
                     _dimensionCalculator[i].SetMap(_target->GetSetMap(), _size, i * sizeDiv, _size);
             }
 
-            if (_div.size() > 0)
+            if (!_div.empty())
             {
                 _divIndex = -1;
                 _calcButton->SetLabel(wxT("Stop"));
@@ -1232,7 +1230,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                     else if (_divIndex < static_cast<int>(_div.size()) - 1)
                     {
                         // Update progress bar.
-                        _progress = 50 * (1 + static_cast<double>(_divIndex) / static_cast<double>(_div.size()));
+                        _progress = static_cast<int>(50 * (1 + static_cast<double>(_divIndex) / static_cast<double>(_div.size())));
                         _progressBar->SetValue(_progress);
                         _progressTxt->SetLabel(wxString(wxT("Progress: ")) + TextUtils::ToWxString(_progress) + wxT("%"));
 
@@ -1302,10 +1300,9 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         if (_dataCheck->GetValue())
                         {
                             vector<double> doubleCount;
-                            for (unsigned i = 0; i < _boxCount.size(); i++)
-                            {
-                                doubleCount.push_back(_boxCount[i]);
-                            }
+                            for (int i : _boxCount)
+                                doubleCount.push_back(i);
+
                             auto plot = new PlotWindow(_epsilon, doubleCount, this, wxID_ANY, wxT("Data plot"));    // Txt: "Data plot"
                             plot->Show(true);
                         }
@@ -1313,7 +1310,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         // Draw fitted plot.
                         if (_dataFitCheck->GetValue())
                         {
-                            LineParams myLine;
+                            LineParams myLine{};
                             myLine.m = dimensionFit;
                             myLine.b = b;
                             auto plot = new PlotWindow(myLine, logEpsilon, logCount, this, wxID_ANY, wxT("Fitted data plot"));    // Txt: "Fitted data plot"
@@ -1405,7 +1402,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         _target->PrepareRender();
         _target->Render();
 
-        SaveProgressDiag* saveProgress = new SaveProgressDiag(_target, this, false);
+        auto* saveProgress = new SaveProgressDiag(_target, this, false);
         saveProgress->ShowModal();
 
         if (saveProgress->IsFinished())
@@ -1440,9 +1437,9 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
                 for (int ex = 0; ex < nDiv; ex++)
                 {
                     bool found = false;
-                    for (int w = ex * local_epsilon; w < (ex + 1) * local_epsilon && !found; w++)
+                    for (int w = static_cast<int>(ex * local_epsilon); w < (ex + 1) * local_epsilon && !found; w++)
                     {
-                        for (int h = ey * local_epsilon; h < (ey + 1) * local_epsilon; h++)
+                        for (int h = static_cast<int>(ey * local_epsilon); h < (ey + 1) * local_epsilon; h++)
                         {
                             if (w < _size && h < _size)
                             {
@@ -1450,9 +1447,9 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
                                 {
                                     found = true;
                                     // Color square
-                                    for (int y = ey * local_epsilon; y < (ey + 1) * local_epsilon; y++)
+                                    for (int y = static_cast<int>(ey * local_epsilon); y < (ey + 1) * local_epsilon; y++)
                                     {
-                                        for (int x = ex * local_epsilon; x < (ex + 1) * local_epsilon; x++)
+                                        for (int x = static_cast<int>(ex * local_epsilon); x < (ex + 1) * local_epsilon; x++)
                                         {
                                             if (x < _size && y < _size)
                                                 colorMap[x][y] = true;
@@ -1471,7 +1468,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
             // Horizontal lines.
             for (int ey = 0; ey < nDiv; ey++)
             {
-                int y = ey * local_epsilon;
+                int y = static_cast<int>(ey * local_epsilon);
                 for (int x = 0; x < _size; x++)
                     tempSetMap[x][y] = true;
             }
@@ -1482,7 +1479,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
             // Vertical lines
             for (int ex = 0; ex < nDiv; ex++)
             {
-                int x = ex * local_epsilon;
+                int x = static_cast<int>(ex * local_epsilon);
                 for (int y = 0; y < _size; y++)
                     tempSetMap[x][y] = true;
             }

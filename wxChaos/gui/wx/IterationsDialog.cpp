@@ -94,7 +94,14 @@ void IterationsDialog::OnApply(wxCommandEvent&)
 {
     // Redraw fractal.
     _text = _textCtrl->GetValue();
-    _number = TextUtils::ToInt(_text);
+
+    const int value = TextUtils::ToInt(_text);;
+    if (value < 0)
+    {
+        wxMessageBox("Negative values are not allowed.", "Error", wxOK | wxICON_ERROR);
+        return;
+    }
+    _number = value;
     _presenter->ChangeIterations(_number);
 }
 void IterationsDialog::SetTarget(SFMLFractal* presenter)

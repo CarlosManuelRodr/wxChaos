@@ -16,52 +16,19 @@ MainFrame* mainFramePtr = nullptr;
 */
 void GetDesktopResolution(int& width, int& height)
 {
-#ifdef _WIN32
     RECT desktop;
-    const HWND hDesktop = GetDesktopWindow();
+    // ReSharper disable once CppLocalVariableMayBeConst
+    HWND hDesktop = GetDesktopWindow();
     GetWindowRect(hDesktop, &desktop);
     width = desktop.right;
     height = desktop.bottom;
-#endif
-#ifdef linux
-    int num_sizes;
-    Rotation original_rotation;
-
-    Display *dpy = XOpenDisplay(NULL);
-    Window root = RootWindow(dpy, 0);
-    XRRScreenSize *xrrs = XRRSizes(dpy, 0, &num_sizes);
-
-    XRRScreenConfiguration *conf = XRRGetScreenInfo(dpy, root);
-    short original_rate = XRRConfigCurrentRate(conf);
-    SizeID original_size_id = XRRConfigCurrentConfiguration(conf, &original_rotation);
-
-    width = xrrs[original_size_id].width;
-    height = xrrs[original_size_id].height;
-
-    XCloseDisplay(dpy);
-#endif
 }
-
-#ifdef __linux__
-const std::string exec(const char* cmd)
-{
-    FILE* pipe = popen(cmd, "r");
-    if (!pipe) return "ERROR";
-    char buffer[128];
-    std::string result = "";
-    while(!feof(pipe))
-    {
-        if (fgets(buffer, 128, pipe) != NULL)
-            result += buffer;
-    }
-    pclose(pipe);
-    return result;
-}
-#endif
 
 // Fractal Frame
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPosition, wxSize(1180, 820))
 {
+    fractalType = FractalType::Mandelbrot; // This will clash with config.ini options. I need to find a better way to handle this.
+
     // Init handlers.
     wxImage::AddHandler(new wxPNGHandler);
     wxImage::AddHandler(new wxICOHandler);

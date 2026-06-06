@@ -160,7 +160,7 @@ public:
 
     ///@brief Sets the iteration count and invalidates cached images.
     ///@param iterations New maximum iteration count.
-    void ChangeIterations(int iterations);
+    void ChangeIterations(unsigned int iterations);
 
     ///@brief Sets the Julia constant and invalidates cached images.
     ///@param real Real component.

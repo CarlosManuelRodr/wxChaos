@@ -1,7 +1,5 @@
-#include <algorithm>
 #include <cmath>
 #include <string>
-#include <utility>
 #include "AppPaths.h"
 #include "Fractal.h"
 #include "SFMLFractal.h"
@@ -434,7 +432,7 @@ void SFMLFractal::DecreaseIterations()
     }
 }
 
-void SFMLFractal::ChangeIterations(const int iterations)
+void SFMLFractal::ChangeIterations(const unsigned int iterations)
 {
     _changeFractalIter = true;
 
