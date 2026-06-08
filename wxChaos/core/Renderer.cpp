@@ -85,6 +85,53 @@ unsigned int Renderer::ToColorMapValue(const double value)
 {
     return value < 0 ? InvalidColor : static_cast<unsigned int>(value);
 }
+double Renderer::SafeTrapDistance(const double distance)
+{
+    return distance == 0.0 ? 0.000001 : distance;
+}
+double Renderer::OrbitTrapColorOffset(const double distanceX, const double distanceY)
+{
+    return log(1 / SafeTrapDistance(distanceX)) + log(1 / SafeTrapDistance(distanceY));
+}
+double Renderer::SmoothEscapeOffset(const double zNorm)
+{
+    return log(log(zNorm)) / log(2.0);
+}
+double Renderer::InitialGaussianMu()
+{
+    return (log(log(2.0)) - log(log(sqrt(4.0)))) / log(2.0) + 1;
+}
+double Renderer::EscapedGaussianMu(const double zNorm)
+{
+    return (log(log(2.0)) - log(log(sqrt(zNorm)))) / log(2.0) + 1;
+}
+unsigned int Renderer::GaussianIntegerColor(const GaussianIntegerPoint& point, const unsigned int paletteSize) const
+{
+    const double gaussianColor = (point.mu * point.distance + (1 - point.mu) * point.previousDistance) * paletteSize;
+    const double trapOffset = _myOpt.orbitTrapMode ? OrbitTrapColorOffset(point.trapDistanceX, point.trapDistanceY) : 0.0;
+    return ToColorMapValue(abs(gaussianColor + trapOffset));
+}
+unsigned int Renderer::EscapeAngleColor(const EscapePoint& point, const unsigned int paletteSize)
+{
+    constexpr int color1 = 1;
+    const int color2 = static_cast<int>(0.25 * paletteSize);
+    const int color3 = static_cast<int>(0.50 * paletteSize);
+    const int color4 = static_cast<int>(0.75 * paletteSize);
+
+    if (point.zRe > 0 && point.zIm > 0)
+        return point.iterations + color1;
+    if (point.zRe <= 0 && point.zIm > 0)
+        return point.iterations + color2;
+    if (point.zRe <= 0 && point.zIm < 0)
+        return point.iterations + color3;
+    return point.iterations + color4;
+}
+unsigned int Renderer::TriangleInequalityColor(const TriangleInequalityPoint& point)
+{
+    const double previousDistance = point.previousDistance / (point.iterations - 1);
+    const double distance = point.distance / point.iterations;
+    return static_cast<unsigned int>(abs(((point.mu * distance + (1 - point.mu) * previousDistance) * 700)));
+}
 void Renderer::Reset()
 {
     _x = 0;

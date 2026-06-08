@@ -2,6 +2,7 @@
 #ifndef RENDER_FRACTAL_H
 #define RENDER_FRACTAL_H
 
+#include <cmath>
 #include <limits>
 #include "types/FractalType.h"
 #include "geometry/Vector2Int.h"
@@ -11,6 +12,36 @@ class Renderer
 {
 protected:
     static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
+
+    struct EscapePoint
+    {
+        unsigned int iterations = 0;
+        bool insideSet = true;
+        double zRe = 0.0;
+        double zIm = 0.0;
+        double zNorm = 0.0;
+        double trapDistanceX = 0.0;
+        double trapDistanceY = 0.0;
+    };
+
+    struct GaussianIntegerPoint
+    {
+        bool insideSet = true;
+        double distance = 99.0;
+        double previousDistance = 0.0;
+        double mu = 0.0;
+        double trapDistanceX = 0.0;
+        double trapDistanceY = 0.0;
+    };
+
+    struct TriangleInequalityPoint
+    {
+        bool insideSet = true;
+        unsigned int iterations = 0;
+        double distance = 0.0;
+        double previousDistance = 0.0;
+        double mu = 0.0;
+    };
 
     bool** _setMap;
     unsigned int** _colorMap;
@@ -42,6 +73,17 @@ protected:
     double _kImaginary;
 
     static unsigned int ToColorMapValue(double value);
+    static double SafeTrapDistance(double distance);
+    static double OrbitTrapColorOffset(double distanceX, double distanceY);
+    static double SmoothEscapeOffset(double zNorm);
+    static double InitialGaussianMu();
+    static double EscapedGaussianMu(double zNorm);
+    unsigned int GaussianIntegerColor(const GaussianIntegerPoint& point, unsigned int paletteSize) const;
+    static unsigned int EscapeAngleColor(const EscapePoint& point, unsigned int paletteSize);
+    static unsigned int TriangleInequalityColor(const TriangleInequalityPoint& point);
+
+    template<class PixelRenderer>
+    void RenderPixels(PixelRenderer pixelRenderer);
 
 public:
     Renderer();
@@ -67,5 +109,18 @@ public:
     bool IsRunning() const;
     virtual unsigned int GetProgress();
 };
+
+template<class PixelRenderer> void Renderer::RenderPixels(PixelRenderer pixelRenderer)
+{
+    for (_y = _heightOrigin; _y < _heightFinal; _y++)
+    {
+        const double pixelIm = _maxY - _y * _yFactor;
+        for (_x = _widthOrigin; _x < _widthFinal; _x++)
+        {
+            const double pixelRe = _minX + _x * _xFactor;
+            pixelRenderer(pixelRe, pixelIm);
+        }
+    }
+}
 
 #endif

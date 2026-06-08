@@ -11,10 +11,12 @@ class JuliaZNRenderer : public Renderer
     double _bailout;
 
     void EscapeTimeRender();
+    EscapePoint IterateEscapePoint(double pixelRe, double pixelIm) const;
+    unsigned int ColorEscapePoint(const EscapePoint& point) const;
     void GaussianIntRender();
+    GaussianIntegerPoint IterateGaussianIntegerPoint(double pixelRe, double pixelIm) const;
     void EscapeAngleRender();
-    void EscapeTimeSmoothRender();
-    void EscapeTimeWithOrbitTrapRender();
+    EscapePoint IterateEscapeAnglePoint(double pixelRe, double pixelIm) const;
 
 public:
     JuliaZNRenderer();

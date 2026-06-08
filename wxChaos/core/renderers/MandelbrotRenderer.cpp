@@ -12,285 +12,234 @@ MandelbrotRenderer::MandelbrotRenderer()
 }
 void MandelbrotRenderer::EscapeTimeRender()
 {
-    unsigned n;
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    RenderPixels([this](const double pixelRe, const double pixelIm)
     {
-        const double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            const double c_re = _minX + _x * _xFactor;
-            double Z_re = c_re;
-            double Z_im = c_im;
-            bool insideSet = true;
+        const EscapePoint point = IterateEscapePoint(pixelRe, pixelIm);
+        if (point.insideSet)
+            _setMap[_x][_y] = true;
 
-            for (n=0; n<_maxIter; n++)
-            {
-                const double Z_re2 = Z_re * Z_re;
-                const double Z_im2 = Z_im * Z_im;
-
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    insideSet = false;
-                    break;
-                }
-
-                Z_im = 2*Z_re*Z_im + c_im;
-                Z_re = Z_re2 - Z_im2 + c_re;
-            }
-
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            _colorMap[_x][_y] = n;
-        }
-    }
+        _colorMap[_x][_y] = ColorEscapePoint(point);
+    });
 }
 
-void MandelbrotRenderer::EscapeTimeSmoothRender()
+Renderer::EscapePoint MandelbrotRenderer::IterateEscapePoint(const double pixelRe, const double pixelIm) const
 {
-    unsigned n;
-    const double log2 = log(2.0);
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        const double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            double c_re;
-            double Z_re = c_re = _minX + _x * _xFactor;
-            double Z_im = c_im;
-            double Z_re2 = 0;
-            double Z_im2 = 0;
-            bool insideSet = true;
+    EscapePoint point;
+    double zRe = pixelRe;
+    double zIm = pixelIm;
 
-            for (n=0; n<_maxIter; n++)
+    if (!_myOpt.orbitTrapMode)
+    {
+        unsigned n = 0;
+        for (; n < _maxIter; n++)
+        {
+            const double zRe2 = zRe * zRe;
+            const double zIm2 = zIm * zIm;
+            point.zNorm = zRe2 + zIm2;
+            if (point.zNorm > 4)
             {
-                Z_re2 = Z_re*Z_re;
-                Z_im2 = Z_im*Z_im;
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    insideSet = false;
-                    break;
-                }
-                Z_im = 2*Z_re*Z_im + c_im;
-                Z_re = Z_re2 - Z_im2 + c_re;
+                point.insideSet = false;
+                break;
             }
 
-            if (insideSet)
-                _setMap[_x][_y] = true;
-            _colorMap[_x][_y] = static_cast<unsigned int>(abs(4.0*(n -  log(log(Z_re2+Z_im2))/log2)));
+            zIm = 2 * zRe * zIm + pixelIm;
+            zRe = zRe2 - zIm2 + pixelRe;
         }
+
+        point.iterations = n;
+        point.zRe = zRe;
+        point.zIm = zIm;
+        return point;
     }
+
+    point.trapDistanceX = abs(zRe);
+    point.trapDistanceY = abs(zIm);
+
+    for (unsigned n = 0; n < _maxIter; n++)
+    {
+        const double zRe2 = zRe * zRe;
+        const double zIm2 = zIm * zIm;
+        point.zNorm = zRe2 + zIm2;
+
+        if (point.zNorm > 4)
+        {
+            point.insideSet = false;
+            if (point.zNorm > 16)
+            {
+                point.trapDistanceY = minVal(point.trapDistanceY, abs(zIm));
+                point.trapDistanceX = minVal(point.trapDistanceX, abs(zRe));
+                break;
+            }
+        }
+        else
+            point.iterations = n;
+
+        zIm = 2 * zRe * zIm + pixelIm;
+        zRe = zRe2 - zIm2 + pixelRe;
+
+        point.trapDistanceY = minVal(point.trapDistanceY, abs(zIm));
+        point.trapDistanceX = minVal(point.trapDistanceX, abs(zRe));
+    }
+
+    point.zRe = zRe;
+    point.zIm = zIm;
+    return point;
 }
 
-void MandelbrotRenderer::EscapeTimeWithOrbitTrapRender()
+unsigned int MandelbrotRenderer::ColorEscapePoint(const EscapePoint& point) const
 {
-    double c_re;
-    double Z_re2 = 0;
-    double Z_im2 = 0;
-    const double log2 = log(2.0);
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    if (!_myOpt.orbitTrapMode)
     {
-        const double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            double Z_re = c_re = _minX + _x * _xFactor;
-            double Z_im = c_im;
+        if (_myOpt.smoothRender)
+            return static_cast<unsigned int>(abs(4.0 * (point.iterations - SmoothEscapeOffset(point.zNorm))));
 
-            double distX = abs(Z_re);
-            double distY = abs(Z_im);
-
-            bool insideSet = true;
-            unsigned int iterations = 0;
-
-            for (unsigned n=0; n<_maxIter; n++)
-            {
-                Z_re2 = Z_re*Z_re;
-                Z_im2 = Z_im*Z_im;
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    insideSet = false;
-                    if (Z_re2 + Z_im2 > 16)
-                    {
-                        if (abs(Z_im) < distY)
-                            distY = abs(Z_im);
-                        if (abs(Z_re) < distX)
-                            distX = abs(Z_re);
-                        break;
-                    }
-                }
-                else
-                    iterations = n;
-
-                Z_im = 2*Z_re*Z_im + c_im;
-                Z_re = Z_re2 - Z_im2 + c_re;
-
-                if (abs(Z_im) < distY)
-                    distY = abs(Z_im);
-                if (abs(Z_re) < distX)
-                    distX = abs(Z_re);
-            }
-            if (distX == 0)
-                distX = 0.000001;
-            if (distY == 0)
-                distY = 0.000001;
-
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            if (_myOpt.smoothRender)
-            {
-                if (!insideSet)
-                    _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations - log(log(Z_re2 + Z_im2)) / log2) + 4.0 * (log(1 / distX) + log(1 / distY))));
-                else
-                    _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations + 4.0 * (log(1 / distX) + log(1 / distY)))));
-            }
-            else
-                _colorMap[_x][_y] = ToColorMapValue(iterations + log(1 / distX) + log(1 / distY));
-        }
+        return point.iterations;
     }
+
+    const double trapOffset = OrbitTrapColorOffset(point.trapDistanceX, point.trapDistanceY);
+    if (!_myOpt.smoothRender)
+        return ToColorMapValue(point.iterations + trapOffset);
+
+    if (!point.insideSet)
+        return ToColorMapValue(abs(4.0 * (point.iterations - SmoothEscapeOffset(point.zNorm)) + 4.0 * trapOffset));
+
+    return ToColorMapValue(abs(4.0 * (point.iterations + 4.0 * trapOffset)));
 }
 
 void MandelbrotRenderer::GaussianIntRender()
 {
-    double distance1 = 0;
-    const double log2 = log(2.0);
-    const double loglog2 = log(log2);
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    RenderPixels([this](const double pixelRe, const double pixelIm)
     {
-        const double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        const GaussianIntegerPoint point = IterateGaussianIntegerPoint(pixelRe, pixelIm);
+        if (point.insideSet)
+            _setMap[_x][_y] = true;
+
+        _colorMap[_x][_y] = GaussianIntegerColor(point, _myOpt.paletteSize);
+    });
+}
+
+Renderer::GaussianIntegerPoint MandelbrotRenderer::IterateGaussianIntegerPoint(const double pixelRe, const double pixelIm) const
+{
+    GaussianIntegerPoint point;
+    double zRe = 0.0;
+    double zIm = 0.0;
+    point.mu = InitialGaussianMu();
+    point.trapDistanceX = abs(pixelRe);
+    point.trapDistanceY = abs(pixelIm);
+
+    for (unsigned n = 0; n < _maxIter && point.insideSet; n++)
+    {
+        const double zRe2 = zRe * zRe;
+        const double zIm2 = zIm * zIm;
+        const double zNorm = zRe2 + zIm2;
+
+        if (zNorm > 4)
         {
-            double Z_im;
-            double Z_re = Z_im = 0;
-            const double c_re = _minX + _x * _xFactor;
-            bool insideSet = true;
-            double distance = 99;
-            double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
-
-            for (unsigned n = 0; n<_maxIter && insideSet; n++)
-            {
-                const double Z_re2 = Z_re * Z_re;
-                const double Z_im2 = Z_im * Z_im;
-
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    mu = (loglog2 - log(log(sqrt(Z_re2 + Z_im2))))/log2 + 1;
-                    insideSet = false;
-                }
-
-                Z_im = 2*Z_re*Z_im + c_im;
-                Z_re = Z_re2 - Z_im2 + c_re;
-
-                distance1 = distance;
-                distance = minVal(distance, gaussianIntDist(Z_re, Z_im));
-            }
-
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
+            point.mu = EscapedGaussianMu(zNorm);
+            point.insideSet = false;
         }
+
+        zIm = 2 * zRe * zIm + pixelIm;
+        zRe = zRe2 - zIm2 + pixelRe;
+
+        point.previousDistance = point.distance;
+        point.distance = minVal(point.distance, gaussianIntDist(zRe, zIm));
+        point.trapDistanceY = minVal(point.trapDistanceY, abs(zIm));
+        point.trapDistanceX = minVal(point.trapDistanceX, abs(zRe));
     }
+
+    return point;
 }
 
 void MandelbrotRenderer::EscapeAngleRender()
 {
-    unsigned n;
-    constexpr int color1 = 1;
-    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
-    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
-    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    RenderPixels([this](const double pixelRe, const double pixelIm)
     {
-        const double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        const EscapePoint point = IterateEscapeAnglePoint(pixelRe, pixelIm);
+        if (point.insideSet)
+            _setMap[_x][_y] = true;
+
+        _colorMap[_x][_y] = EscapeAngleColor(point, _myOpt.paletteSize);
+    });
+}
+
+Renderer::EscapePoint MandelbrotRenderer::IterateEscapeAnglePoint(const double pixelRe, const double pixelIm) const
+{
+    EscapePoint point;
+    double zRe = pixelRe;
+    double zIm = pixelIm;
+
+    unsigned n = 0;
+    for (; n < _maxIter; n++)
+    {
+        const double zRe2 = zRe * zRe;
+        const double zIm2 = zIm * zIm;
+        point.zNorm = zRe2 + zIm2;
+        if (point.zNorm > 4)
         {
-            double c_re;
-            double Z_re = c_re = _minX + _x * _xFactor;
-            double Z_im = c_im;
-            bool insideSet = true;
-
-            for (n=0; n<_maxIter; n++)
-            {
-                const double Z_re2 = Z_re * Z_re;
-                const double Z_im2 = Z_im * Z_im;
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    insideSet = false;
-                    break;
-                }
-                Z_im = 2*Z_re*Z_im + c_im;
-                Z_re = Z_re2 - Z_im2 + c_re;
-            }
-
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            if (Z_re > 0 && Z_im > 0)
-                _colorMap[_x][_y] = n + color1;
-            else if (Z_re <= 0 && Z_im > 0)
-                _colorMap[_x][_y] = n + color2;
-            else if (Z_re <= 0 && Z_im < 0)
-                _colorMap[_x][_y] = n + color3;
-            else
-                _colorMap[_x][_y] = n + color4;
+            point.insideSet = false;
+            break;
         }
+
+        zIm = 2 * zRe * zIm + pixelIm;
+        zRe = zRe2 - zIm2 + pixelRe;
     }
+
+    point.iterations = n;
+    point.zRe = zRe;
+    point.zIm = zIm;
+    return point;
 }
 
 void MandelbrotRenderer::TriangleInequalityRender()
 {
-    unsigned n;
-    double distance1 = 0;
-    const double log2 = log(2.0);
-    const double loglog2 = log(log2);
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    RenderPixels([this](const double pixelRe, const double pixelIm)
     {
-        const double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        const TriangleInequalityPoint point = IterateTriangleInequalityPoint(pixelRe, pixelIm);
+        if (point.insideSet)
+            _setMap[_x][_y] = true;
+
+        _colorMap[_x][_y] = TriangleInequalityColor(point);
+    });
+}
+
+Renderer::TriangleInequalityPoint MandelbrotRenderer::IterateTriangleInequalityPoint(const double pixelRe, const double pixelIm) const
+{
+    TriangleInequalityPoint point;
+    double zRe = 0.0;
+    double zIm = 0.0;
+    point.mu = InitialGaussianMu();
+
+    for (unsigned n = 0; n < _maxIter && point.insideSet; n++)
+    {
+        const double zRe2 = zRe * zRe;
+        const double zIm2 = zIm * zIm;
+        const double zNorm = zRe2 + zIm2;
+
+        if (zNorm > 4)
         {
-            double Z_im;
-            double Z_re = Z_im = 0;
-            const double c_re = _minX + _x * _xFactor;
-            bool insideSet = true;
-            double distance = 0;
-            double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
-
-            for (n=0; n<_maxIter && insideSet; n++)
-            {
-                const double Z_re2 = Z_re * Z_re;
-                const double Z_im2 = Z_im * Z_im;
-
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    mu = (loglog2 - log(log(sqrt(Z_re2 + Z_im2))))/log2 + 1;
-                    if (n > 0) insideSet = false;
-                }
-
-                Z_im = 2*Z_re*Z_im;
-                Z_re = Z_re2 - Z_im2;
-
-                const double tia_prev_x = Z_re;
-                const double tia_prev_y = Z_im;
-
-                Z_re += c_re;
-                Z_im += c_im;
-
-                distance1 = distance;
-                if (n > 0) distance += TIA(Z_re, Z_im, c_re, c_im, tia_prev_x, tia_prev_y);
-            }
-
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            distance1 = distance1/(n-1);
-            distance = distance/n;
-            _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*700)));
+            point.mu = EscapedGaussianMu(zNorm);
+            if (n > 0)
+                point.insideSet = false;
         }
+
+        zIm = 2 * zRe * zIm;
+        zRe = zRe2 - zIm2;
+
+        const double tiaPrevX = zRe;
+        const double tiaPrevY = zIm;
+
+        zRe += pixelRe;
+        zIm += pixelIm;
+
+        point.previousDistance = point.distance;
+        if (n > 0)
+            point.distance += TIA(zRe, zIm, pixelRe, pixelIm, tiaPrevX, tiaPrevY);
+
+        point.iterations = n + 1;
     }
+
+    return point;
 }
 
 void MandelbrotRenderer::BuddhabrotRender()
@@ -380,12 +329,7 @@ void MandelbrotRenderer::Render()
     switch (_myOpt.alg)
     {
         case RenderingAlgorithmType::EscapeTime:
-            if (_myOpt.orbitTrapMode)
-                EscapeTimeWithOrbitTrapRender();
-            else if (_myOpt.smoothRender)
-                EscapeTimeSmoothRender();
-            else
-                EscapeTimeRender();
+            EscapeTimeRender();
             break;
         case RenderingAlgorithmType::GaussianInt:
             GaussianIntRender();

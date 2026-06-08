@@ -11,197 +11,176 @@ JuliaZNRenderer::JuliaZNRenderer()
 }
 void JuliaZNRenderer::EscapeTimeRender()
 {
-    unsigned i;
-    const auto k = complex<double>(_kReal, _kImaginary);
-    const double squaredBail = _bailout*_bailout;
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    RenderPixels([this](const double pixelRe, const double pixelIm)
     {
-        double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        const EscapePoint point = IterateEscapePoint(pixelRe, pixelIm);
+        if (point.insideSet)
+            _setMap[_x][_y] = true;
+
+        _colorMap[_x][_y] = ColorEscapePoint(point);
+    });
+}
+
+Renderer::EscapePoint JuliaZNRenderer::IterateEscapePoint(const double pixelRe, const double pixelIm) const
+{
+    EscapePoint point;
+    const auto k = complex<double>(_kReal, _kImaginary);
+    complex<double> z(pixelRe, pixelIm);
+    const double squaredBail = _bailout * _bailout;
+
+    if (!_myOpt.orbitTrapMode && !_myOpt.smoothRender)
+    {
+        unsigned i = 0;
+        for (; i < _maxIter; i++)
         {
-            auto z = complex<double>(_minX + _x * _xFactor, c_im);
-            bool insideSet = true;
-
-            for (i=0; i<_maxIter; i++)
+            z = pow(z, _n) + k;
+            point.zNorm = z.real() * z.real() + z.imag() * z.imag();
+            if (point.zNorm > squaredBail)
             {
-                z = pow(z,_n) + k;
-                if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
-                {
-                    insideSet = false;
-                    break;
-                }
+                point.insideSet = false;
+                break;
             }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            _colorMap[_x][_y] = i;
         }
+
+        point.iterations = i;
+        point.zRe = z.real();
+        point.zIm = z.imag();
+        return point;
     }
+
+    const double bailFourPower = squaredBail * squaredBail;
+    point.trapDistanceX = abs(z.real());
+    point.trapDistanceY = abs(z.imag());
+
+    for (unsigned i = 0; i < _maxIter; i++)
+    {
+        z = pow(z, _n) + k;
+        point.zRe = z.real();
+        point.zIm = z.imag();
+        point.zNorm = point.zRe * point.zRe + point.zIm * point.zIm;
+
+        if (point.zNorm > squaredBail)
+        {
+            point.insideSet = false;
+            if (point.zNorm > bailFourPower)
+            {
+                point.trapDistanceY = minVal(point.trapDistanceY, abs(point.zIm));
+                point.trapDistanceX = minVal(point.trapDistanceX, abs(point.zRe));
+                break;
+            }
+        }
+        else
+            point.iterations = i;
+
+        point.trapDistanceY = minVal(point.trapDistanceY, abs(point.zIm));
+        point.trapDistanceX = minVal(point.trapDistanceX, abs(point.zRe));
+    }
+
+    return point;
+}
+
+unsigned int JuliaZNRenderer::ColorEscapePoint(const EscapePoint& point) const
+{
+    if (!_myOpt.orbitTrapMode && !_myOpt.smoothRender)
+        return point.iterations;
+
+    const double trapOffset = OrbitTrapColorOffset(point.trapDistanceX, point.trapDistanceY);
+    if (!_myOpt.smoothRender)
+        return ToColorMapValue(abs(point.iterations + trapOffset));
+
+    if (!point.insideSet)
+        return ToColorMapValue(abs(4.0 * (point.iterations - SmoothEscapeOffset(point.zNorm)) + 4.0 * trapOffset));
+
+    return ToColorMapValue(abs(4.0 * (point.iterations + 4.0 * trapOffset)));
 }
 
 void JuliaZNRenderer::GaussianIntRender()
 {
-    const auto k = complex<double>(_kReal, _kImaginary);
-    double distance1 = 0;
-    const double log2 = log(2.0);
-    const double loglog2 = log(log2);
-    const double squaredBail = _bailout*_bailout;
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    RenderPixels([this](const double pixelRe, const double pixelIm)
     {
-        double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        const GaussianIntegerPoint point = IterateGaussianIntegerPoint(pixelRe, pixelIm);
+        if (point.insideSet)
+            _setMap[_x][_y] = true;
+
+        _colorMap[_x][_y] = GaussianIntegerColor(point, _myOpt.paletteSize);
+    });
+}
+
+Renderer::GaussianIntegerPoint JuliaZNRenderer::IterateGaussianIntegerPoint(const double pixelRe, const double pixelIm) const
+{
+    GaussianIntegerPoint point;
+    const auto k = complex<double>(_kReal, _kImaginary);
+    complex<double> z(pixelRe, pixelIm);
+    const double squaredBail = _bailout * _bailout;
+    point.mu = InitialGaussianMu();
+    point.trapDistanceX = abs(pixelRe);
+    point.trapDistanceY = abs(pixelIm);
+
+    for (unsigned i = 0; i < _maxIter && point.insideSet; i++)
+    {
+        const double zNorm = z.real() * z.real() + z.imag() * z.imag();
+        if (zNorm > squaredBail)
         {
-            auto z = complex<double>(_minX + _x * _xFactor, c_im);
-            bool insideSet = true;
-            double distance = 99;
-            double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
-
-            for (unsigned i = 0; i<_maxIter && insideSet; i++)
-            {
-                const double zNorm = z.real() * z.real() + z.imag() * z.imag();
-                if (zNorm > squaredBail)
-                {
-                    mu = (loglog2 - log(log(sqrt(zNorm))))/log2 + 1;
-                    if (i > 0) insideSet = false;
-                }
-                z = pow(z,_n) + k;
-
-                distance1 = distance;
-                distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
+            point.mu = EscapedGaussianMu(zNorm);
+            if (i > 0)
+                point.insideSet = false;
         }
+
+        z = pow(z, _n) + k;
+
+        point.previousDistance = point.distance;
+        point.distance = minVal(point.distance, gaussianIntDist(z.real(), z.imag()));
+        point.trapDistanceY = minVal(point.trapDistanceY, abs(z.imag()));
+        point.trapDistanceX = minVal(point.trapDistanceX, abs(z.real()));
     }
+
+    return point;
 }
 
 void JuliaZNRenderer::EscapeAngleRender()
 {
-    constexpr int color1 = 1;
-    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
-    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
-    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
-    const auto k = complex<double>(_kReal, _kImaginary);
-    const double squaredBail = _bailout*_bailout;
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    RenderPixels([this](const double pixelRe, const double pixelIm)
     {
-        double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        EscapePoint point = IterateEscapeAnglePoint(pixelRe, pixelIm);
+        if (point.insideSet)
+            _setMap[_x][_y] = true;
+
+        point.iterations = _n;
+        _colorMap[_x][_y] = EscapeAngleColor(point, _myOpt.paletteSize);
+    });
+}
+
+Renderer::EscapePoint JuliaZNRenderer::IterateEscapeAnglePoint(const double pixelRe, const double pixelIm) const
+{
+    EscapePoint point;
+    const auto k = complex<double>(_kReal, _kImaginary);
+    complex<double> z(pixelRe, pixelIm);
+    const double squaredBail = _bailout * _bailout;
+
+    unsigned i = 0;
+    for (; i < _maxIter; i++)
+    {
+        z = pow(z, _n) + k;
+        point.zNorm = z.real() * z.real() + z.imag() * z.imag();
+        if (point.zNorm > squaredBail)
         {
-            auto z = complex<double>(_minX + _x * _xFactor, c_im);
-            bool insideSet = true;
-
-            for (unsigned i = 0; i<_maxIter; i++)
-            {
-                z = pow(z,_n) + k;
-                if (z.real()*z.real() + z.imag()*z.imag() > squaredBail)
-                {
-                    insideSet = false;
-                    break;
-                }
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            if (z.real() > 0 && z.imag() > 0)
-                _colorMap[_x][_y] = _n + color1;
-            else if (z.real() <= 0 && z.imag() > 0)
-                _colorMap[_x][_y] = _n + color2;
-            else if (z.real() <= 0 && z.imag() < 0)
-                _colorMap[_x][_y] = _n + color3;
-            else
-                _colorMap[_x][_y] = _n + color4;
+            point.insideSet = false;
+            break;
         }
     }
+
+    point.iterations = i;
+    point.zRe = z.real();
+    point.zIm = z.imag();
+    return point;
 }
 
-void JuliaZNRenderer::EscapeTimeSmoothRender()
-{
-    EscapeTimeWithOrbitTrapRender();
-}
-
-void JuliaZNRenderer::EscapeTimeWithOrbitTrapRender()
-{
-    const auto k = complex<double>(_kReal, _kImaginary);
-    const double log2 = log(2.0);
-    unsigned i;
-    const double squaredBail = _bailout*_bailout;
-    double Z_im2 = 0;
-    double Z_re2 = 0;
-    const double bailFourPower = squaredBail*squaredBail;
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            complex<double> z = complex<double>(_minX + _x * _xFactor, c_im);
-
-            double distX = abs(z.real());
-            double distY = abs(z.imag());
-
-            bool insideSet = true;
-            unsigned int iterations = 0;
-
-            for (i=0; i<_maxIter; i++)
-            {
-                z = pow(z, _n) + k;
-                Z_re2 = z.real()*z.real();
-                Z_im2 = z.imag()*z.imag();
-                if (Z_re2 + Z_im2 > squaredBail)
-                {
-                    insideSet = false;
-                    if (Z_re2 + Z_im2 > bailFourPower)
-                    {
-                        if (abs(z.imag()) < distY) distY = abs(z.imag());
-                        if (abs(z.real()) < distX) distX = abs(z.real());
-                        break;
-                    }
-                }
-                else
-                    iterations = i;
-
-                if (abs(z.imag()) < distY)
-                    distY = abs(z.imag());
-                if (abs(z.real()) < distX)
-                    distX = abs(z.real());
-            }
-            if (distX == 0)
-                distX = 0.000001;
-            if (distY == 0)
-                distY = 0.000001;
-
-            if (insideSet)
-                _setMap[_x][_y] = true;
-            if (_myOpt.smoothRender)
-            {
-                const unsigned int out = ToColorMapValue(
-                    abs(4.0 * (iterations - log(log(Z_re2 + Z_im2)) / log2) + 4.0 * (log(1 / distX) + log(1 / distY))));
-                if (!insideSet)
-                    _colorMap[_x][_y] = out;
-                else
-                    _colorMap[_x][_y] = ToColorMapValue(abs(4.0 * (iterations + 4.0 * (log(1 / distX) + log(1 / distY)))));
-            }
-            else
-                _colorMap[_x][_y] = ToColorMapValue(abs(iterations + log(1 / distX) + log(1 / distY)));
-        }
-    }
-}
 void JuliaZNRenderer::Render()
 {
     switch (_myOpt.alg)
     {
         case RenderingAlgorithmType::EscapeTime:
-            if (_myOpt.orbitTrapMode)
-                EscapeTimeWithOrbitTrapRender();
-            else if (_myOpt.smoothRender)
-                EscapeTimeSmoothRender();
-            else
-                EscapeTimeRender();
+            EscapeTimeRender();
             break;
         case RenderingAlgorithmType::GaussianInt:
             GaussianIntRender();
