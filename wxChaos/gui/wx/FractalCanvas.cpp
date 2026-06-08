@@ -300,7 +300,7 @@ void FractalCanvas::AbortRender() const
         return;
 
     _target->StopRender();
-    _target->SetRendered(true);
+    _target->MarkRenderAborted();
 }
 void FractalCanvas::ChangeType(const FractalType type)
 {

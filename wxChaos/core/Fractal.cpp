@@ -500,6 +500,15 @@ void Fractal::MarkRenderInterrupted()
     _paused = false;
 }
 
+void Fractal::MarkRenderAborted()
+{
+    _rendered = true;
+    _rendering = false;
+    _paused = false;
+    _redrawAll = true;
+    _pendingRenderOffset = {0, 0};
+}
+
 void Fractal::ResumeFromPausedPan()
 {
     _rendering = false;

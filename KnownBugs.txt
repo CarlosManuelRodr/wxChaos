@@ -1,4 +1,2 @@
-- Inconsistent previews when using the abort feature and moving the view position.
-
 Improvements:
 - When JuliaMode is enabled and the user changes a render option, changes should be applied to JuliaMode.

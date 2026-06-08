@@ -207,6 +207,9 @@ public:
     ///@brief Clears active render and pause presentation state.
     void MarkRenderInterrupted();
 
+    ///@brief Marks an aborted render as visible but requiring a full redraw next time.
+    void MarkRenderAborted();
+
     ///@brief Resumes from a paused pan by clearing pause and render flags.
     void ResumeFromPausedPan();
 
