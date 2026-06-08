@@ -1,7 +1,4 @@
-- Toggle button of JuliaMode inits in a wrong position
 - Inconsistent previews when using the abort feature and moving the view position.
-- Inconsistent render area can be triggered by moving the view before the render completes.
 
 Improvements:
 - When JuliaMode is enabled and the user changes a render option, changes should be applied to JuliaMode.
-- Change anonymous namespace functions from AppConfigStore and MainWindows to private member functions.
