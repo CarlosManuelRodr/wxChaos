@@ -10,11 +10,14 @@ class MandelbrotZNRenderer : public Renderer
     int _n;
     double _bailout;
 
+    Point TracePoint(double pixelRe, double pixelIm) const;
+    void RenderFromPoint(unsigned int (MandelbrotZNRenderer::*colorPoint)(const Point&) const);
     void EscapeTimeRender();
     void GaussianIntRender();
     void EscapeAngleRender();
-    void EscapeTimeSmoothRender();
-    void EscapeTimeWithOrbitTrapRender();
+    unsigned int ColorEscapeTimePoint(const Point& point) const;
+    unsigned int ColorGaussianIntegerPoint(const Point& point) const;
+    unsigned int ColorEscapeAnglePoint(const Point& point) const;
 
 public:
     MandelbrotZNRenderer();

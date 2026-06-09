@@ -9,12 +9,16 @@ class MandelbrotRenderer : public Renderer
 {
     int _buddhaRandomP;
 
+    Point TracePoint(double pixelRe, double pixelIm) const;
+    void RenderFromPoint(unsigned int (MandelbrotRenderer::*colorPoint)(const Point&) const);
     void EscapeTimeRender();
-    void EscapeTimeSmoothRender();
-    void EscapeTimeWithOrbitTrapRender();
     void GaussianIntRender();
     void EscapeAngleRender();
     void TriangleInequalityRender();
+    unsigned int ColorEscapeTimePoint(const Point& point) const;
+    unsigned int ColorGaussianIntegerPoint(const Point& point) const;
+    unsigned int ColorEscapeAnglePoint(const Point& point) const;
+    unsigned int ColorTriangleInequalityPoint(const Point& point) const;
     void BuddhabrotRender();
 
 public:

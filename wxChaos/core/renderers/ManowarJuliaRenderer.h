@@ -7,10 +7,14 @@
 */
 class ManowarJuliaRenderer : public Renderer
 {
+    Point TracePoint(double pixelRe, double pixelIm) const;
+    void RenderFromPoint(unsigned int (ManowarJuliaRenderer::*colorPoint)(const Point&) const);
     void EscapeTimeRender();
     void GaussianIntRender();
     void EscapeAngleRender();
-    void EscapeTimeWithOrbitTrapRender();
+    unsigned int ColorEscapeTimePoint(const Point& point) const;
+    unsigned int ColorGaussianIntegerPoint(const Point& point) const;
+    unsigned int ColorEscapeAnglePoint(const Point& point) const;
 
 public:
     ManowarJuliaRenderer();

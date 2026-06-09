@@ -85,6 +85,77 @@ unsigned int Renderer::ToColorMapValue(const double value)
 {
     return value < 0 ? InvalidColor : static_cast<unsigned int>(value);
 }
+double Renderer::SafeDistance(const double distance)
+{
+    return distance == 0.0 ? 0.000001 : distance;
+}
+double Renderer::InitialMu()
+{
+    return (log(log(2.0)) - log(log(sqrt(4.0)))) / log(2.0) + 1;
+}
+double Renderer::MuFromNorm(const double norm)
+{
+    return (log(log(2.0)) - log(log(sqrt(norm)))) / log(2.0) + 1;
+}
+double Renderer::SmoothEscapeValue(const Point& point)
+{
+    return point.iterations - log(log(point.escapedNorm)) / log(2.0);
+}
+double Renderer::OrbitTrapValue(const Point& point)
+{
+    return log(1 / SafeDistance(point.orbitTrapDistanceX)) + log(1 / SafeDistance(point.orbitTrapDistanceY));
+}
+unsigned int Renderer::EscapeTimeColor(const Point& point) const
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const double orbitTrapValue = OrbitTrapValue(point);
+        if (_myOpt.smoothRender)
+        {
+            if (!point.insideSet)
+                return ToColorMapValue(abs(4.0 * SmoothEscapeValue(point) + 4.0 * orbitTrapValue));
+
+            return ToColorMapValue(abs(4.0 * (point.iterations + 4.0 * orbitTrapValue)));
+        }
+
+        return ToColorMapValue(abs(point.iterations + orbitTrapValue));
+    }
+
+    if (_myOpt.smoothRender && !point.insideSet)
+        return ToColorMapValue(abs(4.0 * SmoothEscapeValue(point)));
+
+    return point.iterations;
+}
+unsigned int Renderer::GaussianIntegerColor(const Point& point) const
+{
+    const double gaussianValue = (point.mu * point.gaussianDistance + (1 - point.mu) * point.previousGaussianDistance) * _myOpt.paletteSize;
+    const double orbitTrapValue = _myOpt.orbitTrapMode ? OrbitTrapValue(point) : 0.0;
+    return ToColorMapValue(abs(gaussianValue + orbitTrapValue));
+}
+unsigned int Renderer::EscapeAngleColor(const Point& point) const
+{
+    constexpr int color1 = 1;
+    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
+    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
+    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
+
+    if (point.zRe > 0 && point.zIm > 0)
+        return point.iterations + color1;
+    if (point.zRe <= 0 && point.zIm > 0)
+        return point.iterations + color2;
+    if (point.zRe <= 0 && point.zIm < 0)
+        return point.iterations + color3;
+    return point.iterations + color4;
+}
+unsigned int Renderer::TriangleInequalityColor(const Point& point)
+{
+    if (point.triangleIterations <= 1)
+        return 0;
+
+    const double previousDistance = point.previousTriangleDistance / (point.triangleIterations - 1);
+    const double distance = point.triangleDistance / point.triangleIterations;
+    return static_cast<unsigned int>(abs(((point.mu * distance + (1 - point.mu) * previousDistance) * 700)));
+}
 void Renderer::Reset()
 {
     _x = 0;
