@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "FractalUtils.h"
 
 // RenderFractal
 Renderer::Renderer() : _myOpt()
@@ -91,11 +92,52 @@ double Renderer::SafeDistance(const double distance)
 }
 double Renderer::InitialMu()
 {
-    return (log(log(2.0)) - log(log(sqrt(4.0)))) / log(2.0) + 1;
+    return 1.0;
 }
 double Renderer::MuFromNorm(const double norm)
 {
     return (log(log(2.0)) - log(log(sqrt(norm)))) / log(2.0) + 1;
+}
+void Renderer::MeasureEscapeMu(Point& point, const PointTraceEvent event, const double zNorm)
+{
+    if (event == PointTraceEvent::Escaped)
+        point.mu = MuFromNorm(zNorm);
+}
+void Renderer::MeasureOrbitTrap(Point& point, const PointTraceEvent event, const double zRe, const double zIm)
+{
+    if (event == PointTraceEvent::Started)
+    {
+        point.orbitTrapDistanceX = abs(zRe);
+        point.orbitTrapDistanceY = abs(zIm);
+        return;
+    }
+
+    if (event == PointTraceEvent::Iterated)
+    {
+        point.orbitTrapDistanceX = minVal(point.orbitTrapDistanceX, abs(zRe));
+        point.orbitTrapDistanceY = minVal(point.orbitTrapDistanceY, abs(zIm));
+    }
+}
+void Renderer::MeasureGaussianInteger(Point& point, const PointTraceEvent event, const double zRe, const double zIm, const bool wasInside)
+{
+    if (event != PointTraceEvent::Iterated || !wasInside)
+        return;
+
+    point.previousGaussianDistance = point.gaussianDistance;
+    point.gaussianDistance = minVal(point.gaussianDistance, gaussianIntDist(zRe, zIm));
+}
+void Renderer::MeasureTriangleInequality(Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
+                                         const double squaredRe, const double squaredIm, const bool wasInside)
+{
+    if (event != PointTraceEvent::Iterated || !wasInside)
+        return;
+
+    point.previousTriangleDistance = point.triangleDistance;
+    if (iteration > 0)
+    {
+        point.triangleDistance += TIA(zRe, zIm, point.startRe, point.startIm, squaredRe, squaredIm);
+        point.triangleIterations++;
+    }
 }
 double Renderer::SmoothEscapeValue(const Point& point)
 {

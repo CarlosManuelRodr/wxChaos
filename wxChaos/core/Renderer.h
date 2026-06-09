@@ -13,6 +13,13 @@ class Renderer
 protected:
     static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
 
+    enum class PointTraceEvent
+    {
+        Started,
+        Iterated,
+        Escaped
+    };
+
     struct Point
     {
         double startRe = 0.0;
@@ -27,7 +34,7 @@ protected:
         unsigned int iterations = 0;
         bool insideSet = true;
 
-        double mu = 0.0;
+        double mu = 1.0;
 
         double gaussianDistance = 99.0;
         double previousGaussianDistance = 0.0;
@@ -73,6 +80,11 @@ protected:
     static double SafeDistance(double distance);
     static double InitialMu();
     static double MuFromNorm(double norm);
+    static void MeasureEscapeMu(Point& point, PointTraceEvent event, double zNorm);
+    static void MeasureOrbitTrap(Point& point, PointTraceEvent event, double zRe, double zIm);
+    static void MeasureGaussianInteger(Point& point, PointTraceEvent event, double zRe, double zIm, bool wasInside);
+    static void MeasureTriangleInequality(Point& point, PointTraceEvent event, unsigned int iteration, double zRe, double zIm,
+                                          double squaredRe, double squaredIm, bool wasInside);
     static double SmoothEscapeValue(const Point& point);
     static double OrbitTrapValue(const Point& point);
     unsigned int EscapeTimeColor(const Point& point) const;

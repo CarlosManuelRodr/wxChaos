@@ -12,17 +12,27 @@ MandelbrotRenderer::MandelbrotRenderer()
 }
 void MandelbrotRenderer::EscapeTimeRender()
 {
-    RenderFromPoint(&MandelbrotRenderer::ColorEscapeTimePoint);
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        RenderFromPoint(&MandelbrotRenderer::ColorEscapeTimePoint, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&MandelbrotRenderer::ColorEscapeTimePoint, measure);
 }
 
-Renderer::Point MandelbrotRenderer::TracePoint(const double pixelRe, const double pixelIm) const
+template<class MeasurePoint>
+Renderer::Point MandelbrotRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = pixelRe;
     point.startIm = pixelIm;
-    point.mu = InitialMu();
-    point.orbitTrapDistanceX = abs(pixelRe);
-    point.orbitTrapDistanceY = abs(pixelIm);
+    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
 
     double zRe = 0.0;
     double zIm = 0.0;
@@ -37,49 +47,43 @@ Renderer::Point MandelbrotRenderer::TracePoint(const double pixelRe, const doubl
 
         zRe = squaredRe + pixelRe;
         zIm = squaredIm + pixelIm;
+        const double zNorm = zRe * zRe + zIm * zIm;
+        const bool wasInside = !escaped;
 
         point.zRe = zRe;
         point.zIm = zIm;
-        point.zNorm = zRe * zRe + zIm * zIm;
-        point.orbitTrapDistanceX = minVal(point.orbitTrapDistanceX, abs(zRe));
-        point.orbitTrapDistanceY = minVal(point.orbitTrapDistanceY, abs(zIm));
+        point.zNorm = zNorm;
+        measure(point, PointTraceEvent::Iterated, n, zRe, zIm, zNorm, squaredRe, squaredIm, wasInside);
 
         if (!escaped)
         {
             point.iterations = n + 1;
-            point.previousGaussianDistance = point.gaussianDistance;
-            point.gaussianDistance = minVal(point.gaussianDistance, gaussianIntDist(zRe, zIm));
-            point.previousTriangleDistance = point.triangleDistance;
-            if (n > 0)
-            {
-                point.triangleDistance += TIA(zRe, zIm, pixelRe, pixelIm, squaredRe, squaredIm);
-                point.triangleIterations++;
-            }
 
-            if (point.zNorm > 4)
+            if (zNorm > 4)
             {
                 escaped = true;
                 point.insideSet = false;
                 point.iterations = n;
                 point.escapedZRe = zRe;
                 point.escapedZIm = zIm;
-                point.escapedNorm = point.zNorm;
-                point.mu = MuFromNorm(point.zNorm);
+                point.escapedNorm = zNorm;
+                measure(point, PointTraceEvent::Escaped, n, zRe, zIm, zNorm, squaredRe, squaredIm, wasInside);
             }
         }
 
-        if (escaped && point.zNorm > 16)
+        if (escaped && zNorm > 16)
             break;
     }
 
     return point;
 }
 
-void MandelbrotRenderer::RenderFromPoint(unsigned int (MandelbrotRenderer::*colorPoint)(const Point&) const)
+template<class MeasurePoint>
+void MandelbrotRenderer::RenderFromPoint(unsigned int (MandelbrotRenderer::*colorPoint)(const Point&) const, MeasurePoint measure)
 {
-    RenderPixels([this, colorPoint](const double pixelRe, const double pixelIm)
+    RenderPixels([this, colorPoint, measure](const double pixelRe, const double pixelIm)
     {
-        const Point point = TracePoint(pixelRe, pixelIm);
+        const Point point = TracePoint(pixelRe, pixelIm, measure);
         if (point.insideSet)
             _setMap[_x][_y] = true;
 
@@ -89,17 +93,43 @@ void MandelbrotRenderer::RenderFromPoint(unsigned int (MandelbrotRenderer::*colo
 
 void MandelbrotRenderer::GaussianIntRender()
 {
-    RenderFromPoint(&MandelbrotRenderer::ColorGaussianIntegerPoint);
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
+                                const double zNorm, const double squaredRe, const double squaredIm, const bool wasInside)
+        {
+            MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
+            MeasureOrbitTrap(point, event, zRe, zIm);
+            MeasureEscapeMu(point, event, zNorm);
+        };
+        RenderFromPoint(&MandelbrotRenderer::ColorGaussianIntegerPoint, measure);
+        return;
+    }
+
+    const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm,
+                            const double zNorm, double, double, const bool wasInside)
+    {
+        MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
+        MeasureEscapeMu(point, event, zNorm);
+    };
+    RenderFromPoint(&MandelbrotRenderer::ColorGaussianIntegerPoint, measure);
 }
 
 void MandelbrotRenderer::EscapeAngleRender()
 {
-    RenderFromPoint(&MandelbrotRenderer::ColorEscapeAnglePoint);
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&MandelbrotRenderer::ColorEscapeAnglePoint, measure);
 }
 
 void MandelbrotRenderer::TriangleInequalityRender()
 {
-    RenderFromPoint(&MandelbrotRenderer::ColorTriangleInequalityPoint);
+    const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
+                            const double zNorm, const double squaredRe, const double squaredIm, const bool wasInside)
+    {
+        MeasureTriangleInequality(point, event, iteration, zRe, zIm, squaredRe, squaredIm, wasInside);
+        MeasureEscapeMu(point, event, zNorm);
+    };
+    RenderFromPoint(&MandelbrotRenderer::ColorTriangleInequalityPoint, measure);
 }
 
 unsigned int MandelbrotRenderer::ColorEscapeTimePoint(const Point& point) const

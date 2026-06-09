@@ -7,8 +7,10 @@
 */
 class JuliaRenderer : public Renderer
 {
-    Point TracePoint(double pixelRe, double pixelIm) const;
-    void RenderFromPoint(unsigned int (JuliaRenderer::*colorPoint)(const Point&) const);
+    template<class MeasurePoint>
+    Point TracePoint(double pixelRe, double pixelIm, MeasurePoint measure) const;
+    template<class MeasurePoint>
+    void RenderFromPoint(unsigned int (JuliaRenderer::*colorPoint)(const Point&) const, MeasurePoint measure);
     void EscapeTimeRender();
     void GaussianIntRender();
     void EscapeAngleRender();

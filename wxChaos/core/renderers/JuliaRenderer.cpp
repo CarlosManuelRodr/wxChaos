@@ -8,19 +8,29 @@ JuliaRenderer::JuliaRenderer() = default;
 
 void JuliaRenderer::EscapeTimeRender()
 {
-    RenderFromPoint(&JuliaRenderer::ColorEscapeTimePoint);
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        RenderFromPoint(&JuliaRenderer::ColorEscapeTimePoint, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&JuliaRenderer::ColorEscapeTimePoint, measure);
 }
 
-Renderer::Point JuliaRenderer::TracePoint(const double pixelRe, const double pixelIm) const
+template<class MeasurePoint>
+Renderer::Point JuliaRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = pixelRe;
     point.startIm = pixelIm;
     point.zRe = pixelRe;
     point.zIm = pixelIm;
-    point.mu = InitialMu();
-    point.orbitTrapDistanceX = abs(pixelRe);
-    point.orbitTrapDistanceY = abs(pixelIm);
+    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
 
     double zRe = pixelRe;
     double zIm = pixelIm;
@@ -31,13 +41,14 @@ Renderer::Point JuliaRenderer::TracePoint(const double pixelRe, const double pix
         point.zNorm = zRe * zRe + zIm * zIm;
         if (!escaped && point.zNorm > 4)
         {
+            const double zNorm = point.zNorm;
             escaped = true;
             point.insideSet = false;
             point.iterations = n;
             point.escapedZRe = zRe;
             point.escapedZIm = zIm;
-            point.escapedNorm = point.zNorm;
-            point.mu = MuFromNorm(point.zNorm);
+            point.escapedNorm = zNorm;
+            measure(point, PointTraceEvent::Escaped, n, zRe, zIm, zNorm, 0.0, 0.0, true);
         }
 
         if (escaped && point.zNorm > 16)
@@ -50,35 +61,29 @@ Renderer::Point JuliaRenderer::TracePoint(const double pixelRe, const double pix
 
         zRe = squaredRe + _kReal;
         zIm = squaredIm + _kImaginary;
+        const double zNorm = zRe * zRe + zIm * zIm;
+        const bool wasInside = !escaped;
 
         point.zRe = zRe;
         point.zIm = zIm;
-        point.zNorm = zRe * zRe + zIm * zIm;
-        point.orbitTrapDistanceX = minVal(point.orbitTrapDistanceX, abs(zRe));
-        point.orbitTrapDistanceY = minVal(point.orbitTrapDistanceY, abs(zIm));
+        point.zNorm = zNorm;
+        measure(point, PointTraceEvent::Iterated, n, zRe, zIm, zNorm, squaredRe, squaredIm, wasInside);
 
         if (!escaped)
         {
             point.iterations = n + 1;
-            point.previousGaussianDistance = point.gaussianDistance;
-            point.gaussianDistance = minVal(point.gaussianDistance, gaussianIntDist(zRe, zIm));
-            point.previousTriangleDistance = point.triangleDistance;
-            if (n > 0)
-            {
-                point.triangleDistance += TIA(zRe, zIm, pixelRe, pixelIm, squaredRe, squaredIm);
-                point.triangleIterations++;
-            }
         }
     }
 
     return point;
 }
 
-void JuliaRenderer::RenderFromPoint(unsigned int (JuliaRenderer::*colorPoint)(const Point&) const)
+template<class MeasurePoint>
+void JuliaRenderer::RenderFromPoint(unsigned int (JuliaRenderer::*colorPoint)(const Point&) const, MeasurePoint measure)
 {
-    RenderPixels([this, colorPoint](const double pixelRe, const double pixelIm)
+    RenderPixels([this, colorPoint, measure](const double pixelRe, const double pixelIm)
     {
-        const Point point = TracePoint(pixelRe, pixelIm);
+        const Point point = TracePoint(pixelRe, pixelIm, measure);
         if (point.insideSet)
             _setMap[_x][_y] = true;
 
@@ -88,17 +93,43 @@ void JuliaRenderer::RenderFromPoint(unsigned int (JuliaRenderer::*colorPoint)(co
 
 void JuliaRenderer::GaussianIntRender()
 {
-    RenderFromPoint(&JuliaRenderer::ColorGaussianIntegerPoint);
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm,
+                                const double zNorm, double, double, const bool wasInside)
+        {
+            MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
+            MeasureOrbitTrap(point, event, zRe, zIm);
+            MeasureEscapeMu(point, event, zNorm);
+        };
+        RenderFromPoint(&JuliaRenderer::ColorGaussianIntegerPoint, measure);
+        return;
+    }
+
+    const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm,
+                            const double zNorm, double, double, const bool wasInside)
+    {
+        MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
+        MeasureEscapeMu(point, event, zNorm);
+    };
+    RenderFromPoint(&JuliaRenderer::ColorGaussianIntegerPoint, measure);
 }
 
 void JuliaRenderer::EscapeAngleRender()
 {
-    RenderFromPoint(&JuliaRenderer::ColorEscapeAnglePoint);
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&JuliaRenderer::ColorEscapeAnglePoint, measure);
 }
 
 void JuliaRenderer::TriangleInequalityRender()
 {
-    RenderFromPoint(&JuliaRenderer::ColorTriangleInequalityPoint);
+    const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
+                            const double zNorm, const double squaredRe, const double squaredIm, const bool wasInside)
+    {
+        MeasureTriangleInequality(point, event, iteration, zRe, zIm, squaredRe, squaredIm, wasInside);
+        MeasureEscapeMu(point, event, zNorm);
+    };
+    RenderFromPoint(&JuliaRenderer::ColorTriangleInequalityPoint, measure);
 }
 
 unsigned int JuliaRenderer::ColorEscapeTimePoint(const Point& point) const
