@@ -7,190 +7,192 @@ ManowarJuliaRenderer::ManowarJuliaRenderer() = default;
 
 void ManowarJuliaRenderer::EscapeTimeRender()
 {
-    RenderPixels([this](const double pixelRe, const double pixelIm)
+    double z_re, z_im;
+    unsigned n;
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
-        const EscapePoint point = IterateEscapePoint(pixelRe, pixelIm);
-        if (point.insideSet)
-            _setMap[_x][_y] = true;
-
-        _colorMap[_x][_y] = ColorEscapePoint(point);
-    });
-}
-
-Renderer::EscapePoint ManowarJuliaRenderer::IterateEscapePoint(const double pixelRe, const double pixelIm) const
-{
-    EscapePoint point;
-    double zRe = pixelRe;
-    double zIm = pixelIm;
-    double manRe = pixelRe;
-    double manIm = pixelIm;
-
-    if (!_myOpt.orbitTrapMode)
-    {
-        unsigned n = 0;
-        for (; n < _maxIter; n++)
+        double z_y_init = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            const double zRe2 = zRe * zRe;
-            const double zIm2 = zIm * zIm;
-            point.zNorm = zRe2 + zIm2;
-            if (point.zNorm > 4)
+            double man_re = z_re = _minX + _x * _xFactor;
+            double man_im = z_im = z_y_init;
+            bool insideSet = true;
+
+            for (n=0; n<_maxIter; n++)
             {
-                point.insideSet = false;
-                break;
+                double z_re2 = z_re * z_re;
+                double z_im2 = z_im * z_im;
+                if (z_re2 + z_im2 > 4)
+                {
+                    insideSet = false;
+                    break;
+                }
+                const double temp_re = z_re;
+                const double temp_im = z_im;
+                z_im = 2*z_re*z_im + _kImaginary + man_im;
+                z_re = z_re2 - z_im2 + _kReal + man_re;
+                man_re = temp_re;
+                man_im = temp_im;
             }
+            if (insideSet)
+                _setMap[_x][_y] = true;
 
-            const double tempRe = zRe;
-            const double tempIm = zIm;
-            zIm = 2 * zRe * zIm + _kImaginary + manIm;
-            zRe = zRe2 - zIm2 + _kReal + manRe;
-            manRe = tempRe;
-            manIm = tempIm;
+            _colorMap[_x][_y] = n;
         }
-
-        point.iterations = n;
-        point.zRe = zRe;
-        point.zIm = zIm;
-        return point;
     }
-
-    bool broken = false;
-    point.trapDistanceX = abs(pixelRe);
-    point.trapDistanceY = abs(pixelIm);
-
-    for (unsigned n = 0; n < _maxIter; n++)
-    {
-        point.zNorm = zRe * zRe + zIm * zIm;
-        if (point.zNorm > 4)
-        {
-            point.insideSet = false;
-            broken = true;
-        }
-
-        const double tempRe = zRe;
-        const double tempIm = zIm;
-        const double zRe2 = zRe * zRe;
-        const double zIm2 = zIm * zIm;
-        zIm = 2 * zRe * zIm + _kImaginary + manIm;
-        zRe = zRe2 - zIm2 + _kReal + manRe;
-        manRe = tempRe;
-        manIm = tempIm;
-
-        point.trapDistanceY = minVal(point.trapDistanceY, abs(zIm));
-        point.trapDistanceX = minVal(point.trapDistanceX, abs(zRe));
-
-        if (!broken)
-            point.iterations = n;
-    }
-
-    point.zRe = zRe;
-    point.zIm = zIm;
-    return point;
-}
-
-unsigned int ManowarJuliaRenderer::ColorEscapePoint(const EscapePoint& point) const
-{
-    if (!_myOpt.orbitTrapMode)
-        return point.iterations;
-
-    return ToColorMapValue(point.iterations + OrbitTrapColorOffset(point.trapDistanceX, point.trapDistanceY));
 }
 
 void ManowarJuliaRenderer::GaussianIntRender()
 {
-    RenderPixels([this](const double pixelRe, const double pixelIm)
+    // Creates fractal.
+    double z_re, z_im;
+    double distance1 = 0;
+    const double log2 = log(2.0);
+    const double loglog2 = log(log2);
+
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
-        const GaussianIntegerPoint point = IterateGaussianIntegerPoint(pixelRe, pixelIm);
-        if (point.insideSet)
-            _setMap[_x][_y] = true;
-
-        _colorMap[_x][_y] = GaussianIntegerColor(point, _myOpt.paletteSize);
-    });
-}
-
-Renderer::GaussianIntegerPoint ManowarJuliaRenderer::IterateGaussianIntegerPoint(const double pixelRe, const double pixelIm) const
-{
-    GaussianIntegerPoint point;
-    double zRe = pixelRe;
-    double zIm = pixelIm;
-    double manRe = pixelRe;
-    double manIm = pixelIm;
-    point.mu = InitialGaussianMu();
-    point.trapDistanceX = abs(pixelRe);
-    point.trapDistanceY = abs(pixelIm);
-
-    for (unsigned n = 0; n < _maxIter && point.insideSet; n++)
-    {
-        const double zRe2 = zRe * zRe;
-        const double zIm2 = zIm * zIm;
-        const double zNorm = zRe2 + zIm2;
-
-        if (zNorm > 4)
+        double z_y_init = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            point.mu = EscapedGaussianMu(zNorm);
-            if (n > 0)
-                point.insideSet = false;
+            double man_re = z_re = _minX + _x * _xFactor;
+            double man_im = z_im = z_y_init;
+
+            bool insideSet = true;
+            double distance = 99;
+            double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
+
+            for (unsigned n = 0; n<_maxIter && insideSet; n++)
+            {
+                double z_re2 = z_re * z_re;
+                double z_im2 = z_im * z_im;
+
+                if (z_re2 + z_im2 > 4)
+                {
+                    mu = (loglog2 - log(log(sqrt(z_re2 + z_im2))))/log2 + 1;
+                    if (n > 0) insideSet = false;
+                }
+                const double temp_re = z_re;
+                const double temp_im = z_im;
+                z_im = 2*z_re*z_im + _kImaginary + man_im;
+                z_re = z_re2 - z_im2 + _kReal + man_re;
+                man_re = temp_re;
+                man_im = temp_im;
+
+                distance1 = distance;
+                distance = minVal(distance, gaussianIntDist(z_re, z_im));
+            }
+            if (insideSet)
+                _setMap[_x][_y] = true;
+
+            _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
         }
-
-        const double tempRe = zRe;
-        const double tempIm = zIm;
-        zIm = 2 * zRe * zIm + _kImaginary + manIm;
-        zRe = zRe2 - zIm2 + _kReal + manRe;
-        manRe = tempRe;
-        manIm = tempIm;
-
-        point.previousDistance = point.distance;
-        point.distance = minVal(point.distance, gaussianIntDist(zRe, zIm));
-        point.trapDistanceY = minVal(point.trapDistanceY, abs(zIm));
-        point.trapDistanceX = minVal(point.trapDistanceX, abs(zRe));
     }
-
-    return point;
 }
 
 void ManowarJuliaRenderer::EscapeAngleRender()
 {
-    RenderPixels([this](const double pixelRe, const double pixelIm)
+    // Creates fractal.
+    double z_re, z_im;
+    unsigned n;
+    constexpr int color1 = 1;
+    const int color2 = 0.25 * _myOpt.paletteSize;
+    const int color3 = 0.50 * _myOpt.paletteSize;
+    const int color4 = 0.75 * _myOpt.paletteSize;
+
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
-        const EscapePoint point = IterateEscapeAnglePoint(pixelRe, pixelIm);
-        if (point.insideSet)
-            _setMap[_x][_y] = true;
-
-        _colorMap[_x][_y] = EscapeAngleColor(point, _myOpt.paletteSize);
-    });
-}
-
-Renderer::EscapePoint ManowarJuliaRenderer::IterateEscapeAnglePoint(const double pixelRe, const double pixelIm) const
-{
-    EscapePoint point;
-    double zRe = pixelRe;
-    double zIm = pixelIm;
-    double manRe = pixelRe;
-    double manIm = pixelIm;
-
-    unsigned n = 0;
-    for (; n < _maxIter; n++)
-    {
-        const double zRe2 = zRe * zRe;
-        const double zIm2 = zIm * zIm;
-        point.zNorm = zRe2 + zIm2;
-        if (point.zNorm > 4)
+        double z_y_init = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            point.insideSet = false;
-            break;
-        }
+            double man_re = z_re = _minX + _x * _xFactor;
+            double man_im = z_im = z_y_init;
+            bool insideSet = true;
 
-        const double tempRe = zRe;
-        const double tempIm = zIm;
-        zIm = 2.0 * zRe * zIm + _kImaginary + manIm;
-        zRe = zRe2 - zIm2 + _kReal + manRe;
-        manRe = tempRe;
-        manIm = tempIm;
+            for (n=0; n<_maxIter; n++)
+            {
+                double z_re2 = z_re * z_re;
+                double z_im2 = z_im * z_im;
+                if (z_re2 + z_im2 > 4)
+                {
+                    insideSet = false;
+                    break;
+                }
+                const double temp_re = z_re;
+                const double temp_im = z_im;
+                z_im = 2.0 * z_re * z_im + _kImaginary + man_im;
+                z_re = z_re2 - z_im2 + _kReal + man_re;
+                man_re = temp_re;
+                man_im = temp_im;
+            }
+            if (insideSet)
+                _setMap[_x][_y] = true;
+
+            if (z_re > 0 && z_im > 0)
+                _colorMap[_x][_y] = n + color1;
+            else if (z_re <= 0 && z_im > 0)
+                _colorMap[_x][_y] = n + color2;
+            else if (z_re <= 0 && z_im < 0)
+                _colorMap[_x][_y] = n + color3;
+            else
+                _colorMap[_x][_y] = n + color4;
+        }
     }
 
-    point.iterations = n;
-    point.zRe = zRe;
-    point.zIm = zIm;
-    return point;
+}
+
+void ManowarJuliaRenderer::EscapeTimeWithOrbitTrapRender()
+{
+    // Creates fractal.
+    complex<double> z;
+
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    {
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        {
+            double re = _minX + _x * _xFactor;
+            double im = _maxY - _y * _yFactor;
+            auto man = z = complex<double>(re, im);
+            auto constant = complex<double>(_kReal, _kImaginary);
+            bool broken = false;
+
+            double distX = abs(re);
+            double distY = abs(im);
+
+            bool insideSet = true;
+            int iterations = 0;
+
+            for (unsigned n=0; n<_maxIter; n++)
+            {
+                if (z.real()*z.real() + z.imag()*z.imag() > 4)
+                {
+                    insideSet = false;
+                    broken = true;
+                }
+
+                const complex<double> temp = z;
+                z = pow(z, 2) + man + constant;
+                man = temp;
+
+                if (abs(z.imag()) < distY)
+                    distY = abs(z.imag());
+                if (abs(z.real()) < distX)
+                    distX = abs(z.real());
+
+                if (!broken)
+                    iterations = n;
+            }
+            if (insideSet)
+                _setMap[_x][_y] = true;
+
+            if (distX == 0)
+                distX = 0.000001;
+            if (distY == 0)
+                distY = 0.000001;
+
+            _colorMap[_x][_y] = ToColorMapValue(iterations + log(1 / distX) + log(1 / distY));
+        }
+    }
 }
 
 void ManowarJuliaRenderer::Render()
@@ -198,7 +200,10 @@ void ManowarJuliaRenderer::Render()
     switch (_myOpt.alg)
     {
         case RenderingAlgorithmType::EscapeTime:
-            EscapeTimeRender();
+            if (_myOpt.orbitTrapMode)
+                EscapeTimeWithOrbitTrapRender();
+            else
+                EscapeTimeRender();
             break;
         case RenderingAlgorithmType::GaussianInt:
             GaussianIntRender();

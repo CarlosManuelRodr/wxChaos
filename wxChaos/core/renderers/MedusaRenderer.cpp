@@ -7,154 +7,165 @@ MedusaRenderer::MedusaRenderer() = default;
 
 void MedusaRenderer::EscapeTimeRender()
 {
-    RenderPixels([this](const double pixelRe, const double pixelIm)
-    {
-        const EscapePoint point = IterateEscapePoint(pixelRe, pixelIm);
-        if (point.insideSet)
-            _setMap[_x][_y] = true;
-
-        _colorMap[_x][_y] = ColorEscapePoint(point);
-    });
-}
-
-Renderer::EscapePoint MedusaRenderer::IterateEscapePoint(const double pixelRe, const double pixelIm) const
-{
-    EscapePoint point;
+    // Creates fractal.
+    unsigned n;
     const auto k = complex<double>(_kReal, _kImaginary);
-    complex<double> z(pixelRe, pixelIm);
-
-    if (!_myOpt.orbitTrapMode)
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
-        unsigned n = 0;
-        for (; n < _maxIter; n++)
+        double c_im = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            point.zNorm = z.real() * z.real() + z.imag() * z.imag();
-            if (point.zNorm > 4)
+            complex<double> z = complex<double>(_minX + _x * _xFactor, c_im);
+            bool insideSet = true;
+            for (n=0; n<_maxIter; n++)
             {
-                point.insideSet = false;
-                break;
+                if (z.real()*z.real() + z.imag()*z.imag() > 4)
+                {
+                    insideSet = false;
+                    break;
+                }
+                z = pow(z, 1.5) + k;
             }
-
-            z = pow(z, 1.5) + k;
+            if (insideSet)
+            {
+                _setMap[_x][_y] = true;
+            }
+            _colorMap[_x][_y] = n;
         }
-
-        point.iterations = n;
-        point.zRe = z.real();
-        point.zIm = z.imag();
-        return point;
     }
-
-    bool broken = false;
-    point.trapDistanceX = abs(pixelRe);
-    point.trapDistanceY = abs(pixelIm);
-
-    for (unsigned n = 0; n < _maxIter; n++)
-    {
-        z = pow(z, 1.5) + k;
-        point.zRe = z.real();
-        point.zIm = z.imag();
-        point.zNorm = point.zRe * point.zRe + point.zIm * point.zIm;
-        if (point.zNorm > 4)
-        {
-            point.insideSet = false;
-            broken = true;
-        }
-
-        point.trapDistanceY = minVal(point.trapDistanceY, abs(point.zIm));
-        point.trapDistanceX = minVal(point.trapDistanceX, abs(point.zRe));
-
-        if (!broken)
-            point.iterations = n;
-    }
-
-    return point;
-}
-
-unsigned int MedusaRenderer::ColorEscapePoint(const EscapePoint& point) const
-{
-    if (!_myOpt.orbitTrapMode)
-        return point.iterations;
-
-    return ToColorMapValue(point.iterations + OrbitTrapColorOffset(point.trapDistanceX, point.trapDistanceY));
 }
 
 void MedusaRenderer::GaussianIntRender()
 {
-    RenderPixels([this](const double pixelRe, const double pixelIm)
-    {
-        const GaussianIntegerPoint point = IterateGaussianIntegerPoint(pixelRe, pixelIm);
-        if (point.insideSet)
-            _setMap[_x][_y] = true;
-
-        _colorMap[_x][_y] = GaussianIntegerColor(point, _myOpt.paletteSize);
-    });
-}
-
-Renderer::GaussianIntegerPoint MedusaRenderer::IterateGaussianIntegerPoint(const double pixelRe, const double pixelIm) const
-{
-    GaussianIntegerPoint point;
     const auto k = complex<double>(_kReal, _kImaginary);
-    complex<double> z(pixelRe, pixelIm);
-    point.mu = InitialGaussianMu();
-    point.trapDistanceX = abs(pixelRe);
-    point.trapDistanceY = abs(pixelIm);
+    double distance1 = 0;
+    const double log2 = log(2.0);
+    const double loglog2 = log(log2);
 
-    for (unsigned n = 0; n < _maxIter && point.insideSet; n++)
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
-        const double zNorm = z.real() * z.real() + z.imag() * z.imag();
-        if (zNorm > 4)
+        double cIm = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            point.mu = EscapedGaussianMu(zNorm);
-            if (n > 0)
-                point.insideSet = false;
+            complex<double> z = complex<double>(_minX + _x * _xFactor, cIm);
+            bool insideSet = true;
+            double distance = 99;
+            double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
+
+            for (unsigned n = 0; n<_maxIter && insideSet; n++)
+            {
+                const double zNorm = z.real() * z.real() + z.imag() * z.imag();
+                if (zNorm > 4)
+                {
+                    mu = (loglog2 - log(log(sqrt(zNorm))))/log2 + 1;
+                    if (n > 0) insideSet = false;
+                }
+                z = pow(z, 1.5) + k;
+
+                distance1 = distance;
+                distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
+            }
+            if (insideSet)
+            {
+                _setMap[_x][_y] = true;
+            }
+            _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
         }
-
-        z = pow(z, 1.5) + k;
-
-        point.previousDistance = point.distance;
-        point.distance = minVal(point.distance, gaussianIntDist(z.real(), z.imag()));
-        point.trapDistanceY = minVal(point.trapDistanceY, abs(z.imag()));
-        point.trapDistanceX = minVal(point.trapDistanceX, abs(z.real()));
     }
-
-    return point;
 }
 
 void MedusaRenderer::EscapeAngleRender()
 {
-    RenderPixels([this](const double pixelRe, const double pixelIm)
-    {
-        const EscapePoint point = IterateEscapeAnglePoint(pixelRe, pixelIm);
-        if (point.insideSet)
-            _setMap[_x][_y] = true;
+    unsigned n;
+    const auto k = complex<double>(_kReal, _kImaginary);
+    const int color1 = 1;
+    const int color2 = 0.25 * _myOpt.paletteSize;
+    const int color3 = 0.50 * _myOpt.paletteSize;
+    const int color4 = 0.75 * _myOpt.paletteSize;
 
-        _colorMap[_x][_y] = EscapeAngleColor(point, _myOpt.paletteSize);
-    });
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    {
+        double c_im = _maxY - _y * _yFactor;
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        {
+            complex<double> z = complex<double>(_minX + _x * _xFactor, c_im);
+            bool insideSet = true;
+
+            for (n=0; n<_maxIter; n++)
+            {
+                if (z.real()*z.real() + z.imag()*z.imag() > 4)
+                {
+                    insideSet = false;
+                    break;
+                }
+                z = pow(z, 1.5) + k;
+            }
+            if (insideSet)
+            {
+                _setMap[_x][_y] = true;
+            }
+            if (z.real() > 0 && z.imag() > 0)
+            {
+                _colorMap[_x][_y] = n + color1;
+            }
+            else if (z.real() <= 0 && z.imag() > 0)
+            {
+                _colorMap[_x][_y] = n + color2;
+            }
+            else if (z.real() <= 0 && z.imag() < 0)
+            {
+                _colorMap[_x][_y] = n + color3;
+            }
+            else
+            {
+                _colorMap[_x][_y] = n + color4;
+            }
+        }
+    }
 }
 
-Renderer::EscapePoint MedusaRenderer::IterateEscapeAnglePoint(const double pixelRe, const double pixelIm) const
+void MedusaRenderer::EscapeTimeWithOrbitTrapRender()
 {
-    EscapePoint point;
-    const auto k = complex<double>(_kReal, _kImaginary);
-    complex<double> z(pixelRe, pixelIm);
-
-    unsigned n = 0;
-    for (; n < _maxIter; n++)
+    const complex<double> constant(_kReal, _kImaginary);
+    for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {
-        point.zNorm = z.real() * z.real() + z.imag() * z.imag();
-        if (point.zNorm > 4)
+        for (_x=_widthOrigin; _x<_widthFinal; _x++)
         {
-            point.insideSet = false;
-            break;
+            double re = _minX + _x * _xFactor;
+            double im = _maxY - _y * _yFactor;
+            complex<double> z = complex<double>(re, im);
+            bool broken = false;
+
+            double distX = abs(re);
+            double distY = abs(im);
+
+            bool insideSet = true;
+            int iterations = 0;
+
+            for (unsigned n=0; n<_maxIter; n++)
+            {
+                z = pow(z, 1.5) + constant;
+                if (z.real()*z.real() + z.imag()*z.imag() > 4)
+                {
+                    insideSet = false;
+                    broken = true;
+                }
+
+                if (abs(z.imag()) < distY)
+                    distY = abs(z.imag());
+                if (abs(z.real()) < distX)
+                    distX = abs(z.real());
+
+                if (!broken)
+                    iterations = n;
+            }
+            if (insideSet)
+            {
+                _setMap[_x][_y] = true;
+            }
+            _colorMap[_x][_y] = ToColorMapValue(iterations + log(1 / distX) + log(1 / distY));
         }
-
-        z = pow(z, 1.5) + k;
     }
-
-    point.iterations = n;
-    point.zRe = z.real();
-    point.zIm = z.imag();
-    return point;
 }
 
 void MedusaRenderer::Render()
@@ -162,7 +173,10 @@ void MedusaRenderer::Render()
     switch (_myOpt.alg)
     {
     case RenderingAlgorithmType::EscapeTime:
-        EscapeTimeRender();
+        if (_myOpt.orbitTrapMode)
+            EscapeTimeWithOrbitTrapRender();
+        else
+            EscapeTimeRender();
         break;
     case RenderingAlgorithmType::GaussianInt:
         GaussianIntRender();
