@@ -50,7 +50,7 @@ Renderer::Point ManowarJuliaRenderer::TracePoint(const double pixelRe, const dou
             measure(point, PointTraceEvent::Escaped, n, zRe, zIm, zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && point.zNorm > 16)
+        if (escaped && point.zNorm > 16 && !point.measureGaussianAfterEscape)
             break;
 
         const double zRe2 = zRe * zRe;

@@ -48,7 +48,7 @@ Renderer::Point ManowarRenderer::TracePoint(const double pixelRe, const double p
             measure(point, PointTraceEvent::Escaped, n, zRe, zIm, zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && point.zNorm > 16)
+        if (escaped && point.zNorm > 16 && !point.measureGaussianAfterEscape)
             break;
 
         const double zRe2 = zRe * zRe;

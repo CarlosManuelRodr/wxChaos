@@ -64,7 +64,7 @@ Renderer::Point MandelbrotZNRenderer::TracePoint(const double pixelRe, const dou
             }
         }
 
-        if (escaped && point.zNorm > trapBailout)
+        if (escaped && point.zNorm > trapBailout && !point.measureGaussianAfterEscape)
             break;
     }
 

@@ -48,7 +48,7 @@ Renderer::Point MedusaRenderer::TracePoint(const double pixelRe, const double pi
             measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && point.zNorm > 16)
+        if (escaped && point.zNorm > 16 && !point.measureGaussianAfterEscape)
             break;
 
         z = pow(z, 1.5) + constant;

@@ -49,7 +49,7 @@ Renderer::Point SinoidalRenderer::TracePoint(const double pixelRe, const double 
             measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && point.zNorm > _maxIter * _maxIter)
+        if (escaped && point.zNorm > _maxIter * _maxIter && !point.measureGaussianAfterEscape)
             break;
 
         z = constant * sin(z);

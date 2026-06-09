@@ -65,7 +65,7 @@ Renderer::Point JuliaZNRenderer::TracePoint(const double pixelRe, const double p
             }
         }
 
-        if (escaped && point.zNorm > trapBailout)
+        if (escaped && point.zNorm > trapBailout && !point.measureGaussianAfterEscape)
             break;
     }
 

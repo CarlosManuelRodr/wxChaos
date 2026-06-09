@@ -38,6 +38,7 @@ protected:
 
         double gaussianDistance = 99.0;
         double previousGaussianDistance = 0.0;
+        bool measureGaussianAfterEscape = false;
 
         double triangleDistance = 0.0;
         double previousTriangleDistance = 0.0;

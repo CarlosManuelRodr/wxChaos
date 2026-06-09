@@ -120,11 +120,19 @@ void Renderer::MeasureOrbitTrap(Point& point, const PointTraceEvent event, const
 }
 void Renderer::MeasureGaussianInteger(Point& point, const PointTraceEvent event, const double zRe, const double zIm, const bool wasInside)
 {
-    if (event != PointTraceEvent::Iterated || !wasInside)
+    if (event == PointTraceEvent::Escaped)
+    {
+        point.measureGaussianAfterEscape = true;
+        return;
+    }
+
+    if (event != PointTraceEvent::Iterated || (!wasInside && !point.measureGaussianAfterEscape))
         return;
 
     point.previousGaussianDistance = point.gaussianDistance;
     point.gaussianDistance = minVal(point.gaussianDistance, gaussianIntDist(zRe, zIm));
+    if (!wasInside)
+        point.measureGaussianAfterEscape = false;
 }
 void Renderer::MeasureTriangleInequality(Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
                                          const double squaredRe, const double squaredIm, const bool wasInside)
