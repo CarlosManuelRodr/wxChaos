@@ -62,76 +62,6 @@ Renderer::Point MandelbrotRenderer::TracePoint(const double pixelRe, const doubl
     return point;
 }
 
-template<class MeasurePoint>
-void MandelbrotRenderer::RenderFromPoint(unsigned int (MandelbrotRenderer::*colorPoint)(const Point&) const, MeasurePoint measure)
-{
-    RenderPixels([this, colorPoint, measure](const double pixelRe, const double pixelIm)
-    {
-        const Point point = TracePoint(pixelRe, pixelIm, measure);
-        if (point.insideSet)
-            _setMap[_x][_y] = true;
-
-        _colorMap[_x][_y] = (this->*colorPoint)(point);
-    });
-}
-
-void MandelbrotRenderer::EscapeTimeRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
-        {
-            MeasureOrbitTrap(point, event, zRe, zIm);
-        };
-        RenderFromPoint(&MandelbrotRenderer::EscapeTimeColor, measure);
-        return;
-    }
-
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&MandelbrotRenderer::EscapeTimeColor, measure);
-}
-
-void MandelbrotRenderer::GaussianIntRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int, const double zRe, const double zIm,
-                                const double zNorm, const double, const double, const bool wasInside)
-        {
-            MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
-            MeasureOrbitTrap(point, event, zRe, zIm);
-            MeasureEscapeMu(point, event, zNorm);
-        };
-        RenderFromPoint(&MandelbrotRenderer::GaussianIntegerColor, measure);
-        return;
-    }
-
-    const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm,
-                            const double zNorm, double, double, const bool wasInside)
-    {
-        MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
-        MeasureEscapeMu(point, event, zNorm);
-    };
-    RenderFromPoint(&MandelbrotRenderer::GaussianIntegerColor, measure);
-}
-
-void MandelbrotRenderer::EscapeAngleRender()
-{
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&MandelbrotRenderer::EscapeAngleColor, measure);
-}
-
-void MandelbrotRenderer::TriangleInequalityRender()
-{
-    const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
-                            const double zNorm, const double squaredRe, const double squaredIm, const bool wasInside)
-    {
-        MeasureTriangleInequality(point, event, iteration, zRe, zIm, squaredRe, squaredIm, wasInside);
-        MeasureEscapeMu(point, event, zNorm);
-    };
-    RenderFromPoint(&MandelbrotRenderer::TriangleInequalityColor, measure);
-}
-
 void MandelbrotRenderer::BuddhabrotRender()
 {
     sf::Mutex mutex;
@@ -216,19 +146,24 @@ void MandelbrotRenderer::BuddhabrotRender()
 
 void MandelbrotRenderer::Render()
 {
+    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    {
+        return TracePoint(pixelRe, pixelIm, measure);
+    };
+
     switch (_myOpt.alg)
     {
         case RenderingAlgorithmType::EscapeTime:
-            EscapeTimeRender();
+            EscapeTimeRender(tracePoint);
             break;
         case RenderingAlgorithmType::GaussianInt:
-            GaussianIntRender();
+            GaussianIntRender(tracePoint);
             break;
         case RenderingAlgorithmType::EscapeAngle:
-            EscapeAngleRender();
+            EscapeAngleRender(tracePoint);
             break;
         case RenderingAlgorithmType::TriangleInequality:
-            TriangleInequalityRender();
+            TriangleInequalityRender(tracePoint);
             break;
         case RenderingAlgorithmType::Buddhabrot:
             BuddhabrotRender();

@@ -56,81 +56,23 @@ Renderer::Point JuliaZNRenderer::TracePoint(const double pixelRe, const double p
     return point;
 }
 
-template<class ColorPoint, class MeasurePoint>
-void JuliaZNRenderer::RenderFromPoint(ColorPoint colorPoint, MeasurePoint measure)
-{
-    RenderPixels([this, colorPoint, measure](const double pixelRe, const double pixelIm)
-    {
-        const Point point = TracePoint(pixelRe, pixelIm, measure);
-        if (point.insideSet)
-            _setMap[_x][_y] = true;
-
-        _colorMap[_x][_y] = colorPoint(point);
-    });
-}
-
-void JuliaZNRenderer::EscapeTimeRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
-        {
-            MeasureOrbitTrap(point, event, zRe, zIm);
-        };
-        RenderFromPoint([this](const Point& point) { return EscapeTimeColor(point); }, measure);
-        return;
-    }
-
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint([this](const Point& point) { return EscapeTimeColor(point); }, measure);
-}
-
-void JuliaZNRenderer::GaussianIntRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm,
-                                const double zNorm, double, double, const bool wasInside)
-        {
-            MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
-            MeasureOrbitTrap(point, event, zRe, zIm);
-            MeasureEscapeMu(point, event, zNorm);
-        };
-        RenderFromPoint([this](const Point& point) { return GaussianIntegerColor(point); }, measure);
-        return;
-    }
-
-    const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm,
-                            const double zNorm, double, double, const bool wasInside)
-    {
-        MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
-        MeasureEscapeMu(point, event, zNorm);
-    };
-    RenderFromPoint([this](const Point& point) { return GaussianIntegerColor(point); }, measure);
-}
-
-void JuliaZNRenderer::EscapeAngleRender()
-{
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    const auto colorPoint = [this](Point point)
-    {
-        point.iterations = _n;
-        return EscapeAngleColor(point);
-    };
-    RenderFromPoint(colorPoint, measure);
-}
 void JuliaZNRenderer::Render()
 {
+    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    {
+        return TracePoint(pixelRe, pixelIm, measure);
+    };
+
     switch (_myOpt.alg)
     {
         case RenderingAlgorithmType::EscapeTime:
-            EscapeTimeRender();
+            EscapeTimeRender(tracePoint);
             break;
         case RenderingAlgorithmType::GaussianInt:
-            GaussianIntRender();
+            GaussianIntRender(tracePoint);
             break;
         case RenderingAlgorithmType::EscapeAngle:
-            EscapeAngleRender();
+            EscapeAngleRender(tracePoint);
             break;
         default:
             break;
