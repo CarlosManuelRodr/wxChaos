@@ -17,8 +17,6 @@ class MandelbrotRenderer : public Renderer
     void GaussianIntRender();
     void EscapeAngleRender();
     void TriangleInequalityRender();
-    unsigned int ColorEscapeAnglePoint(const Point& point) const;
-    unsigned int ColorTriangleInequalityPoint(const Point& point) const;
     void BuddhabrotRender();
 
 public:

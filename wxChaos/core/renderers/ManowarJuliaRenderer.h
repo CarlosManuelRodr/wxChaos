@@ -14,9 +14,6 @@ class ManowarJuliaRenderer : public Renderer
     void EscapeTimeRender();
     void GaussianIntRender();
     void EscapeAngleRender();
-    unsigned int ColorEscapeTimePoint(const Point& point) const;
-    unsigned int ColorGaussianIntegerPoint(const Point& point) const;
-    unsigned int ColorEscapeAnglePoint(const Point& point) const;
 
 public:
     ManowarJuliaRenderer();

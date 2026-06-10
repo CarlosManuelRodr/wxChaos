@@ -15,10 +15,6 @@ class JuliaRenderer : public Renderer
     void GaussianIntRender();
     void EscapeAngleRender();
     void TriangleInequalityRender();
-    unsigned int ColorEscapeTimePoint(const Point& point) const;
-    unsigned int ColorGaussianIntegerPoint(const Point& point) const;
-    unsigned int ColorEscapeAnglePoint(const Point& point) const;
-    unsigned int ColorTriangleInequalityPoint(const Point& point) const;
 
 public:
     JuliaRenderer();

@@ -1,23 +1,6 @@
 #include "ManowarRenderer.h"
-#include "FractalUtils.h"
 
 ManowarRenderer::ManowarRenderer() = default;
-
-void ManowarRenderer::EscapeTimeRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
-        {
-            MeasureOrbitTrap(point, event, zRe, zIm);
-        };
-        RenderFromPoint(&ManowarRenderer::ColorEscapeTimePoint, measure);
-        return;
-    }
-
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&ManowarRenderer::ColorEscapeTimePoint, measure);
-}
 
 template<class MeasurePoint>
 Renderer::Point ManowarRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
@@ -90,6 +73,22 @@ void ManowarRenderer::RenderFromPoint(unsigned int (ManowarRenderer::*colorPoint
     });
 }
 
+void ManowarRenderer::EscapeTimeRender()
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        RenderFromPoint(&ManowarRenderer::EscapeTimeColor, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&ManowarRenderer::EscapeTimeColor, measure);
+}
+
 void ManowarRenderer::GaussianIntRender()
 {
     if (_myOpt.orbitTrapMode)
@@ -101,7 +100,7 @@ void ManowarRenderer::GaussianIntRender()
             MeasureOrbitTrap(point, event, zRe, zIm);
             MeasureEscapeMu(point, event, zNorm);
         };
-        RenderFromPoint(&ManowarRenderer::ColorGaussianIntegerPoint, measure);
+        RenderFromPoint(&ManowarRenderer::GaussianIntegerColor, measure);
         return;
     }
 
@@ -111,28 +110,13 @@ void ManowarRenderer::GaussianIntRender()
         MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(&ManowarRenderer::ColorGaussianIntegerPoint, measure);
+    RenderFromPoint(&ManowarRenderer::GaussianIntegerColor, measure);
 }
 
 void ManowarRenderer::EscapeAngleRender()
 {
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&ManowarRenderer::ColorEscapeAnglePoint, measure);
-}
-
-unsigned int ManowarRenderer::ColorEscapeTimePoint(const Point& point) const
-{
-    return EscapeTimeColor(point);
-}
-
-unsigned int ManowarRenderer::ColorGaussianIntegerPoint(const Point& point) const
-{
-    return GaussianIntegerColor(point);
-}
-
-unsigned int ManowarRenderer::ColorEscapeAnglePoint(const Point& point) const
-{
-    return EscapeAngleColor(point);
+    RenderFromPoint(&ManowarRenderer::EscapeAngleColor, measure);
 }
 
 void ManowarRenderer::Render()

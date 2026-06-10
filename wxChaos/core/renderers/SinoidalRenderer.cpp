@@ -1,26 +1,9 @@
 // ReSharper disable CppTooWideScope
 #include <complex>
 #include "SinoidalRenderer.h"
-#include "FractalUtils.h"
 using namespace std;
 
 SinoidalRenderer::SinoidalRenderer() = default;
-
-void SinoidalRenderer::EscapeTimeRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
-        {
-            MeasureOrbitTrap(point, event, zRe, zIm);
-        };
-        RenderFromPoint(&SinoidalRenderer::ColorEscapeTimePoint, measure);
-        return;
-    }
-
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&SinoidalRenderer::ColorEscapeTimePoint, measure);
-}
 
 template<class MeasurePoint>
 Renderer::Point SinoidalRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
@@ -82,6 +65,22 @@ void SinoidalRenderer::RenderFromPoint(unsigned int (SinoidalRenderer::*colorPoi
     });
 }
 
+void SinoidalRenderer::EscapeTimeRender()
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        RenderFromPoint(&SinoidalRenderer::EscapeTimeColor, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&SinoidalRenderer::EscapeTimeColor, measure);
+}
+
 void SinoidalRenderer::GaussianIntRender()
 {
     if (_myOpt.orbitTrapMode)
@@ -93,7 +92,7 @@ void SinoidalRenderer::GaussianIntRender()
             MeasureOrbitTrap(point, event, zRe, zIm);
             MeasureEscapeMu(point, event, zNorm);
         };
-        RenderFromPoint(&SinoidalRenderer::ColorGaussianIntegerPoint, measure);
+        RenderFromPoint(&SinoidalRenderer::GaussianIntegerColor, measure);
         return;
     }
 
@@ -103,28 +102,13 @@ void SinoidalRenderer::GaussianIntRender()
         MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(&SinoidalRenderer::ColorGaussianIntegerPoint, measure);
+    RenderFromPoint(&SinoidalRenderer::GaussianIntegerColor, measure);
 }
 
 void SinoidalRenderer::EscapeAngleRender()
 {
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&SinoidalRenderer::ColorEscapeAnglePoint, measure);
-}
-
-unsigned int SinoidalRenderer::ColorEscapeTimePoint(const Point& point) const
-{
-    return EscapeTimeColor(point);
-}
-
-unsigned int SinoidalRenderer::ColorGaussianIntegerPoint(const Point& point) const
-{
-    return GaussianIntegerColor(point);
-}
-
-unsigned int SinoidalRenderer::ColorEscapeAnglePoint(const Point& point) const
-{
-    return EscapeAngleColor(point);
+    RenderFromPoint(&SinoidalRenderer::EscapeAngleColor, measure);
 }
 
 void SinoidalRenderer::Render()

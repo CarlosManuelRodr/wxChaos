@@ -1,25 +1,8 @@
 #include <complex>
 #include "MedusaRenderer.h"
-#include "FractalUtils.h"
 using namespace std;
 
 MedusaRenderer::MedusaRenderer() = default;
-
-void MedusaRenderer::EscapeTimeRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
-        {
-            MeasureOrbitTrap(point, event, zRe, zIm);
-        };
-        RenderFromPoint(&MedusaRenderer::ColorEscapeTimePoint, measure);
-        return;
-    }
-
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&MedusaRenderer::ColorEscapeTimePoint, measure);
-}
 
 template<class MeasurePoint>
 Renderer::Point MedusaRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
@@ -81,6 +64,22 @@ void MedusaRenderer::RenderFromPoint(unsigned int (MedusaRenderer::*colorPoint)(
     });
 }
 
+void MedusaRenderer::EscapeTimeRender()
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        RenderFromPoint(&MedusaRenderer::EscapeTimeColor, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&MedusaRenderer::EscapeTimeColor, measure);
+}
+
 void MedusaRenderer::GaussianIntRender()
 {
     if (_myOpt.orbitTrapMode)
@@ -92,7 +91,7 @@ void MedusaRenderer::GaussianIntRender()
             MeasureOrbitTrap(point, event, zRe, zIm);
             MeasureEscapeMu(point, event, zNorm);
         };
-        RenderFromPoint(&MedusaRenderer::ColorGaussianIntegerPoint, measure);
+        RenderFromPoint(&MedusaRenderer::GaussianIntegerColor, measure);
         return;
     }
 
@@ -102,28 +101,13 @@ void MedusaRenderer::GaussianIntRender()
         MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(&MedusaRenderer::ColorGaussianIntegerPoint, measure);
+    RenderFromPoint(&MedusaRenderer::GaussianIntegerColor, measure);
 }
 
 void MedusaRenderer::EscapeAngleRender()
 {
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&MedusaRenderer::ColorEscapeAnglePoint, measure);
-}
-
-unsigned int MedusaRenderer::ColorEscapeTimePoint(const Point& point) const
-{
-    return EscapeTimeColor(point);
-}
-
-unsigned int MedusaRenderer::ColorGaussianIntegerPoint(const Point& point) const
-{
-    return GaussianIntegerColor(point);
-}
-
-unsigned int MedusaRenderer::ColorEscapeAnglePoint(const Point& point) const
-{
-    return EscapeAngleColor(point);
+    RenderFromPoint(&MedusaRenderer::EscapeAngleColor, measure);
 }
 
 void MedusaRenderer::Render()

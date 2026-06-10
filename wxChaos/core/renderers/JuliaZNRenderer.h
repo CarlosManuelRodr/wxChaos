@@ -12,14 +12,11 @@ class JuliaZNRenderer : public Renderer
 
     template<class MeasurePoint>
     Point TracePoint(double pixelRe, double pixelIm, MeasurePoint measure) const;
-    template<class MeasurePoint>
-    void RenderFromPoint(unsigned int (JuliaZNRenderer::*colorPoint)(const Point&) const, MeasurePoint measure);
+    template<class ColorPoint, class MeasurePoint>
+    void RenderFromPoint(ColorPoint colorPoint, MeasurePoint measure);
     void EscapeTimeRender();
     void GaussianIntRender();
     void EscapeAngleRender();
-    unsigned int ColorEscapeTimePoint(const Point& point) const;
-    unsigned int ColorGaussianIntegerPoint(const Point& point) const;
-    unsigned int ColorEscapeAnglePoint(const Point& point) const;
 
 public:
     JuliaZNRenderer();

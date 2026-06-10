@@ -8,21 +8,6 @@ MandelbrotZNRenderer::MandelbrotZNRenderer()
     _n = 0;
     _bailout = 0;
 }
-void MandelbrotZNRenderer::EscapeTimeRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
-        {
-            MeasureOrbitTrap(point, event, zRe, zIm);
-        };
-        RenderFromPoint(&MandelbrotZNRenderer::ColorEscapeTimePoint, measure);
-        return;
-    }
-
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&MandelbrotZNRenderer::ColorEscapeTimePoint, measure);
-}
 
 template<class MeasurePoint>
 Renderer::Point MandelbrotZNRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
@@ -84,6 +69,22 @@ void MandelbrotZNRenderer::RenderFromPoint(unsigned int (MandelbrotZNRenderer::*
     });
 }
 
+void MandelbrotZNRenderer::EscapeTimeRender()
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        RenderFromPoint(&MandelbrotZNRenderer::EscapeTimeColor, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&MandelbrotZNRenderer::EscapeTimeColor, measure);
+}
+
 void MandelbrotZNRenderer::GaussianIntRender()
 {
     if (_myOpt.orbitTrapMode)
@@ -95,7 +96,7 @@ void MandelbrotZNRenderer::GaussianIntRender()
             MeasureOrbitTrap(point, event, zRe, zIm);
             MeasureEscapeMu(point, event, zNorm);
         };
-        RenderFromPoint(&MandelbrotZNRenderer::ColorGaussianIntegerPoint, measure);
+        RenderFromPoint(&MandelbrotZNRenderer::GaussianIntegerColor, measure);
         return;
     }
 
@@ -105,28 +106,13 @@ void MandelbrotZNRenderer::GaussianIntRender()
         MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(&MandelbrotZNRenderer::ColorGaussianIntegerPoint, measure);
+    RenderFromPoint(&MandelbrotZNRenderer::GaussianIntegerColor, measure);
 }
 
 void MandelbrotZNRenderer::EscapeAngleRender()
 {
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&MandelbrotZNRenderer::ColorEscapeAnglePoint, measure);
-}
-
-unsigned int MandelbrotZNRenderer::ColorEscapeTimePoint(const Point& point) const
-{
-    return EscapeTimeColor(point);
-}
-
-unsigned int MandelbrotZNRenderer::ColorGaussianIntegerPoint(const Point& point) const
-{
-    return GaussianIntegerColor(point);
-}
-
-unsigned int MandelbrotZNRenderer::ColorEscapeAnglePoint(const Point& point) const
-{
-    return EscapeAngleColor(point);
+    RenderFromPoint(&MandelbrotZNRenderer::EscapeAngleColor, measure);
 }
 
 void MandelbrotZNRenderer::Render()

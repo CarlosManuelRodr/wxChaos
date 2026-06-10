@@ -2,7 +2,6 @@
 #ifndef RENDER_FRACTAL_H
 #define RENDER_FRACTAL_H
 
-#include <cmath>
 #include <limits>
 #include "types/FractalType.h"
 #include "geometry/Vector2Int.h"
@@ -88,10 +87,10 @@ protected:
                                           double squaredRe, double squaredIm, bool wasInside);
     static double SmoothEscapeValue(const Point& point);
     static double OrbitTrapValue(const Point& point);
-    unsigned int EscapeTimeColor(const Point& point) const;
-    unsigned int GaussianIntegerColor(const Point& point) const;
-    unsigned int EscapeAngleColor(const Point& point) const;
-    unsigned int TriangleInequalityColor(const Point& point) const;
+    [[nodiscard]] unsigned int EscapeTimeColor(const Point& point) const;
+    [[nodiscard]] unsigned int GaussianIntegerColor(const Point& point) const;
+    [[nodiscard]] unsigned int EscapeAngleColor(const Point& point) const;
+    [[nodiscard]] unsigned int TriangleInequalityColor(const Point& point) const;
 
     template<class PixelRenderer>
     void RenderPixels(PixelRenderer pixelRenderer);
@@ -114,10 +113,10 @@ public:
     void SetK(double re, double im);
     void Reset();
     virtual void PreTerminate();
-    Vector2Int GetCoords() const;
-    Vector2Int GetStartPoints() const;
-    Vector2Int GetEndPoints() const;
-    bool IsRunning() const;
+    [[nodiscard]] Vector2Int GetCoords() const;
+    [[nodiscard]] Vector2Int GetStartPoints() const;
+    [[nodiscard]] Vector2Int GetEndPoints() const;
+    [[nodiscard]] bool IsRunning() const;
     virtual unsigned int GetProgress();
 };
 

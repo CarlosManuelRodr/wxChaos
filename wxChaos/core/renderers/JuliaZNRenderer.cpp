@@ -1,28 +1,12 @@
 // ReSharper disable CppTooWideScope
 #include <complex>
 #include "JuliaZNRenderer.h"
-#include "FractalUtils.h"
 using namespace std;
 
 JuliaZNRenderer::JuliaZNRenderer()
 {
     _n = 0;
     _bailout = 0;
-}
-void JuliaZNRenderer::EscapeTimeRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
-        {
-            MeasureOrbitTrap(point, event, zRe, zIm);
-        };
-        RenderFromPoint(&JuliaZNRenderer::ColorEscapeTimePoint, measure);
-        return;
-    }
-
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&JuliaZNRenderer::ColorEscapeTimePoint, measure);
 }
 
 template<class MeasurePoint>
@@ -72,8 +56,8 @@ Renderer::Point JuliaZNRenderer::TracePoint(const double pixelRe, const double p
     return point;
 }
 
-template<class MeasurePoint>
-void JuliaZNRenderer::RenderFromPoint(unsigned int (JuliaZNRenderer::*colorPoint)(const Point&) const, MeasurePoint measure)
+template<class ColorPoint, class MeasurePoint>
+void JuliaZNRenderer::RenderFromPoint(ColorPoint colorPoint, MeasurePoint measure)
 {
     RenderPixels([this, colorPoint, measure](const double pixelRe, const double pixelIm)
     {
@@ -81,8 +65,24 @@ void JuliaZNRenderer::RenderFromPoint(unsigned int (JuliaZNRenderer::*colorPoint
         if (point.insideSet)
             _setMap[_x][_y] = true;
 
-        _colorMap[_x][_y] = (this->*colorPoint)(point);
+        _colorMap[_x][_y] = colorPoint(point);
     });
+}
+
+void JuliaZNRenderer::EscapeTimeRender()
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        RenderFromPoint([this](const Point& point) { return EscapeTimeColor(point); }, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint([this](const Point& point) { return EscapeTimeColor(point); }, measure);
 }
 
 void JuliaZNRenderer::GaussianIntRender()
@@ -96,7 +96,7 @@ void JuliaZNRenderer::GaussianIntRender()
             MeasureOrbitTrap(point, event, zRe, zIm);
             MeasureEscapeMu(point, event, zNorm);
         };
-        RenderFromPoint(&JuliaZNRenderer::ColorGaussianIntegerPoint, measure);
+        RenderFromPoint([this](const Point& point) { return GaussianIntegerColor(point); }, measure);
         return;
     }
 
@@ -106,30 +106,18 @@ void JuliaZNRenderer::GaussianIntRender()
         MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(&JuliaZNRenderer::ColorGaussianIntegerPoint, measure);
+    RenderFromPoint([this](const Point& point) { return GaussianIntegerColor(point); }, measure);
 }
 
 void JuliaZNRenderer::EscapeAngleRender()
 {
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&JuliaZNRenderer::ColorEscapeAnglePoint, measure);
-}
-
-unsigned int JuliaZNRenderer::ColorEscapeTimePoint(const Point& point) const
-{
-    return EscapeTimeColor(point);
-}
-
-unsigned int JuliaZNRenderer::ColorGaussianIntegerPoint(const Point& point) const
-{
-    return GaussianIntegerColor(point);
-}
-
-unsigned int JuliaZNRenderer::ColorEscapeAnglePoint(const Point& point) const
-{
-    Point colorPoint = point;
-    colorPoint.iterations = _n;
-    return EscapeAngleColor(colorPoint);
+    const auto colorPoint = [this](Point point)
+    {
+        point.iterations = _n;
+        return EscapeAngleColor(point);
+    };
+    RenderFromPoint(colorPoint, measure);
 }
 void JuliaZNRenderer::Render()
 {
