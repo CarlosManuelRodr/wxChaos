@@ -4,26 +4,10 @@
 #include <random>
 #include <vector>
 #include "MandelbrotRenderer.h"
-#include "FractalUtils.h"
 
 MandelbrotRenderer::MandelbrotRenderer()
 {
     _buddhaRandomP = 0;
-}
-void MandelbrotRenderer::EscapeTimeRender()
-{
-    if (_myOpt.orbitTrapMode)
-    {
-        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
-        {
-            MeasureOrbitTrap(point, event, zRe, zIm);
-        };
-        RenderFromPoint(&MandelbrotRenderer::ColorEscapeTimePoint, measure);
-        return;
-    }
-
-    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&MandelbrotRenderer::ColorEscapeTimePoint, measure);
 }
 
 template<class MeasurePoint>
@@ -91,18 +75,34 @@ void MandelbrotRenderer::RenderFromPoint(unsigned int (MandelbrotRenderer::*colo
     });
 }
 
+void MandelbrotRenderer::EscapeTimeRender()
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        RenderFromPoint(&MandelbrotRenderer::EscapeTimeColor, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    RenderFromPoint(&MandelbrotRenderer::EscapeTimeColor, measure);
+}
+
 void MandelbrotRenderer::GaussianIntRender()
 {
     if (_myOpt.orbitTrapMode)
     {
-        const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
-                                const double zNorm, const double squaredRe, const double squaredIm, const bool wasInside)
+        const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int, const double zRe, const double zIm,
+                                const double zNorm, const double, const double, const bool wasInside)
         {
             MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
             MeasureOrbitTrap(point, event, zRe, zIm);
             MeasureEscapeMu(point, event, zNorm);
         };
-        RenderFromPoint(&MandelbrotRenderer::ColorGaussianIntegerPoint, measure);
+        RenderFromPoint(&MandelbrotRenderer::GaussianIntegerColor, measure);
         return;
     }
 
@@ -112,13 +112,13 @@ void MandelbrotRenderer::GaussianIntRender()
         MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(&MandelbrotRenderer::ColorGaussianIntegerPoint, measure);
+    RenderFromPoint(&MandelbrotRenderer::GaussianIntegerColor, measure);
 }
 
 void MandelbrotRenderer::EscapeAngleRender()
 {
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(&MandelbrotRenderer::ColorEscapeAnglePoint, measure);
+    RenderFromPoint(&MandelbrotRenderer::EscapeAngleColor, measure);
 }
 
 void MandelbrotRenderer::TriangleInequalityRender()
@@ -129,27 +129,7 @@ void MandelbrotRenderer::TriangleInequalityRender()
         MeasureTriangleInequality(point, event, iteration, zRe, zIm, squaredRe, squaredIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(&MandelbrotRenderer::ColorTriangleInequalityPoint, measure);
-}
-
-unsigned int MandelbrotRenderer::ColorEscapeTimePoint(const Point& point) const
-{
-    return EscapeTimeColor(point);
-}
-
-unsigned int MandelbrotRenderer::ColorGaussianIntegerPoint(const Point& point) const
-{
-    return GaussianIntegerColor(point);
-}
-
-unsigned int MandelbrotRenderer::ColorEscapeAnglePoint(const Point& point) const
-{
-    return EscapeAngleColor(point);
-}
-
-unsigned int MandelbrotRenderer::ColorTriangleInequalityPoint(const Point& point) const
-{
-    return TriangleInequalityColor(point);
+    RenderFromPoint(&MandelbrotRenderer::TriangleInequalityColor, measure);
 }
 
 void MandelbrotRenderer::BuddhabrotRender()

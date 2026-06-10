@@ -91,7 +91,7 @@ protected:
     unsigned int EscapeTimeColor(const Point& point) const;
     unsigned int GaussianIntegerColor(const Point& point) const;
     unsigned int EscapeAngleColor(const Point& point) const;
-    static unsigned int TriangleInequalityColor(const Point& point);
+    unsigned int TriangleInequalityColor(const Point& point) const;
 
     template<class PixelRenderer>
     void RenderPixels(PixelRenderer pixelRenderer);
