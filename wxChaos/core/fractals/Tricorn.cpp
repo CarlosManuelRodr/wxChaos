@@ -13,6 +13,8 @@ Tricorn::Tricorn(const unsigned int width, const unsigned int height) : Fractal(
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _hasOrbit = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
     _type = FractalType::Tricorn;
     myRender = new TricornRenderer[_threadNumber];
     SetWatchdog<TricornRenderer>(myRender, &_watchdog, _threadNumber);
@@ -20,8 +22,9 @@ Tricorn::Tricorn(const unsigned int width, const unsigned int height) : Fractal(
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
-    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Tricorn::~Tricorn()
 {

@@ -24,13 +24,15 @@ Renderer::Point MandelbrotZNRenderer::TracePoint(const double pixelRe, const dou
 
     for (unsigned i = 0; i < _maxIter; i++)
     {
-        z = pow(z, _n) + c;
+        const complex<double> poweredZ = pow(z, _n);
+        z = poweredZ + c;
 
         point.zRe = z.real();
         point.zIm = z.imag();
         point.zNorm = point.zRe * point.zRe + point.zIm * point.zIm;
         const bool wasInside = !escaped;
-        measure(point, PointTraceEvent::Iterated, i, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
+        measure(point, PointTraceEvent::Iterated, i, point.zRe, point.zIm, point.zNorm,
+                poweredZ.real(), poweredZ.imag(), wasInside);
 
         if (!escaped)
         {
@@ -72,6 +74,9 @@ void MandelbrotZNRenderer::Render()
             break;
         case RenderingAlgorithmType::EscapeAngle:
             EscapeAngleRender(tracePoint);
+            break;
+        case RenderingAlgorithmType::TriangleInequality:
+            TriangleInequalityRender(tracePoint);
             break;
         default:
             break;

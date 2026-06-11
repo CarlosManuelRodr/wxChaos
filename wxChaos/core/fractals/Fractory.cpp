@@ -13,6 +13,8 @@ Fractory::Fractory(const unsigned int width, const unsigned int height) : Fracta
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _hasOrbit = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
     _type = FractalType::Fractory;
     myRender = new FractoryRenderer[_threadNumber];
     SetWatchdog<FractoryRenderer>(myRender, &_watchdog, _threadNumber);
@@ -22,6 +24,7 @@ Fractory::Fractory(const unsigned int width, const unsigned int height) : Fracta
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Fractory::~Fractory()
 {

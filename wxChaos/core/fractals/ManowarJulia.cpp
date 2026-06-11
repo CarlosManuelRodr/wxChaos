@@ -15,6 +15,7 @@ ManowarJulia::ManowarJulia(const unsigned int width, const unsigned int height) 
     _juliaVariety = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
+    _hasSmoothRender = true;
     myRender = new ManowarJuliaRenderer[_threadNumber];
     SetWatchdog<ManowarJuliaRenderer>(myRender, &_watchdog, _threadNumber);
 
@@ -23,6 +24,7 @@ ManowarJulia::ManowarJulia(const unsigned int width, const unsigned int height) 
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 ManowarJulia::~ManowarJulia()
 {

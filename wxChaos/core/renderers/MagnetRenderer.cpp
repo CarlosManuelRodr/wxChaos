@@ -16,6 +16,7 @@ Renderer::Point MagnetRenderer::TracePoint(const double pixelRe, const double pi
 
     const complex<double> c(pixelRe, pixelIm);
     complex<double> z(0.0, 0.0);
+    bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
@@ -23,16 +24,19 @@ Renderer::Point MagnetRenderer::TracePoint(const double pixelRe, const double pi
         point.zIm = z.imag();
         point.zNorm = norm(z);
 
-        if (point.zNorm > _maxIter)
+        if (!escaped && point.zNorm > _maxIter)
         {
+            escaped = true;
             point.insideSet = false;
             point.iterations = n;
             point.escapedZRe = point.zRe;
             point.escapedZIm = point.zIm;
             point.escapedNorm = point.zNorm;
             measure(point, PointTraceEvent::Escaped, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, true);
-            break;
         }
+
+        if (escaped && !point.measureGaussianAfterEscape)
+            break;
 
         z = pow((pow(z, 2) + c - complex<double>(1.0, 0.0)) /
                 (complex<double>(2.0, 0.0) * z + c - complex<double>(2.0, 0.0)), 2.0);
@@ -40,8 +44,11 @@ Renderer::Point MagnetRenderer::TracePoint(const double pixelRe, const double pi
         point.zRe = z.real();
         point.zIm = z.imag();
         point.zNorm = norm(z);
-        point.iterations = n + 1;
-        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, true);
+        const bool wasInside = !escaped;
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
+
+        if (!escaped)
+            point.iterations = n + 1;
     }
 
     return point;
@@ -59,8 +66,14 @@ void MagnetRenderer::Render()
         case RenderingAlgorithmType::EscapeTime:
             EscapeTimeRender(tracePoint);
             break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender(tracePoint);
+            break;
         case RenderingAlgorithmType::EscapeAngle:
             EscapeAngleRender(tracePoint);
+            break;
+        case RenderingAlgorithmType::TriangleInequality:
+            TriangleInequalityRender(tracePoint);
             break;
         default:
             break;

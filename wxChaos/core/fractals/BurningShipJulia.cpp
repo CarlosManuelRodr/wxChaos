@@ -10,6 +10,8 @@ BurningShipJulia::BurningShipJulia(unsigned int width, unsigned int height) : Fr
     _maxY = _minY+(_maxX-_minX)*_screenHeight/_screenWidth;
     _juliaVariety = true;
     _hasOrbit = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
@@ -18,6 +20,11 @@ BurningShipJulia::BurningShipJulia(unsigned int width, unsigned int height) : Fr
     _type = FractalType::BurningShip;
     myRender = new BurningShipJuliaRenderer[_threadNumber];
     SetWatchdog<BurningShipJuliaRenderer>(myRender, &_watchdog, _threadNumber);
+
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 BurningShipJulia::~BurningShipJulia()
 {

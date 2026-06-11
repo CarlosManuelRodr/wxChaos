@@ -35,13 +35,15 @@ Renderer::Point SinoidalRenderer::TracePoint(const double pixelRe, const double 
         if (escaped && point.zNorm > _maxIter * _maxIter && !point.measureGaussianAfterEscape)
             break;
 
-        z = constant * sin(z);
+        const complex<double> transformedZ = constant * sin(z);
+        z = transformedZ;
 
         point.zRe = z.real();
         point.zIm = z.imag();
         point.zNorm = point.zRe * point.zRe + point.zIm * point.zIm;
         const bool wasInside = !escaped;
-        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
+                transformedZ.real(), transformedZ.imag(), wasInside);
 
         if (!escaped)
         {
@@ -69,6 +71,9 @@ void SinoidalRenderer::Render()
         break;
     case RenderingAlgorithmType::EscapeAngle:
         EscapeAngleRender(tracePoint);
+        break;
+    case RenderingAlgorithmType::TriangleInequality:
+        TriangleInequalityRender(tracePoint);
         break;
     default:
         break;

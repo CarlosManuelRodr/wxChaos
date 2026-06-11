@@ -34,13 +34,15 @@ Renderer::Point MedusaRenderer::TracePoint(const double pixelRe, const double pi
         if (escaped && point.zNorm > 16 && !point.measureGaussianAfterEscape)
             break;
 
-        z = pow(z, 1.5) + constant;
+        const complex<double> poweredZ = pow(z, 1.5);
+        z = poweredZ + constant;
 
         point.zRe = z.real();
         point.zIm = z.imag();
         point.zNorm = point.zRe * point.zRe + point.zIm * point.zIm;
         const bool wasInside = !escaped;
-        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
+                poweredZ.real(), poweredZ.imag(), wasInside);
 
         if (!escaped)
         {
@@ -68,6 +70,9 @@ void MedusaRenderer::Render()
         break;
     case RenderingAlgorithmType::EscapeAngle:
         EscapeAngleRender(tracePoint);
+        break;
+    case RenderingAlgorithmType::TriangleInequality:
+        TriangleInequalityRender(tracePoint);
         break;
     default:
         break;

@@ -15,9 +15,16 @@ BurningShip::BurningShip(unsigned int width, unsigned int height) : Fractal(widt
 
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _hasOrbit = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
     _type = FractalType::BurningShip;
     myRender = new BurningShipRenderer[_threadNumber];
     SetWatchdog<BurningShipRenderer>(myRender, &_watchdog, _threadNumber);
+
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 BurningShip::~BurningShip()
 {

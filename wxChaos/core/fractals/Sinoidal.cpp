@@ -20,6 +20,7 @@ Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fracta
     _juliaVariety = true;
 
     _hasOrbitTrap = true;
+    _hasSmoothRender = true;
 
     myRender = new SinoidalRenderer[_threadNumber];
     SetWatchdog<SinoidalRenderer>(myRender, &_watchdog, _threadNumber);
@@ -29,6 +30,7 @@ Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fracta
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Sinoidal::~Sinoidal()
 {

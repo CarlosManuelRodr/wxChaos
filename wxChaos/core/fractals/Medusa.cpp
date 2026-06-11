@@ -18,6 +18,7 @@ Medusa::Medusa(const unsigned int width, const unsigned int height) : Fractal(wi
     _juliaVariety = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
+    _hasSmoothRender = true;
 
     myRender = new MedusaRenderer[_threadNumber];
     SetWatchdog<MedusaRenderer>(myRender, &_watchdog, _threadNumber);
@@ -27,6 +28,7 @@ Medusa::Medusa(const unsigned int width, const unsigned int height) : Fractal(wi
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Medusa::~Medusa()
 {

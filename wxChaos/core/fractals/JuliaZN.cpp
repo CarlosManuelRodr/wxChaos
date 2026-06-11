@@ -29,6 +29,7 @@ JuliaZN::JuliaZN(const unsigned int width, const unsigned int height) : Fractal(
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);

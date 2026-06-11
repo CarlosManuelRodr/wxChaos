@@ -15,6 +15,8 @@ Magnet::Magnet(const unsigned int width, const unsigned int height) : Fractal(wi
 
     _type = FractalType::Magnetic;
     _hasOrbit = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
 
     myRender = new MagnetRenderer[_threadNumber];
     SetWatchdog<MagnetRenderer>(myRender, &_watchdog, _threadNumber);
@@ -22,7 +24,9 @@ Magnet::Magnet(const unsigned int width, const unsigned int height) : Fractal(wi
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Magnet::~Magnet()
 {

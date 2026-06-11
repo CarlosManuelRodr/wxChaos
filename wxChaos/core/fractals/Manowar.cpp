@@ -16,6 +16,7 @@ Manowar::Manowar(const unsigned int width, const unsigned int height) : Fractal(
     _type = FractalType::Manowar;
     _hasOrbit = true;
     _hasOrbitTrap = true;
+    _hasSmoothRender = true;
     myRender = new ManowarRenderer[_threadNumber];
     SetWatchdog<ManowarRenderer>(myRender, &_watchdog, _threadNumber);
 
@@ -24,6 +25,7 @@ Manowar::Manowar(const unsigned int width, const unsigned int height) : Fractal(
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Manowar::~Manowar()
 {

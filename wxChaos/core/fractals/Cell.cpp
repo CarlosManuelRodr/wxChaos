@@ -18,10 +18,17 @@ Cell::Cell(unsigned int width, unsigned int height) : Fractal(width, height)
     bailout = 2;
 
     _hasOrbit = true;
+    _hasOrbitTrap = true;
+    _hasSmoothRender = true;
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _type = FractalType::Cell;
     myRender = new CellRenderer[_threadNumber];
     SetWatchdog<CellRenderer>(myRender, &_watchdog, _threadNumber);
+
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
+    _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);
+    _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
+    _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
 Cell::~Cell()
 {

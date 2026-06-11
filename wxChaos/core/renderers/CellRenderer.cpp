@@ -72,6 +72,12 @@ void CellRenderer::Render()
         case RenderingAlgorithmType::GaussianInt:
             GaussianIntRender(tracePoint);
             break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender(tracePoint);
+            break;
+        case RenderingAlgorithmType::TriangleInequality:
+            TriangleInequalityRender(tracePoint);
+            break;
         default:
             break;
     }

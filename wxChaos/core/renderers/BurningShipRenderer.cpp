@@ -73,6 +73,9 @@ void BurningShipRenderer::Render()
         case RenderingAlgorithmType::EscapeAngle:
             EscapeAngleRender(tracePoint);
             break;
+        case RenderingAlgorithmType::TriangleInequality:
+            TriangleInequalityRender(tracePoint);
+            break;
         default:
             break;
     }
