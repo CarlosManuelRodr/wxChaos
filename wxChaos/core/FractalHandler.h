@@ -29,8 +29,8 @@ class FractalHandler
     Fractory* _fractory;
     Cell* _cell;
     DoublePendulum* _doublePendulum;
-    UserDefined* _userDefined;
-    FPUserDefined* _fpUserDefined;
+    UserDefinedEscapeTime* _userDefined;
+    UserDefinedFixedPoint* _fpUserDefined;
     ScriptFractal* _scriptFractal;
 
     Fractal* _target;

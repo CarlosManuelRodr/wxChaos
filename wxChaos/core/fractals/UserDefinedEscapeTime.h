@@ -3,16 +3,15 @@
 #include "../renderers/UserDefinedEscapeTimeRenderer.h"
 
 /*
-* @class UserDefined
+* @class UserDefinedEscapeTime
 * @brief Handles the RenderUserDefined threads.
 */
-class UserDefined : public Fractal
+class UserDefinedEscapeTime : public Fractal
 {
-private:
-    UserDefinedEscapeTimeRenderer* myRender;
+    UserDefinedEscapeTimeRenderer* _myRender;
 public:
-    UserDefined(unsigned int width, unsigned int height);
-    ~UserDefined();
+    UserDefinedEscapeTime(unsigned int width, unsigned int height);
+    ~UserDefinedEscapeTime();
 
     void Render();
     void SetFormula(FormulaOptions formula);        ///< Sets user formula.

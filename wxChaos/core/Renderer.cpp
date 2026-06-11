@@ -1,7 +1,6 @@
 #include "Renderer.h"
 #include "FractalUtils.h"
 
-// RenderFractal
 Renderer::Renderer() : _myOpt()
 {
     _setMap = nullptr;

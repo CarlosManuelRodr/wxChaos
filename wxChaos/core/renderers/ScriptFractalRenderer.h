@@ -3,7 +3,7 @@
 #include "../scripting/AngelscriptRenderEngine.h"
 
 /*
-* @class RenderScriptFractal
+* @class ScriptFractalRenderer
 * @brief Threaded ScriptFractal rendering routines.
 */
 class ScriptFractalRenderer : public Renderer

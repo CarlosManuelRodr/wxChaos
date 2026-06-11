@@ -69,19 +69,19 @@ void ManowarRenderer::Render()
 
     switch (_myOpt.alg)
     {
-    case RenderingAlgorithmType::EscapeTime:
-        EscapeTimeRender(tracePoint);
-        break;
-    case RenderingAlgorithmType::GaussianInt:
-        GaussianIntRender(tracePoint);
-        break;
-    case RenderingAlgorithmType::EscapeAngle:
-        EscapeAngleRender(tracePoint);
-        break;
-    case RenderingAlgorithmType::TriangleInequality:
-        TriangleInequalityRender(tracePoint);
-        break;
-    default:
-        break;
+        case RenderingAlgorithmType::EscapeTime:
+            EscapeTimeRender(tracePoint);
+            break;
+        case RenderingAlgorithmType::GaussianInt:
+            GaussianIntRender(tracePoint);
+            break;
+        case RenderingAlgorithmType::EscapeAngle:
+            EscapeAngleRender(tracePoint);
+            break;
+        case RenderingAlgorithmType::TriangleInequality:
+            TriangleInequalityRender(tracePoint);
+            break;
+        default:
+            break;
     }
 }

@@ -3,17 +3,16 @@
 #include "../renderers/UserDefinedFixedPointRenderer.h"
 
 /*
-* @class FPUserDefined
+* @class UserDefinedFixedPoint
 * @brief Handles the RenderUserDefined threads.
 */
-class FPUserDefined : public Fractal
+class UserDefinedFixedPoint : public Fractal
 {
-private:
-    UserDefinedFixedPointRenderer* myRender;
-    double minStep;
+    UserDefinedFixedPointRenderer* _myRender;
+    double _minStep;
 public:
-    FPUserDefined(unsigned int width, unsigned int height);
-    ~FPUserDefined();
+    UserDefinedFixedPoint(unsigned int width, unsigned int height);
+    ~UserDefinedFixedPoint();
 
     void Render();
     void SetFormula(FormulaOptions formula);        ///< Sets user formula.

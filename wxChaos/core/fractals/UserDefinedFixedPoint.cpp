@@ -1,9 +1,9 @@
 #include <complex>
 #include <mpParser.h>
-#include "FPUserDefined.h"
+#include "UserDefinedFixedPoint.h"
 using namespace std;
 
-FPUserDefined::FPUserDefined(const unsigned int width, const unsigned int height) : Fractal(width, height)
+UserDefinedFixedPoint::UserDefinedFixedPoint(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8713;
@@ -16,37 +16,37 @@ FPUserDefined::FPUserDefined(const unsigned int width, const unsigned int height
 
     _type = FractalType::FixedPointUserDefined;
     _hasOrbit = true;
-    myRender = new UserDefinedFixedPointRenderer[_threadNumber];
-    SetWatchdog<UserDefinedFixedPointRenderer>(myRender, &_watchdog, _threadNumber);
+    _myRender = new UserDefinedFixedPointRenderer[_threadNumber];
+    SetWatchdog<UserDefinedFixedPointRenderer>(_myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
-    minStep = 0.001;
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &_minStep, wxT("0.001"));
+    _minStep = 0.001;
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
 }
-FPUserDefined::~FPUserDefined()
+UserDefinedFixedPoint::~UserDefinedFixedPoint()
 {
     this->StopRender();
-    delete[] myRender;
+    delete[] _myRender;
 }
-void FPUserDefined::Render()
+void UserDefinedFixedPoint::Render()
 {
     for (unsigned int i=0; i<_threadNumber; i++)
-        myRender[i].SetParams(minStep);
+        _myRender[i].SetParams(_minStep);
 
-    this->SetRendererBounds<UserDefinedFixedPointRenderer>(myRender);
+    this->SetRendererBounds<UserDefinedFixedPointRenderer>(_myRender);
 }
-void FPUserDefined::SetFormula(const FormulaOptions formula)
+void UserDefinedFixedPoint::SetFormula(const FormulaOptions formula)
 {
     _userFormula = formula;
     for (unsigned int i=0; i<_threadNumber; i++)
-        myRender[i].SetFormula(formula);
+        _myRender[i].SetFormula(formula);
 }
-void FPUserDefined::DrawOrbit()
+void UserDefinedFixedPoint::DrawOrbit()
 {
     mup::ParserX parser;
     parser.SetExpr(_userFormula.userFormula.utf8_string());
@@ -73,16 +73,16 @@ void FPUserDefined::DrawOrbit()
     }
     catch (mup::ParserError&) {}
 }
-void FPUserDefined::CopyOptFromPanel()
+void UserDefinedFixedPoint::CopyOptFromPanel()
 {
-    minStep = *_panelOpt.GetDoubleElement(0);
+    _minStep = *_panelOpt.GetDoubleElement(0);
 }
-void FPUserDefined::PostRender()
+void UserDefinedFixedPoint::PostRender()
 {
-    if (myRender[0].IsThereError())
+    if (_myRender[0].IsThereError())
     {
-        const wxString out = wxString(wxT("Fatal error in formula.\n")) + myRender[0].GetErrorInfo() + wxT("\n");
-        myRender[0].ClearErrorInfo();
+        const wxString out = wxString(wxT("Fatal error in formula.\n")) + _myRender[0].GetErrorInfo() + wxT("\n");
+        _myRender[0].ClearErrorInfo();
         wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }

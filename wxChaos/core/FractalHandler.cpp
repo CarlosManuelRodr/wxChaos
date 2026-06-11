@@ -148,12 +148,12 @@ void FractalHandler::CreateFractal(const FractalType type, const unsigned int wi
             }
         case FractalType::UserDefined:
             {
-                _target = _userDefined = new UserDefined(width, height);
+                _target = _userDefined = new UserDefinedEscapeTime(width, height);
                 break;
             }
         case FractalType::FixedPointUserDefined:
             {
-                _target = _fpUserDefined = new FPUserDefined(width, height);
+                _target = _fpUserDefined = new UserDefinedFixedPoint(width, height);
                 break;
             }
         default: break;

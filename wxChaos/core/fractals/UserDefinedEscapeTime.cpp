@@ -1,8 +1,8 @@
 #include <mpParser.h>
-#include "UserDefined.h"
+#include "UserDefinedEscapeTime.h"
 using namespace std;
 
-UserDefined::UserDefined(const unsigned int width, const unsigned int height) : Fractal(width, height)
+UserDefinedEscapeTime::UserDefinedEscapeTime(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -2.5;
@@ -15,32 +15,32 @@ UserDefined::UserDefined(const unsigned int width, const unsigned int height) : 
 
     _type = FractalType::UserDefined;
     _hasOrbit = true;
-    myRender = new UserDefinedEscapeTimeRenderer[_threadNumber];
-    SetWatchdog<UserDefinedEscapeTimeRenderer>(myRender, &_watchdog, _threadNumber);
+    _myRender = new UserDefinedEscapeTimeRenderer[_threadNumber];
+    SetWatchdog<UserDefinedEscapeTimeRenderer>(_myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
 }
-UserDefined::~UserDefined()
+UserDefinedEscapeTime::~UserDefinedEscapeTime()
 {
     this->StopRender();
-    delete[] myRender;
+    delete[] _myRender;
 }
-void UserDefined::Render()
+void UserDefinedEscapeTime::Render()
 {
-    this->SetRendererBounds<UserDefinedEscapeTimeRenderer>(myRender);
+    this->SetRendererBounds<UserDefinedEscapeTimeRenderer>(_myRender);
 }
-void UserDefined::SetFormula(FormulaOptions formula)
+void UserDefinedEscapeTime::SetFormula(FormulaOptions formula)
 {
     _userFormula = formula;
     for (unsigned int i = 0; i < _threadNumber; i++)
-        myRender[i].SetFormula(formula);
+        _myRender[i].SetFormula(formula);
 
     if (formula.julia)
         _juliaVariety = true;
 }
-void UserDefined::DrawOrbit()
+void UserDefinedEscapeTime::DrawOrbit()
 {
     bool julia = _userFormula.julia;
     mup::ParserX parser;
@@ -81,12 +81,12 @@ void UserDefined::DrawOrbit()
     }
     catch (mup::ParserError&) {}
 }
-void UserDefined::PostRender()
+void UserDefinedEscapeTime::PostRender()
 {
-    if (myRender[0].IsThereError())
+    if (_myRender[0].IsThereError())
     {
-        const wxString out = wxString(wxT("Fatal error in formula.\n")) + myRender[0].GetErrorInfo() + wxT("\n");
-        myRender[0].ClearErrorInfo();
+        const wxString out = wxString(wxT("Fatal error in formula.\n")) + _myRender[0].GetErrorInfo() + wxT("\n");
+        _myRender[0].ClearErrorInfo();
         wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }
