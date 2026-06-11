@@ -22,6 +22,6 @@ public:
     void SetPath(const std::string& scriptPath);
     wxString GetErrorInfo();
     void ClearErrorInfo();
-    bool IsThereError() const;
+    [[nodiscard]] bool IsThereError() const;
     void SetParams(int _threadIndex);
 };

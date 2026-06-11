@@ -1,21 +1,21 @@
 #include <mpParser.h>
-#include "FPUserDefinedRenderer.h"
+#include "UserDefinedFixedPointRenderer.h"
 
-FPUserDefinedRenderer::FPUserDefinedRenderer()
+UserDefinedFixedPointRenderer::UserDefinedFixedPointRenderer()
 {
     _bailout = 0;
     _julia = false;
     _minStep = 0.001;
 }
 
-void FPUserDefinedRenderer::SetFormula(const FormulaOpt& formula)
+void UserDefinedFixedPointRenderer::SetFormula(const FormulaOptions& formula)
 {
     _bailout = formula.bailout;
     _julia = formula.julia;
     _parserFormula = formula.userFormula;
 }
 
-void FPUserDefinedRenderer::Render()
+void UserDefinedFixedPointRenderer::Render()
 {
     mup::ParserX parser;
     parser.SetExpr(_parserFormula.utf8_string());
@@ -67,22 +67,22 @@ void FPUserDefinedRenderer::Render()
     parser.ClearFun();
 }
 
-void FPUserDefinedRenderer::SetParams(const double minStep)
+void UserDefinedFixedPointRenderer::SetParams(const double minStep)
 {
     _minStep = minStep;
 }
 
-wxString FPUserDefinedRenderer::GetErrorInfo()
+wxString UserDefinedFixedPointRenderer::GetErrorInfo()
 {
     return _errorInfo;
 }
 
-void FPUserDefinedRenderer::ClearErrorInfo()
+void UserDefinedFixedPointRenderer::ClearErrorInfo()
 {
     _errorInfo.clear();
 }
 
-bool FPUserDefinedRenderer::IsThereError() const
+bool UserDefinedFixedPointRenderer::IsThereError() const
 {
     return _errorInfo.size() != 0;
 }

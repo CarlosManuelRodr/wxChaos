@@ -1,6 +1,5 @@
 #include <complex>
 #include "MandelbrotZNRenderer.h"
-#include "FractalUtils.h"
 using namespace std;
 
 MandelbrotZNRenderer::MandelbrotZNRenderer()

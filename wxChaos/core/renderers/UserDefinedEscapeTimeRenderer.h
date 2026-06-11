@@ -1,12 +1,12 @@
 #pragma once
-#include "FormulaOpt.h"
+#include "FormulaOptions.h"
 #include "../Renderer.h"
 
 /*
 * @class RenderUserDefined
 * @brief Threaded UserDefined rendering routines.
 */
-class UserDefinedRenderer : public Renderer
+class UserDefinedEscapeTimeRenderer : public Renderer
 {
     int bailout;
     bool julia;
@@ -14,11 +14,11 @@ class UserDefinedRenderer : public Renderer
     wxString parserFormula;
 
 public:
-    UserDefinedRenderer();
+    UserDefinedEscapeTimeRenderer();
 
-    void SetFormula(const FormulaOpt &formula);
+    void SetFormula(const FormulaOptions &formula);
     void Render() override;
-    wxString GetErrorInfo();
     void ClearErrorInfo();
-    bool IsThereError() const;
+    [[nodiscard]] wxString GetErrorInfo();
+    [[nodiscard]] bool IsThereError() const;
 };

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/UserDefinedRenderer.h"
+#include "../renderers/UserDefinedEscapeTimeRenderer.h"
 
 /*
 * @class UserDefined
@@ -9,13 +9,13 @@
 class UserDefined : public Fractal
 {
 private:
-    UserDefinedRenderer* myRender;
+    UserDefinedEscapeTimeRenderer* myRender;
 public:
     UserDefined(unsigned int width, unsigned int height);
     ~UserDefined();
 
     void Render();
-    void SetFormula(FormulaOpt formula);        ///< Sets user formula.
+    void SetFormula(FormulaOptions formula);        ///< Sets user formula.
     void DrawOrbit();
     void PostRender();
 };

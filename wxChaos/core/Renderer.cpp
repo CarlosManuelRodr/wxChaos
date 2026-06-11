@@ -197,7 +197,8 @@ unsigned int Renderer::EscapeAngleColor(const Point& point) const
         return point.iterations + color3;
     return point.iterations + color4;
 }
-unsigned int Renderer::TriangleInequalityColor(const Point& point) const
+// ReSharper disable once CppMemberFunctionMayBeStatic
+unsigned int Renderer::TriangleInequalityColor(const Point& point) const // NOLINT(*-convert-member-functions-to-static)
 {
     if (point.triangleIterations <= 1)
         return 0;

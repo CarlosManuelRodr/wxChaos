@@ -734,7 +734,7 @@ bool Fractal::IsRendering()
         return false;
     return _renderPool.IsRunning() || _watchdog.ThreadRunning();
 }
-void Fractal::SetFormula(FormulaOpt formula)
+void Fractal::SetFormula(FormulaOptions formula)
 {
     _userFormula = std::move(formula);
 }

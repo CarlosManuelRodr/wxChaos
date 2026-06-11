@@ -2,7 +2,7 @@
 #include <wx/string.h>
 #include "types/FormulaType.h"
 
-struct FormulaOpt
+struct FormulaOptions
 {
     wxString userFormula;
     FormulaType type;

@@ -167,7 +167,7 @@ void FractalHandler::CreateScriptFractal(const unsigned int width, const unsigne
 {
     _target = _scriptFractal = new ScriptFractal(width, height, scriptPath);
 }
-void FractalHandler::SetFormula(FormulaOpt formula) const
+void FractalHandler::SetFormula(FormulaOptions formula) const
 {
     if (_type == FractalType::UserDefined)
     {

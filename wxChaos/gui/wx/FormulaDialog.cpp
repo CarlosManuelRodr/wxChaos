@@ -165,7 +165,7 @@ void FormulaDialog::OnAccept(wxCommandEvent&)
 void FormulaDialog::OnApply(wxCommandEvent&)
 {
     // Creates fractal with the formula.
-    FormulaOpt options;
+    FormulaOptions options;
     options.userFormula = _formulaCtrl->GetValue();
     options.bailout = TextUtils::ToInt(_bailCtrl->GetValue());
     options.julia = _juliaCheck->GetValue();

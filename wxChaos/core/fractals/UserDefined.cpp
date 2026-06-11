@@ -15,8 +15,8 @@ UserDefined::UserDefined(const unsigned int width, const unsigned int height) : 
 
     _type = FractalType::UserDefined;
     _hasOrbit = true;
-    myRender = new UserDefinedRenderer[_threadNumber];
-    SetWatchdog<UserDefinedRenderer>(myRender, &_watchdog, _threadNumber);
+    myRender = new UserDefinedEscapeTimeRenderer[_threadNumber];
+    SetWatchdog<UserDefinedEscapeTimeRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
@@ -29,9 +29,9 @@ UserDefined::~UserDefined()
 }
 void UserDefined::Render()
 {
-    this->SetRendererBounds<UserDefinedRenderer>(myRender);
+    this->SetRendererBounds<UserDefinedEscapeTimeRenderer>(myRender);
 }
-void UserDefined::SetFormula(FormulaOpt formula)
+void UserDefined::SetFormula(FormulaOptions formula)
 {
     _userFormula = formula;
     for (unsigned int i = 0; i < _threadNumber; i++)

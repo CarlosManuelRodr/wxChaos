@@ -1,6 +1,4 @@
 #pragma once
-#ifndef RENDER_FRACTAL_H
-#define RENDER_FRACTAL_H
 
 #include <limits>
 #include "types/FractalType.h"
@@ -216,5 +214,3 @@ void Renderer::TriangleInequalityRender(TracePoint tracePoint)
     };
     RenderFromPoint(tracePoint, &Renderer::TriangleInequalityColor, measure);
 }
-
-#endif

@@ -1,12 +1,12 @@
 #pragma once
-#include "FormulaOpt.h"
+#include "FormulaOptions.h"
 #include "../Renderer.h"
 
 /*
 * @class RenderFPUserDefined
 * @brief Threaded FPUserDefined rendering routines.
 */
-class FPUserDefinedRenderer : public Renderer
+class UserDefinedFixedPointRenderer : public Renderer
 {
     int _bailout;
     bool _julia;
@@ -15,12 +15,12 @@ class FPUserDefinedRenderer : public Renderer
     wxString _parserFormula;
 
 public:
-    FPUserDefinedRenderer();
+    UserDefinedFixedPointRenderer();
 
-    void SetFormula(const FormulaOpt& formula);
+    void SetFormula(const FormulaOptions& formula);
     void Render() override;
     void SetParams(double minStep);
-    wxString GetErrorInfo();
     void ClearErrorInfo();
-    bool IsThereError() const;
+    [[nodiscard]] wxString GetErrorInfo();
+    [[nodiscard]] bool IsThereError() const;
 };

@@ -1,6 +1,4 @@
-#ifndef WXCHAOS_SLN_THREAD_WATCHDOG_H
-#define WXCHAOS_SLN_THREAD_WATCHDOG_H
-
+#pragma once
 #include <SFML/System.hpp>
 #include "Renderer.h"
 
@@ -174,5 +172,3 @@ template<class MT> MT* ThreadWatchdog<MT>::GetThread(unsigned int nThread)
 {
     return nThread < _threadCounter ? _threadList[nThread] : nullptr;
 }
-
-#endif

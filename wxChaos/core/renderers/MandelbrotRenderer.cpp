@@ -1,5 +1,4 @@
 // ReSharper disable CppDFAConstantConditions
-// ReSharper disable CppTooWideScope
 #include <complex>
 #include <random>
 #include <vector>

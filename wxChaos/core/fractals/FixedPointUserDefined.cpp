@@ -16,8 +16,8 @@ FPUserDefined::FPUserDefined(const unsigned int width, const unsigned int height
 
     _type = FractalType::FixedPointUserDefined;
     _hasOrbit = true;
-    myRender = new FPUserDefinedRenderer[_threadNumber];
-    SetWatchdog<FPUserDefinedRenderer>(myRender, &_watchdog, _threadNumber);
+    myRender = new UserDefinedFixedPointRenderer[_threadNumber];
+    SetWatchdog<UserDefinedFixedPointRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
@@ -38,9 +38,9 @@ void FPUserDefined::Render()
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(minStep);
 
-    this->SetRendererBounds<FPUserDefinedRenderer>(myRender);
+    this->SetRendererBounds<UserDefinedFixedPointRenderer>(myRender);
 }
-void FPUserDefined::SetFormula(const FormulaOpt formula)
+void FPUserDefined::SetFormula(const FormulaOptions formula)
 {
     _userFormula = formula;
     for (unsigned int i=0; i<_threadNumber; i++)

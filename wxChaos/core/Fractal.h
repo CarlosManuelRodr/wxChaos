@@ -17,7 +17,7 @@
 #include "geometry/Rect.h"
 #include "ColorPalettes.h"
 #include "Options.h"
-#include "FormulaOpt.h"
+#include "FormulaOptions.h"
 #include "Renderer.h"
 #include "ThreadWatchdog.h"
 #include "rendering/RenderJob.h"
@@ -51,7 +51,7 @@ protected:
     double _xFactor;                 ///< Conversion factor numberX to pixelX.
     double _yFactor;                 ///< Conversion factor numberY to pixelY.
     unsigned _maxIter;               ///< Maximum number of iterations.
-    FormulaOpt _userFormula;         ///< Formula specified by the user.
+    FormulaOptions _userFormula;         ///< Formula specified by the user.
 
     // System.
     unsigned int _threadNumber;      ///< Number of threads. By default, is the same as the number of cores in the system.
@@ -291,7 +291,7 @@ public:
     ///@brief Verifies watchdog status.
     ///@return true if there is an active thread. false if not.
     virtual bool IsRendering();
-    virtual void SetFormula(FormulaOpt formula);                   ///< Sets user formula.
+    virtual void SetFormula(FormulaOptions formula);                   ///< Sets user formula.
     virtual void CopyOptFromPanel();                               ///< Copy options from the option panel.
 
     // Communication methods.

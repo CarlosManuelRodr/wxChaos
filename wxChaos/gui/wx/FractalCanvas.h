@@ -50,7 +50,7 @@ class FractalCanvas : public wxSFMLCanvas
     sf::Sprite _outMouse;
     sf::Sprite _outHelp;
 
-    FormulaOpt _userFormula;
+    FormulaOptions _userFormula;
     ScriptData _scriptData;
 
     sf::Event _event{};
@@ -153,10 +153,10 @@ public:
 
     ///@brief Sets the user formula.
     ///@param userFormula Formula specified by the user.
-    void SetUserFormula(const FormulaOpt &userFormula);
+    void SetUserFormula(const FormulaOptions &userFormula);
 
     ///@return Formula in the user-defined fractal.
-    FormulaOpt GetFormula();
+    FormulaOptions GetFormula();
 
     ///// Event processor /////
 

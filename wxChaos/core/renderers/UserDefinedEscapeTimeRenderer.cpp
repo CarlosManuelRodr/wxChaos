@@ -1,18 +1,18 @@
 #include <mpParser.h>
-#include "UserDefinedRenderer.h"
+#include "UserDefinedEscapeTimeRenderer.h"
 
-UserDefinedRenderer::UserDefinedRenderer()
+UserDefinedEscapeTimeRenderer::UserDefinedEscapeTimeRenderer()
 {
     bailout = 1;
     julia = false;
 }
-void UserDefinedRenderer::SetFormula(const FormulaOpt &formula)
+void UserDefinedEscapeTimeRenderer::SetFormula(const FormulaOptions &formula)
 {
     bailout = formula.bailout;
     julia = formula.julia;
     parserFormula = formula.userFormula;
 }
-void UserDefinedRenderer::Render()
+void UserDefinedEscapeTimeRenderer::Render()
 {
     mup::ParserX parser;
     parser.SetExpr(parserFormula.utf8_string());
@@ -85,15 +85,15 @@ void UserDefinedRenderer::Render()
     parser.ClearVar();
     parser.ClearFun();
 }
-wxString UserDefinedRenderer::GetErrorInfo()
+wxString UserDefinedEscapeTimeRenderer::GetErrorInfo()
 {
     return errorInfo;
 }
-void UserDefinedRenderer::ClearErrorInfo()
+void UserDefinedEscapeTimeRenderer::ClearErrorInfo()
 {
     errorInfo.clear();
 }
-bool UserDefinedRenderer::IsThereError() const
+bool UserDefinedEscapeTimeRenderer::IsThereError() const
 {
     return errorInfo.size() != 0;
 }

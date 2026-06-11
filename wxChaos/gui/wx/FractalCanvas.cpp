@@ -457,11 +457,11 @@ bool FractalCanvas::IsSliderMode() const
 {
     return _sliderMode;
 }
-void FractalCanvas::SetUserFormula(const FormulaOpt &userFormula)
+void FractalCanvas::SetUserFormula(const FormulaOptions &userFormula)
 {
     _userFormula = userFormula;
 }
-FormulaOpt FractalCanvas::GetFormula()
+FormulaOptions FractalCanvas::GetFormula()
 {
     return _userFormula;
 }
