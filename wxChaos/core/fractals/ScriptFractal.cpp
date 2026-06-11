@@ -4,8 +4,8 @@
 #include "../../scripting/AngelscriptBindings.h"
 using namespace std;
 
-ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData, const int renderThreads)
-                             : Fractal(width, height)
+ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData,
+                             const int renderThreads) : Fractal(width, height)
 {
     if (renderThreads != -1)
         _threadNumber = static_cast<unsigned>(renderThreads);
@@ -35,13 +35,14 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     }
     SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
 }
-ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath) : Fractal(width, height)
+ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath)
+                             : Fractal(width, height)
 {
     _path = scriptPath;
     AngelscriptConfigurationEngine configEngine;
     if (configEngine.CompileFromPath(_path) && configEngine.Execute())
     {
-        ScriptData params = configEngine.GetScriptData();
+        const ScriptData params = configEngine.GetScriptData();
         _minX = params.minX;
         _maxX = params.maxX;
         _minY = params.minY;
@@ -75,7 +76,7 @@ void ScriptFractal::PostRender()
         if (_myRender[i].IsThereError())
         {
             errorLog += wxT("Thread ");
-            errorLog += TextUtils::ToWxString((int)i);
+            errorLog += TextUtils::ToWxString(static_cast<int>(i));
             errorLog += wxT(" says:\n");
             errorLog += _myRender[i].GetErrorInfo();
             errorLog += wxT("\n");
@@ -84,7 +85,7 @@ void ScriptFractal::PostRender()
     }
     if (errorLog.size() != 0)
     {
-        wxString out = wxString(wxT("Fatal error in script.\n")) + errorLog;
+        const wxString out = wxString(wxT("Fatal error in script.\n")) + errorLog;
         wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }

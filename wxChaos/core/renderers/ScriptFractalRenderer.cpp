@@ -3,92 +3,92 @@ using namespace std;
 
 ScriptFractalRenderer::ScriptFractalRenderer()
 {
-    renderEngine = nullptr;
-    threadIndex = 0;
-    hasEnded = true;
+    _renderEngine = nullptr;
+    _threadIndex = 0;
+    _hasEnded = true;
 }
 ScriptFractalRenderer::~ScriptFractalRenderer() = default;
 
 void ScriptFractalRenderer::SetPath(const string& scriptPath)
 {
-    path = scriptPath;
+    _path = scriptPath;
 }
 void ScriptFractalRenderer::Render()
 {
-    hasEnded = false;
+    _hasEnded = false;
 
     // Creates script engine.
-    renderEngine = new AngelscriptRenderEngine();
-    if (renderEngine->GetStatus() == EngineStatus::Error)
+    _renderEngine = new AngelscriptRenderEngine();
+    if (_renderEngine->GetStatus() == EngineStatus::Error)
     {
-        errorInfo = renderEngine->GetErrorInfo();
+        _errorInfo = _renderEngine->GetErrorInfo();
         return;
     }
 
     // Register global variables
     bool isEngineOk = true;
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double minX", &_minX);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double maxX", &_maxX);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double minY", &_minY);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double maxY", &_maxY);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double xFactor", &_xFactor);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double yFactor", &_yFactor);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double kReal", &_kReal);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double kImaginary", &_kImaginary);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("int ho", &_heightOrigin);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("int hf", &_heightFinal);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("int wo", &_widthOrigin);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("int wf", &_widthFinal);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double maxIter", &_maxIter);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("int threadIndex", &threadIndex);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("int screenWidth", &_myOpt.screenWidth);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("int screenHeight", &_myOpt.screenHeight);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("int paletteSize", &_myOpt.paletteSize);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double minX", &_minX);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double maxX", &_maxX);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double minY", &_minY);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double maxY", &_maxY);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double xFactor", &_xFactor);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double yFactor", &_yFactor);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double kReal", &_kReal);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double kImaginary", &_kImaginary);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("int ho", &_heightOrigin);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("int hf", &_heightFinal);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("int wo", &_widthOrigin);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("int wf", &_widthFinal);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("double maxIter", &_maxIter);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("uint threadIndex", &_threadIndex);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("uint screenWidth", &_myOpt.screenWidth);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("uint screenHeight", &_myOpt.screenHeight);
+    isEngineOk &= _renderEngine->RegisterGlobalVariable("uint paletteSize", &_myOpt.paletteSize);
 
     if (!isEngineOk)
     {
-        errorInfo = renderEngine->GetErrorInfo();
+        _errorInfo = _renderEngine->GetErrorInfo();
         return;
     }
 
     // Compile and execute the script code.
-    if (!renderEngine->CompileFromPath(path))
+    if (!_renderEngine->CompileFromPath(_path))
     {
-        errorInfo = renderEngine->GetErrorInfo();
+        _errorInfo = _renderEngine->GetErrorInfo();
         return;
     }
 
-    if (!renderEngine->Execute())
+    if (!_renderEngine->Execute())
     {
-        errorInfo = renderEngine->GetErrorInfo();
+        _errorInfo = _renderEngine->GetErrorInfo();
         return;
     }
 
-    hasEnded = true;
+    _hasEnded = true;
 
-    delete renderEngine;
-    renderEngine = nullptr;
+    delete _renderEngine;
+    _renderEngine = nullptr;
 }
 wxString ScriptFractalRenderer::GetErrorInfo()
 {
-    return errorInfo;
+    return _errorInfo;
 }
 void ScriptFractalRenderer::ClearErrorInfo()
 {
-    errorInfo.clear();
+    _errorInfo.clear();
 }
 bool ScriptFractalRenderer::IsThereError() const
 {
-    return errorInfo.size() != 0;
+    return _errorInfo.size() != 0;
 }
 
 void ScriptFractalRenderer::PreTerminate()
 {
-    if (!hasEnded)
-        renderEngine->Abort();
+    if (!_hasEnded)
+        _renderEngine->Abort();
 }
-void ScriptFractalRenderer::SetParams(int _threadIndex)
+void ScriptFractalRenderer::SetParams(const unsigned int threadIndex)
 {
-    threadIndex = _threadIndex;
+    _threadIndex = threadIndex;
 }
 

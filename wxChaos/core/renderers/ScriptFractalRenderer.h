@@ -8,11 +8,11 @@
 */
 class ScriptFractalRenderer : public Renderer
 {
-    AngelscriptRenderEngine* renderEngine;
-    std::string path;
-    wxString errorInfo;
-    int threadIndex;
-    bool hasEnded;
+    AngelscriptRenderEngine* _renderEngine;
+    std::string _path;
+    wxString _errorInfo;
+    unsigned int _threadIndex;
+    bool _hasEnded;
 public:
     ScriptFractalRenderer();
     ~ScriptFractalRenderer() override;
@@ -23,5 +23,5 @@ public:
     wxString GetErrorInfo();
     void ClearErrorInfo();
     [[nodiscard]] bool IsThereError() const;
-    void SetParams(int _threadIndex);
+    void SetParams(unsigned int threadIndex);
 };

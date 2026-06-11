@@ -2,7 +2,7 @@
 #include "Cell.h"
 using namespace std;
 
-Cell::Cell(unsigned int width, unsigned int height) : Fractal(width, height)
+Cell::Cell(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     _minX = -1.3;
     _maxX = 1.3;

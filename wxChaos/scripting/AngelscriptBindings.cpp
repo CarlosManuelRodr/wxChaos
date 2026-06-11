@@ -1,5 +1,6 @@
 // ReSharper disable CppParameterMayBeConst
 // ReSharper disable CppParameterMayBeConstPtrOrRef
+// ReSharper disable CppDFAUnusedValue
 #include <cassert>
 #include <limits>
 #include "AngelscriptBindings.h"
