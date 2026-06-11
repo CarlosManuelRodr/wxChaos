@@ -10,17 +10,22 @@
 * stop them, reset them, and relaunch them.
 * @tparam MT Must be a RenderFractal inherited class.
 */
-template<class MT> class ThreadWatchdog : public sf::Thread
+template<class MT> class ThreadWatchdog
 {
     MT** _threadList;               ///< An array with pointers to the execution threads.
-    Thread** _sfmlThreads;          ///< An array to hold the actual sf::Thread objects.
+    sf::Thread** _sfmlThreads;      ///< An array to hold the actual sf::Thread objects.
+    sf::Thread _watchdogThread;     ///< Thread that waits for all render threads to finish.
     bool _threadRunning;            ///< State of the threads.
     unsigned int _threadCounter;    ///< Number of threads to watch over.
+
+    void run();
 public:
     ThreadWatchdog();
     ~ThreadWatchdog();
 
-    virtual void run();
+    void launch();
+    void wait();
+    void terminate();
 
     ///@brief Changes the number of execution threads. For this it will have to delete the previous ones.
     ///@param threadNumber Number of new threads.
@@ -41,7 +46,7 @@ public:
 
     ///@brief Informs if there is a thread running.
     ///@return true if there is a thread running. false if not.
-    bool ThreadRunning() const;
+    [[nodiscard]] bool ThreadRunning() const;
 
     ///@brief Ask the RenderFractal the render progress.
     ///@return A integer from 0 to 100 that is the progress.
@@ -66,7 +71,7 @@ template<class MT> void SetWatchdog(MT* myRender, ThreadWatchdog<Renderer>* watc
         watchdog->SetThread(&myRender[i]);
 }
 
-template<class MT> ThreadWatchdog<MT>::ThreadWatchdog() : Thread(&ThreadWatchdog::run, this)
+template<class MT> ThreadWatchdog<MT>::ThreadWatchdog() : _watchdogThread(&ThreadWatchdog::run, this)
 {
     _threadCounter = 0;
     _threadRunning = false;
@@ -95,13 +100,25 @@ template<class MT> void ThreadWatchdog<MT>::SetThreadNumber(const unsigned int t
     _threadRunning = false;
 
     _threadList = new MT* [threadNumber];
-    _sfmlThreads = new Thread* [threadNumber]; // Allocate for sf::Thread pointers
+    _sfmlThreads = new sf::Thread* [threadNumber]; // Allocate for sf::Thread pointers
     for (int i = 0; i < threadNumber; ++i)
         _sfmlThreads[i] = nullptr;
 }
 template<class MT> void ThreadWatchdog<MT>::SetThread(MT* threadAddress)
 {
     _threadList[_threadCounter++] = threadAddress;
+}
+template<class MT> void ThreadWatchdog<MT>::launch()
+{
+    _watchdogThread.launch();
+}
+template<class MT> void ThreadWatchdog<MT>::wait()
+{
+    _watchdogThread.wait();
+}
+template<class MT> void ThreadWatchdog<MT>::terminate()
+{
+    _watchdogThread.terminate();
 }
 template<class MT> void ThreadWatchdog<MT>::run()
 {
@@ -136,7 +153,7 @@ template<class MT> void ThreadWatchdog<MT>::LaunchThreads()
     for (unsigned int i = 0; i < _threadCounter; i++)
     {
         // Create a new thread that will call the run() method of our RenderFractal object
-        _sfmlThreads[i] = new Thread(&Renderer::run, _threadList[i]);
+        _sfmlThreads[i] = new sf::Thread(&Renderer::run, _threadList[i]);
         _sfmlThreads[i]->launch();
     }
 }
