@@ -12,10 +12,12 @@ Tricorn::Tricorn(const unsigned int width, const unsigned int height) : Fractal(
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
+    _type = FractalType::Tricorn;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
-    _type = FractalType::Tricorn;
+    _smoothRender = true;
+
     myRender = new TricornRenderer[_threadNumber];
     SetWatchdog<TricornRenderer>(myRender, &_watchdog, _threadNumber);
 

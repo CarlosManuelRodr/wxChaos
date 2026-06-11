@@ -20,7 +20,7 @@ JuliaZN::JuliaZN(const unsigned int width, const unsigned int height) : Fractal(
     _juliaVariety = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
-    _smoothRender = false;
+    _smoothRender = true;
     myRender = new JuliaZNRenderer[_threadNumber];
     SetWatchdog<JuliaZNRenderer>(myRender, &_watchdog, _threadNumber);
 

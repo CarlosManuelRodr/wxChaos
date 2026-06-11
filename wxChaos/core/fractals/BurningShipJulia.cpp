@@ -12,6 +12,7 @@ BurningShipJulia::BurningShipJulia(unsigned int width, unsigned int height) : Fr
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
+    _smoothRender = true;
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);

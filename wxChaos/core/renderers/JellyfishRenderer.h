@@ -2,16 +2,16 @@
 #include "../Renderer.h"
 
 /*
-* @class RenderMedusa
-* @brief Threaded Medusa rendering routines.
+* @class JellyfishRenderer
+* @brief Threaded Jellyfish rendering routines.
 */
-class MedusaRenderer : public Renderer
+class JellyfishRenderer : public Renderer
 {
     template<class MeasurePoint>
     Point TracePoint(double pixelRe, double pixelIm, MeasurePoint measure) const;
 
 public:
-    MedusaRenderer();
+    JellyfishRenderer();
 
     void Render() override;
 };

@@ -27,7 +27,7 @@ Renderer::Point CellRenderer::TracePoint(const double pixelRe, const double pixe
     for (unsigned n = 0; n < _maxIter; n++)
     {
         point.zNorm = norm(z);
-        if (!escaped && point.zNorm > squaredBailout)
+        if (n > 0 && !escaped && point.zNorm > squaredBailout)
         {
             escaped = true;
             point.insideSet = false;

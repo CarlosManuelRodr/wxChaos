@@ -21,6 +21,7 @@ Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fracta
 
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
+    _smoothRender = true;
 
     myRender = new SinoidalRenderer[_threadNumber];
     SetWatchdog<SinoidalRenderer>(myRender, &_watchdog, _threadNumber);

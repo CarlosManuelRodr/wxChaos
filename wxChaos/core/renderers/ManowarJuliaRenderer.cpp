@@ -20,7 +20,7 @@ Renderer::Point ManowarJuliaRenderer::TracePoint(const double pixelRe, const dou
     for (unsigned n = 0; n < _maxIter; n++)
     {
         point.zNorm = zRe * zRe + zIm * zIm;
-        if (!escaped && point.zNorm > 4)
+        if (n > 0 && !escaped && point.zNorm > 4)
         {
             const double zNorm = point.zNorm;
             escaped = true;

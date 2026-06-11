@@ -16,6 +16,8 @@ ManowarJulia::ManowarJulia(const unsigned int width, const unsigned int height) 
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
+    _smoothRender = true;
+
     myRender = new ManowarJuliaRenderer[_threadNumber];
     SetWatchdog<ManowarJuliaRenderer>(myRender, &_watchdog, _threadNumber);
 

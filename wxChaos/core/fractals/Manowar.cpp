@@ -17,6 +17,8 @@ Manowar::Manowar(const unsigned int width, const unsigned int height) : Fractal(
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
+    _smoothRender = true;
+
     myRender = new ManowarRenderer[_threadNumber];
     SetWatchdog<ManowarRenderer>(myRender, &_watchdog, _threadNumber);
 

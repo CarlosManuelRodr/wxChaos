@@ -24,7 +24,7 @@ Renderer::Point FractoryRenderer::TracePoint(const double pixelRe, const double 
     for (unsigned n = 0; n < _maxIter; n++)
     {
         point.zNorm = norm(z);
-        if (!escaped && point.zNorm > 4)
+        if (n > 0 && !escaped && point.zNorm > 4)
         {
             escaped = true;
             point.insideSet = false;

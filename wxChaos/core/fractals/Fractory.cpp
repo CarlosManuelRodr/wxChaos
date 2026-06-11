@@ -12,10 +12,12 @@ Fractory::Fractory(const unsigned int width, const unsigned int height) : Fracta
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
+    _type = FractalType::Fractory;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
-    _type = FractalType::Fractory;
+    _smoothRender = true;
+
     myRender = new FractoryRenderer[_threadNumber];
     SetWatchdog<FractoryRenderer>(myRender, &_watchdog, _threadNumber);
 

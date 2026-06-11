@@ -1,8 +1,8 @@
 #include <complex>
-#include "Medusa.h"
+#include "Jellyfish.h"
 using namespace std;
 
-Medusa::Medusa(const unsigned int width, const unsigned int height) : Fractal(width, height)
+Jellyfish::Jellyfish(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     _minX = -1.1342;
     _maxX = 1.7251;
@@ -19,9 +19,10 @@ Medusa::Medusa(const unsigned int width, const unsigned int height) : Fractal(wi
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
+    _smoothRender = true;
 
-    myRender = new MedusaRenderer[_threadNumber];
-    SetWatchdog<MedusaRenderer>(myRender, &_watchdog, _threadNumber);
+    myRender = new JellyfishRenderer[_threadNumber];
+    SetWatchdog<JellyfishRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
@@ -30,16 +31,16 @@ Medusa::Medusa(const unsigned int width, const unsigned int height) : Fractal(wi
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
-Medusa::~Medusa()
+Jellyfish::~Jellyfish()
 {
     this->StopRender();
     delete[] myRender;
 }
-void Medusa::Render()
+void Jellyfish::Render()
 {
-    this->SetRendererBounds<MedusaRenderer>(myRender);
+    this->SetRendererBounds<JellyfishRenderer>(myRender);
 }
-void Medusa::DrawOrbit()
+void Jellyfish::DrawOrbit()
 {
     complex<double> z(_orbitX, _orbitY);
     complex<double> k(_kReal, _kImaginary);

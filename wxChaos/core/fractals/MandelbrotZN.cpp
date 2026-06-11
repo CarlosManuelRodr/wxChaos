@@ -18,7 +18,7 @@ MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) 
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
-    _smoothRender = false;
+    _smoothRender = true;
     myRender = new MandelbrotZNRenderer[_threadNumber];
     SetWatchdog<MandelbrotZNRenderer>(myRender, &_watchdog, _threadNumber);
 

@@ -1,11 +1,11 @@
 #include <complex>
-#include "MedusaRenderer.h"
+#include "JellyfishRenderer.h"
 using namespace std;
 
-MedusaRenderer::MedusaRenderer() = default;
+JellyfishRenderer::JellyfishRenderer() = default;
 
 template<class MeasurePoint>
-Renderer::Point MedusaRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
+Renderer::Point JellyfishRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = pixelRe;
@@ -19,7 +19,7 @@ Renderer::Point MedusaRenderer::TracePoint(const double pixelRe, const double pi
     for (unsigned n = 0; n < _maxIter; n++)
     {
         point.zNorm = z.real() * z.real() + z.imag() * z.imag();
-        if (!escaped && point.zNorm > 4)
+        if (n > 0 && !escaped && point.zNorm > 4)
         {
             const double zNorm = point.zNorm;
             escaped = true;
@@ -53,7 +53,7 @@ Renderer::Point MedusaRenderer::TracePoint(const double pixelRe, const double pi
     return point;
 }
 
-void MedusaRenderer::Render()
+void JellyfishRenderer::Render()
 {
     const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
     {

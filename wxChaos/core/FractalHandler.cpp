@@ -78,7 +78,7 @@ void FractalHandler::CreateFractal(const FractalType type, const unsigned int wi
             }
         case FractalType::Medusa:
             {
-                _target = _medusa = new Medusa(width, height);
+                _target = _medusa = new Jellyfish(width, height);
                 break;
             }
         case FractalType::Manowar:

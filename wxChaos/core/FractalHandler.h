@@ -15,7 +15,7 @@ class FractalHandler
     Newton* _newton;
     Sinoidal* _sinoidal;
     Magnet* _magnet;
-    Medusa* _medusa;
+    Jellyfish* _medusa;
     Manowar* _manowar;
     ManowarJulia* _manowarJulia;
     SierpinskyTriangle* _sierpinskyTriangle;

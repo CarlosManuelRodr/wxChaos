@@ -14,10 +14,12 @@ BurningShip::BurningShip(unsigned int width, unsigned int height) : Fractal(widt
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _algorithm = RenderingAlgorithmType::EscapeTime;
+    _type = FractalType::BurningShip;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
-    _type = FractalType::BurningShip;
+    _smoothRender = true;
+
     myRender = new BurningShipRenderer[_threadNumber];
     SetWatchdog<BurningShipRenderer>(myRender, &_watchdog, _threadNumber);
 
