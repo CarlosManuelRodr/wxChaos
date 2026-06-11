@@ -1,94 +1,68 @@
 // ReSharper disable CppTooWideScope
 #include <complex>
 #include "MagnetRenderer.h"
+
 using namespace std;
 
 MagnetRenderer::MagnetRenderer() = default;
 
-void MagnetRenderer::EscapeTimeRender()
+template<class MeasurePoint>
+Renderer::Point MagnetRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
 {
-    // Creates fractal.
-    unsigned n;
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    Point point;
+    point.startRe = pixelRe;
+    point.startIm = pixelIm;
+    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+
+    const complex<double> c(pixelRe, pixelIm);
+    complex<double> z(0.0, 0.0);
+
+    for (unsigned n = 0; n < _maxIter; n++)
     {
-        double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        point.zRe = z.real();
+        point.zIm = z.imag();
+        point.zNorm = norm(z);
+
+        if (point.zNorm > _maxIter)
         {
-            complex<double> z = complex<double>(0, 0);
-            complex<double> c = complex<double>(_minX + _x * _xFactor, c_im);
-
-            bool insideSet = true;
-            for (n=0; n<_maxIter; n++)
-            {
-
-                if (z.real()*z.real() + z.imag()*z.imag() > _maxIter)
-                {
-                    insideSet = false;
-                    break;
-                }
-                z = pow((pow(z, 2) + c - complex<double>(1.0, 0.0))/(complex<double>(2.0, 0.0)*z + c - complex<double>(2.0, 0.0)), 2.0);
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-            _colorMap[_x][_y] = n;
+            point.insideSet = false;
+            point.iterations = n;
+            point.escapedZRe = point.zRe;
+            point.escapedZIm = point.zIm;
+            point.escapedNorm = point.zNorm;
+            measure(point, PointTraceEvent::Escaped, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, true);
+            break;
         }
+
+        z = pow((pow(z, 2) + c - complex<double>(1.0, 0.0)) /
+                (complex<double>(2.0, 0.0) * z + c - complex<double>(2.0, 0.0)), 2.0);
+
+        point.zRe = z.real();
+        point.zIm = z.imag();
+        point.zNorm = norm(z);
+        point.iterations = n + 1;
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, true);
     }
-}
 
-void MagnetRenderer::EscapeAngleRender()
-{
-    // Creates fractal.
-    unsigned n;
-    constexpr int color1 = 1;
-    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
-    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
-    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            complex<double> z = complex<double>(0, 0);
-            complex<double> c = complex<double>(_minX + _x * _xFactor, c_im);
-            bool insideSet = true;
-
-            for (n=0; n<_maxIter; n++)
-            {
-                if (z.real()*z.real() + z.imag()*z.imag() > _maxIter)
-                {
-                    insideSet = false;
-                    break;
-                }
-                z = pow((pow(z, 2) + c - complex<double>(1.0, 0.0))/(complex<double>(2.0, 0.0)*z + c - complex<double>(2.0, 0.0)), 2.0);
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            if (z.real() > 0 && z.imag() > 0)
-                _colorMap[_x][_y] = n + color1;
-            else if (z.real() <= 0 && z.imag() > 0)
-                _colorMap[_x][_y] = n + color2;
-            else if (z.real() <= 0 && z.imag() < 0)
-                _colorMap[_x][_y] = n + color3;
-            else
-                _colorMap[_x][_y] = n + color4;
-        }
-    }
+    return point;
 }
 
 void MagnetRenderer::Render()
 {
+    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    {
+        return TracePoint(pixelRe, pixelIm, measure);
+    };
+
     switch (_myOpt.alg)
     {
         case RenderingAlgorithmType::EscapeTime:
-            EscapeTimeRender();
+            EscapeTimeRender(tracePoint);
             break;
         case RenderingAlgorithmType::EscapeAngle:
-            EscapeAngleRender();
+            EscapeAngleRender(tracePoint);
             break;
         default:
             break;
     }
 }
-

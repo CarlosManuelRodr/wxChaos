@@ -8,8 +8,9 @@
 class CellRenderer : public Renderer
 {
     double _bailout;
-    void EscapeTimeRender();
-    void GaussianIntRender();
+
+    template<class MeasurePoint>
+    Point TracePoint(double pixelRe, double pixelIm, MeasurePoint measure) const;
 
 public:
     CellRenderer();

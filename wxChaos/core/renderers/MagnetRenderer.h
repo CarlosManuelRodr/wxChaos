@@ -7,8 +7,8 @@
 */
 class MagnetRenderer : public Renderer
 {
-    void EscapeTimeRender();
-    void EscapeAngleRender();
+    template<class MeasurePoint>
+    Point TracePoint(double pixelRe, double pixelIm, MeasurePoint measure) const;
 
 public:
     MagnetRenderer();

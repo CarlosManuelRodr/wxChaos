@@ -1,154 +1,81 @@
 // ReSharper disable CppTooWideScope
+#include <cmath>
 #include "BurningShipJuliaRenderer.h"
-#include "FractalUtils.h"
 
 BurningShipJuliaRenderer::BurningShipJuliaRenderer() = default;
 
-void BurningShipJuliaRenderer::EscapeTimeRender()
+template<class MeasurePoint>
+Renderer::Point BurningShipJuliaRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
 {
-    const double c_im = _kImaginary;
-    const double c_re = _kReal;
-    unsigned n;
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    Point point;
+    point.startRe = pixelRe;
+    point.startIm = pixelIm;
+    point.zRe = pixelRe;
+    point.zIm = pixelIm;
+    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+
+    double zRe = pixelRe;
+    double zIm = pixelIm;
+    bool escaped = false;
+
+    for (unsigned n = 0; n < _maxIter; n++)
     {
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        point.zNorm = zRe * zRe + zIm * zIm;
+        if (!escaped && point.zNorm > 4)
         {
-            double Z_re = _maxY - _y * _yFactor;
-            double Z_im = _minX + _x * _xFactor;
-            bool insideSet = true;
-
-            for (n=0; n<_maxIter; n++)
-            {
-                double Z_re2 = Z_re * Z_re;
-                double Z_im2 = Z_im * Z_im;
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    insideSet = false;
-                    break;
-                }
-                Z_im = abs(Z_im);
-                Z_re = abs(Z_re);
-                Z_im = 2*Z_re*Z_im + c_im;
-                Z_re = Z_re2 - Z_im2 + c_re;
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            _colorMap[_x][_y] = n;
+            escaped = true;
+            point.insideSet = false;
+            point.iterations = n;
+            point.escapedZRe = zRe;
+            point.escapedZIm = zIm;
+            point.escapedNorm = point.zNorm;
+            measure(point, PointTraceEvent::Escaped, n, zRe, zIm, point.zNorm, 0.0, 0.0, true);
         }
+
+        if (escaped && point.zNorm > 16 && !point.measureGaussianAfterEscape)
+            break;
+
+        const double zRe2 = zRe * zRe;
+        const double zIm2 = zIm * zIm;
+        const double squaredRe = zRe2 - zIm2;
+        const double squaredIm = 2.0 * std::abs(zRe) * std::abs(zIm);
+
+        zRe = squaredRe + _kReal;
+        zIm = squaredIm + _kImaginary;
+        const double zNorm = zRe * zRe + zIm * zIm;
+        const bool wasInside = !escaped;
+
+        point.zRe = zRe;
+        point.zIm = zIm;
+        point.zNorm = zNorm;
+        measure(point, PointTraceEvent::Iterated, n, zRe, zIm, zNorm, squaredRe, squaredIm, wasInside);
+
+        if (!escaped)
+            point.iterations = n + 1;
     }
 
-}
-
-void BurningShipJuliaRenderer::GaussianIntRender()
-{
-    const double c_im = _kImaginary;
-    const double c_re = _kReal;
-    double distance1;
-    const double log2 = log(2.0);
-    const double loglog2 = log(log2);
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            double Z_re = _minX + _x * _xFactor;
-            double Z_im = _maxY - _y * _yFactor;
-            bool insideSet = true;
-            double distance = 99;
-            double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
-
-            for (unsigned n = 0; n<_maxIter && insideSet; n++)
-            {
-                double Z_re2 = Z_re * Z_re;
-                double Z_im2 = Z_im * Z_im;
-
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    mu = (loglog2 - log(log(sqrt(Z_re2 + Z_im2))))/log2 + 1;
-                    if (n > 0)
-                        insideSet = false;
-                }
-                Z_im = abs(Z_im);
-                Z_re = abs(Z_re);
-                Z_im = 2*Z_re*Z_im + c_im;
-                Z_re = Z_re2 - Z_im2 + c_re;
-
-                distance1 = distance;
-                distance = minVal(distance, gaussianIntDist(Z_re, Z_im));
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            _colorMap[_x][_y] = ToColorMapValue(abs(((mu * distance + (1 - mu) * distance1) * _myOpt.paletteSize)));
-        }
-    }
-
-}
-
-void BurningShipJuliaRenderer::EscapeAngleRender()
-{
-    const double c_im = _kImaginary;
-    const double c_re = _kReal;
-    unsigned n;
-    constexpr int color1 = 1;
-    const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
-    const int color3 = static_cast<int>(0.50 * _myOpt.paletteSize);
-    const int color4 = static_cast<int>(0.75 * _myOpt.paletteSize);
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            double Z_re = _minX + _x * _xFactor;
-            double Z_im = _maxY - _y * _yFactor;
-            bool insideSet = true;
-
-            for (n=0; n<_maxIter; n++)
-            {
-                double Z_re2 = Z_re * Z_re;
-                double Z_im2 = Z_im * Z_im;
-                if (Z_re2 + Z_im2 > 4)
-                {
-                    insideSet = false;
-                    break;
-                }
-                Z_im = abs(Z_im);
-                Z_re = abs(Z_re);
-                Z_im = 2*Z_re*Z_im + c_im;
-                Z_re = Z_re2 - Z_im2 + c_re;
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            if (Z_re > 0 && Z_im > 0)
-                _colorMap[_x][_y] = n + color1;
-            else if (Z_re <= 0 && Z_im > 0)
-                _colorMap[_x][_y] = n + color2;
-            else if (Z_re <= 0 && Z_im < 0)
-                _colorMap[_x][_y] = n + color3;
-            else
-                _colorMap[_x][_y] = n + color4;
-        }
-    }
-
+    return point;
 }
 
 void BurningShipJuliaRenderer::Render()
 {
+    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    {
+        return TracePoint(pixelRe, pixelIm, measure);
+    };
+
     switch (_myOpt.alg)
     {
         case RenderingAlgorithmType::EscapeTime:
-            EscapeTimeRender();
+            EscapeTimeRender(tracePoint);
             break;
         case RenderingAlgorithmType::GaussianInt:
-            GaussianIntRender();
+            GaussianIntRender(tracePoint);
             break;
         case RenderingAlgorithmType::EscapeAngle:
-            EscapeAngleRender();
+            EscapeAngleRender(tracePoint);
             break;
         default:
             break;
     }
 }
-

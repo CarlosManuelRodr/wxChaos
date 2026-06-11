@@ -1,105 +1,83 @@
 #include <complex>
 #include "CellRenderer.h"
-#include "FractalUtils.h"
+
 using namespace std;
 
 CellRenderer::CellRenderer()
 {
     _bailout = 1.0;
 }
-void CellRenderer::EscapeTimeRender()
+
+template<class MeasurePoint>
+Renderer::Point CellRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
 {
-    // Creates fractal.
-    const double squaredBail = _bailout*_bailout;
-    unsigned n;
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    Point point;
+    point.startRe = pixelRe;
+    point.startIm = pixelIm;
+    point.zRe = pixelRe;
+    point.zIm = pixelIm;
+    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+
+    const complex<double> c(pixelRe, pixelIm);
+    complex<double> z = c;
+    complex<double> b = c - sin(c);
+    const double squaredBailout = _bailout * _bailout;
+    bool escaped = false;
+
+    for (unsigned n = 0; n < _maxIter; n++)
     {
-        double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        point.zNorm = norm(z);
+        if (!escaped && point.zNorm > squaredBailout)
         {
-            complex<double> c = complex<double>(_minX + _x * _xFactor, c_im);
-            complex<double> z = c;
-            complex<double> b = c - sin(c);
-            bool insideSet = true;
-
-            for (n=0; n<_maxIter; n++)
-            {
-                if (z.real()*z.real()+ z.imag()*z.imag() > squaredBail)
-                {
-                    insideSet = false;
-                    break;
-                }
-                b /= c;
-                z = z*c + b/z;
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            _colorMap[_x][_y] = n;
+            escaped = true;
+            point.insideSet = false;
+            point.iterations = n;
+            point.escapedZRe = z.real();
+            point.escapedZIm = z.imag();
+            point.escapedNorm = point.zNorm;
+            measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, point.zNorm, 0.0, 0.0, true);
         }
-    }
-}
 
-void CellRenderer::GaussianIntRender()
-{
-    // Creates fractal.
-    const double squaredBail = _bailout*_bailout;
+        if (escaped && !point.measureGaussianAfterEscape)
+            break;
 
-    double distance1 = 0;
-    const double log2 = log(2.0);
-    const double loglog2 = log(log2);
+        b /= c;
+        z = z * c + b / z;
+        const bool wasInside = !escaped;
 
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        double c_im = _maxY - _y * _yFactor;
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            complex<double> c = complex<double>(_minX + _x * _xFactor, c_im);
-            complex<double> z = c;
-            complex<double> b = c - sin(c);
-            bool insideSet = true;
-            double distance = 99;
-            double mu = (loglog2 - log(log(sqrt(4.0)))) / log2 + 1;
+        point.zRe = z.real();
+        point.zIm = z.imag();
+        point.zNorm = norm(z);
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
 
-            for (unsigned n = 0; n<_maxIter && insideSet; n++)
-            {
-                const double norm = z.real() * z.real() + z.imag() * z.imag();
-                if (norm > squaredBail)
-                {
-                    mu = (loglog2 - log(log(sqrt(norm))))/log2 + 1;
-                    if (n > 0) insideSet = false;
-                }
-                b /= c;
-                z = z*c + b/z;
-
-                distance1 = distance;
-                distance = minVal(distance, gaussianIntDist(z.real(), z.imag()));
-            }
-            if (insideSet)
-                _setMap[_x][_y] = true;
-
-            _colorMap[_x][_y] = static_cast<unsigned int>(abs(((mu*distance + (1-mu)*distance1)*_myOpt.paletteSize)));
-        }
+        if (!escaped)
+            point.iterations = n + 1;
     }
 
+    return point;
 }
 
 void CellRenderer::Render()
 {
+    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    {
+        return TracePoint(pixelRe, pixelIm, measure);
+    };
+
     switch (_myOpt.alg)
     {
         case RenderingAlgorithmType::EscapeTime:
-            EscapeTimeRender();
+            EscapeTimeRender(tracePoint);
             break;
         case RenderingAlgorithmType::GaussianInt:
-            GaussianIntRender();
+            GaussianIntRender(tracePoint);
             break;
         default:
             break;
     }
 }
-void CellRenderer::SetParams(double bailout)
+
+void CellRenderer::SetParams(const double bailout)
 {
     _bailout = bailout;
 }
-

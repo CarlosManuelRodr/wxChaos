@@ -7,9 +7,8 @@
 */
 class BurningShipJuliaRenderer : public Renderer
 {
-    void EscapeTimeRender();
-    void GaussianIntRender();
-    void EscapeAngleRender();
+    template<class MeasurePoint>
+    Point TracePoint(double pixelRe, double pixelIm, MeasurePoint measure) const;
 
 public:
     BurningShipJuliaRenderer();
