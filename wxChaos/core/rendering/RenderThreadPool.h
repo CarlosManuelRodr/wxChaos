@@ -61,11 +61,11 @@ public:
 
     ///@brief Informs if the pool is actively rendering.
     ///@return true if there is active work.
-    bool IsRunning() const;
+    [[nodiscard]] bool IsRunning() const;
 
     ///@brief Returns render progress for the current batch.
     ///@return A value from 0 to 100.
-    int GetProgress() const;
+    [[nodiscard]] int GetProgress() const;
 };
 
 #endif

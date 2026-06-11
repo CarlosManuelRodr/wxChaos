@@ -21,9 +21,9 @@ public:
     explicit RenderJob(const RenderRegion& region);
     RenderJob(const RenderRegion& region, int progressOriginY);
 
-    const RenderRegion& GetRegion() const;
-    int GetProgressOriginY() const;
-    bool IsEmpty() const;
+    [[nodiscard]] const RenderRegion& GetRegion() const;
+    [[nodiscard]] int GetProgressOriginY() const;
+    [[nodiscard]] bool IsEmpty() const;
 };
 
 #endif

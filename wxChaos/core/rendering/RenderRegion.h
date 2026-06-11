@@ -20,14 +20,14 @@ public:
     RenderRegion();
     RenderRegion(int left, int top, int right, int bottom);
 
-    int GetLeft() const;
-    int GetTop() const;
-    int GetRight() const;
-    int GetBottom() const;
-    int GetWidth() const;
-    int GetHeight() const;
-    int GetArea() const;
-    bool IsEmpty() const;
+    [[nodiscard]] int GetLeft() const;
+    [[nodiscard]] int GetTop() const;
+    [[nodiscard]] int GetRight() const;
+    [[nodiscard]] int GetBottom() const;
+    [[nodiscard]] int GetWidth() const;
+    [[nodiscard]] int GetHeight() const;
+    [[nodiscard]] int GetArea() const;
+    [[nodiscard]] bool IsEmpty() const;
 };
 
 #endif

@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "FractalUtils.h"
+#include "FractalUtilities.h"
 
 Renderer::Renderer() : _myOpt()
 {

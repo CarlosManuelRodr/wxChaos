@@ -3,7 +3,7 @@
 #include <utility>
 #include "Fractal.h"
 #include "BmpImageWriter.h"
-#include "SystemUtils.h"
+#include "SystemUtilities.h"
 using namespace std;
 
 constexpr ColorPalettes defaultGradientStyle = Retro;

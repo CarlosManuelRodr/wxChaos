@@ -1,4 +1,4 @@
-#include "SystemUtils.h"
+#include "SystemUtilities.h"
 #include <windows.h>
 
 int Get_Cores()

@@ -8,7 +8,7 @@
 #include "BmpImageWriter.h"
 #include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
-#include "SystemUtils.h"
+#include "SystemUtilities.h"
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);

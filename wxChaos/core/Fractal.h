@@ -1,13 +1,10 @@
 #pragma once
-#ifndef FRACTAL_H
-#define FRACTAL_H
 #include <algorithm>
 #include <limits>
 #include <vector>
 #include <wx/bitmap.h>
 #include <wx/colour.h>
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
 #include "wx/wxGradient.h"
 #include "types/FractalType.h"
 #include "types/RenderingAlgorithmType.h"
@@ -506,5 +503,3 @@ template<class M> void Fractal::MoveMatrix(M** matrix, const unsigned int matrix
             std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
     }
 }
-
-#endif
