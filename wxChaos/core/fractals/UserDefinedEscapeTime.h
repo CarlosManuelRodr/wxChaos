@@ -11,10 +11,10 @@ class UserDefinedEscapeTime : public Fractal
     UserDefinedEscapeTimeRenderer* _myRender;
 public:
     UserDefinedEscapeTime(unsigned int width, unsigned int height);
-    ~UserDefinedEscapeTime();
+    ~UserDefinedEscapeTime() override;
 
-    void Render();
-    void SetFormula(FormulaOptions formula);        ///< Sets user formula.
-    void DrawOrbit();
-    void PostRender();
+    void Render() override;
+    void SetFormula(FormulaOptions formula) override;        ///< Sets user formula.
+    void DrawOrbit() override;
+    void PostRender() override;
 };

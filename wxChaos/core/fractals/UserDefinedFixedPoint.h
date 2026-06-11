@@ -12,11 +12,11 @@ class UserDefinedFixedPoint : public Fractal
     double _minStep;
 public:
     UserDefinedFixedPoint(unsigned int width, unsigned int height);
-    ~UserDefinedFixedPoint();
+    ~UserDefinedFixedPoint() override;
 
-    void Render();
-    void SetFormula(FormulaOptions formula);        ///< Sets user formula.
-    void DrawOrbit();
-    void CopyOptFromPanel();
-    void PostRender();
+    void Render() override;
+    void SetFormula(FormulaOptions formula) override;        ///< Sets user formula.
+    void DrawOrbit() override;
+    void CopyOptFromPanel() override;
+    void PostRender() override;
 };
