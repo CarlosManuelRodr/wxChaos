@@ -3,6 +3,7 @@
 #include "AppPaths.h"
 #include "RendererOptions.h"
 #include "TextUtils.h"
+#include <utility>
 
 ColorPalette::ColorPalette()
 {
@@ -90,7 +91,8 @@ void ColorPalette::SetStyle(const ColorPalettes palette)
     };
 }
 
-RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent, const wxWindowID id,
+RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent,
+                                 std::function<void(const Options&)> optionsChanged, const wxWindowID id,
                                  const wxString& title, const wxPoint& pos, const wxSize& size, const long windowStyle)
                                  : wxFrame(parent, id, title, pos, size, windowStyle)
 {
@@ -101,6 +103,7 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
     _active = active;
     _presenter = presenter;
     _target = _presenter->GetFractal();
+    _optionsChanged = std::move(optionsChanged);
 
     this->SetSizeHints(wxSize(760, 700), wxDefaultSize);
 
@@ -318,6 +321,11 @@ void RendererOptions::ConnectEvents()
     _colorVarSlider->Bind(wxEVT_SCROLL_THUMBRELEASE, &RendererOptions::OnColorVar, this);
     _colorVarSlider->Bind(wxEVT_SCROLL_CHANGED, &RendererOptions::OnColorVar, this);
 }
+void RendererOptions::NotifyOptionsChanged() const
+{
+    if (_optionsChanged)
+        _optionsChanged(_target->GetOptions());
+}
 void RendererOptions::SetAlgorithmChoices()
 {
     // Construct the algorithm choice according to the algorithms available in the fractal.
@@ -417,6 +425,7 @@ void RendererOptions::ApplyPaletteSize(const int paletteSize)
     _presenter->SetGradientSize(paletteSize);
     _gradPalSize->SetValue(paletteSize);
     _colorVarSlider->SetRange(0, paletteSize);
+    NotifyOptionsChanged();
 }
 void RendererOptions::SetTarget(SFMLFractal* presenter)
 {
@@ -494,6 +503,7 @@ void RendererOptions::GradientColorChangeSelection(wxCommandEvent&)
     _gradientMap->SetBitmap(PaintGradient());
     _gradientMap->SetWindowStyle(wxSIMPLE_BORDER);
     _gradientMap->Refresh();
+    NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
@@ -528,6 +538,8 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
         _presenter->SetAlgorithm(algorithm);
         if (algorithm == RenderingAlgorithmType::Buddhabrot)
             ApplyPaletteSize(BuddhabrotPaletteSize);
+        else
+            NotifyOptionsChanged();
     }
 }
 
@@ -538,6 +550,7 @@ void RendererOptions::OnRelativeColor(wxCommandEvent&)
     const bool mode = _relativeCheck->IsChecked();
     _presenter->SetRelativeColor(mode);
     _relativeCheck->SetValue(mode);
+    NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::OnColorFractal(wxCommandEvent&)
@@ -545,6 +558,7 @@ void RendererOptions::OnColorFractal(wxCommandEvent&)
     const bool mode = _colorFractal->IsChecked();
     _presenter->SetExteriorColorMode(mode);
     _colorFractal->SetValue(mode);
+    NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::OnColorSet(wxCommandEvent&)
@@ -552,6 +566,7 @@ void RendererOptions::OnColorSet(wxCommandEvent&)
     const bool mode = _colorSet->IsChecked();
     _presenter->SetFractalSetColorMode(mode);
     _colorSet->SetValue(mode);
+    NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::OnOrbitTrap(wxCommandEvent&)
@@ -560,6 +575,7 @@ void RendererOptions::OnOrbitTrap(wxCommandEvent&)
     _presenter->SetOrbitTrapMode(mode);
     _orbitTrap->SetValue(mode);
     _presenter->Redraw();
+    NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::OnSmoothRender(wxCommandEvent&)
@@ -568,6 +584,7 @@ void RendererOptions::OnSmoothRender(wxCommandEvent&)
     _presenter->SetSmoothRender(mode);
     _smoothRender->SetValue(mode);
     _presenter->Redraw();
+    NotifyOptionsChanged();
 }
 void RendererOptions::OnSetRed(wxScrollEvent&)
 {
@@ -577,6 +594,7 @@ void RendererOptions::OnSetRed(wxScrollEvent&)
     wxString text = L"Red: ";
     text += TextUtils::ToWxString(value);
     _redSetText->SetLabel(wxString(text));
+    NotifyOptionsChanged();
 }
 void RendererOptions::OnSetGreen(wxScrollEvent&)
 {
@@ -586,6 +604,7 @@ void RendererOptions::OnSetGreen(wxScrollEvent&)
     wxString text = L"Green: ";
     text += TextUtils::ToWxString(value);
     _greenSetText->SetLabel(wxString(text));
+    NotifyOptionsChanged();
 }
 void RendererOptions::OnSetBlue(wxScrollEvent&)
 {
@@ -595,6 +614,7 @@ void RendererOptions::OnSetBlue(wxScrollEvent&)
     wxString text = L"Blue: ";
     text += TextUtils::ToWxString(value);
     _blueSetText->SetLabel(wxString(text));
+    NotifyOptionsChanged();
 }
 void RendererOptions::OnClose(wxCloseEvent&)
 {
@@ -611,6 +631,7 @@ void RendererOptions::OnGrad(wxCommandEvent&)
     _gradientMap->SetWindowStyle(wxSIMPLE_BORDER);
     _gradientMap->Refresh();
     _gradStylesChoice->SetSelection(CustomGradient);
+    NotifyOptionsChanged();
 }
 wxBitmap RendererOptions::PaintGradient() const
 {
@@ -639,9 +660,11 @@ void RendererOptions::OnGradPaletteSize(wxSpinEvent&)
 
     _gradientMap->SetBitmap(this->PaintGradient());
     _colorVarSlider->SetRange(0,size);
+    NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::OnColorVar(wxScrollEvent&)
 {
     _presenter->SetVarGradient(_colorVarSlider->GetValue());
+    NotifyOptionsChanged();
 }

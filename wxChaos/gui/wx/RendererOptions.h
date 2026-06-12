@@ -15,6 +15,7 @@
 #include <wx/spinctrl.h>
 #include <wx/notebook.h>
 #include <SFML/Graphics/Color.hpp>
+#include <functional>
 #include "ColorPalettes.h"
 #include "wxGradientDialog.h"
 #include "Fractal.h"
@@ -62,6 +63,7 @@ class RendererOptions : public wxFrame
     bool* _active;                                  ///< Used to communicate with the MainFrame.
     sf::Color _setColor;                            ///< Color of the fractal set.
     ColorPalette _gradFractalColor;                 ///< Color in Grad color mode.
+    std::function<void(const Options&)> _optionsChanged;
     int _escapeTimeIndex, _gaussIntIndex, _buddhabrotIndex;
     int _escapeAngleIndex, _triangleIneqIndex, _chaoticMapIndex;
     int _lyapunovIndex, _convergenceTestIndex;
@@ -83,6 +85,7 @@ class RendererOptions : public wxFrame
     void OnColorVar(wxScrollEvent& event);
 
     void ConnectEvents();
+    void NotifyOptionsChanged() const;
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
     int GetPaletteSizeForAlgorithm(RenderingAlgorithmType algorithm, int paletteSize) const;
     void ApplyPaletteSize(int paletteSize);
@@ -97,7 +100,8 @@ public:
     ///@param title
     ///@param pos
     ///@param windowStyle
-    RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
+    RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent,
+               std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
                const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
                long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
     ~RendererOptions() override;

@@ -17,6 +17,7 @@ JuliaMode::JuliaMode(wxWindow* parent, FractalCanvas* ptr, const FractalType fra
     _selection = nullptr;
     _play = nullptr;
     _closeRequested.store(false);
+    _rendererOptionsPending = false;
 
     _juliaFractal.CreateFractal(_type, _size.GetWidth(), _size.GetHeight());
     _sfmlFractal = new SFMLFractal(_juliaFractal.GetFractalPtr());
@@ -158,6 +159,20 @@ void JuliaMode::Run()
 
     while (_window->isOpen())
     {
+        Options rendererOptions;
+        bool applyRendererOptions = false;
+        {
+            const std::lock_guard<std::mutex> lock(_rendererOptionsMutex);
+            if (_rendererOptionsPending)
+            {
+                rendererOptions = _pendingRendererOptions;
+                _rendererOptionsPending = false;
+                applyRendererOptions = true;
+            }
+        }
+        if (applyRendererOptions)
+            ApplyRendererOptions(rendererOptions);
+
         if (_closeRequested.load())
         {
             _juliaFractal.GetFractalPtr()->StopRender();
@@ -183,4 +198,25 @@ void JuliaMode::Wait()
 void JuliaMode::Close()
 {
     _closeRequested.store(true);
+}
+
+void JuliaMode::ApplyRendererOptions(const Options& options) const
+{
+    _sfmlFractal->SetGradient(options.gradient);
+    _sfmlFractal->SetGradientSize(options.gradPaletteSize);
+    _sfmlFractal->SetVarGradient(options.changeGradient);
+    _sfmlFractal->SetAlgorithm(options.alg);
+    _sfmlFractal->SetRelativeColor(options.relativeColor);
+    _sfmlFractal->SetExteriorColorMode(options.colorMode);
+    _sfmlFractal->SetFractalSetColorMode(options.colorSet);
+    _sfmlFractal->SetFractalSetColor(options.fSetColor);
+    _sfmlFractal->SetOrbitTrapMode(options.orbitTrapMode);
+    _sfmlFractal->SetSmoothRender(options.smoothRender);
+}
+
+void JuliaMode::SetRendererOptions(const Options& options)
+{
+    const std::lock_guard<std::mutex> lock(_rendererOptionsMutex);
+    _pendingRendererOptions = options;
+    _rendererOptionsPending = true;
 }

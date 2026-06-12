@@ -61,7 +61,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     if (opt.colorPaletteWindow)
     {
         rendererOptionsActive = true;
-        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this);
+        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this,
+            [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         rendererOptions->Show(true);
     }
     if (opt.constantWindow)
@@ -459,7 +460,8 @@ void MainFrame::OnPalette(wxCommandEvent&)
     if (!rendererOptionsActive)
     {
         rendererOptionsActive = true;
-        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this);
+        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this,
+            [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         rendererOptions->Show(true);
 
         // Adjust position.
@@ -1118,4 +1120,9 @@ void MainFrame::ReloadScripts()
 
     // Get new scripts.
     this->GetScriptFractals();
+}
+void MainFrame::UpdateJuliaRendererOptions(const Options& options)
+{
+    if (juliaModePtr != nullptr)
+        juliaModePtr->SetRendererOptions(options);
 }

@@ -9,6 +9,7 @@
 
 #pragma once
 #include <atomic>
+#include <mutex>
 #include <SFML/System.hpp>
 #include "FractalCanvas.h"
 #include "FractalTypes.h"
@@ -36,12 +37,18 @@ class JuliaMode
     sf::Event _event;
     sf::Thread m_thread; // Thread for the rendering loop
     std::atomic_bool _closeRequested;
+    std::mutex _rendererOptionsMutex;
+    Options _pendingRendererOptions;
+    bool _rendererOptionsPending;
 
     ///@brief Handles the window's events.
     void HandleEvent();
 
     ///@brief The main loop for the Julia window thread.
     void Run();
+
+    ///@brief Applies renderer settings without replacing Julia-specific state.
+    void ApplyRendererOptions(const Options& options) const;
 
 public:
     ///@brief Constructor
@@ -62,4 +69,7 @@ public:
 
     ///@brief Signals the window to close.
     void Close();
+
+    ///@brief Queues renderer settings to be applied by the Julia window thread.
+    void SetRendererOptions(const Options& options);
 };
