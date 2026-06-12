@@ -45,7 +45,6 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     _juliaModePtr = nullptr;
     _dimensionCalculator = nullptr;
     _changeKeyboardGuide = false;
-    _rendererOptionsActive = false;
     _introConstActive = false;
     _iterationsDialogIsActive = false;
     _informationFrameIsActive = false;
@@ -59,8 +58,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     if (_appConfig.juliaMode) this->UpdateJuliaMode();
     if (_appConfig.colorPaletteWindow)
     {
-        _rendererOptionsActive = true;
-        _rendererOptions = new RendererOptions(&_rendererOptionsActive, _fractalCanvas->GetSFMLFractalPtr(), this,
+        _rendererOptions = new RendererOptions(_fractalCanvas->GetSFMLFractalPtr(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         _rendererOptions->Show(true);
     }
@@ -104,6 +102,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, &MainFrame::OnCanvasStatusText, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnJuliaMode, this, ID_JULIA_MODE);
     this->Bind(wxEVT_JULIA_MODE_CLOSED, &MainFrame::OnJuliaModeClosed, this);
+    this->Bind(wxEVT_RENDERER_OPTIONS_CLOSED, &MainFrame::OnRendererOptionsClosed, this);
     this->Bind(wxEVT_DIMENSION_FRAME_CLOSED, &MainFrame::OnDimensionFrameClosed, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnWelcomeDialog, this, ID_WELCOME_DIALOG);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, ID_ABOUT);
@@ -392,6 +391,10 @@ void MainFrame::OnJuliaModeClosed(wxCommandEvent&)
 {
     DestroyJuliaMode(false);
 }
+void MainFrame::OnRendererOptionsClosed(wxCommandEvent&)
+{
+    _rendererOptions = nullptr;
+}
 void MainFrame::DestroyDimensionFrame()
 {
     if (_dimensionCalculator == nullptr)
@@ -456,10 +459,9 @@ void MainFrame::OnSave(wxCommandEvent&)
 void MainFrame::OnPalette(wxCommandEvent&)
 {
     // Color palette frame.
-    if (!_rendererOptionsActive)
+    if (_rendererOptions == nullptr)
     {
-        _rendererOptionsActive = true;
-        _rendererOptions = new RendererOptions(&_rendererOptionsActive, _fractalCanvas->GetSFMLFractalPtr(), this,
+        _rendererOptions = new RendererOptions(_fractalCanvas->GetSFMLFractalPtr(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         _rendererOptions->Show(true);
 
@@ -1023,7 +1025,7 @@ void MainFrame::GetScriptFractals()
 void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
-    if (_rendererOptionsActive)
+    if (_rendererOptions != nullptr)
         _rendererOptions->SetTarget(_fractalCanvas->GetSFMLFractalPtr());
     if (_iterationsDialogIsActive)
         _iterationsDialog->SetTarget(_fractalCanvas->GetSFMLFractalPtr());

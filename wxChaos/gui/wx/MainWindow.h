@@ -93,7 +93,6 @@ class MainFrame : public wxFrame
     DimensionFrame* _dimensionCalculator;
     
     bool _changeKeyboardGuide;
-    bool _rendererOptionsActive;
     bool _introConstActive;
     bool _iterationsDialogIsActive;
     bool _informationFrameIsActive;
@@ -179,6 +178,7 @@ public :
     void OnQuit(wxCommandEvent& event);
     void OnResize(wxSizeEvent& event);                     ///< Resizes the frame.
     void OnJuliaModeClosed(wxCommandEvent& event);         ///< Handles the Julia window closed event.
+    void OnRendererOptionsClosed(wxCommandEvent& event);   ///< Handles the renderer options window closed event.
     void OnDimensionFrameClosed(wxCommandEvent& event);    ///< Handles the dimension window closed event.
     void ChangeMandelbrot(wxCommandEvent& event);
     void ChangeMandelbrotZN(wxCommandEvent& event);

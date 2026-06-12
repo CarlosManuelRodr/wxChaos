@@ -21,6 +21,8 @@
 
 #define RendererOptionsFrameSize wxSize(900, 820)
 
+wxDECLARE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
+
 /**
 * @class RendererOptions
 * @brief Frame that allows the user to change several color and algorithm parameters.
@@ -58,7 +60,6 @@ class RendererOptions : public wxFrame
     
     SFMLFractal* _presenter;                        ///< Presenter used to mutate the displayed fractal.
     Fractal* _target;                               ///< Target fractal.
-    bool* _active;                                  ///< Used to communicate with the MainFrame.
     sf::Color _setColor;                            ///< Color of the fractal set.
     ColorPalette _gradFractalColor;                 ///< Color in Grad color mode.
     std::function<void(const Options&)> _optionsChanged;
@@ -91,19 +92,16 @@ class RendererOptions : public wxFrame
 
 public:
     ///@brief Constructor.
-    ///@param active Used to communicate with the MainFrame.
     ///@param presenter Pointer to the target fractal presenter.
     ///@param parent Parent wxWindow.
     ///@param title
     ///@param pos
     ///@param size
     ///@param windowStyle
-    RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent,
+    RendererOptions(SFMLFractal* presenter, wxWindow* parent,
                     std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
                     long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
-    ~RendererOptions() override;
-
     ///@brief Sets the target fractal.
     ///@param presenter Pointer to target fractal presenter.
     void SetTarget(SFMLFractal* presenter);

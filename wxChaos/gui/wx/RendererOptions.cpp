@@ -5,7 +5,9 @@
 #include "RendererOptions.h"
 #include "TextUtils.h"
 
-RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent,
+wxDEFINE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
+
+RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
                                  std::function<void(const Options&)> optionsChanged, const wxWindowID id,
                                  const wxString& title, const wxPoint& pos, const wxSize& size, const long windowStyle)
                                  : wxFrame(parent, id, title, pos, size, windowStyle)
@@ -14,7 +16,6 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
     const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
-    _active = active;
     _presenter = presenter;
     _target = _presenter->GetFractal();
     _optionsChanged = std::move(optionsChanged);
@@ -180,11 +181,6 @@ RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow*
     this->SetAlgorithmChoices();
     this->ConnectEvents();
 }
-RendererOptions::~RendererOptions()
-{
-    *_active = false;    // Warns the mainframe that this frame has been closed.
-}
-
 void RendererOptions::ConnectEvents()
 {
     this->Bind(wxEVT_CLOSE_WINDOW, &RendererOptions::OnClose, this);
@@ -399,7 +395,7 @@ void RendererOptions::SetTarget(SFMLFractal* presenter)
 }
 void RendererOptions::OnOk(wxCommandEvent&)
 {
-    this->Destroy();
+    this->Close(true);
 }
 void RendererOptions::GradientColorChangeSelection(wxCommandEvent&)
 {
@@ -532,8 +528,7 @@ void RendererOptions::OnSetBlue(wxScrollEvent&)
 }
 void RendererOptions::OnClose(wxCloseEvent&)
 {
-    *_active = false;
-    this->Show(false);
+    wxQueueEvent(GetParent(), new wxCommandEvent(wxEVT_RENDERER_OPTIONS_CLOSED));
     this->Destroy();
 }
 void RendererOptions::OnGrad(wxCommandEvent&)
