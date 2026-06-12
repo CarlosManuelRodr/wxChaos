@@ -10,8 +10,6 @@
 */
 
 #pragma once
-#ifndef _fractalCanvas
-#define _fractalCanvas
 
 #include "wxSFMLCanvas.h"
 #include "sfml/ToggleButton.h"
@@ -172,5 +170,3 @@ public:
     void OnKeyDown(wxKeyEvent& event);
     void OnKeyUp(wxKeyEvent& event);
 };
-
-#endif

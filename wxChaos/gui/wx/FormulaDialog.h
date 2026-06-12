@@ -8,8 +8,8 @@
 */
 
 #pragma once
-#ifndef _formulaDialog
-#define _formulaDialog
+#ifndef WXCHAOS_GUI_WX_FORMULADIALOG_H
+#define WXCHAOS_GUI_WX_FORMULADIALOG_H
 
 #include <wx/wx.h>
 #include "FractalCanvas.h"

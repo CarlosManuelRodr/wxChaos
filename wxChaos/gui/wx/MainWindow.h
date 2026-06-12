@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef _mainWindow
-#define _mainWindow
 
 #include <optional>
 #include "config/AppConfigStore.h"
@@ -85,8 +83,8 @@ enum IDS
 */
 class MainFrame : public wxFrame
 {
-    FractalCanvas* fractalCanvas{};
-    FormulaDialog* formulaDialog{};
+    FractalCanvas* _fractalCanvas{};
+    FormulaDialog* _formulaDialog{};
     JuliaMode* _juliaModePtr;
     JuliaConstantDialog* _juliaConstantDialog;
     IterationsDialog* _iterationsDialog{};
@@ -232,5 +230,3 @@ public :
 };
 
 extern MainFrame* mainFramePtr;  ///< Pointer to the MainFrame.
-
-#endif
