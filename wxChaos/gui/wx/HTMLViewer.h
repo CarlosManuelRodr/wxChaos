@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef _htmlViewer
-#define _htmlViewer
 
 #include <wx/wx.h>
 #include <wx/html/htmlwin.h>
@@ -30,5 +28,3 @@ public:
                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_DIALOG_STYLE);
     ~HTMLViewer() override;
 };
-
-#endif

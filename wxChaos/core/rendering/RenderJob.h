@@ -1,6 +1,4 @@
 #pragma once
-#ifndef RENDER_JOB_H
-#define RENDER_JOB_H
 
 #include "rendering/RenderRegion.h"
 
@@ -25,5 +23,3 @@ public:
     [[nodiscard]] int GetProgressOriginY() const;
     [[nodiscard]] bool IsEmpty() const;
 };
-
-#endif

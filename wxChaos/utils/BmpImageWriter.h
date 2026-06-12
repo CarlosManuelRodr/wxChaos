@@ -39,7 +39,7 @@ public:
     BmpImageWriter(const BmpImageWriter&) = delete;
     BmpImageWriter& operator=(const BmpImageWriter&) = delete;
 
-    bool IsOpen() const;
+    [[nodiscard]] bool IsOpen() const;
     bool WriteRow(const std::vector<BmpPixel>& row);
     bool Close();
 };

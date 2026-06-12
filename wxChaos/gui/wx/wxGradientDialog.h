@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef WX_GRADIENT_DLG_H
-#define WX_GRADIENT_DLG_H
 
 #include <wx/dialog.h>
 #include <wx/sizer.h>
@@ -67,5 +65,3 @@ public:
     [[nodiscard]] wxGradient GetGradient() const;
     int ShowModal() override;
 };
-
-#endif

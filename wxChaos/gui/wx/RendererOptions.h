@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef _color
-#define _color
 
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
@@ -101,9 +99,9 @@ public:
     ///@param pos
     ///@param windowStyle
     RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent,
-               std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
-               const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
-               long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
+                    std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
+                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
+                    long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
     ~RendererOptions() override;
 
     ///@brief Sets the target fractal.
@@ -111,5 +109,3 @@ public:
     void SetTarget(SFMLFractal* presenter);
 
 };
-
-#endif //_color

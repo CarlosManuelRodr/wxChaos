@@ -1,6 +1,5 @@
-#include "BmpImageWriter.h"
-
 #include <limits>
+#include "BmpImageWriter.h"
 
 bool BmpImageWriter::TryCalculateLayout(const unsigned int width, const unsigned int height, unsigned int& paddingBytes, uint32_t& imageBytes, uint32_t& fileBytes)
 {

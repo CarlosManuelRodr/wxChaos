@@ -1,14 +1,13 @@
 /**
-* @file ConstDialog.h
-* @brief This header file contains the ConstDialog.
+* @file JuliaConstantDialog.h
+* @brief This header file contains the JuliaConstantDialog.
 *
 * @author Carlos Manuel Rodriguez y Martinez
 * @copyright GNU Public License.
 * @date 7/18/2012
 */
 
-#ifndef _const_dialog
-#define _const_dialog
+#pragma once
 
 #include <wx/panel.h>
 #include <wx/dialog.h>
@@ -42,5 +41,3 @@ public:
                         const wxSize& size = wxSize(320, 250), long style = wxDEFAULT_DIALOG_STYLE);
     ~JuliaConstantDialog() override;
 };
-
-#endif

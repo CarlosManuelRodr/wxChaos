@@ -1,9 +1,9 @@
+#include <utility>
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include "AppPaths.h"
 #include "RendererOptions.h"
 #include "TextUtils.h"
-#include <utility>
 
 RendererOptions::RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent,
                                  std::function<void(const Options&)> optionsChanged, const wxWindowID id,

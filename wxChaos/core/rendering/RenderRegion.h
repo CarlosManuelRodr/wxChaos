@@ -1,6 +1,4 @@
 #pragma once
-#ifndef RENDER_REGION_H
-#define RENDER_REGION_H
 
 /**
 * @class RenderRegion
@@ -29,5 +27,3 @@ public:
     [[nodiscard]] int GetArea() const;
     [[nodiscard]] bool IsEmpty() const;
 };
-
-#endif

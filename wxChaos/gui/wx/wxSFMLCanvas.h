@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef WX_SFML_CANVAS_HPP
-#define WX_SFML_CANVAS_HPP
 
 #include <wx/wx.h>
 #include <SFML/Graphics.hpp>
@@ -31,5 +29,3 @@ private:
     void OnPaintEvent(wxPaintEvent&);
     void OnEraseBackground(wxEraseEvent&);
 };
-
-#endif

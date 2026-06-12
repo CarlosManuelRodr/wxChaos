@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef WXCHAOS_GUI_WX_ITERATIONS_DIALOG_H
-#define WXCHAOS_GUI_WX_ITERATIONS_DIALOG_H
 
 #include <wx/wx.h>
 #include "Fractal.h"
@@ -47,5 +45,3 @@ public:
     void OnApply(wxCommandEvent& event);
     void SetTarget(SFMLFractal* presenter);
 };
-
-#endif

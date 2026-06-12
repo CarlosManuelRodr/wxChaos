@@ -8,17 +8,15 @@
 */
 
 #pragma once
-#ifndef WXCHAOS_GUI_WX_FORMULADIALOG_H
-#define WXCHAOS_GUI_WX_FORMULADIALOG_H
 
 #include <wx/wx.h>
 #include "FractalCanvas.h"
 
 /**
-* @class FuncDialog
+* @class FunctionsHelpDialog
 * @brief Dialog that shows the available functions.
 */
-class FuncDialog : public wxDialog
+class FunctionsHelpDialog : public wxDialog
 {
     wxPanel* _mainPanel;
     wxTextCtrl* _text;
@@ -27,10 +25,10 @@ class FuncDialog : public wxDialog
     void OnClose(wxCommandEvent& event);
 
 public:
-    explicit FuncDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
+    explicit FunctionsHelpDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
                         const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(460, 250),
                         long style = wxDEFAULT_DIALOG_STYLE);
-    ~FuncDialog() override;
+    ~FunctionsHelpDialog() override;
 };
 
 #define FormulaDialogSize wxSize(520, 320)
@@ -72,5 +70,3 @@ public:
                   const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
     ~FormulaDialog() override;
 };
-
-#endif

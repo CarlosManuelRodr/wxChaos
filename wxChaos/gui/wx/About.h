@@ -9,8 +9,6 @@
 */
 
 #pragma once
-#ifndef _aboutDialog
-#define _aboutDialog
 
 #include <wx/gdicmn.h>
 #include <wx/wx.h>
@@ -121,5 +119,3 @@ private:
         ID_ContentPanel = 10001
     };
 };
-
-#endif

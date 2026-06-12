@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef _sizeDialog
-#define _sizeDialog
 
 #include <wx/wx.h>
 #include <wx/statline.h>
@@ -45,7 +43,6 @@ public:
     ///@return true if has finished, false if not.
     bool IsFinished() const;
 };
-
 /**
 * @class SizeDialogSave
 * @brief Creates a dialog to select the fractal size and number of iterations.
@@ -83,5 +80,3 @@ public:
                    long style = wxDEFAULT_DIALOG_STYLE);
     ~SizeDialogSave() override;
 };
-
-#endif

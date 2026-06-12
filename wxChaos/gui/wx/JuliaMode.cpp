@@ -5,7 +5,7 @@ using namespace std;
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
 JuliaMode::JuliaMode(wxWindow* parent, FractalCanvas* ptr, const FractalType fractalType, const Options& juliaOpt,
-                     const wxSize& size) : _event(), m_thread(&JuliaMode::Run, this)
+                     const wxSize& size) : _event(), m_thread(&JuliaMode::Run, this), _pendingRendererOptions()
 {
     _parent = parent;
     _myJuliaOpt = juliaOpt;
@@ -51,17 +51,10 @@ void JuliaMode::HandleEvent()
             _play->Resize(_window);
         }
 
-        // The original HandleEvents methods in SelectRect and ButtonChange take SFML 1.6 style events.
-        // As we are not supposed to change those files, we'll continue to call them.
-        // Fortunately, the event structure members they use are mostly compatible.
         if (_selection->HandleEvents(_event))
-        {
             _sfmlFractal->SetAreaOfView(_selection->GetSelection());
-        }
         if (_play->HandleEvents(_event))
-        {
             _sfmlFractal->ChangeVarGradient();
-        }
 
         // Keyboad events.
         if (_event.type == sf::Event::KeyPressed)
@@ -145,8 +138,7 @@ void JuliaMode::Run()
     _window->setPosition(juliaWindowPos);
 
     _window->setFramerateLimit(30);
-    sf::Image icon;
-    if (icon.loadFromFile("Resources/iconPNG.png"))
+    if (sf::Image icon; icon.loadFromFile("Resources/iconPNG.png"))
         _window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     _juliaFractal.GetFractalPtr()->SetOptions(_myJuliaOpt, true);
@@ -162,7 +154,7 @@ void JuliaMode::Run()
         Options rendererOptions;
         bool applyRendererOptions = false;
         {
-            const std::lock_guard<std::mutex> lock(_rendererOptionsMutex);
+            const std::lock_guard lock(_rendererOptionsMutex);
             if (_rendererOptionsPending)
             {
                 rendererOptions = _pendingRendererOptions;
@@ -200,6 +192,7 @@ void JuliaMode::Close()
     _closeRequested.store(true);
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 void JuliaMode::ApplyRendererOptions(const Options& options) const
 {
     _sfmlFractal->SetGradient(options.gradient);
@@ -216,7 +209,7 @@ void JuliaMode::ApplyRendererOptions(const Options& options) const
 
 void JuliaMode::SetRendererOptions(const Options& options)
 {
-    const std::lock_guard<std::mutex> lock(_rendererOptionsMutex);
+    const std::lock_guard lock(_rendererOptionsMutex);
     _pendingRendererOptions = options;
     _rendererOptionsPending = true;
 }

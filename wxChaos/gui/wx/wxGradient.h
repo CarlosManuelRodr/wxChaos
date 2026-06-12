@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef WX_GRADIENT_H
-#define WX_GRADIENT_H
 
 #include <wx/colour.h>
 #include <wx/wx.h>
@@ -47,5 +45,3 @@ public:
 	void FromString(wxString str);
 	wxString ToString();
 };
-
-#endif

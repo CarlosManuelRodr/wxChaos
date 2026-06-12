@@ -1,6 +1,4 @@
 #pragma once
-#ifndef RENDER_THREAD_POOL_H
-#define RENDER_THREAD_POOL_H
 
 #include <condition_variable>
 #include <deque>
@@ -67,5 +65,3 @@ public:
     ///@return A value from 0 to 100.
     [[nodiscard]] int GetProgress() const;
 };
-
-#endif

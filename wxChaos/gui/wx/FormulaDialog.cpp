@@ -2,7 +2,7 @@
 #include "TextUtils.h"
 
 // FuncDialog
-FuncDialog::FuncDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
+FunctionsHelpDialog::FunctionsHelpDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
                        const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
@@ -37,13 +37,13 @@ FuncDialog::FuncDialog(wxWindow* parent, const wxWindowID id, const wxString& ti
 
     this->Centre(wxBOTH);
 
-    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FuncDialog::OnClose, this);
+    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FunctionsHelpDialog::OnClose, this);
 }
-FuncDialog::~FuncDialog()
+FunctionsHelpDialog::~FunctionsHelpDialog()
 {
-    _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FuncDialog::OnClose, this);
+    _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FunctionsHelpDialog::OnClose, this);
 }
-void FuncDialog::OnClose(wxCommandEvent&)
+void FunctionsHelpDialog::OnClose(wxCommandEvent&)
 {
     this->Close(true);
 }
@@ -214,7 +214,7 @@ void FormulaDialog::OnChoice(wxCommandEvent&)
 }
 void FormulaDialog::OnFunc(wxCommandEvent&)
 {
-    const auto diag = new FuncDialog(this, wxID_ANY);
+    const auto diag = new FunctionsHelpDialog(this, wxID_ANY);
     diag->Move(this->GetPosition().x + this->GetSize().x, this->GetPosition().y);
     diag->Show(true);
 }

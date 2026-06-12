@@ -8,9 +8,5 @@
 */
 
 #pragma once
-#ifndef _global
-#define _global
 
 constexpr char APP_VERSION[] = "2.0.0";
-
-#endif

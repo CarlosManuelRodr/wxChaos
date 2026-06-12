@@ -8,8 +8,6 @@
 */
 
 #pragma once
-#ifndef _dimFrame
-#define _dimFrame
 
 #include <wx/wx.h>
 #include <wx/statline.h>
@@ -48,7 +46,6 @@ enum FractalList
     FL_DOUBLE_PENDULUM,
     COUNT
 };
-
 /**
 * @class DimensionCalculator
 * @brief A multithread fractal dimension calculator.
@@ -280,5 +277,3 @@ public:
                             long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~DimensionFrame() override;
 };
-
-#endif
