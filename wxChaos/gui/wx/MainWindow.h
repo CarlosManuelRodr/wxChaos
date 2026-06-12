@@ -16,7 +16,7 @@
 #include "JuliaMode.h"
 #include "About.h"
 #include "RendererOptions.h"
-#include "ConstDialog.h"
+#include "JuliaConstantDialog.h"
 #include "SizeDialogSave.h"
 #include "IterationsDialog.h"
 #include "FormulaDialog.h"
@@ -86,12 +86,12 @@ enum IDS
 class MainFrame : public wxFrame
 {
     FractalCanvas* fractalCanvas{};
-    JuliaMode* juliaModePtr;
-    ConstDialog* diag;
+    JuliaMode* _juliaModePtr;
+    JuliaConstantDialog* _juliaConstantDialog;
     IterationsDialog* iterDiag{};
     RendererOptions* rendererOptions;
     FormulaDialog* formDialog{};
-    ScriptEditor* scriptEditor{};
+    ScriptEditor* _scriptEditor{};
     DimensionFrame* dimensionCalculator;
     
     bool changeKeyboardGuide;

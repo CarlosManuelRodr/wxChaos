@@ -42,7 +42,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     this->GetParserOpt();    // Gets configuration from config.ini.
     this->SetUpGUI();
 
-    juliaModePtr = nullptr;
+    _juliaModePtr = nullptr;
     dimensionCalculator = nullptr;
     changeKeyboardGuide = false;
     rendererOptionsActive = false;
@@ -67,8 +67,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     }
     if (opt.constantWindow)
     {
-        diag = new ConstDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
-        diag->Show(true);
+        _juliaConstantDialog = new JuliaConstantDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
+        _juliaConstantDialog->Show(true);
         introConstActive = true;
     }
     if (!opt.colorSet)
@@ -368,15 +368,15 @@ void MainFrame::CloseAll()
 }
 void MainFrame::DestroyJuliaMode(const bool requestClose)
 {
-    if (juliaModePtr == nullptr)
+    if (_juliaModePtr == nullptr)
         return;
 
     if (requestClose)
-        juliaModePtr->Close();
+        _juliaModePtr->Close();
 
-    juliaModePtr->Wait();
-    delete juliaModePtr;
-    juliaModePtr = nullptr;
+    _juliaModePtr->Wait();
+    delete _juliaModePtr;
+    _juliaModePtr = nullptr;
     juliaMode->Check(false);
     fractalCanvas->SetJuliaMode(false);
 }
@@ -530,15 +530,15 @@ void MainFrame::OnManIntroConst(wxCommandEvent&)
     // Manual constant.
     if (!introConstActive)
     {
-        diag = new ConstDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
-        diag->Show(true);
+        _juliaConstantDialog = new JuliaConstantDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
+        _juliaConstantDialog->Show(true);
         introConstActive = true;
     }
     else
     {
-        diag->Show(false);
+        _juliaConstantDialog->Show(false);
         introConstActive = false;
-        delete diag;
+        delete _juliaConstantDialog;
     }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -646,15 +646,15 @@ void MainFrame::OnScriptEditor(wxCommandEvent&)
 {
     if (!scriptEditorActive)
     {
-        scriptEditor = new ScriptEditor(&scriptEditorActive, this);
-        scriptEditor->Show(true);
+        _scriptEditor = new ScriptEditor(&scriptEditorActive, this);
+        _scriptEditor->Show(true);
         scriptEditorActive = true;
     }
     else
     {
-        scriptEditor->Show(false);
+        _scriptEditor->Show(false);
         scriptEditorActive = false;
-        delete scriptEditor;
+        delete _scriptEditor;
     }
 }
 void MainFrame::OnZoomRecorder(wxCommandEvent&)
@@ -1041,9 +1041,9 @@ void MainFrame::UpdateMenu()
     // Closes constant dialog.
     if (introConstActive)
     {
-        diag->Show(false);
+        _juliaConstantDialog->Show(false);
         introConstActive = false;
-        delete diag;
+        delete _juliaConstantDialog;
     }
 
     // Adjust Julia constant menu items.
@@ -1079,10 +1079,10 @@ void MainFrame::UpdateMenu()
 void MainFrame::UpdateJuliaMode()
 {
     // Destroy Julia window.
-    if (juliaModePtr != nullptr)
+    if (_juliaModePtr != nullptr)
     {
         juliaMode->Check(false);
-        juliaModePtr->Close();
+        _juliaModePtr->Close();
     }
     // Creates Julia fractal with parameters from the main fractal.
     else
@@ -1108,8 +1108,8 @@ void MainFrame::UpdateJuliaMode()
             juliaType = FractalType::Julia;
         };
 
-        juliaModePtr = new JuliaMode(this, fractalCanvas, juliaType, fractalCanvas->GetFractalPtr()->GetOptions());
-        juliaModePtr->Launch();
+        _juliaModePtr = new JuliaMode(this, fractalCanvas, juliaType, fractalCanvas->GetFractalPtr()->GetOptions());
+        _juliaModePtr->Launch();
         fractalCanvas->SetJuliaMode(true);
     }
 }
@@ -1123,6 +1123,6 @@ void MainFrame::ReloadScripts()
 }
 void MainFrame::UpdateJuliaRendererOptions(const Options& options)
 {
-    if (juliaModePtr != nullptr)
-        juliaModePtr->SetRendererOptions(options);
+    if (_juliaModePtr != nullptr)
+        _juliaModePtr->SetRendererOptions(options);
 }

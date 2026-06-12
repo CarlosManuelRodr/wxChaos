@@ -10,17 +10,16 @@
 #ifndef _const_dialog
 #define _const_dialog
 
-#include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/dialog.h>
 #include "sfml/SFMLFractal.h"
 
 /**
-* @class ConstDialog
+* @class JuliaConstantDialog
 * @brief Dialog that sets the constant "K" in a Julia fractal.
 */
 
-class ConstDialog : public wxDialog
+class JuliaConstantDialog : public wxDialog
 {
     wxPanel* _dumbPanel;
     wxTextCtrl* _realText;
@@ -38,10 +37,10 @@ class ConstDialog : public wxDialog
     void OnClose(wxCloseEvent& event);
 
 public:
-    ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id = wxID_ANY,
-                const wxString& title = wxT("Enter constant"), const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxSize(320, 250), long style = wxDEFAULT_DIALOG_STYLE);
-    ~ConstDialog() override;
+    JuliaConstantDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id = wxID_ANY,
+                        const wxString& title = wxT("Enter constant"), const wxPoint& pos = wxDefaultPosition,
+                        const wxSize& size = wxSize(320, 250), long style = wxDEFAULT_DIALOG_STYLE);
+    ~JuliaConstantDialog() override;
 };
 
 #endif

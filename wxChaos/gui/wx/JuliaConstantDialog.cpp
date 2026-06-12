@@ -1,10 +1,11 @@
 #include <wx/gdicmn.h>
 #include <wx/statbox.h>
-#include "ConstDialog.h"
+#include "JuliaConstantDialog.h"
 #include "TextUtils.h"
 
-ConstDialog::ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, const wxWindowID id, const wxString& title,
-                         const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
+JuliaConstantDialog::JuliaConstantDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, const wxWindowID id,
+                                         const wxString& title, const wxPoint& pos, const wxSize& size,
+                                         const long style) : wxDialog(parent, id, title, pos, size, style)
 {
     _presenter = presenter;
     _target = _presenter->GetFractal();
@@ -58,18 +59,18 @@ ConstDialog::ConstDialog(bool* active, SFMLFractal* presenter, wxWindow* parent,
     
     this->Centre(wxBOTH);
 
-    _okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ConstDialog::OnOk, this);
-    _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ConstDialog::OnApply, this);
-    this->Bind(wxEVT_CLOSE_WINDOW, &ConstDialog::OnClose, this);
+    _okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &JuliaConstantDialog::OnOk, this);
+    _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &JuliaConstantDialog::OnApply, this);
+    this->Bind(wxEVT_CLOSE_WINDOW, &JuliaConstantDialog::OnClose, this);
 }
 
-ConstDialog::~ConstDialog()
+JuliaConstantDialog::~JuliaConstantDialog()
 {
-    _okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ConstDialog::OnOk, this);
+    _okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &JuliaConstantDialog::OnOk, this);
     *_active = false;
 }
 
-void ConstDialog::OnOk(wxCommandEvent&)
+void JuliaConstantDialog::OnOk(wxCommandEvent&)
 {
     const double real = TextUtils::ToDouble(_realText->GetLineText(0));
     const double imag = TextUtils::ToDouble(_imText->GetLineText(0));
@@ -80,7 +81,7 @@ void ConstDialog::OnOk(wxCommandEvent&)
     this->Close(true);
     this->Destroy();
 }
-void ConstDialog::OnApply(wxCommandEvent&)
+void JuliaConstantDialog::OnApply(wxCommandEvent&)
 {
     const double real = TextUtils::ToDouble(_realText->GetLineText(0));
     const double imag = TextUtils::ToDouble(_imText->GetLineText(0));
@@ -90,7 +91,7 @@ void ConstDialog::OnApply(wxCommandEvent&)
 
     _presenter->SetK(real, imag);
 }
-void ConstDialog::OnClose(wxCloseEvent&)
+void JuliaConstantDialog::OnClose(wxCloseEvent&)
 {
     this->Destroy();
 }
