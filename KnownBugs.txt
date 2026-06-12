@@ -1,1 +1,2 @@
 Improvements:
+- Redesign the ugly ass svg banner of the About dialog.

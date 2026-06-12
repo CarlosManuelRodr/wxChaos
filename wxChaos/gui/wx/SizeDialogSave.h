@@ -40,7 +40,7 @@ public:
     ~SaveProgressDiag() override;
 
     ///@brief Inform if the fractal has finished.
-    ///@return true if has finished, false if not.
+    ///@return true if it has finished, false if not.
     bool IsFinished() const;
 };
 /**
