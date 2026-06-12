@@ -14,6 +14,7 @@ private:
 public:
     Cell(unsigned int width, unsigned int height);
     ~Cell();
+    wxString GetName() const override { return wxT("Cell"); }
 
     void Render();
     void DrawOrbit();

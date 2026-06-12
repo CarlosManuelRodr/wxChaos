@@ -2,6 +2,8 @@
 #include "FractalCanvas.h"
 #include "TextUtils.h"
 #include "SizeDialogSave.h"
+#include <algorithm>
+#include <cmath>
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
@@ -101,6 +103,7 @@ void FractalCanvas::CreateScriptFractal(const ScriptData& scriptData)
     const sf::Vector2u size = this->getSize();
     _fractalHandler.CreateScriptFractal(size.x, size.y, scriptData);
 }
+
 void FractalCanvas::OnUpdate()
 {
     // Handles SFML events.
@@ -464,6 +467,61 @@ void FractalCanvas::SetUserFormula(const FormulaOptions &userFormula)
 FormulaOptions FractalCanvas::GetFormula()
 {
     return _userFormula;
+}
+
+wxString FractalCanvas::InspectPoint(const double real, const double imaginary,
+                                     const optional<unsigned int> iterations) const
+{
+    constexpr unsigned int probeSize = 3;
+    FractalHandler probeHandler;
+
+    if (_type == FractalType::ScriptFractal)
+        probeHandler.CreateScriptFractal(probeSize, probeSize, _scriptData);
+    else
+        probeHandler.CreateFractal(_type, probeSize, probeSize);
+
+    Fractal* probe = probeHandler.GetFractalPtr();
+    if (probe == nullptr)
+        return wxT("This fractal cannot be inspected.");
+
+    Options options = _target->GetOptions();
+    const vector<RenderingAlgorithmType> algorithms = probe->GetAvailableAlg();
+    if (find(algorithms.begin(), algorithms.end(), RenderingAlgorithmType::EscapeTime) != algorithms.end())
+        options.alg = RenderingAlgorithmType::EscapeTime;
+    else if (!algorithms.empty())
+        options.alg = algorithms.front();
+
+    options.orbitTrapMode = false;
+    options.smoothRender = false;
+    options.justLaunchThreads = false;
+    if (iterations.has_value())
+        options.maxIter = *iterations;
+
+    probe->SetOptions(options);
+    probeHandler.SetFormula(_userFormula);
+
+    const double scale = max({1.0, abs(real), abs(imaginary)});
+    const double epsilon = scale * 1e-10;
+    probe->SetView({real - epsilon, imaginary - epsilon, real + epsilon, imaginary + epsilon});
+    probe->RenderBlocking();
+
+    const Fractal::PointSample sample = probe->GetPointSample(1, 1);
+    wxString output;
+    output << wxT("Fractal: ") << probe->GetName() << wxT("\n")
+           << wxT("Point: ") << real << wxT(" + ") << imaginary << wxT("i\n")
+           << wxT("Algorithm: ") << probe->GetRenderingAlgorithmName() << wxT("\n")
+           << wxT("Maximum iterations: ") << options.maxIter << wxT("\n");
+
+    if (sample.inSet)
+        output << wxT("Result: inside after ") << options.maxIter << wxT(" iterations");
+    else if (sample.hasValue && options.alg == RenderingAlgorithmType::EscapeTime)
+        output << wxT("Result: escaped at iteration ") << sample.value;
+    else if (sample.hasValue)
+        output << wxT("Renderer value: ") << sample.value;
+    else
+        output << wxT("Result: no value produced");
+
+    return output;
 }
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnResize(wxSizeEvent& event)

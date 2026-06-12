@@ -18,6 +18,7 @@ class DoublePendulum : public Fractal
 public:
     DoublePendulum(unsigned int width, unsigned int height);
     ~DoublePendulum() override;
+    wxString GetName() const override { return wxT("Double Pendulum"); }
 
     void Render() override;
     void DrawOrbit() override;

@@ -31,6 +31,14 @@
 */
 class Fractal
 {
+public:
+    struct PointSample
+    {
+        bool inSet;
+        unsigned int value;
+        bool hasValue;
+    };
+
 protected:
     bool** _setMap;                             ///< Stores the points that belong to the fractal set.
     unsigned int** _colorMap;                   ///< Store the color map.
@@ -157,6 +165,12 @@ public:
 
     virtual ~Fractal();
 
+    ///@brief Returns the display name supplied by the concrete fractal.
+    virtual wxString GetName() const = 0;
+
+    ///@brief Returns the display name of the selected rendering algorithm.
+    wxString GetRenderingAlgorithmName() const;
+
     ///@brief SetAreaOfView to a specified size.
     ///@param width New width.
     ///@param height New height.
@@ -254,6 +268,12 @@ public:
     const std::vector<LineData>& GetLines() const;
     const std::vector<LineData>& GetOrbitLines() const;
     const std::vector<CircleData>& GetCircles() const;
+
+    ///@brief Renders the current view synchronously without creating an image.
+    void RenderBlocking();
+
+    ///@brief Returns the stored result for a rendered pixel.
+    PointSample GetPointSample(unsigned int x, unsigned int y) const;
 
     // Thread control.
     ///@brief Calculate drawing limits of each thread and launches them.
@@ -400,6 +420,7 @@ public:
     ///@brief Draws a simple line. Used in orbit mode.
     void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
     void DrawCircle(double xCenter, double yCenter, double radius, sf::Color color = sf::Color(0, 0, 0));
+    void ClearGeometryFigures();
     virtual void DrawOrbit() {}
 };
 

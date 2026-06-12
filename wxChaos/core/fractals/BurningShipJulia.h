@@ -13,6 +13,7 @@ private:
 public:
     BurningShipJulia(unsigned int width, unsigned int height);
     ~BurningShipJulia();
+    wxString GetName() const override { return wxT("Burning Ship Julia"); }
 
     void Render();
     void DrawOrbit();

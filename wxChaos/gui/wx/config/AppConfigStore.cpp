@@ -271,3 +271,10 @@ void AppConfigStore::SetFirstUse(bool firstUse) const
     config.firstUse = firstUse;
     Save(config);
 }
+
+void AppConfigStore::SetCommandConsole(const bool commandConsole) const
+{
+    AppConfig config = Load();
+    config.commandConsole = commandConsole;
+    Save(config);
+}

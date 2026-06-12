@@ -13,6 +13,7 @@ private:
 public:
     Fractory(unsigned int width, unsigned int height);
     ~Fractory();
+    wxString GetName() const override { return wxT("Fractory"); }
 
     void Render();
     void DrawOrbit();

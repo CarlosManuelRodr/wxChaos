@@ -13,6 +13,7 @@ class Newton : public Fractal
 public:
     Newton(unsigned int width, unsigned int height);
     ~Newton() override;
+    wxString GetName() const override { return wxT("Newton"); }
 
     void Render() override;
     void DrawOrbit() override;

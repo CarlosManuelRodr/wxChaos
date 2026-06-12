@@ -53,6 +53,9 @@ public:
     ///@param firstUse New value for the first-use flag.
     void SetFirstUse(bool firstUse) const;
 
+    ///@brief Updates whether the command console should open at startup.
+    void SetCommandConsole(bool commandConsole) const;
+
 private:
     static const char* DefaultColorStyle();
     static std::string Trim(const std::string& value);

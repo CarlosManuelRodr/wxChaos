@@ -75,6 +75,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
 
     this->GetScriptFractals();
     this->ConnectEvents();
+    if (_appConfig.commandConsole)
+        this->ShowCommandConsole();
 }
 void MainFrame::ShowFirstUseDialog()
 {
@@ -101,6 +103,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_RENDERER_OPTIONS_CLOSED, &MainFrame::OnRendererOptionsClosed, this);
     this->Bind(wxEVT_SCRIPT_EDITOR_CLOSED, &MainFrame::OnScriptEditorClosed, this);
     this->Bind(wxEVT_DIMENSION_FRAME_CLOSED, &MainFrame::OnDimensionFrameClosed, this);
+    this->Bind(wxEVT_COMMAND_CONSOLE_CLOSED, &MainFrame::OnCommandConsoleClosed, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnWelcomeDialog, this, ID_WELCOME_DIALOG);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, ID_ABOUT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnKeyboardGuide, this, ID_KEYBOARD_GUIDE);
@@ -147,6 +150,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnScriptEditor, this, ID_SCRIPT_EDITOR);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnZoomRecorder, this, ID_ZOOM_RECORDER);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnDimensionCalculator, this, ID_DIMENSION_CALCULATOR);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnCommandConsole, this, ID_COMMAND_CONSOLE);
 }
 
 void MainFrame::SetUpGUI()
@@ -261,6 +265,7 @@ void MainFrame::SetUpGUI()
 
     // Tools menu.
     _toolMenu->Append(ID_SCRIPT_EDITOR, wxT("Script editor"), wxT("Create new fractals with an scripting language."));
+    _toolMenu->Append(ID_COMMAND_CONSOLE, wxT("Command console"), wxT("Control and inspect the current fractal with commands."));
     _toolMenu->Append(ID_ZOOM_RECORDER, wxT("Zoom recorder"), wxT("Record a video zoom."));
     _toolMenu->Append(ID_DIMENSION_CALCULATOR, wxT("Dimension calculator"), wxT("Calculate fractal dimension."));
 
@@ -357,6 +362,11 @@ void MainFrame::OnQuit(wxCommandEvent&)
 }
 void MainFrame::CloseAll()
 {
+    if (_commandConsole != nullptr)
+    {
+        _commandConsole->Destroy();
+        _commandConsole = nullptr;
+    }
     DestroyJuliaMode(true);
     DestroyDimensionFrame();
     delete _fractalCanvas;
@@ -409,6 +419,29 @@ void MainFrame::DestroyDimensionFrame()
 void MainFrame::OnDimensionFrameClosed(wxCommandEvent&)
 {
     _dimensionCalculator = nullptr;
+}
+
+void MainFrame::OnCommandConsoleClosed(wxCommandEvent&)
+{
+    _commandConsole = nullptr;
+    _appConfig.commandConsole = false;
+    AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).SetCommandConsole(false);
+}
+
+void MainFrame::ShowCommandConsole()
+{
+    if (_commandConsole == nullptr)
+    {
+        _commandConsole = new CommandConsole(_fractalCanvas, [this] { ReloadScripts(); }, this);
+        _commandConsole->Show(true);
+        _appConfig.commandConsole = true;
+        AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).SetCommandConsole(true);
+    }
+    else
+    {
+        _commandConsole->Raise();
+        _commandConsole->SetFocus();
+    }
 }
 void MainFrame::OnWelcomeDialog(wxCommandEvent&)
 {
@@ -678,6 +711,11 @@ void MainFrame::OnDimensionCalculator(wxCommandEvent&)
     }
     else
         _dimensionCalculator->SetFocus();
+}
+
+void MainFrame::OnCommandConsole(wxCommandEvent&)
+{
+    this->ShowCommandConsole();
 }
 
 

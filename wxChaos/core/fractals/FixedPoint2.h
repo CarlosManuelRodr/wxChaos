@@ -13,6 +13,7 @@ class FixedPoint2 : public Fractal
 public:
     FixedPoint2(unsigned int width, unsigned int height);
     ~FixedPoint2() override;
+    wxString GetName() const override { return wxT("Fixed Point: cos(z)"); }
 
     void Render() override;
     void DrawOrbit() override;

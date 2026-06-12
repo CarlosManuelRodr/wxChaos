@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "wxSFMLCanvas.h"
 #include "sfml/ToggleButton.h"
 #include "sfml/SelectionRect.h"
@@ -155,6 +157,9 @@ public:
 
     ///@return Formula in the user-defined fractal.
     FormulaOptions GetFormula();
+
+    ///@brief Evaluates one world-coordinate point with the current fractal settings.
+    wxString InspectPoint(double real, double imaginary, std::optional<unsigned int> iterations = std::nullopt) const;
 
     ///// Event processor /////
 

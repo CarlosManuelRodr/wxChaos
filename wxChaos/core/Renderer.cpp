@@ -20,6 +20,22 @@ Renderer::Renderer() : _myOpt()
     _kReal = _kImaginary = 0.0;
 }
 
+wxString Renderer::GetAlgorithmName(const RenderingAlgorithmType algorithm)
+{
+    switch (algorithm)
+    {
+        case RenderingAlgorithmType::EscapeTime: return wxT("escape time");
+        case RenderingAlgorithmType::GaussianInt: return wxT("Gaussian integer");
+        case RenderingAlgorithmType::EscapeAngle: return wxT("escape angle");
+        case RenderingAlgorithmType::TriangleInequality: return wxT("triangle inequality");
+        case RenderingAlgorithmType::ChaoticMap: return wxT("chaotic map");
+        case RenderingAlgorithmType::Lyapunov: return wxT("Lyapunov");
+        case RenderingAlgorithmType::ConvergenceTest: return wxT("convergence test");
+        case RenderingAlgorithmType::Buddhabrot: return wxT("Buddhabrot");
+        default: return wxT("renderer-specific");
+    }
+}
+
 void Renderer::SetOptions(const Options& opt)
 {
     _myOpt = opt;

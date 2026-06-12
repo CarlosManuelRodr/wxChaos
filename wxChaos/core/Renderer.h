@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <wx/string.h>
 #include "types/FractalType.h"
 #include "geometry/Vector2Int.h"
 #include "Options.h"
@@ -108,6 +109,7 @@ public:
     virtual ~Renderer() = default;
 
     virtual void Render() = 0;
+    static wxString GetAlgorithmName(RenderingAlgorithmType algorithm);
     virtual void Stop();
 
     void run();

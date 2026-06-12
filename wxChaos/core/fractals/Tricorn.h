@@ -13,6 +13,7 @@ private:
 public:
     Tricorn(unsigned int width, unsigned int height);
     ~Tricorn();
+    wxString GetName() const override { return wxT("Tricorn"); }
 
     void Render();
     void DrawOrbit();

@@ -13,6 +13,7 @@ class Magnet : public Fractal
 public:
     Magnet(unsigned int width, unsigned int height);
     ~Magnet() override;
+    wxString GetName() const override { return wxT("Magnet"); }
 
     void Render() override;
     void DrawOrbit() override;

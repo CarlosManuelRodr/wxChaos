@@ -13,6 +13,7 @@ class Mandelbrot : public Fractal
 public:
     Mandelbrot(unsigned int width, unsigned int height);
     ~Mandelbrot() override;
+    wxString GetName() const override { return wxT("Mandelbrot"); }
 
     void Render() override;     ///< Launch threads.
     void DrawOrbit() override;

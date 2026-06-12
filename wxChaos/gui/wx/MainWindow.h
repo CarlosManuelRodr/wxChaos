@@ -21,6 +21,7 @@
 #include "ScriptEditor.h"
 #include "ZoomRecorder.h"
 #include "DimensionFrame.h"
+#include "CommandConsole.h"
 
 /**
 * @enum IDS
@@ -71,7 +72,8 @@ enum IDS
     ID_WELCOME_DIALOG,
     ID_SCRIPT_EDITOR,
     ID_ZOOM_RECORDER,
-    ID_DIMENSION_CALCULATOR
+    ID_DIMENSION_CALCULATOR,
+    ID_COMMAND_CONSOLE
 };
 
 /**
@@ -91,6 +93,7 @@ class MainFrame : public wxFrame
     RendererOptions* _rendererOptions;
     ScriptEditor* _scriptEditor{};
     DimensionFrame* _dimensionCalculator;
+    CommandConsole* _commandConsole{};
     
     bool _changeKeyboardGuide;
     bool _introConstActive;
@@ -162,6 +165,7 @@ class MainFrame : public wxFrame
     void CloseAll();
     void DestroyJuliaMode(bool requestClose);
     void DestroyDimensionFrame();
+    void ShowCommandConsole();
     void ShowFirstUseDialog();
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
@@ -180,6 +184,7 @@ public :
     void OnRendererOptionsClosed(wxCommandEvent& event);   ///< Handles the renderer options window closed event.
     void OnScriptEditorClosed(wxCommandEvent& event);      ///< Handles the script editor window closed event.
     void OnDimensionFrameClosed(wxCommandEvent& event);    ///< Handles the dimension window closed event.
+    void OnCommandConsoleClosed(wxCommandEvent& event);    ///< Handles the command console closed event.
     void ChangeMandelbrot(wxCommandEvent& event);
     void ChangeMandelbrotZN(wxCommandEvent& event);
     void ChangeJulia(wxCommandEvent& event);
@@ -225,6 +230,7 @@ public :
     void OnScriptEditor(wxCommandEvent& event);
     void OnZoomRecorder(wxCommandEvent& event);
     void OnDimensionCalculator(wxCommandEvent& event);
+    void OnCommandConsole(wxCommandEvent& event);
 
     void ReloadScripts();  ///< Search again for script fractals.
 };

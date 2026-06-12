@@ -126,6 +126,11 @@ Fractal::~Fractal()
     delete[] _auxMap;
 }
 
+wxString Fractal::GetRenderingAlgorithmName() const
+{
+    return Renderer::GetAlgorithmName(_algorithm);
+}
+
 sf::Color Fractal::GetColorFromPalette(unsigned int index) const
 {
     if (index <= 0)
@@ -665,6 +670,31 @@ const std::vector<LineData>& Fractal::GetOrbitLines() const
 const std::vector<CircleData>& Fractal::GetCircles() const
 {
     return _circles;
+}
+
+void Fractal::RenderBlocking()
+{
+    const bool previousSnapshot = _onSnapshot;
+    const bool previousWaitRoutine = _waitRoutine;
+    _onSnapshot = true;
+    _waitRoutine = true;
+
+    this->PrepareRender();
+    this->Render();
+    this->PreDrawMaps();
+
+    _rendered = true;
+    _rendering = false;
+    _onSnapshot = previousSnapshot;
+    _waitRoutine = previousWaitRoutine;
+}
+
+Fractal::PointSample Fractal::GetPointSample(const unsigned int x, const unsigned int y) const
+{
+    if (x >= _screenWidth || y >= _screenHeight)
+        return {false, 0, false};
+
+    return {_setMap[x][y], _colorMap[x][y], _colorMap[x][y] != InvalidColor};
 }
 // Thread control
 ThreadWatchdog<Renderer>* Fractal::GetWatchdog()
@@ -1218,4 +1248,11 @@ void Fractal::DrawCircle(const double xCenter, const double yCenter, const doubl
     data.color = color;
     _circles.push_back(data);
     _geomFigure = true;
+}
+
+void Fractal::ClearGeometryFigures()
+{
+    _circles.clear();
+    _lines.clear();
+    _geomFigure = !_orbitLines.empty();
 }
