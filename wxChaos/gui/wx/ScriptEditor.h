@@ -16,6 +16,8 @@
 #include <vector>
 #include "AngelscriptBindings.h"
 
+wxDECLARE_EVENT(wxEVT_SCRIPT_EDITOR_CLOSED, wxCommandEvent);
+
 class ScriptNameDialog : public wxDialog
 {
     wxStaticText* _scriptNameText;
@@ -49,7 +51,6 @@ class ScriptEditor : public wxFrame
     wxButton* _runButton;
     wxRichTextCtrl* _console;
     wxStaticBitmap* _renderPreviewBitmap;
-    bool* _isActive;
 
     std::vector<ScriptData> _loadedScripts;
     int _currentScriptIndex;
@@ -69,13 +70,14 @@ class ScriptEditor : public wxFrame
     void OnSaveChanges(wxCommandEvent& event);
     void OnNewScript(wxCommandEvent& event);
     void OnDeleteScript(wxCommandEvent& event);
-    void OnClose(wxCommandEvent& event);
+    void OnCloseButton(wxCommandEvent& event);
+    void OnClose(wxCloseEvent& event);
     void OnCodeChange(wxKeyEvent& event);
     void OnValidateScript(wxCommandEvent& event);
     void OnRunScript(wxCommandEvent& event);
     void OnDebugPanel(wxCollapsiblePaneEvent& event);
 public:
-    ScriptEditor(bool* active, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Script editor"),
+    ScriptEditor(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Script editor"),
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 900),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ScriptEditor() override;

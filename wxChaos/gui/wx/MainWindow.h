@@ -97,7 +97,6 @@ class MainFrame : public wxFrame
     bool _iterationsDialogIsActive;
     bool _informationFrameIsActive;
     bool _formulaDialogIsActive;
-    bool _scriptEditorIsActive;
     bool _showOptionsPanel{};
 
     // WX
@@ -179,6 +178,7 @@ public :
     void OnResize(wxSizeEvent& event);                     ///< Resizes the frame.
     void OnJuliaModeClosed(wxCommandEvent& event);         ///< Handles the Julia window closed event.
     void OnRendererOptionsClosed(wxCommandEvent& event);   ///< Handles the renderer options window closed event.
+    void OnScriptEditorClosed(wxCommandEvent& event);      ///< Handles the script editor window closed event.
     void OnDimensionFrameClosed(wxCommandEvent& event);    ///< Handles the dimension window closed event.
     void ChangeMandelbrot(wxCommandEvent& event);
     void ChangeMandelbrotZN(wxCommandEvent& event);
@@ -228,5 +228,3 @@ public :
 
     void ReloadScripts();  ///< Search again for script fractals.
 };
-
-extern MainFrame* mainFramePtr;  ///< Pointer to the MainFrame.

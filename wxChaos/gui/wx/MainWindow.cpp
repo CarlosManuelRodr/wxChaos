@@ -9,7 +9,6 @@
 using namespace std;
 
 constexpr unsigned int SCRIPT_ID_INDEX = 8510;
-MainFrame* mainFramePtr = nullptr;
 
 /**
 * @brief Gets the desktop resolution. Used to adjust menu position.
@@ -34,7 +33,6 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     wxImage::AddHandler(new wxICOHandler);
 
     // WX.
-    mainFramePtr = this;
     this->SetSizeHints(wxSize(900, 650), wxDefaultSize);
 
     const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
@@ -49,7 +47,6 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     _iterationsDialogIsActive = false;
     _informationFrameIsActive = false;
     _formulaDialogIsActive = false;
-    _scriptEditorIsActive = false;
     _selectedScriptIndex = std::nullopt;
 
     this->UpdateMenu();
@@ -103,6 +100,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnJuliaMode, this, ID_JULIA_MODE);
     this->Bind(wxEVT_JULIA_MODE_CLOSED, &MainFrame::OnJuliaModeClosed, this);
     this->Bind(wxEVT_RENDERER_OPTIONS_CLOSED, &MainFrame::OnRendererOptionsClosed, this);
+    this->Bind(wxEVT_SCRIPT_EDITOR_CLOSED, &MainFrame::OnScriptEditorClosed, this);
     this->Bind(wxEVT_DIMENSION_FRAME_CLOSED, &MainFrame::OnDimensionFrameClosed, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnWelcomeDialog, this, ID_WELCOME_DIALOG);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, ID_ABOUT);
@@ -395,6 +393,11 @@ void MainFrame::OnRendererOptionsClosed(wxCommandEvent&)
 {
     _rendererOptions = nullptr;
 }
+void MainFrame::OnScriptEditorClosed(wxCommandEvent&)
+{
+    _scriptEditor = nullptr;
+    ReloadScripts();
+}
 void MainFrame::DestroyDimensionFrame()
 {
     if (_dimensionCalculator == nullptr)
@@ -645,18 +648,13 @@ void MainFrame::OnUserManual(wxCommandEvent&) // NOLINT(*-convert-member-functio
 }
 void MainFrame::OnScriptEditor(wxCommandEvent&)
 {
-    if (!_scriptEditorIsActive)
+    if (_scriptEditor == nullptr)
     {
-        _scriptEditor = new ScriptEditor(&_scriptEditorIsActive, this);
+        _scriptEditor = new ScriptEditor(this);
         _scriptEditor->Show(true);
-        _scriptEditorIsActive = true;
     }
     else
-    {
-        _scriptEditor->Show(false);
-        _scriptEditorIsActive = false;
-        delete _scriptEditor;
-    }
+        _scriptEditor->Close(true);
 }
 void MainFrame::OnZoomRecorder(wxCommandEvent&)
 {

@@ -4,9 +4,10 @@
 #include "ScriptEditor.h"
 #include "FractalTypes.h"
 #include "global.h"
-#include "MainWindow.h"
 #include "../scripting/AngelscriptConfigurationEngine.h"
 using namespace std;
+
+wxDEFINE_EVENT(wxEVT_SCRIPT_EDITOR_CLOSED, wxCommandEvent);
 
 const string newScriptTemplate = R""""(void Configure()
 {
@@ -87,10 +88,9 @@ wxString ScriptNameDialog::GetScriptName() const
 }
 
 
-ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
+ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
                            const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style)
 {
-    _isActive = active;
     _currentScriptIndex = -1;
     _debugCollapsiblePaneBestHeight = 0;
 
@@ -260,7 +260,8 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     _saveChangesButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnSaveChanges, this);
     _newButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewScript, this);
     _removeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
-    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClose, this);
+    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnCloseButton, this);
+    this->Bind(wxEVT_CLOSE_WINDOW, &ScriptEditor::OnClose, this);
     _codeEditor->Bind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
     _runButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
@@ -269,14 +270,12 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
 
 ScriptEditor::~ScriptEditor()
 {
-    *_isActive = false;
-
     // Disconnect Events
     _scriptsListBox->Unbind(wxEVT_COMMAND_LISTBOX_SELECTED, &ScriptEditor::OnSelectScript, this);
     _saveChangesButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnSaveChanges, this);
     _newButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewScript, this);
     _removeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
-    _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClose, this);
+    _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnCloseButton, this);
     _codeEditor->Unbind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
     _runButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
@@ -384,11 +383,13 @@ void ScriptEditor::OnDeleteScript(wxCommandEvent&)
         this->FetchUserScripts();
     }
 }
-void ScriptEditor::OnClose(wxCommandEvent&)
+void ScriptEditor::OnCloseButton(wxCommandEvent&)
 {
-    mainFramePtr->ReloadScripts();
-    this->Show(false);
-    *_isActive = false;
+    this->Close(true);
+}
+void ScriptEditor::OnClose(wxCloseEvent&)
+{
+    wxQueueEvent(GetParent(), new wxCommandEvent(wxEVT_SCRIPT_EDITOR_CLOSED));
     this->Destroy();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
