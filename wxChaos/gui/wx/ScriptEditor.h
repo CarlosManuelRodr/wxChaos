@@ -18,11 +18,11 @@
 
 class ScriptNameDialog : public wxDialog
 {
-    wxStaticText* scriptNameText;
-    wxTextCtrl* scriptNameCtrl;
-    wxStdDialogButtonSizer* buttonsSizer;
-    wxButton* buttonsSizerOK;
-    wxButton* buttonsSizerCancel;
+    wxStaticText* _scriptNameText;
+    wxTextCtrl* _scriptNameCtrl;
+    wxStdDialogButtonSizer* _buttonsSizer;
+    wxButton* _buttonsSizerOk;
+    wxButton* _buttonsSizerCancel;
 
     void OnCancel(wxCommandEvent& event);
     void OnOk(wxCommandEvent& event);
@@ -35,25 +35,25 @@ public:
 
 class ScriptEditor : public wxFrame
 {
-    wxPanel* mainPanel;
-    wxPanel* scriptPanel;
-    wxListBox* scriptsListBox;
-    wxButton* saveChangesButton;
-    wxButton* newButton;
-    wxButton* removeButton;
-    wxButton* closeButton;
-    wxStyledTextCtrl* codeEditor;
-    wxGenericCollapsiblePane* debugCollapsiblePane;
-    wxPanel* debugPanel;
-    wxButton* validateButton;
-    wxButton* runButton;
-    wxRichTextCtrl* console;
-    wxStaticBitmap* renderPreviewBitmap;
-    bool* isActive;
+    wxPanel* _mainPanel;
+    wxPanel* _scriptPanel;
+    wxListBox* _scriptsListBox;
+    wxButton* _saveChangesButton;
+    wxButton* _newButton;
+    wxButton* _removeButton;
+    wxButton* _closeButton;
+    wxStyledTextCtrl* _codeEditor;
+    wxGenericCollapsiblePane* _debugCollapsiblePane;
+    wxPanel* _debugPanel;
+    wxButton* _validateButton;
+    wxButton* _runButton;
+    wxRichTextCtrl* _console;
+    wxStaticBitmap* _renderPreviewBitmap;
+    bool* _isActive;
 
-    std::vector<ScriptData> loadedScripts;
-    int currentScriptIndex;
-    int debugCollapsiblePaneBestHeight;
+    std::vector<ScriptData> _loadedScripts;
+    int _currentScriptIndex;
+    int _debugCollapsiblePaneBestHeight;
 
     void SetUpLexer() const;
     void FetchUserScripts();
