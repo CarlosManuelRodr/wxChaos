@@ -16,30 +16,30 @@
 */
 class ZoomRecorder : public wxDialog
 {
-    wxPanel* panel;
-    wxStaticBitmap* previewBitmap;
-    wxStaticText* previewFrameText;
-    wxSlider* previewSlider;
-    wxButton* saveButton;
-    wxButton* cancelButton;
-    wxStaticText* videoDurationText;
-    wxSpinCtrl* minutesSpinCtrl;
-    wxStaticText* minutesText;
-    wxSpinCtrl* secondsSpinCtrl;
-    wxStaticText* secondsText;
-    wxStaticText* framerateText;
-    wxSpinCtrl* framerateSpinCtrl;
-    wxStaticText* framesPerSecondText;
-    wxCheckBox* rotateCheckbox;
-    wxStaticText* zoomSpeedText;
-    wxSpinCtrl* zoomSpeedCtrl;
-    wxStaticText* colorRotateSpeedText;
-    wxSpinCtrlDouble* colorSpeedCtrl;
+    wxPanel* _panel;
+    wxStaticBitmap* _previewBitmap;
+    wxStaticText* _previewFrameText;
+    wxSlider* _previewSlider;
+    wxButton* _saveButton;
+    wxButton* _cancelButton;
+    wxStaticText* _videoDurationText;
+    wxSpinCtrl* _minutesSpinCtrl;
+    wxStaticText* _minutesText;
+    wxSpinCtrl* _secondsSpinCtrl;
+    wxStaticText* _secondsText;
+    wxStaticText* _framerateText;
+    wxSpinCtrl* _framerateSpinCtrl;
+    wxStaticText* _framesPerSecondText;
+    wxCheckBox* _rotateCheckbox;
+    wxStaticText* _zoomSpeedText;
+    wxSpinCtrl* _zoomSpeedCtrl;
+    wxStaticText* _colorRotateSpeedText;
+    wxSpinCtrlDouble* _colorSpeedCtrl;
 
-    FractalCanvas* fractalCanvasPtr;
-    FractalHandler fractalHandler;
+    FractalCanvas* _fractalCanvasPtr;
+    FractalHandler _fractalHandler;
 
-    Rect outermostZoom, innermostZoom;
+    Rect _outermostZoom, _innermostZoom;
 
     void OnScrollPreview(wxScrollEvent& event);
     void OnSaveVideo(wxCommandEvent&);
@@ -53,9 +53,9 @@ class ZoomRecorder : public wxDialog
     void RenderPreview(int zoom, int zoomSpeed = 1, double colorSpeed = -1.0);
     void RenderPreview();
     void UpdateTotalFrames();
-    [[nodiscard]] int CalculateTotalFrames() const;
+    [[nodiscard]] int GetTotalFrames() const;
 public:
-    ZoomRecorder(FractalCanvas* mFCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Zoom recorder"),
+    ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Zoom recorder"),
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(960, 720),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ZoomRecorder() override;

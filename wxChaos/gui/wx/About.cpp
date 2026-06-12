@@ -7,13 +7,13 @@ IMPLEMENT_DYNAMIC_CLASS(AboutDialog, wxDialog)
 
 AboutDialog::AboutDialog()
 {
-    Init();
+    Initialize();
 }
 
 AboutDialog::AboutDialog(wxWindow* parent, const wxWindowID id, const wxString& caption, const wxPoint& pos,
                          const wxSize& size, const long style)
 {
-    Init();
+    Initialize();
     Create(parent, id, caption, pos, size, style);
 }
 
@@ -33,7 +33,7 @@ bool AboutDialog::Create(wxWindow* parent, const wxWindowID id, const wxString& 
 
 AboutDialog::~AboutDialog() = default;
 
-void AboutDialog::Init()
+void AboutDialog::Initialize()
 {
     m_ContentPanel = nullptr;
     m_HeaderStaticBitmap = nullptr;

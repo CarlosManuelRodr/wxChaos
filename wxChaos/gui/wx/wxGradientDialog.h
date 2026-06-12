@@ -22,6 +22,32 @@
 */
 class wxGradientDialog : public wxDialog
 {
+    enum
+    {
+        ID_STOPS_AREA = wxID_HIGHEST + 1,
+    };
+
+    wxBoxSizer* _topSizer;
+    wxPanel* _topPanel;
+    wxSizer* _buttonSizer;
+    wxStaticBoxSizer* _gradientSizer;
+    wxStaticBitmap* _gradientStatBmp;
+    wxBitmap* _gradientBmp;
+    wxBoxSizer* _stopAreaSizer;
+    wxStaticBitmap* _stopsStatBmp;
+    wxBitmap* _stopsBmp;
+    wxStaticBoxSizer* _stopEditSizer;
+    wxBoxSizer* _colorSizer;
+    wxStaticText* _colorTxt;
+    wxStaticBitmap* _colorStatBmp;
+    wxButton* _colorEditButton;
+    wxButton* _colorDeleteButton;
+
+    int _selectedColorStop;
+    int _gradientSize;
+    std::vector<wxColour> _displayedStops;
+    wxGradient* _gradient;
+
     void OnStopsAreaClick(wxMouseEvent& event);
     void OnEditColor(wxCommandEvent& event);
     void OnDeleteColor(wxCommandEvent& event);
@@ -30,38 +56,14 @@ class wxGradientDialog : public wxDialog
     void CreateWidgets();
     void paintGradient();
     void paintStops();
-    wxBoxSizer *topSizer;
-    wxPanel *topPanel;
-    wxSizer *buttonSizer;
-    wxStaticBoxSizer *gradientSizer;
-    wxStaticBitmap *gradientStatBmp;
-    wxBitmap *gradientBmp;
-    wxBoxSizer *stopAreaSizer;
-    wxStaticBitmap *stopsStatBmp;
-    wxBitmap *stopsBmp;
-    wxStaticBoxSizer *stopEditSizer;
-    wxBoxSizer *colorSizer;
-    wxStaticText *colorTxt;
-    wxStaticBitmap *colorStatBmp;
-    wxButton *colorEditBtn;
-    wxButton *colorDeleteBtn;
-
-    int selectedColorStop;
-    int gradientSize;
-    std::vector<wxColor> m_displayedStops;
-    wxGradient* m_gradient;
-    DECLARE_DYNAMIC_CLASS(wxGradientDialog)
-
-    enum
-    {
-        ID_STOPS_AREA = wxID_HIGHEST + 1,
-    };
 
 public:
     wxGradientDialog();
-    explicit wxGradientDialog(wxWindow *parent, const wxGradient& grad = wxGradient(std::vector(2, *wxBLACK), 0, 100));
+    explicit wxGradientDialog(wxWindow* parent, const wxGradient& gradient = wxGradient(std::vector(2, *wxBLACK), 0, 100));
     ~wxGradientDialog() override;
     bool Create(wxWindow *parent, const wxGradient& grad = wxGradient(std::vector(2, *wxBLACK), 0, 100));
     [[nodiscard]] wxGradient GetGradient() const;
     int ShowModal() override;
+
+    wxDECLARE_DYNAMIC_CLASS(wxGradientDialog);
 };

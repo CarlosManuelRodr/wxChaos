@@ -2,84 +2,84 @@
 
 wxGradient::wxGradient()
 {
-    m_min = m_max = 0;
+    _min = _max = 0;
 }
 
 wxGradient::wxGradient(const std::vector<wxColour>& stops, const unsigned int min, const unsigned int max)
 {
-    m_stops = stops;
-    m_min = min;
-    m_max = max;
+    _stops = stops;
+    _min = min;
+    _max = max;
 }
 
 wxGradient::~wxGradient() = default;
 
 wxColour wxGradient::GetColorAt(const unsigned int value) const
 {
-    if (value < m_min)
-        return m_min;
-    if (value > m_max)
-        return m_max;
+    if (value < _min)
+        return _min;
+    if (value > _max)
+        return _max;
 
-    const unsigned int range = m_max - m_min;
-    const unsigned int v = value - m_min;
-    const double step = range / static_cast<double>(m_stops.size() - 1);
+    const unsigned int range = _max - _min;
+    const unsigned int v = value - _min;
+    const double step = range / static_cast<double>(_stops.size() - 1);
     const int bin = static_cast<int>(v / step);
     const double normalized_v = (v - bin*step) / step;
-    return Lerp(m_stops[bin], m_stops[bin+1], normalized_v);
+    return Lerp(_stops[bin], _stops[bin+1], normalized_v);
 }
 
 void wxGradient::AddColorStop(const wxColour& col)
 {
-    m_stops.push_back(col);
+    _stops.push_back(col);
 }
 
 void wxGradient::InsertColorStop(const unsigned int index, const wxColour& col)
 {
-    if (index > static_cast<int>(m_stops.size()))
+    if (index > static_cast<int>(_stops.size()))
         AddColorStop(col);
     else
-        m_stops.insert(m_stops.begin() + index, col);
+        _stops.insert(_stops.begin() + index, col);
 }
 
 void wxGradient::RemoveColorStop(const unsigned int index)
 {
-    m_stops.erase(m_stops.begin() + index);
+    _stops.erase(_stops.begin() + index);
 }
 
 void wxGradient::EditColorStop(const unsigned int index, const wxColour& col)
 {
-    m_stops[index] = col;
+    _stops[index] = col;
 }
 
 void wxGradient::SetMin(const unsigned int min)
 {
-    m_min = min;
+    _min = min;
 }
 
 unsigned int wxGradient::GetMin() const
 {
-    return m_min;
+    return _min;
 }
 
 void wxGradient::SetMax(const unsigned int max)
 {
-    m_max = max;
+    _max = max;
 }
 
 unsigned int wxGradient::GetMax() const
 {
-    return m_max;
+    return _max;
 }
 
 void wxGradient::SetStops(const std::vector<wxColour>& stops)
 {
-    m_stops = stops;
+    _stops = stops;
 }
 
 std::vector<wxColour> wxGradient::GetStops()
 {
-    return m_stops;
+    return _stops;
 }
 
 void wxGradient::FromString(wxString str)
@@ -99,7 +99,7 @@ void wxGradient::FromString(wxString str)
 wxString wxGradient::ToString()
 {
     wxString str = wxT("");
-    for (auto itr = m_stops.begin(); itr!=m_stops.end(); ++itr)
+    for (auto itr = _stops.begin(); itr!=_stops.end(); ++itr)
     {
         str.Append(itr->GetAsString(wxC2S_CSS_SYNTAX));
         str.Append(';');

@@ -35,8 +35,8 @@ class SaveProgressDiag : public wxDialog
 
 public:
     SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable = true, wxWindowID id = wxID_ANY,
-        const wxString& title = wxT("Saving..."), const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxSize(480, 180), long style = wxDEFAULT_DIALOG_STYLE);
+                     const wxString& title = wxT("Saving..."), const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxSize(480, 180), long style = wxDEFAULT_DIALOG_STYLE);
     ~SaveProgressDiag() override;
 
     ///@brief Inform if the fractal has finished.

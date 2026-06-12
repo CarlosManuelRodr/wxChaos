@@ -2,51 +2,51 @@
 #include <wx/colordlg.h>
 #include "wxGradientDialog.h"
 
-IMPLEMENT_DYNAMIC_CLASS(wxGradientDialog, wxDialog)
+wxIMPLEMENT_DYNAMIC_CLASS(wxGradientDialog, wxDialog)
 
 wxGradientDialog::wxGradientDialog()
 {
-    topSizer = nullptr;
-    topPanel = nullptr;
-    buttonSizer = nullptr;
-    gradientSizer = nullptr;
-    gradientStatBmp = nullptr;
-    stopsStatBmp = nullptr;
-    stopAreaSizer = nullptr;
-    colorSizer = nullptr;
-    colorStatBmp = nullptr;
-    colorEditBtn = nullptr;
-    colorDeleteBtn = nullptr;
-    gradientBmp = nullptr;
-    stopsBmp = nullptr;
-    stopEditSizer = nullptr;
-    colorTxt = nullptr;
-    m_gradient = nullptr;
-    selectedColorStop = 0;
-    gradientSize = 0;
+    _topSizer = nullptr;
+    _topPanel = nullptr;
+    _buttonSizer = nullptr;
+    _gradientSizer = nullptr;
+    _gradientStatBmp = nullptr;
+    _stopsStatBmp = nullptr;
+    _stopAreaSizer = nullptr;
+    _colorSizer = nullptr;
+    _colorStatBmp = nullptr;
+    _colorEditButton = nullptr;
+    _colorDeleteButton = nullptr;
+    _gradientBmp = nullptr;
+    _stopsBmp = nullptr;
+    _stopEditSizer = nullptr;
+    _colorTxt = nullptr;
+    _gradient = nullptr;
+    _selectedColorStop = 0;
+    _gradientSize = 0;
 }
 
-wxGradientDialog::wxGradientDialog(wxWindow* parent, const wxGradient& grad)
+wxGradientDialog::wxGradientDialog(wxWindow* parent, const wxGradient& gradient)
 {
-    topSizer = nullptr;
-    topPanel = nullptr;
-    buttonSizer = nullptr;
-    gradientSizer = nullptr;
-    gradientStatBmp = nullptr;
-    stopsStatBmp = nullptr;
-    stopAreaSizer = nullptr;
-    colorSizer = nullptr;
-    colorStatBmp = nullptr;
-    colorEditBtn = nullptr;
-    colorDeleteBtn = nullptr;
-    gradientBmp = nullptr;
-    stopsBmp = nullptr;
-    stopEditSizer = nullptr;
-    colorTxt = nullptr;
-    m_gradient = nullptr;
-    selectedColorStop = 0;
-    gradientSize = 0;
-    Create(parent, grad);
+    _topSizer = nullptr;
+    _topPanel = nullptr;
+    _buttonSizer = nullptr;
+    _gradientSizer = nullptr;
+    _gradientStatBmp = nullptr;
+    _stopsStatBmp = nullptr;
+    _stopAreaSizer = nullptr;
+    _colorSizer = nullptr;
+    _colorStatBmp = nullptr;
+    _colorEditButton = nullptr;
+    _colorDeleteButton = nullptr;
+    _gradientBmp = nullptr;
+    _stopsBmp = nullptr;
+    _stopEditSizer = nullptr;
+    _colorTxt = nullptr;
+    _gradient = nullptr;
+    _selectedColorStop = 0;
+    _gradientSize = 0;
+    Create(parent, gradient);
 }
 wxGradientDialog::~wxGradientDialog() = default;
 
@@ -58,16 +58,16 @@ bool wxGradientDialog::Create(wxWindow* parent, const wxGradient& grad)
     Bind(wxEVT_CLOSE_WINDOW, &wxGradientDialog::OnWindowClose, this);
     Bind(wxEVT_BUTTON, &wxGradientDialog::OnEditColor, this, wxID_EDIT);
     Bind(wxEVT_BUTTON, &wxGradientDialog::OnDeleteColor, this, wxID_DELETE);
-    stopsStatBmp->Bind(wxEVT_LEFT_DOWN, &wxGradientDialog::OnStopsAreaClick, this, ID_STOPS_AREA);
-    selectedColorStop = -1;
-    m_gradient = new wxGradient(grad);
+    _stopsStatBmp->Bind(wxEVT_LEFT_DOWN, &wxGradientDialog::OnStopsAreaClick, this, ID_STOPS_AREA);
+    _selectedColorStop = -1;
+    _gradient = new wxGradient(grad);
     paintGradient();
     paintStops();
     return true;
 }
 wxGradient wxGradientDialog::GetGradient() const
 {
-    return *m_gradient;
+    return *_gradient;
 }
 int wxGradientDialog::ShowModal()
 {
@@ -75,75 +75,75 @@ int wxGradientDialog::ShowModal()
 }
 void wxGradientDialog::CreateWidgets()
 {
-    topSizer = new wxBoxSizer(wxVERTICAL);
+    _topSizer = new wxBoxSizer(wxVERTICAL);
 
-    gradientSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxString(wxT("Gradient")));
-    topSizer->Add(gradientSizer, 1, wxEXPAND | wxALL, 12);
+    _gradientSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxString(wxT("Gradient")));
+    _topSizer->Add(_gradientSizer, 1, wxEXPAND | wxALL, 12);
     
-    gradientStatBmp = new wxStaticBitmap(this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(300, 50), wxBORDER_SIMPLE );
-    gradientSizer->Add(gradientStatBmp, 1, wxALL | wxALIGN_CENTER_HORIZONTAL);
+    _gradientStatBmp = new wxStaticBitmap(this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(300, 50), wxBORDER_SIMPLE );
+    _gradientSizer->Add(_gradientStatBmp, 1, wxALL | wxALIGN_CENTER_HORIZONTAL);
 
-    stopAreaSizer = new wxBoxSizer(wxHORIZONTAL);
-    gradientSizer->Add(stopAreaSizer, 1, wxEXPAND | wxTOP | wxBOTTOM, 6);
+    _stopAreaSizer = new wxBoxSizer(wxHORIZONTAL);
+    _gradientSizer->Add(_stopAreaSizer, 1, wxEXPAND | wxTOP | wxBOTTOM, 6);
 
-    stopsStatBmp = new wxStaticBitmap(this, ID_STOPS_AREA, wxNullBitmap, wxDefaultPosition, wxSize(311, 16));
-    stopAreaSizer->Add(stopsStatBmp);
+    _stopsStatBmp = new wxStaticBitmap(this, ID_STOPS_AREA, wxNullBitmap, wxDefaultPosition, wxSize(311, 16));
+    _stopAreaSizer->Add(_stopsStatBmp);
 
-    stopEditSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxString(wxT("Stops")));
-    gradientSizer->Add(stopEditSizer, 1, wxEXPAND | wxALL, 2);
+    _stopEditSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxString(wxT("Stops")));
+    _gradientSizer->Add(_stopEditSizer, 1, wxEXPAND | wxALL, 2);
 
-    colorSizer = new wxBoxSizer(wxHORIZONTAL);
-    stopEditSizer->Add(colorSizer, 1, wxEXPAND | wxALL , 6);
+    _colorSizer = new wxBoxSizer(wxHORIZONTAL);
+    _stopEditSizer->Add(_colorSizer, 1, wxEXPAND | wxALL , 6);
 
-    colorTxt = new wxStaticText(this, wxID_ANY, wxString(wxT("Color: ")), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
-    colorSizer->Add(colorTxt, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 12);
+    _colorTxt = new wxStaticText(this, wxID_ANY, wxString(wxT("Color: ")), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+    _colorSizer->Add(_colorTxt, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 12);
 
-    colorStatBmp = new wxStaticBitmap(this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(30, 20), wxBORDER_DOUBLE);
-    colorSizer->Add(colorStatBmp, 0, wxALIGN_CENTER_VERTICAL);
+    _colorStatBmp = new wxStaticBitmap(this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(30, 20), wxBORDER_DOUBLE);
+    _colorSizer->Add(_colorStatBmp, 0, wxALIGN_CENTER_VERTICAL);
     
-    colorEditBtn = new wxButton(this, wxID_EDIT, wxString(wxT("...")), wxDefaultPosition, wxSize(30,22));
-    colorSizer->Add(colorEditBtn, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 6);
-    colorEditBtn->Enable(false);
+    _colorEditButton = new wxButton(this, wxID_EDIT, wxString(wxT("...")), wxDefaultPosition, wxSize(30,22));
+    _colorSizer->Add(_colorEditButton, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 6);
+    _colorEditButton->Enable(false);
 
-    colorDeleteBtn = new wxButton(this, wxID_DELETE, wxString(wxT("Erase")), wxDefaultPosition, wxSize(60, 22));
-    colorSizer->Add(colorDeleteBtn, 0, wxLEFT, 100);
-    colorDeleteBtn->Enable(false);
+    _colorDeleteButton = new wxButton(this, wxID_DELETE, wxString(wxT("Erase")), wxDefaultPosition, wxSize(60, 22));
+    _colorSizer->Add(_colorDeleteButton, 0, wxLEFT, 100);
+    _colorDeleteButton->Enable(false);
 
-    buttonSizer = CreateButtonSizer( wxOK | wxCANCEL );
-    if (buttonSizer)
-        topSizer->Add(buttonSizer, wxSizerFlags().Expand().DoubleBorder());
+    _buttonSizer = CreateButtonSizer( wxOK | wxCANCEL );
+    if (_buttonSizer)
+        _topSizer->Add(_buttonSizer, wxSizerFlags().Expand().DoubleBorder());
 
-    this->SetSizer(topSizer);
+    this->SetSizer(_topSizer);
     GetSizer()->Fit(this); 
     GetSizer()->SetSizeHints(this); 
 }
 void wxGradientDialog::paintGradient()
 {
     wxBufferedDC dc;
-    wxGradient temp = *m_gradient;
+    wxGradient temp = *_gradient;
     temp.SetMax(300);
-    gradientBmp = new wxBitmap(gradientStatBmp->GetSize().GetWidth(), gradientStatBmp->GetSize().GetHeight());
-    dc.SelectObject(*gradientBmp);
+    _gradientBmp = new wxBitmap(_gradientStatBmp->GetSize().GetWidth(), _gradientStatBmp->GetSize().GetHeight());
+    dc.SelectObject(*_gradientBmp);
     for (unsigned int i = temp.GetMin(); i<temp.GetMax(); i++)
     {
         dc.SetPen(wxPen(temp.GetColorAt(i), 1));
         int position = static_cast<int>(i);
-        dc.DrawLine(position, 0, position, gradientStatBmp->GetSize().GetHeight());
+        dc.DrawLine(position, 0, position, _gradientStatBmp->GetSize().GetHeight());
     }
     dc.SelectObject(wxNullBitmap);
-    gradientStatBmp->SetBitmap(*gradientBmp);
+    _gradientStatBmp->SetBitmap(*_gradientBmp);
 }
 void wxGradientDialog::paintStops()
 {
-    m_displayedStops = m_gradient->GetStops();
+    _displayedStops = _gradient->GetStops();
     int ctr = 0;
-    const unsigned int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
+    const unsigned int dist = (_gradientStatBmp->GetSize().GetWidth() / (_displayedStops.size() - 1));
     wxBufferedDC dc;
-    stopsBmp = new wxBitmap(stopsStatBmp->GetSize().GetWidth(), stopsStatBmp->GetSize().GetHeight());
-    dc.SelectObject(*stopsBmp);
+    _stopsBmp = new wxBitmap(_stopsStatBmp->GetSize().GetWidth(), _stopsStatBmp->GetSize().GetHeight());
+    dc.SelectObject(*_stopsBmp);
     dc.SetBackground(wxBrush(GetBackgroundColour()));
     dc.Clear();
-    for (auto itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
+    for (auto itr = _displayedStops.begin(); itr!=_displayedStops.end(); ++itr)
     {
         // Draw triangle.
         dc.SetPen(wxPen(*wxBLACK));
@@ -167,97 +167,97 @@ void wxGradientDialog::paintStops()
         ctr += static_cast<int>(dist);
     }
     dc.SelectObject(wxNullBitmap);
-    stopsStatBmp->SetBitmap(*stopsBmp);
+    _stopsStatBmp->SetBitmap(*_stopsBmp);
 }
 void wxGradientDialog::OnStopsAreaClick(wxMouseEvent& event)
 {    
-    selectedColorStop = -1;
+    _selectedColorStop = -1;
     int ctr = 0;
-    unsigned int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
-    for (auto itr = m_displayedStops.begin(); itr!=m_displayedStops.end(); ++itr)
+    unsigned int dist = (_gradientStatBmp->GetSize().GetWidth() / (_displayedStops.size() - 1));
+    for (auto itr = _displayedStops.begin(); itr!=_displayedStops.end(); ++itr)
     {
         if (event.GetX() >= ctr*dist && event.GetX() <= ctr*dist + 11)
         {
-            selectedColorStop = ctr;
+            _selectedColorStop = ctr;
             break;
         }
         ctr++;
     }
-    m_displayedStops = m_gradient->GetStops();
-    if (selectedColorStop!=-1)
+    _displayedStops = _gradient->GetStops();
+    if (_selectedColorStop!=-1)
     {
-        colorStatBmp->SetBackgroundColour(m_displayedStops[selectedColorStop]);
-        colorStatBmp->ClearBackground();
+        _colorStatBmp->SetBackgroundColour(_displayedStops[_selectedColorStop]);
+        _colorStatBmp->ClearBackground();
         paintStops();
     }
     else
     {
-        const unsigned int insertAt = m_displayedStops.size() - (gradientStatBmp->GetSize().GetWidth() - event.GetX())/dist - 1;
-        m_gradient->InsertColorStop(insertAt, *wxBLACK);
-        selectedColorStop = static_cast<int>(insertAt);
-        m_displayedStops = m_gradient->GetStops();
-        dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
-        colorStatBmp->SetBackgroundColour(m_displayedStops[selectedColorStop]);
-        colorStatBmp->ClearBackground();
+        const unsigned int insertAt = _displayedStops.size() - (_gradientStatBmp->GetSize().GetWidth() - event.GetX())/dist - 1;
+        _gradient->InsertColorStop(insertAt, *wxBLACK);
+        _selectedColorStop = static_cast<int>(insertAt);
+        _displayedStops = _gradient->GetStops();
+        dist = (_gradientStatBmp->GetSize().GetWidth() / (_displayedStops.size() - 1));
+        _colorStatBmp->SetBackgroundColour(_displayedStops[_selectedColorStop]);
+        _colorStatBmp->ClearBackground();
         paintGradient();
         paintStops();
     }
 
     // Triangle selected indicator.
     wxBufferedDC dc;
-    dc.SelectObject(*stopsBmp);
+    dc.SelectObject(*_stopsBmp);
     dc.SetPen(wxPen(*wxLIGHT_GREY));
     dc.SetBrush(wxBrush(*wxBLACK));
-    const int xPosition = static_cast<int>(selectedColorStop*dist);
+    const int xPosition = static_cast<int>(_selectedColorStop*dist);
     const wxPoint triangle[] = {wxPoint(xPosition, 5), wxPoint(xPosition + 5, 0), wxPoint(xPosition + 10, 5)};
     dc.DrawPolygon(3, triangle);
     dc.SelectObject(wxNullBitmap);
-    stopsStatBmp->SetBitmap(*stopsBmp);
+    _stopsStatBmp->SetBitmap(*_stopsBmp);
 
-    colorEditBtn->Enable(true);
-    if (m_displayedStops.size() > 2)
-        colorDeleteBtn->Enable(true);
+    _colorEditButton->Enable(true);
+    if (_displayedStops.size() > 2)
+        _colorDeleteButton->Enable(true);
 
     event.Skip();
 }
 void wxGradientDialog::OnEditColor(wxCommandEvent& WXUNUSED(event))
 {
     wxColourData data;
-    data.SetCustomColour(0, colorStatBmp->GetBackgroundColour());
-    data.SetColour(colorStatBmp->GetBackgroundColour());
+    data.SetCustomColour(0, _colorStatBmp->GetBackgroundColour());
+    data.SetColour(_colorStatBmp->GetBackgroundColour());
     wxColourDialog dialog(this, &data);
     if (dialog.ShowModal()==wxID_OK)
     {
-        colorStatBmp->SetBackgroundColour(dialog.GetColourData().GetColour());
-        colorStatBmp->ClearBackground();
-        m_gradient->EditColorStop(selectedColorStop, dialog.GetColourData().GetColour());
+        _colorStatBmp->SetBackgroundColour(dialog.GetColourData().GetColour());
+        _colorStatBmp->ClearBackground();
+        _gradient->EditColorStop(_selectedColorStop, dialog.GetColourData().GetColour());
         paintGradient();
         paintStops();
 
-        const unsigned int dist = (gradientStatBmp->GetSize().GetWidth() / (m_displayedStops.size() - 1));
+        const unsigned int dist = (_gradientStatBmp->GetSize().GetWidth() / (_displayedStops.size() - 1));
         wxBufferedDC dc;
-        dc.SelectObject(*stopsBmp);
+        dc.SelectObject(*_stopsBmp);
         dc.SetPen(wxPen(*wxLIGHT_GREY));
         dc.SetBrush(wxBrush(*wxBLACK));
-        const int xPosition = static_cast<int>(selectedColorStop * dist);
+        const int xPosition = static_cast<int>(_selectedColorStop * dist);
         const wxPoint triangle[] = {wxPoint(xPosition, 5), wxPoint(xPosition + 5, 0), wxPoint(xPosition + 10, 5)};
         dc.DrawPolygon(3, triangle);
         dc.SelectObject(wxNullBitmap);
-        stopsStatBmp->SetBitmap(*stopsBmp);
+        _stopsStatBmp->SetBitmap(*_stopsBmp);
     }
 }
 void wxGradientDialog::OnDeleteColor(wxCommandEvent& WXUNUSED(event))
 {
-    if (selectedColorStop!=-1 && m_displayedStops.size()>2)
+    if (_selectedColorStop!=-1 && _displayedStops.size()>2)
     {
-        m_gradient->RemoveColorStop(selectedColorStop);
+        _gradient->RemoveColorStop(_selectedColorStop);
         paintGradient();
         paintStops();
-        selectedColorStop=-1;
-        colorStatBmp->SetBackgroundColour(wxNullColour);
-        colorStatBmp->ClearBackground();
-        colorEditBtn->Enable(false);
-        colorDeleteBtn->Enable(false);
+        _selectedColorStop=-1;
+        _colorStatBmp->SetBackgroundColour(wxNullColour);
+        _colorStatBmp->ClearBackground();
+        _colorEditButton->Enable(false);
+        _colorDeleteButton->Enable(false);
     }
 }
 void wxGradientDialog::OnWindowClose(wxCloseEvent& WXUNUSED(event))

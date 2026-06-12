@@ -43,7 +43,7 @@ class ScriptEditor : public wxFrame
     wxButton* removeButton;
     wxButton* closeButton;
     wxStyledTextCtrl* codeEditor;
-    wxCollapsiblePane* debugCollapsiblePane;
+    wxGenericCollapsiblePane* debugCollapsiblePane;
     wxPanel* debugPanel;
     wxButton* validateButton;
     wxButton* runButton;

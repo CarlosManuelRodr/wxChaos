@@ -29,7 +29,7 @@ class RendererOptions : public wxFrame
 {
     static constexpr int BuddhabrotPaletteSize = 1500;
 
-    wxScrolledWindow* _mPanel;
+    wxScrolledWindow* _mainPanel;
     wxStaticText* _algorithmText;
     wxChoice* _algorithmChoice;
     wxStaticText* _optionsText;
@@ -89,7 +89,6 @@ class RendererOptions : public wxFrame
     void ApplyPaletteSize(int paletteSize);
     [[nodiscard]] wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
 
-
 public:
     ///@brief Constructor.
     ///@param active Used to communicate with the MainFrame.
@@ -97,6 +96,7 @@ public:
     ///@param parent Parent wxWindow.
     ///@param title
     ///@param pos
+    ///@param size
     ///@param windowStyle
     RendererOptions(bool* active, SFMLFractal* presenter, wxWindow* parent,
                     std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),

@@ -21,8 +21,8 @@ class wxGradient
 {
 protected:
 	static wxColour Lerp(const wxColour& c1, const wxColour& c2, double value);
-	std::vector<wxColour> m_stops;
-	unsigned int m_min, m_max;
+	std::vector<wxColour> _stops;
+	unsigned int _min, _max;
 
 public:
 	wxGradient();
@@ -34,8 +34,8 @@ public:
 	void RemoveColorStop(unsigned int index);
 	void EditColorStop(unsigned int index, const wxColour& col);
 	void SetMin(unsigned int min);
-	[[nodiscard]] unsigned int GetMin() const;
 	void SetMax(unsigned int max);
+	[[nodiscard]] unsigned int GetMin() const;
 	[[nodiscard]] unsigned int GetMax() const;
 	void SetStops(const std::vector<wxColour>& stops);
 	std::vector<wxColour> GetStops();

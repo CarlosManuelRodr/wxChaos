@@ -186,8 +186,8 @@ ScriptEditor::ScriptEditor(bool* active, wxWindow* parent, const wxWindowID id, 
     panelSizer->Fit(scriptPanel);
     mainPanelSizer->Add(scriptPanel, 1, wxEXPAND | wxALL, 5);
 
-    debugCollapsiblePane = new wxCollapsiblePane(mainPanel, wxID_ANY, wxT("Debugger"), wxDefaultPosition, wxDefaultSize,
-                                                 wxCP_DEFAULT_STYLE | wxCP_NO_TLW_RESIZE);
+    debugCollapsiblePane = new wxGenericCollapsiblePane(mainPanel, wxID_ANY, wxT("Debugger"), wxDefaultPosition, wxDefaultSize,
+                                                   wxCP_DEFAULT_STYLE | wxCP_NO_TLW_RESIZE);
     debugCollapsiblePane->Collapse(true);
     debugCollapsiblePane->SetMinSize(wxSize(750, -1));
 

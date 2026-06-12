@@ -26,8 +26,8 @@ class FunctionsHelpDialog : public wxDialog
 
 public:
     explicit FunctionsHelpDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
-                        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(460, 250),
-                        long style = wxDEFAULT_DIALOG_STYLE);
+                                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(460, 250),
+                                 long style = wxDEFAULT_DIALOG_STYLE);
     ~FunctionsHelpDialog() override;
 };
 

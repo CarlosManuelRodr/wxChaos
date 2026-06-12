@@ -2,7 +2,6 @@
 * @file About.h 
 * @brief This header file contains the About dialog.
 *
-*
 * @author Carlos Manuel Rodriguez y Martinez
 *
 * @date 7/18/2012
@@ -43,13 +42,13 @@ public:
                 const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE,
                 const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION,
                 const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE,
-                long style = SYMBOL_ABOUTDIALOG_STYLE );
+                long style = SYMBOL_ABOUTDIALOG_STYLE);
 
     // Destructor
     ~AboutDialog() override;
 
     // Initializes member variables
-    void Init();
+    void Initialize();
 
     // Creates the controls and the sizers
     void CreateControls();
