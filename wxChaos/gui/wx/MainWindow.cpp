@@ -27,7 +27,7 @@ void GetDesktopResolution(int& width, int& height)
 // Fractal Frame
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPosition, wxSize(1180, 820))
 {
-    fractalType = FractalType::Mandelbrot; // This will clash with config.ini options. I need to find a better way to handle this.
+    _fractalType = FractalType::Mandelbrot; // This will clash with config.ini options. I need to find a better way to handle this.
 
     // Init handlers.
     wxImage::AddHandler(new wxPNGHandler);
@@ -43,42 +43,41 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     this->SetUpGUI();
 
     _juliaModePtr = nullptr;
-    dimensionCalculator = nullptr;
-    changeKeyboardGuide = false;
-    rendererOptionsActive = false;
-    introConstActive = false;
-    iterDiagActive = false;
-    infoFrameActive = false;
-    formDiagActive = false;
-    scriptEditorActive = false;
-    pause = false;
-    selectedScriptIndex = std::nullopt;
+    _dimensionCalculator = nullptr;
+    _changeKeyboardGuide = false;
+    _rendererOptionsActive = false;
+    _introConstActive = false;
+    _iterationsDialogIsActive = false;
+    _informationFrameIsActive = false;
+    _formulaDialogIsActive = false;
+    _scriptEditorIsActive = false;
+    _selectedScriptIndex = std::nullopt;
 
     this->UpdateMenu();
 
     // Set parameters found in the config.ini file.
-    if (opt.juliaMode) this->UpdateJuliaMode();
-    if (opt.colorPaletteWindow)
+    if (_appConfig.juliaMode) this->UpdateJuliaMode();
+    if (_appConfig.colorPaletteWindow)
     {
-        rendererOptionsActive = true;
-        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this,
+        _rendererOptionsActive = true;
+        _rendererOptions = new RendererOptions(&_rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
-        rendererOptions->Show(true);
+        _rendererOptions->Show(true);
     }
-    if (opt.constantWindow)
+    if (_appConfig.constantWindow)
     {
-        _juliaConstantDialog = new JuliaConstantDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
+        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
         _juliaConstantDialog->Show(true);
-        introConstActive = true;
+        _introConstActive = true;
     }
-    if (!opt.colorSet)
+    if (!_appConfig.colorSet)
         fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(false);
 
-    if (opt.firstUse)
+    if (_appConfig.firstUse)
         this->ShowFirstUseDialog();
 
-    if (fractalType != FractalType::Mandelbrot && fractalType != FractalType::Manowar)
-        juliaMode->Enable(false);
+    if (_fractalType != FractalType::Mandelbrot && _fractalType != FractalType::Manowar)
+        _juliaMode->Enable(false);
 
     this->GetScriptFractals();
     this->ConnectEvents();
@@ -108,7 +107,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_DIMENSION_FRAME_CLOSED, &MainFrame::OnDimensionFrameClosed, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnWelcomeDialog, this, ID_WELCOME_DIALOG);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, ID_ABOUT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnKeyboardGuide, this, ID_KEYBOARDGUIDE);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnKeyboardGuide, this, ID_KEYBOARD_GUIDE);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSave, this, ID_SAVE);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPalette, this, ID_PALETTE);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMandelbrot, this, ID_MANDELBROT);
@@ -130,10 +129,10 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeBurningShipJulia, this, ID_BURNING_SHIP_JULIA);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFractory, this, ID_FRACTORY);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeCell, this, ID_CELL);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskyTriangle, this, ID_SIERP_TRIANGLE);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DPENDULUM);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskyTriangle, this, ID_SIERPINSKY_TRIANGLE);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefined, this, ID_USER_DEFINED);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFPUserDefined, this, ID_FPUSER_DEFINED);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFPUserDefined, this, ID_FIXED_POINT_USER_DEFINED);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbortRender, this, ID_ABORT_RENDER);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateAbortRender, this, ID_ABORT_RENDER);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnReset, this, ID_RESET);
@@ -147,7 +146,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateSliderMode, this, ID_ENTER_SLD_CONSTANT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnItManual, this, ID_IT_MANUAL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFormulaDialog, this, ID_FORMULA_DIALOG);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFractalOptions, this, ID_OPTPANEL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFractalOptions, this, ID_OPTION_PANEL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnUserManual, this, ID_USER_MANUAL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnScriptEditor, this, ID_SCRIPT_EDITOR);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnZoomRecorder, this, ID_ZOOM_RECORDER);
@@ -157,15 +156,15 @@ void MainFrame::ConnectEvents()
 void MainFrame::SetUpGUI()
 {
     // Init menu.
-    menubar = new wxMenuBar();
-    fileMenu = new wxMenu();
-    fractalMenu = new wxMenu();
-    iterationsMenu = new wxMenu();
-    toolMenu = new wxMenu();
-    rendererMenu = new wxMenu();
-    helpMenu = new wxMenu();
-    formula = new wxMenu();
-    rendererOptions = nullptr;
+    _menubar = new wxMenuBar();
+    _fileMenu = new wxMenu();
+    _fractalMenu = new wxMenu();
+    _iterationsMenu = new wxMenu();
+    _toolMenu = new wxMenu();
+    _rendererMenu = new wxMenu();
+    _helpMenu = new wxMenu();
+    _formula = new wxMenu();
+    _rendererOptions = nullptr;
 
     // Formulas.
     wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinoidal, *magnet;
@@ -179,176 +178,176 @@ void MainFrame::SetUpGUI()
 #define menuSeparator wxT("    ")
 #endif
 
-    mandelbrot = new wxMenuItem(formula, ID_MANDELBROT, wxString(wxT("Mandelbrot")) + menuSeparator + wxT("z = z^2 + c"), wxEmptyString, wxITEM_NORMAL);
-    mandelbrotZN = new wxMenuItem(formula, ID_MANDELBROT_ZN, wxString(wxT("Mandelbrot")) + menuSeparator + wxT("z = z^n + c"), wxEmptyString, wxITEM_NORMAL);
-    julia = new wxMenuItem(formula, ID_JULIA, wxString(wxT("Mandelbrot (Julia)")) + menuSeparator + wxT("z = z^2 + k"), wxEmptyString, wxITEM_NORMAL);
-    juliaZN = new wxMenuItem(formula, ID_JULIA_ZN, wxString(wxT("Mandelbrot (Julia)")) + menuSeparator + wxT("z = z^n + k"), wxEmptyString, wxITEM_NORMAL);
-    newton = new wxMenuItem(formula, ID_NEWTON, wxString(wxT("Newton")) + menuSeparator + wxT("z^3 - 1 = 0"), wxEmptyString, wxITEM_NORMAL);
-    sinoidal = new wxMenuItem(formula, ID_SINOIDAL, wxString(wxT("Sine (Julia)")) + menuSeparator + wxT("Z = c*Sin(Z)"), wxEmptyString, wxITEM_NORMAL);
-    magnet = new wxMenuItem(formula, ID_MAGNET, wxString(wxT("Magnet")), wxEmptyString, wxITEM_NORMAL);
-    medusa = new wxMenuItem(formula, ID_MEDUSA, wxString(wxT("Jellyfish")), wxEmptyString, wxITEM_NORMAL);
-    manowar = new wxMenuItem(formula, ID_MANOWAR, wxString(wxT("Manowar")), wxEmptyString, wxITEM_NORMAL);
-    manowarJulia = new wxMenuItem(formula, ID_MANOWAR_JULIA, wxString(wxT("Manowar (Julia)")), wxEmptyString, wxITEM_NORMAL);
-    sierpinskyTriangle = new wxMenuItem(formula, ID_SIERP_TRIANGLE, wxString(wxT("Sierpinski Triangle")), wxEmptyString, wxITEM_NORMAL);
-    fixedPoint1 = new wxMenuItem(formula, ID_FIXEDPOINT1, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = sin(z)"), wxEmptyString, wxITEM_NORMAL);
-    fixedPoint2 = new wxMenuItem(formula, ID_FIXEDPOINT2, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = cos(z)"), wxEmptyString, wxITEM_NORMAL);
-    fixedPoint3 = new wxMenuItem(formula, ID_FIXEDPOINT3, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = tan(z)"), wxEmptyString, wxITEM_NORMAL);
-    fixedPoint4 = new wxMenuItem(formula, ID_FIXEDPOINT4, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = z^2"), wxEmptyString, wxITEM_NORMAL);
-    tricorn = new wxMenuItem(formula, ID_TRICORN, wxString(wxT("Tricorn")), wxEmptyString, wxITEM_NORMAL);
-    burningShip = new wxMenuItem(formula, ID_BURNING_SHIP, wxString(wxT("Burning Ship")), wxEmptyString, wxITEM_NORMAL);
-    burningShipJulia = new wxMenuItem(formula, ID_BURNING_SHIP_JULIA, wxString(wxT("Burning Ship (Julia)")), wxEmptyString, wxITEM_NORMAL);
-    fractory = new wxMenuItem(formula, ID_FRACTORY, wxString(wxT("Fractory")), wxEmptyString, wxITEM_NORMAL);
-    cell = new wxMenuItem(formula, ID_CELL, wxString(wxT("Cell")), wxEmptyString, wxITEM_NORMAL);
-    dPendulum = new wxMenuItem(formula, ID_DPENDULUM, wxString(wxT("Double pendulum")), wxEmptyString, wxITEM_NORMAL);
-    userDefined = new wxMenuItem(formula, ID_USER_DEFINED, wxString(wxT("User Formula (Complex)")), wxEmptyString, wxITEM_NORMAL);
-    fpUserDefined = new wxMenuItem(formula, ID_FPUSER_DEFINED, wxString(wxT("User Formula (Fixed Point)")), wxEmptyString, wxITEM_NORMAL);
+    mandelbrot = new wxMenuItem(_formula, ID_MANDELBROT, wxString(wxT("Mandelbrot")) + menuSeparator + wxT("z = z^2 + c"), wxEmptyString, wxITEM_NORMAL);
+    mandelbrotZN = new wxMenuItem(_formula, ID_MANDELBROT_ZN, wxString(wxT("Mandelbrot")) + menuSeparator + wxT("z = z^n + c"), wxEmptyString, wxITEM_NORMAL);
+    julia = new wxMenuItem(_formula, ID_JULIA, wxString(wxT("Mandelbrot (Julia)")) + menuSeparator + wxT("z = z^2 + k"), wxEmptyString, wxITEM_NORMAL);
+    juliaZN = new wxMenuItem(_formula, ID_JULIA_ZN, wxString(wxT("Mandelbrot (Julia)")) + menuSeparator + wxT("z = z^n + k"), wxEmptyString, wxITEM_NORMAL);
+    newton = new wxMenuItem(_formula, ID_NEWTON, wxString(wxT("Newton")) + menuSeparator + wxT("z^3 - 1 = 0"), wxEmptyString, wxITEM_NORMAL);
+    sinoidal = new wxMenuItem(_formula, ID_SINOIDAL, wxString(wxT("Sine (Julia)")) + menuSeparator + wxT("Z = c*Sin(Z)"), wxEmptyString, wxITEM_NORMAL);
+    magnet = new wxMenuItem(_formula, ID_MAGNET, wxString(wxT("Magnet")), wxEmptyString, wxITEM_NORMAL);
+    medusa = new wxMenuItem(_formula, ID_MEDUSA, wxString(wxT("Jellyfish")), wxEmptyString, wxITEM_NORMAL);
+    manowar = new wxMenuItem(_formula, ID_MANOWAR, wxString(wxT("Manowar")), wxEmptyString, wxITEM_NORMAL);
+    manowarJulia = new wxMenuItem(_formula, ID_MANOWAR_JULIA, wxString(wxT("Manowar (Julia)")), wxEmptyString, wxITEM_NORMAL);
+    sierpinskyTriangle = new wxMenuItem(_formula, ID_SIERPINSKY_TRIANGLE, wxString(wxT("Sierpinski Triangle")), wxEmptyString, wxITEM_NORMAL);
+    fixedPoint1 = new wxMenuItem(_formula, ID_FIXEDPOINT1, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = sin(z)"), wxEmptyString, wxITEM_NORMAL);
+    fixedPoint2 = new wxMenuItem(_formula, ID_FIXEDPOINT2, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = cos(z)"), wxEmptyString, wxITEM_NORMAL);
+    fixedPoint3 = new wxMenuItem(_formula, ID_FIXEDPOINT3, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = tan(z)"), wxEmptyString, wxITEM_NORMAL);
+    fixedPoint4 = new wxMenuItem(_formula, ID_FIXEDPOINT4, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = z^2"), wxEmptyString, wxITEM_NORMAL);
+    tricorn = new wxMenuItem(_formula, ID_TRICORN, wxString(wxT("Tricorn")), wxEmptyString, wxITEM_NORMAL);
+    burningShip = new wxMenuItem(_formula, ID_BURNING_SHIP, wxString(wxT("Burning Ship")), wxEmptyString, wxITEM_NORMAL);
+    burningShipJulia = new wxMenuItem(_formula, ID_BURNING_SHIP_JULIA, wxString(wxT("Burning Ship (Julia)")), wxEmptyString, wxITEM_NORMAL);
+    fractory = new wxMenuItem(_formula, ID_FRACTORY, wxString(wxT("Fractory")), wxEmptyString, wxITEM_NORMAL);
+    cell = new wxMenuItem(_formula, ID_CELL, wxString(wxT("Cell")), wxEmptyString, wxITEM_NORMAL);
+    dPendulum = new wxMenuItem(_formula, ID_DOUBLE_PENDULUM, wxString(wxT("Double pendulum")), wxEmptyString, wxITEM_NORMAL);
+    userDefined = new wxMenuItem(_formula, ID_USER_DEFINED, wxString(wxT("User Formula (Complex)")), wxEmptyString, wxITEM_NORMAL);
+    fpUserDefined = new wxMenuItem(_formula, ID_FIXED_POINT_USER_DEFINED, wxString(wxT("User Formula (Fixed Point)")), wxEmptyString, wxITEM_NORMAL);
 
-    typeComplex = new wxMenu();
-    typeNumMet = new wxMenu();
-    typePhysics = new wxMenu();
-    typeOther = new wxMenu();
+    _typeComplex = new wxMenu();
+    _typeNumericalMethod = new wxMenu();
+    _typePhysics = new wxMenu();
+    _typeOther = new wxMenu();
 
-    typeComplex->Append(mandelbrot);
-    typeComplex->Append(mandelbrotZN);
-    typeComplex->Append(julia);
-    typeComplex->Append(juliaZN);
-    typeComplex->Append(sinoidal);
-    typeComplex->Append(medusa);
-    typeComplex->Append(manowar);
-    typeComplex->Append(manowarJulia);
-    typeComplex->Append(tricorn);
-    typeComplex->Append(burningShip);
-    typeComplex->Append(burningShipJulia);
-    typeComplex->Append(fractory);
-    typeComplex->Append(cell);
-    typeNumMet->Append(newton);
-    typeNumMet->Append(fixedPoint1);
-    typeNumMet->Append(fixedPoint2);
-    typeNumMet->Append(fixedPoint3);
-    typeNumMet->Append(fixedPoint4);
-    typePhysics->Append(magnet);
-    typePhysics->Append(dPendulum);
-    typeOther->Append(sierpinskyTriangle);
+    _typeComplex->Append(mandelbrot);
+    _typeComplex->Append(mandelbrotZN);
+    _typeComplex->Append(julia);
+    _typeComplex->Append(juliaZN);
+    _typeComplex->Append(sinoidal);
+    _typeComplex->Append(medusa);
+    _typeComplex->Append(manowar);
+    _typeComplex->Append(manowarJulia);
+    _typeComplex->Append(tricorn);
+    _typeComplex->Append(burningShip);
+    _typeComplex->Append(burningShipJulia);
+    _typeComplex->Append(fractory);
+    _typeComplex->Append(cell);
+    _typeNumericalMethod->Append(newton);
+    _typeNumericalMethod->Append(fixedPoint1);
+    _typeNumericalMethod->Append(fixedPoint2);
+    _typeNumericalMethod->Append(fixedPoint3);
+    _typeNumericalMethod->Append(fixedPoint4);
+    _typePhysics->Append(magnet);
+    _typePhysics->Append(dPendulum);
+    _typeOther->Append(sierpinskyTriangle);
 
-    formula->Append(-1, wxT("Complex"), typeComplex);
-    formula->Append(-1, wxT("Numerical method"), typeNumMet);
-    formula->Append(-1, wxT("Physic"), typePhysics);
-    formula->Append(-1, wxT("Other"), typeOther);
-    formula->Append(userDefined);
-    formula->Append(fpUserDefined);
-    fractalMenu->Append(wxID_ANY, wxT("Formula"), formula);
+    _formula->Append(-1, wxT("Complex"), _typeComplex);
+    _formula->Append(-1, wxT("Numerical method"), _typeNumericalMethod);
+    _formula->Append(-1, wxT("Physic"), _typePhysics);
+    _formula->Append(-1, wxT("Other"), _typeOther);
+    _formula->Append(userDefined);
+    _formula->Append(fpUserDefined);
+    _fractalMenu->Append(wxID_ANY, wxT("Formula"), _formula);
 
     // Julia constant.
-    introConstant = new wxMenu();
-    manual = new wxMenuItem(introConstant, ID_ENTER_MAN_CONSTANT, wxString(wxT("Manual")), wxEmptyString, wxITEM_NORMAL);
-    introConstant->Append(manual);
-    manual->Enable(false);
+    _introConstant = new wxMenu();
+    _manualJuliaConstant = new wxMenuItem(_introConstant, ID_ENTER_MAN_CONSTANT, wxString(wxT("Manual")), wxEmptyString, wxITEM_NORMAL);
+    _introConstant->Append(_manualJuliaConstant);
+    _manualJuliaConstant->Enable(false);
 
-    slider = new wxMenuItem(introConstant, ID_ENTER_SLD_CONSTANT, wxString(wxT("Slider")) + wxT('\t') + wxT("F1"), wxEmptyString, wxITEM_CHECK);
-    introConstant->Append(slider);
-    slider->Enable(false);
-    slider->Check(false);
-    fractalMenu->Append(-1, wxT("Enter Julia constant"), introConstant);
+    _sliderJuliaConstant = new wxMenuItem(_introConstant, ID_ENTER_SLD_CONSTANT, wxString(wxT("Slider")) + wxT('\t') + wxT("F1"), wxEmptyString, wxITEM_CHECK);
+    _introConstant->Append(_sliderJuliaConstant);
+    _sliderJuliaConstant->Enable(false);
+    _sliderJuliaConstant->Check(false);
+    _fractalMenu->Append(-1, wxT("Enter Julia constant"), _introConstant);
 
     // Julia constant and show orbit.
-    juliaMode = new wxMenuItem(fractalMenu, ID_JULIA_MODE, wxString(wxT("Julia mode")), wxEmptyString, wxITEM_CHECK);
-    showOrbit = new wxMenuItem(fractalMenu, ID_SHOW_ORBIT, wxString(wxT("Show orbit")) + wxT('\t') + wxT("F2"), wxEmptyString, wxITEM_CHECK);
+    _juliaMode = new wxMenuItem(_fractalMenu, ID_JULIA_MODE, wxString(wxT("Julia mode")), wxEmptyString, wxITEM_CHECK);
+    _showOrbit = new wxMenuItem(_fractalMenu, ID_SHOW_ORBIT, wxString(wxT("Show orbit")) + wxT('\t') + wxT("F2"), wxEmptyString, wxITEM_CHECK);
 
-    fractalMenu->Append(juliaMode);
+    _fractalMenu->Append(_juliaMode);
 
-    fractalMenu->Append(showOrbit);
-    juliaMode->Check(false);
-    showOrbit->Check(false);
+    _fractalMenu->Append(_showOrbit);
+    _juliaMode->Check(false);
+    _showOrbit->Check(false);
 
     // File menu.
-    fileMenu->Append(ID_SAVE, wxString(wxT("Save image")) + wxT('\t') + wxT("F4"));
-    fileMenu->Append(wxID_EXIT, wxT("Quit"));
+    _fileMenu->Append(ID_SAVE, wxString(wxT("Save image")) + wxT('\t') + wxT("F4"));
+    _fileMenu->Append(wxID_EXIT, wxT("Quit"));
 
     // Tools menu.
-    toolMenu->Append(ID_SCRIPT_EDITOR, wxT("Script editor"), wxT("Create new fractals with an scripting language."));
-    toolMenu->Append(ID_ZOOM_RECORDER, wxT("Zoom recorder"), wxT("Record a video zoom."));
-    toolMenu->Append(ID_DIMENSION_CALCULATOR, wxT("Dimension calculator"), wxT("Calculate fractal dimension."));
+    _toolMenu->Append(ID_SCRIPT_EDITOR, wxT("Script editor"), wxT("Create new fractals with an scripting language."));
+    _toolMenu->Append(ID_ZOOM_RECORDER, wxT("Zoom recorder"), wxT("Record a video zoom."));
+    _toolMenu->Append(ID_DIMENSION_CALCULATOR, wxT("Dimension calculator"), wxT("Calculate fractal dimension."));
 
     // Iterations.
-    itManual = new wxMenuItem(iterationsMenu, ID_IT_MANUAL, wxString(wxT("Manual iterations")), wxEmptyString, wxITEM_NORMAL);
-    iterationsMenu->Append(itManual);
-    MoreIter = new wxMenuItem(iterationsMenu, ID_INCREASE_IT, wxString(wxT("Increase iterations")) + wxT('\t') + wxT("L"), wxEmptyString, wxITEM_NORMAL);
-    iterationsMenu->Append(MoreIter);
+    _manualIterations = new wxMenuItem(_iterationsMenu, ID_IT_MANUAL, wxString(wxT("Manual iterations")), wxEmptyString, wxITEM_NORMAL);
+    _iterationsMenu->Append(_manualIterations);
+    _moreIterations = new wxMenuItem(_iterationsMenu, ID_INCREASE_IT, wxString(wxT("Increase iterations")) + wxT('\t') + wxT("L"), wxEmptyString, wxITEM_NORMAL);
+    _iterationsMenu->Append(_moreIterations);
 
-    lessIter = new wxMenuItem(iterationsMenu, ID_DECREASE_IT, wxString(wxT("Decrease iterations")) + wxT('\t') + wxT("K"), wxEmptyString, wxITEM_NORMAL);
-    iterationsMenu->Append(lessIter);
+    _lessIterations = new wxMenuItem(_iterationsMenu, ID_DECREASE_IT, wxString(wxT("Decrease iterations")) + wxT('\t') + wxT("K"), wxEmptyString, wxITEM_NORMAL);
+    _iterationsMenu->Append(_lessIterations);
 
     // Fractal menu.
-    fractOptItem = new wxMenuItem(fractalMenu, ID_OPTPANEL, wxString(wxT("Fractal options")), wxEmptyString, wxITEM_CHECK);    // Txt: "Fractal options"
-    fractalMenu->Append(fractOptItem);
-    fractalMenu->Append(ID_FORMULA_DIALOG, wxT("Enter user formula")); // Txt: "Enter user formula"
-    fractalMenu->AppendSeparator();
+    _fractalOptionsItem = new wxMenuItem(_fractalMenu, ID_OPTION_PANEL, wxString(wxT("Fractal options")), wxEmptyString, wxITEM_CHECK);    // Txt: "Fractal options"
+    _fractalMenu->Append(_fractalOptionsItem);
+    _fractalMenu->Append(ID_FORMULA_DIALOG, wxT("Enter user formula")); // Txt: "Enter user formula"
+    _fractalMenu->AppendSeparator();
 
-    abortRenderItem = fractalMenu->Append(ID_ABORT_RENDER, wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
-    abortRenderItem->Enable(false);
-    fractalMenu->Append(ID_REDRAW, wxString(wxT("Redraw")) + wxT('\t') + wxT("F5"));
-    fractalMenu->Append(ID_RESET, wxString(wxT("Reset")));
-    rendererMenu->Append(ID_PALETTE, wxT("Renderer options"));
+    _abortRenderItem = _fractalMenu->Append(ID_ABORT_RENDER, wxString(wxT("Abort")) + wxT('\t') + wxT("P"));
+    _abortRenderItem->Enable(false);
+    _fractalMenu->Append(ID_REDRAW, wxString(wxT("Redraw")) + wxT('\t') + wxT("F5"));
+    _fractalMenu->Append(ID_RESET, wxString(wxT("Reset")));
+    _rendererMenu->Append(ID_PALETTE, wxT("Renderer options"));
 
     // Help menu.
-    helpMenu->Append(ID_USER_MANUAL, wxT("User manual"));
-    keyboardGuide = new wxMenuItem(helpMenu, ID_KEYBOARDGUIDE, wxString(wxT("Keyboard guide")), wxEmptyString, wxITEM_CHECK);
-    helpMenu->Append(keyboardGuide);
-    helpMenu->Append(ID_WELCOME_DIALOG, wxT("Open welcome guide"));
-    helpMenu->Append(ID_ABOUT, wxT("About"));
+    _helpMenu->Append(ID_USER_MANUAL, wxT("User manual"));
+    _keyboardGuide = new wxMenuItem(_helpMenu, ID_KEYBOARD_GUIDE, wxString(wxT("Keyboard guide")), wxEmptyString, wxITEM_CHECK);
+    _helpMenu->Append(_keyboardGuide);
+    _helpMenu->Append(ID_WELCOME_DIALOG, wxT("Open welcome guide"));
+    _helpMenu->Append(ID_ABOUT, wxT("About"));
 
 
-    menubar->Append(fileMenu, wxT("File"));
-    menubar->Append(fractalMenu, wxT("Fractal"));
-    menubar->Append(iterationsMenu, wxT("Iterations"));
-    menubar->Append(rendererMenu, wxT("Renderer"));
-    menubar->Append(toolMenu, wxT("Tools"));
-    menubar->Append(helpMenu, wxT("Help"));
-    this->SetMenuBar(menubar);
+    _menubar->Append(_fileMenu, wxT("File"));
+    _menubar->Append(_fractalMenu, wxT("Fractal"));
+    _menubar->Append(_iterationsMenu, wxT("Iterations"));
+    _menubar->Append(_rendererMenu, wxT("Renderer"));
+    _menubar->Append(_toolMenu, wxT("Tools"));
+    _menubar->Append(_helpMenu, wxT("Help"));
+    this->SetMenuBar(_menubar);
 
-    sizer = new wxBoxSizer(wxHORIZONTAL);
-    fractalSizer = new wxBoxSizer(wxVERTICAL);
-    sizer->Add(fractalSizer, 7, wxEXPAND, 5);
+    _sizer = new wxBoxSizer(wxHORIZONTAL);
+    _fractalSizer = new wxBoxSizer(wxVERTICAL);
+    _sizer->Add(_fractalSizer, 7, wxEXPAND, 5);
 
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
 
     // Option panel.
-    optionPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
-    optionPanel->SetScrollRate(5, 5);
-    optionPanel->Hide();
-    showOptPanel = false;
-    optionSizer = new wxBoxSizer(wxVERTICAL);
+    _optionPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+    _optionPanel->SetScrollRate(5, 5);
+    _optionPanel->Hide();
+    _showOptionsPanel = false;
+    _optionSizer = new wxBoxSizer(wxVERTICAL);
 
-    propBitmap = new wxStaticBitmap(optionPanel, wxID_ANY, wxBitmap(AppPaths::ResourceFile({wxT("prop.png")}), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
-    optionSizer->Add(propBitmap, 0, wxALL, 0);
+    _fractalOptionsBitmap = new wxStaticBitmap(_optionPanel, wxID_ANY, wxBitmap(AppPaths::ResourceFile({wxT("prop.png")}), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
+    _optionSizer->Add(_fractalOptionsBitmap, 0, wxALL, 0);
 
-    optionPanel->SetSizer(optionSizer);
-    optionPanel->Layout();
-    optionSizer->Fit(optionPanel);
-    panelSizer->Add(optionPanel, 1, wxEXPAND | wxALL, 1);
+    _optionPanel->SetSizer(_optionSizer);
+    _optionPanel->Layout();
+    _optionSizer->Fit(_optionPanel);
+    panelSizer->Add(_optionPanel, 1, wxEXPAND | wxALL, 1);
 
-    sizer->Add(panelSizer, 2, wxEXPAND, 5);
-    this->SetSizer(sizer);
+    _sizer->Add(panelSizer, 2, wxEXPAND, 5);
+    this->SetSizer(_sizer);
     this->Layout();
     this->Centre(wxVERTICAL);
-    status = this->CreateStatusBar(1, wxST_SIZEGRIP, wxID_ANY);
+    _statusBar = this->CreateStatusBar(1, wxST_SIZEGRIP, wxID_ANY);
 
-    size = fractalSizer->GetSize();
+    _size = _fractalSizer->GetSize();
 
     // Creates fractalCanvas.
-    fractalType = opt.type;
-    fractalCanvas = new FractalCanvas(fractalType, this, wxID_ANY, wxPoint(0, 0), size, wxBORDER_NONE);
+    _fractalType = _appConfig.type;
+    fractalCanvas = new FractalCanvas(_fractalType, this, wxID_ANY, wxPoint(0, 0), _size, wxBORDER_NONE);
 
     wxGradient grad;
     grad.SetMin(0);
-    grad.SetMax(opt.paletteSize);
-    grad.FromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
+    grad.SetMax(_appConfig.paletteSize);
+    grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
     fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
 
-    fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(opt.maxIterations);
-    fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(opt.colorFractal);
-    fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(opt.colorSet);
-    fractalSizer->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
+    fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(_appConfig.maxIterations);
+    fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(_appConfig.colorFractal);
+    fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(_appConfig.colorSet);
+    _fractalSizer->Add(fractalCanvas, 1, wxEXPAND | wxALL, 0);
 }
 
 void MainFrame::OnClose(wxCloseEvent&)
@@ -377,7 +376,7 @@ void MainFrame::DestroyJuliaMode(const bool requestClose)
     _juliaModePtr->Wait();
     delete _juliaModePtr;
     _juliaModePtr = nullptr;
-    juliaMode->Check(false);
+    _juliaMode->Check(false);
     fractalCanvas->SetJuliaMode(false);
 }
 void MainFrame::OnResize(wxSizeEvent&)
@@ -395,16 +394,16 @@ void MainFrame::OnJuliaModeClosed(wxCommandEvent&)
 }
 void MainFrame::DestroyDimensionFrame()
 {
-    if (dimensionCalculator == nullptr)
+    if (_dimensionCalculator == nullptr)
         return;
 
-    DimensionFrame* frame = dimensionCalculator;
-    dimensionCalculator = nullptr;
+    DimensionFrame* frame = _dimensionCalculator;
+    _dimensionCalculator = nullptr;
     frame->Close(true);
 }
 void MainFrame::OnDimensionFrameClosed(wxCommandEvent&)
 {
-    dimensionCalculator = nullptr;
+    _dimensionCalculator = nullptr;
 }
 void MainFrame::OnWelcomeDialog(wxCommandEvent&)
 {
@@ -445,10 +444,10 @@ void MainFrame::OnSave(wxCommandEvent&)
         const auto path = string(fileName.mb_str());
         SizeDialogSave* sizeDialogSave;
 
-        if (fractalType == FractalType::ScriptFractal && selectedScriptIndex.has_value())
-            sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this, loadedScripts[*selectedScriptIndex].file);
+        if (_fractalType == FractalType::ScriptFractal && _selectedScriptIndex.has_value())
+            sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, _fractalType, fractalCanvas->GetFractalPtr(), this, _loadedScripts[*_selectedScriptIndex].file);
         else
-            sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, fractalType, fractalCanvas->GetFractalPtr(), this);
+            sizeDialogSave = new SizeDialogSave(fractalCanvas, path, ext, _fractalType, fractalCanvas->GetFractalPtr(), this);
 
         sizeDialogSave->Show(true);
     }
@@ -457,41 +456,41 @@ void MainFrame::OnSave(wxCommandEvent&)
 void MainFrame::OnPalette(wxCommandEvent&)
 {
     // Color palette frame.
-    if (!rendererOptionsActive)
+    if (!_rendererOptionsActive)
     {
-        rendererOptionsActive = true;
-        rendererOptions = new RendererOptions(&rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this,
+        _rendererOptionsActive = true;
+        _rendererOptions = new RendererOptions(&_rendererOptionsActive, fractalCanvas->GetSFMLFractalPtr(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
-        rendererOptions->Show(true);
+        _rendererOptions->Show(true);
 
         // Adjust position.
         int h, w;
         GetDesktopResolution(h, w);
         if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
-            rendererOptions->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
+            _rendererOptions->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
     }
     else
-        rendererOptions->SetFocus();
+        _rendererOptions->SetFocus();
 }
 void MainFrame::OnFormulaDialog(wxCommandEvent&)
 {
     // User formula menu.
-    if (!formDiagActive)
+    if (!_formulaDialogIsActive)
     {
-        formDiagActive = true;
-        formDialog = new FormulaDialog(ID_USER_DEFINED, ID_FPUSER_DEFINED, slider, manual, &formDiagActive, fractalCanvas, this);
-        formDialog->Show(true);
+        _formulaDialogIsActive = true;
+        formulaDialog = new FormulaDialog(ID_USER_DEFINED, ID_FIXED_POINT_USER_DEFINED, _sliderJuliaConstant, _manualJuliaConstant, &_formulaDialogIsActive, fractalCanvas, this);
+        formulaDialog->Show(true);
 
         // Adjust position.
         int h, w;
         GetDesktopResolution(h, w);
         if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
-            formDialog->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
+            formulaDialog->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
 
-        fractalType = FractalType::UserDefined;
+        _fractalType = FractalType::UserDefined;
     }
     else
-        formDialog->SetFocus();
+        formulaDialog->SetFocus();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnRedraw(wxCommandEvent&)
@@ -502,9 +501,9 @@ void MainFrame::OnReset(wxCommandEvent&)
 {
     fractalCanvas->Reset();
     wxGradient grad;
-    grad.FromString(wxString(opt.colorStyleGrad.c_str(), wxConvUTF8));
+    grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
     grad.SetMin(0);
-    grad.SetMax(opt.paletteSize);
+    grad.SetMax(_appConfig.paletteSize);
     fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
     this->UpdateMenu();
 }
@@ -521,23 +520,23 @@ void MainFrame::OnLessIt(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnShowOrbit(wxCommandEvent&)
 {
-    const bool modo = showOrbit->IsChecked();
+    const bool modo = _showOrbit->IsChecked();
     fractalCanvas->SetOrbitMode(modo);
-    showOrbit->Check(modo);
+    _showOrbit->Check(modo);
 }
 void MainFrame::OnManIntroConst(wxCommandEvent&)
 {
     // Manual constant.
-    if (!introConstActive)
+    if (!_introConstActive)
     {
-        _juliaConstantDialog = new JuliaConstantDialog(&introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
+        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, fractalCanvas->GetSFMLFractalPtr(), this);
         _juliaConstantDialog->Show(true);
-        introConstActive = true;
+        _introConstActive = true;
     }
     else
     {
         _juliaConstantDialog->Show(false);
-        introConstActive = false;
+        _introConstActive = false;
         delete _juliaConstantDialog;
     }
 }
@@ -545,35 +544,35 @@ void MainFrame::OnManIntroConst(wxCommandEvent&)
 void MainFrame::OnSldIntroConst(wxCommandEvent&)
 {
     // Slider constant.
-    const bool modo = slider->IsChecked();
+    const bool modo = _sliderJuliaConstant->IsChecked();
     fractalCanvas->SetSliderMode(modo);
-    slider->Check(modo);
+    _sliderJuliaConstant->Check(modo);
 }
 void MainFrame::OnKeyboardGuide(wxCommandEvent&)
 {
     // Keyboard guide.
-    changeKeyboardGuide = !changeKeyboardGuide;
-    fractalCanvas->SetKeyboardGuide(changeKeyboardGuide);
-    keyboardGuide->Check(changeKeyboardGuide);
+    _changeKeyboardGuide = !_changeKeyboardGuide;
+    fractalCanvas->SetKeyboardGuide(_changeKeyboardGuide);
+    _keyboardGuide->Check(_changeKeyboardGuide);
 }
 void MainFrame::OnCanvasStatusText(wxCommandEvent& event)
 {
-    status->SetStatusText(event.GetString());
+    _statusBar->SetStatusText(event.GetString());
 }
 void MainFrame::OnItManual(wxCommandEvent&)
 {
     // Manual iterations.
-    if (!iterDiagActive)
+    if (!_iterationsDialogIsActive)
     {
-        iterDiag = new IterationsDialog(&iterDiagActive, fractalCanvas->GetSFMLFractalPtr(), this);
-        iterDiag->Show(true);
-        iterDiagActive = true;
+        _iterationsDialog = new IterationsDialog(&_iterationsDialogIsActive, fractalCanvas->GetSFMLFractalPtr(), this);
+        _iterationsDialog->Show(true);
+        _iterationsDialogIsActive = true;
     }
     else
     {
-        iterDiag->Show(false);
-        iterDiagActive = false;
-        delete iterDiag;
+        _iterationsDialog->Show(false);
+        _iterationsDialogIsActive = false;
+        delete _iterationsDialog;
     }
 }
 void MainFrame::OnAbortRender(wxCommandEvent&)
@@ -595,41 +594,41 @@ void MainFrame::OnUpdateSliderMode(wxUpdateUIEvent& event)
 void MainFrame::OnFractalOptions(wxCommandEvent&)
 {
     // Adjust the panel.
-    if (!showOptPanel)
+    if (!_showOptionsPanel)
     {
-        fractOptItem->Check(true);
-        optionPanel->Show();
+        _fractalOptionsItem->Check(true);
+        _optionPanel->Show();
         const wxSize windowSize = this->GetSize();
         if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
 
         this->GetSizer()->Layout();
-        showOptPanel = true;
+        _showOptionsPanel = true;
     }
     else
     {
-        fractOptItem->Check(false);
-        optionPanel->Hide();
+        _fractalOptionsItem->Check(false);
+        _optionPanel->Hide();
         const wxSize windowSize = this->GetSize();
         if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()-175, windowSize.GetHeight());
         this->GetSizer()->Layout();
-        showOptPanel = false;
+        _showOptionsPanel = false;
     }
 }
 void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
 {
     // Pass parameters to the fractal and redraws it.
     const PanelOptions* pOptions = fractalCanvas->GetFractalPtr()->GetOptPanel();
-    for (unsigned int i=0; i<foundTextControls.size(); i++)
-        *pOptions->GetDoubleElement(i) = TextUtils::ToDouble(textControls[i]->GetValue());
+    for (unsigned int i=0; i<_foundTextControls.size(); i++)
+        *pOptions->GetDoubleElement(i) = TextUtils::ToDouble(_textControls[i]->GetValue());
 
-    for (unsigned int i=0; i<foundSpinControls.size(); i++)
-        *pOptions->GetIntElement(i) = spinControls[i]->GetValue();
+    for (unsigned int i=0; i<_foundSpinControls.size(); i++)
+        *pOptions->GetIntElement(i) = _spinControls[i]->GetValue();
 
-    for (unsigned int i=0; i<foundCheckBoxes.size(); i++)
+    for (unsigned int i=0; i<_foundCheckBoxes.size(); i++)
     {
-        if (checkBoxes[i]->GetValue())
+        if (_checkBoxes[i]->GetValue())
             *pOptions->GetBoolElement(i) = true;
         else
             *pOptions->GetBoolElement(i) = false;
@@ -644,16 +643,16 @@ void MainFrame::OnUserManual(wxCommandEvent&) // NOLINT(*-convert-member-functio
 }
 void MainFrame::OnScriptEditor(wxCommandEvent&)
 {
-    if (!scriptEditorActive)
+    if (!_scriptEditorIsActive)
     {
-        _scriptEditor = new ScriptEditor(&scriptEditorActive, this);
+        _scriptEditor = new ScriptEditor(&_scriptEditorIsActive, this);
         _scriptEditor->Show(true);
-        scriptEditorActive = true;
+        _scriptEditorIsActive = true;
     }
     else
     {
         _scriptEditor->Show(false);
-        scriptEditorActive = false;
+        _scriptEditorIsActive = false;
         delete _scriptEditor;
     }
 }
@@ -684,13 +683,13 @@ void MainFrame::OnZoomRecorder(wxCommandEvent&)
 }
 void MainFrame::OnDimensionCalculator(wxCommandEvent&)
 {
-    if (dimensionCalculator == nullptr)
+    if (_dimensionCalculator == nullptr)
     {
-        dimensionCalculator = new DimensionFrame(this);
-        dimensionCalculator->Show(true);
+        _dimensionCalculator = new DimensionFrame(this);
+        _dimensionCalculator->Show(true);
     }
     else
-        dimensionCalculator->SetFocus();
+        _dimensionCalculator->SetFocus();
 }
 
 
@@ -787,42 +786,42 @@ void MainFrame::ChangeFPUserDefined(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::FixedPointUserDefined, false);
 }
-void MainFrame::ChangeFractal(const FractalType fType, const bool enableJulia)
+void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
 {
-    selectedScriptIndex.reset();  // Deselect the script fractal.
-    if (fractalType != fType || fractalType == FractalType::UserDefined || fractalType == FractalType::FixedPointUserDefined)
+    _selectedScriptIndex.reset();  // Deselect the script fractal.
+    if (_fractalType != type || _fractalType == FractalType::UserDefined || _fractalType == FractalType::FixedPointUserDefined)
     {
         const Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
-        fractalCanvas->ChangeType(fType);
+        fractalCanvas->ChangeType(type);
         fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
-        fractalType = fType;
+        _fractalType = type;
         this->UpdateMenu();
-        juliaMode->Enable(enableJulia);
+        _juliaMode->Enable(enableJulia);
     }
 }
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 void MainFrame::ChangeScriptItem(wxCommandEvent& event)
 {
     const unsigned int id = event.GetId() - SCRIPT_ID_INDEX;
-    selectedScriptIndex = id;
+    _selectedScriptIndex = id;
 
     if (fractalCanvas->GetFractalPtr()->IsRendering())
         fractalCanvas->GetFractalPtr()->StopRender();
 
     const Options fractOpt = fractalCanvas->GetFractalPtr()->GetOptions();
-    fractalCanvas->ChangeToScript(loadedScripts[id]);
+    fractalCanvas->ChangeToScript(_loadedScripts[id]);
     fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
 
-    fractalType = FractalType::ScriptFractal;
+    _fractalType = FractalType::ScriptFractal;
     this->UpdateMenu();
-    juliaMode->Enable(false);
+    _juliaMode->Enable(false);
 }
 
 // Methods to adjust the menu.
 void MainFrame::GetParserOpt()
 {
     const AppConfigStore configStore(AppPaths::ToStdPath(AppPaths::ConfigFile()));
-    opt = configStore.Load();
+    _appConfig = configStore.Load();
     configStore.SetFirstUse(false);
 }
 void MainFrame::UpdateOptionsPanel()
@@ -834,8 +833,8 @@ void MainFrame::UpdateOptionsPanel()
     {
         unsigned int labelIndex;
         unsigned int index;
-        fractOptItem->Enable(true);
-        if (!labels.empty() || !textControls.empty() || !spinControls.empty() || !checkBoxes.empty())
+        _fractalOptionsItem->Enable(true);
+        if (!_labels.empty() || !_textControls.empty() || !_spinControls.empty() || !_checkBoxes.empty())
         {
             // If there are elements from a previous panel, deletes them.
             this->DeleteOptPanel();
@@ -843,17 +842,17 @@ void MainFrame::UpdateOptionsPanel()
 
         if (pOptions->GetForceShow())
         {
-            fractOptItem->Check(true);
-            optionPanel->Show();
+            _fractalOptionsItem->Check(true);
+            _optionPanel->Show();
             const wxSize windowSize = this->GetSize();
             if (!this->IsMaximized())
                 this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
 
             this->GetSizer()->Layout();
-            showOptPanel = true;
+            _showOptionsPanel = true;
         }
         else
-            fractOptItem->Check(false);
+            _fractalOptionsItem->Check(false);
 
         // Creates elements from each kind.
         for (int i=0; i<pOptions->GetElementsSize(); i++)
@@ -862,117 +861,117 @@ void MainFrame::UpdateOptionsPanel()
             {
             case PanelOptionType::Label:
                 {
-                    labels.push_back(new wxStaticText(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap(-1);
-                    optionSizer->Add(labels[labelIndex], 0, wxALL, 5);
-                    foundLabels.push_back(i);
+                    _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    labelIndex = _labels.size()-1;
+                    _labels[labelIndex]->Wrap(-1);
+                    _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
+                    _foundLabels.push_back(i);
                 }
                 break;
             case PanelOptionType::TextCtrl:
                 {
-                    labels.push_back(new wxStaticText(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap(-1);
-                    optionSizer->Add(labels[labelIndex], 0, wxALL, 5);
+                    _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    labelIndex = _labels.size()-1;
+                    _labels[labelIndex]->Wrap(-1);
+                    _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
 
-                    textControls.push_back(new wxTextCtrl(optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    index = textControls.size()-1;
-                    optionSizer->Add(textControls[index], 0, wxALL|wxEXPAND, 5);
-                    foundTextControls.push_back(i);
+                    _textControls.push_back(new wxTextCtrl(_optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    index = _textControls.size()-1;
+                    _optionSizer->Add(_textControls[index], 0, wxALL|wxEXPAND, 5);
+                    _foundTextControls.push_back(i);
                 }
                 break;
             case PanelOptionType::Spin:
                 {
-                    labels.push_back(new wxStaticText(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    labelIndex = labels.size()-1;
-                    labels[labelIndex]->Wrap(-1);
-                    optionSizer->Add(labels[labelIndex], 0, wxALL, 5);
+                    _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    labelIndex = _labels.size()-1;
+                    _labels[labelIndex]->Wrap(-1);
+                    _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
 
-                    spinControls.push_back(new wxSpinCtrl(optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 ));
-                    index = spinControls.size()-1;
-                    optionSizer->Add(spinControls[index], 0, wxALL|wxEXPAND, 5);
-                    foundSpinControls.push_back(i);
+                    _spinControls.push_back(new wxSpinCtrl(_optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 ));
+                    index = _spinControls.size()-1;
+                    _optionSizer->Add(_spinControls[index], 0, wxALL|wxEXPAND, 5);
+                    _foundSpinControls.push_back(i);
                 }
                 break;
             case PanelOptionType::CheckBox:
                 {
-                    checkBoxes.push_back(new wxCheckBox(optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    index = checkBoxes.size()-1;
+                    _checkBoxes.push_back(new wxCheckBox(_optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                    index = _checkBoxes.size()-1;
                     if (pOptions->GetDefault(i) == wxT("true"))
-                        checkBoxes[index]->SetValue(true);
+                        _checkBoxes[index]->SetValue(true);
                     else
-                        checkBoxes[index]->SetValue(false);
+                        _checkBoxes[index]->SetValue(false);
 
-                    optionSizer->Add(checkBoxes[index], 0, wxALL|wxEXPAND, 5);
-                    foundCheckBoxes.push_back(i);
+                    _optionSizer->Add(_checkBoxes[index], 0, wxALL|wxEXPAND, 5);
+                    _foundCheckBoxes.push_back(i);
                 }
                 break;
             };
         }
 
         // Creates button to apply options.
-        panelButton = new wxButton(optionPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
-        optionSizer->Add(panelButton, 0, wxALL, 5);
-        panelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MainFrame::OnApplyPanelOpt, this);
-        optionSizer->Layout();
-        optionPanel->SetScrollbars(20, 20, 0, 50);
+        _panelButton = new wxButton(_optionPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
+        _optionSizer->Add(_panelButton, 0, wxALL, 5);
+        _panelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MainFrame::OnApplyPanelOpt, this);
+        _optionSizer->Layout();
+        _optionPanel->SetScrollbars(20, 20, 0, 50);
     }
     else
     {
-        fractOptItem->Check(false);
-        fractOptItem->Enable(false);
-        if (showOptPanel)
+        _fractalOptionsItem->Check(false);
+        _fractalOptionsItem->Enable(false);
+        if (_showOptionsPanel)
             this->DeleteOptPanel();
     }
 }
 void MainFrame::DeleteOptPanel()
 {
     // Deletes panel elements.
-    for (auto & label : labels)
+    for (auto & label : _labels)
         label->Destroy();
 
-    labels.clear();
-    foundLabels.clear();
-    for (auto & textControl : textControls)
+    _labels.clear();
+    _foundLabels.clear();
+    for (auto & textControl : _textControls)
         textControl->Destroy();
 
-    textControls.clear();
-    foundTextControls.clear();
-    for (auto & spinControl : spinControls)
+    _textControls.clear();
+    _foundTextControls.clear();
+    for (auto & spinControl : _spinControls)
         spinControl->Destroy();
 
-    spinControls.clear();
-    foundSpinControls.clear();
-    for (auto & checkBoxe : checkBoxes)
+    _spinControls.clear();
+    _foundSpinControls.clear();
+    for (auto & checkBoxe : _checkBoxes)
         checkBoxe->Destroy();
 
-    checkBoxes.clear();
-    foundCheckBoxes.clear();
+    _checkBoxes.clear();
+    _foundCheckBoxes.clear();
 
     // Erase button, disconnect event and hide panel.
-    panelButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &MainFrame::OnApplyPanelOpt, this);
-    delete panelButton;
+    _panelButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &MainFrame::OnApplyPanelOpt, this);
+    delete _panelButton;
 
-    if (showOptPanel)
+    if (_showOptionsPanel)
     {
-        optionPanel->Hide();
+        _optionPanel->Hide();
         const wxSize windowSize = this->GetSize();
 
         if (!this->IsMaximized())
             this->SetSize(windowSize.GetWidth()-175, windowSize.GetHeight());
 
         this->GetSizer()->Layout();
-        showOptPanel = false;
+        _showOptionsPanel = false;
     }
 }
 void MainFrame::AddScriptMenuElement(const ScriptData& scriptData, const unsigned int index)
 {
-    loadedScripts.push_back(scriptData);
+    _loadedScripts.push_back(scriptData);
     int itemIndex = static_cast<int>(SCRIPT_ID_INDEX + index);
-    scriptItems.push_back(
+    _scriptItems.push_back(
         new wxMenuItem(
-            formula,
+            _formula,
            itemIndex,
             wxString(scriptData.name.c_str(), wxConvUTF8),
         wxEmptyString,
@@ -981,39 +980,39 @@ void MainFrame::AddScriptMenuElement(const ScriptData& scriptData, const unsigne
         );
 
     if (scriptData.scriptCategory == ScriptCategory::Complex)
-        typeComplex->Append(scriptItems[index]);
+        _typeComplex->Append(_scriptItems[index]);
     else if (scriptData.scriptCategory == ScriptCategory::NumMet)
-        typeNumMet->Append(scriptItems[index]);
+        _typeNumericalMethod->Append(_scriptItems[index]);
     else if (scriptData.scriptCategory == ScriptCategory::Physic)
-        typePhysics->Append(scriptItems[index]);
+        _typePhysics->Append(_scriptItems[index]);
     else
-        typeOther->Append(scriptItems[index]);
+        _typeOther->Append(_scriptItems[index]);
 
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeScriptItem, this, itemIndex);
 }
 void MainFrame::RemoveScriptMenuElements()
 {
     // Remove current menu entries.
-    for (unsigned int i = 0; i < loadedScripts.size(); i++)
+    for (unsigned int i = 0; i < _loadedScripts.size(); i++)
     {
-        if (loadedScripts[i].scriptCategory == ScriptCategory::Complex)
-            typeComplex->Remove(scriptItems[i]);
-        else if (loadedScripts[i].scriptCategory == ScriptCategory::NumMet)
-            typeNumMet->Remove(scriptItems[i]);
-        else if (loadedScripts[i].scriptCategory == ScriptCategory::Physic)
-            typePhysics->Remove(scriptItems[i]);
+        if (_loadedScripts[i].scriptCategory == ScriptCategory::Complex)
+            _typeComplex->Remove(_scriptItems[i]);
+        else if (_loadedScripts[i].scriptCategory == ScriptCategory::NumMet)
+            _typeNumericalMethod->Remove(_scriptItems[i]);
+        else if (_loadedScripts[i].scriptCategory == ScriptCategory::Physic)
+            _typePhysics->Remove(_scriptItems[i]);
         else
-            typeOther->Remove(scriptItems[i]);
+            _typeOther->Remove(_scriptItems[i]);
     }
-    loadedScripts.clear();
+    _loadedScripts.clear();
 
     // Disconnect events and delete menu items.
-    for (unsigned int i = 0; i < scriptItems.size(); i++)
+    for (unsigned int i = 0; i < _scriptItems.size(); i++)
     {
         this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeScriptItem, this, static_cast<int>(SCRIPT_ID_INDEX + i));
-        delete scriptItems[i];
+        delete _scriptItems[i];
     }
-    scriptItems.clear();
+    _scriptItems.clear();
 }
 void MainFrame::GetScriptFractals()
 {
@@ -1024,53 +1023,53 @@ void MainFrame::GetScriptFractals()
 void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
-    if (rendererOptionsActive)
-        rendererOptions->SetTarget(fractalCanvas->GetSFMLFractalPtr());
-    if (iterDiagActive)
-        iterDiag->SetTarget(fractalCanvas->GetSFMLFractalPtr());
+    if (_rendererOptionsActive)
+        _rendererOptions->SetTarget(fractalCanvas->GetSFMLFractalPtr());
+    if (_iterationsDialogIsActive)
+        _iterationsDialog->SetTarget(fractalCanvas->GetSFMLFractalPtr());
 
-    showOrbit->Check(false);
+    _showOrbit->Check(false);
     if (fractalCanvas->GetFractalPtr()->HasOrbit())
-        showOrbit->Enable(true);
+        _showOrbit->Enable(true);
     else
-        showOrbit->Enable(false);
+        _showOrbit->Enable(false);
 
-    MoreIter->Enable(true);
-    lessIter->Enable(true);
+    _moreIterations->Enable(true);
+    _lessIterations->Enable(true);
 
     // Closes constant dialog.
-    if (introConstActive)
+    if (_introConstActive)
     {
         _juliaConstantDialog->Show(false);
-        introConstActive = false;
+        _introConstActive = false;
         delete _juliaConstantDialog;
     }
 
     // Adjust Julia constant menu items.
     if (fractalCanvas->GetFractalPtr()->IsJuliaVariety())
     {
-        manual->Enable(true);
-        slider->Enable(true);
+        _manualJuliaConstant->Enable(true);
+        _sliderJuliaConstant->Enable(true);
     }
     else
     {
-        manual->Enable(false);
-        slider->Enable(false);
+        _manualJuliaConstant->Enable(false);
+        _sliderJuliaConstant->Enable(false);
     }
-    slider->Check(false);
+    _sliderJuliaConstant->Check(false);
 
     // Closes formula dialog.
-    if (fractalType != FractalType::UserDefined && fractalType != FractalType::FixedPointUserDefined)
+    if (_fractalType != FractalType::UserDefined && _fractalType != FractalType::FixedPointUserDefined)
     {
-        if (formDiagActive)
+        if (_formulaDialogIsActive)
         {
-            formDialog->Destroy();
-            formDiagActive = false;
+            formulaDialog->Destroy();
+            _formulaDialogIsActive = false;
         }
     }
 
-    abortRenderItem->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
-    abortRenderItem->Enable(false);
+    _abortRenderItem->SetItemLabel(wxString(wxT("Abort"))+ wxT('\t') + wxT("P"));
+    _abortRenderItem->Enable(false);
 
     // If Julia mode is opened, closes it.
     DestroyJuliaMode(true);
@@ -1081,16 +1080,16 @@ void MainFrame::UpdateJuliaMode()
     // Destroy Julia window.
     if (_juliaModePtr != nullptr)
     {
-        juliaMode->Check(false);
+        _juliaMode->Check(false);
         _juliaModePtr->Close();
     }
     // Creates Julia fractal with parameters from the main fractal.
     else
     {
-        juliaMode->Check(true);
+        _juliaMode->Check(true);
 
         FractalType juliaType;
-        switch(fractalType)
+        switch(_fractalType)
         {
         case FractalType::Mandelbrot:
             juliaType = FractalType::Julia;

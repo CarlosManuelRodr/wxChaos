@@ -42,7 +42,7 @@ enum IDS
     ID_MEDUSA,
     ID_MANOWAR,
     ID_MANOWAR_JULIA,
-    ID_SIERP_TRIANGLE,
+    ID_SIERPINSKY_TRIANGLE,
     ID_FIXEDPOINT1,
     ID_FIXEDPOINT2,
     ID_FIXEDPOINT3,
@@ -52,12 +52,12 @@ enum IDS
     ID_BURNING_SHIP_JULIA,
     ID_FRACTORY,
     ID_CELL,
-    ID_DPENDULUM,
+    ID_DOUBLE_PENDULUM,
     ID_USER_DEFINED,
-    ID_FPUSER_DEFINED,
+    ID_FIXED_POINT_USER_DEFINED,
     ID_JULIA_MODE,
     ID_ABOUT,
-    ID_KEYBOARDGUIDE,
+    ID_KEYBOARD_GUIDE,
     ID_ABORT_RENDER,
     ID_REDRAW,
     ID_RESET,
@@ -68,7 +68,7 @@ enum IDS
     ID_ENTER_SLD_CONSTANT,
     ID_IT_MANUAL,
     ID_FORMULA_DIALOG,
-    ID_OPTPANEL,
+    ID_OPTION_PANEL,
     ID_USER_MANUAL,
     ID_WELCOME_DIALOG,
     ID_SCRIPT_EDITOR,
@@ -86,70 +86,69 @@ enum IDS
 class MainFrame : public wxFrame
 {
     FractalCanvas* fractalCanvas{};
+    FormulaDialog* formulaDialog{};
     JuliaMode* _juliaModePtr;
     JuliaConstantDialog* _juliaConstantDialog;
-    IterationsDialog* iterDiag{};
-    RendererOptions* rendererOptions;
-    FormulaDialog* formDialog{};
+    IterationsDialog* _iterationsDialog{};
+    RendererOptions* _rendererOptions;
     ScriptEditor* _scriptEditor{};
-    DimensionFrame* dimensionCalculator;
+    DimensionFrame* _dimensionCalculator;
     
-    bool changeKeyboardGuide;
-    bool rendererOptionsActive;
-    bool introConstActive;
-    bool iterDiagActive;
-    bool infoFrameActive;
-    bool formDiagActive;
-    bool scriptEditorActive;
-    bool pause;
-    bool showOptPanel{};
+    bool _changeKeyboardGuide;
+    bool _rendererOptionsActive;
+    bool _introConstActive;
+    bool _iterationsDialogIsActive;
+    bool _informationFrameIsActive;
+    bool _formulaDialogIsActive;
+    bool _scriptEditorIsActive;
+    bool _showOptionsPanel{};
 
     // WX
-    wxMenuBar* menubar{};
-    wxMenu* fileMenu{};
-    wxMenu* fractalMenu{};
-    wxMenu* iterationsMenu{};
-    wxMenu* toolMenu{};
-    wxMenu* rendererMenu{};
-    wxMenu* helpMenu{};
-    wxMenu* formula{};
-    wxMenuItem* juliaMode{};
-    wxMenuItem* keyboardGuide{};
-    wxMenuItem* showOrbit{};
-    wxMenuItem* slider{};
-    wxMenuItem* manual{};
-    wxMenuItem* itManual{};
-    wxMenuItem* MoreIter{};
-    wxMenuItem* lessIter{};
-    wxMenuItem* fractOptItem{};
-    wxMenu* introConstant{};
-    wxMenu *typeComplex{}, *typeNumMet{}, *typePhysics{}, *typeOther{};
-    wxScrolledWindow* optionPanel{};
-    wxStaticBitmap* propBitmap{};
-    wxBoxSizer* fractalSizer{};
-    wxBoxSizer* optionSizer{};
-    wxMenuItem* abortRenderItem{};
-    wxBoxSizer* sizer{};
-    wxSize size;
-    wxStatusBar* status{};
+    wxMenuBar* _menubar{};
+    wxMenu* _fileMenu{};
+    wxMenu* _fractalMenu{};
+    wxMenu* _iterationsMenu{};
+    wxMenu* _toolMenu{};
+    wxMenu* _rendererMenu{};
+    wxMenu* _helpMenu{};
+    wxMenu* _formula{};
+    wxMenuItem* _juliaMode{};
+    wxMenuItem* _keyboardGuide{};
+    wxMenuItem* _showOrbit{};
+    wxMenuItem* _sliderJuliaConstant{};
+    wxMenuItem* _manualJuliaConstant{};
+    wxMenuItem* _manualIterations{};
+    wxMenuItem* _moreIterations{};
+    wxMenuItem* _lessIterations{};
+    wxMenuItem* _fractalOptionsItem{};
+    wxMenu* _introConstant{};
+    wxMenu *_typeComplex{}, *_typeNumericalMethod{}, *_typePhysics{}, *_typeOther{};
+    wxScrolledWindow* _optionPanel{};
+    wxStaticBitmap* _fractalOptionsBitmap{};
+    wxBoxSizer* _fractalSizer{};
+    wxBoxSizer* _optionSizer{};
+    wxMenuItem* _abortRenderItem{};
+    wxBoxSizer* _sizer{};
+    wxSize _size;
+    wxStatusBar* _statusBar{};
 
     // Menu items from user scripts.
-    std::vector<ScriptData> loadedScripts;
-    std::vector<wxMenuItem*> scriptItems;
-    std::optional<unsigned int> selectedScriptIndex;
+    std::vector<ScriptData> _loadedScripts;
+    std::vector<wxMenuItem*> _scriptItems;
+    std::optional<unsigned int> _selectedScriptIndex;
 
     // Elements of the option panel.
-    wxButton* panelButton{};
-    std::vector<int> foundLabels, foundTextControls;
-    std::vector<int> foundSpinControls, foundCheckBoxes;
-    std::vector<wxStaticText*> labels;
-    std::vector<wxTextCtrl*> textControls;
-    std::vector<wxSpinCtrl*> spinControls;
-    std::vector<wxCheckBox*> checkBoxes;
+    wxButton* _panelButton{};
+    std::vector<int> _foundLabels, _foundTextControls;
+    std::vector<int> _foundSpinControls, _foundCheckBoxes;
+    std::vector<wxStaticText*> _labels;
+    std::vector<wxTextCtrl*> _textControls;
+    std::vector<wxSpinCtrl*> _spinControls;
+    std::vector<wxCheckBox*> _checkBoxes;
 
     // Configuration.
-    FractalType fractalType;
-    AppConfig opt;
+    FractalType _fractalType;
+    AppConfig _appConfig;
 
     void SetUpGUI();                      ///< Create the main window.
     void UpdateMenu();                    ///< Adjust menu items when a new fractal type is selected.
@@ -157,9 +156,9 @@ class MainFrame : public wxFrame
     void UpdateJuliaMode();               ///< Closes the Julia window when a new fractal is selected.
     void UpdateJuliaRendererOptions(const Options& options);
     ///@brief Changes the fractal type.
-    ///@param fType Type of the fractal.
+    ///@param type Type of the fractal.
     ///@param enableJulia Enables a Julia version of this type.
-    void ChangeFractal(FractalType fType, bool enableJulia);
+    void ChangeFractal(FractalType type, bool enableJulia);
     void GetParserOpt();                  ///< Gets parameters from the config.ini file.
     void DeleteOptPanel();                ///< Deletes all the elements in the option panel.
     void GetScriptFractals();             ///< Creates the menu elements corresponding to the script fractals.
