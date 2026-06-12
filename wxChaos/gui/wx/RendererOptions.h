@@ -93,11 +93,13 @@ class RendererOptions : public wxFrame
 public:
     ///@brief Constructor.
     ///@param presenter Pointer to the target fractal presenter.
-    ///@param parent Parent wxWindow.
-    ///@param title
-    ///@param pos
-    ///@param size
-    ///@param windowStyle
+    ///@param parent Parent window that receives renderer options lifecycle events.
+    ///@param optionsChanged Callback invoked after renderer options are changed.
+    ///@param id Window identifier.
+    ///@param title Text displayed in the frame title bar.
+    ///@param pos Initial frame position.
+    ///@param size Initial frame size.
+    ///@param windowStyle wxWidgets frame style flags.
     RendererOptions(SFMLFractal* presenter, wxWindow* parent,
                     std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
