@@ -4,7 +4,6 @@
 #include "AppPaths.h"
 #include "HTMLViewer.h"
 #include "TextUtils.h"
-#include "global.h"
 
 using namespace std;
 
@@ -417,19 +416,8 @@ void MainFrame::OnWelcomeDialog(wxCommandEvent&)
 }
 void MainFrame::OnAbout(wxCommandEvent&)
 {
-    // About dialog.
-    const auto dlg = new AboutDialog(this);
-    dlg->SetAppName(wxT("wxChaos"));
-    dlg->SetVersion(wxString::FromUTF8(APP_VERSION));
-    dlg->SetCopyright(wxString::Format(wxT("%s"),
-        wxT("Carlos Manuel Rodriguez y Martinez.\nEmail: fis.carlosmanuel@gmail.com\nAn open source fractal generator.\nThis program is distributed under the GPLv3 license.")));
-    dlg->SetCustomBuildInfo(wxString::Format(wxT("%s. %s"),
-        AboutDialog::GetBuildInfo(AboutDialog::wxBUILDINFO_LONG).GetData(),
-        wxT("")));
-    dlg->SetHeaderBitmap(wxBitmap(AppPaths::ResourceFile({wxT("wxChaosAbout.bmp")}), wxBITMAP_TYPE_ANY));
-    dlg->ApplyInfo();
-    dlg->ShowModal();
-    dlg->Destroy();
+    AboutDialog dialog(this);
+    dialog.ShowModal();
 }
 void MainFrame::OnSave(wxCommandEvent&)
 {

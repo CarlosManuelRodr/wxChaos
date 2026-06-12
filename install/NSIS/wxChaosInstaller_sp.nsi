@@ -81,7 +81,7 @@ Section "Principal" SEC01
   File "..\..\bin\win32_Unicode Setup Spanish\Resources\Tutorials\mainTut.html"
   File "..\..\bin\win32_Unicode Setup Spanish\Resources\Tutorials\mainTut_html_m4dc94d3a.png"
   SetOutPath "$INSTDIR\Resources"
-  File "..\..\bin\win32_Unicode Setup Spanish\Resources\wxChaosAbout.bmp"
+  File "..\..\bin\win32_Unicode Setup Spanish\Resources\wxChaosAbout.svg"
   SetOutPath "$INSTDIR\ScriptSamples"
   File "..\..\bin\win32_Unicode Setup Spanish\ScriptSamples\Escape_angle.ans"
   File "..\..\bin\win32_Unicode Setup Spanish\ScriptSamples\Gradient.ans"
@@ -129,7 +129,7 @@ Function un.onUninstSuccess
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "¿Are you sure you want to uninstall $(^Name) ?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Â¿Are you sure you want to uninstall $(^Name) ?" IDYES +2
   Abort
 FunctionEnd
 
@@ -154,7 +154,7 @@ Section Uninstall
   Delete "$INSTDIR\ScriptSamples\hello_world.ans"
   Delete "$INSTDIR\ScriptSamples\Gradient.ans"
   Delete "$INSTDIR\ScriptSamples\Escape_angle.ans"
-  Delete "$INSTDIR\Resources\wxChaosAbout.bmp"
+  Delete "$INSTDIR\Resources\wxChaosAbout.svg"
   Delete "$INSTDIR\Resources\Tutorials\mainTut_html_m4dc94d3a.png"
   Delete "$INSTDIR\Resources\Tutorials\mainTut_html_m1b921b37.jpg"
   Delete "$INSTDIR\Resources\Tutorials\mainTut_html_3570d161.png"

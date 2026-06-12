@@ -83,6 +83,7 @@ target_include_directories(wxChaos PRIVATE
 target_compile_definitions(wxChaos PRIVATE
         SFML_STATIC
         WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
+        WXCHAOS_BUILD_TYPE="$<CONFIG>"
         $<$<CONFIG:Debug>:__WXDEBUG__>
         _HAS_STD_BYTE=0    # turns off the enum class std::byte in MSVC’s STL
 )

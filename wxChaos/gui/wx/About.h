@@ -1,120 +1,26 @@
-/** 
-* @file About.h 
-* @brief This header file contains the About dialog.
-*
-* @author Carlos Manuel Rodriguez y Martinez
-*
-* @date 7/18/2012
-*/
-
 #pragma once
 
-#include <wx/gdicmn.h>
-#include <wx/wx.h>
+#include <utility>
+#include <vector>
 
-#define SYMBOL_ABOUTDIALOG_STYLE wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
-#define SYMBOL_ABOUTDIALOG_TITLE _("About ")
-#define SYMBOL_ABOUTDIALOG_IDNAME ID_ABOUTDIALOG
-#define SYMBOL_ABOUTDIALOG_SIZE wxSize(680, 520)
-#define SYMBOL_ABOUTDIALOG_POSITION wxDefaultPosition
+#include <wx/dialog.h>
+#include <wx/string.h>
 
-/**
-* @class AboutDialog
-* @brief A purely informative dialog.
-*/
-class AboutDialog: public wxDialog
-{    
-    DECLARE_DYNAMIC_CLASS( AboutDialog )
+class wxSizer;
+class wxWindow;
 
+class AboutDialog final : public wxDialog
+{
 public:
-    // Constructors
-    AboutDialog();
-    explicit AboutDialog(wxWindow* parent,
-                         wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME,
-                         const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE,
-                         const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION,
-                         const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE,
-                         long style = SYMBOL_ABOUTDIALOG_STYLE);
-
-    // Creation
-    bool Create(wxWindow* parent, 
-                wxWindowID id = SYMBOL_ABOUTDIALOG_IDNAME,
-                const wxString& caption = SYMBOL_ABOUTDIALOG_TITLE,
-                const wxPoint& pos = SYMBOL_ABOUTDIALOG_POSITION,
-                const wxSize& size = SYMBOL_ABOUTDIALOG_SIZE,
-                long style = SYMBOL_ABOUTDIALOG_STYLE);
-
-    // Destructor
-    ~AboutDialog() override;
-
-    // Initializes member variables
-    void Initialize();
-
-    // Creates the controls and the sizers
-    void CreateControls();
-
-    wxString GetAppName() const
-    {
-        return m_AppName;
-    }
-    void SetAppName(const wxString& value)
-    {
-        m_AppName = value;
-    }
-    wxString GetVersion() const
-    {
-        return m_Version;
-    }
-    void SetVersion(const wxString& value)
-    {
-        m_Version = value;
-    }
-    wxString GetCopyright() const
-    {
-        return m_Copyright;
-    }
-    void SetCopyright(const wxString& value)
-    {
-        m_Copyright = value;
-    }
-    wxString GetCustomBuildInfo() const
-    {
-        return m_CustomBuildInfo;
-    }
-    void SetCustomBuildInfo(const wxString& value)
-    {
-        m_CustomBuildInfo = value;
-    }
-
-    //helper functions
-    enum wxBuildInfoFormat 
-    {
-        wxBUILDINFO_SHORT,
-        wxBUILDINFO_LONG
-    };
-
-    static wxString GetBuildInfo(wxBuildInfoFormat format);
-
-    void SetHeaderBitmap(const wxBitmap & value) const;
-    void ApplyInfo();
+    explicit AboutDialog(wxWindow* parent);
 
 private:
-    //AboutDialog member variables
-    wxPanel* m_ContentPanel{};
-    wxStaticBitmap* m_HeaderStaticBitmap{};
-    wxStaticText* m_AppNameStaticText{};
-    wxStaticText* m_CopyrightStaticText{};
-    wxStaticText* m_VersionStaticText{};
-    wxStaticText* m_BuildInfoStaticText{};
-    wxString m_AppName;
-    wxString m_Version;
-    wxString m_Copyright;
-    wxString m_CustomBuildInfo;
+    using DetailRows = std::vector<std::pair<wxString, wxString>>;
 
-    /// Control identifiers
-    enum
-    {
-        ID_ABOUTDIALOG = 10000,
-        ID_ContentPanel = 10001
-    };
+    void CreateControls();
+    wxSizer* CreateDetailGrid(wxWindow* parent, const DetailRows& rows) const;
+
+    wxString GetBuildType() const;
+    wxString GetArchitecture() const;
+    wxString GetCompiler() const;
 };

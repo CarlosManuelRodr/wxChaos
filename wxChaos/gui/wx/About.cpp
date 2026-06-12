@@ -1,156 +1,196 @@
-#include <wx/gbsizer.h>
-#include <wx/window.h>
-#include <wx/statline.h>
 #include "About.h"
 
-IMPLEMENT_DYNAMIC_CLASS(AboutDialog, wxDialog)
+#include <SFML/Config.hpp>
+#include <angelscript.h>
+#include <mpDefines.h>
 
-AboutDialog::AboutDialog()
-{
-    Initialize();
-}
+#include <wx/bmpbndl.h>
+#include <wx/button.h>
+#include <wx/hyperlink.h>
+#include <wx/panel.h>
+#include <wx/sizer.h>
+#include <wx/statbmp.h>
+#include <wx/statline.h>
+#include <wx/stattext.h>
+#include <wx/version.h>
 
-AboutDialog::AboutDialog(wxWindow* parent, const wxWindowID id, const wxString& caption, const wxPoint& pos,
-                         const wxSize& size, const long style)
-{
-    Initialize();
-    Create(parent, id, caption, pos, size, style);
-}
+#include "AppPaths.h"
+#include "global.h"
 
-bool AboutDialog::Create(wxWindow* parent, const wxWindowID id, const wxString& caption, const wxPoint& pos,
-                         const wxSize& size, const long style)
+AboutDialog::AboutDialog(wxWindow* parent)
+    : wxDialog(parent, wxID_ANY, _("About wxChaos"), wxDefaultPosition, wxDefaultSize,
+               wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU)
 {
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
-    wxDialog::Create(parent, id, caption, pos, size, style);
-
+    SetBackgroundColour(wxColour(244, 247, 251));
     CreateControls();
-    if (GetSizer())
-        GetSizer()->SetSizeHints(this);
-
-    Centre();
-    return true;
+    GetSizer()->Fit(this);
+    SetMinSize(GetSize());
+    CentreOnParent();
 }
 
-AboutDialog::~AboutDialog() = default;
-
-void AboutDialog::Initialize()
-{
-    m_ContentPanel = nullptr;
-    m_HeaderStaticBitmap = nullptr;
-    m_AppNameStaticText = nullptr;
-    m_CopyrightStaticText = nullptr;
-    m_VersionStaticText = nullptr;
-    m_BuildInfoStaticText = nullptr;
-}
 void AboutDialog::CreateControls()
 {
-    const auto itemDialog1 = this;
+    const wxColour ink(25, 37, 55);
+    const wxColour muted(92, 105, 123);
+    const wxColour accent(16, 116, 157);
+    const int outerMargin = FromDIP(20);
+    const int sectionGap = FromDIP(14);
 
-    const auto itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-    itemDialog1->SetSizer(itemBoxSizer2);
+    auto* root = new wxBoxSizer(wxVERTICAL);
+    SetSizer(root);
 
-    m_ContentPanel = new wxPanel( itemDialog1, ID_ContentPanel, wxDefaultPosition, wxSize(540, 460), wxNO_BORDER|wxTAB_TRAVERSAL );
-    m_ContentPanel->SetBackgroundColour(wxColour(255, 255, 255));
-    itemBoxSizer2->Add(m_ContentPanel, 0, wxGROW, 0);
+    const wxSize bannerSize = FromDIP(wxSize(680, 170));
+    const wxBitmapBundle banner = wxBitmapBundle::FromSVGFile(
+        AppPaths::ResourceFile({wxT("wxChaosAbout.svg")}), bannerSize);
+    auto* header = new wxStaticBitmap(this, wxID_ANY, banner, wxDefaultPosition, bannerSize);
+    root->Add(header, 0, wxEXPAND);
 
-    const auto itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
-    m_ContentPanel->SetSizer(itemBoxSizer4);
+    auto* content = new wxPanel(this, wxID_ANY);
+    content->SetBackgroundColour(wxColour(244, 247, 251));
+    auto* contentSizer = new wxBoxSizer(wxVERTICAL);
+    content->SetSizer(contentSizer);
+    root->Add(content, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, outerMargin);
 
-    m_HeaderStaticBitmap = new wxStaticBitmap( m_ContentPanel, wxID_STATIC, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer4->Add(m_HeaderStaticBitmap, 0, wxGROW, 0);
+    auto* intro = new wxStaticText(
+        content,
+        wxID_ANY,
+        _("An open-source playground for exploring fractals, dynamical systems, and generative mathematics."));
+    intro->SetForegroundColour(ink);
+    intro->SetFont(wxFontInfo(GetFont().GetPointSize() + 2).Bold());
+    intro->Wrap(bannerSize.GetWidth() - 2 * outerMargin);
+    contentSizer->Add(intro, 0, wxEXPAND | wxTOP, sectionGap);
 
-    auto* itemGridBagSizer6 = new wxGridBagSizer(0, 0);
-    itemGridBagSizer6->AddGrowableRow(2);
-    itemGridBagSizer6->AddGrowableRow(3);
-    itemGridBagSizer6->SetEmptyCellSize(wxSize(10, 20));
-    itemBoxSizer4->Add(itemGridBagSizer6, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
+    auto* byline = new wxStaticText(
+        content,
+        wxID_ANY,
+        _("Created by Carlos Manuel Rodriguez y Martinez. Originally begun in 2012 and modernized with wxWidgets 3 and SFML 2."));
+    byline->SetForegroundColour(muted);
+    byline->Wrap(bannerSize.GetWidth() - 2 * outerMargin);
+    contentSizer->Add(byline, 0, wxEXPAND | wxTOP, FromDIP(6));
 
-    m_AppNameStaticText = new wxStaticText( m_ContentPanel, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
-    m_AppNameStaticText->SetForegroundColour(wxColour(128, 0, 0));
-    m_AppNameStaticText->SetFont(wxFont(28, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Arial Narrow")));
-    itemGridBagSizer6->Add(m_AppNameStaticText, wxGBPosition(0, 0), wxGBSpan(1, 2), wxALIGN_LEFT|wxALIGN_BOTTOM|wxLEFT|wxRIGHT|wxTOP, 5);
+    auto* links = new wxBoxSizer(wxHORIZONTAL);
+    auto* sourceLink = new wxHyperlinkCtrl(
+        content,
+        wxID_ANY,
+        _("Source code"),
+        wxT("https://github.com/CarlosManuelRodr/wxChaos"));
+    auto* emailLink = new wxHyperlinkCtrl(
+        content,
+        wxID_ANY,
+        _("Contact the author"),
+        wxT("mailto:fis.carlosmanuel@gmail.com"));
+    sourceLink->SetNormalColour(accent);
+    emailLink->SetNormalColour(accent);
+    links->Add(sourceLink);
+    links->Add(FromDIP(18), 0);
+    links->Add(emailLink);
+    contentSizer->Add(links, 0, wxTOP, FromDIP(8));
 
-    const auto itemStaticText8 = new wxStaticText( m_ContentPanel, wxID_STATIC, _("Version"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticText8->SetForegroundColour(wxColour(150, 150, 150));
-    itemStaticText8->SetFont(wxFont(8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial")));
-    itemGridBagSizer6->Add(itemStaticText8, wxGBPosition(1, 0), wxGBSpan(1, 1), wxALIGN_RIGHT|wxALIGN_TOP|wxLEFT|wxBOTTOM, 5);
+    contentSizer->Add(new wxStaticLine(content), 0, wxEXPAND | wxTOP | wxBOTTOM, sectionGap);
 
-    m_CopyrightStaticText = new wxStaticText( m_ContentPanel, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE );
-    itemGridBagSizer6->Add(m_CopyrightStaticText, wxGBPosition(2, 0), wxGBSpan(1, 2), wxGROW|wxGROW|wxALL, 5);
+    auto* details = new wxBoxSizer(wxHORIZONTAL);
+    contentSizer->Add(details, 0, wxEXPAND);
 
-    m_VersionStaticText = new wxStaticText( m_ContentPanel, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
-    m_VersionStaticText->SetForegroundColour(wxColour(150, 150, 150));
-    m_VersionStaticText->SetFont(wxFont(8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial")));
-    itemGridBagSizer6->Add(m_VersionStaticText, wxGBPosition(1, 1), wxGBSpan(1, 1), wxALIGN_LEFT|wxALIGN_TOP|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-
-    m_BuildInfoStaticText = new wxStaticText( m_ContentPanel, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE );
-    itemGridBagSizer6->Add(m_BuildInfoStaticText, wxGBPosition(3, 0), wxGBSpan(1, 2), wxGROW|wxGROW|wxALL, 5);
-
-    itemBoxSizer4->Add(5, 5, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    const auto itemStaticLine13 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-    itemBoxSizer2->Add(itemStaticLine13, 0, wxGROW, 0);
-
-    const auto itemStdDialogButtonSizer14 = new wxStdDialogButtonSizer;
-
-    itemBoxSizer2->Add(itemStdDialogButtonSizer14, 0, wxALIGN_RIGHT|wxALL, 5);
-    const auto itemButton15 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer14->AddButton(itemButton15);
-
-    itemStdDialogButtonSizer14->Realize();
-
-    m_BuildInfoStaticText->SetLabel(GetBuildInfo(wxBUILDINFO_LONG));
-}
-wxString AboutDialog::GetBuildInfo(wxBuildInfoFormat format)
-{
-    wxString wxBuild(wxVERSION_STRING);
-
-    if (format == wxBUILDINFO_LONG)
+    auto addSection = [&](const wxString& title, const DetailRows& rows)
     {
-#if defined(__WXMSW__)
-        wxBuild << _T("-Windows");
-#elif defined(__WXMAC__)
-        wxBuild << _T("-Mac");
-#elif defined(__UNIX__)
-        wxBuild << _T("-Linux");
-#endif
+        auto* section = new wxBoxSizer(wxVERTICAL);
+        auto* heading = new wxStaticText(content, wxID_ANY, title);
+        heading->SetForegroundColour(accent);
+        heading->SetFont(wxFontInfo(GetFont().GetPointSize() + 1).Bold());
+        section->Add(heading, 0, wxBOTTOM, FromDIP(8));
+        section->Add(CreateDetailGrid(content, rows), 0, wxEXPAND);
+        return section;
+    };
 
-#if wxUSE_UNICODE
-        wxBuild << _T("-Unicode");
+    details->Add(
+        addSection(
+            _("Application"),
+            {
+                {_("Version"), wxString::FromUTF8(APP_VERSION)},
+                {_("Build"), wxString::Format(wxT("%s (%s)"), GetBuildType(), GetArchitecture())},
+                {_("Compiler"), GetCompiler()},
+            }),
+        1,
+        wxEXPAND | wxRIGHT,
+        FromDIP(20));
+
+    details->Add(
+        addSection(
+            _("Built with"),
+            {
+                {wxT("wxWidgets"), wxVERSION_STRING},
+                {wxT("SFML"), wxString::Format(wxT("%d.%d.%d"), SFML_VERSION_MAJOR, SFML_VERSION_MINOR, SFML_VERSION_PATCH)},
+                {wxT("AngelScript"), wxString::FromUTF8(ANGELSCRIPT_VERSION_STRING)},
+                {wxT("muParserX"), wxString(MUP_PARSER_VERSION)},
+            }),
+        1,
+        wxEXPAND | wxLEFT,
+        FromDIP(20));
+
+    auto* footer = new wxBoxSizer(wxHORIZONTAL);
+    auto* license = new wxStaticText(content, wxID_ANY, _("Licensed under GPLv3"));
+    license->SetForegroundColour(muted);
+    footer->Add(license, 1, wxALIGN_CENTER_VERTICAL);
+    footer->Add(new wxButton(content, wxID_OK, _("Close")), 0, wxLEFT, FromDIP(20));
+    contentSizer->Add(footer, 0, wxEXPAND | wxTOP, sectionGap);
+}
+
+wxSizer* AboutDialog::CreateDetailGrid(wxWindow* parent, const DetailRows& rows) const
+{
+    const wxColour labelColour(92, 105, 123);
+    const wxColour valueColour(25, 37, 55);
+    auto* grid = new wxFlexGridSizer(2, FromDIP(6), FromDIP(14));
+    grid->AddGrowableCol(1);
+
+    for (const auto& [label, value] : rows)
+    {
+        auto* labelText = new wxStaticText(parent, wxID_ANY, label);
+        labelText->SetForegroundColour(labelColour);
+        labelText->SetFont(wxFontInfo(GetFont().GetPointSize()).Bold());
+        grid->Add(labelText, 0, wxALIGN_TOP);
+
+        auto* valueText = new wxStaticText(parent, wxID_ANY, value);
+        valueText->SetForegroundColour(valueColour);
+        grid->Add(valueText, 1, wxEXPAND);
+    }
+
+    return grid;
+}
+
+wxString AboutDialog::GetBuildType() const
+{
+#ifdef WXCHAOS_BUILD_TYPE
+    return wxString::FromUTF8(WXCHAOS_BUILD_TYPE);
+#elif defined(NDEBUG)
+    return wxT("Release");
 #else
-        wxBuild << _T("-ANSI");
-#endif // wxUSE_UNICODE
-    }
-    wxBuild << _(" build");
-    return wxBuild;
+    return wxT("Debug");
+#endif
 }
-void AboutDialog::SetHeaderBitmap(const wxBitmap & value) const
+
+wxString AboutDialog::GetArchitecture() const
 {
-    m_HeaderStaticBitmap->SetBitmap(value);
+#if defined(_M_X64) || defined(__x86_64__)
+    return wxT("x64");
+#elif defined(_M_IX86) || defined(__i386__)
+    return wxT("x86");
+#elif defined(_M_ARM64) || defined(__aarch64__)
+    return wxT("ARM64");
+#else
+    return wxT("unknown architecture");
+#endif
 }
-void AboutDialog::ApplyInfo()
+
+wxString AboutDialog::GetCompiler() const
 {
-    wxASSERT_MSG(m_HeaderStaticBitmap->GetBitmap().IsOk(), _("Header bitmap for About box is empty"));
-    SetTitle(wxString::Format(wxT("%s %s"), _("About"), m_AppName.GetData()));
-    m_AppNameStaticText->SetLabel(m_AppName);
-    m_VersionStaticText->SetLabel(m_Version);
-    m_CopyrightStaticText->SetLabel(m_Copyright);
-    wxString buildInfo;
-    if (m_CustomBuildInfo.IsEmpty())
-    {
-        buildInfo = AboutDialog::GetBuildInfo(wxBUILDINFO_LONG);
-    }
-    else
-    {
-        buildInfo = m_CustomBuildInfo;
-    }
-    m_BuildInfoStaticText->SetLabel(buildInfo);
-    const int labelWidth = m_HeaderStaticBitmap->GetSize().GetWidth() - 20;
-    m_VersionStaticText->Wrap(labelWidth);
-    m_CopyrightStaticText->Wrap(labelWidth);
-    m_BuildInfoStaticText->Wrap(labelWidth);
-    m_ContentPanel->Layout();
-    m_ContentPanel->GetSizer()->Fit(m_ContentPanel);
-    GetSizer()->Fit(this);
-    Centre();
+#if defined(_MSC_VER)
+    return wxString::Format(wxT("MSVC %d.%02d"), _MSC_VER / 100, _MSC_VER % 100);
+#elif defined(__clang__)
+    return wxString::Format(wxT("Clang %d.%d.%d"), __clang_major__, __clang_minor__, __clang_patchlevel__);
+#elif defined(__GNUC__)
+    return wxString::Format(wxT("GCC %d.%d.%d"), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+#else
+    return wxT("Unknown compiler");
+#endif
 }
