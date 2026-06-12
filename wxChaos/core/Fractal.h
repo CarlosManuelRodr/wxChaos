@@ -12,7 +12,7 @@
 #include "geometry/CircleData.h"
 #include "geometry/Vector2Int.h"
 #include "geometry/Rect.h"
-#include "ColorPalettes.h"
+#include "ColorPaletteTypes.h"
 #include "Options.h"
 #include "FormulaOptions.h"
 #include "Renderer.h"
@@ -71,7 +71,7 @@ protected:
     bool _relativeColor;
     bool _colorSet;                         ///< Activates internal coloring.
     bool _colorMode;                        ///< Activates external coloring.
-    ColorPalettes _gradStyle;               ///< Grad color palette to be used.
+    ColorPaletteTypes _gradStyle;               ///< Grad color palette to be used.
     unsigned int _paletteSize;
     unsigned int _gradPaletteSize;
     unsigned int _varGradientStep;
@@ -340,8 +340,8 @@ public:
     void PrepareSnapshot(bool mode);
 
     // Color styles.
-    void SetColorPalette(ColorPalettes gradStyle);
-    ColorPalettes GetColorPalette() const;
+    void SetColorPalette(ColorPaletteTypes gradStyle);
+    ColorPaletteTypes GetColorPalette() const;
 
     // Color operations.
     sf::Color GetSetColor() const;

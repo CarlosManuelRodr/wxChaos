@@ -458,7 +458,7 @@ void SFMLFractal::SetGradientSize(const unsigned int size)
     _fractal->SetGradientSize(size);
 }
 
-void SFMLFractal::SetColorPalette(const ColorPalettes palette)
+void SFMLFractal::SetColorPalette(const ColorPaletteTypes palette)
 {
     ClearImageCache();
     _fractal->SetColorPalette(palette);

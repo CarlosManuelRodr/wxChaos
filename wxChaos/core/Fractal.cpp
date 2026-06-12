@@ -6,7 +6,7 @@
 #include "SystemUtilities.h"
 using namespace std;
 
-constexpr ColorPalettes defaultGradientStyle = Retro;
+constexpr ColorPaletteTypes defaultGradientStyle = Retro;
 const wxString defaultGradientString = wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);");
 
 inline double CalcSquaredDist(const double x1, const double y1, const double x2, const double y2)
@@ -969,12 +969,12 @@ void Fractal::PrepareSnapshot(const bool mode)
 {
     _onSnapshot = mode;
 }
-void Fractal::SetColorPalette(const ColorPalettes gradStyle)
+void Fractal::SetColorPalette(const ColorPaletteTypes gradStyle)
 {
     _gradStyle = gradStyle;
 }
 
-ColorPalettes Fractal::GetColorPalette() const
+ColorPaletteTypes Fractal::GetColorPalette() const
 {
     return _gradStyle;
 }

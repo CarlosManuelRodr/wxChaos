@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "ColorPalettes.h"
+#include "ColorPaletteTypes.h"
 #include "geometry/Rect.h"
 #include "geometry/Vector2Int.h"
 #include "types/Direction.h"
@@ -177,7 +177,7 @@ public:
 
     ///@brief Sets the color palette style.
     ///@param palette New palette style.
-    void SetColorPalette(ColorPalettes palette);
+    void SetColorPalette(ColorPaletteTypes palette);
 
     ///@brief Sets whether exterior colors are drawn and invalidates cached images.
     ///@param mode Exterior color mode.

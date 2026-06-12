@@ -16,7 +16,7 @@
 #include <wx/notebook.h>
 #include <SFML/Graphics/Color.hpp>
 #include <functional>
-#include "ColorPalettes.h"
+#include "ColorPalette.h"
 #include "wxGradientDialog.h"
 #include "Fractal.h"
 #include "sfml/SFMLFractal.h"
@@ -87,9 +87,9 @@ class RendererOptions : public wxFrame
     void ConnectEvents();
     void NotifyOptionsChanged() const;
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
-    int GetPaletteSizeForAlgorithm(RenderingAlgorithmType algorithm, int paletteSize) const;
+    [[nodiscard]] int GetPaletteSizeForAlgorithm(RenderingAlgorithmType algorithm, int paletteSize) const;
     void ApplyPaletteSize(int paletteSize);
-    wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
+    [[nodiscard]] wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
 
 
 public:
