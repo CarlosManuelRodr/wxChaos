@@ -197,6 +197,9 @@ public:
     ///@brief Gets a view expanded around the current one.
     Rect GetExpandedView(double scale = 1.0) const;
 
+    ///@brief Gets an aspect-correct view centered on a world-coordinate point.
+    Rect GetCenteredView(double x, double y, double radius) const;
+
     ///@brief Pans the current view by a pixel delta.
     void PanViewByPixels(int pixelDeltaX, int pixelDeltaY);
 
@@ -420,6 +423,7 @@ public:
     ///@brief Draws a simple line. Used in orbit mode.
     void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
     void DrawCircle(double xCenter, double yCenter, double radius, sf::Color color = sf::Color(0, 0, 0));
+    void DrawCircle(double xCenter, double yCenter, double radius, sf::Color color, bool filled);
     void ClearGeometryFigures();
     virtual void DrawOrbit() {}
 };

@@ -5,4 +5,5 @@ struct CircleData
 {
     double xCenter, yCenter, radius;
     sf::Color color;
+    bool filled = false;
 };

@@ -410,6 +410,17 @@ void SFMLFractal::Redraw()
     _dontDrawTempImage = true;
 }
 
+void SFMLFractal::SetView(const Rect& view)
+{
+    _fractal->StopRender();
+    ResetMovement();
+    ApplyView(view);
+    _fractal->MarkOrbitDirty();
+    ClearImageCache();
+    ResetZoomHistory();
+    _dontDrawTempImage = true;
+}
+
 void SFMLFractal::IncreaseIterations()
 {
     _changeFractalIter = true;
@@ -583,7 +594,7 @@ void SFMLFractal::DrawGeometry(sf::RenderWindow* window) const
         const float r = right - x0;
         sf::CircleShape circle(r);
         circle.setPosition(x0 - r, y0 - r);
-        circle.setFillColor(sf::Color::Transparent);
+        circle.setFillColor(circleData.filled ? circleData.color : sf::Color::Transparent);
         circle.setOutlineColor(circleData.color);
         circle.setOutlineThickness(2);
         window->draw(circle);

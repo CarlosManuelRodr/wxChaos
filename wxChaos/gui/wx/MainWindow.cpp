@@ -432,7 +432,11 @@ void MainFrame::ShowCommandConsole()
 {
     if (_commandConsole == nullptr)
     {
-        _commandConsole = new CommandConsole(_fractalCanvas, [this] { ReloadScripts(); }, this);
+        _commandConsole = new CommandConsole(
+            _fractalCanvas,
+            [this] { ReloadScripts(); },
+            [this](const double real, const double imaginary) { return OpenJuliaModeAt(real, imaginary); },
+            this);
         _commandConsole->Show(true);
         _appConfig.commandConsole = true;
         AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).SetCommandConsole(true);
@@ -1112,31 +1116,38 @@ void MainFrame::UpdateJuliaMode()
     // Creates Julia fractal with parameters from the main fractal.
     else
     {
-        _juliaMode->Check(true);
-
-        FractalType juliaType;
-        switch(_fractalType)
-        {
-        case FractalType::Mandelbrot:
-            juliaType = FractalType::Julia;
-            break;
-        case FractalType::MandelbrotZN:
-            juliaType = FractalType::JuliaZN;
-            break;
-        case FractalType::Manowar:
-            juliaType = FractalType::ManowarJulia;
-            break;
-        case FractalType::BurningShip:
-            juliaType = FractalType::BurningShipJulia;
-            break;
-        default:
-            juliaType = FractalType::Julia;
-        };
-
-        _juliaModePtr = new JuliaMode(this, _fractalCanvas, juliaType, _fractalCanvas->GetFractalPtr()->GetOptions());
-        _juliaModePtr->Launch();
-        _fractalCanvas->SetJuliaMode(true);
+        const Options options = _fractalCanvas->GetFractalPtr()->GetOptions();
+        if (!OpenJuliaModeAt(options.kReal, options.kImaginary))
+            _juliaMode->Check(false);
     }
+}
+
+bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
+{
+    FractalType juliaType;
+    switch (_fractalType)
+    {
+        case FractalType::Mandelbrot: juliaType = FractalType::Julia; break;
+        case FractalType::MandelbrotZN: juliaType = FractalType::JuliaZN; break;
+        case FractalType::Manowar: juliaType = FractalType::ManowarJulia; break;
+        case FractalType::BurningShip: juliaType = FractalType::BurningShipJulia; break;
+        default: return false;
+    }
+
+    if (_juliaModePtr != nullptr)
+    {
+        _juliaModePtr->SetConstant(real, imaginary);
+        return true;
+    }
+
+    Options options = _fractalCanvas->GetFractalPtr()->GetOptions();
+    options.kReal = real;
+    options.kImaginary = imaginary;
+    _juliaMode->Check(true);
+    _juliaModePtr = new JuliaMode(this, _fractalCanvas, juliaType, options);
+    _juliaModePtr->Launch();
+    _fractalCanvas->SetJuliaMode(true);
+    return true;
 }
 void MainFrame::ReloadScripts()
 {

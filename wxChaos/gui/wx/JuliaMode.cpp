@@ -18,6 +18,9 @@ JuliaMode::JuliaMode(wxWindow* parent, FractalCanvas* ptr, const FractalType fra
     _play = nullptr;
     _closeRequested.store(false);
     _rendererOptionsPending = false;
+    _pendingKReal = 0.0;
+    _pendingKImaginary = 0.0;
+    _constantPending = false;
 
     _juliaFractal.CreateFractal(_type, _size.GetWidth(), _size.GetHeight());
     _sfmlFractal = new SFMLFractal(_juliaFractal.GetFractalPtr());
@@ -153,6 +156,9 @@ void JuliaMode::Run()
     {
         Options rendererOptions;
         bool applyRendererOptions = false;
+        double kReal = 0.0;
+        double kImaginary = 0.0;
+        bool applyConstant = false;
         {
             const std::lock_guard lock(_rendererOptionsMutex);
             if (_rendererOptionsPending)
@@ -161,9 +167,18 @@ void JuliaMode::Run()
                 _rendererOptionsPending = false;
                 applyRendererOptions = true;
             }
+            if (_constantPending)
+            {
+                kReal = _pendingKReal;
+                kImaginary = _pendingKImaginary;
+                _constantPending = false;
+                applyConstant = true;
+            }
         }
         if (applyRendererOptions)
             ApplyRendererOptions(rendererOptions);
+        if (applyConstant)
+            _sfmlFractal->SetK(kReal, kImaginary);
 
         if (_closeRequested.load())
         {
@@ -212,4 +227,12 @@ void JuliaMode::SetRendererOptions(const Options& options)
     const std::lock_guard lock(_rendererOptionsMutex);
     _pendingRendererOptions = options;
     _rendererOptionsPending = true;
+}
+
+void JuliaMode::SetConstant(const double real, const double imaginary)
+{
+    const std::lock_guard lock(_rendererOptionsMutex);
+    _pendingKReal = real;
+    _pendingKImaginary = imaginary;
+    _constantPending = true;
 }

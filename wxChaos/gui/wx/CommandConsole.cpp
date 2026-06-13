@@ -13,11 +13,13 @@ wxDEFINE_EVENT(wxEVT_COMMAND_CONSOLE_CLOSED, wxCommandEvent);
 using namespace std;
 
 CommandConsole::CommandConsole(FractalCanvas* fractalCanvas, std::function<void()> reloadScripts,
-                               wxWindow* parent, const wxWindowID id, const wxString& title,
+                               std::function<bool(double, double)> openJuliaMode, wxWindow* parent,
+                               const wxWindowID id, const wxString& title,
                                const wxPoint& pos, const wxSize& size, const long style)
     : wxFrame(parent, id, title, pos, size, style),
       _fractalCanvas(fractalCanvas),
       _reloadScripts(std::move(reloadScripts)),
+      _openJuliaMode(std::move(openJuliaMode)),
       _historyIndex(0)
 {
     this->SetSizeHints(wxSize(620, 380), wxDefaultSize);
@@ -47,6 +49,7 @@ CommandConsole::CommandConsole(FractalCanvas* fractalCanvas, std::function<void(
     _commandNames = {
         wxT("AskInfo("), wxT("SetBoundaries("), wxT("Redraw()"), wxT("Abort()"),
         wxT("DrawLine("), wxT("DrawCircle("), wxT("DeleteFigures()"),
+        wxT("FocusView("), wxT("OpenJuliaMode("),
         wxT("SetIterations("), wxT("GetIterations()"), wxT("ReloadScripts()"),
         wxT("Help()"), wxT("Clear()")
     };
@@ -188,32 +191,56 @@ wxString CommandConsole::Execute(const ParsedCommand& command)
     }
     if (command.name == wxT("drawcircle"))
     {
-        const optional<double> x = ReadDouble(command, {"x", "re"}, 0, error);
+        const optional<double> x = ReadDouble(command, {"x", "re", "real"}, 0, error);
         if (!x.has_value()) return error;
-        const optional<double> y = ReadDouble(command, {"y", "im"}, 1, error);
+        const optional<double> y = ReadDouble(command, {"y", "im", "imaginary"}, 1, error);
         if (!y.has_value()) return error;
         const optional<double> radius = ReadDouble(command, {"r", "radius"}, 2, error);
         if (!radius.has_value()) return error;
         if (*radius <= 0.0) return wxT("Error: radius must be greater than zero.");
-        const sf::Color color = ReadColor(command, error);
+        const sf::Color color = ReadColor(command, 3, error);
         if (!error.empty()) return error;
-        fractal->DrawCircle(*x, *y, *radius, color);
-        return wxT("Circle drawn.");
+        const optional<bool> filled = ReadBool(command, {"filled", "fill"}, 6, error);
+        if (!error.empty()) return error;
+        fractal->DrawCircle(*x, *y, *radius, color, filled.value_or(false));
+        return filled.value_or(false) ? wxT("Filled circle drawn.") : wxT("Circle drawn.");
     }
     if (command.name == wxT("drawline"))
     {
-        const optional<double> x1 = ReadDouble(command, {"x1", "re1"}, 0, error);
+        const optional<double> x1 = ReadDouble(command, {"x1", "re1", "real1"}, 0, error);
         if (!x1.has_value()) return error;
-        const optional<double> y1 = ReadDouble(command, {"y1", "im1"}, 1, error);
+        const optional<double> y1 = ReadDouble(command, {"y1", "im1", "imaginary1"}, 1, error);
         if (!y1.has_value()) return error;
-        const optional<double> x2 = ReadDouble(command, {"x2", "re2"}, 2, error);
+        const optional<double> x2 = ReadDouble(command, {"x2", "re2", "real2"}, 2, error);
         if (!x2.has_value()) return error;
-        const optional<double> y2 = ReadDouble(command, {"y2", "im2"}, 3, error);
+        const optional<double> y2 = ReadDouble(command, {"y2", "im2", "imaginary2"}, 3, error);
         if (!y2.has_value()) return error;
-        const sf::Color color = ReadColor(command, error);
+        const sf::Color color = ReadColor(command, 4, error);
         if (!error.empty()) return error;
         fractal->DrawLine(*x1, *y1, *x2, *y2, color);
         return wxT("Line drawn.");
+    }
+    if (command.name == wxT("focusview"))
+    {
+        const optional<double> x = ReadDouble(command, {"x", "re", "real"}, 0, error);
+        if (!x.has_value()) return error;
+        const optional<double> y = ReadDouble(command, {"y", "im", "imaginary"}, 1, error);
+        if (!y.has_value()) return error;
+        const optional<double> radius = ReadDouble(command, {"r", "radius"}, 2, error);
+        if (!radius.has_value()) return error;
+        if (*radius <= 0.0) return wxT("Error: radius must be greater than zero.");
+        _fractalCanvas->GetSFMLFractalPtr()->SetView(fractal->GetCenteredView(*x, *y, *radius));
+        return wxT("View focused.");
+    }
+    if (command.name == wxT("openjuliamode"))
+    {
+        const optional<double> real = ReadDouble(command, {"re", "x", "real"}, 0, error);
+        if (!real.has_value()) return error;
+        const optional<double> imaginary = ReadDouble(command, {"im", "y", "imaginary"}, 1, error);
+        if (!imaginary.has_value()) return error;
+        if (!_openJuliaMode(*real, *imaginary))
+            return wxT("Error: Julia mode is unavailable for the current fractal.");
+        return wxT("Julia mode opened or updated at the requested point.");
     }
     if (command.name == wxT("setboundaries"))
     {
@@ -227,8 +254,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command)
         if (!maxY.has_value()) return error;
         if (*minX >= *maxX || *minY >= *maxY)
             return wxT("Error: minimum boundaries must be smaller than maximum boundaries.");
-        fractal->SetView({*minX, *minY, *maxX, *maxY});
-        _fractalCanvas->GetSFMLFractalPtr()->Redraw();
+        _fractalCanvas->GetSFMLFractalPtr()->SetView({*minX, *minY, *maxX, *maxY});
         return wxT("View boundaries updated.");
     }
 
@@ -345,14 +371,26 @@ optional<unsigned int> CommandConsole::ReadUnsigned(const ParsedCommand& command
     return static_cast<unsigned int>(number);
 }
 
-sf::Color CommandConsole::ReadColor(const ParsedCommand& command, wxString& error)
+sf::Color CommandConsole::ReadColor(const ParsedCommand& command, const size_t positionalIndex, wxString& error)
 {
-    const optional<wxString> redValue = FindArgument(command, {"red"}, numeric_limits<size_t>::max());
-    const optional<wxString> greenValue = FindArgument(command, {"green"}, numeric_limits<size_t>::max());
-    const optional<wxString> blueValue = FindArgument(command, {"blue"}, numeric_limits<size_t>::max());
-    const bool hasColor = redValue.has_value() || greenValue.has_value() || blueValue.has_value();
-    if (!hasColor)
+    optional<wxString> redValue = FindArgument(command, {"red"}, numeric_limits<size_t>::max());
+    optional<wxString> greenValue = FindArgument(command, {"green"}, numeric_limits<size_t>::max());
+    optional<wxString> blueValue = FindArgument(command, {"blue"}, numeric_limits<size_t>::max());
+    const bool hasNamedColor = redValue.has_value() || greenValue.has_value() || blueValue.has_value();
+    if (!hasNamedColor && positionalIndex >= command.positionalArguments.size())
         return sf::Color::Black;
+
+    if (!hasNamedColor)
+    {
+        if (positionalIndex + 2 >= command.positionalArguments.size())
+        {
+            error = wxT("Error: positional colors require red, green, and blue values.");
+            return {};
+        }
+        redValue = command.positionalArguments[positionalIndex];
+        greenValue = command.positionalArguments[positionalIndex + 1];
+        blueValue = command.positionalArguments[positionalIndex + 2];
+    }
 
     unsigned int red = 0;
     unsigned int green = 0;
@@ -376,14 +414,43 @@ sf::Color CommandConsole::ReadColor(const ParsedCommand& command, wxString& erro
     return {static_cast<sf::Uint8>(red), static_cast<sf::Uint8>(green), static_cast<sf::Uint8>(blue)};
 }
 
+optional<bool> CommandConsole::ReadBool(const ParsedCommand& command,
+                                        const initializer_list<const char*> names,
+                                        const size_t positionalIndex, wxString& error)
+{
+    const optional<wxString> value = FindArgument(command, names, positionalIndex);
+    if (!value.has_value())
+        return nullopt;
+
+    const wxString normalized = value->Lower();
+    if (normalized == wxT("true") || normalized == wxT("yes") || normalized == wxT("1"))
+        return true;
+    if (normalized == wxT("false") || normalized == wxT("no") || normalized == wxT("0"))
+        return false;
+
+    error = wxT("Error: '") + *value + wxT("' is not a boolean. Use true or false.");
+    return nullopt;
+}
+
 wxString CommandConsole::HelpText()
 {
     return wxT(
-        "AskInfo(re, im, iterations=optional)\n"
-        "DrawCircle(x, y, r, red=0, green=0, blue=0)\n"
-        "DrawLine(x1, y1, x2, y2, red=0, green=0, blue=0)\n"
+        "Coordinates may be named x/y or re/im.\n"
+        "RGB colors use integer components from 0 to 255. White is 255,255,255.\n\n"
+        "AskInfo(x, y, iterations=optional)\n"
+        "AskInfo(re=..., im=..., iterations=optional)\n"
+        "DrawCircle(x, y, radius, red, green, blue)\n"
+        "DrawCircle(re=..., im=..., radius=..., red=..., green=..., blue=..., filled=true)\n"
+        "DrawCircle(x, y, radius, red, green, blue, filled)\n"
+        "DrawLine(x1, y1, x2, y2, red, green, blue)\n"
+        "DrawLine(re1=..., im1=..., re2=..., im2=..., red=..., green=..., blue=...)\n"
+        "FocusView(x, y, radius)\n"
+        "FocusView(re=..., im=..., radius=...)\n"
+        "  radius is the horizontal half-width; vertical range follows the canvas aspect ratio.\n"
+        "OpenJuliaMode(x, y)\n"
+        "OpenJuliaMode(re=..., im=...)\n"
         "DeleteFigures()\n"
-        "SetBoundaries(minX, maxX, minY, maxY)\n"
+        "SetBoundaries(minX, maxX, minY, maxY) or minRe/maxRe/minIm/maxIm\n"
         "SetIterations(iterations)\n"
         "GetIterations()\n"
         "Redraw()\n"
@@ -392,8 +459,10 @@ wxString CommandConsole::HelpText()
         "Clear() or Clc()\n"
         "Help()\n\n"
         "Examples:\n"
-        "DrawCircle(x=0.1, y=0.3, r=1.3)\n"
-        "AskInfo(re=-1.3, im=7.3)"
+        "DrawCircle(1, 0, 1.4, 255, 255, 255)\n"
+        "DrawCircle(re=1, im=0, radius=1.4, red=255, green=255, blue=255, filled=true)\n"
+        "FocusView(re=-0.75, im=0.1, radius=0.02)\n"
+        "OpenJuliaMode(re=-0.8, im=0.156)"
     );
 }
 

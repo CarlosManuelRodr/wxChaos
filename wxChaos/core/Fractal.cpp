@@ -461,6 +461,12 @@ Rect Fractal::GetExpandedView(const double scale) const
     return view;
 }
 
+Rect Fractal::GetCenteredView(const double x, const double y, const double radius) const
+{
+    const double verticalRadius = radius * static_cast<double>(_screenHeight) / _screenWidth;
+    return {x - radius, y - verticalRadius, x + radius, y + verticalRadius};
+}
+
 void Fractal::PanViewByPixels(const int pixelDeltaX, const int pixelDeltaY)
 {
     const double fx = (_maxX - _minX) / _screenWidth;
@@ -1241,11 +1247,18 @@ void Fractal::DrawLine(const double x1, const double y1, const double x2, const 
 
 void Fractal::DrawCircle(const double xCenter, const double yCenter, const double radius, const sf::Color color)
 {
+    this->DrawCircle(xCenter, yCenter, radius, color, false);
+}
+
+void Fractal::DrawCircle(const double xCenter, const double yCenter, const double radius, const sf::Color color,
+                         const bool filled)
+{
     CircleData data;
     data.xCenter = xCenter;
     data.yCenter = yCenter;
     data.radius = radius;
     data.color = color;
+    data.filled = filled;
     _circles.push_back(data);
     _geomFigure = true;
 }

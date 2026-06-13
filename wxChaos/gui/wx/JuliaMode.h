@@ -40,6 +40,9 @@ class JuliaMode
     std::mutex _rendererOptionsMutex;
     Options _pendingRendererOptions;
     bool _rendererOptionsPending;
+    double _pendingKReal;
+    double _pendingKImaginary;
+    bool _constantPending;
 
     ///@brief Handles the window's events.
     void HandleEvent();
@@ -72,4 +75,7 @@ public:
 
     ///@brief Queues renderer settings to be applied by the Julia window thread.
     void SetRendererOptions(const Options& options);
+
+    ///@brief Queues a Julia constant to be applied by the Julia window thread.
+    void SetConstant(double real, double imaginary);
 };

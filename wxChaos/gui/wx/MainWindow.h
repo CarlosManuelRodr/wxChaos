@@ -164,6 +164,7 @@ class MainFrame : public wxFrame
     void ConnectEvents();
     void CloseAll();
     void DestroyJuliaMode(bool requestClose);
+    bool OpenJuliaModeAt(double real, double imaginary);
     void DestroyDimensionFrame();
     void ShowCommandConsole();
     void ShowFirstUseDialog();

@@ -152,6 +152,9 @@ public:
     ///@brief Forces a redrawing and clears cached zoom-back images.
     void Redraw();
 
+    ///@brief Replaces the current world-coordinate view and resets zoom history.
+    void SetView(const Rect& view);
+
     ///@brief Increases the iteration count and invalidates cached images.
     void IncreaseIterations();
 

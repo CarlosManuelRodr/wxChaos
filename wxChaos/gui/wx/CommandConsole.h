@@ -24,6 +24,7 @@ class CommandConsole : public wxFrame
 
     FractalCanvas* _fractalCanvas;
     std::function<void()> _reloadScripts;
+    std::function<bool(double, double)> _openJuliaMode;
     wxRichTextCtrl* _output;
     wxStaticText* _prompt;
     wxTextCtrl* _input;
@@ -47,7 +48,10 @@ class CommandConsole : public wxFrame
     static std::optional<unsigned int> ReadUnsigned(const ParsedCommand& command,
                                                     std::initializer_list<const char*> names,
                                                     size_t positionalIndex, wxString& error);
-    static sf::Color ReadColor(const ParsedCommand& command, wxString& error);
+    static sf::Color ReadColor(const ParsedCommand& command, size_t positionalIndex, wxString& error);
+    static std::optional<bool> ReadBool(const ParsedCommand& command,
+                                        std::initializer_list<const char*> names,
+                                        size_t positionalIndex, wxString& error);
     static wxString HelpText();
 
     void OnClose(wxCloseEvent& event);
@@ -55,7 +59,8 @@ class CommandConsole : public wxFrame
     void OnKeyDown(wxKeyEvent& event);
 
 public:
-    CommandConsole(FractalCanvas* fractalCanvas, std::function<void()> reloadScripts, wxWindow* parent,
+    CommandConsole(FractalCanvas* fractalCanvas, std::function<void()> reloadScripts,
+                   std::function<bool(double, double)> openJuliaMode, wxWindow* parent,
                    wxWindowID id = wxID_ANY, const wxString& title = wxT("Command console"),
                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(760, 520),
                    long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
