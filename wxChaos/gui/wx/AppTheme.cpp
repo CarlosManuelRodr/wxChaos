@@ -1,18 +1,15 @@
 #include "AppTheme.h"
 
 #include <wx/html/htmlwin.h>
+#include <wx/panel.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/settings.h>
+#include <wx/stattext.h>
 #include <wx/stc/stc.h>
 #include <wx/textctrl.h>
 #include <wx/toplevel.h>
 #include <wx/window.h>
 #include <vector>
-
-#ifdef __WXMSW__
-#include <windows.h>
-#include <uxtheme.h>
-#endif
 
 AppTheme& AppTheme::Instance()
 {
@@ -70,15 +67,23 @@ void AppTheme::ApplyToSingleWindow(wxWindow* window)
     if (window == nullptr)
         return;
 
-    const bool isRichText = dynamic_cast<wxRichTextCtrl*>(window) != nullptr;
-    const bool isStyledText = dynamic_cast<wxStyledTextCtrl*>(window) != nullptr;
-    const bool controlBackground = dynamic_cast<wxTextCtrl*>(window) != nullptr
-        || isRichText
-        || isStyledText
+    const bool customTextControl = dynamic_cast<wxRichTextCtrl*>(window) != nullptr
+        || dynamic_cast<wxStyledTextCtrl*>(window) != nullptr
         || dynamic_cast<wxHtmlWindow*>(window) != nullptr;
+    const bool genericSurface = dynamic_cast<wxTopLevelWindow*>(window) != nullptr
+        || dynamic_cast<wxPanel*>(window) != nullptr
+        || dynamic_cast<wxStaticText*>(window) != nullptr;
 
-    window->SetBackgroundColour(controlBackground ? ControlBackground() : Background());
-    window->SetForegroundColour(Foreground());
+    if (customTextControl)
+    {
+        window->SetBackgroundColour(ControlBackground());
+        window->SetForegroundColour(Foreground());
+    }
+    else if (genericSurface)
+    {
+        window->SetBackgroundColour(Background());
+        window->SetForegroundColour(Foreground());
+    }
 
     if (const auto styledText = dynamic_cast<wxStyledTextCtrl*>(window))
     {
@@ -111,34 +116,6 @@ void AppTheme::ApplyToSingleWindow(wxWindow* window)
             wxTextAttr(Foreground(), ControlBackground()));
     }
 
-#ifdef __WXMSW__
-    const HWND handle = static_cast<HWND>(window->GetHandle());
-    if (handle != nullptr)
-    {
-        // Scintilla and rich-text controls are painted above. Applying the
-        // Explorer native theme to their custom HWNDs is not supported.
-        if (!isStyledText && !isRichText)
-            SetWindowTheme(handle, IsDark() ? L"DarkMode_Explorer" : L"Explorer", nullptr);
-
-        if (dynamic_cast<wxTopLevelWindow*>(window) != nullptr)
-        {
-            const HMODULE dwmapi = LoadLibraryW(L"dwmapi.dll");
-            if (dwmapi != nullptr)
-            {
-                using DwmSetWindowAttributeFn = HRESULT(WINAPI*)(HWND, DWORD, LPCVOID, DWORD);
-                const auto setWindowAttribute = reinterpret_cast<DwmSetWindowAttributeFn>(
-                    GetProcAddress(dwmapi, "DwmSetWindowAttribute"));
-                if (setWindowAttribute != nullptr)
-                {
-                    const BOOL dark = IsDark();
-                    if (FAILED(setWindowAttribute(handle, 20, &dark, sizeof(dark))))
-                        setWindowAttribute(handle, 19, &dark, sizeof(dark));
-                }
-                FreeLibrary(dwmapi);
-            }
-        }
-    }
-#endif
 }
 
 void AppTheme::ApplyToWindow(wxWindow* window)

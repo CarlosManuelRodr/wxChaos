@@ -1,5 +1,7 @@
 #include "gui/wx/MainWindow.h"
 #include "gui/wx/AppTheme.h"
+#include "gui/wx/config/AppConfigStore.h"
+#include "utils/AppPaths.h"
 
 enum ProcessDpiAwarenessValue
 {
@@ -65,6 +67,12 @@ public:
 #ifdef _WIN32
         EnableHighDpiSupport();
 #endif
+        const AppConfig config = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load();
+        const Appearance appearance = config.darkTheme ? Appearance::Dark : Appearance::Light;
+        if (SetAppearance(appearance) == AppearanceResult::Failure)
+            wxLogWarning("The requested application appearance is not available.");
+
+        AppTheme::SetDark(config.darkTheme);
         AppTheme::Install();
         const auto main = new MainFrame;
         main->Show();

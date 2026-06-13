@@ -1300,6 +1300,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         if (_dataCheck->GetValue())
                         {
                             vector<double> doubleCount;
+                            doubleCount.reserve(_boxCount.size());
                             for (int i : _boxCount)
                                 doubleCount.push_back(i);
 

@@ -391,10 +391,6 @@ void MainFrame::OnSettingsFrameClosed(wxCommandEvent&)
 void MainFrame::ApplyAppConfig(const AppConfig& config)
 {
     _appConfig = config;
-    AppTheme::SetDark(config.darkTheme);
-    AppTheme::ApplyToAllWindows();
-    if (_commandConsole != nullptr)
-        _commandConsole->ApplyTheme();
     wxGradient gradient;
     gradient.SetMin(0);
     gradient.SetMax(config.paletteSize);
