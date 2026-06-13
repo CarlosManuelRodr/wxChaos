@@ -51,7 +51,7 @@ private:
     AppConfig ReadControls();
 
     /// @brief Redraws the bitmap that previews the selected gradient.
-    void UpdateGradientPreview();
+    void UpdateGradientPreview() const;
 
     /// @brief Persists and applies the current control values.
     /// @param closeAfterSave Whether to close the frame after saving.

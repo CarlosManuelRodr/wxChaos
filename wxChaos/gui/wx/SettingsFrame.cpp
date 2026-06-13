@@ -1,3 +1,4 @@
+// ReSharper disable CppDFAUnreachableFunctionCall
 #include <wx/dcbuffer.h>
 #include <utility>
 #include "SettingsFrame.h"
@@ -187,7 +188,7 @@ AppConfig SettingsFrame::ReadControls()
     return config;
 }
 
-void SettingsFrame::UpdateGradientPreview()
+void SettingsFrame::UpdateGradientPreview() const
 {
     const wxSize size = _gradientPreview->GetMinSize();
     wxBitmap bitmap(size.GetWidth(), size.GetHeight());

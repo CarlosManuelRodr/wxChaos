@@ -50,7 +50,7 @@ class ZoomRecorder : public wxDialog
     void OnChangeSpeedDbl(wxSpinDoubleEvent&);
 
     void CreateFractalHandler();
-    void RenderPreview(int zoom, int zoomSpeed = 1, double colorSpeed = -1.0);
+    void RenderPreview(int zoom, int zoomSpeed = 1, double colorSpeed = -1.0) const;
     void RenderPreview();
     void UpdateTotalFrames();
     [[nodiscard]] int GetTotalFrames() const;

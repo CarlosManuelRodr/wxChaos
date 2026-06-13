@@ -10,6 +10,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cstdlib>
+#include <utility>
 #include "SFML/System.hpp"
 #include "AppPaths.h"
 #include "ZoomRecorder.h"
@@ -86,7 +87,7 @@ protected:
             fractalHandler.GetFractalPtr()->SetView(viewport);
 
             if (colorSpeed != -1)
-                fractalHandler.GetFractalPtr()->SetVarGradient(colorSpeed * t);
+                fractalHandler.GetFractalPtr()->SetVarGradient(static_cast<int>(colorSpeed * t));
             else
                 fractalHandler.GetFractalPtr()->SetVarGradient(0);
 
@@ -113,9 +114,9 @@ protected:
 
 public:
     ZoomRenderer(string p_filepath, FractalCanvas* p_fcanvas, int p_width, int p_height, int p_total_frames,
-        double p_zoom_speed, double p_color_speed)
+                 double p_zoom_speed, double p_color_speed)
     {
-        filepath = p_filepath;
+        filepath = std::move(p_filepath);
         fractalCanvasPtr = p_fcanvas;
         currentFrame = 0;
         totalFrames = p_total_frames;
@@ -189,7 +190,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     previewAndButtonsSizer->Add(buttonSizer, 0, 0, 5);
     panelSizer->Add(previewAndButtonsSizer, 0, wxEXPAND, 5);
 
-    wxStaticBoxSizer* optionsSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, wxT("Options")), wxVERTICAL);
+    auto* optionsSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, wxT("Options")), wxVERTICAL);
 
     _videoDurationText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Video duration:"), wxDefaultPosition, wxDefaultSize, 0);
     _videoDurationText->Wrap(-1);
@@ -315,7 +316,7 @@ void ZoomRecorder::CreateFractalHandler()
 
     if (fractalType == FractalType::ScriptFractal)
     {
-        ScriptFractal* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(_fractalCanvasPtr->GetFractalPtr());
+        auto* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(_fractalCanvasPtr->GetFractalPtr());
         _fractalHandler.CreateScriptFractal(250, 166, scriptFractalPtr->GetPath());
     }
     else
@@ -326,7 +327,7 @@ void ZoomRecorder::CreateFractalHandler()
     // Copy parameters.
     _fractalHandler.GetFractalPtr()->SetOptions(fractalOptions);
 }
-void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const double colorSpeed)
+void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const double colorSpeed) const
 {
     const double totalFrames = this->GetTotalFrames();
     const double zoomSpeedFloat = zoomSpeed;
@@ -344,7 +345,7 @@ void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const doub
     _fractalHandler.GetFractalPtr()->SetView(viewport);
 
     if (colorSpeed != -1)
-        _fractalHandler.GetFractalPtr()->SetVarGradient(colorSpeed * t);
+        _fractalHandler.GetFractalPtr()->SetVarGradient(static_cast<int>(colorSpeed * t));
     else
         _fractalHandler.GetFractalPtr()->SetVarGradient(0);
 
@@ -386,7 +387,7 @@ void ZoomRecorder::OnScrollPreview(wxScrollEvent& event)
 void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
 {
     // Select the output directory
-    wxDirDialog* dirDialog = new wxDirDialog(this);
+    auto* dirDialog = new wxDirDialog(this);
     wxString selectedFile;
 
     if (dirDialog->ShowModal() == wxID_OK)
@@ -410,7 +411,7 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
     const std::string selectedDirPath(selectedFile.mb_str());
 
     wxProgressDialog progressDialog(wxT("Generating video..."), wxT("Please wait until the process is complete."), totalFrames, this);
-    ZoomRenderer* renderer = new ZoomRenderer(selectedDirPath, _fractalCanvasPtr, 2500, 1660, totalFrames, zoomSpeed, colorSpeed);
+    auto* renderer = new ZoomRenderer(selectedDirPath, _fractalCanvasPtr, 2500, 1660, totalFrames, zoomSpeed, colorSpeed);
     wxThreadError err = renderer->Create();
 
     if (err != wxTHREAD_NO_ERROR)
