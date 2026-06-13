@@ -70,9 +70,11 @@ void AppTheme::ApplyToSingleWindow(wxWindow* window)
     if (window == nullptr)
         return;
 
+    const bool isRichText = dynamic_cast<wxRichTextCtrl*>(window) != nullptr;
+    const bool isStyledText = dynamic_cast<wxStyledTextCtrl*>(window) != nullptr;
     const bool controlBackground = dynamic_cast<wxTextCtrl*>(window) != nullptr
-        || dynamic_cast<wxRichTextCtrl*>(window) != nullptr
-        || dynamic_cast<wxStyledTextCtrl*>(window) != nullptr
+        || isRichText
+        || isStyledText
         || dynamic_cast<wxHtmlWindow*>(window) != nullptr;
 
     window->SetBackgroundColour(controlBackground ? ControlBackground() : Background());
@@ -82,11 +84,10 @@ void AppTheme::ApplyToSingleWindow(wxWindow* window)
     {
         styledText->StyleSetBackground(wxSTC_STYLE_DEFAULT, ControlBackground());
         styledText->StyleSetForeground(wxSTC_STYLE_DEFAULT, Foreground());
+        styledText->StyleClearAll();
         styledText->StyleSetBackground(wxSTC_STYLE_LINENUMBER, Background());
         styledText->StyleSetForeground(wxSTC_STYLE_LINENUMBER, Foreground());
         styledText->SetCaretForeground(Foreground());
-        for (int style = 0; style <= wxSTC_STYLE_MAX; ++style)
-            styledText->StyleSetBackground(style, ControlBackground());
 
         styledText->StyleSetForeground(wxSTC_C_COMMENT,
             IsDark() ? wxColour(134, 239, 172) : wxColour(21, 128, 61));
@@ -114,7 +115,10 @@ void AppTheme::ApplyToSingleWindow(wxWindow* window)
     const HWND handle = static_cast<HWND>(window->GetHandle());
     if (handle != nullptr)
     {
-        SetWindowTheme(handle, IsDark() ? L"DarkMode_Explorer" : L"Explorer", nullptr);
+        // Scintilla and rich-text controls are painted above. Applying the
+        // Explorer native theme to their custom HWNDs is not supported.
+        if (!isStyledText && !isRichText)
+            SetWindowTheme(handle, IsDark() ? L"DarkMode_Explorer" : L"Explorer", nullptr);
 
         if (dynamic_cast<wxTopLevelWindow*>(window) != nullptr)
         {
@@ -172,7 +176,7 @@ int AppTheme::FilterEvent(wxEvent& event)
         const auto showEvent = dynamic_cast<wxShowEvent*>(&event);
         if (!_applying && showEvent != nullptr && showEvent->IsShown())
         {
-            if (auto* window = dynamic_cast<wxWindow*>(event.GetEventObject()))
+            if (auto* window = dynamic_cast<wxTopLevelWindow*>(event.GetEventObject()))
             {
                 window->CallAfter([window] {
                     AppTheme& instance = Instance();
