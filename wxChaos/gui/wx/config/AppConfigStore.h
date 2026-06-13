@@ -25,6 +25,7 @@ struct AppConfig
     bool colorFractal = true;
     bool colorSet = true;
     bool firstUse = false;
+    bool darkTheme = false; ///< Uses the application dark appearance when enabled.
 };
 
 /**

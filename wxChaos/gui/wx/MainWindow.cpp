@@ -4,6 +4,7 @@
 #include "AppPaths.h"
 #include "HTMLViewer.h"
 #include "TextUtils.h"
+#include "AppTheme.h"
 
 using namespace std;
 
@@ -37,6 +38,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
     this->GetParserOpt();    // Gets configuration from config.ini.
+    AppTheme::SetDark(_appConfig.darkTheme);
     this->SetUpGUI();
 
     _juliaModePtr = nullptr;
@@ -389,6 +391,10 @@ void MainFrame::OnSettingsFrameClosed(wxCommandEvent&)
 void MainFrame::ApplyAppConfig(const AppConfig& config)
 {
     _appConfig = config;
+    AppTheme::SetDark(config.darkTheme);
+    AppTheme::ApplyToAllWindows();
+    if (_commandConsole != nullptr)
+        _commandConsole->ApplyTheme();
     wxGradient gradient;
     gradient.SetMin(0);
     gradient.SetMax(config.paletteSize);

@@ -87,6 +87,7 @@ private:
     wxCheckBox* _juliaMode{};                     ///< Opens Julia mode at startup.
     wxCheckBox* _colorPaletteWindow{};            ///< Opens renderer options at startup.
     wxCheckBox* _firstUse{};                      ///< Shows the welcome guide on the next launch.
+    wxChoice* _theme{};                           ///< Selects the light or dark application appearance.
     wxChoice* _fractalType{};                     ///< Selects the default fractal type.
     wxSpinCtrl* _maxIterations{};                 ///< Selects the default iteration limit.
     wxSpinCtrl* _paletteSize{};                   ///< Selects the default gradient palette size.

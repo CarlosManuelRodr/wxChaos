@@ -1,4 +1,5 @@
 #include "gui/wx/MainWindow.h"
+#include "gui/wx/AppTheme.h"
 
 enum ProcessDpiAwarenessValue
 {
@@ -64,9 +65,18 @@ public:
 #ifdef _WIN32
         EnableHighDpiSupport();
 #endif
+        AppTheme::Install();
         const auto main = new MainFrame;
         main->Show();
         return true;
+    }
+
+    /// @brief Removes the global theme event filter during application shutdown.
+    /// @return Base wxWidgets exit status.
+    int OnExit() override
+    {
+        AppTheme::Uninstall();
+        return wxApp::OnExit();
     }
 };
 

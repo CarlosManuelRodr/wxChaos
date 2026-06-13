@@ -8,6 +8,7 @@
 #include <wx/stattext.h>
 #include "AppPaths.h"
 #include "global.h"
+#include "AppTheme.h"
 
 wxDEFINE_EVENT(wxEVT_COMMAND_CONSOLE_CLOSED, wxCommandEvent);
 using namespace std;
@@ -54,7 +55,7 @@ CommandConsole::CommandConsole(FractalCanvas* fractalCanvas, std::function<void(
         wxT("Help()"), wxT("Clear()")
     };
 
-    this->ApplyDarkTheme();
+    this->ApplyTheme();
     this->WriteWelcome();
     this->CentreOnParent();
     _input->SetFocus();
@@ -64,11 +65,36 @@ CommandConsole::CommandConsole(FractalCanvas* fractalCanvas, std::function<void(
     _enterButton->Bind(wxEVT_BUTTON, &CommandConsole::OnEnter, this);
 }
 
-void CommandConsole::ApplyDarkTheme()
+wxColour CommandConsole::OutputColor()
 {
-    const wxColour frameBackground(12, 17, 27);
-    const wxColour controlBackground(17, 24, 39);
-    const wxColour foreground(226, 232, 240);
+    return AppTheme::IsDark() ? wxColour(226, 232, 240) : wxColour(31, 41, 55);
+}
+
+wxColour CommandConsole::PromptColor()
+{
+    return AppTheme::IsDark() ? wxColour(52, 211, 153) : wxColour(4, 120, 87);
+}
+
+wxColour CommandConsole::ErrorColor()
+{
+    return AppTheme::IsDark() ? wxColour(248, 113, 113) : wxColour(185, 28, 28);
+}
+
+wxColour CommandConsole::MutedColor()
+{
+    return AppTheme::IsDark() ? wxColour(148, 163, 184) : wxColour(100, 116, 139);
+}
+
+wxColour CommandConsole::InfoColor()
+{
+    return AppTheme::IsDark() ? wxColour(96, 165, 250) : wxColour(29, 78, 216);
+}
+
+void CommandConsole::ApplyTheme()
+{
+    const wxColour frameBackground = AppTheme::IsDark() ? wxColour(12, 17, 27) : AppTheme::Background();
+    const wxColour controlBackground = AppTheme::IsDark() ? wxColour(17, 24, 39) : AppTheme::ControlBackground();
+    const wxColour foreground = OutputColor();
     const wxFont font = wxFontInfo(10).Family(wxFONTFAMILY_TELETYPE).FaceName(wxT("Consolas"));
 
     this->SetBackgroundColour(frameBackground);
@@ -79,18 +105,20 @@ void CommandConsole::ApplyDarkTheme()
     _input->SetBackgroundColour(controlBackground);
     _input->SetForegroundColour(foreground);
     _input->SetFont(font);
-    _prompt->SetForegroundColour(wxColour(52, 211, 153));
+    _prompt->SetForegroundColour(PromptColor());
     _prompt->SetFont(font);
-    _enterButton->SetBackgroundColour(wxColour(31, 41, 55));
+    _enterButton->SetBackgroundColour(AppTheme::IsDark() ? wxColour(31, 41, 55) : AppTheme::Background());
     _enterButton->SetForegroundColour(foreground);
+    _output->SetStyle(wxRichTextRange(0, _output->GetLastPosition()), wxTextAttr(foreground, controlBackground));
+    Refresh();
 }
 
 void CommandConsole::WriteWelcome() const
 {
-    WriteText(wxT("wxChaos ") + wxString::FromUTF8(APP_VERSION) + wxT(" command console\n"), wxColour(96, 165, 250));
+    WriteText(wxT("wxChaos ") + wxString::FromUTF8(APP_VERSION) + wxT(" command console\n"), InfoColor());
     WriteText(wxT("Type Help() for commands. Named and positional arguments are supported.\n\n"),
-              wxColour(148, 163, 184));
-    WriteText(wxT("Ready.\n"), wxColour(226, 232, 240));
+              MutedColor());
+    WriteText(wxT("Ready.\n"), OutputColor());
 }
 
 void CommandConsole::WriteText(const wxString& text, const wxColour& color) const
@@ -113,19 +141,18 @@ void CommandConsole::RunCommand()
     _history.push_back(input);
     _historyIndex = _history.size();
     _input->Clear();
-    WriteText(wxT("\n> ") + input + wxT("\n"), wxColour(52, 211, 153));
+    WriteText(wxT("\n> ") + input + wxT("\n"), PromptColor());
 
     wxString error;
     const std::optional<ParsedCommand> command = Parse(input, error);
     if (!command.has_value())
     {
-        WriteText(error + wxT("\n"), wxColour(248, 113, 113));
+        WriteText(error + wxT("\n"), ErrorColor());
         return;
     }
 
     const wxString result = Execute(*command);
-    WriteText(result + wxT("\n"), result.StartsWith(wxT("Error:")) ? wxColour(248, 113, 113)
-                                                                    : wxColour(226, 232, 240));
+    WriteText(result + wxT("\n"), result.StartsWith(wxT("Error:")) ? ErrorColor() : OutputColor());
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall

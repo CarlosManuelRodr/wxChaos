@@ -54,12 +54,18 @@ wxPanel* SettingsFrame::CreateGeneralPage()
     _juliaMode = new wxCheckBox(page, wxID_ANY, wxT("Open Julia mode"));
     _colorPaletteWindow = new wxCheckBox(page, wxID_ANY, wxT("Open renderer options"));
     _firstUse = new wxCheckBox(page, wxID_ANY, wxT("Show the welcome guide on next launch"));
+    const wxString themeChoices[] = {wxT("Light"), wxT("Dark")};
+    _theme = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, 2, themeChoices);
 
     sizer->Add(_constantWindow, 0, wxBOTTOM, 8);
     sizer->Add(_commandConsole, 0, wxBOTTOM, 8);
     sizer->Add(_juliaMode, 0, wxBOTTOM, 8);
     sizer->Add(_colorPaletteWindow, 0, wxBOTTOM, 8);
     sizer->Add(_firstUse, 0, wxBOTTOM, 8);
+    const auto themeRow = new wxBoxSizer(wxHORIZONTAL);
+    themeRow->Add(new wxStaticText(page, wxID_ANY, wxT("Appearance:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    themeRow->Add(_theme, 0);
+    sizer->Add(themeRow, 0, wxTOP | wxBOTTOM, 12);
     sizer->Add(new wxStaticText(page, wxID_ANY,
         wxT("Startup window changes take effect the next time wxChaos starts.")), 0, wxTOP, 12);
     page->SetSizer(sizer);
@@ -138,6 +144,7 @@ void SettingsFrame::LoadControls(const AppConfig& config)
     _juliaMode->SetValue(config.juliaMode);
     _colorPaletteWindow->SetValue(config.colorPaletteWindow);
     _firstUse->SetValue(config.firstUse);
+    _theme->SetSelection(config.darkTheme ? 1 : 0);
     _maxIterations->SetValue(config.maxIterations);
     _paletteSize->SetValue(config.paletteSize);
     _colorFractal->SetValue(config.colorFractal);
@@ -176,6 +183,7 @@ AppConfig SettingsFrame::ReadControls()
     config.colorFractal = _colorFractal->GetValue();
     config.colorSet = _colorSet->GetValue();
     config.firstUse = _firstUse->GetValue();
+    config.darkTheme = _theme->GetSelection() == 1;
     return config;
 }
 

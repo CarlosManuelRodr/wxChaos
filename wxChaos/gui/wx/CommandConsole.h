@@ -33,7 +33,25 @@ class CommandConsole : public wxFrame
     std::vector<wxString> _commandNames;
     size_t _historyIndex;
 
-    void ApplyDarkTheme();
+    /// @brief Returns the console color used for ordinary output.
+    /// @return Theme-aware primary console text color.
+    static wxColour OutputColor();
+
+    /// @brief Returns the console color used for prompts.
+    /// @return Theme-aware prompt color.
+    static wxColour PromptColor();
+
+    /// @brief Returns the console color used for errors.
+    /// @return Theme-aware error color.
+    static wxColour ErrorColor();
+
+    /// @brief Returns the console color used for secondary text.
+    /// @return Theme-aware muted text color.
+    static wxColour MutedColor();
+
+    /// @brief Returns the console color used for informational headings.
+    /// @return Theme-aware informational text color.
+    static wxColour InfoColor();
     void WriteWelcome() const;
     void WriteText(const wxString& text, const wxColour& color) const;
     void RunCommand();
@@ -59,6 +77,9 @@ class CommandConsole : public wxFrame
     void OnKeyDown(wxKeyEvent& event);
 
 public:
+    /// @brief Applies the currently selected application appearance to the console.
+    void ApplyTheme();
+
     CommandConsole(FractalCanvas* fractalCanvas, std::function<void()> reloadScripts,
                    std::function<bool(double, double)> openJuliaMode, wxWindow* parent,
                    wxWindowID id = wxID_ANY, const wxString& title = wxT("Command console"),

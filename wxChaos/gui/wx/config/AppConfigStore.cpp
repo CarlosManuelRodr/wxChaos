@@ -185,6 +185,7 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     config.colorFractal = ReadBool(values, "COLOR_FRACTAL", config.colorFractal);
     config.colorSet = ReadBool(values, "COLOR_SET", config.colorSet);
     config.firstUse = ReadBool(values, "FIRST_USE", config.firstUse);
+    config.darkTheme = ReadBool(values, "DARK_THEME", config.darkTheme);
 
     return config;
 }
@@ -240,6 +241,7 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/Color/palette_window", &config.colorPaletteWindow, config.colorPaletteWindow);
     fileConfig.Read("/Color/fractal", &config.colorFractal, config.colorFractal);
     fileConfig.Read("/Color/set", &config.colorSet, config.colorSet);
+    fileConfig.Read("/General/dark_theme", &config.darkTheme, config.darkTheme);
 
     return config;
 }
@@ -262,6 +264,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Color/palette_window", config.colorPaletteWindow);
     fileConfig.Write("/Color/fractal", config.colorFractal);
     fileConfig.Write("/Color/set", config.colorSet);
+    fileConfig.Write("/General/dark_theme", config.darkTheme);
     fileConfig.Flush();
 }
 
