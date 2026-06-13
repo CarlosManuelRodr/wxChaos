@@ -8,42 +8,93 @@
 #include "config/AppConfigStore.h"
 #include "wxGradient.h"
 
+/// @brief Emitted after the settings frame has been closed.
 wxDECLARE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);
 
+/**
+ * @class SettingsFrame
+ * @brief Provides a graphical editor for values persisted by AppConfigStore.
+ *
+ * Settings are grouped into General, Presets, and Rendering pages. Applying
+ * changes saves the configuration and notifies the owning window.
+ */
 class SettingsFrame final : public wxFrame
 {
 public:
+    /**
+     * @brief Creates the application settings frame.
+     * @param parent Window that owns the frame and receives the close event.
+     * @param config Configuration values used to initialize the controls.
+     * @param configChanged Callback invoked after configuration is saved.
+     */
     SettingsFrame(wxWindow* parent, const AppConfig& config, std::function<void(const AppConfig&)> configChanged);
 
 private:
+    /// @brief Creates the page containing startup behavior settings.
+    /// @return Newly created General settings page.
     wxPanel* CreateGeneralPage();
+
+    /// @brief Creates the page containing default fractal settings.
+    /// @return Newly created Presets settings page.
     wxPanel* CreatePresetsPage();
+
+    /// @brief Creates the page containing default coloring settings.
+    /// @return Newly created Rendering settings page.
     wxPanel* CreateRenderingPage();
+
+    /// @brief Populates every control from the supplied configuration.
+    /// @param config Configuration values to display.
     void LoadControls(const AppConfig& config);
+
+    /// @brief Builds a configuration object from the current control values.
+    /// @return Configuration represented by the settings controls.
     AppConfig ReadControls();
+
+    /// @brief Redraws the bitmap that previews the selected gradient.
     void UpdateGradientPreview();
+
+    /// @brief Persists and applies the current control values.
+    /// @param closeAfterSave Whether to close the frame after saving.
     void SaveSettings(bool closeAfterSave);
+
+    /// @brief Opens the visual gradient editor.
+    /// @param event Button event that requested the editor.
     void OnEditGradient(wxCommandEvent& event);
+
+    /// @brief Restores all controls to the built-in application defaults.
+    /// @param event Button event that requested the reset.
     void OnRestoreDefaults(wxCommandEvent& event);
+
+    /// @brief Saves settings without closing the frame.
+    /// @param event Apply button event.
     void OnApply(wxCommandEvent& event);
+
+    /// @brief Saves settings and closes the frame.
+    /// @param event OK button event.
     void OnOk(wxCommandEvent& event);
+
+    /// @brief Closes the frame without saving unapplied changes.
+    /// @param event Cancel button event.
     void OnCancel(wxCommandEvent& event);
+
+    /// @brief Notifies the parent and destroys the frame.
+    /// @param event Window close event.
     void OnClose(wxCloseEvent& event);
 
-    wxListbook* _pages{};
-    wxCheckBox* _constantWindow{};
-    wxCheckBox* _commandConsole{};
-    wxCheckBox* _juliaMode{};
-    wxCheckBox* _colorPaletteWindow{};
-    wxCheckBox* _firstUse{};
-    wxChoice* _fractalType{};
-    wxSpinCtrl* _maxIterations{};
-    wxSpinCtrl* _paletteSize{};
-    wxCheckBox* _colorFractal{};
-    wxCheckBox* _colorSet{};
-    wxStaticBitmap* _gradientPreview{};
-    wxGradient _gradient;
-    std::vector<FractalType> _fractalTypes;
-    std::function<void(const AppConfig&)> _configChanged;
-    bool _closing{};
+    wxListbook* _pages{};                         ///< Vertically tabbed settings container.
+    wxCheckBox* _constantWindow{};                ///< Opens the Julia constant window at startup.
+    wxCheckBox* _commandConsole{};                ///< Opens the command console at startup.
+    wxCheckBox* _juliaMode{};                     ///< Opens Julia mode at startup.
+    wxCheckBox* _colorPaletteWindow{};            ///< Opens renderer options at startup.
+    wxCheckBox* _firstUse{};                      ///< Shows the welcome guide on the next launch.
+    wxChoice* _fractalType{};                     ///< Selects the default fractal type.
+    wxSpinCtrl* _maxIterations{};                 ///< Selects the default iteration limit.
+    wxSpinCtrl* _paletteSize{};                   ///< Selects the default gradient palette size.
+    wxCheckBox* _colorFractal{};                  ///< Enables coloring outside the fractal set.
+    wxCheckBox* _colorSet{};                      ///< Enables coloring inside the fractal set.
+    wxStaticBitmap* _gradientPreview{};           ///< Displays the current default gradient.
+    wxGradient _gradient;                         ///< Gradient being edited by the frame.
+    std::vector<FractalType> _fractalTypes;       ///< Values corresponding to the fractal choice entries.
+    std::function<void(const AppConfig&)> _configChanged; ///< Applies saved settings to the running application.
+    bool _closing{};                              ///< Prevents duplicate close notifications.
 };

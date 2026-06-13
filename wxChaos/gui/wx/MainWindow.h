@@ -96,7 +96,7 @@ class MainFrame : public wxFrame
     ScriptEditor* _scriptEditor{};
     DimensionFrame* _dimensionCalculator;
     CommandConsole* _commandConsole{};
-    SettingsFrame* _settingsFrame{};
+    SettingsFrame* _settingsFrame{};              ///< Active application settings frame.
     
     bool _changeKeyboardGuide;
     bool _introConstActive;
@@ -171,6 +171,8 @@ class MainFrame : public wxFrame
     void DestroyDimensionFrame();
     void ShowCommandConsole();
     void ShowFirstUseDialog();
+    /// @brief Applies saved settings that can safely change during the current session.
+    /// @param config Newly saved application configuration.
     void ApplyAppConfig(const AppConfig& config);
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
@@ -184,8 +186,8 @@ public :
     void OnAbout(wxCommandEvent& event);                   ///< Opens the About frame.
     void OnClose(wxCloseEvent& event);                     ///< Closes the frame.
     void OnQuit(wxCommandEvent& event);
-    void OnSettings(wxCommandEvent& event);
-    void OnSettingsFrameClosed(wxCommandEvent& event);
+    void OnSettings(wxCommandEvent& event);                 ///< Opens or focuses the settings frame.
+    void OnSettingsFrameClosed(wxCommandEvent& event);      ///< Clears the settings frame reference after closure.
     void OnResize(wxSizeEvent& event);                     ///< Resizes the frame.
     void OnJuliaModeClosed(wxCommandEvent& event);         ///< Handles the Julia window closed event.
     void OnRendererOptionsClosed(wxCommandEvent& event);   ///< Handles the renderer options window closed event.
