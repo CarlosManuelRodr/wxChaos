@@ -21,13 +21,13 @@ AboutDialog::AboutDialog(wxWindow* parent)
     : wxDialog(parent, wxID_ANY, _("About wxChaos"), wxDefaultPosition, wxDefaultSize,
                wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU)
 {
-    SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
-    SetBackgroundColour(wxColour(244, 247, 251));
+    wxWindow::SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
+    wxWindowBase::SetBackgroundColour(wxColour(244, 247, 251));
     CreateControls();
     GetSizer()->Fit(this);
     SetClientSize(640, GetClientSize().GetHeight());
-    Layout();
-    SetMinSize(GetSize());
+    wxTopLevelWindowBase::Layout();
+    wxTopLevelWindowBase::SetMinSize(GetSize());
     CentreOnParent();
 }
 
@@ -204,7 +204,7 @@ wxSizer* AboutDialog::CreateDetailGrid(wxWindow* parent, const DetailRows& rows)
     return grid;
 }
 
-wxString AboutDialog::GetBuildType() const
+wxString AboutDialog::GetBuildType()
 {
 #ifdef WXCHAOS_BUILD_TYPE
     return wxString::FromUTF8(WXCHAOS_BUILD_TYPE);
@@ -215,7 +215,7 @@ wxString AboutDialog::GetBuildType() const
 #endif
 }
 
-wxString AboutDialog::GetArchitecture() const
+wxString AboutDialog::GetArchitecture()
 {
 #if defined(_M_X64) || defined(__x86_64__)
     return wxT("x64");
@@ -228,7 +228,7 @@ wxString AboutDialog::GetArchitecture() const
 #endif
 }
 
-wxString AboutDialog::GetCompiler() const
+wxString AboutDialog::GetCompiler()
 {
 #if defined(_MSC_VER)
     return wxString::Format(wxT("MSVC %d.%02d"), _MSC_VER / 100, _MSC_VER % 100);

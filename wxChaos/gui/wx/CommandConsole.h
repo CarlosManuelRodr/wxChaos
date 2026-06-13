@@ -34,10 +34,10 @@ class CommandConsole : public wxFrame
     size_t _historyIndex;
 
     void ApplyDarkTheme();
-    void WriteWelcome();
-    void WriteText(const wxString& text, const wxColour& color);
+    void WriteWelcome() const;
+    void WriteText(const wxString& text, const wxColour& color) const;
     void RunCommand();
-    wxString Execute(const ParsedCommand& command);
+    wxString Execute(const ParsedCommand& command) const;
     static std::optional<ParsedCommand> Parse(const wxString& text, wxString& error);
     static std::optional<wxString> FindArgument(const ParsedCommand& command,
                                                 std::initializer_list<const char*> names,

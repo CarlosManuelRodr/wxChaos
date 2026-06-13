@@ -1,9 +1,8 @@
+#include <algorithm>
 #include "AppPaths.h"
 #include "FractalCanvas.h"
 #include "TextUtils.h"
 #include "SizeDialogSave.h"
-#include <algorithm>
-#include <cmath>
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);

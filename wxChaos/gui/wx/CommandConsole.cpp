@@ -85,7 +85,7 @@ void CommandConsole::ApplyDarkTheme()
     _enterButton->SetForegroundColour(foreground);
 }
 
-void CommandConsole::WriteWelcome()
+void CommandConsole::WriteWelcome() const
 {
     WriteText(wxT("wxChaos ") + wxString::FromUTF8(APP_VERSION) + wxT(" command console\n"), wxColour(96, 165, 250));
     WriteText(wxT("Type Help() for commands. Named and positional arguments are supported.\n\n"),
@@ -93,7 +93,7 @@ void CommandConsole::WriteWelcome()
     WriteText(wxT("Ready.\n"), wxColour(226, 232, 240));
 }
 
-void CommandConsole::WriteText(const wxString& text, const wxColour& color)
+void CommandConsole::WriteText(const wxString& text, const wxColour& color) const
 {
     _output->MoveEnd();
     _output->BeginTextColour(color);
@@ -102,6 +102,7 @@ void CommandConsole::WriteText(const wxString& text, const wxColour& color)
     _output->ShowPosition(_output->GetLastPosition());
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 void CommandConsole::RunCommand()
 {
     const wxString input = _input->GetValue();
@@ -127,7 +128,8 @@ void CommandConsole::RunCommand()
                                                                     : wxColour(226, 232, 240));
 }
 
-wxString CommandConsole::Execute(const ParsedCommand& command)
+// ReSharper disable once CppDFAUnreachableFunctionCall
+wxString CommandConsole::Execute(const ParsedCommand& command) const
 {
     Fractal* fractal = _fractalCanvas->GetFractalPtr();
     wxString error;
@@ -318,9 +320,10 @@ optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& te
     return command;
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 optional<wxString> CommandConsole::FindArgument(const ParsedCommand& command,
-                                                 const initializer_list<const char*> names,
-                                                 const size_t positionalIndex)
+                                                const initializer_list<const char*> names,
+                                                const size_t positionalIndex)
 {
     for (const char* name : names)
     {
@@ -333,6 +336,7 @@ optional<wxString> CommandConsole::FindArgument(const ParsedCommand& command,
     return nullopt;
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 optional<double> CommandConsole::ReadDouble(const ParsedCommand& command,
                                              const initializer_list<const char*> names,
                                              const size_t positionalIndex, wxString& error)
@@ -352,6 +356,7 @@ optional<double> CommandConsole::ReadDouble(const ParsedCommand& command,
     return number;
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 optional<unsigned int> CommandConsole::ReadUnsigned(const ParsedCommand& command,
                                                      const initializer_list<const char*> names,
                                                      const size_t positionalIndex, wxString& error)
@@ -371,6 +376,7 @@ optional<unsigned int> CommandConsole::ReadUnsigned(const ParsedCommand& command
     return static_cast<unsigned int>(number);
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 sf::Color CommandConsole::ReadColor(const ParsedCommand& command, const size_t positionalIndex, wxString& error)
 {
     optional<wxString> redValue = FindArgument(command, {"red"}, numeric_limits<size_t>::max());
@@ -414,6 +420,7 @@ sf::Color CommandConsole::ReadColor(const ParsedCommand& command, const size_t p
     return {static_cast<sf::Uint8>(red), static_cast<sf::Uint8>(green), static_cast<sf::Uint8>(blue)};
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 optional<bool> CommandConsole::ReadBool(const ParsedCommand& command,
                                         const initializer_list<const char*> names,
                                         const size_t positionalIndex, wxString& error)
@@ -432,6 +439,7 @@ optional<bool> CommandConsole::ReadBool(const ParsedCommand& command,
     return nullopt;
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 wxString CommandConsole::HelpText()
 {
     return wxT(

@@ -26,9 +26,9 @@ private:
     void OnBannerPaint(wxPaintEvent& event);
     void OnBannerSize(wxSizeEvent& event);
 
-    wxString GetBuildType() const;
-    wxString GetArchitecture() const;
-    wxString GetCompiler() const;
+    static wxString GetBuildType();
+    static wxString GetArchitecture();
+    static wxString GetCompiler() ;
 
     wxPanel* _bannerPanel{};
     wxImage _bannerImage;
