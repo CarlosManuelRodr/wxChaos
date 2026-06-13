@@ -25,4 +25,5 @@ public:
     wxString GetErrorInfo() const;
     void ClearErrorInfo() const;
     std::string GetPath();
+    const ScriptData& GetScriptData() const;
 };

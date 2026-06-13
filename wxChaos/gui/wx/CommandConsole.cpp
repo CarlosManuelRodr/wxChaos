@@ -187,7 +187,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command)
             if (!iterations.has_value()) return error;
             if (*iterations == 0) return wxT("Error: iterations must be greater than zero.");
         }
-        return _fractalCanvas->InspectPoint(*real, *imaginary, iterations);
+        return fractal->InspectPoint(*real, *imaginary, iterations);
     }
     if (command.name == wxT("drawcircle"))
     {

@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <limits>
+#include <optional>
 #include <vector>
 #include <wx/bitmap.h>
 #include <wx/colour.h>
@@ -154,6 +155,9 @@ protected:
     template<class M>
     void MoveMatrix(M** matrix, unsigned int matrixWidth, unsigned int matrixHeight, int moveX, int moveY, M fillValue = M{});
 
+    static wxString FormatNumber(double value);
+    static wxString FormatComplex(double real, double imaginary);
+
 public:
     static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
 
@@ -272,11 +276,18 @@ public:
     const std::vector<LineData>& GetOrbitLines() const;
     const std::vector<CircleData>& GetCircles() const;
 
+    ///@brief Describes the measurements of the currently recorded orbit.
+    wxString DescribeOrbit(bool escaped) const;
+
     ///@brief Renders the current view synchronously without creating an image.
     void RenderBlocking();
 
     ///@brief Returns the stored result for a rendered pixel.
     PointSample GetPointSample(unsigned int x, unsigned int y) const;
+
+    ///@brief Evaluates and describes one world-coordinate point using the current fractal settings.
+    wxString InspectPoint(double real, double imaginary,
+                          std::optional<unsigned int> iterations = std::nullopt) const;
 
     // Thread control.
     ///@brief Calculate drawing limits of each thread and launches them.

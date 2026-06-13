@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include <optional>
-
 #include "wxSFMLCanvas.h"
 #include "sfml/ToggleButton.h"
 #include "sfml/SelectionRect.h"
@@ -72,9 +70,6 @@ class FractalCanvas : public wxSFMLCanvas
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
     void CreateFractal(FractalType type);
     void CreateScriptFractal(const ScriptData& scriptData);
-    wxString DescribeOrbit(Fractal& fractal, bool escaped) const;
-    static wxString FormatNumber(double value);
-    static wxString FormatComplex(double real, double imaginary);
 
 public:
     ///@brief Constructor
@@ -160,9 +155,6 @@ public:
 
     ///@return Formula in the user-defined fractal.
     FormulaOptions GetFormula();
-
-    ///@brief Evaluates one world-coordinate point with the current fractal settings.
-    wxString InspectPoint(double real, double imaginary, std::optional<unsigned int> iterations = std::nullopt) const;
 
     ///// Event processor /////
 

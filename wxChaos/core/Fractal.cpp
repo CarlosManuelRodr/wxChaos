@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <utility>
 #include "Fractal.h"
+#include "FractalHandler.h"
+#include "fractals/ScriptFractal.h"
 #include "BmpImageWriter.h"
 #include "SystemUtilities.h"
 using namespace std;
@@ -678,6 +680,65 @@ const std::vector<CircleData>& Fractal::GetCircles() const
     return _circles;
 }
 
+wxString Fractal::DescribeOrbit(const bool escaped) const
+{
+    if (_orbitLines.empty())
+        return wxT("Orbit: no transitions were recorded.");
+
+    const double startRe = _orbitLines.front().x1;
+    const double startIm = _orbitLines.front().y1;
+    const double finalRe = _orbitLines.back().x2;
+    const double finalIm = _orbitLines.back().y2;
+
+    double totalDistance = 0.0;
+    double largestStep = 0.0;
+    double closestToOrigin = hypot(startRe, startIm);
+    double farthestFromOrigin = closestToOrigin;
+
+    for (const LineData& line : _orbitLines)
+    {
+        const double stepDistance = hypot(line.x2 - line.x1, line.y2 - line.y1);
+        const double distanceToOrigin = hypot(line.x2, line.y2);
+        totalDistance += stepDistance;
+        largestStep = std::max(largestStep, stepDistance);
+        closestToOrigin = std::min(closestToOrigin, distanceToOrigin);
+        farthestFromOrigin = std::max(farthestFromOrigin, distanceToOrigin);
+    }
+
+    const double displacement = hypot(finalRe - startRe, finalIm - startIm);
+    const double averageStep = totalDistance / static_cast<double>(_orbitLines.size());
+    const double pathEfficiency = totalDistance > 0.0 ? 100.0 * displacement / totalDistance : 0.0;
+    const double finalModulus = hypot(finalRe, finalIm);
+    constexpr double radiansToDegrees = 180.0 / 3.14159265358979323846;
+    const double finalAngle = atan2(finalIm, finalRe) * radiansToDegrees;
+
+    wxString output;
+    output << wxT("Orbit transitions: ") << _orbitLines.size() << wxT("\n")
+           << wxT("Orbit path length: ") << FormatNumber(totalDistance) << wxT("\n")
+           << wxT("Straight-line displacement: ") << FormatNumber(displacement)
+           << wxT(" (") << FormatNumber(pathEfficiency) << wxT("% of path length)\n")
+           << wxT("Average / largest step: ") << FormatNumber(averageStep) << wxT(" / ")
+           << FormatNumber(largestStep) << wxT("\n")
+           << wxT("Closest / farthest from origin: ") << FormatNumber(closestToOrigin) << wxT(" / ")
+           << FormatNumber(farthestFromOrigin) << wxT("\n")
+           << (escaped ? wxT("Escape value: ") : wxT("Last recorded value: "))
+           << FormatComplex(finalRe, finalIm) << wxT("\n")
+           << wxT("Final modulus / angle: ") << FormatNumber(finalModulus) << wxT(" / ")
+           << FormatNumber(finalAngle) << wxT(" degrees");
+    return output;
+}
+
+wxString Fractal::FormatNumber(const double value)
+{
+    return wxString::Format(wxT("%.10g"), value);
+}
+
+wxString Fractal::FormatComplex(const double real, const double imaginary)
+{
+    return FormatNumber(real) + (imaginary < 0.0 ? wxT(" - ") : wxT(" + "))
+           + FormatNumber(abs(imaginary)) + wxT("i");
+}
+
 void Fractal::RenderBlocking()
 {
     const bool previousSnapshot = _onSnapshot;
@@ -701,6 +762,74 @@ Fractal::PointSample Fractal::GetPointSample(const unsigned int x, const unsigne
         return {false, 0, false};
 
     return {_setMap[x][y], _colorMap[x][y], _colorMap[x][y] != InvalidColor};
+}
+
+wxString Fractal::InspectPoint(const double real, const double imaginary,
+                               const optional<unsigned int> iterations) const
+{
+    constexpr unsigned int probeSize = 3;
+    FractalHandler probeHandler;
+
+    if (_type == FractalType::ScriptFractal)
+    {
+        const auto* scriptFractal = dynamic_cast<const ScriptFractal*>(this);
+        if (scriptFractal == nullptr)
+            return wxT("This fractal cannot be inspected.");
+        probeHandler.CreateScriptFractal(probeSize, probeSize, scriptFractal->GetScriptData());
+    }
+    else
+        probeHandler.CreateFractal(_type, probeSize, probeSize);
+
+    Fractal* probe = probeHandler.GetFractalPtr();
+    if (probe == nullptr)
+        return wxT("This fractal cannot be inspected.");
+
+    Options options = GetOptions();
+    const vector<RenderingAlgorithmType> algorithms = probe->GetAvailableAlg();
+    if (find(algorithms.begin(), algorithms.end(), RenderingAlgorithmType::EscapeTime) != algorithms.end())
+        options.alg = RenderingAlgorithmType::EscapeTime;
+    else if (!algorithms.empty())
+        options.alg = algorithms.front();
+
+    options.orbitTrapMode = false;
+    options.smoothRender = false;
+    options.justLaunchThreads = false;
+    if (iterations.has_value())
+        options.maxIter = *iterations;
+
+    probe->SetOptions(options);
+    probe->SetFormula(_userFormula);
+
+    const double scale = max({1.0, abs(real), abs(imaginary)});
+    const double epsilon = scale * 1e-10;
+    probe->SetView({real - epsilon, imaginary - epsilon, real + epsilon, imaginary + epsilon});
+    probe->RenderBlocking();
+
+    const PointSample sample = probe->GetPointSample(1, 1);
+    wxString output;
+    output << wxT("Fractal: ") << probe->GetName() << wxT("\n")
+           << wxT("Point: ") << FormatComplex(real, imaginary) << wxT("\n")
+           << wxT("Algorithm: ") << probe->GetRenderingAlgorithmName() << wxT("\n")
+           << wxT("Maximum iterations: ") << options.maxIter << wxT("\n");
+
+    if (sample.inSet)
+        output << wxT("Result: inside after ") << options.maxIter << wxT(" iterations");
+    else if (sample.hasValue && options.alg == RenderingAlgorithmType::EscapeTime)
+        output << wxT("Result: escaped at iteration ") << sample.value;
+    else if (sample.hasValue)
+        output << wxT("Renderer value: ") << sample.value;
+    else
+        output << wxT("Result: no value produced");
+
+    if (probe->HasOrbit())
+    {
+        probe->SetOrbitMode(true);
+        probe->SetOrbitPoint(real, imaginary);
+        probe->DrawOrbit();
+        output << wxT("\n") << probe->DescribeOrbit(!sample.inSet);
+    }
+
+    return output;
 }
 // Thread control
 ThreadWatchdog<Renderer>* Fractal::GetWatchdog()

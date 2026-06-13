@@ -43,6 +43,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     if (configEngine.CompileFromPath(_path) && configEngine.Execute())
     {
         const ScriptData params = configEngine.GetScriptData();
+        _myScriptData = params;
         _minX = params.minX;
         _maxX = params.maxX;
         _minY = params.minY;
@@ -59,6 +60,10 @@ ScriptFractal::~ScriptFractal()
 {
     this->StopRender();
     delete[] _myRender;
+}
+const ScriptData& ScriptFractal::GetScriptData() const
+{
+    return _myScriptData;
 }
 void ScriptFractal::Render()
 {
