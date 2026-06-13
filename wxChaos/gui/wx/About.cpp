@@ -4,12 +4,12 @@
 #include <angelscript.h>
 #include <mpDefines.h>
 
-#include <wx/bmpbndl.h>
 #include <wx/button.h>
+#include <wx/dcbuffer.h>
 #include <wx/hyperlink.h>
+#include <wx/image.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
-#include <wx/statbmp.h>
 #include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/version.h>
@@ -40,11 +40,20 @@ void AboutDialog::CreateControls()
     auto* root = new wxBoxSizer(wxVERTICAL);
     SetSizer(root);
 
-    const wxSize bannerSize = FromDIP(wxSize(680, 170));
-    const wxBitmapBundle banner = wxBitmapBundle::FromSVGFile(
-        AppPaths::ResourceFile({wxT("wxChaosAbout.svg")}), bannerSize);
-    auto* header = new wxStaticBitmap(this, wxID_ANY, banner, wxDefaultPosition, bannerSize);
-    root->Add(header, 0, wxEXPAND);
+    constexpr int bannerWidth = 640;
+    constexpr int bannerHeight = 160;
+    const wxSize bannerSize(bannerWidth, bannerHeight);
+    _bannerImage.LoadFile(
+        AppPaths::ResourceFile({wxT("wxChaosAbout.png")}),
+        wxBITMAP_TYPE_PNG);
+    wxASSERT_MSG(_bannerImage.IsOk(), _("Could not load the About banner"));
+
+    _bannerPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, bannerSize);
+    _bannerPanel->SetMinSize(bannerSize);
+    _bannerPanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
+    _bannerPanel->Bind(wxEVT_PAINT, &AboutDialog::OnBannerPaint, this);
+    _bannerPanel->Bind(wxEVT_SIZE, &AboutDialog::OnBannerSize, this);
+    root->Add(_bannerPanel, 0, wxEXPAND);
 
     auto* content = new wxPanel(this, wxID_ANY);
     content->SetBackgroundColour(wxColour(244, 247, 251));
@@ -134,6 +143,41 @@ void AboutDialog::CreateControls()
     footer->Add(license, 1, wxALIGN_CENTER_VERTICAL);
     footer->Add(new wxButton(content, wxID_OK, _("Close")), 0, wxLEFT, FromDIP(20));
     contentSizer->Add(footer, 0, wxEXPAND | wxTOP, sectionGap);
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AboutDialog::OnBannerPaint(wxPaintEvent&)
+{
+    wxAutoBufferedPaintDC dc(_bannerPanel);
+    const wxSize size = _bannerPanel->GetClientSize();
+    dc.SetBackground(wxBrush(wxColour(7, 17, 31)));
+    dc.Clear();
+
+    if (!_bannerImage.IsOk() || size.GetWidth() <= 0 || size.GetHeight() <= 0)
+        return;
+
+    const double imageRatio = static_cast<double>(_bannerImage.GetWidth()) / _bannerImage.GetHeight();
+    int drawWidth = size.GetWidth();
+    int drawHeight = static_cast<int>(drawWidth / imageRatio);
+    if (drawHeight > size.GetHeight())
+    {
+        drawHeight = size.GetHeight();
+        drawWidth = static_cast<int>(drawHeight * imageRatio);
+    }
+
+    const int x = (size.GetWidth() - drawWidth) / 2;
+    const int y = (size.GetHeight() - drawHeight) / 2;
+    const wxImage scaled = _bannerImage.Scale(
+        drawWidth,
+        drawHeight,
+        wxIMAGE_QUALITY_HIGH);
+    dc.DrawBitmap(wxBitmap(scaled), x, y, false);
+}
+
+void AboutDialog::OnBannerSize(wxSizeEvent& event)
+{
+    _bannerPanel->Refresh();
+    event.Skip();
 }
 
 wxSizer* AboutDialog::CreateDetailGrid(wxWindow* parent, const DetailRows& rows) const
