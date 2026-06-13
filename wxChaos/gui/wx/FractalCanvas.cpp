@@ -508,7 +508,7 @@ wxString FractalCanvas::InspectPoint(const double real, const double imaginary,
     const Fractal::PointSample sample = probe->GetPointSample(1, 1);
     wxString output;
     output << wxT("Fractal: ") << probe->GetName() << wxT("\n")
-           << wxT("Point: ") << real << wxT(" + ") << imaginary << wxT("i\n")
+           << wxT("Point: ") << FormatComplex(real, imaginary) << wxT("\n")
            << wxT("Algorithm: ") << probe->GetRenderingAlgorithmName() << wxT("\n")
            << wxT("Maximum iterations: ") << options.maxIter << wxT("\n");
 
@@ -521,7 +521,75 @@ wxString FractalCanvas::InspectPoint(const double real, const double imaginary,
     else
         output << wxT("Result: no value produced");
 
+    if (probe->HasOrbit())
+    {
+        probe->SetOrbitMode(true);
+        probe->SetOrbitPoint(real, imaginary);
+        probe->DrawOrbit();
+        output << wxT("\n") << DescribeOrbit(*probe, !sample.inSet);
+    }
+
     return output;
+}
+
+wxString FractalCanvas::DescribeOrbit(Fractal& fractal, const bool escaped) const
+{
+    const vector<LineData>& lines = fractal.GetOrbitLines();
+    if (lines.empty())
+        return wxT("Orbit: no transitions were recorded.");
+
+    const double startRe = lines.front().x1;
+    const double startIm = lines.front().y1;
+    const double finalRe = lines.back().x2;
+    const double finalIm = lines.back().y2;
+
+    double totalDistance = 0.0;
+    double largestStep = 0.0;
+    double closestToOrigin = hypot(startRe, startIm);
+    double farthestFromOrigin = closestToOrigin;
+
+    for (const LineData& line : lines)
+    {
+        const double stepDistance = hypot(line.x2 - line.x1, line.y2 - line.y1);
+        const double distanceToOrigin = hypot(line.x2, line.y2);
+        totalDistance += stepDistance;
+        largestStep = max(largestStep, stepDistance);
+        closestToOrigin = min(closestToOrigin, distanceToOrigin);
+        farthestFromOrigin = max(farthestFromOrigin, distanceToOrigin);
+    }
+
+    const double displacement = hypot(finalRe - startRe, finalIm - startIm);
+    const double averageStep = totalDistance / static_cast<double>(lines.size());
+    const double pathEfficiency = totalDistance > 0.0 ? 100.0 * displacement / totalDistance : 0.0;
+    const double finalModulus = hypot(finalRe, finalIm);
+    constexpr double radiansToDegrees = 180.0 / 3.14159265358979323846;
+    const double finalAngle = atan2(finalIm, finalRe) * radiansToDegrees;
+
+    wxString output;
+    output << wxT("Orbit transitions: ") << lines.size() << wxT("\n")
+           << wxT("Orbit path length: ") << FormatNumber(totalDistance) << wxT("\n")
+           << wxT("Straight-line displacement: ") << FormatNumber(displacement)
+           << wxT(" (") << FormatNumber(pathEfficiency) << wxT("% of path length)\n")
+           << wxT("Average / largest step: ") << FormatNumber(averageStep) << wxT(" / ")
+           << FormatNumber(largestStep) << wxT("\n")
+           << wxT("Closest / farthest from origin: ") << FormatNumber(closestToOrigin) << wxT(" / ")
+           << FormatNumber(farthestFromOrigin) << wxT("\n")
+           << (escaped ? wxT("Escape value: ") : wxT("Last recorded value: "))
+           << FormatComplex(finalRe, finalIm) << wxT("\n")
+           << wxT("Final modulus / angle: ") << FormatNumber(finalModulus) << wxT(" / ")
+           << FormatNumber(finalAngle) << wxT(" degrees");
+    return output;
+}
+
+wxString FractalCanvas::FormatNumber(const double value)
+{
+    return wxString::Format(wxT("%.10g"), value);
+}
+
+wxString FractalCanvas::FormatComplex(const double real, const double imaginary)
+{
+    return FormatNumber(real) + (imaginary < 0.0 ? wxT(" - ") : wxT(" + "))
+           + FormatNumber(abs(imaginary)) + wxT("i");
 }
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnResize(wxSizeEvent& event)

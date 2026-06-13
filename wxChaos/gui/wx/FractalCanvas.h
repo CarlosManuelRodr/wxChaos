@@ -72,6 +72,9 @@ class FractalCanvas : public wxSFMLCanvas
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
     void CreateFractal(FractalType type);
     void CreateScriptFractal(const ScriptData& scriptData);
+    wxString DescribeOrbit(Fractal& fractal, bool escaped) const;
+    static wxString FormatNumber(double value);
+    static wxString FormatComplex(double real, double imaginary);
 
 public:
     ///@brief Constructor
