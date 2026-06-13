@@ -25,6 +25,8 @@ AboutDialog::AboutDialog(wxWindow* parent)
     SetBackgroundColour(wxColour(244, 247, 251));
     CreateControls();
     GetSizer()->Fit(this);
+    SetClientSize(640, GetClientSize().GetHeight());
+    Layout();
     SetMinSize(GetSize());
     CentreOnParent();
 }
@@ -150,7 +152,7 @@ void AboutDialog::OnBannerPaint(wxPaintEvent&)
 {
     wxAutoBufferedPaintDC dc(_bannerPanel);
     const wxSize size = _bannerPanel->GetClientSize();
-    dc.SetBackground(wxBrush(wxColour(7, 17, 31)));
+    dc.SetBackground(wxBrush(GetBackgroundColour()));
     dc.Clear();
 
     if (!_bannerImage.IsOk() || size.GetWidth() <= 0 || size.GetHeight() <= 0)
