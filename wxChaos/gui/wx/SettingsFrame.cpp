@@ -67,8 +67,6 @@ wxPanel* SettingsFrame::CreateGeneralPage()
     themeRow->Add(_theme, 0);
     sizer->Add(themeRow, 0, wxTOP | wxBOTTOM, 12);
     sizer->Add(new wxStaticText(page, wxID_ANY,
-        wxT("Appearance changes take effect the next time wxChaos starts.")), 0, wxBOTTOM, 8);
-    sizer->Add(new wxStaticText(page, wxID_ANY,
         wxT("Startup window changes take effect the next time wxChaos starts.")), 0, wxTOP, 12);
     page->SetSizer(sizer);
     return page;

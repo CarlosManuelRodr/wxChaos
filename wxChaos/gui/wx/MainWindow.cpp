@@ -390,7 +390,16 @@ void MainFrame::OnSettingsFrameClosed(wxCommandEvent&)
 }
 void MainFrame::ApplyAppConfig(const AppConfig& config)
 {
+    const bool appearanceChanged = config.darkTheme != _appConfig.darkTheme;
     _appConfig = config;
+
+    if (appearanceChanged)
+    {
+        wxMessageBox(
+            wxT("You need to restart wxChaos for the appearance change to take effect."),
+            wxT("Restart required"), wxOK | wxICON_INFORMATION, this);
+    }
+
     wxGradient gradient;
     gradient.SetMin(0);
     gradient.SetMax(config.paletteSize);
