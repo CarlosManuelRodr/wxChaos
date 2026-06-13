@@ -22,6 +22,7 @@
 #include "ZoomRecorder.h"
 #include "DimensionFrame.h"
 #include "CommandConsole.h"
+#include "SettingsFrame.h"
 
 /**
 * @enum IDS
@@ -73,7 +74,8 @@ enum IDS
     ID_SCRIPT_EDITOR,
     ID_ZOOM_RECORDER,
     ID_DIMENSION_CALCULATOR,
-    ID_COMMAND_CONSOLE
+    ID_COMMAND_CONSOLE,
+    ID_SETTINGS
 };
 
 /**
@@ -94,6 +96,7 @@ class MainFrame : public wxFrame
     ScriptEditor* _scriptEditor{};
     DimensionFrame* _dimensionCalculator;
     CommandConsole* _commandConsole{};
+    SettingsFrame* _settingsFrame{};
     
     bool _changeKeyboardGuide;
     bool _introConstActive;
@@ -168,6 +171,7 @@ class MainFrame : public wxFrame
     void DestroyDimensionFrame();
     void ShowCommandConsole();
     void ShowFirstUseDialog();
+    void ApplyAppConfig(const AppConfig& config);
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
 
@@ -180,6 +184,8 @@ public :
     void OnAbout(wxCommandEvent& event);                   ///< Opens the About frame.
     void OnClose(wxCloseEvent& event);                     ///< Closes the frame.
     void OnQuit(wxCommandEvent& event);
+    void OnSettings(wxCommandEvent& event);
+    void OnSettingsFrameClosed(wxCommandEvent& event);
     void OnResize(wxSizeEvent& event);                     ///< Resizes the frame.
     void OnJuliaModeClosed(wxCommandEvent& event);         ///< Handles the Julia window closed event.
     void OnRendererOptionsClosed(wxCommandEvent& event);   ///< Handles the renderer options window closed event.

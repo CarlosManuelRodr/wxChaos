@@ -68,7 +68,10 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
         _fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(false);
 
     if (_appConfig.firstUse)
+    {
         this->ShowFirstUseDialog();
+        _appConfig.firstUse = false;
+    }
 
     if (_fractalType != FractalType::Mandelbrot && _fractalType != FractalType::Manowar)
         _juliaMode->Enable(false);
@@ -96,6 +99,8 @@ void MainFrame::ConnectEvents()
 {
     this->Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnQuit, this, wxID_EXIT);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSettings, this, ID_SETTINGS);
+    this->Bind(wxEVT_SETTINGS_FRAME_CLOSED, &MainFrame::OnSettingsFrameClosed, this);
     this->Bind(wxEVT_SIZE, &MainFrame::OnResize, this);
     this->Bind(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, &MainFrame::OnCanvasStatusText, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnJuliaMode, this, ID_JULIA_MODE);
@@ -261,6 +266,9 @@ void MainFrame::SetUpGUI()
 
     // File menu.
     _fileMenu->Append(ID_SAVE, wxString(wxT("Save image")) + wxT('\t') + wxT("F4"));
+    _fileMenu->AppendSeparator();
+    _fileMenu->Append(ID_SETTINGS, wxT("Settings..."));
+    _fileMenu->AppendSeparator();
     _fileMenu->Append(wxID_EXIT, wxT("Quit"));
 
     // Tools menu.
@@ -360,8 +368,43 @@ void MainFrame::OnQuit(wxCommandEvent&)
 {
     Close(true);
 }
+void MainFrame::OnSettings(wxCommandEvent&)
+{
+    if (_settingsFrame == nullptr)
+    {
+        _settingsFrame = new SettingsFrame(this, _appConfig,
+            [this](const AppConfig& config) { ApplyAppConfig(config); });
+        _settingsFrame->Show();
+    }
+    else
+    {
+        _settingsFrame->Raise();
+        _settingsFrame->SetFocus();
+    }
+}
+void MainFrame::OnSettingsFrameClosed(wxCommandEvent&)
+{
+    _settingsFrame = nullptr;
+}
+void MainFrame::ApplyAppConfig(const AppConfig& config)
+{
+    _appConfig = config;
+    wxGradient gradient;
+    gradient.SetMin(0);
+    gradient.SetMax(config.paletteSize);
+    gradient.FromString(wxString::FromUTF8(config.colorStyleGrad.c_str()));
+    _fractalCanvas->GetSFMLFractalPtr()->SetGradient(gradient);
+    _fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(config.maxIterations);
+    _fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(config.colorFractal);
+    _fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(config.colorSet);
+}
 void MainFrame::CloseAll()
 {
+    if (_settingsFrame != nullptr)
+    {
+        _settingsFrame->Destroy();
+        _settingsFrame = nullptr;
+    }
     if (_commandConsole != nullptr)
     {
         _commandConsole->Destroy();
