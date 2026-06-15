@@ -9,6 +9,9 @@
 
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include <wx/wx.h>
 #include <wx/statline.h>
 #include <wx/richtext/richtextctrl.h>
@@ -237,15 +240,15 @@ class DimensionFrame : public wxFrame
     FractalHandler _fractalHandler;                  ///< The fractal handler.
     ImagePanel* _previewImage;                       ///< Panel to show a preview of the dimension calculator.
     Options _myOpt;                                  ///< Fractal options.
-    DimensionCalculator* _dimensionCalculator;       ///< An array of DimCalculator.
-    sf::Thread** _dimThreads;                        ///< An array of sf::Thread pointers.
+    int _threadNumber;                               ///< Number of dimension worker threads.
+    std::vector<DimensionCalculator> _dimensionCalculator; ///< Dimension workers, one per thread.
+    std::vector<std::unique_ptr<sf::Thread>> _dimThreads;   ///< Owned dimension worker threads.
     std::vector<int> _div;                           ///< Vector to hold the number of divisions.
     std::vector<double> _epsilon;                    ///< Vector to hold the epsilon values.
     std::vector<int> _boxCount;                      ///< Vector to hold the box counting.
     std::vector<ScriptData> _loadedScripts;          ///< Parameters and location of user scripts.
     std::vector<unsigned int> _scriptList;           ///< List of script fractals.
     int _divIndex{};                                 ///< Division index.
-    int _threadNumber;                               ///< Number of render threads.
     bool _scriptSelected;
     bool _firstRender;
 
@@ -269,6 +272,14 @@ class DimensionFrame : public wxFrame
     void OnHelp(wxCommandEvent&);
 
     void CreateFractal(int size);
+    /**
+     * @brief Waits for all dimension worker threads and releases their resources.
+     */
+    void JoinDimensionThreads();
+    /**
+     * @brief Requests all dimension workers to stop, then joins and releases their threads.
+     */
+    void StopDimensionThreads();
     void GetScriptFractals();                   ///< Creates the menu elements corresponding to the script fractals.
     void WriteText(const wxString &txt) const;  ///< Writes text to the output panel.
 public:

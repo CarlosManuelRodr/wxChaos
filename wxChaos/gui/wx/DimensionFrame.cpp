@@ -533,10 +533,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
                                const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style)
 {
     _threadNumber = Get_Cores();
-    _dimensionCalculator = new DimensionCalculator[_threadNumber];
-    _dimThreads = new sf::Thread * [_threadNumber];
-    for (int i = 0; i < _threadNumber; ++i)
-        _dimThreads[i] = nullptr;
+    _dimensionCalculator.resize(_threadNumber);
+    _dimThreads.resize(_threadNumber);
 
     _previewSize = 400;
     _target = nullptr;
@@ -828,29 +826,36 @@ DimensionFrame::~DimensionFrame()
     {
         // Stop render.
         _target->StopRender();
-
-        // Stop all.
-        for (int i = 0; i < _threadNumber; i++)
-        {
-            if (_dimensionCalculator[i].IsRunning())
-                _dimensionCalculator[i].Terminate();
-            if (_dimThreads[i])
-            {
-                _dimThreads[i]->wait();
-                delete _dimThreads[i];
-                _dimThreads[i] = nullptr;
-            }
-        }
         _calcButton->SetLabel(wxT("Calculate"));
         _calculatingDimension = false;
     }
+    StopDimensionThreads();
+
     if (_renderingPreview)
         _target->StopRender();
 
-    delete[] _dimensionCalculator;
-    delete[] _dimThreads;
     _fractalHandler.DeleteFractal();
     delete _confFractOptDialog;
+}
+
+void DimensionFrame::JoinDimensionThreads()
+{
+    for (auto& thread : _dimThreads)
+    {
+        if (thread)
+            thread->wait();
+        thread.reset();
+    }
+}
+
+void DimensionFrame::StopDimensionThreads()
+{
+    for (auto& calculator : _dimensionCalculator)
+    {
+        if (calculator.IsRunning())
+            calculator.Terminate();
+    }
+    JoinDimensionThreads();
 }
 
 void DimensionFrame::CreateFractal(int size)
@@ -1130,17 +1135,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
         // Stop render.
         _target->StopRender();
 
-        // Stop all.
-        for (int i = 0; i < _threadNumber; i++)
-        {
-            if (_dimensionCalculator[i].IsRunning())
-                _dimensionCalculator[i].Terminate();
-            if (_dimThreads[i]) {
-                _dimThreads[i]->wait();
-                delete _dimThreads[i];
-                _dimThreads[i] = nullptr;
-            }
-        }
+        StopDimensionThreads();
         _calcButton->SetLabel(wxT("Calculate"));
         _previewButton->Enable(true);
         _savePreviewButton->Enable(true);
@@ -1202,13 +1197,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
 
                 if (!threadRunning)
                 {
-                    // Clean up finished threads
-                    for (int i = 0; i < _threadNumber; ++i) {
-                        if (_dimThreads[i]) {
-                            delete _dimThreads[i];
-                            _dimThreads[i] = nullptr;
-                        }
-                    }
+                    JoinDimensionThreads();
 
                     if (_divIndex == -1)
                     {
@@ -1220,7 +1209,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         for (int i = 0; i < _threadNumber; i++)
                         {
                             _dimensionCalculator[i].SetDiv(_div[_divIndex]);
-                            _dimThreads[i] = new sf::Thread(&DimensionCalculator::Run, &_dimensionCalculator[i]);
+                            _dimThreads[i] = std::make_unique<sf::Thread>(&DimensionCalculator::Run, &_dimensionCalculator[i]);
                             _dimThreads[i]->launch();
                         }
 
@@ -1254,7 +1243,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         for (int i = 0; i < _threadNumber; i++)
                         {
                             _dimensionCalculator[i].SetDiv(_div[_divIndex]);
-                            _dimThreads[i] = new sf::Thread(&DimensionCalculator::Run, &_dimensionCalculator[i]);
+                            _dimThreads[i] = std::make_unique<sf::Thread>(&DimensionCalculator::Run, &_dimensionCalculator[i]);
                             _dimThreads[i]->launch();
                         }
                     }
