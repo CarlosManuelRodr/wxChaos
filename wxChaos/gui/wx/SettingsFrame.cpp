@@ -1,4 +1,5 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
+// ReSharper disable CppDFAMemoryLeak
 #include <wx/dcbuffer.h>
 #include <utility>
 #include "SettingsFrame.h"
@@ -12,7 +13,7 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
         wxDEFAULT_FRAME_STYLE & ~wxMAXIMIZE_BOX),
       _configChanged(std::move(configChanged))
 {
-    SetMinSize(wxSize(620, 440));
+    wxTopLevelWindowBase::SetMinSize(wxSize(620, 440));
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
     _pages = new wxListbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLB_LEFT);
