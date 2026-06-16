@@ -105,8 +105,7 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         FractalType::DoublePendulum, FractalType::UserDefined, FractalType::FixedPointUserDefined
     };
 
-    _fractalType = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-        sizeof(names) / sizeof(names[0]), names);
+    _fractalType = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(names), names);
     _maxIterations = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
         wxSP_ARROW_KEYS, 1, 20000000, 100);
     sizer->Add(new wxStaticText(page, wxID_ANY, wxT("Default fractal:")), 0, wxALIGN_CENTER_VERTICAL);
@@ -161,8 +160,7 @@ wxPanel* SettingsFrame::CreateRenderingPage()
     };
     const auto styleRow = new wxBoxSizer(wxHORIZONTAL);
     styleRow->Add(new wxStaticText(page, wxID_ANY, wxT("Color style:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
-    _colorStyle = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-        sizeof(colorStyleNames) / sizeof(colorStyleNames[0]), colorStyleNames);
+    _colorStyle = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(colorStyleNames), colorStyleNames);
     styleRow->Add(_colorStyle, 0);
     sizer->Add(styleRow, 0, wxBOTTOM, 12);
 
