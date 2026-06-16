@@ -1,3 +1,4 @@
+// ReSharper disable CppDFAUnreachableFunctionCall
 #include <utility>
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
@@ -323,6 +324,8 @@ void RendererOptions::SetAlgorithmChoices()
         _presenter->SetSmoothRender(false);
     }
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppMemberFunctionMayBeStatic
 int RendererOptions::GetPaletteSizeForAlgorithm(const RenderingAlgorithmType algorithm, const int paletteSize) const
 {
     if (algorithm == RenderingAlgorithmType::Buddhabrot)
@@ -330,6 +333,7 @@ int RendererOptions::GetPaletteSizeForAlgorithm(const RenderingAlgorithmType alg
 
     return paletteSize;
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::ApplyPaletteSize(const int paletteSize)
 {
     _presenter->SetGradientSize(paletteSize);
