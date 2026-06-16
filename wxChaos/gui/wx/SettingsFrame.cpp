@@ -9,9 +9,9 @@
 wxDEFINE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);
 
 SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::function<void(const AppConfig&)> configChanged)
-    : wxFrame(parent, wxID_ANY, wxT("Settings"), wxDefaultPosition, wxSize(700, 520),
-        wxDEFAULT_FRAME_STYLE & ~wxMAXIMIZE_BOX),
-      _configChanged(std::move(configChanged))
+                             : wxFrame(parent, wxID_ANY, wxT("Settings"), wxDefaultPosition, wxSize(700, 520),
+                                  wxDEFAULT_FRAME_STYLE & ~wxMAXIMIZE_BOX),
+                             _configChanged(std::move(configChanged))
 {
     wxTopLevelWindowBase::SetMinSize(wxSize(620, 440));
 
