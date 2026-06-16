@@ -325,8 +325,7 @@ void RendererOptions::SetAlgorithmChoices()
     }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-// ReSharper disable once CppMemberFunctionMayBeStatic
-int RendererOptions::GetPaletteSizeForAlgorithm(const RenderingAlgorithmType algorithm, const int paletteSize) const
+int RendererOptions::GetPaletteSizeForAlgorithm(const RenderingAlgorithmType algorithm, const int paletteSize)
 {
     if (algorithm == RenderingAlgorithmType::Buddhabrot)
         return BuddhabrotPaletteSize;
