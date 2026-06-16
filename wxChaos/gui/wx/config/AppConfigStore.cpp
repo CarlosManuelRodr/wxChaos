@@ -170,6 +170,17 @@ const std::map<std::string, ColorPaletteTypes>& AppConfigStore::ColorStyles()
     return colorStyles;
 }
 
+const std::map<std::string, AppAppearance>& AppConfigStore::Appearances()
+{
+    static const std::map<std::string, AppAppearance> appearances = {
+        { "System", AppAppearance::System },
+        { "Light", AppAppearance::Light },
+        { "Dark", AppAppearance::Dark }
+    };
+
+    return appearances;
+}
+
 // ReSharper disable once CppDFAConstantParameter
 FractalType AppConfigStore::FractalTypeFromString(const std::string& value, const FractalType defaultValue)
 {
@@ -203,6 +214,23 @@ std::string AppConfigStore::ColorStyleToString(const ColorPaletteTypes type)
     }
 
     return "Retro";
+}
+
+AppAppearance AppConfigStore::AppearanceFromString(const std::string& value, const AppAppearance defaultValue)
+{
+    const auto it = Appearances().find(value);
+    return it == Appearances().end() ? defaultValue : it->second;
+}
+
+std::string AppConfigStore::AppearanceToString(const AppAppearance appearance)
+{
+    for (const auto& item : Appearances())
+    {
+        if (item.second == appearance)
+            return item.first;
+    }
+
+    return "System";
 }
 
 ColorPaletteTypes AppConfigStore::InferColorStyleFromGradient(const std::string& gradient)
@@ -241,7 +269,10 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     config.colorFractal = ReadBool(values, "COLOR_FRACTAL", config.colorFractal);
     config.colorSet = ReadBool(values, "COLOR_SET", config.colorSet);
     config.firstUse = ReadBool(values, "FIRST_USE", config.firstUse);
-    config.darkTheme = ReadBool(values, "DARK_THEME", config.darkTheme);
+    if (values.find("APPEARANCE") != values.end())
+        config.appearance = AppearanceFromString(ReadString(values, "APPEARANCE", "System"), config.appearance);
+    else if (values.find("DARK_THEME") != values.end())
+        config.appearance = ReadBool(values, "DARK_THEME", false) ? AppAppearance::Dark : AppAppearance::Light;
 
     return config;
 }
@@ -309,7 +340,15 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/Color/palette_window", &config.colorPaletteWindow, config.colorPaletteWindow);
     fileConfig.Read("/Color/fractal", &config.colorFractal, config.colorFractal);
     fileConfig.Read("/Color/set", &config.colorSet, config.colorSet);
-    fileConfig.Read("/General/dark_theme", &config.darkTheme, config.darkTheme);
+    wxString appearance;
+    if (fileConfig.Read("/General/appearance", &appearance))
+        config.appearance = AppearanceFromString(appearance.ToStdString(), config.appearance);
+    else
+    {
+        bool darkTheme = false;
+        if (fileConfig.Read("/General/dark_theme", &darkTheme))
+            config.appearance = darkTheme ? AppAppearance::Dark : AppAppearance::Light;
+    }
 
     return config;
 }
@@ -333,7 +372,8 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Color/palette_window", config.colorPaletteWindow);
     fileConfig.Write("/Color/fractal", config.colorFractal);
     fileConfig.Write("/Color/set", config.colorSet);
-    fileConfig.Write("/General/dark_theme", config.darkTheme);
+    fileConfig.Write("/General/appearance", ToWxString(AppearanceToString(config.appearance)));
+    fileConfig.Write("/General/dark_theme", config.appearance == AppAppearance::Dark);
     fileConfig.Flush();
 }
 

@@ -38,7 +38,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
     this->GetParserOpt();    // Gets configuration from config.ini.
-    AppTheme::SetDark(_appConfig.darkTheme);
+    AppTheme::SetAppearance(_appConfig.appearance);
     this->SetUpGUI();
 
     _juliaModePtr = nullptr;
@@ -391,7 +391,7 @@ void MainFrame::OnSettingsFrameClosed(wxCommandEvent&)
 }
 void MainFrame::ApplyAppConfig(const AppConfig& config)
 {
-    const bool appearanceChanged = config.darkTheme != _appConfig.darkTheme;
+    const bool appearanceChanged = config.appearance != _appConfig.appearance;
     _appConfig = config;
 
     if (appearanceChanged)

@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <wx/string.h>
+#include "../AppAppearance.h"
 #include "ColorPaletteTypes.h"
 #include "../../../core/types/FractalType.h"
 
@@ -18,7 +19,7 @@ struct AppConfig
     FractalType type = FractalType::Mandelbrot;
     int maxIterations = 100;
     int paletteSize = 300;
-    ColorPaletteTypes colorStyle = Retro; ///< Default gradient preset, or CustomGradient for user-edited gradients.
+    ColorPaletteTypes colorStyle = SunsetDrive; ///< Default gradient preset, or CustomGradient for user-edited gradients.
     std::string colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);";
     bool constantWindow = false;
     bool commandConsole = false;
@@ -27,7 +28,7 @@ struct AppConfig
     bool colorFractal = true;
     bool colorSet = true;
     bool firstUse = false;
-    bool darkTheme = false; ///< Uses the application dark appearance when enabled.
+    AppAppearance appearance = AppAppearance::System; ///< Application appearance preference.
 };
 
 /**
@@ -72,6 +73,8 @@ private:
     static const std::map<std::string, FractalType>& FractalTypes();
     ///@brief Returns the persisted names for gradient color style presets.
     static const std::map<std::string, ColorPaletteTypes>& ColorStyles();
+    ///@brief Returns the persisted names for application appearance preferences.
+    static const std::map<std::string, AppAppearance>& Appearances();
     static FractalType FractalTypeFromString(const std::string& value, FractalType defaultValue);
     static std::string FractalTypeToString(FractalType type);
     ///@brief Converts a persisted gradient color style name to its enum value.
@@ -83,6 +86,15 @@ private:
     ///@param type Color style to serialize.
     ///@return Persisted color style name.
     static std::string ColorStyleToString(ColorPaletteTypes type);
+    ///@brief Converts a persisted appearance name to its enum value.
+    ///@param value Persisted appearance name.
+    ///@param defaultValue Value returned when the name is not recognized.
+    ///@return Parsed appearance preference.
+    static AppAppearance AppearanceFromString(const std::string& value, AppAppearance defaultValue);
+    ///@brief Converts an appearance enum value to its persisted name.
+    ///@param appearance Appearance preference to serialize.
+    ///@return Persisted appearance name.
+    static std::string AppearanceToString(AppAppearance appearance);
     ///@brief Identifies whether a saved gradient string matches a built-in preset.
     ///@param gradient Serialized gradient string.
     ///@return Matching preset, or CustomGradient when no preset matches.

@@ -3,6 +3,21 @@
 #include "gui/wx/config/AppConfigStore.h"
 #include "utils/AppPaths.h"
 
+wxApp::Appearance ToWxAppearance(const AppAppearance appearance)
+{
+    switch (appearance)
+    {
+        case AppAppearance::Dark:
+            return wxApp::Appearance::Dark;
+        case AppAppearance::Light:
+            return wxApp::Appearance::Light;
+        case AppAppearance::System:
+            return wxApp::Appearance::System;
+    }
+
+    return wxApp::Appearance::System;
+}
+
 enum ProcessDpiAwarenessValue
 {
     ProcessDpiUnaware [[maybe_unused]] = 0,
@@ -68,11 +83,10 @@ public:
         EnableHighDpiSupport();
 #endif
         const AppConfig config = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load();
-        const Appearance appearance = config.darkTheme ? Appearance::Dark : Appearance::Light;
-        if (SetAppearance(appearance) == AppearanceResult::Failure)
+        if (SetAppearance(ToWxAppearance(config.appearance)) == AppearanceResult::Failure)
             wxLogWarning("The requested application appearance is not available.");
 
-        AppTheme::SetDark(config.darkTheme);
+        AppTheme::SetAppearance(config.appearance);
         AppTheme::Install();
         const auto main = new MainFrame;
         main->Show();

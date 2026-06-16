@@ -2,6 +2,7 @@
 
 #include <wx/eventfilter.h>
 #include <wx/colour.h>
+#include "AppAppearance.h"
 
 class wxWindow;
 
@@ -24,6 +25,15 @@ public:
     /// @brief Selects the current application appearance.
     /// @param dark Whether the dark appearance should be used.
     static void SetDark(bool dark);
+
+    /// @brief Selects the current application appearance.
+    /// @param appearance Appearance preference to resolve and apply.
+    static void SetAppearance(AppAppearance appearance);
+
+    /// @brief Resolves an appearance preference to the effective dark-mode state.
+    /// @param appearance Appearance preference to resolve.
+    /// @return True when the application should use dark colors.
+    [[nodiscard]] static bool ResolveDark(AppAppearance appearance);
 
     /// @brief Reports whether the dark appearance is selected.
     /// @return True when dark appearance colors are active.

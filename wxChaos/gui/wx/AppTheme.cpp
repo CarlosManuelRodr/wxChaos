@@ -42,6 +42,26 @@ void AppTheme::SetDark(const bool dark)
     Instance()._dark = dark;
 }
 
+void AppTheme::SetAppearance(const AppAppearance appearance)
+{
+    SetDark(ResolveDark(appearance));
+}
+
+bool AppTheme::ResolveDark(const AppAppearance appearance)
+{
+    switch (appearance)
+    {
+        case AppAppearance::Dark:
+            return true;
+        case AppAppearance::Light:
+            return false;
+        case AppAppearance::System:
+            return wxSystemSettings::GetAppearance().AreAppsDark();
+    }
+
+    return false;
+}
+
 bool AppTheme::IsDark()
 {
     return Instance()._dark;
