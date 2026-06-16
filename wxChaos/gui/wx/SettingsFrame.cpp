@@ -1,6 +1,7 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
 // ReSharper disable CppDFAMemoryLeak
 #include <wx/dcbuffer.h>
+#include <wx/spinctrl.h>
 #include <utility>
 #include "SettingsFrame.h"
 #include "AppPaths.h"

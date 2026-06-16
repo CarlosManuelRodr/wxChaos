@@ -3,7 +3,6 @@
 #include <functional>
 #include <vector>
 #include <wx/listbook.h>
-#include <wx/spinctrl.h>
 #include <wx/wx.h>
 #include "config/AppConfigStore.h"
 #include "wxGradient.h"
