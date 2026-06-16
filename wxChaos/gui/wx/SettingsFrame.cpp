@@ -1,6 +1,7 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
 // ReSharper disable CppDFAMemoryLeak
 #include <wx/dcbuffer.h>
+#include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 #include <utility>
 #include "SettingsFrame.h"
@@ -21,6 +22,11 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
     _pages->AddPage(CreateGeneralPage(), wxT("General"), true);
     _pages->AddPage(CreatePresetsPage(), wxT("Presets"));
     _pages->AddPage(CreateRenderingPage(), wxT("Rendering"));
+#ifdef __WXMSW__
+    // wxMSW uses a no-header report view for left-side listbook labels.
+    // Autosize its text column so page titles are not ellipsized.
+    _pages->GetListView()->SetColumnWidth(0, wxLIST_AUTOSIZE);
+#endif
     mainSizer->Add(_pages, 1, wxEXPAND | wxALL, 12);
 
     const auto buttons = new wxBoxSizer(wxHORIZONTAL);
