@@ -4,6 +4,7 @@
 #include <utility>
 #include <wx/fileconf.h>
 #include "AppConfigStore.h"
+#include "ColorPalette.h"
 #include "global.h"
 
 const char* AppConfigStore::DefaultColorStyle()
@@ -148,6 +149,27 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
     return fractalTypes;
 }
 
+const std::map<std::string, ColorPaletteTypes>& AppConfigStore::ColorStyles()
+{
+    static const std::map<std::string, ColorPaletteTypes> colorStyles = {
+        { "Retro", Retro },
+        { "Hakim", Hakim },
+        { "Aquamarine", Aquamarine },
+        { "PastelDream", PastelDream },
+        { "RoseGold", RoseGold },
+        { "Gunmetal", Gunmetal },
+        { "SunsetDrive", SunsetDrive },
+        { "AuroraBorealis", AuroraBorealis },
+        { "Vaporwave", Vaporwave },
+        { "DeepOcean", DeepOcean },
+        { "Ember", Ember },
+        { "RainbowFire", RainbowFire },
+        { "Custom", CustomGradient }
+    };
+
+    return colorStyles;
+}
+
 // ReSharper disable once CppDFAConstantParameter
 FractalType AppConfigStore::FractalTypeFromString(const std::string& value, const FractalType defaultValue)
 {
@@ -166,6 +188,39 @@ std::string AppConfigStore::FractalTypeToString(FractalType type)
     return "Mandelbrot";
 }
 
+ColorPaletteTypes AppConfigStore::ColorStyleFromString(const std::string& value, const ColorPaletteTypes defaultValue)
+{
+    const auto it = ColorStyles().find(value);
+    return it == ColorStyles().end() ? defaultValue : it->second;
+}
+
+std::string AppConfigStore::ColorStyleToString(const ColorPaletteTypes type)
+{
+    for (const auto& item : ColorStyles())
+    {
+        if (item.second == type)
+            return item.first;
+    }
+
+    return "Retro";
+}
+
+ColorPaletteTypes AppConfigStore::InferColorStyleFromGradient(const std::string& gradient)
+{
+    for (const auto& item : ColorStyles())
+    {
+        if (item.second == CustomGradient)
+            continue;
+
+        ColorPalette palette;
+        palette.SetStyle(item.second);
+        if (palette.grad.ToStdString() == gradient)
+            return item.second;
+    }
+
+    return CustomGradient;
+}
+
 AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
 {
     AppConfig config;
@@ -177,6 +232,7 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     config.colorStyleGrad = ReadString(values, "COLOR_STYLE", config.colorStyleGrad);
     if (config.colorStyleGrad.find("rgb(") == std::string::npos)
         config.colorStyleGrad = DefaultColorStyle();
+    config.colorStyle = InferColorStyleFromGradient(config.colorStyleGrad);
 
     config.constantWindow = ReadBool(values, "CONSTANT_WINDOW", config.constantWindow);
     config.commandConsole = ReadBool(values, "COMMAND_CONSOLE", config.commandConsole);
@@ -222,6 +278,18 @@ AppConfig AppConfigStore::Load() const
     if (config.colorStyleGrad.find("rgb(") == std::string::npos)
         config.colorStyleGrad = DefaultColorStyle();
 
+    wxString colorStylePreset;
+    if (fileConfig.Read("/Fractal/color_style_preset", &colorStylePreset))
+        config.colorStyle = ColorStyleFromString(colorStylePreset.ToStdString(), InferColorStyleFromGradient(config.colorStyleGrad));
+    else
+        config.colorStyle = InferColorStyleFromGradient(config.colorStyleGrad);
+    if (config.colorStyle != CustomGradient)
+    {
+        ColorPalette palette;
+        palette.SetStyle(config.colorStyle);
+        config.colorStyleGrad = palette.grad.ToStdString();
+    }
+
     wxString fractalType;
     fileConfig.Read("/Fractal/fractal_type", &fractalType, "Mandelbrot");
     config.type = FractalTypeFromString(fractalType.ToStdString(), config.type);
@@ -254,6 +322,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Fractal/app_version", ToWxString(APP_VERSION));
     fileConfig.Write("/Fractal/color_type", wxString("Gradient"));
     fileConfig.Write("/Fractal/palette_size", static_cast<long>(config.paletteSize));
+    fileConfig.Write("/Fractal/color_style_preset", ToWxString(ColorStyleToString(config.colorStyle)));
     fileConfig.Write("/Fractal/color_style", ToWxString(config.colorStyleGrad));
     fileConfig.Write("/Fractal/fractal_type", ToWxString(FractalTypeToString(config.type)));
     fileConfig.Write("/Fractal/default_iteration", static_cast<long>(config.maxIterations));

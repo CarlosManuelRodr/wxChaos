@@ -353,6 +353,7 @@ void MainFrame::SetUpGUI()
     grad.SetMin(0);
     grad.SetMax(_appConfig.paletteSize);
     grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
+    _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(_appConfig.colorStyle);
     _fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
 
     _fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(_appConfig.maxIterations);
@@ -404,6 +405,7 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     gradient.SetMin(0);
     gradient.SetMax(config.paletteSize);
     gradient.FromString(wxString::FromUTF8(config.colorStyleGrad.c_str()));
+    _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(config.colorStyle);
     _fractalCanvas->GetSFMLFractalPtr()->SetGradient(gradient);
     _fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(config.maxIterations);
     _fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(config.colorFractal);
@@ -588,6 +590,7 @@ void MainFrame::OnReset(wxCommandEvent&)
     grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
     grad.SetMin(0);
     grad.SetMax(_appConfig.paletteSize);
+    _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(_appConfig.colorStyle);
     _fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
     this->UpdateMenu();
 }

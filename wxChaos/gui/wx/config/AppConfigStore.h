@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <wx/string.h>
+#include "ColorPaletteTypes.h"
 #include "../../../core/types/FractalType.h"
 
 /**
@@ -17,6 +18,7 @@ struct AppConfig
     FractalType type = FractalType::Mandelbrot;
     int maxIterations = 100;
     int paletteSize = 300;
+    ColorPaletteTypes colorStyle = Retro; ///< Default gradient preset, or CustomGradient for user-edited gradients.
     std::string colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);";
     bool constantWindow = false;
     bool commandConsole = false;
@@ -68,8 +70,23 @@ private:
     static int ReadInt(const std::map<std::string, std::string>& values, const std::string& key, int defaultValue);
     static std::string ReadString(const std::map<std::string, std::string>& values, const std::string& key, const std::string& defaultValue);
     static const std::map<std::string, FractalType>& FractalTypes();
+    ///@brief Returns the persisted names for gradient color style presets.
+    static const std::map<std::string, ColorPaletteTypes>& ColorStyles();
     static FractalType FractalTypeFromString(const std::string& value, FractalType defaultValue);
     static std::string FractalTypeToString(FractalType type);
+    ///@brief Converts a persisted gradient color style name to its enum value.
+    ///@param value Persisted color style name.
+    ///@param defaultValue Value returned when the name is not recognized.
+    ///@return Parsed color style.
+    static ColorPaletteTypes ColorStyleFromString(const std::string& value, ColorPaletteTypes defaultValue);
+    ///@brief Converts a gradient color style enum value to its persisted name.
+    ///@param type Color style to serialize.
+    ///@return Persisted color style name.
+    static std::string ColorStyleToString(ColorPaletteTypes type);
+    ///@brief Identifies whether a saved gradient string matches a built-in preset.
+    ///@param gradient Serialized gradient string.
+    ///@return Matching preset, or CustomGradient when no preset matches.
+    static ColorPaletteTypes InferColorStyleFromGradient(const std::string& gradient);
     static AppConfig LoadLegacyConfig(const std::string& filename);
     static wxString ToWxString(const std::string& value);
 

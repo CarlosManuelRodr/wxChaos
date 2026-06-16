@@ -6,6 +6,7 @@
 #include <utility>
 #include "SettingsFrame.h"
 #include "AppPaths.h"
+#include "ColorPalette.h"
 #include "wxGradientDialog.h"
 
 wxDEFINE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);
@@ -128,7 +129,44 @@ wxPanel* SettingsFrame::CreateRenderingPage()
     paletteRow->Add(_paletteSize, 0);
     sizer->Add(paletteRow, 0, wxBOTTOM, 16);
 
-    sizer->Add(new wxStaticText(page, wxID_ANY, wxT("Default gradient:")), 0, wxBOTTOM, 6);
+    const wxString colorStyleNames[] = {
+        wxT("Retro"),
+        wxT("Hakim"),
+        wxT("Aquamarine"),
+        wxT("Pastel Dream"),
+        wxT("Rose Gold"),
+        wxT("Gunmetal"),
+        wxT("Sunset Drive"),
+        wxT("Aurora Borealis"),
+        wxT("Vaporwave"),
+        wxT("Deep Ocean"),
+        wxT("Ember"),
+        wxT("Rainbow Fire"),
+        wxT("Custom")
+    };
+    _colorStyles = {
+        Retro,
+        Hakim,
+        Aquamarine,
+        PastelDream,
+        RoseGold,
+        Gunmetal,
+        SunsetDrive,
+        AuroraBorealis,
+        Vaporwave,
+        DeepOcean,
+        Ember,
+        RainbowFire,
+        CustomGradient
+    };
+    const auto styleRow = new wxBoxSizer(wxHORIZONTAL);
+    styleRow->Add(new wxStaticText(page, wxID_ANY, wxT("Color style:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    _colorStyle = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+        sizeof(colorStyleNames) / sizeof(colorStyleNames[0]), colorStyleNames);
+    styleRow->Add(_colorStyle, 0);
+    sizer->Add(styleRow, 0, wxBOTTOM, 12);
+
+    sizer->Add(new wxStaticText(page, wxID_ANY, wxT("Gradient preview:")), 0, wxBOTTOM, 6);
     const auto gradientRow = new wxBoxSizer(wxHORIZONTAL);
     _gradientPreview = new wxStaticBitmap(page, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(320, 44), wxBORDER_SIMPLE);
     const auto editGradient = new wxButton(page, wxID_EDIT, wxT("Edit..."));
@@ -142,6 +180,7 @@ wxPanel* SettingsFrame::CreateRenderingPage()
     sizer->Add(_colorSet, 0, wxBOTTOM, 8);
     page->SetSizer(sizer);
 
+    _colorStyle->Bind(wxEVT_CHOICE, &SettingsFrame::OnColorStyleChanged, this);
     editGradient->Bind(wxEVT_BUTTON, &SettingsFrame::OnEditGradient, this);
     return page;
 }
@@ -158,6 +197,15 @@ void SettingsFrame::LoadControls(const AppConfig& config)
     _paletteSize->SetValue(config.paletteSize);
     _colorFractal->SetValue(config.colorFractal);
     _colorSet->SetValue(config.colorSet);
+    _colorStyle->SetSelection(0);
+    for (size_t i = 0; i < _colorStyles.size(); ++i)
+    {
+        if (_colorStyles[i] == config.colorStyle)
+        {
+            _colorStyle->SetSelection(static_cast<int>(i));
+            break;
+        }
+    }
 
     _fractalType->SetSelection(0);
     for (size_t i = 0; i < _fractalTypes.size(); ++i)
@@ -184,6 +232,9 @@ AppConfig SettingsFrame::ReadControls()
         config.type = _fractalTypes[selection];
     config.maxIterations = _maxIterations->GetValue();
     config.paletteSize = _paletteSize->GetValue();
+    const int colorStyleSelection = _colorStyle->GetSelection();
+    if (colorStyleSelection != wxNOT_FOUND)
+        config.colorStyle = _colorStyles[colorStyleSelection];
     config.colorStyleGrad = _gradient.ToString().ToStdString();
     config.constantWindow = _constantWindow->GetValue();
     config.commandConsole = _commandConsole->GetValue();
@@ -213,6 +264,21 @@ void SettingsFrame::UpdateGradientPreview() const
     _gradientPreview->SetBitmap(bitmap);
 }
 
+void SettingsFrame::ApplyColorStyle(const ColorPaletteTypes style)
+{
+    if (style == CustomGradient)
+        return;
+
+    ColorPalette palette;
+    palette.SetStyle(style);
+    _paletteSize->SetValue(palette.paletteSize);
+    _gradient = wxGradient();
+    _gradient.SetMin(0);
+    _gradient.SetMax(palette.paletteSize);
+    _gradient.FromString(palette.grad);
+    UpdateGradientPreview();
+}
+
 void SettingsFrame::SaveSettings(const bool closeAfterSave)
 {
     AppConfig config = ReadControls();
@@ -223,8 +289,16 @@ void SettingsFrame::SaveSettings(const bool closeAfterSave)
         Close();
 }
 
+void SettingsFrame::OnColorStyleChanged(wxCommandEvent&)
+{
+    const int selection = _colorStyle->GetSelection();
+    if (selection != wxNOT_FOUND)
+        ApplyColorStyle(_colorStyles[selection]);
+}
+
 void SettingsFrame::OnEditGradient(wxCommandEvent&)
 {
+    _colorStyle->SetSelection(static_cast<int>(_colorStyles.size()) - 1);
     wxGradientDialog dialog(this, _gradient);
     if (dialog.ShowModal() == wxID_OK)
     {
