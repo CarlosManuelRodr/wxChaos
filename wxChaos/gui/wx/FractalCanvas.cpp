@@ -1,11 +1,15 @@
 #include <algorithm>
 #include "AppPaths.h"
 #include "FractalCanvas.h"
-#include "TextUtils.h"
 #include "SizeDialogSave.h"
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
+
+wxString FractalCanvas::FormatStatusCoordinate(const double value)
+{
+    return wxString::Format(wxT("%.15g"), value);
+}
 
 // Fractal Canvas
 FractalCanvas::FractalCanvas(const FractalType fractalType,
@@ -581,28 +585,28 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     if (_type == FractalType::DoublePendulum)
     {
         text = wxT("θ2: ");
-        text += TextUtils::ToWxString(_target->GetX(event.GetPosition().x));
+        text += FormatStatusCoordinate(_target->GetX(event.GetPosition().x));
         text += wxT("   θ1: ");
-        text += TextUtils::ToWxString(_target->GetY(event.GetPosition().y));
+        text += FormatStatusCoordinate(_target->GetY(event.GetPosition().y));
     }
     else if (_type == FractalType::SierpinskyTriangle || _type == FractalType::ScriptFractal)
     {
         text = wxT("x: ");
-        text += TextUtils::ToWxString(_target->GetX(event.GetPosition().x));
+        text += FormatStatusCoordinate(_target->GetX(event.GetPosition().x));
         text += wxT("   y: ");
-        text += TextUtils::ToWxString(_target->GetY(event.GetPosition().y));
+        text += FormatStatusCoordinate(_target->GetY(event.GetPosition().y));
     }
     else
     {
         text = wxT("Real: ");
-        text += TextUtils::ToWxString(_target->GetX(event.GetPosition().x));
+        text += FormatStatusCoordinate(_target->GetX(event.GetPosition().x));
         text += wxT("   Imaginary: ");
-        text += TextUtils::ToWxString(_target->GetY(event.GetPosition().y));
+        text += FormatStatusCoordinate(_target->GetY(event.GetPosition().y));
     }
 
     if (_target->IsHighPrecisionRenderActive())
     {
-        text += wxT("   MPFR: ");
+        text += wxT("   Multiprecision: ");
         text += wxString::Format(wxT("%u"), _target->GetHighPrecisionRenderBits());
         text += wxT("-bit");
     }
