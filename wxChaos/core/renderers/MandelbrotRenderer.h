@@ -9,8 +9,8 @@ class MandelbrotRenderer : public Renderer
 {
     int _buddhaRandomP;
 
-    template<class MeasurePoint>
-    Point TracePoint(double pixelRe, double pixelIm, MeasurePoint measure) const;
+    template<class Real, class MeasurePoint>
+    Point TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const;
     void BuddhabrotRender();
 
 public:

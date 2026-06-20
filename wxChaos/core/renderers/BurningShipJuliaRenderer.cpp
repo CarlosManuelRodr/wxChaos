@@ -4,51 +4,53 @@
 
 BurningShipJuliaRenderer::BurningShipJuliaRenderer() = default;
 
-template<class MeasurePoint>
-Renderer::Point BurningShipJuliaRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
+template<class Real, class MeasurePoint>
+Renderer::Point BurningShipJuliaRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
-    point.startRe = pixelRe;
-    point.startIm = pixelIm;
-    point.zRe = pixelRe;
-    point.zIm = pixelIm;
-    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+    point.startRe = ToDouble(pixelRe);
+    point.startIm = ToDouble(pixelIm);
+    point.zRe = point.startRe;
+    point.zIm = point.startIm;
+    measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    double zRe = pixelRe;
-    double zIm = pixelIm;
+    Real zRe = pixelRe;
+    Real zIm = pixelIm;
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
-        point.zNorm = zRe * zRe + zIm * zIm;
-        if (n > 0 && !escaped && point.zNorm > 4)
+        const Real currentNorm = zRe * zRe + zIm * zIm;
+        point.zNorm = ToDouble(currentNorm);
+        if (n > 0 && !escaped && currentNorm > Real(4))
         {
             escaped = true;
             point.insideSet = false;
             point.iterations = n;
-            point.escapedZRe = zRe;
-            point.escapedZIm = zIm;
+            point.escapedZRe = ToDouble(zRe);
+            point.escapedZIm = ToDouble(zIm);
             point.escapedNorm = point.zNorm;
-            measure(point, PointTraceEvent::Escaped, n, zRe, zIm, point.zNorm, 0.0, 0.0, true);
+            measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, point.zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && point.zNorm > 16 && !point.measureGaussianAfterEscape)
+        if (escaped && currentNorm > Real(16) && !point.measureGaussianAfterEscape)
             break;
 
-        const double zRe2 = zRe * zRe;
-        const double zIm2 = zIm * zIm;
-        const double squaredRe = zRe2 - zIm2;
-        const double squaredIm = 2.0 * std::abs(zRe) * std::abs(zIm);
+        const Real zRe2 = zRe * zRe;
+        const Real zIm2 = zIm * zIm;
+        const Real squaredRe = zRe2 - zIm2;
+        const Real squaredIm = Real(2) * RealAbs(zRe) * RealAbs(zIm);
 
-        zRe = squaredRe + _kReal;
-        zIm = squaredIm + _kImaginary;
-        const double zNorm = zRe * zRe + zIm * zIm;
+        zRe = squaredRe + Real(_kReal);
+        zIm = squaredIm + Real(_kImaginary);
+        const Real zNorm = zRe * zRe + zIm * zIm;
         const bool wasInside = !escaped;
 
-        point.zRe = zRe;
-        point.zIm = zIm;
-        point.zNorm = zNorm;
-        measure(point, PointTraceEvent::Iterated, n, zRe, zIm, zNorm, squaredRe, squaredIm, wasInside);
+        point.zRe = ToDouble(zRe);
+        point.zIm = ToDouble(zIm);
+        point.zNorm = ToDouble(zNorm);
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
+                ToDouble(squaredRe), ToDouble(squaredIm), wasInside);
 
         if (!escaped)
             point.iterations = n + 1;
@@ -59,7 +61,7 @@ Renderer::Point BurningShipJuliaRenderer::TracePoint(const double pixelRe, const
 
 void BurningShipJuliaRenderer::Render()
 {
-    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
         return TracePoint(pixelRe, pixelIm, measure);
     };

@@ -124,14 +124,14 @@ void SFMLFractal::ResetMovement()
     _hasCommittedPanOffset = false;
 }
 
-Rect SFMLFractal::CaptureCurrentView() const
+PreciseRect SFMLFractal::CaptureCurrentView() const
 {
-    return _fractal->GetView();
+    return _fractal->GetPreciseView();
 }
 
-void SFMLFractal::ApplyView(const Rect& view) const
+void SFMLFractal::ApplyView(const PreciseRect& view) const
 {
-    _fractal->SetView(view);
+    _fractal->SetPreciseView(view);
 }
 
 void SFMLFractal::SaveZoom()
@@ -147,7 +147,7 @@ void SFMLFractal::ResetZoomHistory()
 
 void SFMLFractal::ExpandCurrentView()
 {
-    ApplyView(_fractal->GetExpandedView());
+    ApplyView(_fractal->GetPreciseExpandedView());
     _outermostZoom = CaptureCurrentView();
 }
 
@@ -275,10 +275,10 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
     _outermostZoom = CaptureCurrentView();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
 
-    for (Rect& view : _zoomHistory)
+    for (PreciseRect& view : _zoomHistory)
     {
-        view._top = view._bottom + (view._right - view._left) *
-            static_cast<double>(screenSize.y) / screenSize.x;
+        view.top = view.bottom + (view.right - view.left) *
+            HighPrecisionReal(screenSize.y) / HighPrecisionReal(screenSize.x);
     }
 
     _fractal->MarkRenderDirty();
@@ -313,7 +313,7 @@ void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 
     SaveZoom();
 
-    ApplyView(_fractal->GetViewForPixelRect(pixelCoordinates));
+    ApplyView(_fractal->GetPreciseViewForPixelRect(pixelCoordinates));
     if (wasPaused)
         _fractal->MarkRenderInterrupted();
     _fractal->MarkOrbitDirty();
@@ -371,22 +371,21 @@ void SFMLFractal::ZoomBack()
 
 Rect SFMLFractal::GetOutermostZoom() const
 {
-    return _outermostZoom;
+    return _outermostZoom.ToRect();
 }
 
 Rect SFMLFractal::GetCurrentZoom() const
 {
-    return CaptureCurrentView();
+    return CaptureCurrentView().ToRect();
 }
 
 bool SFMLFractal::HasZoomed() const
 {
-    const Rect currentZoom = GetCurrentZoom();
-    const Rect outermostZoom = GetOutermostZoom();
-    return outermostZoom._left != currentZoom._left ||
-        outermostZoom._right != currentZoom._right ||
-        outermostZoom._bottom != currentZoom._bottom ||
-        outermostZoom._top != currentZoom._top;
+    const PreciseRect currentZoom = CaptureCurrentView();
+    return _outermostZoom.left != currentZoom.left ||
+        _outermostZoom.right != currentZoom.right ||
+        _outermostZoom.bottom != currentZoom.bottom ||
+        _outermostZoom.top != currentZoom.top;
 }
 
 void SFMLFractal::Redraw()
@@ -414,7 +413,7 @@ void SFMLFractal::SetView(const Rect& view)
 {
     _fractal->StopRender();
     ResetMovement();
-    ApplyView(view);
+    ApplyView(PreciseRect(view));
     _fractal->MarkOrbitDirty();
     ClearImageCache();
     ResetZoomHistory();

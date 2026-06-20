@@ -56,6 +56,10 @@ protected:
     double _maxY;                    ///< Upper numeric limit of the fractal.
     double _xFactor;                 ///< Conversion factor numberX to pixelX.
     double _yFactor;                 ///< Conversion factor numberY to pixelY.
+    mutable PreciseRect _preciseView;
+    mutable HighPrecisionReal _preciseXFactor;
+    mutable HighPrecisionReal _preciseYFactor;
+    mutable bool _preciseViewInitialized;
     unsigned _maxIter;               ///< Maximum number of iterations.
     FormulaOptions _userFormula;         ///< Formula specified by the user.
 
@@ -144,6 +148,11 @@ protected:
 
     ///@brief Copies the current fractal state into a renderer before launch.
     void ConfigureRenderer(Renderer& renderer) const;
+    void EnsurePreciseViewInitialized() const;
+    void SyncDoubleViewFromPrecise();
+    void UpdatePreciseFactors();
+    [[nodiscard]] bool ShouldUseHighPrecision() const;
+    [[nodiscard]] bool OptionsPreciseViewMatchesDoubleView(const Options& opt) const;
 
     ///@brief Selects the pixel regions that need rendering for the current movement state.
     std::vector<RenderRegion> BuildRenderRegions() const;
@@ -186,6 +195,7 @@ public:
     ///@brief Sets the fractal render viewport.
     ///@param worldCoordinates Viewport in world coordinates.
     void SetView(const Rect& worldCoordinates);
+    void SetPreciseView(const PreciseRect& worldCoordinates);
 
     void Redraw();                     ///< Redraws the fractal.
 
@@ -194,15 +204,19 @@ public:
 
     ///@brief Gets the current world-coordinate view.
     Rect GetView() const;
+    PreciseRect GetPreciseView() const;
 
     ///@brief Converts a pixel rectangle into a world-coordinate view with the current aspect ratio.
     Rect GetViewForPixelRect(const sf::Rect<int>& pixelCoordinates) const;
+    PreciseRect GetPreciseViewForPixelRect(const sf::Rect<int>& pixelCoordinates) const;
 
     ///@brief Gets a view expanded around the current one.
     Rect GetExpandedView(double scale = 1.0) const;
+    PreciseRect GetPreciseExpandedView(double scale = 1.0) const;
 
     ///@brief Gets an aspect-correct view centered on a world-coordinate point.
     Rect GetCenteredView(double x, double y, double radius) const;
+    PreciseRect GetPreciseCenteredView(const HighPrecisionReal& x, const HighPrecisionReal& y, const HighPrecisionReal& radius) const;
 
     ///@brief Pans the current view by a pixel delta.
     void PanViewByPixels(int pixelDeltaX, int pixelDeltaY);

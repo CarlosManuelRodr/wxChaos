@@ -8,32 +8,33 @@ CellRenderer::CellRenderer()
     _bailout = 1.0;
 }
 
-template<class MeasurePoint>
-Renderer::Point CellRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
+template<class Real, class MeasurePoint>
+Renderer::Point CellRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
-    point.startRe = pixelRe;
-    point.startIm = pixelIm;
-    point.zRe = pixelRe;
-    point.zIm = pixelIm;
-    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+    point.startRe = ToDouble(pixelRe);
+    point.startIm = ToDouble(pixelIm);
+    point.zRe = point.startRe;
+    point.zIm = point.startIm;
+    measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    const complex<double> c(pixelRe, pixelIm);
-    complex<double> z = c;
-    complex<double> b = c - sin(c);
-    const double squaredBailout = _bailout * _bailout;
+    const PrecisionComplex<Real> c(pixelRe, pixelIm);
+    PrecisionComplex<Real> z = c;
+    PrecisionComplex<Real> b = c - ComplexSin(c);
+    const Real squaredBailout = Real(_bailout) * Real(_bailout);
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
-        point.zNorm = norm(z);
-        if (n > 0 && !escaped && point.zNorm > squaredBailout)
+        const Real currentNorm = ComplexNorm(z);
+        point.zNorm = ToDouble(currentNorm);
+        if (n > 0 && !escaped && currentNorm > squaredBailout)
         {
             escaped = true;
             point.insideSet = false;
             point.iterations = n;
-            point.escapedZRe = z.real();
-            point.escapedZIm = z.imag();
+            point.escapedZRe = ToDouble(z.re);
+            point.escapedZIm = ToDouble(z.im);
             point.escapedNorm = point.zNorm;
             measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, point.zNorm, 0.0, 0.0, true);
         }
@@ -45,9 +46,9 @@ Renderer::Point CellRenderer::TracePoint(const double pixelRe, const double pixe
         z = z * c + b / z;
         const bool wasInside = !escaped;
 
-        point.zRe = z.real();
-        point.zIm = z.imag();
-        point.zNorm = norm(z);
+        point.zRe = ToDouble(z.re);
+        point.zIm = ToDouble(z.im);
+        point.zNorm = ToDouble(ComplexNorm(z));
         measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
 
         if (!escaped)
@@ -59,7 +60,7 @@ Renderer::Point CellRenderer::TracePoint(const double pixelRe, const double pixe
 
 void CellRenderer::Render()
 {
-    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
         return TracePoint(pixelRe, pixelIm, measure);
     };

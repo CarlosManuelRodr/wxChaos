@@ -17,6 +17,9 @@ Renderer::Renderer() : _myOpt()
     _xFactor = 0.0;
     _yFactor = 0.0;
     _minX = _maxX = _minY = _maxY = _maxIter = 0.0;
+    _preciseXFactor = 0;
+    _preciseYFactor = 0;
+    _useHighPrecision = false;
     _kReal = _kImaginary = 0.0;
 }
 
@@ -46,6 +49,10 @@ void Renderer::SetOptions(const Options& opt)
     _minY = opt.minY;
     _maxY = opt.maxY;
     _maxIter = opt.maxIter;
+    _preciseView = opt.hasPreciseView ? opt.preciseView : PreciseRect(Rect(opt.minX, opt.minY, opt.maxX, opt.maxY));
+    _preciseXFactor = opt.preciseXFactor;
+    _preciseYFactor = opt.preciseYFactor;
+    _useHighPrecision = opt.useHighPrecision;
     _type = opt.type;
 }
 void Renderer::SetLimits(const int widthOrigin, const int heightOrigin, const int widthFinal, const int heightFinal)

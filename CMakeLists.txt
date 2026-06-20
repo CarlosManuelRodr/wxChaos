@@ -29,6 +29,8 @@ message(STATUS "wxWidgets libraries: ${wxWidgets_LIBRARIES}")
 
 include(${wxWidgets_USE_FILE})
 
+find_package(Boost REQUIRED)
+
 # -------------
 # AngelScript -
 # -------------
@@ -66,6 +68,7 @@ add_executable(wxChaos WIN32 ${SRC_FILES}
 # -------------------------------------------------------------------
 target_include_directories(wxChaos PRIVATE
         ${wxWidgets_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIRS}
         ${SFML_INCLUDE_DIRS}
         wxChaos/core
         wxChaos/gui

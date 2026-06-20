@@ -6,25 +6,26 @@ using namespace std;
 
 MagnetRenderer::MagnetRenderer() = default;
 
-template<class MeasurePoint>
-Renderer::Point MagnetRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
+template<class Real, class MeasurePoint>
+Renderer::Point MagnetRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
-    point.startRe = pixelRe;
-    point.startIm = pixelIm;
-    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+    point.startRe = ToDouble(pixelRe);
+    point.startIm = ToDouble(pixelIm);
+    measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    const complex<double> c(pixelRe, pixelIm);
-    complex<double> z(0.0, 0.0);
+    const PrecisionComplex<Real> c(pixelRe, pixelIm);
+    PrecisionComplex<Real> z(Real(0), Real(0));
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
-        point.zRe = z.real();
-        point.zIm = z.imag();
-        point.zNorm = norm(z);
+        const Real currentNorm = ComplexNorm(z);
+        point.zRe = ToDouble(z.re);
+        point.zIm = ToDouble(z.im);
+        point.zNorm = ToDouble(currentNorm);
 
-        if (!escaped && point.zNorm > _maxIter)
+        if (!escaped && currentNorm > Real(_maxIter))
         {
             escaped = true;
             point.insideSet = false;
@@ -38,12 +39,12 @@ Renderer::Point MagnetRenderer::TracePoint(const double pixelRe, const double pi
         if (escaped && !point.measureGaussianAfterEscape)
             break;
 
-        z = pow((pow(z, 2) + c - complex<double>(1.0, 0.0)) /
-                (complex<double>(2.0, 0.0) * z + c - complex<double>(2.0, 0.0)), 2.0);
+        z = ComplexPow((ComplexPow(z, 2) + c - PrecisionComplex<Real>(Real(1), Real(0))) /
+                       (Real(2) * z + c - PrecisionComplex<Real>(Real(2), Real(0))), 2);
 
-        point.zRe = z.real();
-        point.zIm = z.imag();
-        point.zNorm = norm(z);
+        point.zRe = ToDouble(z.re);
+        point.zIm = ToDouble(z.im);
+        point.zNorm = ToDouble(ComplexNorm(z));
         const bool wasInside = !escaped;
         measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
 
@@ -56,7 +57,7 @@ Renderer::Point MagnetRenderer::TracePoint(const double pixelRe, const double pi
 
 void MagnetRenderer::Render()
 {
-    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
         return TracePoint(pixelRe, pixelIm, measure);
     };

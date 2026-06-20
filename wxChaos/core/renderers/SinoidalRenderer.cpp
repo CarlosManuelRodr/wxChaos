@@ -5,45 +5,45 @@ using namespace std;
 
 SinoidalRenderer::SinoidalRenderer() = default;
 
-template<class MeasurePoint>
-Renderer::Point SinoidalRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
+template<class Real, class MeasurePoint>
+Renderer::Point SinoidalRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
-    point.startRe = pixelRe;
-    point.startIm = pixelIm;
-    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+    point.startRe = ToDouble(pixelRe);
+    point.startIm = ToDouble(pixelIm);
+    measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    const complex<double> constant(_kReal, _kImaginary);
-    complex<double> z(pixelRe, pixelIm);
+    const PrecisionComplex<Real> constant{Real(_kReal), Real(_kImaginary)};
+    PrecisionComplex<Real> z(pixelRe, pixelIm);
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
-        point.zNorm = z.real() * z.real() + z.imag() * z.imag();
-        if (!escaped && point.zNorm > _maxIter)
+        const Real currentNorm = ComplexNorm(z);
+        point.zNorm = ToDouble(currentNorm);
+        if (!escaped && currentNorm > Real(_maxIter))
         {
-            const double zNorm = point.zNorm;
             escaped = true;
             point.insideSet = false;
             point.iterations = n;
-            point.escapedZRe = z.real();
-            point.escapedZIm = z.imag();
-            point.escapedNorm = zNorm;
-            measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, zNorm, 0.0, 0.0, true);
+            point.escapedZRe = ToDouble(z.re);
+            point.escapedZIm = ToDouble(z.im);
+            point.escapedNorm = point.zNorm;
+            measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, point.zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && point.zNorm > _maxIter * _maxIter && !point.measureGaussianAfterEscape)
+        if (escaped && currentNorm > Real(_maxIter) * Real(_maxIter) && !point.measureGaussianAfterEscape)
             break;
 
-        const complex<double> transformedZ = constant * sin(z);
+        const PrecisionComplex<Real> transformedZ = constant * ComplexSin(z);
         z = transformedZ;
 
-        point.zRe = z.real();
-        point.zIm = z.imag();
-        point.zNorm = point.zRe * point.zRe + point.zIm * point.zIm;
+        point.zRe = ToDouble(z.re);
+        point.zIm = ToDouble(z.im);
+        point.zNorm = ToDouble(ComplexNorm(z));
         const bool wasInside = !escaped;
         measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
-                transformedZ.real(), transformedZ.imag(), wasInside);
+                ToDouble(transformedZ.re), ToDouble(transformedZ.im), wasInside);
 
         if (!escaped)
         {
@@ -56,7 +56,7 @@ Renderer::Point SinoidalRenderer::TracePoint(const double pixelRe, const double 
 
 void SinoidalRenderer::Render()
 {
-    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
         return TracePoint(pixelRe, pixelIm, measure);
     };

@@ -65,6 +65,9 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _maxY = _minY + (_maxX - _minX) * static_cast<double>(_screenHeight) / _screenWidth;
     _xFactor = (_maxX - _minX) / (_screenWidth - 1);
     _yFactor = (_maxY - _minY) / (_screenHeight - 1);
+    _preciseXFactor = 0;
+    _preciseYFactor = 0;
+    _preciseViewInitialized = false;
     _kReal = 0;
     _kImaginary = 0;
     _changeGradient = 0;
@@ -183,6 +186,56 @@ void Fractal::ConfigureRenderer(Renderer& renderer) const
     renderer.SetOptions(this->GetOptions());
     renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
     renderer.SetK(_kReal, _kImaginary);
+}
+void Fractal::EnsurePreciseViewInitialized() const
+{
+    if (_preciseViewInitialized)
+        return;
+
+    _preciseView = PreciseRect(Rect(_minX, _minY, _maxX, _maxY));
+    const HighPrecisionReal widthDivisor = _screenWidth > 1 ? HighPrecisionReal(_screenWidth - 1) : HighPrecisionReal(1);
+    const HighPrecisionReal heightDivisor = _screenHeight > 1 ? HighPrecisionReal(_screenHeight - 1) : HighPrecisionReal(1);
+    _preciseXFactor = (_preciseView.right - _preciseView.left) / widthDivisor;
+    _preciseYFactor = (_preciseView.top - _preciseView.bottom) / heightDivisor;
+    _preciseViewInitialized = true;
+}
+void Fractal::SyncDoubleViewFromPrecise()
+{
+    _minX = ToDouble(_preciseView.left);
+    _maxX = ToDouble(_preciseView.right);
+    _minY = ToDouble(_preciseView.bottom);
+    _maxY = ToDouble(_preciseView.top);
+    _xFactor = ToDouble(_preciseXFactor);
+    _yFactor = ToDouble(_preciseYFactor);
+}
+void Fractal::UpdatePreciseFactors()
+{
+    const HighPrecisionReal widthDivisor = _screenWidth > 1 ? HighPrecisionReal(_screenWidth - 1) : HighPrecisionReal(1);
+    const HighPrecisionReal heightDivisor = _screenHeight > 1 ? HighPrecisionReal(_screenHeight - 1) : HighPrecisionReal(1);
+    _preciseXFactor = (_preciseView.right - _preciseView.left) / widthDivisor;
+    _preciseYFactor = (_preciseView.top - _preciseView.bottom) / heightDivisor;
+    _preciseViewInitialized = true;
+}
+bool Fractal::ShouldUseHighPrecision() const
+{
+    EnsurePreciseViewInitialized();
+
+    if (_screenWidth <= 1 || _screenHeight <= 1)
+        return false;
+
+    const double left = ToDouble(_preciseView.left);
+    const double nextX = ToDouble(_preciseView.left + _preciseXFactor);
+    const double top = ToDouble(_preciseView.top);
+    const double nextY = ToDouble(_preciseView.top - _preciseYFactor);
+    return left == nextX || top == nextY || ToDouble(_preciseXFactor) == 0.0 || ToDouble(_preciseYFactor) == 0.0;
+}
+bool Fractal::OptionsPreciseViewMatchesDoubleView(const Options& opt) const
+{
+    return opt.hasPreciseView &&
+        ToDouble(opt.preciseView.left) == opt.minX &&
+        ToDouble(opt.preciseView.right) == opt.maxX &&
+        ToDouble(opt.preciseView.bottom) == opt.minY &&
+        ToDouble(opt.preciseView.top) == opt.maxY;
 }
 std::vector<RenderRegion> Fractal::BuildRenderRegions() const
 {
@@ -373,9 +426,11 @@ void Fractal::Resize(const unsigned int width, const unsigned int height)
         }
     }
 
-    _maxY = _minY + (_maxX - _minX) * static_cast<double>(_screenHeight) / _screenWidth;
-    _xFactor = (_maxX - _minX) / (_screenWidth - 1);
-    _yFactor = (_maxY - _minY) / (_screenHeight - 1);
+    EnsurePreciseViewInitialized();
+    _preciseView.top = _preciseView.bottom + (_preciseView.right - _preciseView.left) *
+        HighPrecisionReal(_screenHeight) / HighPrecisionReal(_screenWidth);
+    UpdatePreciseFactors();
+    SyncDoubleViewFromPrecise();
 
 }
 void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
@@ -405,14 +460,14 @@ void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
 }
 void Fractal::SetView(const Rect& worldCoordinates)
 {
-    _minX = worldCoordinates._left;
-    _maxX = worldCoordinates._right;
-    _minY = worldCoordinates._bottom;
-    _maxY = worldCoordinates._top;
+    SetPreciseView(PreciseRect(worldCoordinates));
+}
 
-    _xFactor = (_maxX - _minX) / (_screenWidth - 1);
-    _yFactor = (_maxY - _minY) / (_screenHeight - 1);
-
+void Fractal::SetPreciseView(const PreciseRect& worldCoordinates)
+{
+    _preciseView = worldCoordinates;
+    UpdatePreciseFactors();
+    SyncDoubleViewFromPrecise();
     _rendered = false;
     _rendering = false;
 
@@ -434,50 +489,76 @@ sf::Vector2u Fractal::GetScreenSize() const
 
 Rect Fractal::GetView() const
 {
-    return {_minX, _minY, _maxX, _maxY};
+    return GetPreciseView().ToRect();
+}
+
+PreciseRect Fractal::GetPreciseView() const
+{
+    EnsurePreciseViewInitialized();
+    return _preciseView;
 }
 
 Rect Fractal::GetViewForPixelRect(const sf::Rect<int>& pixelCoordinates) const
 {
-    const double xFactor = (_maxX - _minX) / _screenWidth;
-    const double yFactor = (_maxY - _minY) / _screenHeight;
+    return GetPreciseViewForPixelRect(pixelCoordinates).ToRect();
+}
 
-    Rect view;
-    view._right = _minX + (pixelCoordinates.left + pixelCoordinates.width) * xFactor;
-    view._left = _minX + pixelCoordinates.left * xFactor;
-    view._bottom = _maxY - (pixelCoordinates.top + pixelCoordinates.height) * yFactor;
-    view._top = view._bottom + (view._right - view._left) * static_cast<double>(_screenHeight) / _screenWidth;
+PreciseRect Fractal::GetPreciseViewForPixelRect(const sf::Rect<int>& pixelCoordinates) const
+{
+    EnsurePreciseViewInitialized();
+    const HighPrecisionReal xFactor = (_preciseView.right - _preciseView.left) / HighPrecisionReal(_screenWidth);
+    const HighPrecisionReal yFactor = (_preciseView.top - _preciseView.bottom) / HighPrecisionReal(_screenHeight);
+
+    PreciseRect view;
+    view.right = _preciseView.left + HighPrecisionReal(pixelCoordinates.left + pixelCoordinates.width) * xFactor;
+    view.left = _preciseView.left + HighPrecisionReal(pixelCoordinates.left) * xFactor;
+    view.bottom = _preciseView.top - HighPrecisionReal(pixelCoordinates.top + pixelCoordinates.height) * yFactor;
+    view.top = view.bottom + (view.right - view.left) * HighPrecisionReal(_screenHeight) / HighPrecisionReal(_screenWidth);
     return view;
 }
 
 Rect Fractal::GetExpandedView(const double scale) const
 {
-    Rect view = GetView();
-    const double scaleX = std::abs(view._right - view._left) * scale;
-    const double scaleY = std::abs(view._top - view._bottom) * scale;
+    return GetPreciseExpandedView(scale).ToRect();
+}
 
-    view._left -= scaleX;
-    view._right += scaleX;
-    view._bottom -= scaleY;
-    view._top = view._bottom + (view._right - view._left) * static_cast<double>(_screenHeight) / _screenWidth;
+PreciseRect Fractal::GetPreciseExpandedView(const double scale) const
+{
+    EnsurePreciseViewInitialized();
+    PreciseRect view = _preciseView;
+    const HighPrecisionReal scaleX = RealAbs(view.right - view.left) * HighPrecisionReal(scale);
+    const HighPrecisionReal scaleY = RealAbs(view.top - view.bottom) * HighPrecisionReal(scale);
+
+    view.left -= scaleX;
+    view.right += scaleX;
+    view.bottom -= scaleY;
+    view.top = view.bottom + (view.right - view.left) * HighPrecisionReal(_screenHeight) / HighPrecisionReal(_screenWidth);
     return view;
 }
 
 Rect Fractal::GetCenteredView(const double x, const double y, const double radius) const
 {
-    const double verticalRadius = radius * static_cast<double>(_screenHeight) / _screenWidth;
+    return GetPreciseCenteredView(HighPrecisionReal(x), HighPrecisionReal(y), HighPrecisionReal(radius)).ToRect();
+}
+
+PreciseRect Fractal::GetPreciseCenteredView(const HighPrecisionReal& x, const HighPrecisionReal& y, const HighPrecisionReal& radius) const
+{
+    const HighPrecisionReal verticalRadius = radius * HighPrecisionReal(_screenHeight) / HighPrecisionReal(_screenWidth);
     return {x - radius, y - verticalRadius, x + radius, y + verticalRadius};
 }
 
 void Fractal::PanViewByPixels(const int pixelDeltaX, const int pixelDeltaY)
 {
-    const double fx = (_maxX - _minX) / _screenWidth;
-    const double fy = (_maxY - _minY) / _screenHeight;
+    EnsurePreciseViewInitialized();
+    const HighPrecisionReal fx = (_preciseView.right - _preciseView.left) / HighPrecisionReal(_screenWidth);
+    const HighPrecisionReal fy = (_preciseView.top - _preciseView.bottom) / HighPrecisionReal(_screenHeight);
 
-    _minX -= pixelDeltaX * fx;
-    _maxX -= pixelDeltaX * fx;
-    _minY += pixelDeltaY * fy;
-    _maxY += pixelDeltaY * fy;
+    _preciseView.left -= HighPrecisionReal(pixelDeltaX) * fx;
+    _preciseView.right -= HighPrecisionReal(pixelDeltaX) * fx;
+    _preciseView.bottom += HighPrecisionReal(pixelDeltaY) * fy;
+    _preciseView.top += HighPrecisionReal(pixelDeltaY) * fy;
+    UpdatePreciseFactors();
+    SyncDoubleViewFromPrecise();
 }
 
 bool Fractal::IsRendered() const
@@ -908,31 +989,44 @@ void Fractal::CopyOptFromPanel() {}
 // Communication methods.
 double Fractal::GetX(const int pixelX) const
 {
-    return _minX + pixelX * _xFactor;
+    EnsurePreciseViewInitialized();
+    return ToDouble(_preciseView.left + HighPrecisionReal(pixelX) * _preciseXFactor);
 }
 double Fractal::GetY(const int pixelY) const
 {
-    return _maxY - pixelY * _yFactor;
+    EnsurePreciseViewInitialized();
+    return ToDouble(_preciseView.top - HighPrecisionReal(pixelY) * _preciseYFactor);
 }
 int Fractal::GetPixelX(const double xNum) const
 {
-    return static_cast<int>((xNum - _minX) / _xFactor);
+    EnsurePreciseViewInitialized();
+    return static_cast<int>(ToDouble((HighPrecisionReal(xNum) - _preciseView.left) / _preciseXFactor));
 }
 int Fractal::GetPixelY(const double yNum) const
 {
-    return static_cast<int>((_maxY - yNum) / _yFactor);
+    EnsurePreciseViewInitialized();
+    return static_cast<int>(ToDouble((_preciseView.top - HighPrecisionReal(yNum)) / _preciseYFactor));
 }
 void Fractal::SetOptions(const Options& opt, const bool keepSize)
 {
+    const bool usePreciseOptions = OptionsPreciseViewMatchesDoubleView(opt);
+
     if (!keepSize)
     {
         _minX = opt.minX;
         _maxX = opt.maxX;
         _minY = opt.minY;
         _maxY = opt.maxY;
+
+        _preciseView = usePreciseOptions ? opt.preciseView : PreciseRect(Rect(_minX, _minY, _maxX, _maxY));
     }
     else
+    {
+        EnsurePreciseViewInitialized();
         _maxY = _minY + (_maxX - _minX) * static_cast<double>(_screenHeight) / _screenWidth;
+        _preciseView.top = _preciseView.bottom + (_preciseView.right - _preciseView.left) *
+            HighPrecisionReal(_screenHeight) / HighPrecisionReal(_screenWidth);
+    }
 
     _maxIter = opt.maxIter;
     _panelOpt = opt.panelOpt;
@@ -957,13 +1051,14 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _colorMode = opt.colorMode;
     _justLaunchThreads = opt.justLaunchThreads;
 
-    _xFactor = (_maxX - _minX) / (_screenWidth - 1);
-    _yFactor = (_maxY - _minY) / (_screenHeight - 1);
+    UpdatePreciseFactors();
+    SyncDoubleViewFromPrecise();
 
     this->CopyOptFromPanel();
 }
 Options Fractal::GetOptions() const
 {
+    EnsurePreciseViewInitialized();
     Options opt;
 
     opt.minX = _minX;
@@ -995,6 +1090,11 @@ Options Fractal::GetOptions() const
 
     opt.screenWidth = _screenWidth;
     opt.screenHeight = _screenHeight;
+    opt.preciseView = _preciseView;
+    opt.preciseXFactor = _preciseXFactor;
+    opt.preciseYFactor = _preciseYFactor;
+    opt.hasPreciseView = true;
+    opt.useHighPrecision = ShouldUseHighPrecision();
 
     return opt;
 }

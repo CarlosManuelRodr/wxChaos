@@ -36,8 +36,8 @@ class SFMLFractal
     sf::Texture _geomTexture;              ///< Texture backing the geometry overlay.
     sf::Sprite _outGeom;                   ///< Sprite used to draw the geometry overlay.
     sf::RectangleShape _iterationsOverlay; ///< Background shape for the iteration-count overlay.
-    std::vector<Rect> _zoomHistory;        ///< World-coordinate views available for zoom-back.
-    Rect _outermostZoom;                   ///< Farthest world-coordinate view reached by zoom-back.
+    std::vector<PreciseRect> _zoomHistory; ///< World-coordinate views available for zoom-back.
+    PreciseRect _outermostZoom;            ///< Farthest world-coordinate view reached by zoom-back.
     bool _movement[4]{};                   ///< Active keyboard movement state.
     int _xVel;
     int _yVel;
@@ -76,10 +76,10 @@ class SFMLFractal
     void ResetMovement();
 
     ///@brief Returns the fractal's current world-coordinate view.
-    Rect CaptureCurrentView() const;
+    PreciseRect CaptureCurrentView() const;
 
     ///@brief Applies a world-coordinate view to the fractal.
-    void ApplyView(const Rect& view) const;
+    void ApplyView(const PreciseRect& view) const;
 
     ///@brief Saves the current view for zoom-back.
     void SaveZoom();

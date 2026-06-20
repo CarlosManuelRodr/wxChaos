@@ -10,8 +10,8 @@ class MandelbrotZNRenderer : public Renderer
     int _n;
     double _bailout;
 
-    template<class MeasurePoint>
-    Point TracePoint(double pixelRe, double pixelIm, MeasurePoint measure) const;
+    template<class Real, class MeasurePoint>
+    Point TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const;
 
 public:
     MandelbrotZNRenderer();

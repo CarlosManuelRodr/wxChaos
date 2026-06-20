@@ -71,6 +71,10 @@ protected:
     double _minY;
     double _maxY;
     double _maxIter;
+    PreciseRect _preciseView;
+    HighPrecisionReal _preciseXFactor;
+    HighPrecisionReal _preciseYFactor;
+    bool _useHighPrecision;
 
     double _kReal;
     double _kImaginary;
@@ -93,6 +97,8 @@ protected:
 
     template<class PixelRenderer>
     void RenderPixels(PixelRenderer pixelRenderer);
+    template<class PixelRenderer>
+    void RenderPixelsPrecise(PixelRenderer pixelRenderer);
     template<class TracePoint, class MeasurePoint>
     void RenderFromPoint(TracePoint tracePoint, unsigned int (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure);
     template<class TracePoint>
@@ -143,17 +149,35 @@ template<class PixelRenderer> void Renderer::RenderPixels(PixelRenderer pixelRen
     }
 }
 
+template<class PixelRenderer> void Renderer::RenderPixelsPrecise(PixelRenderer pixelRenderer)
+{
+    for (_y = _heightOrigin; _y < _heightFinal; _y++)
+    {
+        const HighPrecisionReal pixelIm = _preciseView.top - HighPrecisionReal(_y) * _preciseYFactor;
+        for (_x = _widthOrigin; _x < _widthFinal; _x++)
+        {
+            const HighPrecisionReal pixelRe = _preciseView.left + HighPrecisionReal(_x) * _preciseXFactor;
+            pixelRenderer(pixelRe, pixelIm);
+        }
+    }
+}
+
 template<class TracePoint, class MeasurePoint>
 void Renderer::RenderFromPoint(TracePoint tracePoint, unsigned int (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure)
 {
-    RenderPixels([this, tracePoint, colorPoint, measure](const double pixelRe, const double pixelIm)
+    const auto renderPixel = [this, tracePoint, colorPoint, measure](const auto& pixelRe, const auto& pixelIm)
     {
         const Point point = tracePoint(pixelRe, pixelIm, measure);
         if (point.insideSet)
             _setMap[_x][_y] = true;
 
         _colorMap[_x][_y] = (this->*colorPoint)(point);
-    });
+    };
+
+    if (_useHighPrecision)
+        RenderPixelsPrecise(renderPixel);
+    else
+        RenderPixels(renderPixel);
 }
 
 template<class TracePoint>

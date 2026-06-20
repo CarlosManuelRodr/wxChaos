@@ -4,45 +4,45 @@ using namespace std;
 
 JellyfishRenderer::JellyfishRenderer() = default;
 
-template<class MeasurePoint>
-Renderer::Point JellyfishRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
+template<class Real, class MeasurePoint>
+Renderer::Point JellyfishRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
-    point.startRe = pixelRe;
-    point.startIm = pixelIm;
-    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+    point.startRe = ToDouble(pixelRe);
+    point.startIm = ToDouble(pixelIm);
+    measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    const complex<double> constant(_kReal, _kImaginary);
-    complex<double> z(pixelRe, pixelIm);
+    const PrecisionComplex<Real> constant{Real(_kReal), Real(_kImaginary)};
+    PrecisionComplex<Real> z(pixelRe, pixelIm);
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
-        point.zNorm = z.real() * z.real() + z.imag() * z.imag();
-        if (n > 0 && !escaped && point.zNorm > 4)
+        const Real currentNorm = ComplexNorm(z);
+        point.zNorm = ToDouble(currentNorm);
+        if (n > 0 && !escaped && currentNorm > Real(4))
         {
-            const double zNorm = point.zNorm;
             escaped = true;
             point.insideSet = false;
             point.iterations = n;
-            point.escapedZRe = z.real();
-            point.escapedZIm = z.imag();
-            point.escapedNorm = zNorm;
-            measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, zNorm, 0.0, 0.0, true);
+            point.escapedZRe = ToDouble(z.re);
+            point.escapedZIm = ToDouble(z.im);
+            point.escapedNorm = point.zNorm;
+            measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, point.zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && point.zNorm > 16 && !point.measureGaussianAfterEscape)
+        if (escaped && currentNorm > Real(16) && !point.measureGaussianAfterEscape)
             break;
 
-        const complex<double> poweredZ = pow(z, 1.5);
+        const PrecisionComplex<Real> poweredZ = ComplexPow(z, 1.5);
         z = poweredZ + constant;
 
-        point.zRe = z.real();
-        point.zIm = z.imag();
-        point.zNorm = point.zRe * point.zRe + point.zIm * point.zIm;
+        point.zRe = ToDouble(z.re);
+        point.zIm = ToDouble(z.im);
+        point.zNorm = ToDouble(ComplexNorm(z));
         const bool wasInside = !escaped;
         measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
-                poweredZ.real(), poweredZ.imag(), wasInside);
+                ToDouble(poweredZ.re), ToDouble(poweredZ.im), wasInside);
 
         if (!escaped)
         {
@@ -55,7 +55,7 @@ Renderer::Point JellyfishRenderer::TracePoint(const double pixelRe, const double
 
 void JellyfishRenderer::Render()
 {
-    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
         return TracePoint(pixelRe, pixelIm, measure);
     };

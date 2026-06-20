@@ -8,37 +8,38 @@ MandelbrotZNRenderer::MandelbrotZNRenderer()
     _bailout = 0;
 }
 
-template<class MeasurePoint>
-Renderer::Point MandelbrotZNRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
+template<class Real, class MeasurePoint>
+Renderer::Point MandelbrotZNRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
-    point.startRe = pixelRe;
-    point.startIm = pixelIm;
-    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+    point.startRe = ToDouble(pixelRe);
+    point.startIm = ToDouble(pixelIm);
+    measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    const complex<double> c(pixelRe, pixelIm);
-    complex<double> z(0, 0);
-    const double squaredBail = _bailout * _bailout;
-    const double trapBailout = squaredBail * squaredBail;
+    const PrecisionComplex<Real> c(pixelRe, pixelIm);
+    PrecisionComplex<Real> z(Real(0), Real(0));
+    const Real squaredBail = Real(_bailout) * Real(_bailout);
+    const Real trapBailout = squaredBail * squaredBail;
     bool escaped = false;
 
     for (unsigned i = 0; i < _maxIter; i++)
     {
-        const complex<double> poweredZ = pow(z, _n);
+        const PrecisionComplex<Real> poweredZ = ComplexPow(z, _n);
         z = poweredZ + c;
 
-        point.zRe = z.real();
-        point.zIm = z.imag();
-        point.zNorm = point.zRe * point.zRe + point.zIm * point.zIm;
+        const Real zNorm = ComplexNorm(z);
+        point.zRe = ToDouble(z.re);
+        point.zIm = ToDouble(z.im);
+        point.zNorm = ToDouble(zNorm);
         const bool wasInside = !escaped;
         measure(point, PointTraceEvent::Iterated, i, point.zRe, point.zIm, point.zNorm,
-                poweredZ.real(), poweredZ.imag(), wasInside);
+                ToDouble(poweredZ.re), ToDouble(poweredZ.im), wasInside);
 
         if (!escaped)
         {
             point.iterations = i + 1;
 
-            if (point.zNorm > squaredBail)
+            if (zNorm > squaredBail)
             {
                 escaped = true;
                 point.insideSet = false;
@@ -50,7 +51,7 @@ Renderer::Point MandelbrotZNRenderer::TracePoint(const double pixelRe, const dou
             }
         }
 
-        if (escaped && point.zNorm > trapBailout && !point.measureGaussianAfterEscape)
+        if (escaped && zNorm > trapBailout && !point.measureGaussianAfterEscape)
             break;
     }
 
@@ -59,7 +60,7 @@ Renderer::Point MandelbrotZNRenderer::TracePoint(const double pixelRe, const dou
 
 void MandelbrotZNRenderer::Render()
 {
-    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
         return TracePoint(pixelRe, pixelIm, measure);
     };

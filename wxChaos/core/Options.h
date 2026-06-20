@@ -4,9 +4,12 @@
 #include "wx/PanelOptions.h"
 #include "types/RenderingAlgorithmType.h"
 #include "types/FractalType.h"
+#include "numeric/PreciseRect.h"
 
 struct Options
 {
+    Options();
+
     double minX;
     double maxX;
     double minY;
@@ -36,4 +39,35 @@ struct Options
 
     unsigned int screenHeight;
     unsigned int screenWidth;
+
+    PreciseRect preciseView;
+    HighPrecisionReal preciseXFactor;
+    HighPrecisionReal preciseYFactor;
+    bool hasPreciseView;
+    bool useHighPrecision;
 };
+
+inline Options::Options()
+{
+    minX = maxX = minY = maxY = 0.0;
+    xFactor = yFactor = 0.0;
+    maxIter = 0;
+    changeGradient = 0;
+    alg = RenderingAlgorithmType::Other;
+    type = FractalType::Undefined;
+    paletteSize = gradPaletteSize = 0;
+    kReal = kImaginary = 0.0;
+    orbitTrapMode = false;
+    colorSet = false;
+    colorMode = false;
+    buddhaMode = false;
+    smoothRender = false;
+    justLaunchThreads = false;
+    relativeColor = false;
+    fSetColor = sf::Color::Black;
+    screenHeight = screenWidth = 0;
+    preciseXFactor = 0;
+    preciseYFactor = 0;
+    hasPreciseView = false;
+    useHighPrecision = false;
+}

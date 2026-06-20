@@ -3,54 +3,55 @@ using namespace std;
 
 ManowarJuliaRenderer::ManowarJuliaRenderer() = default;
 
-template<class MeasurePoint>
-Renderer::Point ManowarJuliaRenderer::TracePoint(const double pixelRe, const double pixelIm, MeasurePoint measure) const
+template<class Real, class MeasurePoint>
+Renderer::Point ManowarJuliaRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
-    point.startRe = pixelRe;
-    point.startIm = pixelIm;
-    measure(point, PointTraceEvent::Started, 0, pixelRe, pixelIm, 0.0, 0.0, 0.0, true);
+    point.startRe = ToDouble(pixelRe);
+    point.startIm = ToDouble(pixelIm);
+    measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    double zRe = pixelRe;
-    double zIm = pixelIm;
-    double manRe = pixelRe;
-    double manIm = pixelIm;
+    Real zRe = pixelRe;
+    Real zIm = pixelIm;
+    Real manRe = pixelRe;
+    Real manIm = pixelIm;
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
-        point.zNorm = zRe * zRe + zIm * zIm;
-        if (n > 0 && !escaped && point.zNorm > 4)
+        const Real currentNorm = zRe * zRe + zIm * zIm;
+        point.zNorm = ToDouble(currentNorm);
+        if (n > 0 && !escaped && currentNorm > Real(4))
         {
-            const double zNorm = point.zNorm;
             escaped = true;
             point.insideSet = false;
             point.iterations = n;
-            point.escapedZRe = zRe;
-            point.escapedZIm = zIm;
-            point.escapedNorm = zNorm;
-            measure(point, PointTraceEvent::Escaped, n, zRe, zIm, zNorm, 0.0, 0.0, true);
+            point.escapedZRe = ToDouble(zRe);
+            point.escapedZIm = ToDouble(zIm);
+            point.escapedNorm = point.zNorm;
+            measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, point.zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && point.zNorm > 16 && !point.measureGaussianAfterEscape)
+        if (escaped && currentNorm > Real(16) && !point.measureGaussianAfterEscape)
             break;
 
-        const double zRe2 = zRe * zRe;
-        const double zIm2 = zIm * zIm;
-        const double tempRe = zRe;
-        const double tempIm = zIm;
+        const Real zRe2 = zRe * zRe;
+        const Real zIm2 = zIm * zIm;
+        const Real tempRe = zRe;
+        const Real tempIm = zIm;
 
-        zIm = 2.0 * zRe * zIm + _kImaginary + manIm;
-        zRe = zRe2 - zIm2 + _kReal + manRe;
+        zIm = Real(2) * zRe * zIm + Real(_kImaginary) + manIm;
+        zRe = zRe2 - zIm2 + Real(_kReal) + manRe;
         manRe = tempRe;
         manIm = tempIm;
-        const double zNorm = zRe * zRe + zIm * zIm;
+        const Real zNorm = zRe * zRe + zIm * zIm;
         const bool wasInside = !escaped;
 
-        point.zRe = zRe;
-        point.zIm = zIm;
-        point.zNorm = zNorm;
-        measure(point, PointTraceEvent::Iterated, n, zRe, zIm, zNorm, zRe2 - zIm2, 2.0 * tempRe * tempIm, wasInside);
+        point.zRe = ToDouble(zRe);
+        point.zIm = ToDouble(zIm);
+        point.zNorm = ToDouble(zNorm);
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
+                ToDouble(zRe2 - zIm2), ToDouble(Real(2) * tempRe * tempIm), wasInside);
 
         if (!escaped)
         {
@@ -63,7 +64,7 @@ Renderer::Point ManowarJuliaRenderer::TracePoint(const double pixelRe, const dou
 
 void ManowarJuliaRenderer::Render()
 {
-    const auto tracePoint = [this](const double pixelRe, const double pixelIm, auto measure)
+    const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
         return TracePoint(pixelRe, pixelIm, measure);
     };
