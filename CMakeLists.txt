@@ -29,7 +29,9 @@ message(STATUS "wxWidgets libraries: ${wxWidgets_LIBRARIES}")
 
 include(${wxWidgets_USE_FILE})
 
-find_package(Boost REQUIRED)
+find_path(MPFR_INCLUDE_DIR mpfr.h REQUIRED)
+find_library(MPFR_LIBRARY NAMES mpfr REQUIRED)
+find_library(GMP_LIBRARY NAMES gmp REQUIRED)
 
 # -------------
 # AngelScript -
@@ -68,7 +70,7 @@ add_executable(wxChaos WIN32 ${SRC_FILES}
 # -------------------------------------------------------------------
 target_include_directories(wxChaos PRIVATE
         ${wxWidgets_INCLUDE_DIRS}
-        ${Boost_INCLUDE_DIRS}
+        ${MPFR_INCLUDE_DIR}
         ${SFML_INCLUDE_DIRS}
         wxChaos/core
         wxChaos/gui
@@ -101,6 +103,8 @@ target_link_libraries(wxChaos PRIVATE
         sfml-system
         sfml-main
         angelscript
+        ${MPFR_LIBRARY}
+        ${GMP_LIBRARY}
         Threads::Threads          # pthreads
         winmm comctl32 rpcrt4 wsock32 opengl32
 )

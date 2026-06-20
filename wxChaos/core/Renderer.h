@@ -75,6 +75,7 @@ protected:
     HighPrecisionReal _preciseXFactor;
     HighPrecisionReal _preciseYFactor;
     bool _useHighPrecision;
+    unsigned int _highPrecisionBits;
 
     double _kReal;
     double _kImaginary;
@@ -151,14 +152,22 @@ template<class PixelRenderer> void Renderer::RenderPixels(PixelRenderer pixelRen
 
 template<class PixelRenderer> void Renderer::RenderPixelsPrecise(PixelRenderer pixelRenderer)
 {
+    HighPrecisionReal::PrecisionScope precision(_highPrecisionBits);
+    const HighPrecisionReal top = HighPrecisionReal::WithCurrentPrecision(_preciseView.top);
+    const HighPrecisionReal left = HighPrecisionReal::WithCurrentPrecision(_preciseView.left);
+    const HighPrecisionReal xFactor = HighPrecisionReal::WithCurrentPrecision(_preciseXFactor);
+    const HighPrecisionReal yFactor = HighPrecisionReal::WithCurrentPrecision(_preciseYFactor);
+    HighPrecisionReal pixelIm = top - HighPrecisionReal(_heightOrigin) * yFactor;
+
     for (_y = _heightOrigin; _y < _heightFinal; _y++)
     {
-        const HighPrecisionReal pixelIm = _preciseView.top - HighPrecisionReal(_y) * _preciseYFactor;
+        HighPrecisionReal pixelRe = left + HighPrecisionReal(_widthOrigin) * xFactor;
         for (_x = _widthOrigin; _x < _widthFinal; _x++)
         {
-            const HighPrecisionReal pixelRe = _preciseView.left + HighPrecisionReal(_x) * _preciseXFactor;
             pixelRenderer(pixelRe, pixelIm);
+            pixelRe += xFactor;
         }
+        pixelIm -= yFactor;
     }
 }
 

@@ -152,6 +152,7 @@ protected:
     void SyncDoubleViewFromPrecise();
     void UpdatePreciseFactors();
     [[nodiscard]] bool ShouldUseHighPrecision() const;
+    [[nodiscard]] unsigned int EstimateRequiredPrecisionBits() const;
     [[nodiscard]] bool OptionsPreciseViewMatchesDoubleView(const Options& opt) const;
 
     ///@brief Selects the pixel regions that need rendering for the current movement state.
@@ -369,8 +370,11 @@ public:
     ///@return a Options struct with the fractal options.
     Options GetOptions() const;
 
-    ///@brief Returns true when the current view will render through the multiprecision path.
+    ///@brief Returns true when the current view will render through the MPFR path.
     bool IsHighPrecisionRenderActive() const;
+
+    ///@brief Returns the selected MPFR precision for the current view, or 0 for double rendering.
+    unsigned int GetHighPrecisionRenderBits() const;
 
     ///@brief Forces the fractal to acquire a "rendered" status.
     void SetRendered(bool mode);

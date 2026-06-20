@@ -601,7 +601,11 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     }
 
     if (_target->IsHighPrecisionRenderActive())
-        text += wxT("   Multiprecision: active");
+    {
+        text += wxT("   MPFR: ");
+        text += wxString::Format(wxT("%u"), _target->GetHighPrecisionRenderBits());
+        text += wxT("-bit");
+    }
 
     wxCommandEvent statusEvent(wxEVT_FRACTAL_CANVAS_STATUS_TEXT);
     statusEvent.SetEventObject(this);

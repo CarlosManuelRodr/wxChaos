@@ -2,9 +2,295 @@
 
 #include <cmath>
 #include <type_traits>
-#include <boost/multiprecision/cpp_dec_float.hpp>
+#include <mpfr.h>
 
-using HighPrecisionReal = boost::multiprecision::cpp_dec_float_100;
+class HighPrecisionReal
+{
+public:
+    class PrecisionScope
+    {
+    public:
+        explicit PrecisionScope(const unsigned int precisionBits)
+            : _previousPrecision(GetDefaultPrecision())
+        {
+            SetDefaultPrecision(precisionBits);
+        }
+
+        ~PrecisionScope()
+        {
+            SetDefaultPrecision(_previousPrecision);
+        }
+
+        PrecisionScope(const PrecisionScope&) = delete;
+        PrecisionScope& operator=(const PrecisionScope&) = delete;
+
+    private:
+        mpfr_prec_t _previousPrecision;
+    };
+
+    HighPrecisionReal()
+    {
+        mpfr_init2(_value, GetDefaultPrecision());
+        mpfr_set_zero(_value, 0);
+    }
+
+    HighPrecisionReal(const int value)
+    {
+        mpfr_init2(_value, GetDefaultPrecision());
+        mpfr_set_si(_value, value, kRoundingMode);
+    }
+
+    HighPrecisionReal(const unsigned int value)
+    {
+        mpfr_init2(_value, GetDefaultPrecision());
+        mpfr_set_ui(_value, value, kRoundingMode);
+    }
+
+    HighPrecisionReal(const double value)
+    {
+        mpfr_init2(_value, GetDefaultPrecision());
+        mpfr_set_d(_value, value, kRoundingMode);
+    }
+
+    HighPrecisionReal(const HighPrecisionReal& other)
+    {
+        mpfr_init2(_value, mpfr_get_prec(other._value));
+        mpfr_set(_value, other._value, kRoundingMode);
+    }
+
+    HighPrecisionReal(HighPrecisionReal&& other) noexcept
+    {
+        mpfr_init2(_value, mpfr_get_prec(other._value));
+        mpfr_swap(_value, other._value);
+    }
+
+    ~HighPrecisionReal()
+    {
+        mpfr_clear(_value);
+    }
+
+    HighPrecisionReal& operator=(const HighPrecisionReal& other)
+    {
+        if (this == &other)
+            return *this;
+
+        mpfr_set_prec(_value, mpfr_get_prec(other._value));
+        mpfr_set(_value, other._value, kRoundingMode);
+        return *this;
+    }
+
+    HighPrecisionReal& operator=(HighPrecisionReal&& other) noexcept
+    {
+        if (this == &other)
+            return *this;
+
+        mpfr_swap(_value, other._value);
+        return *this;
+    }
+
+    HighPrecisionReal& operator=(const int value)
+    {
+        mpfr_set_si(_value, value, kRoundingMode);
+        return *this;
+    }
+
+    HighPrecisionReal& operator=(const unsigned int value)
+    {
+        mpfr_set_ui(_value, value, kRoundingMode);
+        return *this;
+    }
+
+    HighPrecisionReal& operator=(const double value)
+    {
+        mpfr_set_d(_value, value, kRoundingMode);
+        return *this;
+    }
+
+    [[nodiscard]] double ToDouble() const
+    {
+        return mpfr_get_d(_value, kRoundingMode);
+    }
+
+    [[nodiscard]] mpfr_prec_t GetPrecision() const
+    {
+        return mpfr_get_prec(_value);
+    }
+
+    [[nodiscard]] static HighPrecisionReal WithCurrentPrecision(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_set(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+    static void SetDefaultPrecision(const unsigned int precisionBits)
+    {
+        _defaultPrecision = precisionBits < MPFR_PREC_MIN ? MPFR_PREC_MIN : precisionBits;
+    }
+
+    [[nodiscard]] static mpfr_prec_t GetDefaultPrecision()
+    {
+        return _defaultPrecision;
+    }
+
+    HighPrecisionReal& operator+=(const HighPrecisionReal& right)
+    {
+        mpfr_add(_value, _value, right._value, kRoundingMode);
+        return *this;
+    }
+
+    HighPrecisionReal& operator-=(const HighPrecisionReal& right)
+    {
+        mpfr_sub(_value, _value, right._value, kRoundingMode);
+        return *this;
+    }
+
+    HighPrecisionReal& operator*=(const HighPrecisionReal& right)
+    {
+        mpfr_mul(_value, _value, right._value, kRoundingMode);
+        return *this;
+    }
+
+    HighPrecisionReal& operator/=(const HighPrecisionReal& right)
+    {
+        mpfr_div(_value, _value, right._value, kRoundingMode);
+        return *this;
+    }
+
+    friend HighPrecisionReal operator+(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        HighPrecisionReal result;
+        mpfr_add(result._value, left._value, right._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal operator-(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        HighPrecisionReal result;
+        mpfr_sub(result._value, left._value, right._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal operator*(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        HighPrecisionReal result;
+        mpfr_mul(result._value, left._value, right._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal operator/(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        HighPrecisionReal result;
+        mpfr_div(result._value, left._value, right._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal operator-(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_neg(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+    friend bool operator<(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        return mpfr_less_p(left._value, right._value) != 0;
+    }
+
+    friend bool operator<=(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        return mpfr_lessequal_p(left._value, right._value) != 0;
+    }
+
+    friend bool operator>(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        return mpfr_greater_p(left._value, right._value) != 0;
+    }
+
+    friend bool operator>=(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        return mpfr_greaterequal_p(left._value, right._value) != 0;
+    }
+
+    friend bool operator==(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        return mpfr_equal_p(left._value, right._value) != 0;
+    }
+
+    friend bool operator!=(const HighPrecisionReal& left, const HighPrecisionReal& right)
+    {
+        return !(left == right);
+    }
+
+    friend HighPrecisionReal abs(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_abs(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal sqrt(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_sqrt(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal sin(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_sin(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal cos(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_cos(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal sinh(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_sinh(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal cosh(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_cosh(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal atan2(const HighPrecisionReal& y, const HighPrecisionReal& x)
+    {
+        HighPrecisionReal result;
+        mpfr_atan2(result._value, y._value, x._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal pow(const HighPrecisionReal& base, const HighPrecisionReal& exponent)
+    {
+        HighPrecisionReal result;
+        mpfr_pow(result._value, base._value, exponent._value, kRoundingMode);
+        return result;
+    }
+
+    friend HighPrecisionReal log(const HighPrecisionReal& value)
+    {
+        HighPrecisionReal result;
+        mpfr_log(result._value, value._value, kRoundingMode);
+        return result;
+    }
+
+private:
+    static constexpr mpfr_rnd_t kRoundingMode = MPFR_RNDN;
+    inline static thread_local mpfr_prec_t _defaultPrecision = 1024;
+
+    mpfr_t _value;
+};
 
 template<class Real>
 double ToDouble(const Real& value)
@@ -12,10 +298,7 @@ double ToDouble(const Real& value)
     if constexpr (std::is_same_v<Real, double>)
         return value;
     else
-    {
-        const HighPrecisionReal evaluated(value);
-        return evaluated.convert_to<double>();
-    }
+        return value.ToDouble();
 }
 
 template<class Real>

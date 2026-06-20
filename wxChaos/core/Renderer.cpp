@@ -20,6 +20,7 @@ Renderer::Renderer() : _myOpt()
     _preciseXFactor = 0;
     _preciseYFactor = 0;
     _useHighPrecision = false;
+    _highPrecisionBits = 0;
     _kReal = _kImaginary = 0.0;
 }
 
@@ -53,6 +54,7 @@ void Renderer::SetOptions(const Options& opt)
     _preciseXFactor = opt.preciseXFactor;
     _preciseYFactor = opt.preciseYFactor;
     _useHighPrecision = opt.useHighPrecision;
+    _highPrecisionBits = opt.highPrecisionBits;
     _type = opt.type;
 }
 void Renderer::SetLimits(const int widthOrigin, const int heightOrigin, const int widthFinal, const int heightFinal)

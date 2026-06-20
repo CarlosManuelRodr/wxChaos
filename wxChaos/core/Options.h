@@ -45,6 +45,7 @@ struct Options
     HighPrecisionReal preciseYFactor;
     bool hasPreciseView;
     bool useHighPrecision;
+    unsigned int highPrecisionBits;
 };
 
 inline Options::Options()
@@ -70,4 +71,5 @@ inline Options::Options()
     preciseYFactor = 0;
     hasPreciseView = false;
     useHighPrecision = false;
+    highPrecisionBits = 0;
 }

@@ -1,5 +1,6 @@
 #include <complex>
 #include <algorithm>
+#include <limits>
 #include <utility>
 #include "Fractal.h"
 #include "FractalHandler.h"
@@ -218,16 +219,40 @@ void Fractal::UpdatePreciseFactors()
 }
 bool Fractal::ShouldUseHighPrecision() const
 {
+    return EstimateRequiredPrecisionBits() > 53;
+}
+unsigned int Fractal::EstimateRequiredPrecisionBits() const
+{
     EnsurePreciseViewInitialized();
 
     if (_screenWidth <= 1 || _screenHeight <= 1)
-        return false;
+        return 0;
 
-    const double left = ToDouble(_preciseView.left);
-    const double nextX = ToDouble(_preciseView.left + _preciseXFactor);
-    const double top = ToDouble(_preciseView.top);
-    const double nextY = ToDouble(_preciseView.top - _preciseYFactor);
-    return left == nextX || top == nextY || ToDouble(_preciseXFactor) == 0.0 || ToDouble(_preciseYFactor) == 0.0;
+    using std::ceil;
+    using std::log;
+    using std::max;
+
+    const HighPrecisionReal minStep = std::min(HighPrecisionReal(RealAbs(_preciseXFactor)),
+                                               HighPrecisionReal(RealAbs(_preciseYFactor)));
+    if (minStep <= 0)
+        return 1024;
+
+    const HighPrecisionReal coordinateScale = std::max(
+        HighPrecisionReal(1),
+        std::max(std::max(HighPrecisionReal(RealAbs(_preciseView.left)), HighPrecisionReal(RealAbs(_preciseView.right))),
+                 std::max(HighPrecisionReal(RealAbs(_preciseView.bottom)), HighPrecisionReal(RealAbs(_preciseView.top)))));
+    const HighPrecisionReal precisionRatio = coordinateScale / minStep;
+    if (precisionRatio <= 0)
+        return 0;
+
+    const HighPrecisionReal log2Ratio = log(precisionRatio) / log(HighPrecisionReal(2));
+    const double requiredBits = ceil(ToDouble(log2Ratio)) + 8.0;
+    if (requiredBits <= 0.0)
+        return 0;
+    if (requiredBits >= static_cast<double>(std::numeric_limits<unsigned int>::max()))
+        return std::numeric_limits<unsigned int>::max();
+
+    return static_cast<unsigned int>(requiredBits);
 }
 bool Fractal::OptionsPreciseViewMatchesDoubleView(const Options& opt) const
 {
@@ -1094,13 +1119,19 @@ Options Fractal::GetOptions() const
     opt.preciseXFactor = _preciseXFactor;
     opt.preciseYFactor = _preciseYFactor;
     opt.hasPreciseView = true;
-    opt.useHighPrecision = ShouldUseHighPrecision();
+    opt.highPrecisionBits = EstimateRequiredPrecisionBits();
+    opt.useHighPrecision = opt.highPrecisionBits > 53;
 
     return opt;
 }
 bool Fractal::IsHighPrecisionRenderActive() const
 {
     return ShouldUseHighPrecision();
+}
+unsigned int Fractal::GetHighPrecisionRenderBits() const
+{
+    const unsigned int precisionBits = EstimateRequiredPrecisionBits();
+    return precisionBits > 53 ? precisionBits : 0;
 }
 void Fractal::SetRendered(const bool mode)
 {
