@@ -369,6 +369,9 @@ public:
     ///@return a Options struct with the fractal options.
     Options GetOptions() const;
 
+    ///@brief Returns true when the current view will render through the multiprecision path.
+    bool IsHighPrecisionRenderActive() const;
+
     ///@brief Forces the fractal to acquire a "rendered" status.
     void SetRendered(bool mode);
 

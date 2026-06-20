@@ -1098,6 +1098,10 @@ Options Fractal::GetOptions() const
 
     return opt;
 }
+bool Fractal::IsHighPrecisionRenderActive() const
+{
+    return ShouldUseHighPrecision();
+}
 void Fractal::SetRendered(const bool mode)
 {
     _rendered = mode;

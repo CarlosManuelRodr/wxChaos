@@ -599,6 +599,10 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
         text += wxT("   Imaginary: ");
         text += TextUtils::ToWxString(_target->GetY(event.GetPosition().y));
     }
+
+    if (_target->IsHighPrecisionRenderActive())
+        text += wxT("   Multiprecision: active");
+
     wxCommandEvent statusEvent(wxEVT_FRACTAL_CANVAS_STATUS_TEXT);
     statusEvent.SetEventObject(this);
     statusEvent.SetString(text);
