@@ -96,6 +96,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     this->Bind(wxEVT_RIGHT_DOWN, &FractalCanvas::OnClick, this);
     this->Bind(wxEVT_LEFT_UP, &FractalCanvas::OnReleaseClick, this);
     this->Bind(wxEVT_RIGHT_UP, &FractalCanvas::OnReleaseClick, this);
+    this->Bind(wxEVT_MOUSEWHEEL, &FractalCanvas::OnMouseWheel, this);
     this->Bind(wxEVT_SIZE, &FractalCanvas::OnResize, this);
     this->Bind(wxEVT_KEY_DOWN, &FractalCanvas::OnKeyDown, this);
     this->Bind(wxEVT_KEY_UP, &FractalCanvas::OnKeyUp, this);
@@ -194,11 +195,11 @@ void FractalCanvas::UpdateRenderingOverlay()
 void FractalCanvas::DrawLoadingSpinner(sf::RenderWindow* window)
 {
     constexpr int dotCount = 12;
-    constexpr float pi = 3.14159265358979323846F;
-    constexpr float dotRadius = 2.2F;
 
     for (int i = 0; i < dotCount; ++i)
     {
+        constexpr float dotRadius = 2.2F;
+        constexpr float pi = 3.14159265358979323846F;
         const int age = (i + static_cast<int>(_spinnerFrame)) % dotCount;
         const auto alpha = static_cast<sf::Uint8>(55 + age * 16);
         const float angle = 2.0F * pi * static_cast<float>(i) / static_cast<float>(dotCount);
@@ -293,6 +294,25 @@ void FractalCanvas::EmitStatusText() const
     statusEvent.SetEventObject(const_cast<FractalCanvas*>(this));
     statusEvent.SetString(BuildStatusText());
     GetParent()->GetEventHandler()->ProcessEvent(statusEvent);
+}
+
+void FractalCanvas::ZoomAtMousePosition(const wxPoint& position) const
+{
+    constexpr double zoomScale = 0.75;
+
+    const sf::Vector2u screenSize = _target->GetScreenSize();
+    const auto screenWidth = static_cast<int>(screenSize.x);
+    const auto screenHeight = static_cast<int>(screenSize.y);
+
+    if (screenWidth <= 0 || screenHeight <= 0)
+        return;
+
+    const int zoomWidth = std::max(1, static_cast<int>(std::round(static_cast<double>(screenWidth) * zoomScale)));
+    const int zoomHeight = std::max(1, static_cast<int>(std::round(static_cast<double>(screenHeight) * zoomScale)));
+    const int left = std::clamp(position.x - zoomWidth / 2, 0, screenWidth - zoomWidth);
+    const int top = std::clamp(position.y - zoomHeight / 2, 0, screenHeight - zoomHeight);
+
+    _sfmlFractal->SetAreaOfView(sf::IntRect(left, top, zoomWidth, zoomHeight));
 }
 
 void FractalCanvas::OnUpdate()
@@ -748,6 +768,23 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
         }
     }
 }
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
+{
+    if (_target->IsRendering() || _sfmlFractal->IsMoving())
+    {
+        event.Skip();
+        return;
+    }
+
+    const int rotation = event.GetWheelRotation();
+    if (rotation > 0)
+        ZoomAtMousePosition(event.GetPosition());
+    else if (rotation < 0)
+        _sfmlFractal->ZoomBack();
+}
+
 void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 {
     // Selection event.

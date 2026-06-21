@@ -86,11 +86,12 @@ class FractalCanvas : public wxSFMLCanvas
     void EnsureFontLoaded();
     void UpdateIterationsOverlay();
     void UpdateRenderingOverlay();
-    void DrawRenderingOverlay(sf::RenderWindow* window);
-    void DrawLoadingSpinner(sf::RenderWindow* window);
-    void DrawIterationsOverlay(sf::RenderWindow* window);
+    void DrawRenderingOverlay(RenderWindow* window);
+    void DrawLoadingSpinner(RenderWindow* window);
+    void DrawIterationsOverlay(RenderWindow* window);
     wxString BuildStatusText() const;
     void EmitStatusText() const;
+    void ZoomAtMousePosition(const wxPoint& position) const;
     static wxString FormatStatusCoordinate(double value);
 
 public:
@@ -185,6 +186,7 @@ public:
 
     void OnClick(wxMouseEvent& event);
     void OnReleaseClick(wxMouseEvent& event);
+    void OnMouseWheel(wxMouseEvent& event);
 
     ///@brief Resizes the frame.
     void OnResize(wxSizeEvent& event);
