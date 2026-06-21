@@ -3,3 +3,5 @@
 Improvements:
 - wxWidgets and Angelscript should be imported from Vcpkg.
 - muParserX should be imported as a submodule to benefit from the latest bug fixes.
+- There is an update of https://wxmathplot.sourceforge.io/ that should be used instead of the old one. Since the author
+  doesn't use git I will have to keep downloading it manually and add it to third_party.
