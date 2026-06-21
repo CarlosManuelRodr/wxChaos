@@ -160,4 +160,39 @@ if(BUILD_TESTING)
     endif()
 
     add_test(NAME wxChaosCoreTests COMMAND wxChaosCoreTests)
+
+    add_executable(wxChaosGuiTests
+            tests/GuiTestsMain.cpp
+            tests/GuiPanelOptionsTests.cpp
+            tests/SelectionRectTests.cpp
+            tests/WxGradientTests.cpp
+            wxChaos/gui/sfml/SelectionRect.cpp
+            wxChaos/gui/wx/PanelOptions.cpp
+            wxChaos/gui/wx/wxGradient.cpp
+    )
+
+    target_include_directories(wxChaosGuiTests PRIVATE
+            ${wxWidgets_INCLUDE_DIRS}
+            ${SFML_INCLUDE_DIRS}
+            wxChaos/core
+            wxChaos/gui
+            wxChaos/gui/wx
+    )
+
+    target_link_libraries(wxChaosGuiTests PRIVATE
+            doctest::doctest
+            ${wxWidgets_LIBRARIES}
+            sfml-graphics
+            sfml-window
+            sfml-system
+    )
+
+    target_compile_definitions(wxChaosGuiTests PRIVATE
+            SFML_STATIC
+            WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
+            $<$<CONFIG:Debug>:__WXDEBUG__>
+            _HAS_STD_BYTE=0
+    )
+
+    add_test(NAME wxChaosGuiTests COMMAND wxChaosGuiTests)
 endif()
