@@ -29,6 +29,8 @@ message(STATUS "wxWidgets libraries: ${wxWidgets_LIBRARIES}")
 
 include(${wxWidgets_USE_FILE})
 
+find_package(doctest CONFIG REQUIRED)
+
 find_path(MPFR_INCLUDE_DIR mpfr.h REQUIRED)
 find_library(MPFR_LIBRARY NAMES mpfr REQUIRED)
 find_library(GMP_LIBRARY NAMES gmp REQUIRED)
@@ -132,3 +134,30 @@ add_custom_command(
         "$<TARGET_FILE_DIR:wxChaos>/"
         COMMENT "Copying application resources..."
 )
+
+include(CTest)
+
+if(BUILD_TESTING)
+    add_executable(wxChaosCoreTests
+            tests/CoreTestsMain.cpp
+            tests/FractalUtilitiesTests.cpp
+            tests/GeometryTests.cpp
+            tests/RenderingTests.cpp
+            wxChaos/core/geometry/Rect.cpp
+            wxChaos/core/geometry/Vector2Double.cpp
+            wxChaos/core/rendering/RenderJob.cpp
+            wxChaos/core/rendering/RenderRegion.cpp
+    )
+
+    target_include_directories(wxChaosCoreTests PRIVATE
+            wxChaos/core
+    )
+
+    target_link_libraries(wxChaosCoreTests PRIVATE doctest::doctest)
+
+    if(MSVC)
+        target_compile_definitions(wxChaosCoreTests PRIVATE _HAS_STD_BYTE=0)
+    endif()
+
+    add_test(NAME wxChaosCoreTests COMMAND wxChaosCoreTests)
+endif()
