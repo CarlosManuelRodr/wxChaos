@@ -1,5 +1,8 @@
 - Zoom recorder is not performing the zoom at the depth level that the user has zoomed in to.
 
+TODO:
+- Remove stupid way of handling the cycle color length at SettingsFrame. Should be a centralized way to get color defaults.
+
 Improvements:
 - Implement zooming with the mouse wheel.
 - Implement render passes. This will make it possible to zoom faster.

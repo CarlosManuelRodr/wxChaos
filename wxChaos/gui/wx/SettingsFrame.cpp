@@ -303,7 +303,7 @@ void SettingsFrame::ApplyColorStyle(const ColorPaletteTypes style)
     ColorPalette palette;
     palette.SetStyle(style);
     _paletteSize->SetValue(palette.paletteSize);
-    if (style == ClassicMandelbrot)
+    if (style == ClassicMandelbrot) // TODO: This is a temporary fix until we have a better way to handle color cycle length
         _colorCycleLength->SetValue(72);
     _gradient = wxGradient();
     _gradient.SetMin(0);
