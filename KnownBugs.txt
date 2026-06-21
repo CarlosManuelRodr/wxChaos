@@ -1,1 +1,4 @@
 - Zoom recorder is not performing the zoom at the depth level that the user has zoomed in to.
+
+Improvements:
+- wxWidgets and Angelscript should be imported from Vcpkg.
