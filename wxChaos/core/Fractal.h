@@ -65,7 +65,7 @@ protected:
     FormulaOptions _userFormula;         ///< Formula specified by the user.
 
     // System.
-    unsigned int _threadNumber;      ///< Number of threads. By default, is the same as the number of cores in the system.
+    unsigned int _threadNumber;      ///< Number of threads. By default, it is the same as the number of cores in the system.
 
     // Julia variables.
     double _kReal;
@@ -98,7 +98,7 @@ protected:
     bool _rendering;
     bool _paused;
     bool _pausing;
-    bool _varGradient;                      ///< If this is activated (by the play button) the gradient variation mode starts.
+    bool _varGradient;                      ///< If this is activated (by the play button), the gradient variation mode starts.
     bool _onSnapshot;
     bool _waitRoutine;
     bool _redrawAll;
@@ -154,12 +154,12 @@ protected:
     void ConfigureRenderer(Renderer& renderer) const;
     void EnsurePreciseViewInitialized() const;
     void SyncDoubleViewFromPrecise();
-    void UpdatePreciseFactors();
+    void UpdatePreciseFactors() const;
+    void NotifyPrecisionStatusIfChanged();
     [[nodiscard]] bool SupportsHighPrecisionRender() const;
     [[nodiscard]] bool ShouldUseHighPrecision() const;
     [[nodiscard]] unsigned int EstimateRequiredPrecisionBits() const;
-    void NotifyPrecisionStatusIfChanged();
-    [[nodiscard]] bool OptionsPreciseViewMatchesDoubleView(const Options& opt) const;
+    [[nodiscard]] static bool OptionsPreciseViewMatchesDoubleView(const Options& opt) ;
 
     ///@brief Selects the pixel regions that need rendering for the current movement state.
     std::vector<RenderRegion> BuildRenderRegions() const;
@@ -246,7 +246,7 @@ public:
     ///@brief Clears active render and pause presentation state.
     void MarkRenderInterrupted();
 
-    ///@brief Marks an aborted render as visible but requiring a full redraw next time.
+    ///@brief Marks an aborted render as visible but requiring a full redrawing next time.
     void MarkRenderAborted();
 
     ///@brief Resumes from a paused pan by clearing pause and render flags.
@@ -373,7 +373,7 @@ public:
     void SetOptions(const Options& opt, bool keepSize = false);
 
     ///@brief Gets fractal options.
-    ///@return a Options struct with the fractal options.
+    ///@return An Options struct with the fractal options.
     Options GetOptions() const;
 
     ///@brief Returns true when the current view will render through the MPFR path.

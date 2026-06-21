@@ -49,7 +49,7 @@ public:
     [[nodiscard]] bool ThreadRunning() const;
 
     ///@brief Ask the RenderFractal the render progress.
-    ///@return A integer from 0 to 100 that is the progress.
+    ///@return An integer from 0 to 100 that is the progress.
     int GetThreadProgress();
 
     ///@brief Get the thread in the specified index.

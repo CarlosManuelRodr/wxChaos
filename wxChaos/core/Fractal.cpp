@@ -211,7 +211,7 @@ void Fractal::SyncDoubleViewFromPrecise()
     _xFactor = ToDouble(_preciseXFactor);
     _yFactor = ToDouble(_preciseYFactor);
 }
-void Fractal::UpdatePreciseFactors()
+void Fractal::UpdatePreciseFactors() const
 {
     const HighPrecisionReal widthDivisor = _screenWidth > 1 ? HighPrecisionReal(_screenWidth - 1) : HighPrecisionReal(1);
     const HighPrecisionReal heightDivisor = _screenHeight > 1 ? HighPrecisionReal(_screenHeight - 1) : HighPrecisionReal(1);
@@ -299,7 +299,7 @@ void Fractal::NotifyPrecisionStatusIfChanged()
     if (_precisionStatusChanged)
         _precisionStatusChanged(active, precisionBits);
 }
-bool Fractal::OptionsPreciseViewMatchesDoubleView(const Options& opt) const
+bool Fractal::OptionsPreciseViewMatchesDoubleView(const Options& opt)
 {
     return opt.hasPreciseView &&
         ToDouble(opt.preciseView.left) == opt.minX &&

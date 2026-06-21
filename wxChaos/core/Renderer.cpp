@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include "FractalUtilities.h"
 
-Renderer::Renderer() : _myOpt()
+Renderer::Renderer()
 {
     _setMap = nullptr;
     _colorMap = nullptr;

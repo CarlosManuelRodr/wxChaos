@@ -110,7 +110,7 @@ void FractalCanvas::CreateScriptFractal(const ScriptData& scriptData)
     _fractalHandler.CreateScriptFractal(size.x, size.y, scriptData);
 }
 
-void FractalCanvas::AttachFractalStatusHandler()
+void FractalCanvas::AttachFractalStatusHandler() const
 {
     if (_target == nullptr)
         return;

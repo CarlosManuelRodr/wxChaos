@@ -45,6 +45,6 @@ public:
     void CreateScriptFractal(unsigned int width, unsigned int height, const std::string& scriptPath);
     void SetFormula(FormulaOptions formula) const;
     void DeleteFractal();
-    Fractal* GetFractalPtr() const;
-    FractalType GetType() const;
+    [[nodiscard]] Fractal* GetFractalPtr() const;
+    [[nodiscard]] FractalType GetType() const;
 };

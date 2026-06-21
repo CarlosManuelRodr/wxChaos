@@ -642,6 +642,8 @@ void MainFrame::OnKeyboardGuide(wxCommandEvent&)
     _fractalCanvas->SetKeyboardGuide(_changeKeyboardGuide);
     _keyboardGuide->Check(_changeKeyboardGuide);
 }
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnCanvasStatusText(wxCommandEvent& event)
 {
     _statusBar->SetStatusText(event.GetString());
@@ -662,18 +664,22 @@ void MainFrame::OnItManual(wxCommandEvent&)
         delete _iterationsDialog;
     }
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnAbortRender(wxCommandEvent&)
 {
     _fractalCanvas->AbortRender();
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateAbortRender(wxUpdateUIEvent& event)
 {
     event.Enable(_fractalCanvas != nullptr && _fractalCanvas->CanAbortRender());
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateShowOrbit(wxUpdateUIEvent& event)
 {
     event.Check(_fractalCanvas != nullptr && _fractalCanvas->IsOrbitMode());
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateSliderMode(wxUpdateUIEvent& event)
 {
     event.Check(_fractalCanvas != nullptr && _fractalCanvas->IsSliderMode());
@@ -703,6 +709,7 @@ void MainFrame::OnFractalOptions(wxCommandEvent&)
         _showOptionsPanel = false;
     }
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
 {
     // Pass parameters to the fractal and redraws it.
@@ -1132,7 +1139,7 @@ void MainFrame::UpdateMenu()
         delete _juliaConstantDialog;
     }
 
-    // Adjust Julia constant menu items.
+    // Adjust Julia's constant menu items.
     if (_fractalCanvas->GetFractalPtr()->IsJuliaVariety())
     {
         _manualJuliaConstant->Enable(true);
@@ -1214,7 +1221,7 @@ void MainFrame::ReloadScripts()
     // Get new scripts.
     this->GetScriptFractals();
 }
-void MainFrame::UpdateJuliaRendererOptions(const Options& options)
+void MainFrame::UpdateJuliaRendererOptions(const Options& options) const
 {
     if (_juliaModePtr != nullptr)
         _juliaModePtr->SetRendererOptions(options);
