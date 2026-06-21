@@ -139,10 +139,10 @@ include(CTest)
 
 if(BUILD_TESTING)
     add_executable(wxChaosCoreTests
-            tests/CoreTestsMain.cpp
-            tests/FractalUtilitiesTests.cpp
-            tests/GeometryTests.cpp
-            tests/RenderingTests.cpp
+            tests/core/CoreTestsMain.cpp
+            tests/core/FractalUtilitiesTests.cpp
+            tests/core/geometry/GeometryTests.cpp
+            tests/core/rendering/RenderingTests.cpp
             wxChaos/core/geometry/Rect.cpp
             wxChaos/core/geometry/Vector2Double.cpp
             wxChaos/core/rendering/RenderJob.cpp
@@ -162,10 +162,10 @@ if(BUILD_TESTING)
     add_test(NAME wxChaosCoreTests COMMAND wxChaosCoreTests)
 
     add_executable(wxChaosGuiTests
-            tests/GuiTestsMain.cpp
-            tests/GuiPanelOptionsTests.cpp
-            tests/SelectionRectTests.cpp
-            tests/WxGradientTests.cpp
+            tests/gui/GuiTestsMain.cpp
+            tests/gui/sfml/SelectionRectTests.cpp
+            tests/gui/wx/PanelOptionsTests.cpp
+            tests/gui/wx/WxGradientTests.cpp
             wxChaos/gui/sfml/SelectionRect.cpp
             wxChaos/gui/wx/PanelOptions.cpp
             wxChaos/gui/wx/wxGradient.cpp
