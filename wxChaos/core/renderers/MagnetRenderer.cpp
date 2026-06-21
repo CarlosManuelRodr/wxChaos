@@ -1,5 +1,4 @@
 // ReSharper disable CppTooWideScope
-#include <complex>
 #include "MagnetRenderer.h"
 
 using namespace std;

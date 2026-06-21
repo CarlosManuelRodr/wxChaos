@@ -1,5 +1,4 @@
 // ReSharper disable CppTooWideScope
-#include <complex>
 #include "JuliaZNRenderer.h"
 using namespace std;
 

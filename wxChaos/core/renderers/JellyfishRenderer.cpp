@@ -1,4 +1,3 @@
-#include <complex>
 #include "JellyfishRenderer.h"
 using namespace std;
 

@@ -1,5 +1,4 @@
 // ReSharper disable CppTooWideScope
-#include <complex>
 #include "SinoidalRenderer.h"
 using namespace std;
 

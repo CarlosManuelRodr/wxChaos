@@ -1,5 +1,4 @@
 // ReSharper disable CppTooWideScope
-#include <cmath>
 #include "BurningShipJuliaRenderer.h"
 
 BurningShipJuliaRenderer::BurningShipJuliaRenderer() = default;

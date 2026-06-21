@@ -1,4 +1,3 @@
-#include <complex>
 #include "CellRenderer.h"
 
 using namespace std;

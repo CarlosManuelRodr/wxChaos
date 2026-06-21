@@ -1,5 +1,4 @@
 // ReSharper disable CppTooWideScope
-#include <complex>
 #include "FractoryRenderer.h"
 
 using namespace std;

@@ -1,4 +1,3 @@
-#include <complex>
 #include "MandelbrotZNRenderer.h"
 using namespace std;
 
