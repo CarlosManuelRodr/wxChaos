@@ -76,6 +76,11 @@ cmd /c "call ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\Too
 
 This command verified successfully in this workspace.
 
+## Testing Expectations
+
+- When adding a new component or new functionality, add a corresponding unit test unless the change is impossible to exercise without a separate design pass.
+- When making changes, run the relevant tests and verify they still pass before handing off.
+
 ## Common Build Failures
 
 - `cmake: The term 'cmake' is not recognized`: CMake is not on the shell `PATH`. Use Ninja against the existing build tree, or call the bundled CMake from the configured build files.
@@ -89,6 +94,7 @@ Before handing off changes, run:
 
 ```powershell
 git diff --check
+& "C:\Users\fisca\AppData\Local\Programs\CLion\bin\cmake\win\x64\bin\ctest.exe" --test-dir cmake-build-debug --output-on-failure
 cmd /c "call ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\Tools\VsDevCmd.bat"" -arch=x64 -host_arch=x64 && ninja -C cmake-build-debug wxChaos"
 ```
 
