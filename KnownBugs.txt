@@ -2,3 +2,4 @@
 
 Improvements:
 - wxWidgets and Angelscript should be imported from Vcpkg.
+- muParserX should be imported as a submodule to benefit from the latest bug fixes.
