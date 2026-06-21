@@ -35,9 +35,13 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _sliderMode = false;
     _onUpdate = false;
     _iterationsOverlayDirty = true;
+    _renderingOverlayDirty = true;
     _hasLastMousePosition = false;
     _lastMousePosition = wxPoint(0, 0);
     _displayedIterations = 0;
+    _spinnerFrame = 0;
+    _spinnerCenter = sf::Vector2f(0.0F, 0.0F);
+    _spinnerRadius = 0.0F;
 
     // UserFormula
     _userFormula.bailout = 2;
@@ -133,6 +137,7 @@ void FractalCanvas::EnsureFontLoaded()
 
     _font.loadFromFile(AppPaths::ResourceFileStd({wxT("PublicSans-Regular.otf")}));
     _iterationsText.setFont(_font);
+    _renderingText.setFont(_font);
 }
 
 void FractalCanvas::UpdateIterationsOverlay()
@@ -156,10 +161,79 @@ void FractalCanvas::UpdateIterationsOverlay()
     _iterationsOverlayDirty = false;
 }
 
+void FractalCanvas::UpdateRenderingOverlay()
+{
+    constexpr float horizontalPadding = 8.0F;
+    constexpr float verticalPadding = 4.0F;
+    constexpr float spinnerDiameter = 18.0F;
+    constexpr float spinnerGap = 8.0F;
+
+    _renderingText.setCharacterSize(25);
+    _renderingText.setString("Rendering...");
+
+    const sf::FloatRect textBounds = _renderingText.getLocalBounds();
+    const float contentHeight = std::max(spinnerDiameter, textBounds.height);
+    const auto overlayWidth = static_cast<unsigned int>(
+        std::ceil(spinnerDiameter + spinnerGap + textBounds.width + horizontalPadding * 2.0F));
+    const auto overlayHeight = static_cast<unsigned int>(std::ceil(contentHeight + verticalPadding * 2.0F));
+
+    _iterationsOverlay.setFillColor(sf::Color(0, 0, 0, 100));
+    _iterationsOverlay.setSize(sf::Vector2f(static_cast<float>(overlayWidth), static_cast<float>(overlayHeight)));
+    _iterationsOverlay.setPosition(0.0F, 0.0F);
+
+    const float contentCenterY = verticalPadding + contentHeight / 2.0F;
+    _spinnerRadius = spinnerDiameter / 2.0F;
+    _spinnerCenter = sf::Vector2f(horizontalPadding + _spinnerRadius, contentCenterY);
+    _renderingText.setPosition(
+        horizontalPadding + spinnerDiameter + spinnerGap - textBounds.left,
+        contentCenterY - textBounds.height / 2.0F - textBounds.top);
+    _renderingOverlayDirty = false;
+}
+
+void FractalCanvas::DrawLoadingSpinner(sf::RenderWindow* window)
+{
+    constexpr int dotCount = 12;
+    constexpr float pi = 3.14159265358979323846F;
+    constexpr float dotRadius = 2.2F;
+
+    for (int i = 0; i < dotCount; ++i)
+    {
+        const int age = (i + static_cast<int>(_spinnerFrame)) % dotCount;
+        const auto alpha = static_cast<sf::Uint8>(55 + age * 16);
+        const float angle = 2.0F * pi * static_cast<float>(i) / static_cast<float>(dotCount);
+        sf::CircleShape dot(dotRadius);
+        dot.setOrigin(dotRadius, dotRadius);
+        dot.setFillColor(sf::Color(255, 255, 255, alpha));
+        dot.setPosition(
+            _spinnerCenter.x + std::cos(angle) * _spinnerRadius,
+            _spinnerCenter.y + std::sin(angle) * _spinnerRadius);
+        window->draw(dot);
+    }
+
+    _spinnerFrame = (_spinnerFrame + 1) % dotCount;
+}
+
+void FractalCanvas::DrawRenderingOverlay(sf::RenderWindow* window)
+{
+    if (_renderingOverlayDirty)
+        UpdateRenderingOverlay();
+
+    window->draw(_iterationsOverlay);
+    DrawLoadingSpinner(window);
+    window->draw(_renderingText);
+    _iterationsOverlayDirty = true;
+}
+
 void FractalCanvas::DrawIterationsOverlay(sf::RenderWindow* window)
 {
-    if (_target->IsSnapshotActive() || _target->IsRenderStarted())
+    if (_target->IsSnapshotActive())
         return;
+
+    if (_target->IsRenderStarted() || _target->IsRendering())
+    {
+        DrawRenderingOverlay(window);
+        return;
+    }
 
     if (_iterationsOverlayDirty || _displayedIterations != _target->GetIterations())
         UpdateIterationsOverlay();
