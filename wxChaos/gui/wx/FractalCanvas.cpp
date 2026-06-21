@@ -12,9 +12,9 @@ wxString FractalCanvas::FormatStatusCoordinate(const double value)
 }
 
 // Fractal Canvas
-FractalCanvas::FractalCanvas(const FractalType fractalType,
-                             wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
-                             const long style) : wxSFMLCanvas(parent, id, position, size, style)
+FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, const wxWindowID id,
+                             const wxPoint& position, const wxSize& size, const long style)
+                             : wxSFMLCanvas(parent, id, position, size, style)
 {
     _type = fractalType;
 
