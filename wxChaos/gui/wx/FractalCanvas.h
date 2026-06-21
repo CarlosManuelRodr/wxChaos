@@ -73,7 +73,9 @@ class FractalCanvas : public wxSFMLCanvas
     bool _iterationsOverlayDirty;
     bool _renderingOverlayDirty;
     bool _hasLastMousePosition;
+    bool _mouseWheelPanning;
     wxPoint _lastMousePosition;
+    wxPoint _lastMouseWheelPanPosition;
     unsigned int _displayedIterations;
     unsigned int _spinnerFrame;
     sf::Vector2f _spinnerCenter;
@@ -187,6 +189,7 @@ public:
     void OnClick(wxMouseEvent& event);
     void OnReleaseClick(wxMouseEvent& event);
     void OnMouseWheel(wxMouseEvent& event);
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
 
     ///@brief Resizes the frame.
     void OnResize(wxSizeEvent& event);

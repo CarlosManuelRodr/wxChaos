@@ -37,7 +37,9 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _iterationsOverlayDirty = true;
     _renderingOverlayDirty = true;
     _hasLastMousePosition = false;
+    _mouseWheelPanning = false;
     _lastMousePosition = wxPoint(0, 0);
+    _lastMouseWheelPanPosition = wxPoint(0, 0);
     _displayedIterations = 0;
     _spinnerFrame = 0;
     _spinnerCenter = sf::Vector2f(0.0F, 0.0F);
@@ -94,9 +96,12 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     this->Bind(wxEVT_MOTION, &FractalCanvas::OnMoveMouse, this);
     this->Bind(wxEVT_LEFT_DOWN, &FractalCanvas::OnClick, this);
     this->Bind(wxEVT_RIGHT_DOWN, &FractalCanvas::OnClick, this);
+    this->Bind(wxEVT_MIDDLE_DOWN, &FractalCanvas::OnClick, this);
     this->Bind(wxEVT_LEFT_UP, &FractalCanvas::OnReleaseClick, this);
     this->Bind(wxEVT_RIGHT_UP, &FractalCanvas::OnReleaseClick, this);
+    this->Bind(wxEVT_MIDDLE_UP, &FractalCanvas::OnReleaseClick, this);
     this->Bind(wxEVT_MOUSEWHEEL, &FractalCanvas::OnMouseWheel, this);
+    this->Bind(wxEVT_MOUSE_CAPTURE_LOST, &FractalCanvas::OnMouseCaptureLost, this);
     this->Bind(wxEVT_SIZE, &FractalCanvas::OnResize, this);
     this->Bind(wxEVT_KEY_DOWN, &FractalCanvas::OnKeyDown, this);
     this->Bind(wxEVT_KEY_UP, &FractalCanvas::OnKeyUp, this);
@@ -716,6 +721,20 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
 
 void FractalCanvas::OnClick(wxMouseEvent& event)
 {
+    if (event.ButtonDown(wxMOUSE_BTN_MIDDLE))
+    {
+        if (!_target->IsRendering() && _target->IsRendered())
+        {
+            _mouseWheelPanning = true;
+            _lastMouseWheelPanPosition = event.GetPosition();
+            _sfmlFractal->BeginMousePan();
+
+            if (!HasCapture())
+                CaptureMouse();
+        }
+        return;
+    }
+
     // Pointer event.
     if (_juliaMode || _orbitMode || _sliderMode)
     {
@@ -754,6 +773,19 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 {
+    if (event.ButtonUp(wxMOUSE_BTN_MIDDLE))
+    {
+        if (_mouseWheelPanning)
+        {
+            _mouseWheelPanning = false;
+            _sfmlFractal->EndMousePan();
+
+            if (HasCapture())
+                ReleaseMouse();
+        }
+        return;
+    }
+
     // Selection event.
     if (_juliaMode || _orbitMode || _sliderMode)
         _screenPointer->ReleaseClickEvent(event);
@@ -785,8 +817,32 @@ void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
         _sfmlFractal->ZoomBack();
 }
 
+void FractalCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+    _mouseWheelPanning = false;
+    _sfmlFractal->EndMousePan();
+    event.Skip();
+}
+
 void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 {
+    if (_mouseWheelPanning)
+    {
+        const wxPoint currentPosition = event.GetPosition();
+        const wxPoint delta = currentPosition - _lastMouseWheelPanPosition;
+
+        if (delta.x != 0 || delta.y != 0)
+        {
+            _sfmlFractal->PanByMousePixels(delta.x, delta.y);
+            _lastMouseWheelPanPosition = currentPosition;
+        }
+
+        _lastMousePosition = currentPosition;
+        _hasLastMousePosition = true;
+        EmitStatusText();
+        return;
+    }
+
     // Selection event.
     if (_juliaMode || _orbitMode || _sliderMode)
     {

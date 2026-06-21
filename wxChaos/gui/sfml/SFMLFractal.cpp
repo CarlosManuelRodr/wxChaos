@@ -9,6 +9,7 @@ SFMLFractal::SFMLFractal(Fractal* fractal) : _committedPanOffset(Vector2Int::Zer
     _zoomingBack = false;
     _dontDrawTempImage = false;
     _setHandleRightClickZoomBack = true;
+    _mousePanning = false;
     _fractal = fractal;
     _xVel = 0.0f;
     _yVel = 0.0f;
@@ -79,6 +80,7 @@ void SFMLFractal::ResetMovement()
     for (bool& direction : _movement)
         direction = false;
 
+    _mousePanning = false;
     _xVel = 0;
     _yVel = 0;
     _posX = 0;
@@ -117,6 +119,9 @@ void SFMLFractal::ExpandCurrentView()
 void SFMLFractal::Move()
 {
     if (!_fractal->IsRendered())
+        return;
+
+    if (_mousePanning)
         return;
 
     if (_movement[Left])
@@ -161,7 +166,7 @@ void SFMLFractal::Move()
 
 bool SFMLFractal::IsMoving() const
 {
-    return _xVel != 0 || _yVel != 0 || _movement[Up] || _movement[Down] || _movement[Left] || _movement[Right];
+    return _mousePanning || _xVel != 0 || _yVel != 0 || _movement[Up] || _movement[Down] || _movement[Left] || _movement[Right];
 }
 
 void SFMLFractal::SetMovement(const Direction direction)
@@ -204,6 +209,34 @@ void SFMLFractal::ReleaseMovement(const Direction direction)
         default:
             break;
     }
+}
+
+void SFMLFractal::BeginMousePan()
+{
+    if (!_fractal->IsRendered())
+        return;
+
+    _mousePanning = true;
+    _xVel = 0;
+    _yVel = 0;
+
+    for (bool& direction : _movement)
+        direction = false;
+}
+
+void SFMLFractal::PanByMousePixels(const int pixelDeltaX, const int pixelDeltaY)
+{
+    if (!_mousePanning || !_fractal->IsRendered())
+        return;
+
+    _fractal->PanViewByPixels(pixelDeltaX, pixelDeltaY);
+    _posX += pixelDeltaX;
+    _posY += pixelDeltaY;
+}
+
+void SFMLFractal::EndMousePan()
+{
+    _mousePanning = false;
 }
 
 void SFMLFractal::HandleEvent(const sf::Event& event)

@@ -45,6 +45,7 @@ class SFMLFractal
     bool _zoomingBack;                     ///< True while the view is being redrawn after zooming back.
     bool _dontDrawTempImage;               ///< Suppresses drawing the temporary image layer when it would be stale.
     bool _setHandleRightClickZoomBack;      ///< True when SFML right-click events should zoom back.
+    bool _mousePanning;                    ///< True while a direct mouse pan gesture is active.
 
     ///@brief Draws fractal maps into the SFML image and then draws the output sprite.
     ///@param window Target window.
@@ -112,6 +113,17 @@ public:
     ///@brief Stops movement in the given direction.
     ///@param direction Direction to deactivate.
     void ReleaseMovement(Direction direction);
+
+    ///@brief Starts direct mouse panning without keyboard smoothing.
+    void BeginMousePan();
+
+    ///@brief Pans the fractal view by an exact mouse-drag delta.
+    ///@param pixelDeltaX Horizontal drag delta in pixels.
+    ///@param pixelDeltaY Vertical drag delta in pixels.
+    void PanByMousePixels(int pixelDeltaX, int pixelDeltaY);
+
+    ///@brief Finishes direct mouse panning and commits the shifted render.
+    void EndMousePan();
 
     ///@brief Resizes the fractal maps and SFML presentation layers to match the window.
     ///@param window Window whose size will be copied.
