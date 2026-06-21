@@ -32,6 +32,8 @@ FractalCanvas::FractalCanvas(const FractalType fractalType,
     _orbitMode = false;
     _sliderMode = false;
     _onUpdate = false;
+    _hasLastMousePosition = false;
+    _lastMousePosition = wxPoint(0, 0);
 
     // UserFormula
     _userFormula.bailout = 2;
@@ -42,6 +44,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType,
     // Create fractal.
     this->CreateFractal(fractalType);
     _target = _fractalHandler.GetFractalPtr();
+    AttachFractalStatusHandler();
     _sfmlFractal = new SFMLFractal(_target);
     _sfmlFractal->SetHandleRightClickZoomBack(false);
 
@@ -105,6 +108,69 @@ void FractalCanvas::CreateScriptFractal(const ScriptData& scriptData)
 {
     const sf::Vector2u size = this->getSize();
     _fractalHandler.CreateScriptFractal(size.x, size.y, scriptData);
+}
+
+void FractalCanvas::AttachFractalStatusHandler()
+{
+    if (_target == nullptr)
+        return;
+
+    _target->SetPrecisionStatusChangedCallback([this](bool, unsigned int)
+    {
+        EmitStatusText();
+    });
+}
+
+wxString FractalCanvas::BuildStatusText() const
+{
+    wxString text;
+    if (_target == nullptr)
+        return text;
+
+    if (_hasLastMousePosition)
+    {
+        if (_type == FractalType::DoublePendulum)
+        {
+            text = wxT("θ2: ");
+            text += FormatStatusCoordinate(_target->GetX(_lastMousePosition.x));
+            text += wxT("   θ1: ");
+            text += FormatStatusCoordinate(_target->GetY(_lastMousePosition.y));
+        }
+        else if (_type == FractalType::SierpinskyTriangle || _type == FractalType::ScriptFractal)
+        {
+            text = wxT("x: ");
+            text += FormatStatusCoordinate(_target->GetX(_lastMousePosition.x));
+            text += wxT("   y: ");
+            text += FormatStatusCoordinate(_target->GetY(_lastMousePosition.y));
+        }
+        else
+        {
+            text = wxT("Real: ");
+            text += FormatStatusCoordinate(_target->GetX(_lastMousePosition.x));
+            text += wxT("   Imaginary: ");
+            text += FormatStatusCoordinate(_target->GetY(_lastMousePosition.y));
+        }
+    }
+
+    if (_target->IsHighPrecisionRenderActive())
+    {
+        if (!text.empty())
+            text += wxT("   ");
+
+        text += wxT("Multiprecision: ");
+        text += wxString::Format(wxT("%u"), _target->GetHighPrecisionRenderBits());
+        text += wxT("-bit");
+    }
+
+    return text;
+}
+
+void FractalCanvas::EmitStatusText() const
+{
+    wxCommandEvent statusEvent(wxEVT_FRACTAL_CANVAS_STATUS_TEXT);
+    statusEvent.SetEventObject(const_cast<FractalCanvas*>(this));
+    statusEvent.SetString(BuildStatusText());
+    GetParent()->GetEventHandler()->ProcessEvent(statusEvent);
 }
 
 void FractalCanvas::OnUpdate()
@@ -314,6 +380,7 @@ void FractalCanvas::ChangeType(const FractalType type)
     this->CreateFractal(type);
     _type = type;
     _target = _fractalHandler.GetFractalPtr();
+    AttachFractalStatusHandler();
     _sfmlFractal->SetFractal(_target);
     _sfmlFractal->SetHandleRightClickZoomBack(false);
     _fractalHandler.SetFormula(_userFormula);
@@ -340,6 +407,7 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
     _scriptData = scriptData;
     this->CreateScriptFractal(_scriptData);
     _target = _fractalHandler.GetFractalPtr();
+    AttachFractalStatusHandler();
     _sfmlFractal->SetFractal(_target);
     _sfmlFractal->SetHandleRightClickZoomBack(false);
 
@@ -402,6 +470,7 @@ void FractalCanvas::Reset()
         this->CreateFractal(_type);
 
     _target = _fractalHandler.GetFractalPtr();
+    AttachFractalStatusHandler();
     _sfmlFractal->SetFractal(_target);
     _sfmlFractal->SetHandleRightClickZoomBack(false);
     _fractalHandler.SetFormula(_userFormula);
@@ -581,40 +650,9 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     }
 
     // Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
-    wxString text;
-    if (_type == FractalType::DoublePendulum)
-    {
-        text = wxT("θ2: ");
-        text += FormatStatusCoordinate(_target->GetX(event.GetPosition().x));
-        text += wxT("   θ1: ");
-        text += FormatStatusCoordinate(_target->GetY(event.GetPosition().y));
-    }
-    else if (_type == FractalType::SierpinskyTriangle || _type == FractalType::ScriptFractal)
-    {
-        text = wxT("x: ");
-        text += FormatStatusCoordinate(_target->GetX(event.GetPosition().x));
-        text += wxT("   y: ");
-        text += FormatStatusCoordinate(_target->GetY(event.GetPosition().y));
-    }
-    else
-    {
-        text = wxT("Real: ");
-        text += FormatStatusCoordinate(_target->GetX(event.GetPosition().x));
-        text += wxT("   Imaginary: ");
-        text += FormatStatusCoordinate(_target->GetY(event.GetPosition().y));
-    }
-
-    if (_target->IsHighPrecisionRenderActive())
-    {
-        text += wxT("   Multiprecision: ");
-        text += wxString::Format(wxT("%u"), _target->GetHighPrecisionRenderBits());
-        text += wxT("-bit");
-    }
-
-    wxCommandEvent statusEvent(wxEVT_FRACTAL_CANVAS_STATUS_TEXT);
-    statusEvent.SetEventObject(this);
-    statusEvent.SetString(text);
-    this->GetParent()->GetEventHandler()->ProcessEvent(statusEvent);
+    _lastMousePosition = event.GetPosition();
+    _hasLastMousePosition = true;
+    EmitStatusText();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 // ReSharper disable once CppParameterMayBeConstPtrOrRef

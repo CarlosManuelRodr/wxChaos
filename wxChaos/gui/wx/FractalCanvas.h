@@ -66,10 +66,15 @@ class FractalCanvas : public wxSFMLCanvas
     bool _orbitMode;
     bool _sliderMode;
     bool _onUpdate;
+    bool _hasLastMousePosition;
+    wxPoint _lastMousePosition;
 
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
     void CreateFractal(FractalType type);
     void CreateScriptFractal(const ScriptData& scriptData);
+    void AttachFractalStatusHandler();
+    wxString BuildStatusText() const;
+    void EmitStatusText() const;
     static wxString FormatStatusCoordinate(double value);
 
 public:

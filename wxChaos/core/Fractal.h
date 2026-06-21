@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <functional>
 #include <limits>
 #include <optional>
 #include <vector>
@@ -106,6 +107,9 @@ protected:
     bool _varGradChange;
     bool _renderJobCompatible;               ///< Fractal compatible with renderJobs.
     bool _changeFractalProp;
+    bool _reportedHighPrecisionActive;
+    unsigned int _reportedHighPrecisionBits;
+    std::function<void(bool, unsigned int)> _precisionStatusChanged;
     std::vector<Vector2Int> _endPoints;
     std::vector<Vector2Int> _startPoints;
     std::vector<Vector2Int> _pausePoints;
@@ -154,6 +158,7 @@ protected:
     [[nodiscard]] bool SupportsHighPrecisionRender() const;
     [[nodiscard]] bool ShouldUseHighPrecision() const;
     [[nodiscard]] unsigned int EstimateRequiredPrecisionBits() const;
+    void NotifyPrecisionStatusIfChanged();
     [[nodiscard]] bool OptionsPreciseViewMatchesDoubleView(const Options& opt) const;
 
     ///@brief Selects the pixel regions that need rendering for the current movement state.
@@ -376,6 +381,9 @@ public:
 
     ///@brief Returns the selected MPFR precision for the current view, or 0 for double rendering.
     unsigned int GetHighPrecisionRenderBits() const;
+
+    ///@brief Registers a callback fired when the active precision mode changes.
+    void SetPrecisionStatusChangedCallback(std::function<void(bool, unsigned int)> callback);
 
     ///@brief Forces the fractal to acquire a "rendered" status.
     void SetRendered(bool mode);

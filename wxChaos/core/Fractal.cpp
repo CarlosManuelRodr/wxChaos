@@ -101,6 +101,8 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _orbitX = _orbitY = 0.0;
     _renderJobCompatible = true;
     _changeFractalProp = false;
+    _reportedHighPrecisionActive = false;
+    _reportedHighPrecisionBits = 0;
     _geomFigure = false;
 
     // Creates default color palette.
@@ -284,6 +286,18 @@ unsigned int Fractal::EstimateRequiredPrecisionBits() const
         return std::numeric_limits<unsigned int>::max();
 
     return static_cast<unsigned int>(requiredBits);
+}
+void Fractal::NotifyPrecisionStatusIfChanged()
+{
+    const bool active = ShouldUseHighPrecision();
+    const unsigned int precisionBits = active ? GetHighPrecisionRenderBits() : 0;
+    if (active == _reportedHighPrecisionActive && precisionBits == _reportedHighPrecisionBits)
+        return;
+
+    _reportedHighPrecisionActive = active;
+    _reportedHighPrecisionBits = precisionBits;
+    if (_precisionStatusChanged)
+        _precisionStatusChanged(active, precisionBits);
 }
 bool Fractal::OptionsPreciseViewMatchesDoubleView(const Options& opt) const
 {
@@ -493,6 +507,7 @@ void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
 {
     this->PreRender();
     _pendingRenderOffset = reusedMapOffset;
+    NotifyPrecisionStatusIfChanged();
 
     // Checks if the movement is valid.
     if ((abs(_pendingRenderOffset.x) >= _screenWidth) || (abs(_pendingRenderOffset.y) >= _screenHeight))
@@ -1163,6 +1178,10 @@ unsigned int Fractal::GetHighPrecisionRenderBits() const
 {
     const unsigned int precisionBits = EstimateRequiredPrecisionBits();
     return SupportsHighPrecisionRender() && precisionBits > 53 ? precisionBits : 0;
+}
+void Fractal::SetPrecisionStatusChangedCallback(std::function<void(bool, unsigned int)> callback)
+{
+    _precisionStatusChanged = std::move(callback);
 }
 void Fractal::SetRendered(const bool mode)
 {
