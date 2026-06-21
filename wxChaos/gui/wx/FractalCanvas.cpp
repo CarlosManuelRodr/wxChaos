@@ -159,6 +159,7 @@ void FractalCanvas::UpdateIterationsOverlay()
 
     _iterationsText.setPosition(horizontalPadding - textBounds.left, verticalPadding - textBounds.top);
     _iterationsOverlayDirty = false;
+    _renderingOverlayDirty = true;
 }
 
 void FractalCanvas::UpdateRenderingOverlay()
