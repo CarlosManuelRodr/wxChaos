@@ -27,5 +27,6 @@ enum ColorPaletteTypes
     DeepOcean,
     Ember,
     RainbowFire,
+    ClassicMandelbrot,
     CustomGradient
 };

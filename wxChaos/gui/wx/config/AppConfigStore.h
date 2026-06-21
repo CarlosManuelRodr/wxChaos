@@ -18,9 +18,10 @@ struct AppConfig
 {
     FractalType type = FractalType::Mandelbrot;
     int maxIterations = 100;
-    int paletteSize = 300;
-    ColorPaletteTypes colorStyle = SunsetDrive; ///< Default gradient preset, or CustomGradient for user-edited gradients.
-    std::string colorStyleGrad = "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);";
+    int paletteSize = 720;
+    int colorCycleLength = 72;
+    ColorPaletteTypes colorStyle = ClassicMandelbrot; ///< Default gradient preset, or CustomGradient for user-edited gradients.
+    std::string colorStyleGrad = "rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);";
     bool constantWindow = false;
     bool commandConsole = false;
     bool juliaMode = false;

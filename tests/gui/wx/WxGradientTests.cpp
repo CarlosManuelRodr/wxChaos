@@ -17,6 +17,15 @@ TEST_CASE("wxGradient interpolates between color stops")
 
     CheckColor(gradient.GetColorAt(0), 0, 0, 0);
     CheckColor(gradient.GetColorAt(50), 50, 75, 100);
+    CheckColor(gradient.GetColorAt(100), 100, 150, 200);
+}
+
+TEST_CASE("wxGradient supports fractional positions")
+{
+    const wxGradient gradient({wxColour(0, 0, 0), wxColour(100, 200, 40)}, 0, 1);
+
+    CheckColor(gradient.GetColorAt(0.25), 25, 50, 10);
+    CheckColor(gradient.GetColorAt(0.75), 75, 150, 30);
 }
 
 TEST_CASE("wxGradient supports adding inserting editing and removing stops")

@@ -6,7 +6,7 @@
 #include "ScriptData.h"
 
 extern bool** asSetMap;
-extern unsigned int** asColorMap;
+extern double** asColorMap;
 extern bool thereIsConsoleText;
 extern std::string consoleText;
 

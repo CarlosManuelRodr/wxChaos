@@ -128,6 +128,13 @@ wxPanel* SettingsFrame::CreateRenderingPage()
     paletteRow->Add(_paletteSize, 0);
     sizer->Add(paletteRow, 0, wxBOTTOM, 16);
 
+    const auto cycleRow = new wxBoxSizer(wxHORIZONTAL);
+    cycleRow->Add(new wxStaticText(page, wxID_ANY, wxT("Color cycle length:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    _colorCycleLength = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+        wxSP_ARROW_KEYS, 1, 20000, 72);
+    cycleRow->Add(_colorCycleLength, 0);
+    sizer->Add(cycleRow, 0, wxBOTTOM, 16);
+
     const wxString colorStyleNames[] = {
         wxT("Retro"),
         wxT("Hakim"),
@@ -141,6 +148,7 @@ wxPanel* SettingsFrame::CreateRenderingPage()
         wxT("Deep Ocean"),
         wxT("Ember"),
         wxT("Rainbow Fire"),
+        wxT("Classic Mandelbrot"),
         wxT("Custom")
     };
     _colorStyles = {
@@ -156,6 +164,7 @@ wxPanel* SettingsFrame::CreateRenderingPage()
         DeepOcean,
         Ember,
         RainbowFire,
+        ClassicMandelbrot,
         CustomGradient
     };
     const auto styleRow = new wxBoxSizer(wxHORIZONTAL);
@@ -204,6 +213,7 @@ void SettingsFrame::LoadControls(const AppConfig& config)
     }
     _maxIterations->SetValue(config.maxIterations);
     _paletteSize->SetValue(config.paletteSize);
+    _colorCycleLength->SetValue(config.colorCycleLength);
     _colorFractal->SetValue(config.colorFractal);
     _colorSet->SetValue(config.colorSet);
     _colorStyle->SetSelection(0);
@@ -241,6 +251,7 @@ AppConfig SettingsFrame::ReadControls()
         config.type = _fractalTypes[selection];
     config.maxIterations = _maxIterations->GetValue();
     config.paletteSize = _paletteSize->GetValue();
+    config.colorCycleLength = _colorCycleLength->GetValue();
     const int colorStyleSelection = _colorStyle->GetSelection();
     if (colorStyleSelection != wxNOT_FOUND)
         config.colorStyle = _colorStyles[colorStyleSelection];
@@ -292,6 +303,8 @@ void SettingsFrame::ApplyColorStyle(const ColorPaletteTypes style)
     ColorPalette palette;
     palette.SetStyle(style);
     _paletteSize->SetValue(palette.paletteSize);
+    if (style == ClassicMandelbrot)
+        _colorCycleLength->SetValue(72);
     _gradient = wxGradient();
     _gradient.SetMin(0);
     _gradient.SetMax(palette.paletteSize);

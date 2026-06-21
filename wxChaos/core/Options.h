@@ -23,6 +23,7 @@ struct Options
     FractalType type;
     unsigned int paletteSize;
     unsigned int gradPaletteSize;
+    double colorCycleLength;
     PanelOptions panelOpt;
 
     double kReal;
@@ -57,6 +58,7 @@ inline Options::Options()
     alg = RenderingAlgorithmType::Other;
     type = FractalType::Undefined;
     paletteSize = gradPaletteSize = 0;
+    colorCycleLength = 0.0;
     kReal = kImaginary = 0.0;
     orbitTrapMode = false;
     colorSet = false;

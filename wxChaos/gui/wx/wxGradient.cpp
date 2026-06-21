@@ -14,15 +14,19 @@ wxGradient::wxGradient(const std::vector<wxColour>& stops, const unsigned int mi
 
 wxGradient::~wxGradient() = default;
 
-wxColour wxGradient::GetColorAt(const unsigned int value) const
+wxColour wxGradient::GetColorAt(const double value) const
 {
+    if (_stops.empty())
+        return *wxBLACK;
+    if (_stops.size() == 1 || _max <= _min)
+        return _stops.front();
     if (value < _min)
-        return _min;
-    if (value > _max)
-        return _max;
+        return _stops.front();
+    if (value >= _max)
+        return _stops.back();
 
     const unsigned int range = _max - _min;
-    const unsigned int v = value - _min;
+    const double v = value - _min;
     const double step = range / static_cast<double>(_stops.size() - 1);
     const int bin = static_cast<int>(v / step);
     const double normalized_v = (v - bin*step) / step;
@@ -109,8 +113,8 @@ wxString wxGradient::ToString()
 
 wxColour wxGradient::Lerp(const wxColour& c1, const wxColour& c2, const double value)
 {
-    const unsigned char R = static_cast<char>((1.0 - value)*c1.Red() + value*c2.Red());
-    const unsigned char G = static_cast<char>((1.0 - value)*c1.Green() + value*c2.Green());
-    const unsigned char B = static_cast<char>((1.0 - value)*c1.Blue() + value*c2.Blue());
+    const unsigned char R = static_cast<unsigned char>((1.0 - value)*c1.Red() + value*c2.Red());
+    const unsigned char G = static_cast<unsigned char>((1.0 - value)*c1.Green() + value*c2.Green());
+    const unsigned char B = static_cast<unsigned char>((1.0 - value)*c1.Blue() + value*c2.Blue());
     return {R,G,B};
 }

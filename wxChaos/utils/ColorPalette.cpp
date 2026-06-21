@@ -81,6 +81,12 @@ void ColorPalette::SetStyle(const ColorPaletteTypes palette)
                 paletteSize = 420;
             }
             break;
+        case ClassicMandelbrot:
+            {
+                grad = wxT("rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);");
+                paletteSize = 720;
+            }
+            break;
         case CustomGradient:
             break;
     };

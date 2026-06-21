@@ -166,6 +166,10 @@ public:
     ///@param size New palette size.
     void SetGradientSize(unsigned int size);
 
+    ///@brief Sets the renderer-value length used for one full palette cycle.
+    ///@param cycleLength New cycle length.
+    void SetColorCycleLength(double cycleLength);
+
     ///@brief Sets the color palette style.
     ///@param palette New palette style.
     void SetColorPalette(ColorPaletteTypes palette);

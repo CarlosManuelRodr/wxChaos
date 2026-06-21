@@ -99,6 +99,7 @@ private:
     wxChoice* _colorStyle{};                      ///< Selects the default gradient color style.
     wxSpinCtrl* _maxIterations{};                 ///< Selects the default iteration limit.
     wxSpinCtrl* _paletteSize{};                   ///< Selects the default gradient palette size.
+    wxSpinCtrl* _colorCycleLength{};              ///< Selects the default palette cycle length.
     wxCheckBox* _colorFractal{};                  ///< Enables coloring outside the fractal set.
     wxCheckBox* _colorSet{};                      ///< Enables coloring inside the fractal set.
     wxStaticBitmap* _gradientPreview{};           ///< Displays the current default gradient.

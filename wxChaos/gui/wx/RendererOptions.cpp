@@ -1,5 +1,6 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
 #include <utility>
+#include <cmath>
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include "AppPaths.h"
@@ -139,6 +140,7 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
         wxT("Deep Ocean"),
         wxT("Ember"),
         wxT("Rainbow Fire"),
+        wxT("Classic Mandelbrot"),
         wxT("Custom")
     };
     constexpr int gradStyleChoiceNChoices = sizeof(gradStyleChoiceChoices) / sizeof(wxString);
@@ -160,6 +162,14 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
     gradSizer->Add(_gradPalSize, 0, wxALL, 5);
     const auto gradientSize = static_cast<int>(_target->GetGradient()->GetMax() - _target->GetGradient()->GetMin());
     _gradPalSize->SetValue(gradientSize);
+
+    _colorCycleText = new wxStaticText(_gradientLabel, wxID_ANY, wxT("Color cycle length:"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorCycleText->Wrap(-1);
+    gradSizer->Add(_colorCycleText, 0, wxALL, 5);
+
+    _colorCycleLength = new wxSpinCtrl(_gradientLabel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000, 72);
+    _colorCycleLength->SetValue(static_cast<int>(std::round(_target->GetColorCycleLength())));
+    gradSizer->Add(_colorCycleLength, 0, wxALL, 5);
 
     _gradientLabel->SetSizer(gradSizer);
     _gradientLabel->Layout();
@@ -189,6 +199,7 @@ void RendererOptions::ConnectEvents()
     _algorithmChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &RendererOptions::OnChangeAlgorithm, this);
     _relativeCheck->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnRelativeColor, this);
     _gradPalSize->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptions::OnGradPaletteSize, this);
+    _colorCycleLength->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptions::OnColorCycleLength, this);
     _colorFractal->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnColorFractal, this);
     _colorSet->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnColorSet, this);
     _orbitTrap->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnOrbitTrap, this);
@@ -346,6 +357,7 @@ void RendererOptions::SetTarget(SFMLFractal* presenter)
     _presenter = presenter;
     _target = _presenter->GetFractal();
     _gradPalSize->SetValue(static_cast<int>(_target->GetPaletteSize()));
+    _colorCycleLength->SetValue(static_cast<int>(std::round(_target->GetColorCycleLength())));
     _orbitTrap->Enable(_target->HasOrbitTrapMode());
     _orbitTrap->SetValue(_target->OrbitTrapActivated());
     _smoothRender->SetValue(_target->SmoothRenderActivated());
@@ -572,6 +584,15 @@ void RendererOptions::OnGradPaletteSize(wxSpinEvent&)
 
     _gradientMap->SetBitmap(this->PaintGradient());
     _colorVarSlider->SetRange(0,size);
+    NotifyOptionsChanged();
+}
+// ReSharper disable once CppMemberFunctionMayBeConst
+void RendererOptions::OnColorCycleLength(wxSpinEvent&)
+{
+    const int size = _colorCycleLength->GetValue();
+    if (size > 0)
+        _presenter->SetColorCycleLength(size);
+
     NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst

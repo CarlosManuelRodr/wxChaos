@@ -9,7 +9,7 @@
 
 const char* AppConfigStore::DefaultColorStyle()
 {
-    return "rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);";
+    return "rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);";
 }
 
 std::string AppConfigStore::Trim(const std::string& value)
@@ -164,6 +164,7 @@ const std::map<std::string, ColorPaletteTypes>& AppConfigStore::ColorStyles()
         { "DeepOcean", DeepOcean },
         { "Ember", Ember },
         { "RainbowFire", RainbowFire },
+        { "ClassicMandelbrot", ClassicMandelbrot },
         { "Custom", CustomGradient }
     };
 
@@ -257,6 +258,7 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     config.type = FractalTypeFromString(ReadString(values, "FRACTAL_TYPE", "Mandelbrot"), config.type);
     config.maxIterations = ReadInt(values, "DEFAULT_ITERATION", config.maxIterations);
     config.paletteSize = ReadInt(values, "PALETTE_SIZE", config.paletteSize);
+    config.colorCycleLength = ReadInt(values, "COLOR_CYCLE_LENGTH", config.colorCycleLength);
     config.colorStyleGrad = ReadString(values, "COLOR_STYLE", config.colorStyleGrad);
     if (config.colorStyleGrad.find("rgb(") == std::string::npos)
         config.colorStyleGrad = DefaultColorStyle();
@@ -333,6 +335,10 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/Fractal/palette_size", &intValue, config.paletteSize);
     config.paletteSize = static_cast<int>(intValue);
 
+    intValue = config.colorCycleLength;
+    fileConfig.Read("/Fractal/color_cycle_length", &intValue, config.colorCycleLength);
+    config.colorCycleLength = static_cast<int>(intValue);
+
     fileConfig.Read("/Fractal/constant_window", &config.constantWindow, config.constantWindow);
     fileConfig.Read("/Fractal/command_console", &config.commandConsole, config.commandConsole);
     fileConfig.Read("/Fractal/julia_mode", &config.juliaMode, config.juliaMode);
@@ -361,6 +367,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Fractal/app_version", ToWxString(APP_VERSION));
     fileConfig.Write("/Fractal/color_type", wxString("Gradient"));
     fileConfig.Write("/Fractal/palette_size", static_cast<long>(config.paletteSize));
+    fileConfig.Write("/Fractal/color_cycle_length", static_cast<long>(config.colorCycleLength));
     fileConfig.Write("/Fractal/color_style_preset", ToWxString(ColorStyleToString(config.colorStyle)));
     fileConfig.Write("/Fractal/color_style", ToWxString(config.colorStyleGrad));
     fileConfig.Write("/Fractal/fractal_type", ToWxString(FractalTypeToString(config.type)));

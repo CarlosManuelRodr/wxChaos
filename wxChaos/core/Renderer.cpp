@@ -1,5 +1,7 @@
 #include "Renderer.h"
 #include "FractalUtilities.h"
+#include <algorithm>
+#include <cmath>
 
 Renderer::Renderer()
 {
@@ -95,7 +97,7 @@ void Renderer::Stop()
         _y = _heightFinal - 1;
     }
 }
-void Renderer::SetRenderOut(bool** outSetMap, unsigned int** outColorMap, unsigned int** outAux)
+void Renderer::SetRenderOut(bool** outSetMap, double** outColorMap, unsigned int** outAux)
 {
     _setMap = outSetMap;
     _colorMap = outColorMap;
@@ -106,9 +108,9 @@ void Renderer::SetK(const double re, const double im)
     _kReal = re;
     _kImaginary = im;
 }
-unsigned int Renderer::ToColorMapValue(const double value)
+double Renderer::ToColorMapValue(const double value)
 {
-    return value < 0 ? InvalidColor : static_cast<unsigned int>(value);
+    return !std::isfinite(value) || value < 0.0 ? InvalidColor : value;
 }
 double Renderer::SafeDistance(const double distance)
 {
@@ -173,40 +175,35 @@ void Renderer::MeasureTriangleInequality(Point& point, const PointTraceEvent eve
 }
 double Renderer::SmoothEscapeValue(const Point& point)
 {
-    return point.iterations - log(log(point.escapedNorm)) / log(2.0);
+    return point.iterations + 1.0 - log(log(sqrt(point.escapedNorm))) / log(2.0);
 }
 double Renderer::OrbitTrapValue(const Point& point)
 {
     return log(1 / SafeDistance(point.orbitTrapDistanceX)) + log(1 / SafeDistance(point.orbitTrapDistanceY));
 }
-unsigned int Renderer::EscapeTimeColor(const Point& point) const
+double Renderer::EscapeTimeColor(const Point& point) const
 {
     if (_myOpt.orbitTrapMode)
     {
         const double orbitTrapValue = OrbitTrapValue(point);
-        if (_myOpt.smoothRender)
-        {
-            if (!point.insideSet)
-                return ToColorMapValue(abs(4.0 * SmoothEscapeValue(point) + 4.0 * orbitTrapValue));
-
-            return ToColorMapValue(abs(4.0 * (point.iterations + 4.0 * orbitTrapValue)));
-        }
-
-        return ToColorMapValue(abs(point.iterations + orbitTrapValue));
+        const double escapeValue = _myOpt.smoothRender && !point.insideSet
+                                       ? SmoothEscapeValue(point)
+                                       : static_cast<double>(point.iterations);
+        return ToColorMapValue(std::max(0.0, escapeValue + orbitTrapValue));
     }
 
     if (_myOpt.smoothRender && !point.insideSet)
-        return ToColorMapValue(abs(4.0 * SmoothEscapeValue(point)));
+        return ToColorMapValue(SmoothEscapeValue(point));
 
     return point.iterations;
 }
-unsigned int Renderer::GaussianIntegerColor(const Point& point) const
+double Renderer::GaussianIntegerColor(const Point& point) const
 {
     const double gaussianValue = (point.mu * point.gaussianDistance + (1 - point.mu) * point.previousGaussianDistance) * _myOpt.paletteSize;
     const double orbitTrapValue = _myOpt.orbitTrapMode ? OrbitTrapValue(point) : 0.0;
-    return ToColorMapValue(abs(gaussianValue + orbitTrapValue));
+    return ToColorMapValue(std::max(0.0, gaussianValue + orbitTrapValue));
 }
-unsigned int Renderer::EscapeAngleColor(const Point& point) const
+double Renderer::EscapeAngleColor(const Point& point) const
 {
     constexpr int color1 = 1;
     const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
@@ -222,14 +219,14 @@ unsigned int Renderer::EscapeAngleColor(const Point& point) const
     return point.iterations + color4;
 }
 // ReSharper disable once CppMemberFunctionMayBeStatic
-unsigned int Renderer::TriangleInequalityColor(const Point& point) const // NOLINT(*-convert-member-functions-to-static)
+double Renderer::TriangleInequalityColor(const Point& point) const // NOLINT(*-convert-member-functions-to-static)
 {
     if (point.triangleIterations <= 1)
         return 0;
 
     const double previousDistance = point.previousTriangleDistance / (point.triangleIterations - 1);
     const double distance = point.triangleDistance / point.triangleIterations;
-    return static_cast<unsigned int>(abs(((point.mu * distance + (1 - point.mu) * previousDistance) * 700)));
+    return ToColorMapValue(std::abs((point.mu * distance + (1 - point.mu) * previousDistance) * 700));
 }
 void Renderer::Reset()
 {

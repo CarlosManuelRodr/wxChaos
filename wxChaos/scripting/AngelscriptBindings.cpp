@@ -12,8 +12,8 @@
 using namespace std;
 
 bool** asSetMap;
-unsigned int** asColorMap;
-static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
+double** asColorMap;
+static constexpr double InvalidColor = std::numeric_limits<double>::max();
 static string name;
 static ScriptCategory scriptCategory;
 static double minX, maxX, minY;
@@ -178,7 +178,7 @@ static void asNoSetMap(bool mode)
 static void asSetPoint(int x, int y, bool setVal, int colorVal)
 {
     asSetMap[x][y] = setVal;
-    asColorMap[x][y] = colorVal < 0 ? InvalidColor : static_cast<unsigned int>(colorVal);
+    asColorMap[x][y] = colorVal < 0 ? InvalidColor : static_cast<double>(colorVal);
 }
 
 static void asPrintString(string& str)

@@ -28,7 +28,7 @@ public:
 	wxGradient();
 	wxGradient(const std::vector<wxColour>& stops, unsigned int min, unsigned int max);
 	virtual ~wxGradient();
-	[[nodiscard]] wxColour GetColorAt(unsigned int value) const;
+	[[nodiscard]] wxColour GetColorAt(double value) const;
 	void AddColorStop(const wxColour& col);
 	void InsertColorStop(unsigned int index, const wxColour& col);
 	void RemoveColorStop(unsigned int index);

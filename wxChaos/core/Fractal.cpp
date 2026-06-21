@@ -1,5 +1,6 @@
 #include <complex>
 #include <algorithm>
+#include <cmath>
 #include <limits>
 #include <utility>
 #include "Fractal.h"
@@ -9,8 +10,9 @@
 #include "SystemUtilities.h"
 using namespace std;
 
-constexpr ColorPaletteTypes defaultGradientStyle = Retro;
-const wxString defaultGradientString = wxT("rgb(4,108,164);rgb(136,171,14);rgb(255,255,255);rgb(171,27,27);rgb(61,43,94);rgb(4,108,164);");
+constexpr ColorPaletteTypes defaultGradientStyle = ClassicMandelbrot;
+constexpr double defaultColorCycleLength = 72.0;
+const wxString defaultGradientString = wxT("rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);");
 
 inline double CalcSquaredDist(const double x1, const double y1, const double x2, const double y2)
 {
@@ -36,12 +38,12 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
 
     // Allocates memory for the maps.
     _setMap = new bool* [_screenWidth];
-    _colorMap = new unsigned int* [_screenWidth];
+    _colorMap = new double* [_screenWidth];
     _auxMap = new unsigned int* [_screenWidth];
     for (int i = 0; i < _screenWidth; i++)
     {
         _setMap[i] = new bool[_screenHeight];
-        _colorMap[i] = new unsigned int[_screenHeight];
+        _colorMap[i] = new double[_screenHeight];
         _auxMap[i] = new unsigned int[_screenHeight];
     }
 
@@ -96,7 +98,10 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _maxIter = 100;
     _varGradChange = false;
     _refreshImage = false;
-    _maxColorMapVal = 0;
+    _maxColorMapVal = 0.0;
+    _relativeColorMin = 0.0;
+    _relativeColorMax = 1.0;
+    _colorCycleLength = defaultColorCycleLength;
     _renderJobCompatible = false;
     _orbitX = _orbitY = 0.0;
     _renderJobCompatible = true;
@@ -115,7 +120,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _gradient.SetMax(_gradPaletteSize);
 
     _palette.resize(_paletteSize);
-    _varGradientStep = _paletteSize / 60;
+    _varGradientStep = std::max(1U, _paletteSize / 60);
     this->RebuildPalette();
 }
 
@@ -139,14 +144,37 @@ wxString Fractal::GetRenderingAlgorithmName() const
     return Renderer::GetAlgorithmName(_algorithm);
 }
 
-sf::Color Fractal::GetColorFromPalette(unsigned int index) const
+sf::Color Fractal::InterpolatePaletteColors(const wxColour& first, const wxColour& second, const double ratio)
 {
-    if (index <= 0)
-        index = 0;
+    const auto channel = [ratio](const unsigned char a, const unsigned char b)
+    {
+        return static_cast<sf::Uint8>(std::round((1.0 - ratio) * a + ratio * b));
+    };
 
-    index = index % _paletteSize;
-    const wxColour& color = _palette[index];
-    return {color.Red(), color.Green(), color.Blue(), color.Alpha()};
+    return {channel(first.Red(), second.Red()),
+            channel(first.Green(), second.Green()),
+            channel(first.Blue(), second.Blue()),
+            channel(first.Alpha(), second.Alpha())};
+}
+
+bool Fractal::IsValidColorMapValue(const double value) const
+{
+    return value != InvalidColor && std::isfinite(value);
+}
+
+sf::Color Fractal::GetColorFromPalette(const double index) const
+{
+    if (_paletteSize == 0 || _palette.empty())
+        return sf::Color::White;
+
+    double wrappedIndex = std::fmod(index, static_cast<double>(_paletteSize));
+    if (wrappedIndex < 0.0)
+        wrappedIndex += _paletteSize;
+
+    const auto lowerIndex = static_cast<unsigned int>(std::floor(wrappedIndex)) % _paletteSize;
+    const auto upperIndex = (lowerIndex + 1) % _paletteSize;
+    const double ratio = wrappedIndex - std::floor(wrappedIndex);
+    return InterpolatePaletteColors(_palette[lowerIndex], _palette[upperIndex], ratio);
 }
 void Fractal::RebuildPalette()
 {
@@ -167,22 +195,59 @@ void Fractal::RedrawMaps()
 
 void Fractal::UpdateMaxColorMapValue()
 {
-    _maxColorMapVal = 0;
+    _maxColorMapVal = 0.0;
+    double minColorMapVal = std::numeric_limits<double>::max();
+    std::vector<double> relativeValues;
 
-    if (_relativeColor)
+    for (int i = 0; i < _screenWidth; i++)
     {
-        // Search for color maximum.
-        for (int i = 0; i < _screenWidth; i++)
+        for (int j = 0; j < _screenHeight; j++)
         {
-            for (int j = 0; j < _screenHeight; j++)
-            {
-                if (_colorMap[i][j] != InvalidColor && _colorMap[i][j] > _maxColorMapVal)
-                    _maxColorMapVal = _colorMap[i][j];
-            }
+            const double value = _colorMap[i][j];
+            if (!IsValidColorMapValue(value))
+                continue;
+
+            minColorMapVal = std::min(minColorMapVal, value);
+            _maxColorMapVal = std::max(_maxColorMapVal, value);
+            if (_relativeColor)
+                relativeValues.push_back(value);
         }
     }
-    if (_maxColorMapVal == 0)
-        _maxColorMapVal = 1;
+
+    if (minColorMapVal == std::numeric_limits<double>::max())
+    {
+        _relativeColorMin = 0.0;
+        _relativeColorMax = 1.0;
+        _maxColorMapVal = 1.0;
+        return;
+    }
+
+    _relativeColorMin = minColorMapVal;
+    _relativeColorMax = _maxColorMapVal;
+
+    if (_relativeColor && relativeValues.size() > 8)
+    {
+        const auto percentileValue = [&relativeValues](const double percentile)
+        {
+            const auto index = static_cast<std::size_t>(std::round(percentile * static_cast<double>(relativeValues.size() - 1)));
+            auto nth = relativeValues.begin() + static_cast<std::ptrdiff_t>(std::min(index, relativeValues.size() - 1));
+            std::nth_element(relativeValues.begin(), nth, relativeValues.end());
+            return *nth;
+        };
+
+        _relativeColorMin = percentileValue(0.02);
+        _relativeColorMax = percentileValue(0.98);
+        if (_relativeColorMax <= _relativeColorMin)
+        {
+            _relativeColorMin = minColorMapVal;
+            _relativeColorMax = _maxColorMapVal;
+        }
+    }
+
+    if (_relativeColorMax <= _relativeColorMin)
+        _relativeColorMax = _relativeColorMin + 1.0;
+    if (_maxColorMapVal <= 0.0)
+        _maxColorMapVal = 1.0;
 }
 void Fractal::ConfigureRenderer(Renderer& renderer) const
 {
@@ -476,12 +541,12 @@ void Fractal::Resize(const unsigned int width, const unsigned int height)
 
     // Allocate memory.
     _setMap = new bool* [_screenWidth];
-    _colorMap = new unsigned int* [_screenWidth];
+    _colorMap = new double* [_screenWidth];
     _auxMap = new unsigned int* [_screenWidth];
     for (int i = 0; i < _screenWidth; i++)
     {
         _setMap[i] = new bool[_screenHeight];
-        _colorMap[i] = new unsigned int[_screenHeight];
+        _colorMap[i] = new double[_screenHeight];
         _auxMap[i] = new unsigned int[_screenHeight];
     }
 
@@ -713,7 +778,7 @@ bool Fractal::ConsumeImageRefreshRequest()
 void Fractal::ReuseRenderedMaps(const Vector2Int reusedMapOffset)
 {
     MoveMatrix<bool>(_setMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x);
-    MoveMatrix<unsigned int>(_colorMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x, InvalidColor);
+    MoveMatrix<double>(_colorMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x, InvalidColor);
     MoveMatrix<unsigned int>(_auxMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x);
 }
 
@@ -722,12 +787,21 @@ void Fractal::PrepareDisplayColorLookup()
     UpdateMaxColorMapValue();
 }
 
+double Fractal::NormalizeColorMapValue(const double value) const
+{
+    if (!_relativeColor)
+        return value * static_cast<double>(_paletteSize) / std::max(1.0, _colorCycleLength);
+
+    const double ratio = std::clamp((value - _relativeColorMin) / (_relativeColorMax - _relativeColorMin), 0.0, 1.0);
+    return ratio * static_cast<double>(_paletteSize > 0 ? _paletteSize - 1 : 0);
+}
+
 bool Fractal::HasDisplayPixelColor(const unsigned int x, const unsigned int y) const
 {
     if (_setMap[x][y] && _colorSet)
         return true;
 
-    return _colorMode && _colorMap[x][y] != InvalidColor;
+    return _colorMode && IsValidColorMapValue(_colorMap[x][y]);
 }
 
 sf::Color Fractal::GetInvalidPixelColor() const
@@ -764,6 +838,9 @@ bool Fractal::ConsumeGradientChangeRequest()
 
 void Fractal::AdvanceGradientOffset()
 {
+    if (_paletteSize == 0)
+        return;
+
     if (_changeGradient < _paletteSize)
         _changeGradient += _varGradientStep;
     else
@@ -778,10 +855,10 @@ void Fractal::RefreshAnimatedColors(sf::Image& image)
     {
         for (unsigned int j = 0; j < _screenHeight; j++)
         {
-            if ((_setMap[i][j] || !_colorSet) && _colorMap[i][j] == InvalidColor)
+            if ((_setMap[i][j] || !_colorSet) && !IsValidColorMapValue(_colorMap[i][j]))
                 continue;
 
-            if ((_setMap[i][j] == false || !_colorSet) && _colorMap[i][j] != InvalidColor)
+            if ((_setMap[i][j] == false || !_colorSet) && IsValidColorMapValue(_colorMap[i][j]))
                 image.setPixel(i, j, GetRenderedPixelColor(i, j));
         }
     }
@@ -913,7 +990,7 @@ Fractal::PointSample Fractal::GetPointSample(const unsigned int x, const unsigne
     if (x >= _screenWidth || y >= _screenHeight)
         return {false, 0, false};
 
-    return {_setMap[x][y], _colorMap[x][y], _colorMap[x][y] != InvalidColor};
+    return {_setMap[x][y], _colorMap[x][y], IsValidColorMapValue(_colorMap[x][y])};
 }
 
 wxString Fractal::InspectPoint(const double real, const double imaginary,
@@ -1104,6 +1181,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _changeGradient = opt.changeGradient;
     _relativeColor = opt.relativeColor;
     _gradPaletteSize = opt.gradPaletteSize;
+    _colorCycleLength = opt.colorCycleLength > 0.0 ? opt.colorCycleLength : defaultColorCycleLength;
     _algorithm = opt.alg;
     _fSetColor = wxColour(opt.fSetColor.r, opt.fSetColor.g, opt.fSetColor.b, opt.fSetColor.a);
 
@@ -1146,6 +1224,7 @@ Options Fractal::GetOptions() const
     opt.relativeColor = _relativeColor;
     opt.paletteSize = _paletteSize;
     opt.gradPaletteSize = _gradPaletteSize;
+    opt.colorCycleLength = _colorCycleLength;
     opt.panelOpt = _panelOpt;
     opt.type = _type;
 
@@ -1211,18 +1290,10 @@ sf::Color Fractal::GetRenderedPixelColor(const unsigned int x, const unsigned in
     if (_setMap[x][y] && _colorSet)
         return GetSetColor();
 
-    if (!_colorMode || _colorMap[x][y] == InvalidColor)
+    if (!_colorMode || !IsValidColorMapValue(_colorMap[x][y]))
         return sf::Color::White;
 
-    if (_relativeColor)
-    {
-        const double colorMapValue = _colorMap[x][y];
-        const auto doubleMaxColorMapValue = static_cast<double>(_maxColorMapVal);
-        const double ratio = colorMapValue / doubleMaxColorMapValue;
-        return GetColorFromPalette(static_cast<int>(ratio * _paletteSize + _changeGradient));
-    }
-
-    return GetColorFromPalette(_colorMap[x][y] + _changeGradient);
+    return GetColorFromPalette(NormalizeColorMapValue(_colorMap[x][y]) + _changeGradient);
 }
 
 sf::Image Fractal::GetRenderedImage()
@@ -1388,7 +1459,7 @@ void Fractal::SetGradient(const wxGradient& grad)
     _gradient = grad;
     _gradPaletteSize = _paletteSize = _gradient.GetMax() - _gradient.GetMin();
     _palette.resize(_paletteSize);
-    _varGradientStep = _paletteSize / 60;
+    _varGradientStep = std::max(1U, _paletteSize / 60);
     this->RebuildPalette();
 }
 void Fractal::SetGradientSize(const unsigned int size)
@@ -1396,8 +1467,20 @@ void Fractal::SetGradientSize(const unsigned int size)
     _gradient.SetMax(size);
     _gradPaletteSize = _paletteSize = size;
     _palette.resize(_paletteSize);
-    _varGradientStep = _paletteSize / 60;
+    _varGradientStep = std::max(1U, _paletteSize / 60);
     this->RebuildPalette();
+}
+void Fractal::SetColorCycleLength(const double cycleLength)
+{
+    if (cycleLength <= 0.0)
+        return;
+
+    _colorCycleLength = cycleLength;
+    RedrawMaps();
+}
+double Fractal::GetColorCycleLength() const
+{
+    return _colorCycleLength;
 }
 // RelativeColor.
 void Fractal::SetRelativeColor(const bool mode)
@@ -1412,6 +1495,8 @@ bool Fractal::GetRelativeColorMode() const
 void Fractal::SetVarGradient(const unsigned int n)
 {
     _varGradChange = true;
+    if (_paletteSize == 0)
+        return;
     _changeGradient = n % _paletteSize;
 }
 

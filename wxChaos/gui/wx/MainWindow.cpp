@@ -355,6 +355,7 @@ void MainFrame::SetUpGUI()
     grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
     _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(_appConfig.colorStyle);
     _fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
+    _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
 
     _fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(_appConfig.maxIterations);
     _fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(_appConfig.colorFractal);
@@ -407,6 +408,7 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     gradient.FromString(wxString::FromUTF8(config.colorStyleGrad.c_str()));
     _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(config.colorStyle);
     _fractalCanvas->GetSFMLFractalPtr()->SetGradient(gradient);
+    _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(config.colorCycleLength);
     _fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(config.maxIterations);
     _fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(config.colorFractal);
     _fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(config.colorSet);
@@ -592,6 +594,7 @@ void MainFrame::OnReset(wxCommandEvent&)
     grad.SetMax(_appConfig.paletteSize);
     _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(_appConfig.colorStyle);
     _fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
+    _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
     this->UpdateMenu();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -886,8 +889,11 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
     if (_fractalType != type || _fractalType == FractalType::UserDefined || _fractalType == FractalType::FixedPointUserDefined)
     {
         const Options fractOpt = _fractalCanvas->GetFractalPtr()->GetOptions();
+        const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractalPtr()->GetColorPalette();
         _fractalCanvas->ChangeType(type);
+        _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(colorPalette);
         _fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
+        _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
         _fractalType = type;
         this->UpdateMenu();
         _juliaMode->Enable(enableJulia);
@@ -903,8 +909,11 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
         _fractalCanvas->GetFractalPtr()->StopRender();
 
     const Options fractOpt = _fractalCanvas->GetFractalPtr()->GetOptions();
+    const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractalPtr()->GetColorPalette();
     _fractalCanvas->ChangeToScript(_loadedScripts[id]);
+    _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(colorPalette);
     _fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
+    _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
 
     _fractalType = FractalType::ScriptFractal;
     this->UpdateMenu();

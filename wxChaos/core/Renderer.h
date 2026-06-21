@@ -9,7 +9,7 @@
 class Renderer
 {
 protected:
-    static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
+    static constexpr double InvalidColor = std::numeric_limits<double>::max();
 
     enum class PointTraceEvent
     {
@@ -47,7 +47,7 @@ protected:
     };
 
     bool** _setMap;
-    unsigned int** _colorMap;
+    double** _colorMap;
     unsigned int** _auxMap;
     int _x;
     int _y;
@@ -80,7 +80,7 @@ protected:
     double _kReal;
     double _kImaginary;
 
-    static unsigned int ToColorMapValue(double value);
+    static double ToColorMapValue(double value);
     static double SafeDistance(double distance);
     static double InitialMu();
     static double MuFromNorm(double norm);
@@ -91,10 +91,10 @@ protected:
                                           double squaredRe, double squaredIm, bool wasInside);
     static double SmoothEscapeValue(const Point& point);
     static double OrbitTrapValue(const Point& point);
-    [[nodiscard]] unsigned int EscapeTimeColor(const Point& point) const;
-    [[nodiscard]] unsigned int GaussianIntegerColor(const Point& point) const;
-    [[nodiscard]] unsigned int EscapeAngleColor(const Point& point) const;
-    [[nodiscard]] unsigned int TriangleInequalityColor(const Point& point) const;
+    [[nodiscard]] double EscapeTimeColor(const Point& point) const;
+    [[nodiscard]] double GaussianIntegerColor(const Point& point) const;
+    [[nodiscard]] double EscapeAngleColor(const Point& point) const;
+    [[nodiscard]] double TriangleInequalityColor(const Point& point) const;
 
     template<class PixelRenderer>
     void RenderPixels(PixelRenderer pixelRenderer);
@@ -103,7 +103,7 @@ protected:
     template<class PixelRenderer>
     void RenderPixelsByPrecision(PixelRenderer pixelRenderer);
     template<class TracePoint, class MeasurePoint>
-    void RenderFromPoint(TracePoint tracePoint, unsigned int (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure);
+    void RenderFromPoint(TracePoint tracePoint, double (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure);
     template<class TracePoint>
     void EscapeTimeRender(TracePoint tracePoint);
     template<class TracePoint>
@@ -128,7 +128,7 @@ public:
     void UpdateLimits(int heightOrigin);
     void SetOptions(const Options& opt);
     Options GetOptions();
-    void SetRenderOut(bool** outSetMap, unsigned int** outColorMap, unsigned int** outAux = nullptr);
+    void SetRenderOut(bool** outSetMap, double** outColorMap, unsigned int** outAux = nullptr);
     void SetK(double re, double im);
     void Reset();
     virtual void PreTerminate();
@@ -182,7 +182,7 @@ template<class PixelRenderer> void Renderer::RenderPixelsByPrecision(PixelRender
 }
 
 template<class TracePoint, class MeasurePoint>
-void Renderer::RenderFromPoint(TracePoint tracePoint, unsigned int (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure)
+void Renderer::RenderFromPoint(TracePoint tracePoint, double (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure)
 {
     const auto renderPixel = [this, tracePoint, colorPoint, measure](const auto& pixelRe, const auto& pixelIm)
     {

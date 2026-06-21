@@ -55,6 +55,8 @@ class RendererOptions : public wxFrame
     wxStaticBitmap* _gradientMap;
     wxStaticText* _gradPalText;
     wxSpinCtrl* _gradPalSize;
+    wxStaticText* _colorCycleText;
+    wxSpinCtrl* _colorCycleLength;
     wxStaticText* _colorVarText;
     wxSlider* _colorVarSlider;
     
@@ -81,6 +83,7 @@ class RendererOptions : public wxFrame
     void OnGrad(wxCommandEvent& event);
     void GradientColorChangeSelection(wxCommandEvent& event);
     void OnGradPaletteSize(wxSpinEvent& event);
+    void OnColorCycleLength(wxSpinEvent& event);
     void OnColorVar(wxScrollEvent& event);
 
     void ConnectEvents();

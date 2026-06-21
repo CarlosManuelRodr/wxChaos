@@ -37,13 +37,13 @@ public:
     struct PointSample
     {
         bool inSet;
-        unsigned int value;
+        double value;
         bool hasValue;
     };
 
 protected:
     bool** _setMap;                             ///< Stores the points that belong to the fractal set.
-    unsigned int** _colorMap;                   ///< Store the color map.
+    double** _colorMap;                         ///< Store continuous color values.
     unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
     ThreadWatchdog<Renderer> _watchdog;         ///< Watch over the render threads.
     RenderThreadPool _renderPool;               ///< Reusable pool for render jobs.
@@ -89,7 +89,10 @@ protected:
     unsigned int _paletteSize;
     unsigned int _gradPaletteSize;
     unsigned int _varGradientStep;
-    unsigned int _maxColorMapVal;
+    double _maxColorMapVal;
+    double _relativeColorMin;
+    double _relativeColorMax;
+    double _colorCycleLength;
     bool _refreshImage;
 
     // Status variables.
@@ -139,7 +142,10 @@ protected:
     ///@brief Looks into the color palette for the corresponding color.
     ///@param index Color parameter.
     ///@return A struct with the color.
-    sf::Color GetColorFromPalette(unsigned int index) const;
+    sf::Color GetColorFromPalette(double index) const;
+    double NormalizeColorMapValue(double value) const;
+    bool IsValidColorMapValue(double value) const;
+    static sf::Color InterpolatePaletteColors(const wxColour& first, const wxColour& second, double ratio);
 
     ///@brief Rebuilds the color palette
     void RebuildPalette();
@@ -175,7 +181,7 @@ protected:
     static wxString FormatComplex(double real, double imaginary);
 
 public:
-    static constexpr unsigned int InvalidColor = std::numeric_limits<unsigned int>::max();
+    static constexpr double InvalidColor = std::numeric_limits<double>::max();
 
     // Basic methods.
     ///@brief Construct a fractal for the given render dimensions.
@@ -418,6 +424,8 @@ public:
     void ChangeVarGradient();
     void SetPaletteSize(unsigned int size);
     unsigned int GetPaletteSize() const;
+    void SetColorCycleLength(double cycleLength);
+    double GetColorCycleLength() const;
     void SetGradient(const wxGradient& grad);
     void SetGradientSize(unsigned int size);
     void SetRelativeColor(bool mode);
