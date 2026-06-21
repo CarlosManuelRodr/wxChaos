@@ -1,14 +1,9 @@
-#include <cmath>
-#include <string>
-#include "AppPaths.h"
-#include "Fractal.h"
 #include "SFMLFractal.h"
 
 constexpr int stdSpeed = 1;
 
 SFMLFractal::SFMLFractal(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
 {
-    _changeFractalIter = true;
     _imgInVector = false;
     _usingRenderImage = false;
     _zoomingBack = false;
@@ -22,18 +17,15 @@ SFMLFractal::SFMLFractal(Fractal* fractal) : _committedPanOffset(Vector2Int::Zer
     _hasCommittedPanOffset = false;
     ResetMovement();
     ResetZoomHistory();
-    EnsureFontLoaded();
     ResetDisplayImages();
 }
 
 void SFMLFractal::SetFractal(Fractal* fractal)
 {
     _fractal = fractal;
-    _changeFractalIter = true;
     _dontDrawTempImage = true;
     ResetMovement();
     ResetZoomHistory();
-    EnsureFontLoaded();
     ClearImageCache();
     ResetDisplayImages();
 }
@@ -45,15 +37,6 @@ Fractal* SFMLFractal::GetFractal() const
 void SFMLFractal::SetHandleRightClickZoomBack(const bool mode)
 {
     _setHandleRightClickZoomBack = mode;
-}
-
-void SFMLFractal::EnsureFontLoaded()
-{
-    if (!_font.getInfo().family.empty())
-        return;
-
-    _font.loadFromFile(AppPaths::ResourceFileStd({wxT("PublicSans-Regular.otf")}));
-    _iterationsText.setFont(_font);
 }
 
 void SFMLFractal::ResetDisplayImages()
@@ -89,26 +72,6 @@ void SFMLFractal::ClearImageCache()
         _fractal->MarkRenderDirty();
         _dontDrawTempImage = true;
     }
-}
-
-void SFMLFractal::UpdateIterationsOverlay()
-{
-    constexpr float horizontalPadding = 8.0F;
-    constexpr float verticalPadding = 4.0F;
-
-    _iterationsText.setCharacterSize(25);
-    _iterationsText.setString("Iterations: " + std::to_string(_fractal->GetIterations()));
-
-    const sf::FloatRect textBounds = _iterationsText.getLocalBounds();
-    const auto overlayWidth = static_cast<unsigned int>(std::ceil(textBounds.width + horizontalPadding * 2.0F));
-    const auto overlayHeight = static_cast<unsigned int>(std::ceil(textBounds.height + verticalPadding * 2.0F));
-
-    _iterationsOverlay.setFillColor(sf::Color(0, 0, 0, 100));
-    _iterationsOverlay.setSize(sf::Vector2f(static_cast<float>(overlayWidth), static_cast<float>(overlayHeight)));
-    _iterationsOverlay.setPosition(0.0F, 0.0F);
-
-    _iterationsText.setPosition(horizontalPadding - textBounds.left, verticalPadding - textBounds.top);
-    _changeFractalIter = false;
 }
 
 void SFMLFractal::ResetMovement()
@@ -422,8 +385,6 @@ void SFMLFractal::SetView(const Rect& view)
 
 void SFMLFractal::IncreaseIterations()
 {
-    _changeFractalIter = true;
-
     ClearImageCache();
     const unsigned change = _fractal->GetIterations() + 100;
     _fractal->SetIterations(change);
@@ -431,8 +392,6 @@ void SFMLFractal::IncreaseIterations()
 
 void SFMLFractal::DecreaseIterations()
 {
-    _changeFractalIter = true;
-
     ClearImageCache();
 
     if (_fractal->GetIterations() > 100)
@@ -444,8 +403,6 @@ void SFMLFractal::DecreaseIterations()
 
 void SFMLFractal::ChangeIterations(const unsigned int iterations)
 {
-    _changeFractalIter = true;
-
     ClearImageCache();
     _fractal->SetIterations(iterations);
 }
@@ -696,12 +653,4 @@ void SFMLFractal::Show(sf::RenderWindow* window)
     if (_fractal->HasGeometryFigures() && !_fractal->IsRendering())
         DrawGeometry(window);
 
-    if (!_fractal->IsSnapshotActive() && !_fractal->IsRenderStarted())
-    {
-        if (_changeFractalIter)
-            UpdateIterationsOverlay();
-
-        window->draw(_iterationsOverlay);
-        window->draw(_iterationsText);
-    }
 }

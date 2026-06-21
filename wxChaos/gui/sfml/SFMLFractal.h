@@ -10,8 +10,6 @@
 #include "wx/wxGradient.h"
 #include "Fractal.h"
 
-class Fractal;
-
 /**
 * @class SFMLFractal
 * @brief Owns the SFML presentation state for a Fractal.
@@ -23,8 +21,6 @@ class Fractal;
 class SFMLFractal
 {
     Fractal* _fractal;                     ///< Fractal model currently being displayed.
-    sf::Font _font;                        ///< Font used by SFML text overlays.
-    sf::Text _iterationsText;              ///< Iteration-count overlay text.
     sf::Image _image;                      ///< Current rendered fractal image.
     sf::Texture _texture;                  ///< Texture backing the rendered fractal sprite.
     sf::Sprite _output;                    ///< Sprite used to draw the rendered fractal image.
@@ -35,7 +31,6 @@ class SFMLFractal
     sf::Image _geomImage;                  ///< Image layer for orbit and geometry overlays.
     sf::Texture _geomTexture;              ///< Texture backing the geometry overlay.
     sf::Sprite _outGeom;                   ///< Sprite used to draw the geometry overlay.
-    sf::RectangleShape _iterationsOverlay; ///< Background shape for the iteration-count overlay.
     std::vector<PreciseRect> _zoomHistory; ///< World-coordinate views available for zoom-back.
     PreciseRect _outermostZoom;            ///< Farthest world-coordinate view reached by zoom-back.
     bool _movement[4]{};                   ///< Active keyboard movement state.
@@ -45,7 +40,6 @@ class SFMLFractal
     int _posY;
     Vector2Int _committedPanOffset;        ///< Settled pan offset waiting for map reuse.
     bool _hasCommittedPanOffset;
-    bool _changeFractalIter;
     bool _imgInVector;                     ///< True when there are cached images available for zoom-back.
     bool _usingRenderImage;                ///< True when the current frame came from a cached zoom-back image.
     bool _zoomingBack;                     ///< True while the view is being redrawn after zooming back.
@@ -60,17 +54,11 @@ class SFMLFractal
     ///@param window Target window.
     void DrawGeometry(sf::RenderWindow* window) const;
 
-    ///@brief Loads the overlay font if it has not been loaded yet.
-    void EnsureFontLoaded();
-
     ///@brief Recreates all SFML image, texture, and sprite objects for the current fractal size.
     void ResetDisplayImages();
 
     ///@brief Clears cached images used for zoom-back.
     void ClearImageCache();
-
-    ///@brief Updates the iteration-count text and background from the measured rendered text bounds.
-    void UpdateIterationsOverlay();
 
     ///@brief Resets panning input, velocity, and pending render offset.
     void ResetMovement();
@@ -84,7 +72,7 @@ class SFMLFractal
     ///@brief Saves the current view for zoom-back.
     void SaveZoom();
 
-    ///@brief Clears zoom-back state and captures the current view as the outermost zoom.
+    ///@brief Clears the zoom-back state and captures the current view as the outermost zoom.
     void ResetZoomHistory();
 
     ///@brief Expands the current view when zoom-back has no saved view.

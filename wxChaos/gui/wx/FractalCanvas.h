@@ -38,6 +38,9 @@ class FractalCanvas : public wxSFMLCanvas
     FractalType _type;
     Fractal* _target;                       ///< Internally, the methods of this class communicate with the fractal through this pointer.
 
+    sf::Font _font;                         ///< Font used by SFML text overlays.
+    sf::Text _iterationsText;               ///< Iteration-count overlay text.
+    sf::RectangleShape _iterationsOverlay;  ///< Background shape for the iteration-count overlay.
     sf::Image _keyboardImage;               ///< Texture of the info images.
     sf::Image _mouseImage;
     sf::Image _helpImage;
@@ -66,13 +69,18 @@ class FractalCanvas : public wxSFMLCanvas
     bool _orbitMode;
     bool _sliderMode;
     bool _onUpdate;
+    bool _iterationsOverlayDirty;
     bool _hasLastMousePosition;
     wxPoint _lastMousePosition;
+    unsigned int _displayedIterations;
 
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
     void CreateFractal(FractalType type);
     void CreateScriptFractal(const ScriptData& scriptData);
     void AttachFractalStatusHandler() const;
+    void EnsureFontLoaded();
+    void UpdateIterationsOverlay();
+    void DrawIterationsOverlay(sf::RenderWindow* window);
     wxString BuildStatusText() const;
     void EmitStatusText() const;
     static wxString FormatStatusCoordinate(double value);
