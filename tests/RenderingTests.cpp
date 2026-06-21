@@ -1,5 +1,4 @@
 #include <doctest/doctest.h>
-
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
 

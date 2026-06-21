@@ -1,5 +1,4 @@
 #include <doctest/doctest.h>
-
 #include "geometry/Rect.h"
 #include "geometry/Vector2Double.h"
 #include "geometry/Vector2Int.h"

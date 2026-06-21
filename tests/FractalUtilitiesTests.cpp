@@ -1,7 +1,5 @@
 #include <cmath>
-
 #include <doctest/doctest.h>
-
 #include "FractalUtilities.h"
 
 TEST_CASE("minVal returns the smaller value")
