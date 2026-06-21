@@ -100,6 +100,8 @@ protected:
     void RenderPixels(PixelRenderer pixelRenderer);
     template<class PixelRenderer>
     void RenderPixelsPrecise(PixelRenderer pixelRenderer);
+    template<class PixelRenderer>
+    void RenderPixelsByPrecision(PixelRenderer pixelRenderer);
     template<class TracePoint, class MeasurePoint>
     void RenderFromPoint(TracePoint tracePoint, unsigned int (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure);
     template<class TracePoint>
@@ -171,6 +173,14 @@ template<class PixelRenderer> void Renderer::RenderPixelsPrecise(PixelRenderer p
     }
 }
 
+template<class PixelRenderer> void Renderer::RenderPixelsByPrecision(PixelRenderer pixelRenderer)
+{
+    if (_useHighPrecision)
+        RenderPixelsPrecise(pixelRenderer);
+    else
+        RenderPixels(pixelRenderer);
+}
+
 template<class TracePoint, class MeasurePoint>
 void Renderer::RenderFromPoint(TracePoint tracePoint, unsigned int (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure)
 {
@@ -183,10 +193,7 @@ void Renderer::RenderFromPoint(TracePoint tracePoint, unsigned int (Renderer::*c
         _colorMap[_x][_y] = (this->*colorPoint)(point);
     };
 
-    if (_useHighPrecision)
-        RenderPixelsPrecise(renderPixel);
-    else
-        RenderPixels(renderPixel);
+    RenderPixelsByPrecision(renderPixel);
 }
 
 template<class TracePoint>

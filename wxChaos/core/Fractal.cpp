@@ -219,7 +219,38 @@ void Fractal::UpdatePreciseFactors()
 }
 bool Fractal::ShouldUseHighPrecision() const
 {
-    return EstimateRequiredPrecisionBits() > 53;
+    return SupportsHighPrecisionRender() && EstimateRequiredPrecisionBits() > 53;
+}
+bool Fractal::SupportsHighPrecisionRender() const
+{
+    if (_algorithm == RenderingAlgorithmType::Buddhabrot)
+        return false;
+
+    switch (_type)
+    {
+        case FractalType::Mandelbrot:
+        case FractalType::MandelbrotZN:
+        case FractalType::Julia:
+        case FractalType::JuliaZN:
+        case FractalType::NewtonRaphsonMethod:
+        case FractalType::Sinoidal:
+        case FractalType::Magnetic:
+        case FractalType::Medusa:
+        case FractalType::Manowar:
+        case FractalType::ManowarJulia:
+        case FractalType::FixedPoint1:
+        case FractalType::FixedPoint2:
+        case FractalType::FixedPoint3:
+        case FractalType::FixedPoint4:
+        case FractalType::Tricorn:
+        case FractalType::BurningShip:
+        case FractalType::BurningShipJulia:
+        case FractalType::Fractory:
+        case FractalType::Cell:
+            return true;
+        default:
+            return false;
+    }
 }
 unsigned int Fractal::EstimateRequiredPrecisionBits() const
 {
@@ -1120,7 +1151,7 @@ Options Fractal::GetOptions() const
     opt.preciseYFactor = _preciseYFactor;
     opt.hasPreciseView = true;
     opt.highPrecisionBits = EstimateRequiredPrecisionBits();
-    opt.useHighPrecision = opt.highPrecisionBits > 53;
+    opt.useHighPrecision = SupportsHighPrecisionRender() && opt.highPrecisionBits > 53;
 
     return opt;
 }
@@ -1131,7 +1162,7 @@ bool Fractal::IsHighPrecisionRenderActive() const
 unsigned int Fractal::GetHighPrecisionRenderBits() const
 {
     const unsigned int precisionBits = EstimateRequiredPrecisionBits();
-    return precisionBits > 53 ? precisionBits : 0;
+    return SupportsHighPrecisionRender() && precisionBits > 53 ? precisionBits : 0;
 }
 void Fractal::SetRendered(const bool mode)
 {

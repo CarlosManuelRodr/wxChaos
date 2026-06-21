@@ -9,6 +9,9 @@ class FixedPoint3Renderer : public Renderer
 {
     double _minStep;
 
+    template<class Real>
+    void RenderConvergence();
+
 public:
     FixedPoint3Renderer();
 

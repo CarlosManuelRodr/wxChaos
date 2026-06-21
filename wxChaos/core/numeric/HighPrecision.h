@@ -382,6 +382,22 @@ PrecisionComplex<Real> ComplexSin(const PrecisionComplex<Real>& z)
 }
 
 template<class Real>
+PrecisionComplex<Real> ComplexCos(const PrecisionComplex<Real>& z)
+{
+    using std::cos;
+    using std::cosh;
+    using std::sin;
+    using std::sinh;
+    return {cos(z.re) * cosh(z.im), -sin(z.re) * sinh(z.im)};
+}
+
+template<class Real>
+PrecisionComplex<Real> ComplexTan(const PrecisionComplex<Real>& z)
+{
+    return ComplexSin(z) / ComplexCos(z);
+}
+
+template<class Real>
 PrecisionComplex<Real> ComplexPow(PrecisionComplex<Real> z, int exponent)
 {
     if (exponent == 0)

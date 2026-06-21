@@ -1,35 +1,45 @@
-#include <complex>
 #include "FixedPoint2Renderer.h"
-using namespace std;
 
 FixedPoint2Renderer::FixedPoint2Renderer()
 {
     _minStep = 0.01;
 }
+template<class Real>
+void FixedPoint2Renderer::RenderConvergence()
+{
+    const Real minStep(_minStep);
+
+    const auto renderPixel = [this, minStep](const Real& pixelRe, const Real& pixelIm)
+    {
+        PrecisionComplex<Real> z(pixelRe, pixelIm);
+        PrecisionComplex<Real> zPrev = z;
+        unsigned n;
+
+        for (n = 0; n < _maxIter; n++)
+        {
+            z = ComplexCos(z);
+
+            if ((zPrev.re - minStep < z.re && zPrev.re + minStep > z.re)
+                && (zPrev.im - minStep < z.im && zPrev.im + minStep > z.im))
+                break;
+
+            zPrev = z;
+        }
+
+        _colorMap[_x][_y] = (z.re > Real(0) ? 1 : 30) + n;
+    };
+
+    if constexpr (std::is_same_v<Real, double>)
+        RenderPixels(renderPixel);
+    else
+        RenderPixelsPrecise(renderPixel);
+}
 void FixedPoint2Renderer::Render()
 {
-    complex<double> z;
-    unsigned n;
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            complex<double> z_prev = z = complex<double>(_minX + _x * _xFactor, _maxY - _y * _yFactor);
-
-            for (n=0; n<_maxIter; n++)
-            {
-                z = cos(z);
-
-                if ((z_prev.real() - _minStep < z.real() && z_prev.real() + _minStep > z.real())
-                    && (z_prev.imag() - _minStep < z.imag() && z_prev.imag() + _minStep > z.imag()))
-                    break;
-
-                z_prev = z;
-            }
-            _colorMap[_x][_y] = (z.real() > 0 ? 1 : 30) + n;
-        }
-    }
+    if (_useHighPrecision)
+        RenderConvergence<HighPrecisionReal>();
+    else
+        RenderConvergence<double>();
 }
 void FixedPoint2Renderer::SetParams(double minStep)
 {

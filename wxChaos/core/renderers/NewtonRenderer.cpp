@@ -1,85 +1,112 @@
-#include <complex>
+#include <cmath>
 #include "NewtonRenderer.h"
-using namespace std;
 
 NewtonRenderer::NewtonRenderer()
 {
     minStep = 0.001;
 }
 
+template<class Real>
+void NewtonRenderer::RenderConvergenceTest()
+{
+    const Real step(minStep);
+    const Real zero(0);
+
+    const auto renderPixel = [this, step, zero](const Real& pixelRe, const Real& pixelIm)
+    {
+        Real re = pixelRe;
+        Real im = pixelIm;
+        Real prevRe = re;
+        Real prevIm = im;
+        unsigned n;
+
+        for (n = 0; n < _maxIter; n++)
+        {
+            const Real re2 = re * re;
+            const Real im2 = im * im;
+            Real d = Real(3) * ((re2 - im2) * (re2 - im2) + Real(4) * re2 * im2);
+            if (d == zero)
+                d = Real(0.000001);
+
+            const Real tmp = re;
+            re = (Real(2) / Real(3)) * re + (re2 - im2) / d;
+            im = (Real(2) / Real(3)) * im - Real(2) * tmp * im / d;
+
+            if ((prevRe - step < re && prevRe + step > re) && (prevIm - step < im && prevIm + step > im))
+                break;
+
+            prevRe = re;
+            prevIm = im;
+        }
+
+        if (re <= zero && im >= zero)
+            _colorMap[_x][_y] = 1 + n;
+        else if (re <= zero && im < zero)
+            _colorMap[_x][_y] = 17 + n;
+        else
+            _colorMap[_x][_y] = 37 + n;
+    };
+
+    if constexpr (std::is_same_v<Real, double>)
+        RenderPixels(renderPixel);
+    else
+        RenderPixelsPrecise(renderPixel);
+}
+template<class Real>
+void NewtonRenderer::RenderConvergenceTestWithOrbitTrap()
+{
+    const Real step(minStep);
+    const PrecisionComplex<Real> one(Real(1), Real(0));
+    const PrecisionComplex<Real> two(Real(2), Real(0));
+
+    const auto renderPixel = [this, step, one, two](const Real& pixelRe, const Real& pixelIm)
+    {
+        PrecisionComplex<Real> z(pixelRe, pixelIm);
+        PrecisionComplex<Real> zPrev = z;
+        Real distX = RealAbs(pixelRe);
+        Real distY = RealAbs(pixelIm);
+        unsigned n;
+
+        for (n = 0; n < _maxIter; n++)
+        {
+            z = z - (ComplexPow(z, 3) - one) / (two * ComplexPow(z, 2));
+
+            if ((zPrev.re - step < z.re && zPrev.re + step > z.re)
+                && (zPrev.im - step < z.im && zPrev.im + step > z.im))
+                break;
+
+            zPrev = z;
+
+            if (RealAbs(z.im) < distY)
+                distY = RealAbs(z.im);
+            if (RealAbs(z.re) < distX)
+                distX = RealAbs(z.re);
+        }
+
+        if constexpr (std::is_same_v<Real, double>)
+            _colorMap[_x][_y] = ToColorMapValue(n + std::log(1 / distX) + std::log(1 / distY));
+        else
+            _colorMap[_x][_y] = ToColorMapValue(n + ToDouble(log(Real(1) / distX) + log(Real(1) / distY)));
+    };
+
+    if constexpr (std::is_same_v<Real, double>)
+        RenderPixels(renderPixel);
+    else
+        RenderPixelsPrecise(renderPixel);
+}
 void NewtonRenderer::ConvergenceTestRender()
 {
-    double re, im;
-    unsigned n;
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            double prev_re = re = _minX + _x * _xFactor;
-            double prev_im = im = _maxY - _y * _yFactor;
-
-            for (n=0; n<_maxIter; n++)
-            {
-                const double re2 = re * re;
-                const double im2 = im * im;
-                double d = 3.0 * ((re2 - im2) * (re2 - im2) + 4.0 * re2 * im2);
-                if (d == 0.0)
-                    d = 0.000001;
-
-                const double tmp = re;
-                re = (2.0/3.0)*re + (re2 - im2)/d;
-                im = (2.0/3.0)*im - 2.0*tmp*im/d;
-
-                if ((prev_re - minStep < re && prev_re + minStep > re) && (prev_im - minStep < im && prev_im + minStep > im))
-                    break;
-
-                prev_re = re;
-                prev_im = im;
-            }
-            if (re <= 0 && im >= 0)
-                _colorMap[_x][_y] = 1 + n;
-            else if (re <= 0 && im < 0)
-                _colorMap[_x][_y] = 17 + n;
-            else
-                _colorMap[_x][_y] = 37 + n;
-        }
-    }
+    if (_useHighPrecision)
+        RenderConvergenceTest<HighPrecisionReal>();
+    else
+        RenderConvergenceTest<double>();
 }
 void NewtonRenderer::ConvergenceTestWithOrbitTrapRender()
 {
-    // Creates fractal.
-    unsigned n;
-    complex<double> z;
-
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
-    {
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
-        {
-            double re = _minX + _x * _xFactor;
-            double im = _maxY - _y * _yFactor;
-            complex<double> z_prev = z = complex<double>(re, im);
-
-            double distX = abs(re);
-            double distY = abs(im);
-
-            for (n=0; n<_maxIter; n++)
-            {
-                z = z - (pow(z, 3) - complex<double>(1, 0))/(complex<double>(2, 0)*pow(z,2));
-
-                if ((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real())
-                    && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
-                    break;
-
-                z_prev = z;
-
-                if (abs(z.imag()) < distY)
-                    distY = abs(z.imag());
-                if (abs(z.real()) < distX)
-                    distX = abs(z.real());
-            }
-            _colorMap[_x][_y] = ToColorMapValue(n + log(1 / distX) + log(1 / distY));
-        }
-    }
+    if (_useHighPrecision)
+        RenderConvergenceTestWithOrbitTrap<HighPrecisionReal>();
+    else
+        RenderConvergenceTestWithOrbitTrap<double>();
 }
 void NewtonRenderer::Render()
 {

@@ -81,10 +81,10 @@ protected:
     wxGradient _gradient;                   ///< Gradient to be used.
     wxColour _fSetColor;                    ///< Color of points belonging to the set.
     std::vector<wxColour> _palette;
-    bool _relativeColor;
+    bool _relativeColor;                    ///< Activates relative coloring.
     bool _colorSet;                         ///< Activates internal coloring.
     bool _colorMode;                        ///< Activates external coloring.
-    ColorPaletteTypes _gradStyle;               ///< Grad color palette to be used.
+    ColorPaletteTypes _gradStyle;           ///< Grad color palette to be used.
     unsigned int _paletteSize;
     unsigned int _gradPaletteSize;
     unsigned int _varGradientStep;
@@ -151,6 +151,7 @@ protected:
     void EnsurePreciseViewInitialized() const;
     void SyncDoubleViewFromPrecise();
     void UpdatePreciseFactors();
+    [[nodiscard]] bool SupportsHighPrecisionRender() const;
     [[nodiscard]] bool ShouldUseHighPrecision() const;
     [[nodiscard]] unsigned int EstimateRequiredPrecisionBits() const;
     [[nodiscard]] bool OptionsPreciseViewMatchesDoubleView(const Options& opt) const;

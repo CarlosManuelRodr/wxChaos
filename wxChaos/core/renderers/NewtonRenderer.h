@@ -9,6 +9,10 @@ class NewtonRenderer : public Renderer
 {
     double minStep;
 
+    template<class Real>
+    void RenderConvergenceTest();
+    template<class Real>
+    void RenderConvergenceTestWithOrbitTrap();
     void ConvergenceTestRender();
     void ConvergenceTestWithOrbitTrapRender();
 

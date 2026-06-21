@@ -16,6 +16,7 @@ Newton::Newton(const unsigned int width, const unsigned int height) : Fractal(wi
     _type = FractalType::NewtonRaphsonMethod;
     _hasOrbit = true;
     _hasOrbitTrap = true;
+    _relativeColor = true;
     myRender = new NewtonRenderer[_threadNumber];
     SetWatchdog<NewtonRenderer>(myRender, &_watchdog, _threadNumber);
 
