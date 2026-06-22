@@ -8,6 +8,7 @@ RenderingAlgorithmOptions RenderingAlgorithm::GetDefaultOptions(const RenderingA
     {
         case RenderingAlgorithmType::GaussianInt:
         case RenderingAlgorithmType::Buddhabrot:
+        case RenderingAlgorithmType::TriangleInequality:
             options.relativeColor = true;
             break;
         default:
