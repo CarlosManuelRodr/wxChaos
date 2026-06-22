@@ -307,7 +307,7 @@ void SettingsFrame::ApplyColorStyle(const ColorPaletteTypes style)
     _gradient = wxGradient();
     _gradient.SetMin(0);
     _gradient.SetMax(palette.paletteSize);
-    _gradient.FromString(palette.grad);
+    _gradient.FromString(wxString::FromUTF8(palette.grad.c_str()));
     UpdateGradientPreview();
 }
 

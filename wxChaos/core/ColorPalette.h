@@ -1,22 +1,23 @@
 #pragma once
-#include <wx/string.h>
+
+#include <string>
 #include "ColorPaletteTypes.h"
 
 /**
 * @class ColorPalette
-* @brief Class that assign a wxString parameter according to the selected palette.
+* @brief Class that assigns gradient parameters according to the selected palette.
 */
 class ColorPalette
 {
 public:
     int paletteSize;
     int colorCycleLength;
-    wxString grad;
+    std::string grad;
 
     ///@brief Empty constructor.
     ColorPalette();
 
-    ///@brief Assign wxString parameter according to the palette selected.
+    ///@brief Assign gradient parameters according to the palette selected.
     ///@param palette Palette selected.
     void SetStyle(ColorPaletteTypes palette);
 };

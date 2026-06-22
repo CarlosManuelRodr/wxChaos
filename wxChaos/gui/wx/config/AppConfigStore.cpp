@@ -11,7 +11,7 @@ std::string AppConfigStore::DefaultColorStyle()
 {
     ColorPalette palette;
     palette.SetStyle(ClassicMandelbrot);
-    return palette.grad.ToStdString();
+    return palette.grad;
 }
 
 AppConfig::AppConfig()
@@ -20,7 +20,7 @@ AppConfig::AppConfig()
     palette.SetStyle(colorStyle);
     paletteSize = palette.paletteSize;
     colorCycleLength = palette.colorCycleLength;
-    colorStyleGrad = palette.grad.ToStdString();
+    colorStyleGrad = palette.grad;
 }
 
 std::string AppConfigStore::Trim(const std::string& value)
@@ -254,7 +254,7 @@ ColorPaletteTypes AppConfigStore::InferColorStyleFromGradient(const std::string&
 
         ColorPalette palette;
         palette.SetStyle(item.second);
-        if (palette.grad.ToStdString() == gradient)
+        if (palette.grad == gradient)
             return item.second;
     }
 
@@ -331,7 +331,7 @@ AppConfig AppConfigStore::Load() const
     {
         ColorPalette palette;
         palette.SetStyle(config.colorStyle);
-        config.colorStyleGrad = palette.grad.ToStdString();
+        config.colorStyleGrad = palette.grad;
     }
 
     wxString fractalType;

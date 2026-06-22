@@ -141,8 +141,10 @@ if(BUILD_TESTING)
     add_executable(wxChaosCoreTests
             tests/core/CoreTestsMain.cpp
             tests/core/FractalUtilitiesTests.cpp
+            tests/core/RenderingAlgorithmTests.cpp
             tests/core/geometry/GeometryTests.cpp
             tests/core/rendering/RenderingTests.cpp
+            wxChaos/core/RenderingAlgorithm.cpp
             wxChaos/core/geometry/Rect.cpp
             wxChaos/core/geometry/Vector2Double.cpp
             wxChaos/core/rendering/RenderJob.cpp

@@ -342,14 +342,6 @@ void RendererOptions::SetAlgorithmChoices()
     SyncRelativeColorControl();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-int RendererOptions::GetPaletteSizeForAlgorithm(const RenderingAlgorithmType algorithm, const int paletteSize)
-{
-    if (algorithm == RenderingAlgorithmType::Buddhabrot)
-        return BuddhabrotPaletteSize;
-
-    return paletteSize;
-}
-// ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::ApplyPaletteSize(const int paletteSize)
 {
     _presenter->SetGradientSize(paletteSize);
@@ -424,9 +416,9 @@ void RendererOptions::GradientColorChangeSelection(wxCommandEvent&)
     _gradFractalColor.SetStyle(static_cast<ColorPaletteTypes>(_gradStylesChoice->GetCurrentSelection()));
     wxGradient myGrad;
     myGrad.SetMin(0);
-    const int paletteSize = GetPaletteSizeForAlgorithm(_target->GetCurrentAlg(), _gradFractalColor.paletteSize);
+    const int paletteSize = RenderingAlgorithm::GetDefaultPaletteSize(_target->GetCurrentAlg(), _gradFractalColor.paletteSize);
     myGrad.SetMax(paletteSize);
-    myGrad.FromString(_gradFractalColor.grad);
+    myGrad.FromString(wxString::FromUTF8(_gradFractalColor.grad.c_str()));
     _presenter->SetColorPalette(static_cast<ColorPaletteTypes>(_gradStylesChoice->GetCurrentSelection()));
     _presenter->SetGradient(myGrad);
     _presenter->SetColorCycleLength(_gradFractalColor.colorCycleLength);
@@ -469,8 +461,9 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
     {
         const auto algorithm = availableAlgorithms[selection];
         _presenter->SetAlgorithm(algorithm);
-        if (algorithm == RenderingAlgorithmType::Buddhabrot)
-            ApplyPaletteSize(BuddhabrotPaletteSize);
+        const RenderingAlgorithmOptions defaults = RenderingAlgorithm::GetDefaultOptions(algorithm);
+        if (defaults.paletteSize.has_value())
+            ApplyPaletteSize(*defaults.paletteSize);
         else
             NotifyOptionsChanged();
         SyncRelativeColorControl();

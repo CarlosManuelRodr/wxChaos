@@ -7,12 +7,12 @@
 #include "FractalHandler.h"
 #include "fractals/ScriptFractal.h"
 #include "BmpImageWriter.h"
+#include "ColorPalette.h"
+#include "RenderingAlgorithm.h"
 #include "SystemUtilities.h"
 using namespace std;
 
 constexpr ColorPaletteTypes defaultGradientStyle = ClassicMandelbrot;
-constexpr double defaultColorCycleLength = 72.0;
-const wxString defaultGradientString = wxT("rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);");
 
 inline double CalcSquaredDist(const double x1, const double y1, const double x2, const double y2)
 {
@@ -101,7 +101,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _maxColorMapVal = 0.0;
     _relativeColorMin = 0.0;
     _relativeColorMax = 1.0;
-    _colorCycleLength = defaultColorCycleLength;
+    _colorCycleLength = 72.0;
     _renderJobCompatible = false;
     _orbitX = _orbitY = 0.0;
     _renderJobCompatible = true;
@@ -111,13 +111,17 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _geomFigure = false;
 
     // Creates default color palette.
+    ColorPalette defaultPalette;
+    defaultPalette.SetStyle(defaultGradientStyle);
+
     _relativeColor = false;
-    _gradPaletteSize = _paletteSize = 300;
+    _gradPaletteSize = _paletteSize = defaultPalette.paletteSize;
     _algorithm = RenderingAlgorithmType::Other;
     _gradStyle = defaultGradientStyle;
-    _gradient.FromString(defaultGradientString);
+    _gradient.FromString(wxString::FromUTF8(defaultPalette.grad.c_str()));
     _gradient.SetMin(0);
     _gradient.SetMax(_gradPaletteSize);
+    _colorCycleLength = defaultPalette.colorCycleLength;
 
     _palette.resize(_paletteSize);
     _varGradientStep = std::max(1U, _paletteSize / 60);
@@ -1182,7 +1186,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _changeGradient = opt.changeGradient;
     _relativeColor = opt.relativeColor;
     _gradPaletteSize = opt.gradPaletteSize;
-    _colorCycleLength = opt.colorCycleLength > 0.0 ? opt.colorCycleLength : defaultColorCycleLength;
+    _colorCycleLength = opt.colorCycleLength > 0.0 ? opt.colorCycleLength : 72.0;
     _algorithm = opt.alg;
     _fSetColor = wxColour(opt.fSetColor.r, opt.fSetColor.g, opt.fSetColor.b, opt.fSetColor.a);
 
@@ -1513,7 +1517,7 @@ vector<RenderingAlgorithmType> Fractal::GetAvailableAlg()
 void Fractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
 {
     _algorithm = algorithm;
-    _relativeColor = _algorithm == RenderingAlgorithmType::Buddhabrot;
+    _relativeColor = RenderingAlgorithm::UsesRelativeColorByDefault(_algorithm);
     this->StopRender();
     _rendered = false;
     _rendering = false;

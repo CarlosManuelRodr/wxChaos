@@ -15,6 +15,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <functional>
 #include "ColorPalette.h"
+#include "RenderingAlgorithm.h"
 #include "wxGradientDialog.h"
 #include "Fractal.h"
 #include "sfml/SFMLFractal.h"
@@ -29,8 +30,6 @@ wxDECLARE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 */
 class RendererOptions : public wxFrame
 {
-    static constexpr int BuddhabrotPaletteSize = 1500;
-
     wxScrolledWindow* _mainPanel;
     wxStaticText* _algorithmText;
     wxChoice* _algorithmChoice;
@@ -92,7 +91,6 @@ class RendererOptions : public wxFrame
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
     void ApplyPaletteSize(int paletteSize);
     [[nodiscard]] wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
-    [[nodiscard]] static int GetPaletteSizeForAlgorithm(RenderingAlgorithmType algorithm, int paletteSize);
 
 public:
     ///@brief Constructor.
