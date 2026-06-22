@@ -15,12 +15,11 @@
 #include <SFML/Graphics/Color.hpp>
 #include <functional>
 #include "coloring/ColorPalette.h"
-#include "coloring/RenderingAlgorithm.h"
+#include "sfml/SFMLFractal.h"
 #include "wxGradientDialog.h"
 #include "Fractal.h"
-#include "sfml/SFMLFractal.h"
 
-#define RendererOptionsFrameSize wxSize(900, 820)
+#define RendererOptionsFrameSize wxSize(950, 820)
 
 wxDECLARE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 

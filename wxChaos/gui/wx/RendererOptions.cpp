@@ -1,6 +1,5 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
 #include <utility>
-#include <cmath>
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include "AppPaths.h"
