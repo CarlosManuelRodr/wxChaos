@@ -171,6 +171,29 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
     _colorCycleLength->SetValue(static_cast<int>(std::round(_target->GetColorCycleLength())));
     gradSizer->Add(_colorCycleLength, 0, wxALL, 5);
 
+    _paletteMappingText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Palette mapping:"), wxDefaultPosition, wxDefaultSize, 0);
+    _paletteMappingText->Wrap(-1);
+    gradSizer->Add(_paletteMappingText, 0, wxALL, 5);
+
+    const wxString paletteMappingChoices[] = {
+        wxT("Linear"),
+        wxT("Exponentially mapped")
+    };
+    constexpr int paletteMappingNChoices = sizeof(paletteMappingChoices) / sizeof(wxString);
+    _paletteMappingMode = new wxChoice(_gradientPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                       paletteMappingNChoices, paletteMappingChoices, 0);
+    gradSizer->Add(_paletteMappingMode, 0, wxALL, 5);
+
+    _paletteMappingExponentText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Exponent:"), wxDefaultPosition, wxDefaultSize, 0);
+    _paletteMappingExponentText->Wrap(-1);
+    gradSizer->Add(_paletteMappingExponentText, 0, wxALL, 5);
+
+    _paletteMappingExponent = new wxSpinCtrlDouble(_gradientPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                                   wxSP_ARROW_KEYS, 0.01, 10.0, 1.5, 0.05);
+    _paletteMappingExponent->SetDigits(2);
+    gradSizer->Add(_paletteMappingExponent, 0, wxALL, 5);
+    SyncPaletteMappingControls();
+
     _gradientPanel->SetSizer(gradSizer);
     _gradientPanel->Layout();
     gradSizer->Fit(_gradientPanel);
@@ -200,6 +223,8 @@ void RendererOptions::ConnectEvents()
     _relativeCheck->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnRelativeColor, this);
     _gradPalSize->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptions::OnGradPaletteSize, this);
     _colorCycleLength->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptions::OnColorCycleLength, this);
+    _paletteMappingMode->Bind(wxEVT_CHOICE, &RendererOptions::OnPaletteMappingMode, this);
+    _paletteMappingExponent->Bind(wxEVT_SPINCTRLDOUBLE, &RendererOptions::OnPaletteMappingExponent, this);
     _colorFractal->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnColorFractal, this);
     _colorSet->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnColorSet, this);
     _orbitTrap->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnOrbitTrap, this);
@@ -252,6 +277,14 @@ void RendererOptions::SyncRelativeColorControl() const
 {
     _relativeCheck->SetValue(_target->GetRelativeColorMode());
     _relativeCheck->Enable(true);
+}
+void RendererOptions::SyncPaletteMappingControls() const
+{
+    const PaletteMappingMode mode = _target->GetPaletteMappingMode();
+    _paletteMappingMode->SetSelection(mode == PaletteMappingMode::Exponential ? 1 : 0);
+    _paletteMappingExponent->SetValue(_target->GetPaletteMappingExponent());
+    _paletteMappingExponent->Enable(mode == PaletteMappingMode::Exponential);
+    _paletteMappingExponentText->Enable(mode == PaletteMappingMode::Exponential);
 }
 void RendererOptions::SetAlgorithmChoices()
 {
@@ -348,6 +381,7 @@ void RendererOptions::SetTarget(SFMLFractal* presenter)
     _target = _presenter->GetFractal();
     _gradPalSize->SetValue(static_cast<int>(_target->GetPaletteSize()));
     _colorCycleLength->SetValue(static_cast<int>(std::round(_target->GetColorCycleLength())));
+    SyncPaletteMappingControls();
     _orbitTrap->Enable(_target->HasOrbitTrapMode());
     _orbitTrap->SetValue(_target->OrbitTrapActivated());
     _smoothRender->SetValue(_target->SmoothRenderActivated());
@@ -583,6 +617,22 @@ void RendererOptions::OnColorCycleLength(wxSpinEvent&)
     if (size > 0)
         _presenter->SetColorCycleLength(size);
 
+    NotifyOptionsChanged();
+}
+// ReSharper disable once CppMemberFunctionMayBeConst
+void RendererOptions::OnPaletteMappingMode(wxCommandEvent&)
+{
+    const PaletteMappingMode mode = _paletteMappingMode->GetSelection() == 1
+                                        ? PaletteMappingMode::Exponential
+                                        : PaletteMappingMode::Linear;
+    _presenter->SetPaletteMappingMode(mode);
+    SyncPaletteMappingControls();
+    NotifyOptionsChanged();
+}
+// ReSharper disable once CppMemberFunctionMayBeConst
+void RendererOptions::OnPaletteMappingExponent(wxSpinDoubleEvent&)
+{
+    _presenter->SetPaletteMappingExponent(_paletteMappingExponent->GetValue());
     NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst

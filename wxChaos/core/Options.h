@@ -2,6 +2,7 @@
 #include "wx/wxGradient.h"
 #include "SFML/Graphics.hpp"
 #include "wx/PanelOptions.h"
+#include "coloring/PaletteMapping.h"
 #include "types/RenderingAlgorithmType.h"
 #include "types/FractalType.h"
 #include "numeric/PreciseRect.h"
@@ -24,6 +25,8 @@ struct Options
     unsigned int paletteSize;
     unsigned int gradPaletteSize;
     double colorCycleLength;
+    PaletteMappingMode paletteMappingMode;
+    double paletteMappingExponent;
     PanelOptions panelOpt;
 
     double kReal;
@@ -59,6 +62,8 @@ inline Options::Options()
     type = FractalType::Undefined;
     paletteSize = gradPaletteSize = 0;
     colorCycleLength = 0.0;
+    paletteMappingMode = PaletteMappingMode::Linear;
+    paletteMappingExponent = 1.5;
     kReal = kImaginary = 0.0;
     orbitTrapMode = false;
     colorSet = false;

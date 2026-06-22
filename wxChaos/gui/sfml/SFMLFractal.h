@@ -182,6 +182,12 @@ public:
     ///@param cycleLength New cycle length.
     void SetColorCycleLength(double cycleLength);
 
+    ///@brief Sets how renderer values are mapped into the active palette.
+    void SetPaletteMappingMode(PaletteMappingMode mode);
+
+    ///@brief Sets the exponent used by exponential palette mapping.
+    void SetPaletteMappingExponent(double exponent);
+
     ///@brief Sets the color palette style.
     ///@param palette New palette style.
     void SetColorPalette(ColorPaletteTypes palette);

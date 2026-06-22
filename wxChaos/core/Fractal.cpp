@@ -8,6 +8,7 @@
 #include "fractals/ScriptFractal.h"
 #include "BmpImageWriter.h"
 #include "coloring/ColorPalette.h"
+#include "coloring/PaletteMapping.h"
 #include "coloring/RenderingAlgorithm.h"
 #include "SystemUtilities.h"
 using namespace std;
@@ -102,6 +103,8 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _relativeColorMin = 0.0;
     _relativeColorMax = 1.0;
     _colorCycleLength = 72.0;
+    _paletteMappingMode = PaletteMappingMode::Linear;
+    _paletteMappingExponent = 1.5;
     _renderJobCompatible = false;
     _orbitX = _orbitY = 0.0;
     _renderJobCompatible = true;
@@ -794,11 +797,10 @@ void Fractal::PrepareDisplayColorLookup()
 
 double Fractal::NormalizeColorMapValue(const double value) const
 {
-    if (!_relativeColor)
-        return value * static_cast<double>(_paletteSize) / std::max(1.0, _colorCycleLength);
-
-    const double ratio = std::clamp((value - _relativeColorMin) / (_relativeColorMax - _relativeColorMin), 0.0, 1.0);
-    return ratio * static_cast<double>(_paletteSize > 0 ? _paletteSize - 1 : 0);
+    const double minValue = _relativeColor ? _relativeColorMin : 0.0;
+    const double maxValue = _relativeColor ? _relativeColorMax : static_cast<double>(_maxIter);
+    return PaletteMapping::Map(value, minValue, maxValue, _paletteSize, _colorCycleLength,
+                               _paletteMappingMode, _paletteMappingExponent, _relativeColor);
 }
 
 bool Fractal::HasDisplayPixelColor(const unsigned int x, const unsigned int y) const
@@ -1187,6 +1189,8 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _relativeColor = opt.relativeColor;
     _gradPaletteSize = opt.gradPaletteSize;
     _colorCycleLength = opt.colorCycleLength > 0.0 ? opt.colorCycleLength : 72.0;
+    _paletteMappingMode = opt.paletteMappingMode;
+    _paletteMappingExponent = opt.paletteMappingExponent > 0.0 ? opt.paletteMappingExponent : 1.5;
     _algorithm = opt.alg;
     _fSetColor = wxColour(opt.fSetColor.r, opt.fSetColor.g, opt.fSetColor.b, opt.fSetColor.a);
 
@@ -1230,6 +1234,8 @@ Options Fractal::GetOptions() const
     opt.paletteSize = _paletteSize;
     opt.gradPaletteSize = _gradPaletteSize;
     opt.colorCycleLength = _colorCycleLength;
+    opt.paletteMappingMode = _paletteMappingMode;
+    opt.paletteMappingExponent = _paletteMappingExponent;
     opt.panelOpt = _panelOpt;
     opt.type = _type;
 
@@ -1486,6 +1492,27 @@ void Fractal::SetColorCycleLength(const double cycleLength)
 double Fractal::GetColorCycleLength() const
 {
     return _colorCycleLength;
+}
+void Fractal::SetPaletteMappingMode(const PaletteMappingMode mode)
+{
+    _paletteMappingMode = mode;
+    RedrawMaps();
+}
+PaletteMappingMode Fractal::GetPaletteMappingMode() const
+{
+    return _paletteMappingMode;
+}
+void Fractal::SetPaletteMappingExponent(const double exponent)
+{
+    if (exponent <= 0.0)
+        return;
+
+    _paletteMappingExponent = exponent;
+    RedrawMaps();
+}
+double Fractal::GetPaletteMappingExponent() const
+{
+    return _paletteMappingExponent;
 }
 // RelativeColor.
 void Fractal::SetRelativeColor(const bool mode)

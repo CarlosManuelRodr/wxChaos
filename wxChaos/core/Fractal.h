@@ -14,6 +14,7 @@
 #include "geometry/CircleData.h"
 #include "geometry/Vector2Int.h"
 #include "geometry/Rect.h"
+#include "coloring/PaletteMapping.h"
 #include "coloring/ColorPaletteTypes.h"
 #include "Options.h"
 #include "FormulaOptions.h"
@@ -93,6 +94,8 @@ protected:
     double _relativeColorMin;
     double _relativeColorMax;
     double _colorCycleLength;
+    PaletteMappingMode _paletteMappingMode;
+    double _paletteMappingExponent;
     bool _refreshImage;
 
     // Status variables.
@@ -426,6 +429,10 @@ public:
     unsigned int GetPaletteSize() const;
     void SetColorCycleLength(double cycleLength);
     double GetColorCycleLength() const;
+    void SetPaletteMappingMode(PaletteMappingMode mode);
+    PaletteMappingMode GetPaletteMappingMode() const;
+    void SetPaletteMappingExponent(double exponent);
+    double GetPaletteMappingExponent() const;
     void SetGradient(const wxGradient& grad);
     void SetGradientSize(unsigned int size);
     void SetRelativeColor(bool mode);

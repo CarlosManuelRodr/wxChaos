@@ -469,6 +469,18 @@ void SFMLFractal::SetColorCycleLength(const double cycleLength)
     _fractal->SetColorCycleLength(cycleLength);
 }
 
+void SFMLFractal::SetPaletteMappingMode(const PaletteMappingMode mode)
+{
+    ClearImageCache();
+    _fractal->SetPaletteMappingMode(mode);
+}
+
+void SFMLFractal::SetPaletteMappingExponent(const double exponent)
+{
+    ClearImageCache();
+    _fractal->SetPaletteMappingExponent(exponent);
+}
+
 void SFMLFractal::SetColorPalette(const ColorPaletteTypes palette)
 {
     ClearImageCache();

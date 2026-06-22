@@ -56,6 +56,10 @@ class RendererOptions : public wxFrame
     wxSpinCtrl* _gradPalSize;
     wxStaticText* _colorCycleText;
     wxSpinCtrl* _colorCycleLength;
+    wxStaticText* _paletteMappingText;
+    wxChoice* _paletteMappingMode;
+    wxStaticText* _paletteMappingExponentText;
+    wxSpinCtrlDouble* _paletteMappingExponent;
     wxStaticText* _colorVarText;
     wxSlider* _colorVarSlider;
     
@@ -83,11 +87,14 @@ class RendererOptions : public wxFrame
     void GradientColorChangeSelection(wxCommandEvent& event);
     void OnGradPaletteSize(wxSpinEvent& event);
     void OnColorCycleLength(wxSpinEvent& event);
+    void OnPaletteMappingMode(wxCommandEvent& event);
+    void OnPaletteMappingExponent(wxSpinDoubleEvent& event);
     void OnColorVar(wxScrollEvent& event);
 
     void ConnectEvents();
     void NotifyOptionsChanged() const;
     void SyncRelativeColorControl() const;
+    void SyncPaletteMappingControls() const;
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
     [[nodiscard]] wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
 

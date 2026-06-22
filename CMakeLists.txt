@@ -144,6 +144,7 @@ if(BUILD_TESTING)
             tests/core/RenderingAlgorithmTests.cpp
             tests/core/geometry/GeometryTests.cpp
             tests/core/rendering/RenderingTests.cpp
+            wxChaos/core/coloring/PaletteMapping.cpp
             wxChaos/core/coloring/RenderingAlgorithm.cpp
             wxChaos/core/geometry/Rect.cpp
             wxChaos/core/geometry/Vector2Double.cpp

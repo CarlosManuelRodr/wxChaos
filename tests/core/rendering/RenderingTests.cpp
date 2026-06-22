@@ -1,4 +1,5 @@
 #include <doctest/doctest.h>
+#include "coloring/PaletteMapping.h"
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
 
@@ -67,4 +68,26 @@ TEST_CASE("RenderJob can override progress origin")
 
     CHECK_FALSE(job.IsEmpty());
     CHECK(job.GetProgressOriginY() == 2);
+}
+
+TEST_CASE("PaletteMapping keeps linear mapping compatible")
+{
+    CHECK(PaletteMapping::Map(36.0, 0.0, 100.0, 300, 72.0,
+                              PaletteMappingMode::Linear, 1.5, false) == doctest::Approx(150.0));
+}
+
+TEST_CASE("PaletteMapping exponential mode reshapes normalized values")
+{
+    const double mapped = PaletteMapping::Map(25.0, 0.0, 100.0, 300, 100.0,
+                                             PaletteMappingMode::Exponential, 2.0, false);
+
+    CHECK(mapped == doctest::Approx(18.75));
+}
+
+TEST_CASE("PaletteMapping exponential relative mode spans the palette once")
+{
+    const double mapped = PaletteMapping::Map(5.0, 0.0, 10.0, 101, 72.0,
+                                             PaletteMappingMode::Exponential, 2.0, true);
+
+    CHECK(mapped == doctest::Approx(25.0));
 }
