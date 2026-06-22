@@ -120,10 +120,10 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
     mainSizer->Add(setSizer, 1, wxEXPAND, 5);
 
     _typeNotebook = new wxNotebook(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
-    _gradientLabel = new wxPanel(_typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    _gradientPanel = new wxPanel(_typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     auto* gradSizer = new wxBoxSizer(wxVERTICAL);
 
-    _gradStylesLabel = new wxStaticText(_gradientLabel, wxID_ANY, wxT("Color styles:"), wxDefaultPosition, wxDefaultSize, 0);
+    _gradStylesLabel = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Color styles:"), wxDefaultPosition, wxDefaultSize, 0);
     _gradStylesLabel->Wrap(-1);
     gradSizer->Add(_gradStylesLabel, 0, wxALL, 5);
 
@@ -144,37 +144,37 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
         wxT("Custom")
     };
     constexpr int gradStyleChoiceNChoices = sizeof(gradStyleChoiceChoices) / sizeof(wxString);
-    _gradStylesChoice = new wxChoice(_gradientLabel, wxID_ANY, wxDefaultPosition, wxDefaultSize, gradStyleChoiceNChoices, gradStyleChoiceChoices, 0);
+    _gradStylesChoice = new wxChoice(_gradientPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, gradStyleChoiceNChoices, gradStyleChoiceChoices, 0);
     _gradStylesChoice->SetSelection(_target->GetColorPalette());
     gradSizer->Add(_gradStylesChoice, 0, wxALL, 5);
 
-    _gradientMap = new wxStaticBitmap(_gradientLabel, wxID_ANY, PaintGradient(), wxDefaultPosition, wxDefaultSize, 0);
+    _gradientMap = new wxStaticBitmap(_gradientPanel, wxID_ANY, PaintGradient(), wxDefaultPosition, wxDefaultSize, 0);
     gradSizer->Add(_gradientMap, 0, wxALL, 5);
 
-    _gradButton = new wxButton(_gradientLabel, wxID_ANY, wxT("Change gradient"), wxDefaultPosition, wxDefaultSize, 0);
+    _gradButton = new wxButton(_gradientPanel, wxID_ANY, wxT("Change gradient"), wxDefaultPosition, wxDefaultSize, 0);
     gradSizer->Add(_gradButton, 0, wxALL, 5);
 
-    _gradPalText = new wxStaticText(_gradientLabel, wxID_ANY, wxT("Palette size:"), wxDefaultPosition, wxDefaultSize, 0);
+    _gradPalText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Palette size:"), wxDefaultPosition, wxDefaultSize, 0);
     _gradPalText->Wrap(-1);
     gradSizer->Add(_gradPalText, 0, wxALL, 5);
 
-    _gradPalSize = new wxSpinCtrl(_gradientLabel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 20000, 300);
+    _gradPalSize = new wxSpinCtrl(_gradientPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 20000, 300);
     gradSizer->Add(_gradPalSize, 0, wxALL, 5);
     const auto gradientSize = static_cast<int>(_target->GetGradient()->GetMax() - _target->GetGradient()->GetMin());
     _gradPalSize->SetValue(gradientSize);
 
-    _colorCycleText = new wxStaticText(_gradientLabel, wxID_ANY, wxT("Color cycle length:"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorCycleText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Color cycle length:"), wxDefaultPosition, wxDefaultSize, 0);
     _colorCycleText->Wrap(-1);
     gradSizer->Add(_colorCycleText, 0, wxALL, 5);
 
-    _colorCycleLength = new wxSpinCtrl(_gradientLabel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000, 72);
+    _colorCycleLength = new wxSpinCtrl(_gradientPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000, 72);
     _colorCycleLength->SetValue(static_cast<int>(std::round(_target->GetColorCycleLength())));
     gradSizer->Add(_colorCycleLength, 0, wxALL, 5);
 
-    _gradientLabel->SetSizer(gradSizer);
-    _gradientLabel->Layout();
-    gradSizer->Fit(_gradientLabel);
-    _typeNotebook->AddPage(_gradientLabel, wxT("Gradient color"), true);
+    _gradientPanel->SetSizer(gradSizer);
+    _gradientPanel->Layout();
+    gradSizer->Fit(_gradientPanel);
+    _typeNotebook->AddPage(_gradientPanel, wxT("Gradient color"), true);
 
     mainSizer->Add(_typeNotebook, 2, wxEXPAND | wxALL, 5);
 

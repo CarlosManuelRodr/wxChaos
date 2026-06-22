@@ -47,7 +47,7 @@ class RendererOptions : public wxFrame
     wxSlider* _blueSetSld;
     wxButton* _okButton;
     wxNotebook* _typeNotebook;
-    wxPanel* _gradientLabel;
+    wxPanel* _gradientPanel;
     wxStaticText* _gradStylesLabel;
     wxChoice* _gradStylesChoice;
     wxButton* _gradButton;
