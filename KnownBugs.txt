@@ -1,10 +1,7 @@
 - Zoom recorder is not performing the zoom at the depth level that the user has zoomed in to.
-
-TODO:
-- Remove stupid way of handling the cycle color length at SettingsFrame. Should be a centralized way to get color defaults.
+- Changing the gradient color palette with the relative color option active should invalidate the cache and redraw everything.
 
 Improvements:
-- Implement zooming with the mouse wheel.
 - Implement render passes. This will make it possible to zoom faster.
 - wxWidgets and Angelscript should be imported from Vcpkg.
 - muParserX should be imported as a submodule to benefit from the latest bug fixes.
