@@ -581,12 +581,13 @@ void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
     // Clear maps.
     if ((!_pendingRenderOffset.x && !_pendingRenderOffset.y) || _redrawAll || _redrawAlways)
     {
+        const double initialColorValue = _algorithm == RenderingAlgorithmType::Buddhabrot ? 0.0 : InvalidColor;
         for (int i = 0; i < _screenWidth; i++)
         {
             for (int j = 0; j < _screenHeight; j++)
             {
                 _setMap[i][j] = false;
-                _colorMap[i][j] = InvalidColor;
+                _colorMap[i][j] = initialColorValue;
                 _auxMap[i][j] = 0;
             }
         }
