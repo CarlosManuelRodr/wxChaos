@@ -76,7 +76,8 @@ bool MandelbrotRenderer::ShouldUsePerturbationRender() const
     return _renderingPrecisionMode == RenderingPrecisionMode::Adaptative && _useHighPrecision;
 }
 
-bool MandelbrotRenderer::HasPerturbationGlitch(const double referenceNorm, const double zNorm, const bool escaped)
+// ReSharper disable once CppDFAUnreachableFunctionCall
+bool MandelbrotRenderer::HasPerturbationGlitchOrDiverged(const double referenceNorm, const double zNorm, const bool escaped)
 {
     if (!std::isfinite(referenceNorm) || !std::isfinite(zNorm))
         return true;
@@ -177,7 +178,7 @@ MandelbrotRenderer::PerturbationTraceResult MandelbrotRenderer::TracePerturbatio
         const double zNorm = nextZRe * nextZRe + nextZIm * nextZIm;
         const double referenceNextNorm = reference.orbitRe[n + 1] * reference.orbitRe[n + 1] +
                                          reference.orbitIm[n + 1] * reference.orbitIm[n + 1];
-        if (!std::isfinite(nextZRe) || !std::isfinite(nextZIm) || HasPerturbationGlitch(referenceNextNorm, zNorm, escaped))
+        if (HasPerturbationGlitchOrDiverged(referenceNextNorm, zNorm, escaped))
             return {point, false};
 
         const bool wasInside = !escaped;

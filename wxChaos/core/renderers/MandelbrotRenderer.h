@@ -31,7 +31,7 @@ class MandelbrotRenderer : public Renderer
     [[nodiscard]] bool ShouldUsePerturbationRender() const;
     [[nodiscard]] PerturbationReference BuildPerturbationReference(const HighPrecisionReal& centerRe, const HighPrecisionReal& centerIm) const;
     [[nodiscard]] PerturbationReference BuildInitialPerturbationReference() const;
-    [[nodiscard]] static bool HasPerturbationGlitch(double referenceNorm, double zNorm, bool escaped);
+    [[nodiscard]] static bool HasPerturbationGlitchOrDiverged(double referenceNorm, double zNorm, bool escaped);
     template<class MeasurePoint>
     PerturbationTraceResult TracePerturbationPoint(const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm,
                                                    const PerturbationReference& reference, MeasurePoint measure) const;
