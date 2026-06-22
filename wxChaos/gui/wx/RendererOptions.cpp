@@ -170,6 +170,9 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
     _colorCycleLength->SetValue(static_cast<int>(std::round(_target->GetColorCycleLength())));
     gradSizer->Add(_colorCycleLength, 0, wxALL, 5);
 
+    auto* advancedColorSizer = new wxStaticBoxSizer(
+        new wxStaticBox(_gradientPanel, wxID_ANY, wxT("Advanced color options")),
+        wxVERTICAL);
     auto* paletteMappingSizer = new wxBoxSizer(wxHORIZONTAL);
     _paletteMappingText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Palette mapping:"), wxDefaultPosition, wxDefaultSize, 0);
     _paletteMappingText->Wrap(-1);
@@ -192,7 +195,8 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
                                                    wxSP_ARROW_KEYS, 0.01, 10.0, 1.5, 0.05);
     _paletteMappingExponent->SetDigits(2);
     paletteMappingSizer->Add(_paletteMappingExponent, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-    gradSizer->Add(paletteMappingSizer, 0, wxEXPAND, 0);
+    advancedColorSizer->Add(paletteMappingSizer, 0, wxEXPAND, 0);
+    gradSizer->Add(advancedColorSizer, 0, wxEXPAND | wxALL, 5);
     SyncPaletteMappingControls();
 
     _gradientPanel->SetSizer(gradSizer);
