@@ -10,6 +10,7 @@ class ColorPalette
 {
 public:
     int paletteSize;
+    int colorCycleLength;
     wxString grad;
 
     ///@brief Empty constructor.

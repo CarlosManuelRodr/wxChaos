@@ -16,12 +16,14 @@
 */
 struct AppConfig
 {
+    AppConfig();
+
     FractalType type = FractalType::Mandelbrot;
     int maxIterations = 100;
-    int paletteSize = 720;
-    int colorCycleLength = 72;
+    int paletteSize = 0;
+    int colorCycleLength = 0;
     ColorPaletteTypes colorStyle = ClassicMandelbrot; ///< Default gradient preset, or CustomGradient for user-edited gradients.
-    std::string colorStyleGrad = "rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);";
+    std::string colorStyleGrad;
     bool constantWindow = false;
     bool commandConsole = false;
     bool juliaMode = false;
@@ -62,7 +64,7 @@ public:
     void SetCommandConsole(bool commandConsole) const;
 
 private:
-    static const char* DefaultColorStyle();
+    static std::string DefaultColorStyle();
     static std::string Trim(const std::string& value);
     static std::string ToLower(std::string value);
     static bool FileExists(const std::string& filename);

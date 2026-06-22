@@ -7,9 +7,20 @@
 #include "ColorPalette.h"
 #include "global.h"
 
-const char* AppConfigStore::DefaultColorStyle()
+std::string AppConfigStore::DefaultColorStyle()
 {
-    return "rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);";
+    ColorPalette palette;
+    palette.SetStyle(ClassicMandelbrot);
+    return palette.grad.ToStdString();
+}
+
+AppConfig::AppConfig()
+{
+    ColorPalette palette;
+    palette.SetStyle(colorStyle);
+    paletteSize = palette.paletteSize;
+    colorCycleLength = palette.colorCycleLength;
+    colorStyleGrad = palette.grad.ToStdString();
 }
 
 std::string AppConfigStore::Trim(const std::string& value)

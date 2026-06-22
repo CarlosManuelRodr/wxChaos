@@ -423,7 +423,9 @@ void RendererOptions::GradientColorChangeSelection(wxCommandEvent&)
     myGrad.FromString(_gradFractalColor.grad);
     _presenter->SetColorPalette(static_cast<ColorPaletteTypes>(_gradStylesChoice->GetCurrentSelection()));
     _presenter->SetGradient(myGrad);
+    _presenter->SetColorCycleLength(_gradFractalColor.colorCycleLength);
     _gradPalSize->SetValue(paletteSize);
+    _colorCycleLength->SetValue(_gradFractalColor.colorCycleLength);
     _colorVarSlider->SetRange(0, paletteSize);
     _gradientMap->SetBitmap(PaintGradient());
     _gradientMap->SetWindowStyle(wxSIMPLE_BORDER);
