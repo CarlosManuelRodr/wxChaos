@@ -171,6 +171,9 @@ bool SFMLFractal::IsMoving() const
 
 void SFMLFractal::SetMovement(const Direction direction)
 {
+    ClearImageCache();
+    ResetZoomHistory();
+
     switch (direction)
     {
         case Up:
@@ -216,6 +219,8 @@ void SFMLFractal::BeginMousePan()
     if (!_fractal->IsRendered())
         return;
 
+    ClearImageCache();
+    ResetZoomHistory();
     _mousePanning = true;
     _xVel = 0;
     _yVel = 0;
