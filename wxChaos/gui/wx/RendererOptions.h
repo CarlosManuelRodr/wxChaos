@@ -88,6 +88,7 @@ class RendererOptions : public wxFrame
 
     void ConnectEvents();
     void NotifyOptionsChanged() const;
+    void SyncRelativeColorControl() const;
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
     void ApplyPaletteSize(int paletteSize);
     [[nodiscard]] wxBitmap PaintGradient() const;    ///< Paints the gradient widget.

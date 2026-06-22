@@ -1513,6 +1513,7 @@ vector<RenderingAlgorithmType> Fractal::GetAvailableAlg()
 void Fractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
 {
     _algorithm = algorithm;
+    _relativeColor = _algorithm == RenderingAlgorithmType::Buddhabrot;
     this->StopRender();
     _rendered = false;
     _rendering = false;

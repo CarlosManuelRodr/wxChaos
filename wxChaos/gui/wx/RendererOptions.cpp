@@ -248,6 +248,11 @@ void RendererOptions::NotifyOptionsChanged() const
     if (_optionsChanged)
         _optionsChanged(_target->GetOptions());
 }
+void RendererOptions::SyncRelativeColorControl() const
+{
+    _relativeCheck->SetValue(_target->GetRelativeColorMode());
+    _relativeCheck->Enable(true);
+}
 void RendererOptions::SetAlgorithmChoices()
 {
     // Construct the algorithm choice according to the algorithms available in the fractal.
@@ -334,6 +339,7 @@ void RendererOptions::SetAlgorithmChoices()
         _presenter->SetOrbitTrapMode(false);
         _presenter->SetSmoothRender(false);
     }
+    SyncRelativeColorControl();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 int RendererOptions::GetPaletteSizeForAlgorithm(const RenderingAlgorithmType algorithm, const int paletteSize)
@@ -393,7 +399,7 @@ void RendererOptions::SetTarget(SFMLFractal* presenter)
     }
 
     _typeNotebook->ChangeSelection(0);
-    _relativeCheck->SetValue(_target->GetRelativeColorMode());
+    SyncRelativeColorControl();
     _colorSet->SetValue(_target->GetInteriorColorMode());
     _colorFractal->SetValue(_target->GetExteriorColorMode());
 
@@ -467,6 +473,7 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
             ApplyPaletteSize(BuddhabrotPaletteSize);
         else
             NotifyOptionsChanged();
+        SyncRelativeColorControl();
     }
 }
 
