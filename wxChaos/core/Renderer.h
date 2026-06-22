@@ -76,6 +76,7 @@ protected:
     HighPrecisionReal _preciseYFactor;
     bool _useHighPrecision;
     unsigned int _highPrecisionBits;
+    RenderingPrecisionMode _renderingPrecisionMode;
 
     double _kReal;
     double _kImaginary;

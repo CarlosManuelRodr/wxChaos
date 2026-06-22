@@ -47,6 +47,21 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
 
     setSizer->Add(_algorithmChoice, 0, wxALL|wxEXPAND, 5);
 
+    _renderingPrecisionText = new wxStaticText(_mainPanel, wxID_ANY, wxT("Rendering precision"), wxDefaultPosition, wxDefaultSize, 0);
+    _renderingPrecisionText->Wrap(-1);
+    setSizer->Add(_renderingPrecisionText, 0, wxALL, 5);
+
+    const wxString renderingPrecisionChoices[] = {
+        wxT("Adaptative"),
+        wxT("Precise"),
+        wxT("Fast")
+    };
+    constexpr int renderingPrecisionNChoices = sizeof(renderingPrecisionChoices) / sizeof(wxString);
+    _renderingPrecisionChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                             renderingPrecisionNChoices, renderingPrecisionChoices, 0);
+    setSizer->Add(_renderingPrecisionChoice, 0, wxALL | wxEXPAND, 5);
+    SyncRenderingPrecisionControl();
+
     _optionsText = new wxStaticText(_mainPanel, wxID_ANY, wxT("Options"), wxDefaultPosition, wxDefaultSize, 0);
     _optionsText->Wrap(-1);
     setSizer->Add(_optionsText, 0, wxALL, 5);
@@ -225,6 +240,7 @@ void RendererOptions::ConnectEvents()
     this->Bind(wxEVT_CLOSE_WINDOW, &RendererOptions::OnClose, this);
     _gradStylesChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &RendererOptions::GradientColorChangeSelection, this);
     _algorithmChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &RendererOptions::OnChangeAlgorithm, this);
+    _renderingPrecisionChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &RendererOptions::OnRenderingPrecision, this);
     _relativeCheck->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptions::OnRelativeColor, this);
     _gradPalSize->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptions::OnGradPaletteSize, this);
     _colorCycleLength->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptions::OnColorCycleLength, this);
@@ -277,6 +293,21 @@ void RendererOptions::NotifyOptionsChanged() const
 {
     if (_optionsChanged)
         _optionsChanged(_target->GetOptions());
+}
+void RendererOptions::SyncRenderingPrecisionControl() const
+{
+    switch (_target->GetRenderingPrecisionMode())
+    {
+        case RenderingPrecisionMode::Adaptative:
+            _renderingPrecisionChoice->SetSelection(0);
+            break;
+        case RenderingPrecisionMode::Precise:
+            _renderingPrecisionChoice->SetSelection(1);
+            break;
+        case RenderingPrecisionMode::Fast:
+            _renderingPrecisionChoice->SetSelection(2);
+            break;
+    }
 }
 void RendererOptions::SyncRelativeColorControl() const
 {
@@ -391,6 +422,7 @@ void RendererOptions::SetTarget(SFMLFractal* presenter)
     _orbitTrap->SetValue(_target->OrbitTrapActivated());
     _smoothRender->SetValue(_target->SmoothRenderActivated());
     _smoothRender->Enable(_target->HasSmoothRenderMode());
+    SyncRenderingPrecisionControl();
 
     _algorithmChoice->Clear();
     _escapeTimeIndex = -1;
@@ -495,6 +527,27 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
         NotifyOptionsChanged();
         SyncRelativeColorControl();
     }
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void RendererOptions::OnRenderingPrecision(wxCommandEvent&)
+{
+    RenderingPrecisionMode mode = RenderingPrecisionMode::Adaptative;
+    switch (_renderingPrecisionChoice->GetSelection())
+    {
+        case 1:
+            mode = RenderingPrecisionMode::Precise;
+            break;
+        case 2:
+            mode = RenderingPrecisionMode::Fast;
+            break;
+        default:
+            mode = RenderingPrecisionMode::Adaptative;
+            break;
+    }
+
+    _presenter->SetRenderingPrecisionMode(mode);
+    NotifyOptionsChanged();
 }
 
 // Option to change methods.

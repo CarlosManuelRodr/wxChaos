@@ -4,6 +4,7 @@
 #include "wx/PanelOptions.h"
 #include "coloring/PaletteMapping.h"
 #include "types/RenderingAlgorithmType.h"
+#include "types/RenderingPrecisionMode.h"
 #include "types/FractalType.h"
 #include "numeric/PreciseRect.h"
 
@@ -21,6 +22,7 @@ struct Options
     unsigned int changeGradient;
     wxGradient gradient;
     RenderingAlgorithmType alg;
+    RenderingPrecisionMode renderingPrecisionMode;
     FractalType type;
     unsigned int paletteSize;
     unsigned int gradPaletteSize;
@@ -59,6 +61,7 @@ inline Options::Options()
     maxIter = 0;
     changeGradient = 0;
     alg = RenderingAlgorithmType::Other;
+    renderingPrecisionMode = RenderingPrecisionMode::Adaptative;
     type = FractalType::Undefined;
     paletteSize = gradPaletteSize = 0;
     colorCycleLength = 0.0;

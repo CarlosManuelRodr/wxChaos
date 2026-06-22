@@ -214,6 +214,7 @@ void JuliaMode::ApplyRendererOptions(const Options& options) const
     _sfmlFractal->SetGradientSize(options.gradPaletteSize);
     _sfmlFractal->SetVarGradient(options.changeGradient);
     _sfmlFractal->SetAlgorithm(options.alg);
+    _sfmlFractal->SetRenderingPrecisionMode(options.renderingPrecisionMode);
     _sfmlFractal->SetRelativeColor(options.relativeColor);
     _sfmlFractal->SetExteriorColorMode(options.colorMode);
     _sfmlFractal->SetFractalSetColorMode(options.colorSet);

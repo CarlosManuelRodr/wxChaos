@@ -79,6 +79,7 @@ protected:
 
     // Color properties.
     RenderingAlgorithmType _algorithm;
+    RenderingPrecisionMode _renderingPrecisionMode;
     std::vector<RenderingAlgorithmType> _availableAlg;
     wxGradient _gradient;                   ///< Gradient to be used.
     wxColour _fSetColor;                    ///< Color of points belonging to the set.
@@ -443,6 +444,8 @@ public:
     RenderingAlgorithmType GetCurrentAlg() const;
     std::vector<RenderingAlgorithmType> GetAvailableAlg();
     void SetAlgorithm(RenderingAlgorithmType algorithm);
+    void SetRenderingPrecisionMode(RenderingPrecisionMode mode);
+    RenderingPrecisionMode GetRenderingPrecisionMode() const;
 
     // Julia mode operations.
     bool IsJuliaVariety() const;

@@ -32,6 +32,8 @@ class RendererOptions : public wxFrame
     wxScrolledWindow* _mainPanel;
     wxStaticText* _algorithmText;
     wxChoice* _algorithmChoice;
+    wxStaticText* _renderingPrecisionText;
+    wxChoice* _renderingPrecisionChoice;
     wxStaticText* _optionsText;
     wxCheckBox* _relativeCheck;
     wxCheckBox* _colorFractal;
@@ -73,6 +75,7 @@ class RendererOptions : public wxFrame
 
     void OnClose(wxCloseEvent& event);
     void OnChangeAlgorithm(wxCommandEvent& event);
+    void OnRenderingPrecision(wxCommandEvent& event);
     void OnRelativeColor(wxCommandEvent& event);
     void OnColorFractal(wxCommandEvent& event);
     void OnColorSet(wxCommandEvent& event);
@@ -92,6 +95,7 @@ class RendererOptions : public wxFrame
 
     void ConnectEvents();
     void NotifyOptionsChanged() const;
+    void SyncRenderingPrecisionControl() const;
     void SyncRelativeColorControl() const;
     void SyncPaletteMappingControls() const;
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.

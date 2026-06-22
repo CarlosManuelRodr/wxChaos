@@ -120,6 +120,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _relativeColor = false;
     _gradPaletteSize = _paletteSize = defaultPalette.paletteSize;
     _algorithm = RenderingAlgorithmType::Other;
+    _renderingPrecisionMode = RenderingPrecisionMode::Adaptative;
     _gradStyle = defaultGradientStyle;
     _gradient.FromString(wxString::FromUTF8(defaultPalette.grad.c_str()));
     _gradient.SetMin(0);
@@ -1192,6 +1193,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _paletteMappingMode = opt.paletteMappingMode;
     _paletteMappingExponent = opt.paletteMappingExponent > 0.0 ? opt.paletteMappingExponent : 1.5;
     _algorithm = opt.alg;
+    _renderingPrecisionMode = opt.renderingPrecisionMode;
     _fSetColor = wxColour(opt.fSetColor.r, opt.fSetColor.g, opt.fSetColor.b, opt.fSetColor.a);
 
     _gradient = opt.gradient;
@@ -1229,6 +1231,7 @@ Options Fractal::GetOptions() const
     opt.changeGradient = _changeGradient;
     opt.smoothRender = _smoothRender;
     opt.alg = _algorithm;
+    opt.renderingPrecisionMode = _renderingPrecisionMode;
     opt.gradient = _gradient;
     opt.relativeColor = _relativeColor;
     opt.paletteSize = _paletteSize;
@@ -1548,6 +1551,20 @@ void Fractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
     this->StopRender();
     _rendered = false;
     _rendering = false;
+}
+void Fractal::SetRenderingPrecisionMode(const RenderingPrecisionMode mode)
+{
+    if (_renderingPrecisionMode == mode)
+        return;
+
+    _renderingPrecisionMode = mode;
+    this->StopRender();
+    _rendered = false;
+    _rendering = false;
+}
+RenderingPrecisionMode Fractal::GetRenderingPrecisionMode() const
+{
+    return _renderingPrecisionMode;
 }
 
 bool Fractal::IsJuliaVariety() const

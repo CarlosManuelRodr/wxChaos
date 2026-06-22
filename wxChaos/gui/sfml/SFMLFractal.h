@@ -219,6 +219,10 @@ public:
     ///@param algorithm New rendering algorithm.
     void SetAlgorithm(RenderingAlgorithmType algorithm);
 
+    ///@brief Sets the rendering precision strategy and invalidates cached images.
+    ///@param mode New rendering precision mode.
+    void SetRenderingPrecisionMode(RenderingPrecisionMode mode);
+
     ///@brief Sets orbit trap mode and invalidates cached images.
     ///@param mode Orbit trap mode.
     void SetOrbitTrapMode(bool mode);

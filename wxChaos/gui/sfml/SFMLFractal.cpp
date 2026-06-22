@@ -529,6 +529,12 @@ void SFMLFractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
     _fractal->SetAlgorithm(algorithm);
 }
 
+void SFMLFractal::SetRenderingPrecisionMode(const RenderingPrecisionMode mode)
+{
+    ClearImageCache();
+    _fractal->SetRenderingPrecisionMode(mode);
+}
+
 void SFMLFractal::SetOrbitTrapMode(const bool mode)
 {
     ClearImageCache();

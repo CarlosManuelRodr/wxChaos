@@ -1,5 +1,7 @@
 // ReSharper disable CppDFAConstantConditions
 #include <complex>
+#include <algorithm>
+#include <cmath>
 #include <random>
 #include <vector>
 #include "MandelbrotRenderer.h"
@@ -61,6 +63,223 @@ Renderer::Point MandelbrotRenderer::TracePoint(const Real& pixelRe, const Real& 
     }
 
     return point;
+}
+
+bool MandelbrotRenderer::ShouldUsePerturbationRender() const
+{
+    if (_myOpt.alg == RenderingAlgorithmType::Buddhabrot)
+        return false;
+
+    if (_renderingPrecisionMode == RenderingPrecisionMode::Fast)
+        return true;
+
+    return _renderingPrecisionMode == RenderingPrecisionMode::Adaptative && _useHighPrecision;
+}
+
+MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildPerturbationReference() const
+{
+    PerturbationReference reference;
+    const unsigned int precisionBits = std::max(_highPrecisionBits, 128U);
+    HighPrecisionReal::PrecisionScope precision(precisionBits);
+
+    const HighPrecisionReal two(2);
+    reference.centerRe = (HighPrecisionReal::WithCurrentPrecision(_preciseView.left) +
+                          HighPrecisionReal::WithCurrentPrecision(_preciseView.right)) / two;
+    reference.centerIm = (HighPrecisionReal::WithCurrentPrecision(_preciseView.top) +
+                          HighPrecisionReal::WithCurrentPrecision(_preciseView.bottom)) / two;
+    reference.centerReDouble = ToDouble(reference.centerRe);
+    reference.centerImDouble = ToDouble(reference.centerIm);
+
+    const auto orbitSize = static_cast<size_t>(_maxIter) + 1;
+    reference.orbitRe.resize(orbitSize, 0.0);
+    reference.orbitIm.resize(orbitSize, 0.0);
+
+    HighPrecisionReal zRe(0);
+    HighPrecisionReal zIm(0);
+    for (size_t n = 0; n + 1 < orbitSize; n++)
+    {
+        const HighPrecisionReal zRe2 = zRe * zRe;
+        const HighPrecisionReal zIm2 = zIm * zIm;
+        const HighPrecisionReal squaredRe = zRe2 - zIm2;
+        const HighPrecisionReal squaredIm = two * zRe * zIm;
+
+        zRe = squaredRe + reference.centerRe;
+        zIm = squaredIm + reference.centerIm;
+
+        reference.orbitRe[n + 1] = ToDouble(zRe);
+        reference.orbitIm[n + 1] = ToDouble(zIm);
+    }
+
+    return reference;
+}
+
+template<class MeasurePoint>
+Renderer::Point MandelbrotRenderer::TracePerturbationPoint(const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm,
+                                                           const PerturbationReference& reference, MeasurePoint measure) const
+{
+    const double deltaRe = ToDouble(pixelRe - reference.centerRe);
+    const double deltaIm = ToDouble(pixelIm - reference.centerIm);
+    if (!std::isfinite(deltaRe) || !std::isfinite(deltaIm))
+        return TracePoint(pixelRe, pixelIm, measure);
+
+    Point point;
+    point.startRe = reference.centerReDouble + deltaRe;
+    point.startIm = reference.centerImDouble + deltaIm;
+    measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
+
+    double epsilonRe = 0.0;
+    double epsilonIm = 0.0;
+    bool escaped = false;
+
+    for (unsigned n = 0; n < _maxIter; n++)
+    {
+        const double referenceRe = reference.orbitRe[n];
+        const double referenceIm = reference.orbitIm[n];
+        const double zRe = referenceRe + epsilonRe;
+        const double zIm = referenceIm + epsilonIm;
+        const double squaredRe = zRe * zRe - zIm * zIm;
+        const double squaredIm = 2.0 * zRe * zIm;
+
+        const double epsilonSquaredRe = epsilonRe * epsilonRe - epsilonIm * epsilonIm;
+        const double epsilonSquaredIm = 2.0 * epsilonRe * epsilonIm;
+        const double referenceEpsilonRe = 2.0 * (referenceRe * epsilonRe - referenceIm * epsilonIm);
+        const double referenceEpsilonIm = 2.0 * (referenceRe * epsilonIm + referenceIm * epsilonRe);
+
+        epsilonRe = referenceEpsilonRe + epsilonSquaredRe + deltaRe;
+        epsilonIm = referenceEpsilonIm + epsilonSquaredIm + deltaIm;
+
+        const double nextZRe = reference.orbitRe[n + 1] + epsilonRe;
+        const double nextZIm = reference.orbitIm[n + 1] + epsilonIm;
+        const double zNorm = nextZRe * nextZRe + nextZIm * nextZIm;
+        if (!std::isfinite(nextZRe) || !std::isfinite(nextZIm) || !std::isfinite(zNorm))
+            return TracePoint(pixelRe, pixelIm, measure);
+
+        const bool wasInside = !escaped;
+        point.zRe = nextZRe;
+        point.zIm = nextZIm;
+        point.zNorm = zNorm;
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
+                squaredRe, squaredIm, wasInside);
+
+        if (!escaped)
+        {
+            point.iterations = n + 1;
+
+            if (zNorm > 4.0)
+            {
+                escaped = true;
+                point.insideSet = false;
+                point.iterations = n;
+                point.escapedZRe = point.zRe;
+                point.escapedZIm = point.zIm;
+                point.escapedNorm = point.zNorm;
+                measure(point, PointTraceEvent::Escaped, n, point.zRe, point.zIm, point.zNorm,
+                        squaredRe, squaredIm, wasInside);
+            }
+        }
+
+        if (escaped && zNorm > 16.0 && !point.measureGaussianAfterEscape)
+            break;
+    }
+
+    return point;
+}
+
+template<class PixelRenderer>
+void MandelbrotRenderer::RenderPerturbationPixels(const PerturbationReference& reference, PixelRenderer pixelRenderer)
+{
+    const unsigned int precisionBits = std::max(_highPrecisionBits, 128U);
+    HighPrecisionReal::PrecisionScope precision(precisionBits);
+    const HighPrecisionReal top = HighPrecisionReal::WithCurrentPrecision(_preciseView.top);
+    const HighPrecisionReal left = HighPrecisionReal::WithCurrentPrecision(_preciseView.left);
+    const HighPrecisionReal xFactor = HighPrecisionReal::WithCurrentPrecision(_preciseXFactor);
+    const HighPrecisionReal yFactor = HighPrecisionReal::WithCurrentPrecision(_preciseYFactor);
+    HighPrecisionReal pixelIm = top - HighPrecisionReal(_heightOrigin) * yFactor;
+
+    for (_y = _heightOrigin; _y < _heightFinal; _y++)
+    {
+        HighPrecisionReal pixelRe = left + HighPrecisionReal(_widthOrigin) * xFactor;
+        for (_x = _widthOrigin; _x < _widthFinal; _x++)
+        {
+            pixelRenderer(pixelRe, pixelIm, reference);
+            pixelRe += xFactor;
+        }
+        pixelIm -= yFactor;
+    }
+}
+
+template<class MeasurePoint>
+void MandelbrotRenderer::PerturbationRenderFromPoint(double (MandelbrotRenderer::*colorPoint)(const Point&) const, MeasurePoint measure)
+{
+    const PerturbationReference reference = BuildPerturbationReference();
+    const auto renderPixel = [this, colorPoint, measure](const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm,
+                                                         const PerturbationReference& reference)
+    {
+        const Point point = TracePerturbationPoint(pixelRe, pixelIm, reference, measure);
+        if (point.insideSet)
+            _setMap[_x][_y] = true;
+
+        _colorMap[_x][_y] = (this->*colorPoint)(point);
+    };
+
+    RenderPerturbationPixels(reference, renderPixel);
+}
+
+void MandelbrotRenderer::PerturbationEscapeTimeRender()
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm, double, double, double, bool)
+        {
+            MeasureOrbitTrap(point, event, zRe, zIm);
+        };
+        PerturbationRenderFromPoint(&MandelbrotRenderer::EscapeTimeColor, measure);
+        return;
+    }
+
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    PerturbationRenderFromPoint(&MandelbrotRenderer::EscapeTimeColor, measure);
+}
+
+void MandelbrotRenderer::PerturbationGaussianIntRender()
+{
+    if (_myOpt.orbitTrapMode)
+    {
+        const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm,
+                                const double zNorm, double, double, const bool wasInside)
+        {
+            MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
+            MeasureOrbitTrap(point, event, zRe, zIm);
+            MeasureEscapeMu(point, event, zNorm);
+        };
+        PerturbationRenderFromPoint(&MandelbrotRenderer::GaussianIntegerColor, measure);
+        return;
+    }
+
+    const auto measure = [](Point& point, const PointTraceEvent event, unsigned int, const double zRe, const double zIm,
+                            const double zNorm, double, double, const bool wasInside)
+    {
+        MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
+        MeasureEscapeMu(point, event, zNorm);
+    };
+    PerturbationRenderFromPoint(&MandelbrotRenderer::GaussianIntegerColor, measure);
+}
+
+void MandelbrotRenderer::PerturbationEscapeAngleRender()
+{
+    const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
+    PerturbationRenderFromPoint(&MandelbrotRenderer::EscapeAngleColor, measure);
+}
+
+void MandelbrotRenderer::PerturbationTriangleInequalityRender()
+{
+    const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
+                            const double zNorm, const double squaredRe, const double squaredIm, const bool wasInside)
+    {
+        MeasureTriangleInequality(point, event, iteration, zRe, zIm, squaredRe, squaredIm, wasInside);
+        MeasureEscapeMu(point, event, zNorm);
+    };
+    PerturbationRenderFromPoint(&MandelbrotRenderer::TriangleInequalityColor, measure);
 }
 
 void MandelbrotRenderer::BuddhabrotRender()
@@ -147,6 +366,28 @@ void MandelbrotRenderer::BuddhabrotRender()
 
 void MandelbrotRenderer::Render()
 {
+    if (ShouldUsePerturbationRender())
+    {
+        switch (_myOpt.alg)
+        {
+            case RenderingAlgorithmType::EscapeTime:
+                PerturbationEscapeTimeRender();
+                break;
+            case RenderingAlgorithmType::GaussianInt:
+                PerturbationGaussianIntRender();
+                break;
+            case RenderingAlgorithmType::EscapeAngle:
+                PerturbationEscapeAngleRender();
+                break;
+            case RenderingAlgorithmType::TriangleInequality:
+                PerturbationTriangleInequalityRender();
+                break;
+            default:
+                break;
+        }
+        return;
+    }
+
     const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
         return TracePoint(pixelRe, pixelIm, measure);
