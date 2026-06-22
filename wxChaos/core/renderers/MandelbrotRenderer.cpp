@@ -76,17 +76,27 @@ bool MandelbrotRenderer::ShouldUsePerturbationRender() const
     return _renderingPrecisionMode == RenderingPrecisionMode::Adaptative && _useHighPrecision;
 }
 
-MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildPerturbationReference() const
+bool MandelbrotRenderer::HasPerturbationGlitch(const double referenceNorm, const double zNorm, const bool escaped)
+{
+    if (!std::isfinite(referenceNorm) || !std::isfinite(zNorm))
+        return true;
+
+    if (!escaped && zNorm <= 4.0 && referenceNorm > 16.0)
+        return true;
+
+    constexpr double glitchThreshold = 1.0e-6;
+    return referenceNorm > 1.0e-12 && zNorm < referenceNorm * glitchThreshold;
+}
+
+MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildPerturbationReference(const HighPrecisionReal& centerRe,
+                                                                                         const HighPrecisionReal& centerIm) const
 {
     PerturbationReference reference;
     const unsigned int precisionBits = std::max(_highPrecisionBits, 128U);
     HighPrecisionReal::PrecisionScope precision(precisionBits);
 
-    const HighPrecisionReal two(2);
-    reference.centerRe = (HighPrecisionReal::WithCurrentPrecision(_preciseView.left) +
-                          HighPrecisionReal::WithCurrentPrecision(_preciseView.right)) / two;
-    reference.centerIm = (HighPrecisionReal::WithCurrentPrecision(_preciseView.top) +
-                          HighPrecisionReal::WithCurrentPrecision(_preciseView.bottom)) / two;
+    reference.centerRe = HighPrecisionReal::WithCurrentPrecision(centerRe);
+    reference.centerIm = HighPrecisionReal::WithCurrentPrecision(centerIm);
     reference.centerReDouble = ToDouble(reference.centerRe);
     reference.centerImDouble = ToDouble(reference.centerIm);
 
@@ -96,6 +106,7 @@ MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildPerturbationR
 
     HighPrecisionReal zRe(0);
     HighPrecisionReal zIm(0);
+    const HighPrecisionReal two(2);
     for (size_t n = 0; n + 1 < orbitSize; n++)
     {
         const HighPrecisionReal zRe2 = zRe * zRe;
@@ -113,14 +124,27 @@ MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildPerturbationR
     return reference;
 }
 
+MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildInitialPerturbationReference() const
+{
+    const unsigned int precisionBits = std::max(_highPrecisionBits, 128U);
+    HighPrecisionReal::PrecisionScope precision(precisionBits);
+
+    const HighPrecisionReal two(2);
+    const HighPrecisionReal centerRe = (HighPrecisionReal::WithCurrentPrecision(_preciseView.left) +
+                                        HighPrecisionReal::WithCurrentPrecision(_preciseView.right)) / two;
+    const HighPrecisionReal centerIm = (HighPrecisionReal::WithCurrentPrecision(_preciseView.top) +
+                                        HighPrecisionReal::WithCurrentPrecision(_preciseView.bottom)) / two;
+    return BuildPerturbationReference(centerRe, centerIm);
+}
+
 template<class MeasurePoint>
-Renderer::Point MandelbrotRenderer::TracePerturbationPoint(const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm,
-                                                           const PerturbationReference& reference, MeasurePoint measure) const
+MandelbrotRenderer::PerturbationTraceResult MandelbrotRenderer::TracePerturbationPoint(const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm,
+                                                                                       const PerturbationReference& reference, MeasurePoint measure) const
 {
     const double deltaRe = ToDouble(pixelRe - reference.centerRe);
     const double deltaIm = ToDouble(pixelIm - reference.centerIm);
     if (!std::isfinite(deltaRe) || !std::isfinite(deltaIm))
-        return TracePoint(pixelRe, pixelIm, measure);
+        return {Point{}, false};
 
     Point point;
     point.startRe = reference.centerReDouble + deltaRe;
@@ -151,8 +175,10 @@ Renderer::Point MandelbrotRenderer::TracePerturbationPoint(const HighPrecisionRe
         const double nextZRe = reference.orbitRe[n + 1] + epsilonRe;
         const double nextZIm = reference.orbitIm[n + 1] + epsilonIm;
         const double zNorm = nextZRe * nextZRe + nextZIm * nextZIm;
-        if (!std::isfinite(nextZRe) || !std::isfinite(nextZIm) || !std::isfinite(zNorm))
-            return TracePoint(pixelRe, pixelIm, measure);
+        const double referenceNextNorm = reference.orbitRe[n + 1] * reference.orbitRe[n + 1] +
+                                         reference.orbitIm[n + 1] * reference.orbitIm[n + 1];
+        if (!std::isfinite(nextZRe) || !std::isfinite(nextZIm) || HasPerturbationGlitch(referenceNextNorm, zNorm, escaped))
+            return {point, false};
 
         const bool wasInside = !escaped;
         point.zRe = nextZRe;
@@ -182,11 +208,11 @@ Renderer::Point MandelbrotRenderer::TracePerturbationPoint(const HighPrecisionRe
             break;
     }
 
-    return point;
+    return {point, true};
 }
 
 template<class PixelRenderer>
-void MandelbrotRenderer::RenderPerturbationPixels(const PerturbationReference& reference, PixelRenderer pixelRenderer)
+void MandelbrotRenderer::RenderPerturbationPixels(PixelRenderer pixelRenderer)
 {
     const unsigned int precisionBits = std::max(_highPrecisionBits, 128U);
     HighPrecisionReal::PrecisionScope precision(precisionBits);
@@ -201,7 +227,7 @@ void MandelbrotRenderer::RenderPerturbationPixels(const PerturbationReference& r
         HighPrecisionReal pixelRe = left + HighPrecisionReal(_widthOrigin) * xFactor;
         for (_x = _widthOrigin; _x < _widthFinal; _x++)
         {
-            pixelRenderer(pixelRe, pixelIm, reference);
+            pixelRenderer(pixelRe, pixelIm);
             pixelRe += xFactor;
         }
         pixelIm -= yFactor;
@@ -211,18 +237,26 @@ void MandelbrotRenderer::RenderPerturbationPixels(const PerturbationReference& r
 template<class MeasurePoint>
 void MandelbrotRenderer::PerturbationRenderFromPoint(double (MandelbrotRenderer::*colorPoint)(const Point&) const, MeasurePoint measure)
 {
-    const PerturbationReference reference = BuildPerturbationReference();
-    const auto renderPixel = [this, colorPoint, measure](const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm,
-                                                         const PerturbationReference& reference)
+    std::vector<PerturbationReference> references;
+    references.push_back(BuildInitialPerturbationReference());
+
+    const auto renderPixel = [this, colorPoint, measure, &references](const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm)
     {
-        const Point point = TracePerturbationPoint(pixelRe, pixelIm, reference, measure);
+        PerturbationTraceResult result = TracePerturbationPoint(pixelRe, pixelIm, references.back(), measure);
+        if (!result.valid)
+        {
+            references.push_back(BuildPerturbationReference(pixelRe, pixelIm));
+            result = TracePerturbationPoint(pixelRe, pixelIm, references.back(), measure);
+        }
+
+        const Point point = result.valid ? result.point : TracePoint(pixelRe, pixelIm, measure);
         if (point.insideSet)
             _setMap[_x][_y] = true;
 
         _colorMap[_x][_y] = (this->*colorPoint)(point);
     };
 
-    RenderPerturbationPixels(reference, renderPixel);
+    RenderPerturbationPixels(renderPixel);
 }
 
 void MandelbrotRenderer::PerturbationEscapeTimeRender()

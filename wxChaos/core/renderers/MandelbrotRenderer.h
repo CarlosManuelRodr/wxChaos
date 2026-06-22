@@ -18,17 +18,25 @@ class MandelbrotRenderer : public Renderer
         std::vector<double> orbitIm;
     };
 
+    struct PerturbationTraceResult
+    {
+        Point point;
+        bool valid = true;
+    };
+
     int _buddhaRandomP;
 
     template<class Real, class MeasurePoint>
     Point TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const;
     [[nodiscard]] bool ShouldUsePerturbationRender() const;
-    [[nodiscard]] PerturbationReference BuildPerturbationReference() const;
+    [[nodiscard]] PerturbationReference BuildPerturbationReference(const HighPrecisionReal& centerRe, const HighPrecisionReal& centerIm) const;
+    [[nodiscard]] PerturbationReference BuildInitialPerturbationReference() const;
+    [[nodiscard]] static bool HasPerturbationGlitch(double referenceNorm, double zNorm, bool escaped);
     template<class MeasurePoint>
-    Point TracePerturbationPoint(const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm,
-                                 const PerturbationReference& reference, MeasurePoint measure) const;
+    PerturbationTraceResult TracePerturbationPoint(const HighPrecisionReal& pixelRe, const HighPrecisionReal& pixelIm,
+                                                   const PerturbationReference& reference, MeasurePoint measure) const;
     template<class PixelRenderer>
-    void RenderPerturbationPixels(const PerturbationReference& reference, PixelRenderer pixelRenderer);
+    void RenderPerturbationPixels(PixelRenderer pixelRenderer);
     template<class MeasurePoint>
     void PerturbationRenderFromPoint(double (MandelbrotRenderer::*colorPoint)(const Point&) const, MeasurePoint measure);
     void PerturbationEscapeTimeRender();
