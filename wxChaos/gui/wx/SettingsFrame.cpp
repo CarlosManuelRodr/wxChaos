@@ -6,7 +6,7 @@
 #include <utility>
 #include "SettingsFrame.h"
 #include "AppPaths.h"
-#include "ColorPalette.h"
+#include "coloring/ColorPalette.h"
 #include "wxGradientDialog.h"
 
 wxDEFINE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);

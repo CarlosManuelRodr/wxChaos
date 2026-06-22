@@ -14,7 +14,7 @@
 #include "geometry/CircleData.h"
 #include "geometry/Vector2Int.h"
 #include "geometry/Rect.h"
-#include "ColorPaletteTypes.h"
+#include "coloring/ColorPaletteTypes.h"
 #include "Options.h"
 #include "FormulaOptions.h"
 #include "Renderer.h"

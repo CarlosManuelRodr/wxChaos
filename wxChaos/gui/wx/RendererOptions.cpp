@@ -341,14 +341,6 @@ void RendererOptions::SetAlgorithmChoices()
     }
     SyncRelativeColorControl();
 }
-// ReSharper disable once CppMemberFunctionMayBeConst
-void RendererOptions::ApplyPaletteSize(const int paletteSize)
-{
-    _presenter->SetGradientSize(paletteSize);
-    _gradPalSize->SetValue(paletteSize);
-    _colorVarSlider->SetRange(0, paletteSize);
-    NotifyOptionsChanged();
-}
 void RendererOptions::SetTarget(SFMLFractal* presenter)
 {
     // Sets the new target fractal.
@@ -416,7 +408,7 @@ void RendererOptions::GradientColorChangeSelection(wxCommandEvent&)
     _gradFractalColor.SetStyle(static_cast<ColorPaletteTypes>(_gradStylesChoice->GetCurrentSelection()));
     wxGradient myGrad;
     myGrad.SetMin(0);
-    const int paletteSize = RenderingAlgorithm::GetDefaultPaletteSize(_target->GetCurrentAlg(), _gradFractalColor.paletteSize);
+    const int paletteSize = _gradFractalColor.paletteSize;
     myGrad.SetMax(paletteSize);
     myGrad.FromString(wxString::FromUTF8(_gradFractalColor.grad.c_str()));
     _presenter->SetColorPalette(static_cast<ColorPaletteTypes>(_gradStylesChoice->GetCurrentSelection()));
@@ -461,11 +453,7 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
     {
         const auto algorithm = availableAlgorithms[selection];
         _presenter->SetAlgorithm(algorithm);
-        const RenderingAlgorithmOptions defaults = RenderingAlgorithm::GetDefaultOptions(algorithm);
-        if (defaults.paletteSize.has_value())
-            ApplyPaletteSize(*defaults.paletteSize);
-        else
-            NotifyOptionsChanged();
+        NotifyOptionsChanged();
         SyncRelativeColorControl();
     }
 }

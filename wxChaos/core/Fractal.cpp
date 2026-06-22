@@ -7,8 +7,8 @@
 #include "FractalHandler.h"
 #include "fractals/ScriptFractal.h"
 #include "BmpImageWriter.h"
-#include "ColorPalette.h"
-#include "RenderingAlgorithm.h"
+#include "coloring/ColorPalette.h"
+#include "coloring/RenderingAlgorithm.h"
 #include "SystemUtilities.h"
 using namespace std;
 

@@ -4,7 +4,7 @@
 #include <utility>
 #include <wx/fileconf.h>
 #include "AppConfigStore.h"
-#include "ColorPalette.h"
+#include "coloring/ColorPalette.h"
 #include "global.h"
 
 std::string AppConfigStore::DefaultColorStyle()

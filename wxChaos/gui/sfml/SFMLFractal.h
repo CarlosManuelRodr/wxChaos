@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "ColorPaletteTypes.h"
+#include "coloring/ColorPaletteTypes.h"
 #include "geometry/Rect.h"
 #include "geometry/Vector2Int.h"
 #include "types/Direction.h"
