@@ -294,7 +294,16 @@ void Fractal::UpdatePreciseFactors() const
 }
 bool Fractal::ShouldUseHighPrecision() const
 {
-    return SupportsHighPrecisionRender() && EstimateRequiredPrecisionBits() > 53;
+    if (!SupportsHighPrecisionRender())
+        return false;
+
+    if (_renderingPrecisionMode == RenderingPrecisionMode::Precise)
+        return true;
+
+    if (_renderingPrecisionMode == RenderingPrecisionMode::Fast)
+        return false;
+
+    return EstimateRequiredPrecisionBits() > 53;
 }
 bool Fractal::SupportsHighPrecisionRender() const
 {
@@ -1258,8 +1267,8 @@ Options Fractal::GetOptions() const
     opt.preciseXFactor = _preciseXFactor;
     opt.preciseYFactor = _preciseYFactor;
     opt.hasPreciseView = true;
-    opt.highPrecisionBits = EstimateRequiredPrecisionBits();
-    opt.useHighPrecision = SupportsHighPrecisionRender() && opt.highPrecisionBits > 53;
+    opt.highPrecisionBits = GetHighPrecisionRenderBits();
+    opt.useHighPrecision = ShouldUseHighPrecision();
 
     return opt;
 }
@@ -1269,8 +1278,17 @@ bool Fractal::IsHighPrecisionRenderActive() const
 }
 unsigned int Fractal::GetHighPrecisionRenderBits() const
 {
+    if (!SupportsHighPrecisionRender())
+        return 0;
+
     const unsigned int precisionBits = EstimateRequiredPrecisionBits();
-    return SupportsHighPrecisionRender() && precisionBits > 53 ? precisionBits : 0;
+    if (_renderingPrecisionMode == RenderingPrecisionMode::Precise)
+        return std::max(precisionBits, 64U);
+
+    if (_renderingPrecisionMode == RenderingPrecisionMode::Adaptative && precisionBits > 53)
+        return precisionBits;
+
+    return 0;
 }
 void Fractal::SetPrecisionStatusChangedCallback(std::function<void(bool, unsigned int)> callback)
 {
