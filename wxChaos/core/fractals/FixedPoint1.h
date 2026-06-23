@@ -2,10 +2,15 @@
 #include "../Fractal.h"
 #include "../renderers/FixedPoint1Renderer.h"
 
-/*
-* @class FixedPoint1
-* @brief Handles the RenderFixedPoint1 threads.
-*/
+/**
+ * @class FixedPoint1
+ * @brief Fixed-point convergence map for z_{n+1} = sin(z_n).
+ *
+ * Each pixel supplies z_0. Iteration stops when the real and imaginary parts
+ * both change by less than the configured minimum step, or when max iterations
+ * is reached. Coloring is based on the convergence iteration and final real
+ * half-plane.
+ */
 class FixedPoint1 : public Fractal
 {
     FixedPoint1Renderer* myRender;

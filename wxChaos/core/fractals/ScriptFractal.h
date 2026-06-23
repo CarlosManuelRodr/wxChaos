@@ -3,10 +3,14 @@
 #include "../renderers/ScriptFractalRenderer.h"
 #include "../scripting/ScriptData.h"
 
-/*
-* @class ScriptFractal
-* @brief Handles the RenderScriptdFractal threads.
-*/
+/**
+ * @class ScriptFractal
+ * @brief Fractal whose render loop is supplied by an AngelScript file.
+ *
+ * The script receives the current view, Julia constant, iteration count,
+ * thread bounds, screen size, and palette size as globals, then writes into
+ * the shared set and color maps through the scripting bindings.
+ */
 class ScriptFractal : public Fractal
 {
     std::string _path;

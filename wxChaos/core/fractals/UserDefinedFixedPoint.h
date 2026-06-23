@@ -2,10 +2,15 @@
 #include "../Fractal.h"
 #include "../renderers/UserDefinedFixedPointRenderer.h"
 
-/*
-* @class UserDefinedFixedPoint
-* @brief Handles the RenderUserDefined threads.
-*/
+/**
+ * @class UserDefinedFixedPoint
+ * @brief Fixed-point convergence map defined by a user muParserX expression.
+ *
+ * The expression computes the next z value and may use variables z/Z. Each
+ * pixel supplies z_0. Iteration stops when the real and imaginary parts both
+ * change by less than the configured minimum step, or when max iterations is
+ * reached.
+ */
 class UserDefinedFixedPoint : public Fractal
 {
     UserDefinedFixedPointRenderer* _myRender;

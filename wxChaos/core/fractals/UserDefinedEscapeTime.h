@@ -2,10 +2,15 @@
 #include "../Fractal.h"
 #include "../renderers/UserDefinedEscapeTimeRenderer.h"
 
-/*
-* @class UserDefinedEscapeTime
-* @brief Handles the RenderUserDefined threads.
-*/
+/**
+ * @class UserDefinedEscapeTime
+ * @brief Escape-time fractal defined by a user muParserX expression.
+ *
+ * The expression computes the next z value and may use variables z/Z and c/C.
+ * In Mandelbrot mode each pixel supplies c and starts z_0 = 0; in Julia mode
+ * each pixel supplies z_0 and the UI Julia constant supplies c. Escape is
+ * detected when |z|^2 exceeds bailout^2 from the formula options.
+ */
 class UserDefinedEscapeTime : public Fractal
 {
     UserDefinedEscapeTimeRenderer* _myRender;

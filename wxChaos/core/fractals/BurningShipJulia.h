@@ -2,10 +2,14 @@
 #include "../Fractal.h"
 #include "../renderers/BurningShipJuliaRenderer.h"
 
-/*
-* @class BurningShipJulia
-* @brief Handles the RenderBurningShipJulia threads.
-*/
+/**
+ * @class BurningShipJulia
+ * @brief Julia variant of the Burning Ship recurrence.
+ *
+ * Each pixel supplies z_0 and the UI Julia constant supplies k. The orbit
+ * iterates z_{n+1} = (abs(Re(z_n)) + i abs(Im(z_n)))^2 + k. Points escape
+ * when |z|^2 exceeds 4.
+ */
 class BurningShipJulia : public Fractal
 {
 private:

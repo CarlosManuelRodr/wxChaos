@@ -2,10 +2,14 @@
 #include "../Fractal.h"
 #include "../renderers/SinoidalRenderer.h"
 
-/*
-* @class Sinoidal
-* @brief Handles the RenderSinoidal threads.
-*/
+/**
+ * @class Sinoidal
+ * @brief Sine-map Julia-style escape-time fractal.
+ *
+ * Each pixel supplies z_0 and the UI Julia constant supplies k. The orbit
+ * iterates z_{n+1} = k sin(z_n). This renderer treats the point as escaped
+ * when |z|^2 exceeds max iterations.
+ */
 class Sinoidal : public Fractal
 {
     SinoidalRenderer* myRender;
