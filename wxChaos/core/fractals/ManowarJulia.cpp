@@ -12,6 +12,7 @@ ManowarJulia::ManowarJulia(const unsigned int width, const unsigned int height) 
     _kReal = 0.0272873;
     _kImaginary = -0.0432547;
     _type = FractalType::ManowarJulia;
+    _hasHighPrecisionRender = true;
     _juliaVariety = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;

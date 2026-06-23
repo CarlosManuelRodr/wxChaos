@@ -89,6 +89,8 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _hasOrbitTrap = false;
     _smoothRender = false;
     _hasSmoothRender = false;
+    _hasHighPrecisionRender = false;
+    _hasFastPrecisionRender = false;
     _waitRoutine = false;
     _redrawAll = false;
     _redrawAlways = false;
@@ -310,31 +312,11 @@ bool Fractal::SupportsHighPrecisionRender() const
     if (_algorithm == RenderingAlgorithmType::Buddhabrot)
         return false;
 
-    switch (_type)
-    {
-        case FractalType::Mandelbrot:
-        case FractalType::MandelbrotZN:
-        case FractalType::Julia:
-        case FractalType::JuliaZN:
-        case FractalType::NewtonRaphsonMethod:
-        case FractalType::Sinoidal:
-        case FractalType::Magnetic:
-        case FractalType::Medusa:
-        case FractalType::Manowar:
-        case FractalType::ManowarJulia:
-        case FractalType::FixedPoint1:
-        case FractalType::FixedPoint2:
-        case FractalType::FixedPoint3:
-        case FractalType::FixedPoint4:
-        case FractalType::Tricorn:
-        case FractalType::BurningShip:
-        case FractalType::BurningShipJulia:
-        case FractalType::Fractory:
-        case FractalType::Cell:
-            return true;
-        default:
-            return false;
-    }
+    return _hasHighPrecisionRender;
+}
+bool Fractal::SupportsFastPrecisionRender() const
+{
+    return _hasFastPrecisionRender;
 }
 unsigned int Fractal::EstimateRequiredPrecisionBits() const
 {
@@ -1561,6 +1543,19 @@ RenderingAlgorithmType Fractal::GetCurrentAlg() const
 vector<RenderingAlgorithmType> Fractal::GetAvailableAlg()
 {
     return _availableAlg;
+}
+vector<RenderingPrecisionMode> Fractal::GetAvailableRenderingPrecisionModes() const
+{
+    vector<RenderingPrecisionMode> modes;
+    if (!SupportsHighPrecisionRender())
+        return modes;
+
+    modes.push_back(RenderingPrecisionMode::Adaptative);
+    modes.push_back(RenderingPrecisionMode::Precise);
+    if (SupportsFastPrecisionRender())
+        modes.push_back(RenderingPrecisionMode::Fast);
+
+    return modes;
 }
 void Fractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
 {

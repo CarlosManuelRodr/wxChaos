@@ -15,6 +15,7 @@ FixedPoint3::FixedPoint3(const unsigned int width, const unsigned int height) : 
     _hasOrbit = true;
 
     _type = FractalType::FixedPoint3;
+    _hasHighPrecisionRender = true;
     myRender = new FixedPoint3Renderer[_threadNumber];
     SetWatchdog<FixedPoint3Renderer>(myRender, &_watchdog, _threadNumber);
 

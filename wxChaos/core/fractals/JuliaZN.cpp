@@ -14,6 +14,7 @@ JuliaZN::JuliaZN(const unsigned int width, const unsigned int height) : Fractal(
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::JuliaZN;
+    _hasHighPrecisionRender = true;
     _kReal = -0.754696;
     _kImaginary = -0.0524231;
     _hasOrbit = true;

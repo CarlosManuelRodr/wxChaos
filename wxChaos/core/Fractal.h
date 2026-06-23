@@ -141,6 +141,8 @@ protected:
     bool _orbitTrapMode;
     bool _hasSmoothRender;
     bool _smoothRender;
+    bool _hasHighPrecisionRender;
+    bool _hasFastPrecisionRender;
 
     // Internal methods.
     ///@brief Looks into the color palette for the corresponding color.
@@ -167,6 +169,7 @@ protected:
     void UpdatePreciseFactors() const;
     void NotifyPrecisionStatusIfChanged();
     [[nodiscard]] bool SupportsHighPrecisionRender() const;
+    [[nodiscard]] bool SupportsFastPrecisionRender() const;
     [[nodiscard]] bool ShouldUseHighPrecision() const;
     [[nodiscard]] unsigned int EstimateRequiredPrecisionBits() const;
     [[nodiscard]] static bool OptionsPreciseViewMatchesDoubleView(const Options& opt) ;
@@ -443,6 +446,7 @@ public:
     // Algorithm.
     RenderingAlgorithmType GetCurrentAlg() const;
     std::vector<RenderingAlgorithmType> GetAvailableAlg();
+    std::vector<RenderingPrecisionMode> GetAvailableRenderingPrecisionModes() const;
     void SetAlgorithm(RenderingAlgorithmType algorithm);
     void SetRenderingPrecisionMode(RenderingPrecisionMode mode);
     RenderingPrecisionMode GetRenderingPrecisionMode() const;

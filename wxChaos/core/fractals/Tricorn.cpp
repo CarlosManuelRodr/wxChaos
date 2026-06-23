@@ -13,6 +13,7 @@ Tricorn::Tricorn(const unsigned int width, const unsigned int height) : Fractal(
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::Tricorn;
+    _hasHighPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;

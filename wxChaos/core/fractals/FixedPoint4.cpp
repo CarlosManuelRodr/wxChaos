@@ -15,6 +15,7 @@ FixedPoint4::FixedPoint4(const unsigned int width, const unsigned int height) : 
     _hasOrbit = true;
 
     _type = FractalType::FixedPoint4;
+    _hasHighPrecisionRender = true;
     myRender = new FixedPoint4Renderer[_threadNumber];
     SetWatchdog<FixedPoint4Renderer>(myRender, &_watchdog, _threadNumber);
 

@@ -15,6 +15,7 @@ BurningShip::BurningShip(const unsigned int width, const unsigned int height) : 
 
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _type = FractalType::BurningShip;
+    _hasHighPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;

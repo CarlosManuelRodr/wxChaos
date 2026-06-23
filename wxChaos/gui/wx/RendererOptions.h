@@ -14,6 +14,7 @@
 #include <wx/notebook.h>
 #include <SFML/Graphics/Color.hpp>
 #include <functional>
+#include <vector>
 #include "coloring/ColorPalette.h"
 #include "sfml/SFMLFractal.h"
 #include "wxGradientDialog.h"
@@ -69,6 +70,7 @@ class RendererOptions : public wxFrame
     sf::Color _setColor;                            ///< Color of the fractal set.
     ColorPalette _gradFractalColor;                 ///< Color in Grad color mode.
     std::function<void(const Options&)> _optionsChanged;
+    std::vector<RenderingPrecisionMode> _renderingPrecisionModes;
     int _escapeTimeIndex, _gaussIntIndex, _buddhabrotIndex;
     int _escapeAngleIndex, _triangleIneqIndex, _chaoticMapIndex;
     int _lyapunovIndex, _convergenceTestIndex;
@@ -95,7 +97,7 @@ class RendererOptions : public wxFrame
 
     void ConnectEvents();
     void NotifyOptionsChanged() const;
-    void SyncRenderingPrecisionControl() const;
+    void SyncRenderingPrecisionControl();
     void SyncRelativeColorControl() const;
     void SyncPaletteMappingControls() const;
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.

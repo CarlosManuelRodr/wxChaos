@@ -14,6 +14,7 @@ Magnet::Magnet(const unsigned int width, const unsigned int height) : Fractal(wi
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::Magnetic;
+    _hasHighPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;

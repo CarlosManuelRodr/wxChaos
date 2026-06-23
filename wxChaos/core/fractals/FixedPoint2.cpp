@@ -15,6 +15,7 @@ FixedPoint2::FixedPoint2(const unsigned int width, const unsigned int height) : 
 
     _hasOrbit = true;
     _type = FractalType::FixedPoint2;
+    _hasHighPrecisionRender = true;
     myRender = new FixedPoint2Renderer[_threadNumber];
     SetWatchdog<FixedPoint2Renderer>(myRender, &_watchdog, _threadNumber);
 

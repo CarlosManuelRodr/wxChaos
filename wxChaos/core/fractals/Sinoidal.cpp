@@ -14,6 +14,7 @@ Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fracta
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::Sinoidal;
+    _hasHighPrecisionRender = true;
     _kReal = 1;
     _kImaginary = 0.25;
     _hasOrbit = true;

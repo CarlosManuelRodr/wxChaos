@@ -13,6 +13,7 @@ Fractory::Fractory(const unsigned int width, const unsigned int height) : Fracta
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::Fractory;
+    _hasHighPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;

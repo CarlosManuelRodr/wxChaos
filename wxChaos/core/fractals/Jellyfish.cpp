@@ -13,6 +13,7 @@ Jellyfish::Jellyfish(const unsigned int width, const unsigned int height) : Frac
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::Medusa;
+    _hasHighPrecisionRender = true;
     _kReal = -0.2;
     _kImaginary = 0;
     _juliaVariety = true;

@@ -14,6 +14,8 @@ Julia::Julia(const unsigned int width, const unsigned int height) : Fractal(widt
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::Julia;
+    _hasHighPrecisionRender = true;
+    _hasFastPrecisionRender = true;
     _kReal = -0.754696;
     _kImaginary = -0.0524231;
     _hasOrbit = true;

@@ -51,14 +51,7 @@ RendererOptions::RendererOptions(SFMLFractal* presenter, wxWindow* parent,
     _renderingPrecisionText->Wrap(-1);
     setSizer->Add(_renderingPrecisionText, 0, wxALL, 5);
 
-    const wxString renderingPrecisionChoices[] = {
-        wxT("Adaptative"),
-        wxT("Precise"),
-        wxT("Fast")
-    };
-    constexpr int renderingPrecisionNChoices = sizeof(renderingPrecisionChoices) / sizeof(wxString);
-    _renderingPrecisionChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                             renderingPrecisionNChoices, renderingPrecisionChoices, 0);
+    _renderingPrecisionChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize);
     setSizer->Add(_renderingPrecisionChoice, 0, wxALL | wxEXPAND, 5);
     SyncRenderingPrecisionControl();
 
@@ -294,20 +287,46 @@ void RendererOptions::NotifyOptionsChanged() const
     if (_optionsChanged)
         _optionsChanged(_target->GetOptions());
 }
-void RendererOptions::SyncRenderingPrecisionControl() const
+void RendererOptions::SyncRenderingPrecisionControl()
 {
-    switch (_target->GetRenderingPrecisionMode())
+    _renderingPrecisionChoice->Clear();
+    _renderingPrecisionModes = _target->GetAvailableRenderingPrecisionModes();
+    if (_renderingPrecisionModes.empty())
     {
-        case RenderingPrecisionMode::Adaptative:
-            _renderingPrecisionChoice->SetSelection(0);
-            break;
-        case RenderingPrecisionMode::Precise:
-            _renderingPrecisionChoice->SetSelection(1);
-            break;
-        case RenderingPrecisionMode::Fast:
-            _renderingPrecisionChoice->SetSelection(2);
-            break;
+        _renderingPrecisionChoice->Append(wxT("N/A"));
+        _renderingPrecisionChoice->SetSelection(0);
+        _renderingPrecisionChoice->Enable(false);
+        return;
     }
+
+    _renderingPrecisionChoice->Enable(true);
+    const RenderingPrecisionMode currentMode = _target->GetRenderingPrecisionMode();
+    int selection = -1;
+    for (size_t i = 0; i < _renderingPrecisionModes.size(); i++)
+    {
+        switch (_renderingPrecisionModes[i])
+        {
+            case RenderingPrecisionMode::Adaptative:
+                _renderingPrecisionChoice->Append(wxT("Adaptative"));
+                break;
+            case RenderingPrecisionMode::Precise:
+                _renderingPrecisionChoice->Append(wxT("Precise"));
+                break;
+            case RenderingPrecisionMode::Fast:
+                _renderingPrecisionChoice->Append(wxT("Fast"));
+                break;
+        }
+
+        if (_renderingPrecisionModes[i] == currentMode)
+            selection = static_cast<int>(i);
+    }
+
+    if (selection < 0)
+    {
+        selection = 0;
+        _presenter->SetRenderingPrecisionMode(_renderingPrecisionModes[0]);
+    }
+    _renderingPrecisionChoice->SetSelection(selection);
 }
 void RendererOptions::SyncRelativeColorControl() const
 {
@@ -524,6 +543,7 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
     {
         const auto algorithm = availableAlgorithms[selection];
         _presenter->SetAlgorithm(algorithm);
+        SyncRenderingPrecisionControl();
         NotifyOptionsChanged();
         SyncRelativeColorControl();
     }
@@ -532,21 +552,11 @@ void RendererOptions::OnChangeAlgorithm(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptions::OnRenderingPrecision(wxCommandEvent&)
 {
-    RenderingPrecisionMode mode = RenderingPrecisionMode::Adaptative;
-    switch (_renderingPrecisionChoice->GetSelection())
-    {
-        case 1:
-            mode = RenderingPrecisionMode::Precise;
-            break;
-        case 2:
-            mode = RenderingPrecisionMode::Fast;
-            break;
-        default:
-            mode = RenderingPrecisionMode::Adaptative;
-            break;
-    }
+    const int selection = _renderingPrecisionChoice->GetSelection();
+    if (selection < 0 || static_cast<size_t>(selection) >= _renderingPrecisionModes.size())
+        return;
 
-    _presenter->SetRenderingPrecisionMode(mode);
+    _presenter->SetRenderingPrecisionMode(_renderingPrecisionModes[selection]);
     NotifyOptionsChanged();
 }
 

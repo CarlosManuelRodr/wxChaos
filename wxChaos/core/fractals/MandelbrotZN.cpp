@@ -15,6 +15,7 @@ MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) 
 
     // Adjust options.
     _type = FractalType::MandelbrotZN;
+    _hasHighPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;

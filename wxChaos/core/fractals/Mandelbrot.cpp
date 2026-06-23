@@ -14,6 +14,8 @@ Mandelbrot::Mandelbrot(const unsigned int width, const unsigned int height) : Fr
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::Mandelbrot;
+    _hasHighPrecisionRender = true;
+    _hasFastPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;

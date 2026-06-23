@@ -14,6 +14,7 @@ Manowar::Manowar(const unsigned int width, const unsigned int height) : Fractal(
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::Manowar;
+    _hasHighPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _hasSmoothRender = true;

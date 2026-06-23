@@ -14,6 +14,7 @@ Newton::Newton(const unsigned int width, const unsigned int height) : Fractal(wi
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _type = FractalType::NewtonRaphsonMethod;
+    _hasHighPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
     _relativeColor = true;
