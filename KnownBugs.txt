@@ -1,3 +1,4 @@
+- Color rotation looks slow when window is maximized.
 - Zoom recorder is not performing the zoom at the depth level that the user has zoomed in to.
 - Changing the gradient color palette with the relative color option active should invalidate the cache and redraw everything.
 
