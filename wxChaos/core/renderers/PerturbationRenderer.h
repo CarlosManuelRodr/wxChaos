@@ -14,8 +14,7 @@ protected:
         HighPrecisionReal centerIm;
         double centerReDouble = 0.0;
         double centerImDouble = 0.0;
-        std::vector<double> orbitRe;
-        std::vector<double> orbitIm;
+        std::vector<PrecisionComplex<double>> orbit;
     };
 
     struct PerturbationTraceResult

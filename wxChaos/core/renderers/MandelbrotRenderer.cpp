@@ -17,27 +17,22 @@ Renderer::Point MandelbrotRenderer::TracePoint(const Real& pixelRe, const Real& 
     point.startIm = ToDouble(pixelIm);
     measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    Real zRe = 0;
-    Real zIm = 0;
+    const PrecisionComplex<Real> c{pixelRe, pixelIm};
+    PrecisionComplex<Real> z{Real(0), Real(0)};
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
-        const Real zRe2 = zRe * zRe;
-        const Real zIm2 = zIm * zIm;
-        const Real squaredRe = zRe2 - zIm2;
-        const Real squaredIm = Real(2) * zRe * zIm;
-
-        zRe = squaredRe + pixelRe;
-        zIm = squaredIm + pixelIm;
-        const Real zNorm = zRe * zRe + zIm * zIm;
+        const PrecisionComplex<Real> squaredZ = z * z;
+        z = squaredZ + c;
+        const Real zNorm = ComplexNorm(z);
         const bool wasInside = !escaped;
 
-        point.zRe = ToDouble(zRe);
-        point.zIm = ToDouble(zIm);
+        point.zRe = ToDouble(z.re);
+        point.zIm = ToDouble(z.im);
         point.zNorm = ToDouble(zNorm);
         measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
-                ToDouble(squaredRe), ToDouble(squaredIm), wasInside);
+                ToDouble(squaredZ.re), ToDouble(squaredZ.im), wasInside);
 
         if (!escaped)
         {
@@ -52,7 +47,7 @@ Renderer::Point MandelbrotRenderer::TracePoint(const Real& pixelRe, const Real& 
                 point.escapedZIm = point.zIm;
                 point.escapedNorm = point.zNorm;
                 measure(point, PointTraceEvent::Escaped, n, point.zRe, point.zIm, point.zNorm,
-                        ToDouble(squaredRe), ToDouble(squaredIm), wasInside);
+                        ToDouble(squaredZ.re), ToDouble(squaredZ.im), wasInside);
             }
         }
 
@@ -76,24 +71,14 @@ MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildPerturbationR
     reference.centerImDouble = ToDouble(reference.centerIm);
 
     const auto orbitSize = static_cast<size_t>(_maxIter) + 1;
-    reference.orbitRe.resize(orbitSize, 0.0);
-    reference.orbitIm.resize(orbitSize, 0.0);
+    reference.orbit.resize(orbitSize);
 
-    HighPrecisionReal zRe(0);
-    HighPrecisionReal zIm(0);
-    const HighPrecisionReal two(2);
+    const PrecisionComplex<HighPrecisionReal> c{reference.centerRe, reference.centerIm};
+    PrecisionComplex<HighPrecisionReal> z{HighPrecisionReal(0), HighPrecisionReal(0)};
     for (size_t n = 0; n + 1 < orbitSize; n++)
     {
-        const HighPrecisionReal zRe2 = zRe * zRe;
-        const HighPrecisionReal zIm2 = zIm * zIm;
-        const HighPrecisionReal squaredRe = zRe2 - zIm2;
-        const HighPrecisionReal squaredIm = two * zRe * zIm;
-
-        zRe = squaredRe + reference.centerRe;
-        zIm = squaredIm + reference.centerIm;
-
-        reference.orbitRe[n + 1] = ToDouble(zRe);
-        reference.orbitIm[n + 1] = ToDouble(zIm);
+        z = z * z + c;
+        reference.orbit[n + 1] = {ToDouble(z.re), ToDouble(z.im)};
     }
 
     return reference;
@@ -113,41 +98,31 @@ MandelbrotRenderer::PerturbationTraceResult MandelbrotRenderer::TracePerturbatio
     point.startIm = reference.centerImDouble + deltaIm;
     measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    double epsilonRe = 0.0;
-    double epsilonIm = 0.0;
+    PrecisionComplex<double> epsilon{0.0, 0.0};
+    const PrecisionComplex<double> delta{deltaRe, deltaIm};
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
     {
-        const double referenceRe = reference.orbitRe[n];
-        const double referenceIm = reference.orbitIm[n];
-        const double zRe = referenceRe + epsilonRe;
-        const double zIm = referenceIm + epsilonIm;
-        const double squaredRe = zRe * zRe - zIm * zIm;
-        const double squaredIm = 2.0 * zRe * zIm;
+        const PrecisionComplex<double> referenceZ = reference.orbit[n];
+        const PrecisionComplex<double> z = referenceZ + epsilon;
+        const PrecisionComplex<double> squaredZ = z * z;
+        const PrecisionComplex<double> squaredReferenceZ = referenceZ * referenceZ;
 
-        const double epsilonSquaredRe = epsilonRe * epsilonRe - epsilonIm * epsilonIm;
-        const double epsilonSquaredIm = 2.0 * epsilonRe * epsilonIm;
-        const double referenceEpsilonRe = 2.0 * (referenceRe * epsilonRe - referenceIm * epsilonIm);
-        const double referenceEpsilonIm = 2.0 * (referenceRe * epsilonIm + referenceIm * epsilonRe);
+        epsilon = squaredZ - squaredReferenceZ + delta;
 
-        epsilonRe = referenceEpsilonRe + epsilonSquaredRe + deltaRe;
-        epsilonIm = referenceEpsilonIm + epsilonSquaredIm + deltaIm;
-
-        const double nextZRe = reference.orbitRe[n + 1] + epsilonRe;
-        const double nextZIm = reference.orbitIm[n + 1] + epsilonIm;
-        const double zNorm = nextZRe * nextZRe + nextZIm * nextZIm;
-        const double referenceNextNorm = reference.orbitRe[n + 1] * reference.orbitRe[n + 1] +
-                                         reference.orbitIm[n + 1] * reference.orbitIm[n + 1];
+        const PrecisionComplex<double> nextZ = reference.orbit[n + 1] + epsilon;
+        const double zNorm = ComplexNorm(nextZ);
+        const double referenceNextNorm = ComplexNorm(reference.orbit[n + 1]);
         if (HasPerturbationGlitchOrDiverged(referenceNextNorm, zNorm, escaped))
             return {point, false};
 
         const bool wasInside = !escaped;
-        point.zRe = nextZRe;
-        point.zIm = nextZIm;
+        point.zRe = nextZ.re;
+        point.zIm = nextZ.im;
         point.zNorm = zNorm;
         measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
-                squaredRe, squaredIm, wasInside);
+                squaredZ.re, squaredZ.im, wasInside);
 
         if (!escaped)
         {
@@ -162,7 +137,7 @@ MandelbrotRenderer::PerturbationTraceResult MandelbrotRenderer::TracePerturbatio
                 point.escapedZIm = point.zIm;
                 point.escapedNorm = point.zNorm;
                 measure(point, PointTraceEvent::Escaped, n, point.zRe, point.zIm, point.zNorm,
-                        squaredRe, squaredIm, wasInside);
+                        squaredZ.re, squaredZ.im, wasInside);
             }
         }
 

@@ -70,16 +70,14 @@ MandelbrotZNRenderer::PerturbationReference MandelbrotZNRenderer::BuildPerturbat
     reference.centerImDouble = ToDouble(reference.centerIm);
 
     const auto orbitSize = static_cast<size_t>(_maxIter) + 1;
-    reference.orbitRe.resize(orbitSize, 0.0);
-    reference.orbitIm.resize(orbitSize, 0.0);
+    reference.orbit.resize(orbitSize);
 
     const PrecisionComplex<HighPrecisionReal> c{reference.centerRe, reference.centerIm};
     PrecisionComplex<HighPrecisionReal> z{HighPrecisionReal(0), HighPrecisionReal(0)};
     for (size_t i = 0; i + 1 < orbitSize; i++)
     {
         z = ComplexPow(z, _n) + c;
-        reference.orbitRe[i + 1] = ToDouble(z.re);
-        reference.orbitIm[i + 1] = ToDouble(z.im);
+        reference.orbit[i + 1] = {ToDouble(z.re), ToDouble(z.im)};
     }
 
     return reference;
@@ -99,33 +97,29 @@ MandelbrotZNRenderer::PerturbationTraceResult MandelbrotZNRenderer::TracePerturb
     point.startIm = reference.centerImDouble + deltaIm;
     measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    double epsilonRe = 0.0;
-    double epsilonIm = 0.0;
+    PrecisionComplex<double> epsilon{0.0, 0.0};
+    const PrecisionComplex<double> delta{deltaRe, deltaIm};
     const double squaredBail = _bailout * _bailout;
     const double trapBailout = squaredBail * squaredBail;
     bool escaped = false;
 
     for (unsigned i = 0; i < _maxIter; i++)
     {
-        const PrecisionComplex<double> referenceZ{reference.orbitRe[i], reference.orbitIm[i]};
-        const PrecisionComplex<double> epsilon{epsilonRe, epsilonIm};
+        const PrecisionComplex<double> referenceZ = reference.orbit[i];
         const PrecisionComplex<double> z = referenceZ + epsilon;
         const PrecisionComplex<double> poweredZ = ComplexPow(z, _n);
         const PrecisionComplex<double> poweredReferenceZ = ComplexPow(referenceZ, _n);
 
-        epsilonRe = poweredZ.re - poweredReferenceZ.re + deltaRe;
-        epsilonIm = poweredZ.im - poweredReferenceZ.im + deltaIm;
+        epsilon = poweredZ - poweredReferenceZ + delta;
 
-        const double nextZRe = reference.orbitRe[i + 1] + epsilonRe;
-        const double nextZIm = reference.orbitIm[i + 1] + epsilonIm;
-        const double zNorm = nextZRe * nextZRe + nextZIm * nextZIm;
-        const double referenceNextNorm = reference.orbitRe[i + 1] * reference.orbitRe[i + 1] +
-                                         reference.orbitIm[i + 1] * reference.orbitIm[i + 1];
+        const PrecisionComplex<double> nextZ = reference.orbit[i + 1] + epsilon;
+        const double zNorm = ComplexNorm(nextZ);
+        const double referenceNextNorm = ComplexNorm(reference.orbit[i + 1]);
         if (HasPerturbationGlitchOrDiverged(referenceNextNorm, zNorm, escaped, squaredBail, trapBailout))
             return {point, false};
 
-        point.zRe = nextZRe;
-        point.zIm = nextZIm;
+        point.zRe = nextZ.re;
+        point.zIm = nextZ.im;
         point.zNorm = zNorm;
         const bool wasInside = !escaped;
         measure(point, PointTraceEvent::Iterated, i, point.zRe, point.zIm, point.zNorm,
