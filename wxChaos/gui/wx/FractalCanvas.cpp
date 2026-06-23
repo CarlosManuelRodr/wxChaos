@@ -804,7 +804,7 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
 {
-    if (_target->IsRendering() || _sfmlFractal->IsMoving())
+    if (_sfmlFractal->IsMoving())
     {
         event.Skip();
         return;
@@ -812,7 +812,12 @@ void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
 
     const int rotation = event.GetWheelRotation();
     if (rotation > 0)
+    {
+        if (_target->StopRender())
+            _target->MarkRenderInterrupted();
+
         ZoomAtMousePosition(event.GetPosition());
+    }
     else if (rotation < 0)
         _sfmlFractal->ZoomBack();
 }
