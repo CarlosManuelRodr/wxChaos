@@ -72,8 +72,8 @@ MandelbrotZNRenderer::PerturbationReference MandelbrotZNRenderer::BuildPerturbat
     const auto orbitSize = static_cast<size_t>(_maxIter) + 1;
     reference.orbit.resize(orbitSize);
 
-    const PrecisionComplex<HighPrecisionReal> c{reference.centerRe, reference.centerIm};
-    PrecisionComplex<HighPrecisionReal> z{HighPrecisionReal(0), HighPrecisionReal(0)};
+    const PrecisionComplex c{reference.centerRe, reference.centerIm};
+    PrecisionComplex z{HighPrecisionReal(0), HighPrecisionReal(0)};
     for (size_t i = 0; i + 1 < orbitSize; i++)
     {
         z = ComplexPow(z, _n) + c;
@@ -97,8 +97,8 @@ MandelbrotZNRenderer::PerturbationTraceResult MandelbrotZNRenderer::TracePerturb
     point.startIm = reference.centerImDouble + deltaIm;
     measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    PrecisionComplex<double> epsilon{0.0, 0.0};
-    const PrecisionComplex<double> delta{deltaRe, deltaIm};
+    PrecisionComplex epsilon{0.0, 0.0};
+    const PrecisionComplex delta{deltaRe, deltaIm};
     const double squaredBail = _bailout * _bailout;
     const double trapBailout = squaredBail * squaredBail;
     bool escaped = false;

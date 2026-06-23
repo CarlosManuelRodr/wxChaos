@@ -73,8 +73,8 @@ MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildPerturbationR
     const auto orbitSize = static_cast<size_t>(_maxIter) + 1;
     reference.orbit.resize(orbitSize);
 
-    const PrecisionComplex<HighPrecisionReal> c{reference.centerRe, reference.centerIm};
-    PrecisionComplex<HighPrecisionReal> z{HighPrecisionReal(0), HighPrecisionReal(0)};
+    const PrecisionComplex c{reference.centerRe, reference.centerIm};
+    PrecisionComplex z{HighPrecisionReal(0), HighPrecisionReal(0)};
     for (size_t n = 0; n + 1 < orbitSize; n++)
     {
         z = z * z + c;
@@ -98,8 +98,8 @@ MandelbrotRenderer::PerturbationTraceResult MandelbrotRenderer::TracePerturbatio
     point.startIm = reference.centerImDouble + deltaIm;
     measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    PrecisionComplex<double> epsilon{0.0, 0.0};
-    const PrecisionComplex<double> delta{deltaRe, deltaIm};
+    PrecisionComplex epsilon{0.0, 0.0};
+    const PrecisionComplex delta{deltaRe, deltaIm};
     bool escaped = false;
 
     for (unsigned n = 0; n < _maxIter; n++)
@@ -107,9 +107,8 @@ MandelbrotRenderer::PerturbationTraceResult MandelbrotRenderer::TracePerturbatio
         const PrecisionComplex<double> referenceZ = reference.orbit[n];
         const PrecisionComplex<double> z = referenceZ + epsilon;
         const PrecisionComplex<double> squaredZ = z * z;
-        const PrecisionComplex<double> squaredReferenceZ = referenceZ * referenceZ;
 
-        epsilon = squaredZ - squaredReferenceZ + delta;
+        epsilon = 2.0 * referenceZ * epsilon + epsilon * epsilon + delta;
 
         const PrecisionComplex<double> nextZ = reference.orbit[n + 1] + epsilon;
         const double zNorm = ComplexNorm(nextZ);
