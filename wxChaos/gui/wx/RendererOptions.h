@@ -20,7 +20,7 @@
 #include "wxGradientDialog.h"
 #include "Fractal.h"
 
-#define RendererOptionsFrameSize wxSize(1000, 820)
+#define RendererOptionsFrameSize wxSize(1000, 870)
 
 wxDECLARE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 
