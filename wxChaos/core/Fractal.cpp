@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <thread>
 #include <utility>
 #include "Fractal.h"
 #include "FractalHandler.h"
@@ -848,19 +849,52 @@ void Fractal::AdvanceGradientOffset()
 
 void Fractal::RefreshAnimatedColors(sf::Image& image)
 {
+    /* This is admittedly an awful and inneficient algorithm, but the alternative is to use a GPU shader and redesign
+     * from scratch the rendering pipeline. So I'm keeping this unless anyone complains. */
+
     UpdateMaxColorMapValue();
 
-    for (unsigned int i = 0; i < _screenWidth; i++)
-    {
-        for (unsigned int j = 0; j < _screenHeight; j++)
-        {
-            if ((_setMap[i][j] || !_colorSet) && !IsValidColorMapValue(_colorMap[i][j]))
-                continue;
+    const unsigned int workerCount = std::min(_threadNumber, _screenWidth);
+    constexpr unsigned int minPixelsForParallelRefresh = 120000;
+    const bool useParallelRefresh = workerCount > 1 && _screenWidth * _screenHeight >= minPixelsForParallelRefresh;
 
-            if ((_setMap[i][j] == false || !_colorSet) && IsValidColorMapValue(_colorMap[i][j]))
-                image.setPixel(i, j, GetRenderedPixelColor(i, j));
+    const auto refreshColumns = [this, &image](const unsigned int beginX, const unsigned int endX)
+    {
+        for (unsigned int i = beginX; i < endX; i++)
+        {
+            for (unsigned int j = 0; j < _screenHeight; j++)
+            {
+                if ((_setMap[i][j] || !_colorSet) && !IsValidColorMapValue(_colorMap[i][j]))
+                    continue;
+
+                if ((_setMap[i][j] == false || !_colorSet) && IsValidColorMapValue(_colorMap[i][j]))
+                    image.setPixel(i, j, GetRenderedPixelColor(i, j));
+            }
         }
+    };
+
+    if (!useParallelRefresh)
+    {
+        refreshColumns(0, _screenWidth);
+        return;
     }
+
+    std::vector<std::thread> workers;
+    workers.reserve(workerCount - 1);
+    const unsigned int columnsPerWorker = _screenWidth / workerCount;
+    unsigned int beginX = 0;
+
+    for (unsigned int workerIndex = 1; workerIndex < workerCount; workerIndex++)
+    {
+        const unsigned int endX = beginX + columnsPerWorker;
+        workers.emplace_back(refreshColumns, beginX, endX);
+        beginX = endX;
+    }
+
+    refreshColumns(beginX, _screenWidth);
+
+    for (std::thread& worker : workers)
+        worker.join();
 }
 
 bool Fractal::ShouldDrawOrbit() const
