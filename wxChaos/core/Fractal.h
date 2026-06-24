@@ -150,7 +150,7 @@ protected:
     ///@return A struct with the color.
     sf::Color GetColorFromPalette(double index) const;
     double NormalizeColorMapValue(double value) const;
-    bool IsValidColorMapValue(double value) const;
+    static bool IsValidColorMapValue(double value);
     static sf::Color InterpolatePaletteColors(const wxColour& first, const wxColour& second, double ratio);
 
     ///@brief Rebuilds the color palette
