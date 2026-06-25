@@ -21,7 +21,6 @@ Manowar::Manowar(const unsigned int width, const unsigned int height) : Fractal(
     _smoothRender = true;
 
     myRender = new ManowarRenderer[_threadNumber];
-    SetWatchdog<ManowarRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

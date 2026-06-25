@@ -20,7 +20,6 @@ Tricorn::Tricorn(const unsigned int width, const unsigned int height) : Fractal(
     _smoothRender = true;
 
     myRender = new TricornRenderer[_threadNumber];
-    SetWatchdog<TricornRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

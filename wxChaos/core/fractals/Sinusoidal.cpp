@@ -25,7 +25,6 @@ Sinusoidal::Sinusoidal(const unsigned int width, const unsigned int height) : Fr
     _smoothRender = true;
 
     myRender = new SinusoidalRenderer[_threadNumber];
-    SetWatchdog<SinusoidalRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

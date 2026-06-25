@@ -23,7 +23,6 @@ Jellyfish::Jellyfish(const unsigned int width, const unsigned int height) : Frac
     _smoothRender = true;
 
     myRender = new JellyfishRenderer[_threadNumber];
-    SetWatchdog<JellyfishRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

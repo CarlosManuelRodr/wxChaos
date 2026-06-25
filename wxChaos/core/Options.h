@@ -39,7 +39,6 @@ struct Options
     bool colorMode;
     bool buddhaMode;
     bool smoothRender;
-    bool justLaunchThreads;
     bool relativeColor;
     sf::Color fSetColor;
 
@@ -73,7 +72,6 @@ inline Options::Options()
     colorMode = false;
     buddhaMode = false;
     smoothRender = false;
-    justLaunchThreads = false;
     relativeColor = false;
     fSetColor = sf::Color::Black;
     screenHeight = screenWidth = 0;

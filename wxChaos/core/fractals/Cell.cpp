@@ -24,7 +24,6 @@ Cell::Cell(const unsigned int width, const unsigned int height) : Fractal(width,
     _type = FractalType::Cell;
     _hasHighPrecisionRender = true;
     myRender = new CellRenderer[_threadNumber];
-    SetWatchdog<CellRenderer>(myRender, &_watchdog, _threadNumber);
 
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);

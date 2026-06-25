@@ -72,7 +72,6 @@ file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
 )
 
 add_executable(wxChaos WIN32 ${SRC_FILES}
-        wxChaos/core/ThreadWatchdog.h
         wxChaos/App.cpp
 )
 

@@ -22,7 +22,6 @@ BurningShip::BurningShip(const unsigned int width, const unsigned int height) : 
     _smoothRender = true;
 
     myRender = new BurningShipRenderer[_threadNumber];
-    SetWatchdog<BurningShipRenderer>(myRender, &_watchdog, _threadNumber);
 
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);

@@ -20,7 +20,6 @@ Magnet::Magnet(const unsigned int width, const unsigned int height) : Fractal(wi
     _hasSmoothRender = true;
 
     myRender = new MagnetRenderer[_threadNumber];
-    SetWatchdog<MagnetRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

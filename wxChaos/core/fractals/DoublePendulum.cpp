@@ -41,7 +41,6 @@ DoublePendulum::DoublePendulum(unsigned int width, unsigned int height) : Fracta
     _algorithm = RenderingAlgorithmType::EscapeTime;
     _type = FractalType::DoublePendulum;
     myRender = new DoublePendulumRenderer[_threadNumber];
-    SetWatchdog<DoublePendulumRenderer>(myRender, &_watchdog, _threadNumber);
 }
 DoublePendulum::~DoublePendulum()
 {

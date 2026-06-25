@@ -12,7 +12,6 @@ SierpinskiTriangle::SierpinskiTriangle(const unsigned int width, const unsigned 
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     myRender = new SierpinskiTriangleRenderer[_threadNumber];
-    SetWatchdog<SierpinskiTriangleRenderer>(myRender, &_watchdog, _threadNumber);
 
     _type = FractalType::SierpinskiTriangle;
 }

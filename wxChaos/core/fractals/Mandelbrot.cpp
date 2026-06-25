@@ -21,7 +21,6 @@ Mandelbrot::Mandelbrot(const unsigned int width, const unsigned int height) : Fr
     _hasSmoothRender = true;
     _smoothRender = true;
     myRender = new MandelbrotRenderer[_threadNumber];
-    SetWatchdog<MandelbrotRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(false);

@@ -19,7 +19,6 @@
 #include "Options.h"
 #include "FormulaOptions.h"
 #include "RenderWorker.h"
-#include "ThreadWatchdog.h"
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
 #include "rendering/RenderThreadPool.h"
@@ -49,7 +48,6 @@ protected:
     bool** _setMap;                             ///< Stores the points that belong to the fractal set.
     double** _colorMap;                         ///< Store continuous color values.
     unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
-    ThreadWatchdog<RenderWorker> _watchdog;         ///< Watch over the render threads.
     RenderThreadPool _renderPool;               ///< Reusable pool for render jobs.
 
     // Fractal properties.
@@ -113,9 +111,7 @@ protected:
     bool _waitRoutine;
     bool _redrawAll;
     bool _redrawAlways;
-    bool _justLaunchThreads;
     bool _varGradChange;
-    bool _renderJobCompatible;               ///< Fractal compatible with renderJobs.
     bool _changeFractalProp;
     bool _reportedHighPrecisionActive;
     unsigned int _reportedHighPrecisionBits;
@@ -327,13 +323,10 @@ public:
                           std::optional<unsigned int> iterations = std::nullopt) const;
 
     // Thread control.
-    ///@brief Calculate drawing limits of each thread and launches them.
+    ///@brief Calculate drawing limits of each worker and launches them.
     ///@param myRender Array of renderer instances.
-    template<class MT> void SetRendererBounds(MT* myRender);
-
-    ///@brief Return a pointer to the watchdog.
-    ///@return A pointer to the watchdog.
-    ThreadWatchdog<RenderWorker>* GetWatchdog();
+    ///@param tileHeight Height of queued render tiles. Use 0 to render one job per exposed region.
+    template<class MT> void SetRendererBounds(MT* myRender, int tileHeight = 16);
 
     ///@brief Returns progress for the active render backend.
     ///@return A value from 0 to 100.
@@ -494,56 +487,25 @@ public:
     virtual void DrawOrbit() {}
 };
 
-template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer* myRender)
+template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer* myRender, const int tileHeight)
 {
     const std::vector<RenderRegion> regions = this->BuildRenderRegions();
-    const bool useRenderPool = _renderJobCompatible && !_justLaunchThreads;
-    const int tileHeight = useRenderPool ? 16 : 0;
     const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions, tileHeight);
-    const bool relaunchExistingWork = _justLaunchThreads && _pendingRenderOffset.x == 0 && _pendingRenderOffset.y == 0;
     _pendingRenderOffset = {0, 0};
 
-    if (useRenderPool)
-    {
-        std::vector<RenderWorker*> renderers;
-        renderers.reserve(_threadNumber);
-
-        for (unsigned int i = 0; i < _threadNumber; i++)
-        {
-            this->ConfigureRenderer(myRender[i]);
-            renderers.push_back(&myRender[i]);
-        }
-
-        _renderPool.Render(renderers, jobs);
-
-        if (_waitRoutine)
-            _renderPool.Wait();
-
-        return;
-    }
-
-    _watchdog.Reset();
+    std::vector<RenderWorker*> renderers;
+    renderers.reserve(_threadNumber);
 
     for (unsigned int i = 0; i < _threadNumber; i++)
     {
         this->ConfigureRenderer(myRender[i]);
-
-        const RenderJob& job = jobs[i];
-        const RenderRegion& region = job.GetRegion();
-
-        if (relaunchExistingWork)
-            myRender[i].SetOldHeightOrigin(job.GetProgressOriginY());
-        else if (job.IsEmpty())
-            myRender[i].SetLimits(0, 0, 0, 1);
-        else
-            myRender[i].SetLimits(region.GetLeft(), region.GetTop(), region.GetRight(), region.GetBottom());
+        renderers.push_back(&myRender[i]);
     }
 
-    _watchdog.LaunchThreads();
-    _watchdog.launch();
+    _renderPool.Render(renderers, jobs);
 
     if (_waitRoutine)
-        _watchdog.wait();
+        _renderPool.Wait();
 }
 
 template<class M> void Fractal::MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,

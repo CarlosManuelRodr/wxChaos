@@ -88,7 +88,6 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _rendering = false;
     _paused = false;
     _pausing = false;
-    _justLaunchThreads = false;
     _maxIter = 100;
     _varGradChange = false;
     _refreshImage = false;
@@ -98,9 +97,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _colorCycleLength = 72.0;
     _paletteMappingMode = PaletteMappingMode::Linear;
     _paletteMappingExponent = 1.5;
-    _renderJobCompatible = false;
     _orbitX = _orbitY = 0.0;
-    _renderJobCompatible = true;
     _changeFractalProp = false;
     _reportedHighPrecisionActive = false;
     _reportedHighPrecisionBits = 0;
@@ -1045,7 +1042,6 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
 
     options.orbitTrapMode = false;
     options.smoothRender = false;
-    options.justLaunchThreads = false;
     if (iterations.has_value())
         options.maxIter = *iterations;
 
@@ -1084,16 +1080,9 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
     return output;
 }
 // Thread control
-ThreadWatchdog<RenderWorker>* Fractal::GetWatchdog()
-{
-    return &_watchdog;
-}
 int Fractal::GetRenderProgress()
 {
-    if (_renderPool.IsRunning())
-        return _renderPool.GetProgress();
-
-    return _watchdog.GetThreadProgress();
+    return _renderPool.GetProgress();
 }
 void Fractal::PauseContinue()
 {
@@ -1102,13 +1091,7 @@ void Fractal::PauseContinue()
         this->PreRestartRender();
         _rendered = false;
         _rendering = true;
-        if (_renderJobCompatible)
-            this->Render();
-        else
-        {
-            _watchdog.LaunchThreads();
-            _watchdog.launch();
-        }
+        this->Render();
         _paused = false;
     }
     else
@@ -1123,13 +1106,7 @@ bool Fractal::StopRender()
 {
     if (this->IsRendering())
     {
-        if (_renderPool.IsRunning())
-            _renderPool.Stop();
-        else
-        {
-            _watchdog.terminate();
-            _watchdog.StopThreads();
-        }
+        _renderPool.Stop();
         _rendering = false;
         return true;
     }
@@ -1149,7 +1126,7 @@ bool Fractal::IsRendering()
 {
     if (_waitRoutine)
         return false;
-    return _renderPool.IsRunning() || _watchdog.ThreadRunning();
+    return _renderPool.IsRunning();
 }
 void Fractal::SetFormula(FormulaOptions formula)
 {
@@ -1224,7 +1201,6 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _orbitTrapMode = opt.orbitTrapMode;
     _colorSet = opt.colorSet;
     _colorMode = opt.colorMode;
-    _justLaunchThreads = opt.justLaunchThreads;
 
     UpdatePreciseFactors();
     SyncDoubleViewFromPrecise();
@@ -1263,7 +1239,6 @@ Options Fractal::GetOptions() const
     opt.orbitTrapMode = _orbitTrapMode;
     opt.colorSet = _colorSet;
     opt.colorMode = _colorMode;
-    opt.justLaunchThreads = _justLaunchThreads;
 
     opt.fSetColor = GetSetColor();
 

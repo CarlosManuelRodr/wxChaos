@@ -21,7 +21,6 @@ BurningShipJulia::BurningShipJulia(const unsigned int width, const unsigned int 
     _type = FractalType::BurningShip;
     _hasHighPrecisionRender = true;
     myRender = new BurningShipJuliaRenderer[_threadNumber];
-    SetWatchdog<BurningShipJuliaRenderer>(myRender, &_watchdog, _threadNumber);
 
     _availableAlg.push_back(RenderingAlgorithmType::EscapeTime);
     _availableAlg.push_back(RenderingAlgorithmType::GaussianInt);

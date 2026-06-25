@@ -16,7 +16,6 @@ UserDefinedEscapeTime::UserDefinedEscapeTime(const unsigned int width, const uns
     _type = FractalType::UserDefinedEscapeTime;
     _hasOrbit = true;
     _myRender = new UserDefinedEscapeTimeRenderer[_threadNumber];
-    SetWatchdog<UserDefinedEscapeTimeRenderer>(_myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

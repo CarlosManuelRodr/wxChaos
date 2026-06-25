@@ -23,7 +23,6 @@ JuliaZN::JuliaZN(const unsigned int width, const unsigned int height) : Fractal(
     _hasSmoothRender = true;
     _smoothRender = true;
     myRender = new JuliaZNRenderer[_threadNumber];
-    SetWatchdog<JuliaZNRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

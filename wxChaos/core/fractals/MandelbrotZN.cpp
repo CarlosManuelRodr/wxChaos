@@ -21,7 +21,6 @@ MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) 
     _hasSmoothRender = true;
     _smoothRender = true;
     myRender = new MandelbrotZNRenderer[_threadNumber];
-    SetWatchdog<MandelbrotZNRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

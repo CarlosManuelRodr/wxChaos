@@ -17,7 +17,6 @@ FixedPoint1::FixedPoint1(const unsigned int width, const unsigned int height) : 
     _type = FractalType::FixedPoint1;
     _hasHighPrecisionRender = true;
     myRender = new FixedPoint1Renderer[_threadNumber];
-    SetWatchdog<FixedPoint1Renderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);

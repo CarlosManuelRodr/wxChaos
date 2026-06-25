@@ -17,7 +17,6 @@ UserDefinedFixedPoint::UserDefinedFixedPoint(const unsigned int width, const uns
     _type = FractalType::UserDefinedFixedPoint;
     _hasOrbit = true;
     _myRender = new UserDefinedFixedPointRenderer[_threadNumber];
-    SetWatchdog<UserDefinedFixedPointRenderer>(_myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);

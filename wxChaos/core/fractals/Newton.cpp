@@ -19,7 +19,6 @@ Newton::Newton(const unsigned int width, const unsigned int height) : Fractal(wi
     _hasOrbitTrap = true;
     _relativeColor = true;
     myRender = new NewtonRenderer[_threadNumber];
-    SetWatchdog<NewtonRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);

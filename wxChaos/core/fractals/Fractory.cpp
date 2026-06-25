@@ -20,7 +20,6 @@ Fractory::Fractory(const unsigned int width, const unsigned int height) : Fracta
     _smoothRender = true;
 
     myRender = new FractoryRenderer[_threadNumber];
-    SetWatchdog<FractoryRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

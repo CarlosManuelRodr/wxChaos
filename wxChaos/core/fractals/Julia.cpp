@@ -24,7 +24,6 @@ Julia::Julia(const unsigned int width, const unsigned int height) : Fractal(widt
     _hasSmoothRender = true;
     _smoothRender = true;
     myRender = new JuliaRenderer[_threadNumber];
-    SetWatchdog<JuliaRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;

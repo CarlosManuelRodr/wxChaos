@@ -23,10 +23,8 @@ UserDefinedNewton::UserDefinedNewton(const unsigned int width, const unsigned in
     _hasOrbit = true;
     _relativeColor = true;
     _redrawAlways = true;
-    _renderJobCompatible = false;
     _threadNumber = 1;
     _myRender = new UserDefinedNewtonRenderer[_threadNumber];
-    SetWatchdog<UserDefinedNewtonRenderer>(_myRender, &_watchdog, _threadNumber);
 
     _convergenceEpsilon = 1e-8;
     _functionEpsilon = 1e-8;
@@ -71,7 +69,9 @@ void UserDefinedNewton::ApplyRendererState() const
 void UserDefinedNewton::Render()
 {
     ApplyRendererState();
-    SetRendererBounds<UserDefinedNewtonRenderer>(_myRender);
+    // Root ids are assigned as roots are discovered, so this renderer must see
+    // the full image in one pass to avoid striping from per-tile registries.
+    SetRendererBounds<UserDefinedNewtonRenderer>(_myRender, 0);
 }
 
 void UserDefinedNewton::SetFormula(const FormulaOptions formula)

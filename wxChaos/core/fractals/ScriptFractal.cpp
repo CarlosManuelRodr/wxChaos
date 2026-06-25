@@ -33,7 +33,6 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
         _myRender[i].SetParams(i);
         _myRender[i].SetPath(scriptData.file);
     }
-    SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
 }
 ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath)
                              : Fractal(width, height)
@@ -54,7 +53,6 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
         _myRender[i].SetPath(scriptPath);
-    SetWatchdog<ScriptFractalRenderer>(_myRender, &_watchdog, _threadNumber);
 }
 ScriptFractal::~ScriptFractal()
 {
