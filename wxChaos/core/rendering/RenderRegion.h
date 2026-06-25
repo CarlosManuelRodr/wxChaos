@@ -5,7 +5,7 @@
 * @brief Represents a rectangular pixel area that needs to be rendered.
 *
 * RenderRegion stores the half-open bounds [left, right) and [top, bottom)
-* used by RenderFractal::SetLimits.
+* passed to Renderer::SetLimits.
 */
 class RenderRegion
 {

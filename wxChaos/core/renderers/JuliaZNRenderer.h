@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderJuliaZN
-* @brief Threaded JuliaZN rendering routines.
+/**
+* @class JuliaZNRenderer
+* @brief Renders power Julia samples for one pixel region.
+*
+* The renderer owns the formula trace for JuliaZN and dispatches the selected
+* escape-time coloring algorithm through the shared Renderer paths.
 */
 class JuliaZNRenderer : public Renderer
 {

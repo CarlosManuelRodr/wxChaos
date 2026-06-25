@@ -1,9 +1,13 @@
 #pragma once
 #include "PerturbationRenderer.h"
 
-/*
-* @class RenderJulia
-* @brief Threaded Julia rendering routines.
+/**
+* @class JuliaRenderer
+* @brief Renders quadratic Julia samples for one pixel region.
+*
+* The renderer owns the Julia formula trace, supports the perturbation path for
+* high-precision views, and dispatches compatible coloring algorithms through
+* the shared Renderer paths.
 */
 class JuliaRenderer : public PerturbationRenderer
 {

@@ -2,9 +2,12 @@
 #include "FormulaOptions.h"
 #include "../Renderer.h"
 
-/*
-* @class RenderFPUserDefined
-* @brief Threaded FPUserDefined rendering routines.
+/**
+* @class UserDefinedFixedPointRenderer
+* @brief Renders user-defined fixed-point convergence formulas.
+*
+* The renderer evaluates the configured muParserX expression for each orbit
+* step and records convergence state in the shared output maps.
 */
 class UserDefinedFixedPointRenderer : public Renderer
 {

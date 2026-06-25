@@ -15,7 +15,10 @@
 
 /**
 * @class SaveProgressDiag
-* @brief Creates a dialog that shows the user the amount of rendering progress and allows the user to pause it and save progress.
+* @brief Tracks progress while a high-resolution image render is being saved.
+*
+* The dialog polls the target fractal render progress, allows cancellation when
+* supported, and closes once the save render finishes.
 */
 class SaveProgressDiag : public wxDialog
 {
@@ -45,7 +48,11 @@ public:
 };
 /**
 * @class SizeDialogSave
-* @brief Creates a dialog to select the fractal size and number of iterations.
+* @brief Collects export dimensions and starts an off-screen image save render.
+*
+* SizeDialogSave preserves the active canvas aspect ratio while the user changes
+* width or height, copies the current fractal options, renders the requested
+* size through FractalHandler, and writes the selected image format.
 */
 class SizeDialogSave : public wxDialog
 {

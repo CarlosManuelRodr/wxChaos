@@ -12,7 +12,11 @@
 
 /**
 * @class ZoomRecorder
-* @brief Creates a dialog to preview and select the zoom recorder parameters.
+* @brief Configures and previews a zoom animation export.
+*
+* ZoomRecorder samples the current canvas zoom range, renders preview frames for
+* the selected timing, rotation, and color-cycling options, then starts video
+* generation when the user saves.
 */
 class ZoomRecorder : public wxDialog
 {

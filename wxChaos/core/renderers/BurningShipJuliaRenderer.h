@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderBurningShipJulia
-* @brief Threaded BurningShipJulia rendering routines.
+/**
+* @class BurningShipJuliaRenderer
+* @brief Renders the Burning Ship Julia recurrence for one pixel region.
+*
+* The renderer owns the formula trace for BurningShipJulia and dispatches the
+* selected escape-time coloring algorithm through the shared Renderer paths.
 */
 class BurningShipJuliaRenderer : public Renderer
 {

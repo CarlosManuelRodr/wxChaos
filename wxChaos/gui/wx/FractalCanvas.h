@@ -1,9 +1,10 @@
 /**
 * @file FractalCanvas.h
-* @brief FractalCanvas related stuff.
+* @brief wx/SFML canvas that hosts the interactive fractal view.
 *
-* FractalCanvas is the class used to draw the fractal, the play button, the selection rect, and
-* the screen pointer.
+* FractalCanvas owns the wx event handlers and SFML overlay controls that let
+* the user render, pan, zoom, select constants, inspect coordinates, and switch
+* between concrete fractal models.
 *
 * @author Carlos Manuel Rodriguez Martinez
 * @date 7/19/2012
@@ -22,10 +23,13 @@ wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 
 /**
 * @class FractalCanvas
-* @brief This is where the fractal is drawn.
+* @brief Interactive wxWidgets/SFML surface for exploring the active fractal.
 *
-* FractalCanvas handles all the memory-related stuff that happens when a new fractal is selected or the program is opened or closed.
-* Its main purpose is to control the flow of the SFML events and to draw the generated image along with some GUI elements.
+* FractalCanvas creates and swaps fractal models through FractalHandler, keeps
+* the SFMLFractal presenter attached to the current model, and coordinates the
+* canvas-level controls: selection zoom, mouse-wheel zoom, mouse panning,
+* Julia/orbit/slider coordinate selection, keyboard help overlays, render
+* status text, and the animated-gradient play button.
 */
 class FractalCanvas : public wxSFMLCanvas
 {
@@ -38,10 +42,10 @@ class FractalCanvas : public wxSFMLCanvas
     FractalType _type;
     Fractal* _target;                       ///< Internally, the methods of this class communicate with the fractal through this pointer.
 
+    sf::RectangleShape _iterationsOverlay;  ///< Background shape for the iteration-count overlay.
     sf::Font _font;                         ///< Font used by SFML text overlays.
     sf::Text _iterationsText;               ///< Iteration-count overlay text.
     sf::Text _renderingText;                ///< Render-status overlay text.
-    sf::RectangleShape _iterationsOverlay;  ///< Background shape for the iteration-count overlay.
     sf::Image _keyboardImage;               ///< Texture of the info images.
     sf::Image _mouseImage;
     sf::Image _helpImage;

@@ -81,10 +81,12 @@ enum IDS
 
 /**
 * @class MainFrame
-* @brief Main frame of the program.
+* @brief Main wxWidgets frame that coordinates application-level UI.
 *
-* Contains all the wxWidgets menu items. The fractal is rendered in the fractalCanvas object,
-* which is a binding of wxWidgets and SFML.
+* MainFrame builds the menu bar, status bar, option panel, and auxiliary tool
+* windows. It routes menu commands to FractalCanvas, keeps Julia, renderer,
+* script, dimension, console, and settings windows synchronized with the active
+* fractal, and applies persisted configuration during startup and runtime.
 */
 class MainFrame : public wxFrame
 {

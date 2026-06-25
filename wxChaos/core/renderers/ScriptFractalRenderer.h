@@ -2,9 +2,12 @@
 #include "../Renderer.h"
 #include "../scripting/AngelscriptRenderEngine.h"
 
-/*
+/**
 * @class ScriptFractalRenderer
-* @brief Threaded ScriptFractal rendering routines.
+* @brief Renders one pixel region by executing an AngelScript render script.
+*
+* The renderer exposes the active render variables to AngelscriptRenderEngine
+* and lets the script fill the shared set, color, and auxiliary maps.
 */
 class ScriptFractalRenderer : public Renderer
 {

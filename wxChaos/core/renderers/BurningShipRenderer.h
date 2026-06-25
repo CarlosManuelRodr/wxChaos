@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderBurningShip
-* @brief Threaded BurningShip rendering routines.
+/**
+* @class BurningShipRenderer
+* @brief Renders the Burning Ship set for one pixel region.
+*
+* The renderer owns the formula trace for BurningShip and dispatches the
+* selected escape-time coloring algorithm through the shared Renderer paths.
 */
 class BurningShipRenderer : public Renderer
 {

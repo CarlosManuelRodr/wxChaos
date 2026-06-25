@@ -4,11 +4,13 @@
 
 /**
 * @class ThreadWatchdog
-* @brief Control the execution of the threads.
+* @brief Legacy SFML-thread launcher for renderer arrays.
 *
-* The watchdog's main purpose is to control the execution and flow of the threads. It provides methods to watch their status,
-* stop them, reset them, and relaunch them.
-* @tparam MT Must be a RenderFractal inherited class.
+* ThreadWatchdog wraps one sf::Thread per renderer, launches each renderer's
+* run() method, waits for completion on a watchdog thread, and aggregates
+* progress and stop requests. Newer render paths may use RenderThreadPool
+* instead, but this class still supports relaunching existing renderer arrays.
+* @tparam MT Renderer-compatible type stored in the watched array.
 */
 template<class MT> class ThreadWatchdog
 {
@@ -35,7 +37,7 @@ public:
     ///@param threadAddress Pointer to the thread to watch over.
     void SetThread(MT* threadAddress);
 
-    ///@brief Resets the RenderFractal.
+    ///@brief Resets every watched renderer.
     void Reset();
 
     ///@brief Launch all the threads in the threadList.
@@ -48,7 +50,7 @@ public:
     ///@return true if there is a thread running. false if not.
     [[nodiscard]] bool ThreadRunning() const;
 
-    ///@brief Ask the RenderFractal the render progress.
+    ///@brief Asks watched renderers for aggregate render progress.
     ///@return An integer from 0 to 100 that is the progress.
     int GetThreadProgress();
 
@@ -152,7 +154,7 @@ template<class MT> void ThreadWatchdog<MT>::LaunchThreads()
     _threadRunning = true;
     for (unsigned int i = 0; i < _threadCounter; i++)
     {
-        // Create a new thread that will call the run() method of our RenderFractal object
+        // Create a new thread that will call the run() method of our renderer.
         _sfmlThreads[i] = new sf::Thread(&Renderer::run, _threadList[i]);
         _sfmlThreads[i]->launch();
     }

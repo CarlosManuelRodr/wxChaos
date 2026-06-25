@@ -5,8 +5,12 @@
 #include "types/EngineStatus.h"
 
 /**
-* @struct AngelscriptRenderEngine
-* @brief Render engine instance. Used to call the Render() function.
+* @class AngelscriptRenderEngine
+* @brief Compiles and runs an AngelScript Render() entry point.
+*
+* Script renderers register the current render variables as globals, compile
+* the selected script, execute it for the active region, and preserve any engine
+* status or error text for the caller.
 */
 class AngelscriptRenderEngine
 {

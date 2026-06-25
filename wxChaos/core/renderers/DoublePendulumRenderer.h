@@ -1,9 +1,13 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderDPendulum
-* @brief Threaded DPendulum rendering routines.
+/**
+* @class DoublePendulumRenderer
+* @brief Renders double-pendulum parameter-space samples for one pixel region.
+*
+* Each pixel is interpreted as a pair of initial pendulum angles, and the
+* renderer records whether the simulated trajectory crosses its escape
+* threshold within the configured iteration count.
 */
 class DoublePendulumRenderer : public Renderer
 {

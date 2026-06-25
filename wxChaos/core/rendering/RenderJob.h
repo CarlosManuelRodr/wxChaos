@@ -7,7 +7,7 @@
 * @brief Describes one renderable unit of work.
 *
 * RenderJob currently wraps a RenderRegion. It also stores the progress origin
-* used by the legacy RenderFractal progress calculation.
+* used by the legacy renderer-array progress calculation.
 */
 class RenderJob
 {

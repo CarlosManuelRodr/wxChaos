@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderSierpinskyTriangle
-* @brief Threaded SierpinskyTriangle rendering routines.
+/**
+* @class SierpinskyTriangleRenderer
+* @brief Renders the Sierpinski triangle inverse-map recurrence.
+*
+* The renderer iterates each pixel through the triangle mapping and writes
+* escape/convergence values into the shared output maps.
 */
 class SierpinskyTriangleRenderer : public Renderer
 {

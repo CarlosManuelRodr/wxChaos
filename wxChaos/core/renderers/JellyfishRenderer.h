@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
+/**
 * @class JellyfishRenderer
-* @brief Threaded Jellyfish rendering routines.
+* @brief Renders the Jellyfish escape-time recurrence for one pixel region.
+*
+* The renderer owns the formula trace for Jellyfish and dispatches the selected
+* escape-time coloring algorithm through the shared Renderer paths.
 */
 class JellyfishRenderer : public Renderer
 {

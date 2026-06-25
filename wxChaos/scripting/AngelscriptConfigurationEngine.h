@@ -6,8 +6,11 @@
 #include "types/EngineStatus.h"
 
 /**
-* @struct AngelscriptConfigurationEngine
-* @brief Script configurator. Used to call the Configure() function.
+* @class AngelscriptConfigurationEngine
+* @brief Compiles and runs a script's Configure() entry point.
+*
+* The configuration engine extracts ScriptData metadata from AngelScript files
+* before they are exposed as script fractals in the UI.
 */
 class AngelscriptConfigurationEngine
 {

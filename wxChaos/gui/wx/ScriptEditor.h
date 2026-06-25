@@ -18,6 +18,10 @@
 
 wxDECLARE_EVENT(wxEVT_SCRIPT_EDITOR_CLOSED, wxCommandEvent);
 
+/**
+* @class ScriptNameDialog
+* @brief Prompts for the name of a new user script.
+*/
 class ScriptNameDialog : public wxDialog
 {
     wxStaticText* _scriptNameText;
@@ -35,6 +39,14 @@ public:
     [[nodiscard]] wxString GetScriptName() const;
 };
 
+/**
+* @class ScriptEditor
+* @brief Editor and validation tool for user AngelScript fractals.
+*
+* ScriptEditor lists saved user scripts, edits source with a styled code
+* control, validates configuration/render entry points, and shows console and
+* preview output for debugging script fractals.
+*/
 class ScriptEditor : public wxFrame
 {
     wxPanel* _mainPanel;

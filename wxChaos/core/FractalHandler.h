@@ -2,9 +2,13 @@
 #include "FractalTypes.h"
 #include "../scripting/ScriptData.h"
 
-/*
+/**
 * @class FractalHandler
-* @brief Interface class to instantiate fractals.
+* @brief Factory and owner for the currently selected Fractal instance.
+*
+* FractalHandler creates the requested built-in, user-defined, or script-backed
+* fractal at the active render size, forwards formula changes to it, and deletes
+* the previous instance when the selection changes.
 */
 class FractalHandler
 {

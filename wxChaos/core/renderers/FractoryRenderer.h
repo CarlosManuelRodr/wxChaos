@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderFractory
-* @brief Threaded Fractory rendering routines.
+/**
+* @class FractoryRenderer
+* @brief Renders the Fractory escape-time recurrence for one pixel region.
+*
+* The renderer owns the formula trace for Fractory and dispatches the selected
+* escape-time coloring algorithm through the shared Renderer paths.
 */
 class FractoryRenderer : public Renderer
 {

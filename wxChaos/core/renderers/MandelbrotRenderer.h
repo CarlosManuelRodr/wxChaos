@@ -1,9 +1,13 @@
 #pragma once
 #include "PerturbationRenderer.h"
 
-/*
-* @class RenderMandelbrot
-* @brief Threaded Mandelbrot rendering routines.
+/**
+* @class MandelbrotRenderer
+* @brief Renders Mandelbrot and Buddhabrot samples for one pixel region.
+*
+* The renderer owns the Mandelbrot formula trace, supports the perturbation
+* path for high-precision views, and dispatches compatible coloring algorithms
+* through the shared Renderer paths.
 */
 class MandelbrotRenderer : public PerturbationRenderer
 {

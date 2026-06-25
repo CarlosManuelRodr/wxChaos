@@ -14,7 +14,11 @@
 
 /**
 * @class wxSFMLCanvas
-* @brief Binding class between SFML and wxWidgets.
+* @brief wxControl wrapper around an SFML RenderWindow.
+*
+* wxSFMLCanvas creates the native SFML window from the wxWidgets handle and
+* drives the virtual OnUpdate hook from idle and paint events so derived classes
+* can render SFML content inside a wx layout.
 */
 class wxSFMLCanvas : public wxControl, public sf::RenderWindow
 {

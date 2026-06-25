@@ -27,10 +27,13 @@
 
 /**
 * @class Fractal
-* @brief Provides an interface to do the fractal rendering and draw the result to the screen.
+* @brief Abstract model for a renderable fractal and its display state.
 *
-* This is an abstract class. Its purpose is to provide a set of methods to render the fractal,
-* allocate memory for the rendering maps, and provide color data for the drawing.
+* Fractal owns the render maps, viewport, palette and coloring settings,
+* render lifecycle flags, optional geometry overlays, orbit state, and the
+* dispatch path that launches concrete Renderer instances. Concrete fractals
+* provide the formula-specific renderer, name, option-panel wiring, and any
+* orbit drawing behavior.
 */
 class Fractal
 {
@@ -325,7 +328,7 @@ public:
 
     // Thread control.
     ///@brief Calculate drawing limits of each thread and launches them.
-    ///@param myRender Array of RenderFractal.
+    ///@param myRender Array of renderer instances.
     template<class MT> void SetRendererBounds(MT* myRender);
 
     ///@brief Return a pointer to the watchdog.

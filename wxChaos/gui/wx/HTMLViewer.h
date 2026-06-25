@@ -1,6 +1,6 @@
 /**
 * @file HTMLViewer.h
-* @brief All the fractal drawing-related classes.
+* @brief Dialog used to display bundled HTML documentation.
 *
 * @copyright GNU Public License.
 * @author Carlos Manuel Rodriguez y Martinez

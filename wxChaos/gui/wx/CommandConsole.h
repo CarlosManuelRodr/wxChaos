@@ -13,6 +13,14 @@
 
 wxDECLARE_EVENT(wxEVT_COMMAND_CONSOLE_CLOSED, wxCommandEvent);
 
+/**
+* @class CommandConsole
+* @brief Text command window for manipulating the active fractal session.
+*
+* CommandConsole parses typed commands, writes themed console output, dispatches
+* view/render/color/script actions to FractalCanvas, and exposes callbacks for
+* script reloads and Julia-mode opening.
+*/
 class CommandConsole : public wxFrame
 {
     struct ParsedCommand

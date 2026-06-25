@@ -51,7 +51,11 @@ enum FractalList
 };
 /**
 * @class DimensionCalculator
-* @brief A multithread fractal dimension calculator.
+* @brief Box-counting worker for one slice of a rendered fractal map.
+*
+* DimensionCalculator counts occupied boxes for a configured grid division over
+* its assigned row range. DimensionFrame owns the threads and aggregates each
+* worker's count into the final dimension estimate.
 */
 
 class DimensionCalculator
@@ -81,7 +85,7 @@ public:
 
 /**
 * @class ImagePanel
-* @brief A panel to show a preview of the dimension calculator.
+* @brief Paints a rendered fractal preview with the current box grid overlay.
 */
 
 class ImagePanel : public wxPanel
@@ -103,9 +107,10 @@ public:
 
 /**
 * @class ConfigFractalOptionsDialog
-* @brief A fractal options dialog.
+* @brief Edits fractal-specific options for the dimension calculator target.
 *
-* This behaves just as the Fractal options on the main frame.
+* The dialog mirrors the main frame's dynamic option panel so a dimension
+* preview can use fractal-specific parameters without changing the active canvas.
 */
 class ConfigFractalOptionsDialog : public wxDialog
 {
@@ -186,7 +191,11 @@ public:
 
 /**
 * @class DimensionFrame
-* @brief Frame to calculate the dimension of a fractal.
+* @brief Tool window for estimating fractal dimension by box counting.
+*
+* DimensionFrame renders a square preview of the selected fractal, counts boxes
+* across the requested grid divisions, logs the samples, and can plot either the
+* collected values or a fitted line.
 */
 class DimensionFrame : public wxFrame
 {

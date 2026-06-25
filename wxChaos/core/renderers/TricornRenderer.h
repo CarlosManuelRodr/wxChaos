@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderTricorn
-* @brief Threaded Tricorn rendering routines.
+/**
+* @class TricornRenderer
+* @brief Renders Tricorn escape-time samples for one pixel region.
+*
+* The renderer owns the formula trace for Tricorn and dispatches the selected
+* escape-time coloring algorithm through the shared Renderer paths.
 */
 class TricornRenderer : public Renderer
 {

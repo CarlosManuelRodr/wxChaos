@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderMandelbrotZN
-* @brief Threaded MandelbrotZN rendering routines.
+/**
+* @class MandelbrotZNRenderer
+* @brief Renders Multibrot samples for one pixel region.
+*
+* The renderer owns the formula trace for MandelbrotZN and dispatches the
+* selected escape-time coloring algorithm through the shared Renderer paths.
 */
 class MandelbrotZNRenderer : public Renderer
 {

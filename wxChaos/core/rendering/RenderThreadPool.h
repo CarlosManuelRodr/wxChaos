@@ -13,7 +13,7 @@
 * @brief Reusable worker pool that renders queued RenderJob objects.
 *
 * RenderThreadPool keeps a fixed set of worker threads alive and assigns each
-* worker one RenderFractal instance. Workers pull RenderJob objects from a
+* worker one Renderer instance. Workers pull RenderJob objects from a
 * shared queue, so a worker that finishes early can immediately help with the
 * remaining render area.
 */

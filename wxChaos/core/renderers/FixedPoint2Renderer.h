@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderFixedPoint2
-* @brief Threaded FixedPoint2 rendering routines.
+/**
+* @class FixedPoint2Renderer
+* @brief Renders the cos(z) fixed-point convergence map for one pixel region.
+*
+* The renderer iterates each pixel as the initial complex value and colors the
+* result using the shared convergence-test output maps.
 */
 class FixedPoint2Renderer : public Renderer
 {

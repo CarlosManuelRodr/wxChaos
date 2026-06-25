@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderSinoidal
-* @brief Threaded Sinoidal rendering routines.
+/**
+* @class SinoidalRenderer
+* @brief Renders the Sinoidal escape-time recurrence for one pixel region.
+*
+* The renderer owns the formula trace for Sinoidal and dispatches the selected
+* escape-time coloring algorithm through the shared Renderer paths.
 */
 class SinoidalRenderer : public Renderer
 {

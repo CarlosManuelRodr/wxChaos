@@ -72,7 +72,11 @@ void EnableHighDpiSupport()
 
 /**
 * @class App
-* @brief Starts the execution of the program.
+* @brief wxWidgets application object for wxChaos startup and shutdown.
+*
+* App enables Windows DPI awareness, loads persisted appearance settings,
+* installs the global theme filter, creates the MainFrame, and removes the
+* theme filter during application exit.
 */
 class App : public wxApp
 {

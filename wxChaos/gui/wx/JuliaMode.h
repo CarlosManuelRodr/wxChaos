@@ -18,7 +18,11 @@ wxDECLARE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
 /**
 * @class JuliaMode
-* @brief Creates and manages a window for displaying a Julia fractal variant.
+* @brief Owns the separate SFML window that previews the Julia variant.
+*
+* JuliaMode runs its own render loop thread, keeps a Julia fractal synchronized
+* with selected renderer options and constants from the main canvas, and emits a
+* close event back to the wxWidgets parent.
 */
 class JuliaMode
 {

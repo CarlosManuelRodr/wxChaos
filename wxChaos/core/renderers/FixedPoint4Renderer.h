@@ -1,9 +1,12 @@
 #pragma once
 #include "../Renderer.h"
 
-/*
-* @class RenderFixedPoint4
-* @brief Threaded FixedPoint4 rendering routines.
+/**
+* @class FixedPoint4Renderer
+* @brief Renders the z^2 fixed-point convergence map for one pixel region.
+*
+* The renderer iterates each pixel as the initial complex value and colors the
+* result using the shared convergence-test output maps.
 */
 class FixedPoint4Renderer : public Renderer
 {

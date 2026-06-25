@@ -2,9 +2,12 @@
 #include "FormulaOptions.h"
 #include "../Renderer.h"
 
-/*
-* @class RenderUserDefined
-* @brief Threaded UserDefined rendering routines.
+/**
+* @class UserDefinedEscapeTimeRenderer
+* @brief Renders user-defined escape-time formulas for one pixel region.
+*
+* The renderer evaluates the configured muParserX expression for each orbit
+* step and writes escape state into the shared output maps.
 */
 class UserDefinedEscapeTimeRenderer : public Renderer
 {

@@ -6,6 +6,15 @@
 #include "geometry/Vector2Int.h"
 #include "Options.h"
 
+/**
+* @class Renderer
+* @brief Base class for per-region fractal render workers.
+*
+* Renderer stores the shared render options and output maps for one pixel
+* region. It provides the common pixel scan, optional high-precision coordinate
+* scan, escape-time coloring algorithms, and progress/stop state used by
+* concrete formula renderers.
+*/
 class Renderer
 {
 protected:
