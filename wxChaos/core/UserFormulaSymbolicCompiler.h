@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <symengine/basic.h>
 
 /**
  * @brief muParserX-ready representation of a user-supplied Newton formula.
@@ -28,6 +29,21 @@ struct CompiledUserFormula
  */
 class UserFormulaSymbolicCompiler
 {
+    /**
+     * @brief Check whether a SymEngine node type is unsupported by the Newton compiler.
+     * @param typeName SymEngine type-code name.
+     * @return true when the construct should be rejected before muParserX compilation.
+     */
+    static bool ContainsUnsupportedTypeName(const std::string& typeName);
+
+    /**
+     * @brief Validate symbols and symbolic constructs in a parsed expression tree.
+     * @param expression SymEngine expression tree to inspect.
+     * @param error Receives a user-facing validation error on failure.
+     * @return true when the tree only uses supported Newton formula constructs.
+     */
+    static bool ValidateExpressionTree(const SymEngine::RCP<const SymEngine::Basic>& expression, std::string& error);
+
     /**
      * @brief Convert optional single-equals equation syntax to `lhs - rhs`.
      * @param input User expression or equation.

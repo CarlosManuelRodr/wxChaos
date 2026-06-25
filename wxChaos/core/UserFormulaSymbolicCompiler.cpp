@@ -10,61 +10,58 @@
 #include <symengine/symengine_casts.h>
 #include "TextUtils.h"
 
-namespace
+bool UserFormulaSymbolicCompiler::ContainsUnsupportedTypeName(const std::string& typeName)
 {
-    bool ContainsUnsupportedTypeName(const std::string& typeName)
+    static const std::string unsupported[] = {
+        "ABS", "CONJUGATE", "DERIVATIVE", "SUBS", "FLOOR", "CEILING", "TRUNCATE", "SIGN",
+        "LAMBERT", "ZETA", "DIRICHLET", "ATAN2", "GAMMA", "ERF"
+    };
+
+    std::string upper = typeName;
+    std::transform(upper.begin(), upper.end(), upper.begin(), [](const unsigned char c)
     {
-        static const std::string unsupported[] = {
-            "ABS", "CONJUGATE", "DERIVATIVE", "SUBS", "FLOOR", "CEILING", "TRUNCATE", "SIGN",
-            "LAMBERT", "ZETA", "DIRICHLET", "ATAN2", "GAMMA", "ERF"
-        };
+        return static_cast<char>(std::toupper(c));
+    });
 
-        std::string upper = typeName;
-        std::transform(upper.begin(), upper.end(), upper.begin(), [](const unsigned char c)
-        {
-            return static_cast<char>(std::toupper(c));
-        });
-
-        return std::any_of(std::begin(unsupported), std::end(unsupported), [&upper](const std::string& value)
-        {
-            return upper.find(value) != std::string::npos;
-        });
-    }
-
-    bool ValidateExpressionTree(const SymEngine::RCP<const SymEngine::Basic>& expression, std::string& error)
+    return std::any_of(std::begin(unsupported), std::end(unsupported), [&upper](const std::string& value)
     {
-        if (SymEngine::is_a<SymEngine::Symbol>(*expression))
-        {
-            const auto& symbol = SymEngine::down_cast<const SymEngine::Symbol&>(*expression);
-            if (symbol.get_name() != "z")
-            {
-                error = "Unknown symbol: " + symbol.get_name() + ". Use z as the complex variable.";
-                return false;
-            }
-        }
+        return upper.find(value) != std::string::npos;
+    });
+}
 
-        if (SymEngine::is_a<SymEngine::FunctionSymbol>(*expression))
+bool UserFormulaSymbolicCompiler::ValidateExpressionTree(const SymEngine::RCP<const SymEngine::Basic>& expression, std::string& error)
+{
+    if (SymEngine::is_a<SymEngine::Symbol>(*expression))
+    {
+        const auto& symbol = SymEngine::down_cast<const SymEngine::Symbol&>(*expression);
+        if (symbol.get_name() != "z")
         {
-            const auto& function = SymEngine::down_cast<const SymEngine::FunctionSymbol&>(*expression);
-            error = "Unsupported function: " + function.get_name();
+            error = "Unknown symbol: " + symbol.get_name() + ". Use z as the complex variable.";
             return false;
         }
-
-        const std::string typeName = SymEngine::type_code_name(expression->get_type_code());
-        if (ContainsUnsupportedTypeName(typeName))
-        {
-            error = "Unsupported symbolic construct: " + typeName;
-            return false;
-        }
-
-        for (const auto& arg : expression->get_args())
-        {
-            if (!ValidateExpressionTree(arg, error))
-                return false;
-        }
-
-        return true;
     }
+
+    if (SymEngine::is_a<SymEngine::FunctionSymbol>(*expression))
+    {
+        const auto& function = SymEngine::down_cast<const SymEngine::FunctionSymbol&>(*expression);
+        error = "Unsupported function: " + function.get_name();
+        return false;
+    }
+
+    const std::string typeName = SymEngine::type_code_name(expression->get_type_code());
+    if (ContainsUnsupportedTypeName(typeName))
+    {
+        error = "Unsupported symbolic construct: " + typeName;
+        return false;
+    }
+
+    for (const auto& arg : expression->get_args())
+    {
+        if (!ValidateExpressionTree(arg, error))
+            return false;
+    }
+
+    return true;
 }
 
 bool UserFormulaSymbolicCompiler::CompileNewtonFormula(const std::string& input, CompiledUserFormula& output, std::string& error)

@@ -1,4 +1,5 @@
 #pragma once
+#include <complex>
 #include "../Fractal.h"
 #include "../UserFormulaSymbolicCompiler.h"
 #include "../renderers/UserDefinedNewtonRenderer.h"
@@ -37,6 +38,13 @@ class UserDefinedNewton : public Fractal
 
     /** @brief Report whether the current formula compiled successfully. */
     [[nodiscard]] bool HasCompiledFormula() const;
+
+    /**
+     * @brief Test whether both components of a complex value are finite.
+     * @param value Complex value to inspect.
+     * @return true when real and imaginary parts are finite.
+     */
+    static bool IsFinite(const std::complex<double>& value);
 
     /**
      * @brief Trace and draw the Newton orbit for the selected point.

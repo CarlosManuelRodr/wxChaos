@@ -4,12 +4,9 @@
 #include <mpParser.h>
 #include "UserDefinedNewton.h"
 
-namespace
+bool UserDefinedNewton::IsFinite(const std::complex<double>& value)
 {
-    bool IsFinite(const std::complex<double>& value)
-    {
-        return std::isfinite(value.real()) && std::isfinite(value.imag());
-    }
+    return std::isfinite(value.real()) && std::isfinite(value.imag());
 }
 
 UserDefinedNewton::UserDefinedNewton(const unsigned int width, const unsigned int height) : Fractal(width, height)
