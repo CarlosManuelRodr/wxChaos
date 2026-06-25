@@ -1,4 +1,4 @@
-#include "gui/wx/MainWindow.h"
+#include "gui/wx/MainFrame.h"
 #include "gui/wx/AppTheme.h"
 #include "gui/wx/config/AppConfigStore.h"
 #include "utils/AppPaths.h"

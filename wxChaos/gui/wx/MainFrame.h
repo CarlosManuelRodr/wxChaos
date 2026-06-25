@@ -1,5 +1,5 @@
 /**
-* @file MainWindow.h
+* @file MainFrame.h
 * @brief This header file contains the main frame of the program.
 *
 * @copyright GNU Public License.

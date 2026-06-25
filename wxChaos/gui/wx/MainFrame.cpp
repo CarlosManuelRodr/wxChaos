@@ -1,5 +1,5 @@
 // ReSharper disable CppEnumeratorNeverUsed
-#include "MainWindow.h"
+#include "MainFrame.h"
 #include "AngelscriptBindings.h"
 #include "AppPaths.h"
 #include "HTMLViewer.h"
