@@ -1,9 +1,8 @@
-#include "UserDefinedNewton.h"
-
 #include <algorithm>
 #include <complex>
 #include <cmath>
 #include <mpParser.h>
+#include "UserDefinedNewton.h"
 
 namespace
 {
@@ -27,6 +26,7 @@ UserDefinedNewton::UserDefinedNewton(const unsigned int width, const unsigned in
     _hasOrbit = true;
     _relativeColor = true;
     _redrawAlways = true;
+    _renderJobCompatible = false;
     _threadNumber = 1;
     _myRender = new UserDefinedNewtonRenderer[_threadNumber];
     SetWatchdog<UserDefinedNewtonRenderer>(_myRender, &_watchdog, _threadNumber);

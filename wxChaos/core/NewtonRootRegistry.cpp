@@ -1,6 +1,5 @@
-#include "NewtonRootRegistry.h"
-
 #include <cmath>
+#include "NewtonRootRegistry.h"
 
 NewtonRootRegistry::NewtonRootRegistry(const double tolerance) : _tolerance(tolerance) {}
 

@@ -1,8 +1,7 @@
-#include "UserDefinedNewtonRenderer.h"
-
 #include <algorithm>
 #include <cmath>
 #include <mpParser.h>
+#include "UserDefinedNewtonRenderer.h"
 
 UserDefinedNewtonRenderer::UserDefinedNewtonRenderer()
 {
@@ -113,8 +112,7 @@ void UserDefinedNewtonRenderer::Render()
                 if (!IsFinite(fz) || !IsFinite(dfz))
                     break;
 
-                const double derivativeMagnitude = std::abs(dfz);
-                if (derivativeMagnitude < _derivativeEpsilon)
+                if (const double derivativeMagnitude = std::abs(dfz); derivativeMagnitude < _derivativeEpsilon)
                     break;
 
                 const std::complex<double> step = fz / dfz;
