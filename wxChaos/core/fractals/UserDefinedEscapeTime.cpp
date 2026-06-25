@@ -13,7 +13,7 @@ UserDefinedEscapeTime::UserDefinedEscapeTime(const unsigned int width, const uns
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _type = FractalType::UserDefined;
+    _type = FractalType::UserDefinedEscapeTime;
     _hasOrbit = true;
     _myRender = new UserDefinedEscapeTimeRenderer[_threadNumber];
     SetWatchdog<UserDefinedEscapeTimeRenderer>(_myRender, &_watchdog, _threadNumber);

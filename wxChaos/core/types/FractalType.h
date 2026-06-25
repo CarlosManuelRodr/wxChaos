@@ -24,9 +24,9 @@ enum class FractalType
     Fractory,
     Cell,
     DoublePendulum,
-    UserDefined,
-    FixedPointUserDefined,
-    NewtonUserDefined,
+    UserDefinedEscapeTime,
+    UserDefinedFixedPoint,
+    UserDefinedNewtonRaphson,
     ScriptFractal,
     Undefined
 };

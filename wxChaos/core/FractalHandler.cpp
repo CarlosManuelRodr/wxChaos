@@ -147,17 +147,17 @@ void FractalHandler::CreateFractal(const FractalType type, const unsigned int wi
                 _target = _doublePendulum = new DoublePendulum(width, height);
                 break;
             }
-        case FractalType::UserDefined:
+        case FractalType::UserDefinedEscapeTime:
             {
                 _target = _userDefined = new UserDefinedEscapeTime(width, height);
                 break;
             }
-        case FractalType::FixedPointUserDefined:
+        case FractalType::UserDefinedFixedPoint:
             {
                 _target = _fpUserDefined = new UserDefinedFixedPoint(width, height);
                 break;
             }
-        case FractalType::NewtonUserDefined:
+        case FractalType::UserDefinedNewtonRaphson:
             {
                 _target = _newtonUserDefined = new UserDefinedNewton(width, height);
                 break;
@@ -175,7 +175,7 @@ void FractalHandler::CreateScriptFractal(const unsigned int width, const unsigne
 }
 void FractalHandler::SetFormula(FormulaOptions formula) const
 {
-    if (_type == FractalType::UserDefined)
+    if (_type == FractalType::UserDefinedEscapeTime)
     {
         if (formula.type != FormulaType::Complex)
         {
@@ -184,7 +184,7 @@ void FractalHandler::SetFormula(FormulaOptions formula) const
         }
         _userDefined->SetFormula(formula);
     }
-    else if (_type == FractalType::FixedPointUserDefined)
+    else if (_type == FractalType::UserDefinedFixedPoint)
     {
         if (formula.type != FormulaType::FixedPoint)
         {
@@ -193,7 +193,7 @@ void FractalHandler::SetFormula(FormulaOptions formula) const
         }
         _fpUserDefined->SetFormula(formula);
     }
-    else if (_type == FractalType::NewtonUserDefined)
+    else if (_type == FractalType::UserDefinedNewtonRaphson)
     {
         if (formula.type != FormulaType::NewtonRaphson)
         {

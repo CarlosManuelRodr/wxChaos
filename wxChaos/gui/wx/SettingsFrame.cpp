@@ -102,8 +102,8 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskyTriangle, FractalType::FixedPoint1,
         FractalType::FixedPoint2, FractalType::FixedPoint3, FractalType::FixedPoint4, FractalType::Tricorn,
         FractalType::BurningShip, FractalType::BurningShipJulia, FractalType::Fractory, FractalType::Cell,
-        FractalType::DoublePendulum, FractalType::UserDefined, FractalType::FixedPointUserDefined,
-        FractalType::NewtonUserDefined
+        FractalType::DoublePendulum, FractalType::UserDefinedEscapeTime, FractalType::UserDefinedFixedPoint,
+        FractalType::UserDefinedNewtonRaphson
     };
 
     _fractalType = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(names), names);

@@ -153,9 +153,9 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
         { "Fractory", FractalType::Fractory },
         { "Cell", FractalType::Cell },
         { "Double_Pendulum", FractalType::DoublePendulum },
-        { "User_Defined", FractalType::UserDefined },
-        { "FPUser_Defined", FractalType::FixedPointUserDefined },
-        { "NewtonUser_Defined", FractalType::NewtonUserDefined }
+        { "User_Defined_Escape_Time", FractalType::UserDefinedEscapeTime },
+        { "User_Defined_Fixed_Point", FractalType::UserDefinedFixedPoint },
+        { "User_Defined_Newton_Raphson", FractalType::UserDefinedNewtonRaphson }
     };
 
     return fractalTypes;
@@ -229,6 +229,7 @@ std::string AppConfigStore::ColorStyleToString(const ColorPaletteTypes type)
     return "Retro";
 }
 
+// ReSharper disable once CppDFAConstantParameter
 AppAppearance AppConfigStore::AppearanceFromString(const std::string& value, const AppAppearance defaultValue)
 {
     const auto it = Appearances().find(value);
@@ -396,7 +397,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Flush();
 }
 
-void AppConfigStore::SetFirstUse(bool firstUse) const
+void AppConfigStore::SetFirstUse(const bool firstUse) const
 {
     AppConfig config = Load();
     config.firstUse = firstUse;

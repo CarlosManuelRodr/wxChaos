@@ -14,7 +14,7 @@ UserDefinedFixedPoint::UserDefinedFixedPoint(const unsigned int width, const uns
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _type = FractalType::FixedPointUserDefined;
+    _type = FractalType::UserDefinedFixedPoint;
     _hasOrbit = true;
     _myRender = new UserDefinedFixedPointRenderer[_threadNumber];
     SetWatchdog<UserDefinedFixedPointRenderer>(_myRender, &_watchdog, _threadNumber);

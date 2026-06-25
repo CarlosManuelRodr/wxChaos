@@ -578,7 +578,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent&)
         if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
             _formulaDialog->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
 
-        _fractalType = FractalType::UserDefined;
+        _fractalType = FractalType::UserDefinedEscapeTime;
     }
     else
         _formulaDialog->SetFocus();
@@ -880,21 +880,21 @@ void MainFrame::ChangeDPendulum(wxCommandEvent&)
 }
 void MainFrame::ChangeUserDefined(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::UserDefined, false);
+    this->ChangeFractal(FractalType::UserDefinedEscapeTime, false);
 }
 void MainFrame::ChangeFPUserDefined(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::FixedPointUserDefined, false);
+    this->ChangeFractal(FractalType::UserDefinedFixedPoint, false);
 }
 void MainFrame::ChangeNewtonUserDefined(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::NewtonUserDefined, false);
+    this->ChangeFractal(FractalType::UserDefinedNewtonRaphson, false);
 }
 void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
 {
     _selectedScriptIndex.reset();  // Deselect the script fractal.
-    if (_fractalType != type || _fractalType == FractalType::UserDefined || _fractalType == FractalType::FixedPointUserDefined
-        || _fractalType == FractalType::NewtonUserDefined)
+    if (_fractalType != type || _fractalType == FractalType::UserDefinedEscapeTime || _fractalType == FractalType::UserDefinedFixedPoint
+        || _fractalType == FractalType::UserDefinedNewtonRaphson)
     {
         const Options fractOpt = _fractalCanvas->GetFractalPtr()->GetOptions();
         const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractalPtr()->GetColorPalette();
@@ -1170,8 +1170,8 @@ void MainFrame::UpdateMenu()
     _sliderJuliaConstant->Check(false);
 
     // Closes formula dialog.
-    if (_fractalType != FractalType::UserDefined && _fractalType != FractalType::FixedPointUserDefined
-        && _fractalType != FractalType::NewtonUserDefined)
+    if (_fractalType != FractalType::UserDefinedEscapeTime && _fractalType != FractalType::UserDefinedFixedPoint
+        && _fractalType != FractalType::UserDefinedNewtonRaphson)
     {
         if (_formulaDialogIsActive)
         {
