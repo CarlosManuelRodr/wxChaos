@@ -834,7 +834,7 @@ DimensionFrame::~DimensionFrame()
     if (_renderingPreview)
         _target->StopRender();
 
-    _fractalHandler.DeleteFractal();
+    _fractalFactory.DeleteFractal();
     delete _confFractOptDialog;
 }
 
@@ -866,77 +866,77 @@ void DimensionFrame::CreateFractal(int size)
     {
         case FL_MANDELBROT:
         {
-            _fractalHandler.CreateFractal(FractalType::Mandelbrot, size, size);
+            _fractalFactory.CreateFractal(FractalType::Mandelbrot, size, size);
             break;
         }
         case FL_MANDELBROT_ZN:
         {
-            _fractalHandler.CreateFractal(FractalType::MandelbrotZN, size, size);
+            _fractalFactory.CreateFractal(FractalType::MandelbrotZN, size, size);
             break;
         }
         case FL_JULIA:
         {
-            _fractalHandler.CreateFractal(FractalType::Julia, size, size);
+            _fractalFactory.CreateFractal(FractalType::Julia, size, size);
             break;
         }
         case FL_JULIA_ZN:
         {
-            _fractalHandler.CreateFractal(FractalType::JuliaZN, size, size);
+            _fractalFactory.CreateFractal(FractalType::JuliaZN, size, size);
             break;
         }
-        case FL_SINOIDAL:
+        case FL_SINUSOIDAL:
         {
-            _fractalHandler.CreateFractal(FractalType::Sinoidal, size, size);
+            _fractalFactory.CreateFractal(FractalType::Sinusoidal, size, size);
             break;
         }
-        case FL_MEDUSA:
+        case FL_JELLYFISH:
         {
-            _fractalHandler.CreateFractal(FractalType::Medusa, size, size);
+            _fractalFactory.CreateFractal(FractalType::Jellyfish, size, size);
             break;
         }
         case FL_MANOWAR:
         {
-            _fractalHandler.CreateFractal(FractalType::Manowar, size, size);
+            _fractalFactory.CreateFractal(FractalType::Manowar, size, size);
             break;
         }
         case FL_MANOWAR_JULIA:
         {
-            _fractalHandler.CreateFractal(FractalType::ManowarJulia, size, size);
+            _fractalFactory.CreateFractal(FractalType::ManowarJulia, size, size);
             break;
         }
         case FL_TRICORN:
         {
-            _fractalHandler.CreateFractal(FractalType::Tricorn, size, size);
+            _fractalFactory.CreateFractal(FractalType::Tricorn, size, size);
             break;
         }
         case FL_BURNING_SHIP:
         {
-            _fractalHandler.CreateFractal(FractalType::BurningShip, size, size);
+            _fractalFactory.CreateFractal(FractalType::BurningShip, size, size);
             break;
         }
         case FL_BURNING_SHIP_JULIA:
         {
-            _fractalHandler.CreateFractal(FractalType::BurningShipJulia, size, size);
+            _fractalFactory.CreateFractal(FractalType::BurningShipJulia, size, size);
             break;
         }
         case FL_FRACTORY:
         {
-            _fractalHandler.CreateFractal(FractalType::Fractory, size, size);
+            _fractalFactory.CreateFractal(FractalType::Fractory, size, size);
             break;
         }
         case FL_CELL:
         {
-            _fractalHandler.CreateFractal(FractalType::Cell, size, size);
+            _fractalFactory.CreateFractal(FractalType::Cell, size, size);
             break;
         }
         case FL_MAGNET:
         {
-            _fractalHandler.CreateFractal(FractalType::Magnetic, size, size);
+            _fractalFactory.CreateFractal(FractalType::Magnetic, size, size);
             break;
         }
         case FL_DOUBLE_PENDULUM:
         {
-            _fractalHandler.CreateFractal(FractalType::DoublePendulum, size, size);
+            _fractalFactory.CreateFractal(FractalType::DoublePendulum, size, size);
             break;
         }
         default: ;
@@ -946,13 +946,13 @@ void DimensionFrame::CreateFractal(int size)
     if (choice >= COUNT)
     {
         const int idx = choice - COUNT;
-        _fractalHandler.CreateScriptFractal(size, size, _loadedScripts[_scriptList[idx]]);
+        _fractalFactory.CreateScriptFractal(size, size, _loadedScripts[_scriptList[idx]]);
         _scriptSelected = true;
     }
     else
         _scriptSelected = false;
 
-    _target = _fractalHandler.GetFractalPtr();
+    _target = _fractalFactory.GetFractalPtr();
     if (_confFractOptDialog != nullptr)
         _confFractOptDialog->SetNewTarget(_target);
 }

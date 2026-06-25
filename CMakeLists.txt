@@ -165,20 +165,28 @@ if(BUILD_TESTING)
             wxChaos/core/geometry/Vector2Double.cpp
             wxChaos/core/rendering/RenderJob.cpp
             wxChaos/core/rendering/RenderRegion.cpp
+            wxChaos/utils/TextUtils.cpp
     )
 
     target_include_directories(wxChaosCoreTests PRIVATE
+            ${wxWidgets_INCLUDE_DIRS}
             ${SYMENGINE_INCLUDE_DIRS}
             wxChaos/core
+            wxChaos/utils
     )
 
     target_link_libraries(wxChaosCoreTests PRIVATE
             doctest::doctest
+            ${wxWidgets_LIBRARIES}
             ${SYMENGINE_LIBRARIES}
     )
 
     if(MSVC)
-        target_compile_definitions(wxChaosCoreTests PRIVATE _HAS_STD_BYTE=0)
+        target_compile_definitions(wxChaosCoreTests PRIVATE
+                WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
+                $<$<CONFIG:Debug>:__WXDEBUG__>
+                _HAS_STD_BYTE=0
+        )
     endif()
 
     add_test(NAME wxChaosCoreTests COMMAND wxChaosCoreTests)

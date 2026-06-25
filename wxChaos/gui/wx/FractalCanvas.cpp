@@ -264,7 +264,7 @@ wxString FractalCanvas::BuildStatusText() const
             text += wxT("   θ1: ");
             text += FormatStatusCoordinate(_target->GetY(_lastMousePosition.y));
         }
-        else if (_type == FractalType::SierpinskyTriangle || _type == FractalType::ScriptFractal)
+        else if (_type == FractalType::SierpinskiTriangle || _type == FractalType::ScriptFractal)
         {
             text = wxT("x: ");
             text += FormatStatusCoordinate(_target->GetX(_lastMousePosition.x));
@@ -502,7 +502,7 @@ Fractal* FractalCanvas::GetFractalPtr() const
 {
     return _target;
 }
-FractalPresenter* FractalCanvas::GetSFMLFractalPtr() const
+FractalPresenter* FractalCanvas::GetFractalPresenterPtr() const
 {
     return _fractalPresenter;
 }
@@ -512,7 +512,7 @@ FractalType FractalCanvas::GetFractalType() const
 }
 bool FractalCanvas::CanAbortRender() const
 {
-    return _target != nullptr && _target->IsRendering() && _type != FractalType::SierpinskyTriangle;
+    return _target != nullptr && _target->IsRendering() && _type != FractalType::SierpinskiTriangle;
 }
 void FractalCanvas::AbortRender() const
 {

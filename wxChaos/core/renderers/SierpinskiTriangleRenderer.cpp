@@ -1,10 +1,10 @@
 #include <mpParser.h>
-#include "SierpinskyTriangleRenderer.h"
+#include "SierpinskiTriangleRenderer.h"
 using namespace std;
 
-SierpinskyTriangleRenderer::SierpinskyTriangleRenderer() = default;
+SierpinskiTriangleRenderer::SierpinskiTriangleRenderer() = default;
 
-void SierpinskyTriangleRenderer::Render()
+void SierpinskiTriangleRenderer::Render()
 {
     for (_y=_heightOrigin; _y<_heightFinal; _y++)
     {

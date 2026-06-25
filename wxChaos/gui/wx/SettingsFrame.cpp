@@ -98,8 +98,8 @@ wxPanel* SettingsFrame::CreatePresetsPage()
     };
     _fractalTypes = {
         FractalType::Mandelbrot, FractalType::MandelbrotZN, FractalType::Julia, FractalType::JuliaZN,
-        FractalType::NewtonRaphsonMethod, FractalType::Sinoidal, FractalType::Magnetic, FractalType::Medusa,
-        FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskyTriangle, FractalType::FixedPoint1,
+        FractalType::NewtonRaphsonMethod, FractalType::Sinusoidal, FractalType::Magnetic, FractalType::Jellyfish,
+        FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskiTriangle, FractalType::FixedPoint1,
         FractalType::FixedPoint2, FractalType::FixedPoint3, FractalType::FixedPoint4, FractalType::Tricorn,
         FractalType::BurningShip, FractalType::BurningShipJulia, FractalType::Fractory, FractalType::Cell,
         FractalType::DoublePendulum, FractalType::UserDefinedEscapeTime, FractalType::UserDefinedFixedPoint,

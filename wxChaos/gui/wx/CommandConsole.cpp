@@ -175,7 +175,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
     }
     if (command.name == wxT("redraw"))
     {
-        _fractalCanvas->GetSFMLFractalPtr()->Redraw();
+        _fractalCanvas->GetFractalPresenterPtr()->Redraw();
         return wxT("Redraw requested.");
     }
     if (command.name == wxT("abort"))
@@ -199,7 +199,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
             return error;
         if (*iterations == 0)
             return wxT("Error: iterations must be greater than zero.");
-        _fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(*iterations);
+        _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(*iterations);
         return wxString::Format(wxT("Maximum iterations set to %u."), *iterations);
     }
     if (command.name == wxT("askinfo"))
@@ -258,7 +258,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         const optional<double> radius = ReadDouble(command, {"r", "radius"}, 2, error);
         if (!radius.has_value()) return error;
         if (*radius <= 0.0) return wxT("Error: radius must be greater than zero.");
-        _fractalCanvas->GetSFMLFractalPtr()->SetView(fractal->GetCenteredView(*x, *y, *radius));
+        _fractalCanvas->GetFractalPresenterPtr()->SetView(fractal->GetCenteredView(*x, *y, *radius));
         return wxT("View focused.");
     }
     if (command.name == wxT("openjuliamode"))
@@ -283,7 +283,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         if (!maxY.has_value()) return error;
         if (*minX >= *maxX || *minY >= *maxY)
             return wxT("Error: minimum boundaries must be smaller than maximum boundaries.");
-        _fractalCanvas->GetSFMLFractalPtr()->SetView({*minX, *minY, *maxX, *maxY});
+        _fractalCanvas->GetFractalPresenterPtr()->SetView({*minX, *minY, *maxX, *maxY});
         return wxT("View boundaries updated.");
     }
 

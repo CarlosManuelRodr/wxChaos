@@ -37,12 +37,12 @@ enum IDS
     ID_JULIA,
     ID_JULIA_ZN,
     ID_NEWTON,
-    ID_SINOIDAL,
+    ID_SINUSOIDAL,
     ID_MAGNET,
-    ID_MEDUSA,
+    ID_JELLYFISH,
     ID_MANOWAR,
     ID_MANOWAR_JULIA,
-    ID_SIERPINSKY_TRIANGLE,
+    ID_SIERPINSKI_TRIANGLE,
     ID_FIXEDPOINT1,
     ID_FIXEDPOINT2,
     ID_FIXEDPOINT3,
@@ -202,12 +202,12 @@ public :
     void ChangeJulia(wxCommandEvent& event);
     void ChangeJuliaZN(wxCommandEvent& event);
     void ChangeNewton(wxCommandEvent& event);
-    void ChangeSinoidal(wxCommandEvent& event);
+    void ChangeSinusoidal(wxCommandEvent& event);
     void ChangeMagnet(wxCommandEvent& event);
-    void ChangeMedusa(wxCommandEvent& event);
+    void ChangeJellyfish(wxCommandEvent& event);
     void ChangeManowar(wxCommandEvent& event);
     void ChangeManowarJulia(wxCommandEvent& event);
-    void ChangeSierpinskyTriangle(wxCommandEvent& event);
+    void ChangeSierpinskiTriangle(wxCommandEvent& event);
     void ChangeFixedPoint1(wxCommandEvent& event);
     void ChangeFixedPoint2(wxCommandEvent& event);
     void ChangeFixedPoint3(wxCommandEvent& event);

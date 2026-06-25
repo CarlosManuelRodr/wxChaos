@@ -1,11 +1,11 @@
 // ReSharper disable CppTooWideScope
-#include "SinoidalRenderer.h"
+#include "SinusoidalRenderer.h"
 using namespace std;
 
-SinoidalRenderer::SinoidalRenderer() = default;
+SinusoidalRenderer::SinusoidalRenderer() = default;
 
 template<class Real, class MeasurePoint>
-RenderWorker::Point SinoidalRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RenderWorker::Point SinusoidalRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);
@@ -53,7 +53,7 @@ RenderWorker::Point SinoidalRenderer::TracePoint(const Real& pixelRe, const Real
     return point;
 }
 
-void SinoidalRenderer::Render()
+void SinusoidalRenderer::Render()
 {
     const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {

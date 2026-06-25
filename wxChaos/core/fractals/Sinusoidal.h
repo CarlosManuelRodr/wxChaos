@@ -1,21 +1,21 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/SinoidalRenderer.h"
+#include "../renderers/SinusoidalRenderer.h"
 
 /**
- * @class Sinoidal
+ * @class Sinusoidal
  * @brief Sine-map Julia-style escape-time fractal.
  *
  * Each pixel supplies z_0 and the UI Julia constant supplies k. The orbit
  * iterates z_{n+1} = k sin(z_n). This renderer treats the point as escaped
  * when |z|^2 exceeds max iterations.
  */
-class Sinoidal : public Fractal
+class Sinusoidal : public Fractal
 {
-    SinoidalRenderer* myRender;
+    SinusoidalRenderer* myRender;
 public:
-    Sinoidal(unsigned int width, unsigned int height);
-    ~Sinoidal() override;
+    Sinusoidal(unsigned int width, unsigned int height);
+    ~Sinusoidal() override;
     wxString GetName() const override { return wxT("Sine"); }
 
     void Render() override;

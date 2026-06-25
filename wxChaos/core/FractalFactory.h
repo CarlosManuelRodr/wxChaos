@@ -6,7 +6,7 @@
 * @class FractalFactory
 * @brief Factory and owner for the currently selected Fractal instance.
 *
-* FractalHandler creates the requested built-in, user-defined, or script-backed
+* FractalFactory creates the requested built-in, user-defined, or script-backed
 * fractal at the active render size, forwards formula changes to it, and deletes
 * the previous instance when the selection changes.
 */
@@ -17,12 +17,12 @@ class FractalFactory
     Julia* _julia;
     JuliaZN* _juliaZN;
     Newton* _newton;
-    Sinoidal* _sinoidal;
+    Sinusoidal* _sinusoidal;
     Magnet* _magnet;
-    Jellyfish* _medusa;
+    Jellyfish* _jellyfish;
     Manowar* _manowar;
     ManowarJulia* _manowarJulia;
-    SierpinskyTriangle* _sierpinskyTriangle;
+    SierpinskiTriangle* _sierpinskiTriangle;
     FixedPoint1* _fixedPoint1;
     FixedPoint2* _fixedPoint2;
     FixedPoint3* _fixedPoint3;

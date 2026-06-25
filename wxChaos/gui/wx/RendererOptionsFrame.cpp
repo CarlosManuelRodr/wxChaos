@@ -706,6 +706,6 @@ void RendererOptionsFrame::OnPaletteMappingExponent(wxSpinDoubleEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptionsFrame::OnColorVar(wxScrollEvent&)
 {
-    _fractalPresenter->SetVarGradient(_colorVarSlider->GetValue());
+    _fractalPresenter->SetColorVariationOffset(_colorVarSlider->GetValue());
     NotifyOptionsChanged();
 }

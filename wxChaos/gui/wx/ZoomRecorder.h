@@ -41,7 +41,7 @@ class ZoomRecorder : public wxDialog
     wxSpinCtrlDouble* _colorSpeedCtrl;
 
     FractalCanvas* _fractalCanvasPtr;
-    FractalFactory _fractalHandler;
+    FractalFactory _fractalFactory;
 
     Rect _outermostZoom, _innermostZoom;
 
@@ -53,7 +53,7 @@ class ZoomRecorder : public wxDialog
     void OnChangeSpeed(wxSpinEvent&);
     void OnChangeSpeedDbl(wxSpinDoubleEvent&);
 
-    void CreateFractalHandler();
+    void CreateFractalFactory();
     void RenderPreview(int zoom, int zoomSpeed = 1, double colorSpeed = -1.0) const;
     void RenderPreview();
     void UpdateTotalFrames();

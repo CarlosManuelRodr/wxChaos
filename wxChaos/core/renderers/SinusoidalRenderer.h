@@ -2,19 +2,19 @@
 #include "../RenderWorker.h"
 
 /**
-* @class SinoidalRenderer
-* @brief Renders the Sinoidal escape-time recurrence for one pixel region.
+* @class SinusoidalRenderer
+* @brief Renders the Sinusoidal escape-time recurrence for one pixel region.
 *
-* The renderer owns the formula trace for Sinoidal and dispatches the selected
+* The renderer owns the formula trace for Sinusoidal and dispatches the selected
 * escape-time coloring algorithm through the shared Renderer paths.
 */
-class SinoidalRenderer : public RenderWorker
+class SinusoidalRenderer : public RenderWorker
 {
     template<class Real, class MeasurePoint>
     Point TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const;
 
 public:
-    SinoidalRenderer();
+    SinusoidalRenderer();
 
     void Render() override;
 };

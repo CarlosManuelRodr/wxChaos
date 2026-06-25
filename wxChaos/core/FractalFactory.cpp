@@ -9,10 +9,10 @@ FractalFactory::FractalFactory()
     _julia = nullptr;
     _juliaZN = nullptr;
     _newton = nullptr;
-    _sinoidal = nullptr;
+    _sinusoidal = nullptr;
     _magnet = nullptr;
-    _sierpinskyTriangle = nullptr;
-    _medusa = nullptr;
+    _sierpinskiTriangle = nullptr;
+    _jellyfish = nullptr;
     _manowar = nullptr;
     _manowarJulia = nullptr;
     _fixedPoint1 = nullptr;
@@ -67,9 +67,9 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
                 _target = _newton = new Newton(width, height);
                 break;
             }
-        case FractalType::Sinoidal:
+        case FractalType::Sinusoidal:
             {
-                _target = _sinoidal = new Sinoidal(width, height);
+                _target = _sinusoidal = new Sinusoidal(width, height);
                 break;
             }
         case FractalType::Magnetic:
@@ -77,9 +77,9 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
                 _target = _magnet = new Magnet(width, height);
                 break;
             }
-        case FractalType::Medusa:
+        case FractalType::Jellyfish:
             {
-                _target = _medusa = new Jellyfish(width, height);
+                _target = _jellyfish = new Jellyfish(width, height);
                 break;
             }
         case FractalType::Manowar:
@@ -92,9 +92,9 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
                 _target = _manowarJulia = new ManowarJulia(width, height);
                 break;
             }
-        case FractalType::SierpinskyTriangle:
+        case FractalType::SierpinskiTriangle:
             {
-                _target = _sierpinskyTriangle = new SierpinskyTriangle(width, height);
+                _target = _sierpinskiTriangle = new SierpinskiTriangle(width, height);
                 break;
             }
         case FractalType::FixedPoint1:
@@ -231,20 +231,20 @@ void FractalFactory::DeleteFractal()
         delete _newton;
         _newton = nullptr;
     }
-    if (_sinoidal != nullptr)
+    if (_sinusoidal != nullptr)
     {
-        delete _sinoidal;
-        _sinoidal = nullptr;
+        delete _sinusoidal;
+        _sinusoidal = nullptr;
     }
     if (_magnet != nullptr)
     {
         delete _magnet;
         _magnet = nullptr;
     }
-    if (_medusa != nullptr)
+    if (_jellyfish != nullptr)
     {
-        delete _medusa;
-        _medusa = nullptr;
+        delete _jellyfish;
+        _jellyfish = nullptr;
     }
     if (_manowar != nullptr)
     {
@@ -256,10 +256,10 @@ void FractalFactory::DeleteFractal()
         delete _manowarJulia;
         _manowarJulia = nullptr;
     }
-    if (_sierpinskyTriangle != nullptr)
+    if (_sierpinskiTriangle != nullptr)
     {
-        delete _sierpinskyTriangle;
-        _sierpinskyTriangle = nullptr;
+        delete _sierpinskiTriangle;
+        _sierpinskiTriangle = nullptr;
     }
     if (_fixedPoint1 != nullptr)
     {

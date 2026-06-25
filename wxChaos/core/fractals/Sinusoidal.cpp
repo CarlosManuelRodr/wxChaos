@@ -1,8 +1,8 @@
 #include <complex>
-#include "Sinoidal.h"
+#include "Sinusoidal.h"
 using namespace std;
 
-Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fractal(width, height)
+Sinusoidal::Sinusoidal(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -8;
@@ -13,7 +13,7 @@ Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fracta
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _type = FractalType::Sinoidal;
+    _type = FractalType::Sinusoidal;
     _hasHighPrecisionRender = true;
     _kReal = 1;
     _kImaginary = 0.25;
@@ -24,8 +24,8 @@ Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fracta
     _hasSmoothRender = true;
     _smoothRender = true;
 
-    myRender = new SinoidalRenderer[_threadNumber];
-    SetWatchdog<SinoidalRenderer>(myRender, &_watchdog, _threadNumber);
+    myRender = new SinusoidalRenderer[_threadNumber];
+    SetWatchdog<SinusoidalRenderer>(myRender, &_watchdog, _threadNumber);
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
@@ -34,16 +34,16 @@ Sinoidal::Sinoidal(const unsigned int width, const unsigned int height) : Fracta
     _availableAlg.push_back(RenderingAlgorithmType::EscapeAngle);
     _availableAlg.push_back(RenderingAlgorithmType::TriangleInequality);
 }
-Sinoidal::~Sinoidal()
+Sinusoidal::~Sinusoidal()
 {
     this->StopRender();
     delete[] myRender;
 }
-void Sinoidal::Render()
+void Sinusoidal::Render()
 {
-    this->SetRendererBounds<SinoidalRenderer>(myRender);
+    this->SetRendererBounds<SinusoidalRenderer>(myRender);
 }
-void Sinoidal::DrawOrbit()
+void Sinusoidal::DrawOrbit()
 {
     complex<double> z(_orbitX, _orbitY);
     const complex<double> k(_kReal, _kImaginary);

@@ -56,18 +56,18 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     if (_appConfig.juliaMode) this->UpdateJuliaMode();
     if (_appConfig.colorPaletteWindow)
     {
-        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetSFMLFractalPtr(), this,
+        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetFractalPresenterPtr(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         _rendererOptions->Show(true);
     }
     if (_appConfig.constantWindow)
     {
-        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetSFMLFractalPtr(), this);
+        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetFractalPresenterPtr(), this);
         _juliaConstantDialog->Show(true);
         _introConstActive = true;
     }
     if (!_appConfig.colorSet)
-        _fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(false);
+        _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(false);
 
     if (_appConfig.firstUse)
     {
@@ -121,9 +121,9 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeJulia, this, ID_JULIA);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeJuliaZN, this, ID_JULIA_ZN);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeNewton, this, ID_NEWTON);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSinoidal, this, ID_SINOIDAL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSinusoidal, this, ID_SINUSOIDAL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMagnet, this, ID_MAGNET);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMedusa, this, ID_MEDUSA);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeJellyfish, this, ID_JELLYFISH);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeManowar, this, ID_MANOWAR);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeManowarJulia, this, ID_MANOWAR_JULIA);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint1, this, ID_FIXEDPOINT1);
@@ -135,7 +135,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeBurningShipJulia, this, ID_BURNING_SHIP_JULIA);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFractory, this, ID_FRACTORY);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeCell, this, ID_CELL);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskyTriangle, this, ID_SIERPINSKY_TRIANGLE);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskiTriangle, this, ID_SIERPINSKI_TRIANGLE);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefined, this, ID_USER_DEFINED);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFPUserDefined, this, ID_FIXED_POINT_USER_DEFINED);
@@ -175,8 +175,8 @@ void MainFrame::SetUpGUI()
     _rendererOptions = nullptr;
 
     // Formulas.
-    wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinoidal, *magnet;
-    wxMenuItem* medusa, *manowar, *manowarJulia, *sierpinskyTriangle, *fixedPoint1, *fixedPoint2;
+    wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinusoidal, *magnet;
+    wxMenuItem* jellyfish, *manowar, *manowarJulia, *sierpinskiTriangle, *fixedPoint1, *fixedPoint2;
     wxMenuItem* fixedPoint3, *fixedPoint4, *userDefined, *fpUserDefined, *newtonUserDefined;
     wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *dPendulum;
 
@@ -191,12 +191,12 @@ void MainFrame::SetUpGUI()
     julia = new wxMenuItem(_formula, ID_JULIA, wxString(wxT("Mandelbrot (Julia)")) + menuSeparator + wxT("z = z^2 + k"), wxEmptyString, wxITEM_NORMAL);
     juliaZN = new wxMenuItem(_formula, ID_JULIA_ZN, wxString(wxT("Mandelbrot (Julia)")) + menuSeparator + wxT("z = z^n + k"), wxEmptyString, wxITEM_NORMAL);
     newton = new wxMenuItem(_formula, ID_NEWTON, wxString(wxT("Newton")) + menuSeparator + wxT("z^3 - 1 = 0"), wxEmptyString, wxITEM_NORMAL);
-    sinoidal = new wxMenuItem(_formula, ID_SINOIDAL, wxString(wxT("Sine (Julia)")) + menuSeparator + wxT("Z = c*Sin(Z)"), wxEmptyString, wxITEM_NORMAL);
+    sinusoidal = new wxMenuItem(_formula, ID_SINUSOIDAL, wxString(wxT("Sine (Julia)")) + menuSeparator + wxT("Z = c*Sin(Z)"), wxEmptyString, wxITEM_NORMAL);
     magnet = new wxMenuItem(_formula, ID_MAGNET, wxString(wxT("Magnet")), wxEmptyString, wxITEM_NORMAL);
-    medusa = new wxMenuItem(_formula, ID_MEDUSA, wxString(wxT("Jellyfish")), wxEmptyString, wxITEM_NORMAL);
+    jellyfish = new wxMenuItem(_formula, ID_JELLYFISH, wxString(wxT("Jellyfish")), wxEmptyString, wxITEM_NORMAL);
     manowar = new wxMenuItem(_formula, ID_MANOWAR, wxString(wxT("Manowar")), wxEmptyString, wxITEM_NORMAL);
     manowarJulia = new wxMenuItem(_formula, ID_MANOWAR_JULIA, wxString(wxT("Manowar (Julia)")), wxEmptyString, wxITEM_NORMAL);
-    sierpinskyTriangle = new wxMenuItem(_formula, ID_SIERPINSKY_TRIANGLE, wxString(wxT("Sierpinski Triangle")), wxEmptyString, wxITEM_NORMAL);
+    sierpinskiTriangle = new wxMenuItem(_formula, ID_SIERPINSKI_TRIANGLE, wxString(wxT("Sierpinski Triangle")), wxEmptyString, wxITEM_NORMAL);
     fixedPoint1 = new wxMenuItem(_formula, ID_FIXEDPOINT1, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = sin(z)"), wxEmptyString, wxITEM_NORMAL);
     fixedPoint2 = new wxMenuItem(_formula, ID_FIXEDPOINT2, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = cos(z)"), wxEmptyString, wxITEM_NORMAL);
     fixedPoint3 = new wxMenuItem(_formula, ID_FIXEDPOINT3, wxString(wxT("Fixed Point")) + menuSeparator + wxT("z = tan(z)"), wxEmptyString, wxITEM_NORMAL);
@@ -220,8 +220,8 @@ void MainFrame::SetUpGUI()
     _typeComplex->Append(mandelbrotZN);
     _typeComplex->Append(julia);
     _typeComplex->Append(juliaZN);
-    _typeComplex->Append(sinoidal);
-    _typeComplex->Append(medusa);
+    _typeComplex->Append(sinusoidal);
+    _typeComplex->Append(jellyfish);
     _typeComplex->Append(manowar);
     _typeComplex->Append(manowarJulia);
     _typeComplex->Append(tricorn);
@@ -236,7 +236,7 @@ void MainFrame::SetUpGUI()
     _typeNumericalMethod->Append(fixedPoint4);
     _typePhysics->Append(magnet);
     _typePhysics->Append(dPendulum);
-    _typeOther->Append(sierpinskyTriangle);
+    _typeOther->Append(sierpinskiTriangle);
 
     _formula->Append(-1, wxT("Complex"), _typeComplex);
     _formula->Append(-1, wxT("Numerical method"), _typeNumericalMethod);
@@ -356,13 +356,13 @@ void MainFrame::SetUpGUI()
     grad.SetMin(0);
     grad.SetMax(_appConfig.paletteSize);
     grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
-    _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(_appConfig.colorStyle);
-    _fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
-    _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(_appConfig.colorStyle);
+    _fractalCanvas->GetFractalPresenterPtr()->SetGradient(grad);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
 
-    _fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(_appConfig.maxIterations);
-    _fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(_appConfig.colorFractal);
-    _fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(_appConfig.colorSet);
+    _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(_appConfig.maxIterations);
+    _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(_appConfig.colorFractal);
+    _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(_appConfig.colorSet);
     _fractalSizer->Add(_fractalCanvas, 1, wxEXPAND | wxALL, 0);
 }
 
@@ -409,12 +409,12 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     gradient.SetMin(0);
     gradient.SetMax(config.paletteSize);
     gradient.FromString(wxString::FromUTF8(config.colorStyleGrad.c_str()));
-    _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(config.colorStyle);
-    _fractalCanvas->GetSFMLFractalPtr()->SetGradient(gradient);
-    _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(config.colorCycleLength);
-    _fractalCanvas->GetSFMLFractalPtr()->ChangeIterations(config.maxIterations);
-    _fractalCanvas->GetSFMLFractalPtr()->SetExteriorColorMode(config.colorFractal);
-    _fractalCanvas->GetSFMLFractalPtr()->SetFractalSetColorMode(config.colorSet);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(config.colorStyle);
+    _fractalCanvas->GetFractalPresenterPtr()->SetGradient(gradient);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(config.colorCycleLength);
+    _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(config.maxIterations);
+    _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(config.colorFractal);
+    _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(config.colorSet);
 }
 void MainFrame::CloseAll()
 {
@@ -550,7 +550,7 @@ void MainFrame::OnPalette(wxCommandEvent&)
     // Color palette frame.
     if (_rendererOptions == nullptr)
     {
-        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetSFMLFractalPtr(), this,
+        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetFractalPresenterPtr(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         _rendererOptions->Show(true);
 
@@ -586,7 +586,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnRedraw(wxCommandEvent&)
 {
-    _fractalCanvas->GetSFMLFractalPtr()->Redraw();
+    _fractalCanvas->GetFractalPresenterPtr()->Redraw();
 }
 void MainFrame::OnReset(wxCommandEvent&)
 {
@@ -595,20 +595,20 @@ void MainFrame::OnReset(wxCommandEvent&)
     grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
     grad.SetMin(0);
     grad.SetMax(_appConfig.paletteSize);
-    _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(_appConfig.colorStyle);
-    _fractalCanvas->GetSFMLFractalPtr()->SetGradient(grad);
-    _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(_appConfig.colorStyle);
+    _fractalCanvas->GetFractalPresenterPtr()->SetGradient(grad);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
     this->UpdateMenu();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnMoreIt(wxCommandEvent&)
 {
-    _fractalCanvas->GetSFMLFractalPtr()->IncreaseIterations();
+    _fractalCanvas->GetFractalPresenterPtr()->IncreaseIterations();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnLessIt(wxCommandEvent&)
 {
-    _fractalCanvas->GetSFMLFractalPtr()->DecreaseIterations();
+    _fractalCanvas->GetFractalPresenterPtr()->DecreaseIterations();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnShowOrbit(wxCommandEvent&)
@@ -622,7 +622,7 @@ void MainFrame::OnManIntroConst(wxCommandEvent&)
     // Manual constant.
     if (!_introConstActive)
     {
-        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetSFMLFractalPtr(), this);
+        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetFractalPresenterPtr(), this);
         _juliaConstantDialog->Show(true);
         _introConstActive = true;
     }
@@ -659,7 +659,7 @@ void MainFrame::OnItManual(wxCommandEvent&)
     // Manual iterations.
     if (!_iterationsDialogIsActive)
     {
-        _iterationsDialog = new IterationsDialog(&_iterationsDialogIsActive, _fractalCanvas->GetSFMLFractalPtr(), this);
+        _iterationsDialog = new IterationsDialog(&_iterationsDialogIsActive, _fractalCanvas->GetFractalPresenterPtr(), this);
         _iterationsDialog->Show(true);
         _iterationsDialogIsActive = true;
     }
@@ -734,7 +734,7 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
             *pOptions->GetBoolElement(i) = false;
     }
     _fractalCanvas->SetFocus();
-    _fractalCanvas->GetSFMLFractalPtr()->Redraw();
+    _fractalCanvas->GetFractalPresenterPtr()->Redraw();
 }
 // ReSharper disable once CppMemberFunctionMayBeStatic
 void MainFrame::OnUserManual(wxCommandEvent&) // NOLINT(*-convert-member-functions-to-static)
@@ -753,7 +753,7 @@ void MainFrame::OnScriptEditor(wxCommandEvent&)
 }
 void MainFrame::OnZoomRecorder(wxCommandEvent&)
 {
-    const FractalPresenter* fractal = _fractalCanvas->GetSFMLFractalPtr();
+    const FractalPresenter* fractal = _fractalCanvas->GetFractalPresenterPtr();
 
     if (const Rect currentZoom = fractal->GetCurrentZoom(), outermostZoom = fractal->GetOutermostZoom();
         outermostZoom._left == currentZoom._left &&
@@ -814,17 +814,17 @@ void MainFrame::ChangeNewton(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::NewtonRaphsonMethod, false);
 }
-void MainFrame::ChangeSinoidal(wxCommandEvent&)
+void MainFrame::ChangeSinusoidal(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::Sinoidal, false);
+    this->ChangeFractal(FractalType::Sinusoidal, false);
 }
 void MainFrame::ChangeMagnet(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Magnetic, false);
 }
-void MainFrame::ChangeMedusa(wxCommandEvent&)
+void MainFrame::ChangeJellyfish(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::Medusa, false);
+    this->ChangeFractal(FractalType::Jellyfish, false);
 }
 void MainFrame::ChangeManowar(wxCommandEvent&)
 {
@@ -834,9 +834,9 @@ void MainFrame::ChangeManowarJulia(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::ManowarJulia, false);
 }
-void MainFrame::ChangeSierpinskyTriangle(wxCommandEvent&)
+void MainFrame::ChangeSierpinskiTriangle(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::SierpinskyTriangle, false);
+    this->ChangeFractal(FractalType::SierpinskiTriangle, false);
 }
 void MainFrame::ChangeFixedPoint1(wxCommandEvent&)
 {
@@ -899,9 +899,9 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
         const Options fractOpt = _fractalCanvas->GetFractalPtr()->GetOptions();
         const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractalPtr()->GetColorPalette();
         _fractalCanvas->ChangeType(type);
-        _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(colorPalette);
-        _fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
-        _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
+        _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(colorPalette);
+        _fractalCanvas->GetFractalPresenterPtr()->SetGradient(fractOpt.gradient);
+        _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
         _fractalType = type;
         this->UpdateMenu();
         _juliaMode->Enable(enableJulia);
@@ -919,9 +919,9 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     const Options fractOpt = _fractalCanvas->GetFractalPtr()->GetOptions();
     const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractalPtr()->GetColorPalette();
     _fractalCanvas->ChangeToScript(_loadedScripts[id]);
-    _fractalCanvas->GetSFMLFractalPtr()->SetColorPalette(colorPalette);
-    _fractalCanvas->GetSFMLFractalPtr()->SetGradient(fractOpt.gradient);
-    _fractalCanvas->GetSFMLFractalPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(colorPalette);
+    _fractalCanvas->GetFractalPresenterPtr()->SetGradient(fractOpt.gradient);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
 
     _fractalType = FractalType::ScriptFractal;
     this->UpdateMenu();
@@ -1135,9 +1135,9 @@ void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
     if (_rendererOptions != nullptr)
-        _rendererOptions->SetTarget(_fractalCanvas->GetSFMLFractalPtr());
+        _rendererOptions->SetTarget(_fractalCanvas->GetFractalPresenterPtr());
     if (_iterationsDialogIsActive)
-        _iterationsDialog->SetTarget(_fractalCanvas->GetSFMLFractalPtr());
+        _iterationsDialog->SetTarget(_fractalCanvas->GetFractalPresenterPtr());
 
     _showOrbit->Check(false);
     if (_fractalCanvas->GetFractalPtr()->HasOrbit())

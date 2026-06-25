@@ -2,15 +2,15 @@
 #include "../RenderWorker.h"
 
 /**
-* @class SierpinskyTriangleRenderer
+* @class SierpinskiTriangleRenderer
 * @brief Renders the Sierpinski triangle inverse-map recurrence.
 *
 * The renderer iterates each pixel through the triangle mapping and writes
 * escape/convergence values into the shared output maps.
 */
-class SierpinskyTriangleRenderer : public RenderWorker
+class SierpinskiTriangleRenderer : public RenderWorker
 {
 public:
-    SierpinskyTriangleRenderer();
+    SierpinskiTriangleRenderer();
     void Render() override;
 };

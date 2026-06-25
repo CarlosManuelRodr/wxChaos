@@ -212,7 +212,7 @@ void JuliaPreviewWindow::ApplyRendererOptions(const Options& options) const
 {
     _fractalPresenter->SetGradient(options.gradient);
     _fractalPresenter->SetGradientSize(options.gradPaletteSize);
-    _fractalPresenter->SetVarGradient(options.changeGradient);
+    _fractalPresenter->SetColorVariationOffset(options.changeGradient);
     _fractalPresenter->SetAlgorithm(options.alg);
     _fractalPresenter->SetRenderingPrecisionMode(options.renderingPrecisionMode);
     _fractalPresenter->SetRelativeColor(options.relativeColor);

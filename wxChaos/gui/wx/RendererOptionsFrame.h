@@ -1,6 +1,6 @@
 /**
 * @file RendererOptionsFrame.h
-* @brief This header contains the RendererOptions.
+* @brief This header contains the renderer options frame.
 *
 * @author Carlos Manuel Rodriguez Martinez
 *

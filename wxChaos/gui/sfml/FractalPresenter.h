@@ -14,7 +14,7 @@
 * @class FractalPresenter
 * @brief Owns the SFML presentation state for a Fractal.
 *
-* SFMLFractal is the bridge between the pure fractal renderer and SFML drawing.
+* FractalPresenter is the bridge between the pure fractal renderer and SFML drawing.
 * It keeps textures, sprites, temporary zoom images, cached zoom-back images,
 * geometry overlays, and SFML event handling out of the Fractal base class.
 */
@@ -170,7 +170,7 @@ public:
     ///@param imaginary Imaginary component.
     void SetK(double real, double imaginary);
 
-    ///@brief Sets the gradient and invalidates cached images.
+    ///@brief Sets the color gradient and invalidates cached images.
     ///@param gradient New gradient.
     void SetGradient(const wxGradient& gradient);
 
@@ -213,7 +213,7 @@ public:
 
     ///@brief Sets the color variation offset and invalidates cached images.
     ///@param offset Color variation offset.
-    void SetVarGradient(int offset);
+    void SetColorVariationOffset(int offset);
 
     ///@brief Sets the rendering algorithm and invalidates cached images.
     ///@param algorithm New rendering algorithm.

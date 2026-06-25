@@ -1,9 +1,9 @@
 #pragma once
 #include "../Fractal.h"
-#include "../renderers/SierpinskyTriangleRenderer.h"
+#include "../renderers/SierpinskiTriangleRenderer.h"
 
 /**
- * @class SierpinskyTriangle
+ * @class SierpinskiTriangle
  * @brief Escape-time inverse-map rendering of the Sierpinski triangle.
  *
  * Each pixel supplies z_0. While |z|^2 <= 4, the renderer applies one of three
@@ -11,11 +11,11 @@
  * otherwise z <- 2z. Points that never escape within max iterations are marked
  * as inside.
  */
-class SierpinskyTriangle : public Fractal
+class SierpinskiTriangle : public Fractal
 {
-    SierpinskyTriangleRenderer* myRender;
+    SierpinskiTriangleRenderer* myRender;
 public:
-    SierpinskyTriangle(unsigned int width, unsigned int height);
+    SierpinskiTriangle(unsigned int width, unsigned int height);
     wxString GetName() const override { return wxT("Sierpinski Triangle"); }
 
     void Render() override;

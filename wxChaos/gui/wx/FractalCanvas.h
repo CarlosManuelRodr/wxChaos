@@ -25,8 +25,8 @@ wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 * @class FractalCanvas
 * @brief Interactive wxWidgets/SFML surface for exploring the active fractal.
 *
-* FractalCanvas creates and swaps fractal models through FractalHandler, keeps
-* the SFMLFractal presenter attached to the current model, and coordinates the
+* FractalCanvas creates and swaps fractal models through FractalFactory, keeps
+* the FractalPresenter attached to the current model, and coordinates the
 * canvas-level controls: selection zoom, mouse-wheel zoom, mouse panning,
 * Julia/orbit/slider coordinate selection, keyboard help overlays, render
 * status text, and the animated-gradient play button.
@@ -143,7 +143,7 @@ public:
     Fractal* GetFractalPtr() const;
 
     ///@return A pointer to the SFML fractal presenter.
-    FractalPresenter* GetSFMLFractalPtr() const;
+    FractalPresenter* GetFractalPresenterPtr() const;
 
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;

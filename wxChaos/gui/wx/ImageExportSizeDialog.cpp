@@ -3,7 +3,7 @@
 #include "TextUtils.h"
 using namespace std;
 
-// SaveProgressDiag
+// ImageExportProgressDialog
 ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable, const wxWindowID id,
                                    const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                                    : wxDialog(parent, id, title, pos, size, style)
@@ -97,7 +97,7 @@ bool ImageExportProgressDialog::IsFinished() const
     return _finished;
 }
 
-// SizeDialogSave
+// ImageExportSizeDialog
 ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* mFCanvas, const string& filePath, const int ext, const FractalType type,
                                const Fractal* target, wxWindow* parent, const string& scriptPath, const wxWindowID id,
                                const wxString& title, const wxPoint& pos, const wxSize& size, const long style)

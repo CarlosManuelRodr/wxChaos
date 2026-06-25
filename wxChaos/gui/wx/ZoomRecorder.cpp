@@ -45,7 +45,7 @@ class ZoomRenderer : public wxThread
 
 protected:
     ExitCode Entry() override {
-        // Create and set-up fractal handler
+        // Create and set-up fractal factory
         FractalFactory fractalHandler;
         Rect outermostZoom, innermostZoom;
 
@@ -56,8 +56,8 @@ protected:
         fractalOptions.xFactor = (fractalOptions.maxX - fractalOptions.minX) / (fractalOptions.screenWidth - 1);
         fractalOptions.yFactor = (fractalOptions.maxY - fractalOptions.minY) / (fractalOptions.screenHeight - 1);
 
-        outermostZoom = fractalCanvasPtr->GetSFMLFractalPtr()->GetOutermostZoom();
-        innermostZoom = fractalCanvasPtr->GetSFMLFractalPtr()->GetCurrentZoom();
+        outermostZoom = fractalCanvasPtr->GetFractalPresenterPtr()->GetOutermostZoom();
+        innermostZoom = fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
 
         if (fractalType == FractalType::ScriptFractal)
         {
@@ -145,10 +145,10 @@ public:
 ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const wxWindowID id, const wxString& title,
                            const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
-    // Fractal handler initialization
+    // fractal factory initialization
     _fractalCanvasPtr = fractalCanvas;
-    this->CreateFractalHandler();
-    _fractalHandler.GetFractalPtr()->SetView(_outermostZoom);
+    this->CreateFractalFactory();
+    _fractalFactory.GetFractalPtr()->SetView(_outermostZoom);
 
     // UI initialization
     this->SetSizeHints(wxSize(900, 680), wxSize(1400, 900));
@@ -164,7 +164,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, wxT("Preview")), wxVERTICAL);
 
     _previewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY,
-        _fractalHandler.GetFractalPtr()->GetRenderedWxBitmap(),
+        _fractalFactory.GetFractalPtr()->GetRenderedWxBitmap(),
         wxDefaultPosition, wxDefaultSize, 0);
     previewSizer->Add(_previewBitmap, 0, wxALL | wxEXPAND, 5);
 
@@ -302,7 +302,7 @@ ZoomRecorder::~ZoomRecorder()
     _colorSpeedCtrl->Unbind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
 
-void ZoomRecorder::CreateFractalHandler()
+void ZoomRecorder::CreateFractalFactory()
 {
     FractalType fractalType = _fractalCanvasPtr->GetFractalType();
     Options fractalOptions = _fractalCanvasPtr->GetFractalPtr()->GetOptions();
@@ -311,21 +311,21 @@ void ZoomRecorder::CreateFractalHandler()
     fractalOptions.xFactor = (fractalOptions.maxX - fractalOptions.minX) / (fractalOptions.screenWidth - 1);
     fractalOptions.yFactor = (fractalOptions.maxY - fractalOptions.minY) / (fractalOptions.screenHeight - 1);
 
-    _outermostZoom = _fractalCanvasPtr->GetSFMLFractalPtr()->GetOutermostZoom();
-    _innermostZoom = _fractalCanvasPtr->GetSFMLFractalPtr()->GetCurrentZoom();
+    _outermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetOutermostZoom();
+    _innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
 
     if (fractalType == FractalType::ScriptFractal)
     {
         auto* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(_fractalCanvasPtr->GetFractalPtr());
-        _fractalHandler.CreateScriptFractal(250, 166, scriptFractalPtr->GetPath());
+        _fractalFactory.CreateScriptFractal(250, 166, scriptFractalPtr->GetPath());
     }
     else
-        _fractalHandler.CreateFractal(fractalType, 250, 166);
+        _fractalFactory.CreateFractal(fractalType, 250, 166);
 
-    _fractalHandler.SetFormula(_fractalCanvasPtr->GetFormula());
+    _fractalFactory.SetFormula(_fractalCanvasPtr->GetFormula());
 
     // Copy parameters.
-    _fractalHandler.GetFractalPtr()->SetOptions(fractalOptions);
+    _fractalFactory.GetFractalPtr()->SetOptions(fractalOptions);
 }
 void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const double colorSpeed) const
 {
@@ -342,14 +342,14 @@ void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const doub
     viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (innermostLo - outermostLo));
     viewport.SetUpperBound(outermostHi - (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (outermostHi - innermostHi));
 
-    _fractalHandler.GetFractalPtr()->SetView(viewport);
+    _fractalFactory.GetFractalPtr()->SetView(viewport);
 
     if (colorSpeed != -1)
-        _fractalHandler.GetFractalPtr()->SetVarGradient(static_cast<int>(colorSpeed * t));
+        _fractalFactory.GetFractalPtr()->SetVarGradient(static_cast<int>(colorSpeed * t));
     else
-        _fractalHandler.GetFractalPtr()->SetVarGradient(0);
+        _fractalFactory.GetFractalPtr()->SetVarGradient(0);
 
-    _previewBitmap->SetBitmap(_fractalHandler.GetFractalPtr()->GetRenderedWxBitmap());
+    _previewBitmap->SetBitmap(_fractalFactory.GetFractalPtr()->GetRenderedWxBitmap());
 }
 void ZoomRecorder::RenderPreview()
 {
@@ -446,7 +446,7 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
 }
 void ZoomRecorder::OnCancel(wxCommandEvent&)
 {
-    _fractalHandler.DeleteFractal();
+    _fractalFactory.DeleteFractal();
     this->EndModal(0);
 }
 void ZoomRecorder::OnUpdateTotalFrames(wxSpinEvent&)

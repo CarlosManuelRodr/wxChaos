@@ -517,7 +517,7 @@ void FractalPresenter::ChangeVarGradient()
     _fractal->ChangeVarGradient();
 }
 
-void FractalPresenter::SetVarGradient(const int offset)
+void FractalPresenter::SetColorVariationOffset(const int offset)
 {
     ClearImageCache();
     _fractal->SetVarGradient(offset);

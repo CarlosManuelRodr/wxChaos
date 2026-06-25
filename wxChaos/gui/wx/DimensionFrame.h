@@ -36,8 +36,8 @@ enum FractalList
     FL_MANDELBROT_ZN,
     FL_JULIA,
     FL_JULIA_ZN,
-    FL_SINOIDAL,
-    FL_MEDUSA,
+    FL_SINUSOIDAL,
+    FL_JELLYFISH,
     FL_MANOWAR,
     FL_MANOWAR_JULIA,
     FL_TRICORN,
@@ -246,7 +246,7 @@ class DimensionFrame : public wxFrame
 
     ConfigFractalOptionsDialog* _confFractOptDialog; ///< Fractal options dialog.
     Fractal* _target;                                ///< The fractal target.
-    FractalFactory _fractalHandler;                  ///< The fractal handler.
+    FractalFactory _fractalFactory;                  ///< The fractal factory.
     ImagePanel* _previewImage;                       ///< Panel to show a preview of the dimension calculator.
     Options _myOpt;                                  ///< Fractal options.
     int _threadNumber;                               ///< Number of dimension worker threads.

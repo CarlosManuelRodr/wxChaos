@@ -137,12 +137,15 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
         { "Julia", FractalType::Julia },
         { "JuliaZN", FractalType::JuliaZN },
         { "Newton", FractalType::NewtonRaphsonMethod },
-        { "Sinoidal", FractalType::Sinoidal },
+        { "Sinusoidal", FractalType::Sinusoidal },
+        { "Sinoidal", FractalType::Sinusoidal },
         { "Magnet", FractalType::Magnetic },
-        { "Medusa", FractalType::Medusa },
+        { "Jellyfish", FractalType::Jellyfish },
+        { "Medusa", FractalType::Jellyfish },
         { "Manowar", FractalType::Manowar },
         { "JManowar", FractalType::ManowarJulia },
-        { "Sierpinsky_Triangle", FractalType::SierpinskyTriangle },
+        { "Sierpinski_Triangle", FractalType::SierpinskiTriangle },
+        { "Sierpinsky_Triangle", FractalType::SierpinskiTriangle },
         { "FixedPoint1", FractalType::FixedPoint1 },
         { "FixedPoint2", FractalType::FixedPoint2 },
         { "FixedPoint3", FractalType::FixedPoint3 },
@@ -203,6 +206,13 @@ FractalType AppConfigStore::FractalTypeFromString(const std::string& value, cons
 
 std::string AppConfigStore::FractalTypeToString(FractalType type)
 {
+    if (type == FractalType::Sinusoidal)
+        return "Sinusoidal";
+    if (type == FractalType::Jellyfish)
+        return "Jellyfish";
+    if (type == FractalType::SierpinskiTriangle)
+        return "Sierpinski_Triangle";
+
     for (const auto& item : FractalTypes())
     {
         if (item.second == type)
