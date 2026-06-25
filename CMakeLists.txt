@@ -31,6 +31,15 @@ include(${wxWidgets_USE_FILE})
 
 find_package(doctest CONFIG REQUIRED)
 
+# SymEngine's exported CMake config currently declares compatibility with
+# CMake 2.8.12, which CMake 4 rejects. Keep this workaround local to package
+# discovery instead of patching generated vcpkg files.
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.0)
+        set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+endif()
+
+find_package(SymEngine CONFIG REQUIRED)
+
 find_path(MPFR_INCLUDE_DIR mpfr.h REQUIRED)
 find_library(MPFR_LIBRARY NAMES mpfr REQUIRED)
 find_library(GMP_LIBRARY NAMES gmp REQUIRED)
@@ -72,6 +81,7 @@ add_executable(wxChaos WIN32 ${SRC_FILES}
 # -------------------------------------------------------------------
 target_include_directories(wxChaos PRIVATE
         ${wxWidgets_INCLUDE_DIRS}
+        ${SYMENGINE_INCLUDE_DIRS}
         ${MPFR_INCLUDE_DIR}
         ${SFML_INCLUDE_DIRS}
         wxChaos/core
@@ -105,6 +115,7 @@ target_link_libraries(wxChaos PRIVATE
         sfml-system
         sfml-main
         angelscript
+        ${SYMENGINE_LIBRARIES}
         ${MPFR_LIBRARY}
         ${GMP_LIBRARY}
         Threads::Threads          # pthreads
@@ -144,6 +155,10 @@ if(BUILD_TESTING)
             tests/core/RenderingAlgorithmTests.cpp
             tests/core/geometry/GeometryTests.cpp
             tests/core/rendering/RenderingTests.cpp
+            tests/core/UserFormulaSymbolicCompilerTests.cpp
+            tests/core/NewtonRootRegistryTests.cpp
+            wxChaos/core/UserFormulaSymbolicCompiler.cpp
+            wxChaos/core/NewtonRootRegistry.cpp
             wxChaos/core/coloring/PaletteMapping.cpp
             wxChaos/core/coloring/RenderingAlgorithm.cpp
             wxChaos/core/geometry/Rect.cpp
@@ -153,10 +168,14 @@ if(BUILD_TESTING)
     )
 
     target_include_directories(wxChaosCoreTests PRIVATE
+            ${SYMENGINE_INCLUDE_DIRS}
             wxChaos/core
     )
 
-    target_link_libraries(wxChaosCoreTests PRIVATE doctest::doctest)
+    target_link_libraries(wxChaosCoreTests PRIVATE
+            doctest::doctest
+            ${SYMENGINE_LIBRARIES}
+    )
 
     if(MSVC)
         target_compile_definitions(wxChaosCoreTests PRIVATE _HAS_STD_BYTE=0)

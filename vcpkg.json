@@ -1,11 +1,8 @@
 {
   "name" : "wx-chaos",
   "version-string" : "1.0.0",
-  "dependencies" : [
-    "mpfr",
-    {
-      "name" : "doctest",
-      "version>=" : "2.5.2"
-    }
-  ]
+  "dependencies" : [ "mpfr", "doctest", {
+    "name" : "symengine",
+    "default-features" : false
+  } ]
 }

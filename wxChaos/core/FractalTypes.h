@@ -45,5 +45,7 @@
 #include "fractals/UserDefinedEscapeTime.h"
 #include "renderers/UserDefinedFixedPointRenderer.h"
 #include "fractals/UserDefinedFixedPoint.h"
+#include "renderers/UserDefinedNewtonRenderer.h"
+#include "fractals/UserDefinedNewton.h"
 #include "renderers/ScriptFractalRenderer.h"
 #include "fractals/ScriptFractal.h"

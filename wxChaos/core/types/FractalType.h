@@ -26,6 +26,7 @@ enum class FractalType
     DoublePendulum,
     UserDefined,
     FixedPointUserDefined,
+    NewtonUserDefined,
     ScriptFractal,
     Undefined
 };

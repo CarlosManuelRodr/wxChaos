@@ -27,6 +27,7 @@ FractalHandler::FractalHandler()
     _doublePendulum = nullptr;
     _userDefined = nullptr;
     _fpUserDefined = nullptr;
+    _newtonUserDefined = nullptr;
     _scriptFractal = nullptr;
     _target = nullptr;
     _type = FractalType::Undefined;
@@ -156,6 +157,11 @@ void FractalHandler::CreateFractal(const FractalType type, const unsigned int wi
                 _target = _fpUserDefined = new UserDefinedFixedPoint(width, height);
                 break;
             }
+        case FractalType::NewtonUserDefined:
+            {
+                _target = _newtonUserDefined = new UserDefinedNewton(width, height);
+                break;
+            }
         default: break;
     }
 }
@@ -186,6 +192,15 @@ void FractalHandler::SetFormula(FormulaOptions formula) const
             formula.userFormula = wxT("z = sin(z)");
         }
         _fpUserDefined->SetFormula(formula);
+    }
+    else if (_type == FractalType::NewtonUserDefined)
+    {
+        if (formula.type != FormulaType::NewtonRaphson)
+        {
+            formula.type = FormulaType::NewtonRaphson;
+            formula.userFormula = wxT("z^3 - 1");
+        }
+        _newtonUserDefined->SetFormula(formula);
     }
 }
 void FractalHandler::DeleteFractal()
@@ -305,6 +320,11 @@ void FractalHandler::DeleteFractal()
     {
         delete _fpUserDefined;
         _fpUserDefined = nullptr;
+    }
+    if (_newtonUserDefined != nullptr)
+    {
+        delete _newtonUserDefined;
+        _newtonUserDefined = nullptr;
     }
     if (_scriptFractal != nullptr)
     {

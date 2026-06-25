@@ -3,5 +3,6 @@
 enum class FormulaType
 {
     Complex = 1,
-    FixedPoint
+    FixedPoint,
+    NewtonRaphson
 };

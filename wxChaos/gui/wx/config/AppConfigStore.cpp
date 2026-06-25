@@ -154,7 +154,8 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
         { "Cell", FractalType::Cell },
         { "Double_Pendulum", FractalType::DoublePendulum },
         { "User_Defined", FractalType::UserDefined },
-        { "FPUser_Defined", FractalType::FixedPointUserDefined }
+        { "FPUser_Defined", FractalType::FixedPointUserDefined },
+        { "NewtonUser_Defined", FractalType::NewtonUserDefined }
     };
 
     return fractalTypes;

@@ -94,7 +94,7 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         wxT("Sierpinski Triangle"), wxT("Fixed Point: sin(z)"), wxT("Fixed Point: cos(z)"),
         wxT("Fixed Point: tan(z)"), wxT("Fixed Point: z^2"), wxT("Tricorn"), wxT("Burning Ship"),
         wxT("Burning Ship Julia"), wxT("Fractory"), wxT("Cell"), wxT("Double Pendulum"),
-        wxT("User Defined"), wxT("User Defined Fixed Point")
+        wxT("User Defined"), wxT("User Defined Fixed Point"), wxT("User Defined Newton-Raphson")
     };
     _fractalTypes = {
         FractalType::Mandelbrot, FractalType::MandelbrotZN, FractalType::Julia, FractalType::JuliaZN,
@@ -102,7 +102,8 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskyTriangle, FractalType::FixedPoint1,
         FractalType::FixedPoint2, FractalType::FixedPoint3, FractalType::FixedPoint4, FractalType::Tricorn,
         FractalType::BurningShip, FractalType::BurningShipJulia, FractalType::Fractory, FractalType::Cell,
-        FractalType::DoublePendulum, FractalType::UserDefined, FractalType::FixedPointUserDefined
+        FractalType::DoublePendulum, FractalType::UserDefined, FractalType::FixedPointUserDefined,
+        FractalType::NewtonUserDefined
     };
 
     _fractalType = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(names), names);

@@ -55,6 +55,7 @@ enum IDS
     ID_DOUBLE_PENDULUM,
     ID_USER_DEFINED,
     ID_FIXED_POINT_USER_DEFINED,
+    ID_NEWTON_USER_DEFINED,
     ID_JULIA_MODE,
     ID_ABOUT,
     ID_KEYBOARD_GUIDE,
@@ -217,6 +218,7 @@ public :
     void ChangeDPendulum(wxCommandEvent& event);
     void ChangeUserDefined(wxCommandEvent& event);
     void ChangeFPUserDefined(wxCommandEvent& event);
+    void ChangeNewtonUserDefined(wxCommandEvent& event);
     void ChangeScriptItem(wxCommandEvent& event);
     void OnKeyboardGuide(wxCommandEvent& event);
     void OnCanvasStatusText(wxCommandEvent& event);

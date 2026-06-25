@@ -139,6 +139,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefined, this, ID_USER_DEFINED);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFPUserDefined, this, ID_FIXED_POINT_USER_DEFINED);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeNewtonUserDefined, this, ID_NEWTON_USER_DEFINED);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbortRender, this, ID_ABORT_RENDER);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateAbortRender, this, ID_ABORT_RENDER);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnReset, this, ID_RESET);
@@ -176,7 +177,7 @@ void MainFrame::SetUpGUI()
     // Formulas.
     wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinoidal, *magnet;
     wxMenuItem* medusa, *manowar, *manowarJulia, *sierpinskyTriangle, *fixedPoint1, *fixedPoint2;
-    wxMenuItem* fixedPoint3, *fixedPoint4, *userDefined, *fpUserDefined;
+    wxMenuItem* fixedPoint3, *fixedPoint4, *userDefined, *fpUserDefined, *newtonUserDefined;
     wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *dPendulum;
 
 #ifdef _WIN32
@@ -208,6 +209,7 @@ void MainFrame::SetUpGUI()
     dPendulum = new wxMenuItem(_formula, ID_DOUBLE_PENDULUM, wxString(wxT("Double pendulum")), wxEmptyString, wxITEM_NORMAL);
     userDefined = new wxMenuItem(_formula, ID_USER_DEFINED, wxString(wxT("User Formula (Complex)")), wxEmptyString, wxITEM_NORMAL);
     fpUserDefined = new wxMenuItem(_formula, ID_FIXED_POINT_USER_DEFINED, wxString(wxT("User Formula (Fixed Point)")), wxEmptyString, wxITEM_NORMAL);
+    newtonUserDefined = new wxMenuItem(_formula, ID_NEWTON_USER_DEFINED, wxString(wxT("User Formula (Newton-Raphson)")), wxEmptyString, wxITEM_NORMAL);
 
     _typeComplex = new wxMenu();
     _typeNumericalMethod = new wxMenu();
@@ -242,6 +244,7 @@ void MainFrame::SetUpGUI()
     _formula->Append(-1, wxT("Other"), _typeOther);
     _formula->Append(userDefined);
     _formula->Append(fpUserDefined);
+    _formula->Append(newtonUserDefined);
     _fractalMenu->Append(wxID_ANY, wxT("Formula"), _formula);
 
     // Julia constant.
@@ -566,7 +569,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent&)
     if (!_formulaDialogIsActive)
     {
         _formulaDialogIsActive = true;
-        _formulaDialog = new FormulaDialog(ID_USER_DEFINED, ID_FIXED_POINT_USER_DEFINED, _sliderJuliaConstant, _manualJuliaConstant, &_formulaDialogIsActive, _fractalCanvas, this);
+        _formulaDialog = new FormulaDialog(ID_USER_DEFINED, ID_FIXED_POINT_USER_DEFINED, ID_NEWTON_USER_DEFINED, _sliderJuliaConstant, _manualJuliaConstant, &_formulaDialogIsActive, _fractalCanvas, this);
         _formulaDialog->Show(true);
 
         // Adjust position.
@@ -883,10 +886,15 @@ void MainFrame::ChangeFPUserDefined(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::FixedPointUserDefined, false);
 }
+void MainFrame::ChangeNewtonUserDefined(wxCommandEvent&)
+{
+    this->ChangeFractal(FractalType::NewtonUserDefined, false);
+}
 void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
 {
     _selectedScriptIndex.reset();  // Deselect the script fractal.
-    if (_fractalType != type || _fractalType == FractalType::UserDefined || _fractalType == FractalType::FixedPointUserDefined)
+    if (_fractalType != type || _fractalType == FractalType::UserDefined || _fractalType == FractalType::FixedPointUserDefined
+        || _fractalType == FractalType::NewtonUserDefined)
     {
         const Options fractOpt = _fractalCanvas->GetFractalPtr()->GetOptions();
         const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractalPtr()->GetColorPalette();
@@ -1162,7 +1170,8 @@ void MainFrame::UpdateMenu()
     _sliderJuliaConstant->Check(false);
 
     // Closes formula dialog.
-    if (_fractalType != FractalType::UserDefined && _fractalType != FractalType::FixedPointUserDefined)
+    if (_fractalType != FractalType::UserDefined && _fractalType != FractalType::FixedPointUserDefined
+        && _fractalType != FractalType::NewtonUserDefined)
     {
         if (_formulaDialogIsActive)
         {

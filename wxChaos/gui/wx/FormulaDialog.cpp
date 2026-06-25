@@ -49,7 +49,7 @@ void FunctionsHelpDialog::OnClose(wxCommandEvent&)
 }
 
 // FormulaDialog
-FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId, wxMenuItem* juliaSlider,
+FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId, const int newtonUserDefinedId, wxMenuItem* juliaSlider,
                              wxMenuItem* juliaManual, bool* active, FractalCanvas* fCanvas, wxWindow* parent,
                              const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
                              const long style) : wxDialog(parent, id, title, pos, size, style)
@@ -57,6 +57,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     // WX Dialog.
     _userDefinedId = userDefinedId;
     _fpUserDefinedId = fPUserDefinedId;
+    _newtonUserDefinedId = newtonUserDefinedId;
 
     _parent = parent;
     this->SetSizeHints(FormulaDialogSize, wxDefaultSize);
@@ -93,7 +94,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     _typeText->Wrap(-1);
     typeSizer->Add(_typeText, 0, wxALL, 5);
 
-    const wxString typeChoiceChoices[] = { wxT("Complex"), wxT("Fixed point") };
+    const wxString typeChoiceChoices[] = { wxT("Complex"), wxT("Fixed point"), wxT("Newton-Raphson") };
     constexpr int typeChoiceNChoices = sizeof(typeChoiceChoices) / sizeof(wxString);
     _typeChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, typeChoiceNChoices, typeChoiceChoices, 0);
 
@@ -133,9 +134,15 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
         _juliaCheck->Enable(true);
         _bailCtrl->Enable(true);
     }
-    else
+    else if (_fCanvas->GetFormula().type == FormulaType::FixedPoint)
     {
         _typeChoice->SetSelection( 1 );
+        _juliaCheck->Enable(false);
+        _bailCtrl->Enable(false);
+    }
+    else
+    {
+        _typeChoice->SetSelection( 2 );
         _juliaCheck->Enable(false);
         _bailCtrl->Enable(false);
     }
@@ -172,8 +179,10 @@ void FormulaDialog::OnApply(wxCommandEvent&)
 
     if (_typeChoice->GetCurrentSelection() == 0)
         options.type = FormulaType::Complex;
-    else
+    else if (_typeChoice->GetCurrentSelection() == 1)
         options.type = FormulaType::FixedPoint;
+    else
+        options.type = FormulaType::NewtonRaphson;
 
     _fCanvas->SetUserFormula(options);
 
@@ -183,9 +192,15 @@ void FormulaDialog::OnApply(wxCommandEvent&)
         event.SetEventObject(_parent);
         _parent->GetEventHandler()->ProcessEvent(event);
     }
-    else
+    else if (_typeChoice->GetCurrentSelection() == 1)
     {
         wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, _fpUserDefinedId);
+        event.SetEventObject(_parent);
+        _parent->GetEventHandler()->ProcessEvent(event);
+    }
+    else
+    {
+        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, _newtonUserDefinedId);
         event.SetEventObject(_parent);
         _parent->GetEventHandler()->ProcessEvent(event);
     }
@@ -209,7 +224,10 @@ void FormulaDialog::OnChoice(wxCommandEvent&)
     {
         _juliaCheck->Enable(false);
         _bailCtrl->Enable(false);
-        _formulaCtrl->SetValue(wxT("z = sin(z)"));
+        if (_typeChoice->GetCurrentSelection() == 1)
+            _formulaCtrl->SetValue(wxT("z = sin(z)"));
+        else
+            _formulaCtrl->SetValue(wxT("z^3 - 1"));
     }
 }
 void FormulaDialog::OnFunc(wxCommandEvent&)

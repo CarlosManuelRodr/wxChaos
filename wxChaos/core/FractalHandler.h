@@ -31,6 +31,7 @@ class FractalHandler
     DoublePendulum* _doublePendulum;
     UserDefinedEscapeTime* _userDefined;
     UserDefinedFixedPoint* _fpUserDefined;
+    UserDefinedNewton* _newtonUserDefined;
     ScriptFractal* _scriptFractal;
 
     Fractal* _target;

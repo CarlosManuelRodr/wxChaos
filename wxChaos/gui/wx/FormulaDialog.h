@@ -55,7 +55,7 @@ class FormulaDialog : public wxDialog
     wxMenuItem* _slider;
     wxMenuItem* _manual;
     bool* _active;
-    int _userDefinedId, _fpUserDefinedId;
+    int _userDefinedId, _fpUserDefinedId, _newtonUserDefinedId;
 
     void OnAccept(wxCommandEvent& event);
     void OnApply(wxCommandEvent& event);
@@ -64,7 +64,7 @@ class FormulaDialog : public wxDialog
     void OnChoice(wxCommandEvent& event);
 
 public:
-    FormulaDialog(int userDefinedId, int fPUserDefinedId, wxMenuItem* juliaSlider,
+    FormulaDialog(int userDefinedId, int fPUserDefinedId, int newtonUserDefinedId, wxMenuItem* juliaSlider,
                   wxMenuItem* juliaManual, bool* active, FractalCanvas* fCanvas, wxWindow* parent,
                   wxWindowID id = wxID_ANY, const wxString& title = wxT("User formula"), const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
