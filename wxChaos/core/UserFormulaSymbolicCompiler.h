@@ -3,7 +3,7 @@
 #include <string>
 
 /**
- * @brief muParserX-ready representation of a user supplied Newton formula.
+ * @brief muParserX-ready representation of a user-supplied Newton formula.
  *
  * The symbolic compiler normalizes the user's input into a function expression
  * and derives the corresponding derivative expression. Both strings are
@@ -20,7 +20,7 @@ struct CompiledUserFormula
 };
 
 /**
- * @brief Converts user formula text into compiled Newton formula source.
+ * @brief Converts user formula text into a compiled Newton formula source.
  *
  * This class owns the one-time symbolic work for user-defined Newton fractals:
  * equation normalization, SymEngine parsing, symbol validation, symbolic
@@ -28,17 +28,6 @@ struct CompiledUserFormula
  */
 class UserFormulaSymbolicCompiler
 {
-public:
-    /**
-     * @brief Compile a Newton formula from a user expression or equation.
-     * @param input User text such as `z^3 - 1` or `z^3 - 1 = 0`.
-     * @param output Receives the normalized function and derivative strings.
-     * @param error Receives a user-facing error message on failure.
-     * @return true when both expressions were generated successfully.
-     */
-    static bool CompileNewtonFormula(const std::string& input, CompiledUserFormula& output, std::string& error);
-
-private:
     /**
      * @brief Convert optional single-equals equation syntax to `lhs - rhs`.
      * @param input User expression or equation.
@@ -53,4 +42,14 @@ private:
      * @return Expression text accepted by the existing muParserX evaluators.
      */
     static std::string ToMuParserExpression(const std::string& expression);
+
+public:
+    /**
+     * @brief Compile a Newton formula from a user expression or equation.
+     * @param input User text such as `z^3 - 1` or `z^3 - 1 = 0`.
+     * @param output Receives the normalized function and derivative strings.
+     * @param error Receives a user-facing error message on failure.
+     * @return true when both expressions were generated successfully.
+     */
+    static bool CompileNewtonFormula(const std::string& input, CompiledUserFormula& output, std::string& error);
 };

@@ -66,7 +66,7 @@ class UserDefinedNewtonRenderer : public Renderer
     [[nodiscard]] double ColorValue(unsigned int rootId, const IterationResult& result) const;
 
     /** @brief Fill the output with the configured set color after a fatal error. */
-    void FillFailedRegion();
+    void FillFailedRegion() const;
 
 public:
     /** @brief Create a renderer with default Newton thresholds. */

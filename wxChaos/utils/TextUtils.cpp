@@ -68,4 +68,17 @@ namespace TextUtils
 
         return numbers;
     }
+
+    std::string Trim(const std::string& value)
+    {
+        auto begin = value.begin();
+        while (begin != value.end() && std::isspace(static_cast<unsigned char>(*begin)))
+            ++begin;
+
+        auto end = value.end();
+        while (end != begin && std::isspace(static_cast<unsigned char>(*(end - 1))))
+            --end;
+
+        return {begin, end};
+    }
 }

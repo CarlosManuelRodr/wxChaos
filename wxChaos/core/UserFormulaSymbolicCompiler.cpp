@@ -1,31 +1,17 @@
 #include "UserFormulaSymbolicCompiler.h"
 
 #include <algorithm>
-#include <cctype>
 #include <regex>
-#include <set>
 #include <symengine/basic.h>
 #include <symengine/functions.h>
 #include <symengine/parser/parser.h>
 #include <symengine/simplify.h>
 #include <symengine/symbol.h>
 #include <symengine/symengine_casts.h>
+#include "TextUtils.h"
 
 namespace
 {
-    std::string Trim(const std::string& value)
-    {
-        auto begin = value.begin();
-        while (begin != value.end() && std::isspace(static_cast<unsigned char>(*begin)))
-            ++begin;
-
-        auto end = value.end();
-        while (end != begin && std::isspace(static_cast<unsigned char>(*(end - 1))))
-            --end;
-
-        return std::string(begin, end);
-    }
-
     bool ContainsUnsupportedTypeName(const std::string& typeName)
     {
         static const std::string unsupported[] = {
@@ -117,7 +103,7 @@ bool UserFormulaSymbolicCompiler::CompileNewtonFormula(const std::string& input,
 std::string UserFormulaSymbolicCompiler::NormalizeEquation(const std::string& input, std::string& error)
 {
     error.clear();
-    const std::string trimmed = Trim(input);
+    std::string trimmed = TextUtils::Trim(input);
     if (trimmed.empty())
     {
         error = "Parse error: formula is empty.";
@@ -134,8 +120,8 @@ std::string UserFormulaSymbolicCompiler::NormalizeEquation(const std::string& in
         return {};
     }
 
-    const std::string left = Trim(trimmed.substr(0, firstEquals));
-    const std::string right = Trim(trimmed.substr(firstEquals + 1));
+    const std::string left = TextUtils::Trim(trimmed.substr(0, firstEquals));
+    const std::string right = TextUtils::Trim(trimmed.substr(firstEquals + 1));
     if (left.empty() || right.empty())
     {
         error = "Parse error: equation must have expressions on both sides of '='.";

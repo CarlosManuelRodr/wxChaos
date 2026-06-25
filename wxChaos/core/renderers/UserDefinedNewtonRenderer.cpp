@@ -59,7 +59,7 @@ double UserDefinedNewtonRenderer::ColorValue(const unsigned int rootId, const It
     return rootId * rootStride + iterationRatio * (rootStride - 1.0) + convergenceFraction;
 }
 
-void UserDefinedNewtonRenderer::FillFailedRegion()
+void UserDefinedNewtonRenderer::FillFailedRegion() const
 {
     for (int y = _heightOrigin; y < _heightFinal; y++)
     {

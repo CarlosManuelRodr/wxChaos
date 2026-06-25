@@ -15,4 +15,5 @@ namespace TextUtils
     int ToInt(const wxString& value);
     int ToInt(const std::string& value);
     std::vector<int> ParseIntList(const wxString& value);
+    std::string Trim(const std::string& value);
 }

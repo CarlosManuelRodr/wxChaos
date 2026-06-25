@@ -59,7 +59,7 @@ bool UserDefinedNewton::HasCompiledFormula() const
     return !_compiledFormula.expression.empty() && !_compiledFormula.derivativeExpression.empty();
 }
 
-void UserDefinedNewton::ApplyRendererState()
+void UserDefinedNewton::ApplyRendererState() const
 {
     for (unsigned int i = 0; i < _threadNumber; i++)
     {
@@ -80,11 +80,8 @@ void UserDefinedNewton::Render()
 void UserDefinedNewton::SetFormula(const FormulaOptions formula)
 {
     _userFormula = formula;
-    std::string error;
-    if (UserFormulaSymbolicCompiler::CompileNewtonFormula(formula.userFormula.utf8_string(), _compiledFormula, error))
-    {
+    if (std::string error; UserFormulaSymbolicCompiler::CompileNewtonFormula(formula.userFormula.utf8_string(), _compiledFormula, error))
         _errorInfo.clear();
-    }
     else
     {
         _compiledFormula = {};

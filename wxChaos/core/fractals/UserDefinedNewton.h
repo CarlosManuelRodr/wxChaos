@@ -45,7 +45,7 @@ class UserDefinedNewton : public Fractal
     OrbitResult DrawNewtonOrbit();
 
     /** @brief Push the current compiled formula and options into the renderer. */
-    void ApplyRendererState();
+    void ApplyRendererState() const;
 
 public:
     /**
