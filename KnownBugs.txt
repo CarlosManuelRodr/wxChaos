@@ -1,3 +1,4 @@
+- Buddhabrot rendering algorithm appears on User Defined Newton Renderer
 - Zoom recorder is not performing the zoom at the depth level that the user has zoomed in to.
 - Changing the gradient color palette with the relative color option active should invalidate the cache and redraw everything.
 
