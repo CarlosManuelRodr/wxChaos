@@ -1,5 +1,5 @@
 #pragma once
-#include "../Renderer.h"
+#include "../RenderWorker.h"
 
 /**
 * @class DoublePendulumRenderer
@@ -9,7 +9,7 @@
 * renderer records whether the simulated trajectory crosses its escape
 * threshold within the configured iteration count.
 */
-class DoublePendulumRenderer : public Renderer
+class DoublePendulumRenderer : public RenderWorker
 {
     bool _th1Bailout, _th2Bailout;
     double _th1NumBailout, _th2NumBailout;

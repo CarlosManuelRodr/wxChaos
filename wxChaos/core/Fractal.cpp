@@ -5,7 +5,7 @@
 #include <thread>
 #include <utility>
 #include "Fractal.h"
-#include "FractalHandler.h"
+#include "FractalFactory.h"
 #include "fractals/ScriptFractal.h"
 #include "BmpImageWriter.h"
 #include "coloring/ColorPalette.h"
@@ -142,7 +142,7 @@ Fractal::~Fractal()
 
 wxString Fractal::GetRenderingAlgorithmName() const
 {
-    return Renderer::GetAlgorithmName(_algorithm);
+    return RenderWorker::GetAlgorithmName(_algorithm);
 }
 
 sf::Color Fractal::InterpolatePaletteColors(const wxColour& first, const wxColour& second, const double ratio)
@@ -250,7 +250,7 @@ void Fractal::UpdateMaxColorMapValue()
     if (_maxColorMapVal <= 0.0)
         _maxColorMapVal = 1.0;
 }
-void Fractal::ConfigureRenderer(Renderer& renderer) const
+void Fractal::ConfigureRenderer(RenderWorker& renderer) const
 {
     renderer.SetOptions(this->GetOptions());
     renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
@@ -1020,7 +1020,7 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
                                const optional<unsigned int> iterations) const
 {
     constexpr unsigned int probeSize = 3;
-    FractalHandler probeHandler;
+    FractalFactory probeHandler;
 
     if (_type == FractalType::ScriptFractal)
     {
@@ -1084,7 +1084,7 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
     return output;
 }
 // Thread control
-ThreadWatchdog<Renderer>* Fractal::GetWatchdog()
+ThreadWatchdog<RenderWorker>* Fractal::GetWatchdog()
 {
     return &_watchdog;
 }

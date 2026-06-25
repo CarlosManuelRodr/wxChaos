@@ -18,7 +18,7 @@
 #include "coloring/ColorPaletteTypes.h"
 #include "Options.h"
 #include "FormulaOptions.h"
-#include "Renderer.h"
+#include "RenderWorker.h"
 #include "ThreadWatchdog.h"
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
@@ -49,7 +49,7 @@ protected:
     bool** _setMap;                             ///< Stores the points that belong to the fractal set.
     double** _colorMap;                         ///< Store continuous color values.
     unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
-    ThreadWatchdog<Renderer> _watchdog;         ///< Watch over the render threads.
+    ThreadWatchdog<RenderWorker> _watchdog;         ///< Watch over the render threads.
     RenderThreadPool _renderPool;               ///< Reusable pool for render jobs.
 
     // Fractal properties.
@@ -166,7 +166,7 @@ protected:
     void UpdateMaxColorMapValue();
 
     ///@brief Copies the current fractal state into a renderer before launch.
-    void ConfigureRenderer(Renderer& renderer) const;
+    void ConfigureRenderer(RenderWorker& renderer) const;
     void EnsurePreciseViewInitialized() const;
     void SyncDoubleViewFromPrecise();
     void UpdatePreciseFactors() const;
@@ -333,7 +333,7 @@ public:
 
     ///@brief Return a pointer to the watchdog.
     ///@return A pointer to the watchdog.
-    ThreadWatchdog<Renderer>* GetWatchdog();
+    ThreadWatchdog<RenderWorker>* GetWatchdog();
 
     ///@brief Returns progress for the active render backend.
     ///@return A value from 0 to 100.
@@ -505,7 +505,7 @@ template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer*
 
     if (useRenderPool)
     {
-        std::vector<Renderer*> renderers;
+        std::vector<RenderWorker*> renderers;
         renderers.reserve(_threadNumber);
 
         for (unsigned int i = 0; i < _threadNumber; i++)

@@ -15,9 +15,9 @@
 #include "wxSFMLCanvas.h"
 #include "sfml/ToggleButton.h"
 #include "sfml/SelectionRect.h"
-#include "sfml/SFMLFractal.h"
+#include "sfml/FractalPresenter.h"
 #include "sfml/CoordinateSelector.h"
-#include "../../core/FractalHandler.h"
+#include "../../core/FractalFactory.h"
 
 wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 
@@ -34,8 +34,8 @@ wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 class FractalCanvas : public wxSFMLCanvas
 {
     // Fractal
-    FractalHandler _fractalHandler;
-    SFMLFractal* _sfmlFractal;
+    FractalFactory _fractalFactory;
+    FractalPresenter* _fractalPresenter;
     SelectionRect* _selection;
     ToggleButton* _play;
     CoordinateSelector* _screenPointer;
@@ -143,7 +143,7 @@ public:
     Fractal* GetFractalPtr() const;
 
     ///@return A pointer to the SFML fractal presenter.
-    SFMLFractal* GetSFMLFractalPtr() const;
+    FractalPresenter* GetSFMLFractalPtr() const;
 
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;

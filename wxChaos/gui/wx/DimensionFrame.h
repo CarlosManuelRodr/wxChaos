@@ -20,7 +20,7 @@
 #include <wx/bmpbuttn.h>
 
 #include <mathplot.h>
-#include "FractalHandler.h"
+#include "FractalFactory.h"
 
 wxDECLARE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
 void GetDesktopResolution(int& width, int& height);
@@ -50,7 +50,7 @@ enum FractalList
     COUNT
 };
 /**
-* @class DimensionCalculator
+* @class BoxCountWorker
 * @brief Box-counting worker for one slice of a rendered fractal map.
 *
 * DimensionCalculator counts occupied boxes for a configured grid division over
@@ -58,7 +58,7 @@ enum FractalList
 * worker's count into the final dimension estimate.
 */
 
-class DimensionCalculator
+class BoxCountWorker
 {
     int _ho, _hf;      ///< Work area of the thread.
     bool** _map;       ///< Fractal target.
@@ -67,7 +67,7 @@ class DimensionCalculator
     int _boxCountN;    ///< Number of counted boxes.
 
 public:
-    DimensionCalculator();    ///< Constructor.
+    BoxCountWorker();    ///< Constructor.
 
     ///@brief Sets the map of the fractal target.
     ///@param map Pointer to a fractal map.
@@ -246,11 +246,11 @@ class DimensionFrame : public wxFrame
 
     ConfigFractalOptionsDialog* _confFractOptDialog; ///< Fractal options dialog.
     Fractal* _target;                                ///< The fractal target.
-    FractalHandler _fractalHandler;                  ///< The fractal handler.
+    FractalFactory _fractalHandler;                  ///< The fractal handler.
     ImagePanel* _previewImage;                       ///< Panel to show a preview of the dimension calculator.
     Options _myOpt;                                  ///< Fractal options.
     int _threadNumber;                               ///< Number of dimension worker threads.
-    std::vector<DimensionCalculator> _dimensionCalculator; ///< Dimension workers, one per thread.
+    std::vector<BoxCountWorker> _dimensionCalculator; ///< Dimension workers, one per thread.
     std::vector<std::unique_ptr<sf::Thread>> _dimThreads;   ///< Owned dimension worker threads.
     std::vector<int> _div;                           ///< Vector to hold the number of divisions.
     std::vector<double> _epsilon;                    ///< Vector to hold the epsilon values.

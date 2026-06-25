@@ -1,11 +1,11 @@
-#include "JuliaMode.h"
-#include "SizeDialogSave.h"
+#include "JuliaPreviewWindow.h"
+#include "ImageExportSizeDialog.h"
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
-JuliaMode::JuliaMode(wxWindow* parent, FractalCanvas* ptr, const FractalType fractalType, const Options& juliaOpt,
-                     const wxSize& size) : _event(), m_thread(&JuliaMode::Run, this), _pendingRendererOptions()
+JuliaPreviewWindow::JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, const FractalType fractalType, const Options& juliaOpt,
+                     const wxSize& size) : _event(), m_thread(&JuliaPreviewWindow::Run, this), _pendingRendererOptions()
 {
     _parent = parent;
     _myJuliaOpt = juliaOpt;
@@ -23,20 +23,20 @@ JuliaMode::JuliaMode(wxWindow* parent, FractalCanvas* ptr, const FractalType fra
     _constantPending = false;
 
     _juliaFractal.CreateFractal(_type, _size.GetWidth(), _size.GetHeight());
-    _sfmlFractal = new SFMLFractal(_juliaFractal.GetFractalPtr());
+    _fractalPresenter = new FractalPresenter(_juliaFractal.GetFractalPtr());
 }
 
-JuliaMode::~JuliaMode()
+JuliaPreviewWindow::~JuliaPreviewWindow()
 {
     delete _selection;
     delete _play;
-    delete _sfmlFractal;
+    delete _fractalPresenter;
     _juliaFractal.DeleteFractal();
     delete _window;
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
-void JuliaMode::HandleEvent()
+void JuliaPreviewWindow::HandleEvent()
 {
     while (_window->pollEvent(_event))
     {
@@ -50,14 +50,14 @@ void JuliaMode::HandleEvent()
         {
             sf::View View(sf::FloatRect(0, 0, static_cast<float>(_event.size.width), static_cast<float>(_event.size.height)));
             _window->setView(View);
-            _sfmlFractal->Resize(_window);
+            _fractalPresenter->Resize(_window);
             _play->Resize(_window);
         }
 
         if (_selection->HandleEvents(_event))
-            _sfmlFractal->SetAreaOfView(_selection->GetSelection());
+            _fractalPresenter->SetAreaOfView(_selection->GetSelection());
         if (_play->HandleEvents(_event))
-            _sfmlFractal->ChangeVarGradient();
+            _fractalPresenter->ChangeVarGradient();
 
         // Keyboad events.
         if (_event.type == sf::Event::KeyPressed)
@@ -71,26 +71,26 @@ void JuliaMode::HandleEvent()
                     wxString fileName = openFileDialog->GetPath();
                     const int ext = openFileDialog->GetFilterIndex();
                     const auto path = string(fileName.mb_str());
-                    const auto diag = new SizeDialogSave(nullptr, path, ext, _type, _juliaFractal.GetFractalPtr(), _parent);
+                    const auto diag = new ImageExportSizeDialog(nullptr, path, ext, _type, _juliaFractal.GetFractalPtr(), _parent);
                     diag->Show(true);
                 }
                 openFileDialog->Destroy();
             }
             if (_event.key.code == sf::Keyboard::F5)  // Redraw fractal.
             {
-                _sfmlFractal->Redraw();
+                _fractalPresenter->Redraw();
             }
             // Handle movement
             switch (_event.key.code)
             {
                 case sf::Keyboard::W:
-                case sf::Keyboard::Up:    _sfmlFractal->SetMovement(Up); break;
+                case sf::Keyboard::Up:    _fractalPresenter->SetMovement(Up); break;
                 case sf::Keyboard::S:
-                case sf::Keyboard::Down:  _sfmlFractal->SetMovement(Down); break;
+                case sf::Keyboard::Down:  _fractalPresenter->SetMovement(Down); break;
                 case sf::Keyboard::A:
-                case sf::Keyboard::Left:  _sfmlFractal->SetMovement(Left); break;
+                case sf::Keyboard::Left:  _fractalPresenter->SetMovement(Left); break;
                 case sf::Keyboard::D:
-                case sf::Keyboard::Right: _sfmlFractal->SetMovement(Right); break;
+                case sf::Keyboard::Right: _fractalPresenter->SetMovement(Right); break;
                 default: break;
             }
         }
@@ -101,35 +101,35 @@ void JuliaMode::HandleEvent()
             switch (_event.key.code)
             {
                 case sf::Keyboard::W:
-                case sf::Keyboard::Up:    _sfmlFractal->ReleaseMovement(Up); break;
+                case sf::Keyboard::Up:    _fractalPresenter->ReleaseMovement(Up); break;
                 case sf::Keyboard::S:
-                case sf::Keyboard::Down:  _sfmlFractal->ReleaseMovement(Down); break;
+                case sf::Keyboard::Down:  _fractalPresenter->ReleaseMovement(Down); break;
                 case sf::Keyboard::A:
-                case sf::Keyboard::Left:  _sfmlFractal->ReleaseMovement(Left); break;
+                case sf::Keyboard::Left:  _fractalPresenter->ReleaseMovement(Left); break;
                 case sf::Keyboard::D:
-                case sf::Keyboard::Right: _sfmlFractal->ReleaseMovement(Right); break;
+                case sf::Keyboard::Right: _fractalPresenter->ReleaseMovement(Right); break;
                 default: break;
             }
         }
 
-        _sfmlFractal->HandleEvent(_event);
+        _fractalPresenter->HandleEvent(_event);
     }
 
     if (_target->ChangeInPointer())
     {
-        _sfmlFractal->SetK(_target->GetKReal(), _target->GetKImaginary());
+        _fractalPresenter->SetK(_target->GetKReal(), _target->GetKImaginary());
     }
 
     // Updates window.
     _window->clear();
-    _sfmlFractal->Move();
-    _sfmlFractal->Show(_window);
+    _fractalPresenter->Move();
+    _fractalPresenter->Show(_window);
     _selection->Show(_window);
     _play->Show(_window);
     _window->display();
 }
 
-void JuliaMode::Run()
+void JuliaPreviewWindow::Run()
 {
     // The window must be created in the same thread that will execute it.
     _window = new sf::RenderWindow(sf::VideoMode(_size.GetWidth(), _size.GetHeight()), "Julia mode");
@@ -178,7 +178,7 @@ void JuliaMode::Run()
         if (applyRendererOptions)
             ApplyRendererOptions(rendererOptions);
         if (applyConstant)
-            _sfmlFractal->SetK(kReal, kImaginary);
+            _fractalPresenter->SetK(kReal, kImaginary);
 
         if (_closeRequested.load())
         {
@@ -192,45 +192,45 @@ void JuliaMode::Run()
     wxQueueEvent(_parent, new wxCommandEvent(wxEVT_JULIA_MODE_CLOSED));
 }
 
-void JuliaMode::Launch()
+void JuliaPreviewWindow::Launch()
 {
     m_thread.launch();
 }
 
-void JuliaMode::Wait()
+void JuliaPreviewWindow::Wait()
 {
     m_thread.wait();
 }
 
-void JuliaMode::Close()
+void JuliaPreviewWindow::Close()
 {
     _closeRequested.store(true);
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
-void JuliaMode::ApplyRendererOptions(const Options& options) const
+void JuliaPreviewWindow::ApplyRendererOptions(const Options& options) const
 {
-    _sfmlFractal->SetGradient(options.gradient);
-    _sfmlFractal->SetGradientSize(options.gradPaletteSize);
-    _sfmlFractal->SetVarGradient(options.changeGradient);
-    _sfmlFractal->SetAlgorithm(options.alg);
-    _sfmlFractal->SetRenderingPrecisionMode(options.renderingPrecisionMode);
-    _sfmlFractal->SetRelativeColor(options.relativeColor);
-    _sfmlFractal->SetExteriorColorMode(options.colorMode);
-    _sfmlFractal->SetFractalSetColorMode(options.colorSet);
-    _sfmlFractal->SetFractalSetColor(options.fSetColor);
-    _sfmlFractal->SetOrbitTrapMode(options.orbitTrapMode);
-    _sfmlFractal->SetSmoothRender(options.smoothRender);
+    _fractalPresenter->SetGradient(options.gradient);
+    _fractalPresenter->SetGradientSize(options.gradPaletteSize);
+    _fractalPresenter->SetVarGradient(options.changeGradient);
+    _fractalPresenter->SetAlgorithm(options.alg);
+    _fractalPresenter->SetRenderingPrecisionMode(options.renderingPrecisionMode);
+    _fractalPresenter->SetRelativeColor(options.relativeColor);
+    _fractalPresenter->SetExteriorColorMode(options.colorMode);
+    _fractalPresenter->SetFractalSetColorMode(options.colorSet);
+    _fractalPresenter->SetFractalSetColor(options.fSetColor);
+    _fractalPresenter->SetOrbitTrapMode(options.orbitTrapMode);
+    _fractalPresenter->SetSmoothRender(options.smoothRender);
 }
 
-void JuliaMode::SetRendererOptions(const Options& options)
+void JuliaPreviewWindow::SetRendererOptions(const Options& options)
 {
     const std::lock_guard lock(_rendererOptionsMutex);
     _pendingRendererOptions = options;
     _rendererOptionsPending = true;
 }
 
-void JuliaMode::SetConstant(const double real, const double imaginary)
+void JuliaPreviewWindow::SetConstant(const double real, const double imaginary)
 {
     const std::lock_guard lock(_rendererOptionsMutex);
     _pendingKReal = real;

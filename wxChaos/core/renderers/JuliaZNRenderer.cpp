@@ -9,7 +9,7 @@ JuliaZNRenderer::JuliaZNRenderer()
 }
 
 template<class Real, class MeasurePoint>
-Renderer::Point JuliaZNRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RenderWorker::Point JuliaZNRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);

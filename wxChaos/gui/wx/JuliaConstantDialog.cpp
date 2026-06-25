@@ -3,7 +3,7 @@
 #include "JuliaConstantDialog.h"
 #include "TextUtils.h"
 
-JuliaConstantDialog::JuliaConstantDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, const wxWindowID id,
+JuliaConstantDialog::JuliaConstantDialog(bool* active, FractalPresenter* presenter, wxWindow* parent, const wxWindowID id,
                                          const wxString& title, const wxPoint& pos, const wxSize& size,
                                          const long style) : wxDialog(parent, id, title, pos, size, style)
 {

@@ -8,7 +8,7 @@ MandelbrotZNRenderer::MandelbrotZNRenderer()
 }
 
 template<class Real, class MeasurePoint>
-Renderer::Point MandelbrotZNRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RenderWorker::Point MandelbrotZNRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);

@@ -11,7 +11,7 @@
 
 #include <wx/wx.h>
 #include "Fractal.h"
-#include "sfml/SFMLFractal.h"
+#include "sfml/FractalPresenter.h"
 
 /**
 * @class IterationsDialog
@@ -27,13 +27,13 @@ class IterationsDialog : public wxFrame
     wxButton* _applyButton;
 
     unsigned int _number;
-    SFMLFractal* _presenter;
+    FractalPresenter* _fractalPresenter;
     Fractal* _target;
     wxString _text;
     bool* _active;
     
 public:
-    IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
+    IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
                      const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 180),
                      long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
 
@@ -43,5 +43,5 @@ public:
     void OnMinus(wxCommandEvent& event);
     void OnOk(wxCommandEvent& event);
     void OnApply(wxCommandEvent& event);
-    void SetTarget(SFMLFractal* presenter);
+    void SetTarget(FractalPresenter* presenter);
 };

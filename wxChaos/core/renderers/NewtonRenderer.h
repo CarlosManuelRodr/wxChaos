@@ -1,5 +1,5 @@
 #pragma once
-#include "../Renderer.h"
+#include "../RenderWorker.h"
 
 /**
 * @class NewtonRenderer
@@ -9,7 +9,7 @@
 * points to the built-in roots, and records convergence data in the shared
 * output maps.
 */
-class NewtonRenderer : public Renderer
+class NewtonRenderer : public RenderWorker
 {
     double minStep;
 

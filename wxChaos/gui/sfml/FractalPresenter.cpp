@@ -1,8 +1,8 @@
-#include "SFMLFractal.h"
+#include "FractalPresenter.h"
 
 constexpr int stdSpeed = 1;
 
-SFMLFractal::SFMLFractal(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
+FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
 {
     _imgInVector = false;
     _usingRenderImage = false;
@@ -21,7 +21,7 @@ SFMLFractal::SFMLFractal(Fractal* fractal) : _committedPanOffset(Vector2Int::Zer
     ResetDisplayImages();
 }
 
-void SFMLFractal::SetFractal(Fractal* fractal)
+void FractalPresenter::SetFractal(Fractal* fractal)
 {
     _fractal = fractal;
     _dontDrawTempImage = true;
@@ -31,16 +31,16 @@ void SFMLFractal::SetFractal(Fractal* fractal)
     ResetDisplayImages();
 }
 
-Fractal* SFMLFractal::GetFractal() const
+Fractal* FractalPresenter::GetFractal() const
 {
     return _fractal;
 }
-void SFMLFractal::SetHandleRightClickZoomBack(const bool mode)
+void FractalPresenter::SetHandleRightClickZoomBack(const bool mode)
 {
     _setHandleRightClickZoomBack = mode;
 }
 
-void SFMLFractal::ResetDisplayImages()
+void FractalPresenter::ResetDisplayImages()
 {
     const sf::Color white(255, 255, 255);
     const sf::Color transparent(255, 255, 255, 0);
@@ -59,7 +59,7 @@ void SFMLFractal::ResetDisplayImages()
     _outGeom.setTexture(_geomTexture);
 }
 
-void SFMLFractal::ClearImageCache()
+void FractalPresenter::ClearImageCache()
 {
     const bool usingCachedRenderImage = _usingRenderImage;
 
@@ -75,7 +75,7 @@ void SFMLFractal::ClearImageCache()
     }
 }
 
-void SFMLFractal::ResetMovement()
+void FractalPresenter::ResetMovement()
 {
     for (bool& direction : _movement)
         direction = false;
@@ -89,34 +89,34 @@ void SFMLFractal::ResetMovement()
     _hasCommittedPanOffset = false;
 }
 
-PreciseRect SFMLFractal::CaptureCurrentView() const
+PreciseRect FractalPresenter::CaptureCurrentView() const
 {
     return _fractal->GetPreciseView();
 }
 
-void SFMLFractal::ApplyView(const PreciseRect& view) const
+void FractalPresenter::ApplyView(const PreciseRect& view) const
 {
     _fractal->SetPreciseView(view);
 }
 
-void SFMLFractal::SaveZoom()
+void FractalPresenter::SaveZoom()
 {
     _zoomHistory.push_back(CaptureCurrentView());
 }
 
-void SFMLFractal::ResetZoomHistory()
+void FractalPresenter::ResetZoomHistory()
 {
     _zoomHistory.clear();
     _outermostZoom = CaptureCurrentView();
 }
 
-void SFMLFractal::ExpandCurrentView()
+void FractalPresenter::ExpandCurrentView()
 {
     ApplyView(_fractal->GetPreciseExpandedView());
     _outermostZoom = CaptureCurrentView();
 }
 
-void SFMLFractal::Move()
+void FractalPresenter::Move()
 {
     if (!_fractal->IsRendered())
         return;
@@ -164,12 +164,12 @@ void SFMLFractal::Move()
     }
 }
 
-bool SFMLFractal::IsMoving() const
+bool FractalPresenter::IsMoving() const
 {
     return _mousePanning || _xVel != 0 || _yVel != 0 || _movement[Up] || _movement[Down] || _movement[Left] || _movement[Right];
 }
 
-void SFMLFractal::SetMovement(const Direction direction)
+void FractalPresenter::SetMovement(const Direction direction)
 {
     ClearImageCache();
     ResetZoomHistory();
@@ -193,7 +193,7 @@ void SFMLFractal::SetMovement(const Direction direction)
     }
 }
 
-void SFMLFractal::ReleaseMovement(const Direction direction)
+void FractalPresenter::ReleaseMovement(const Direction direction)
 {
     switch (direction)
     {
@@ -214,7 +214,7 @@ void SFMLFractal::ReleaseMovement(const Direction direction)
     }
 }
 
-void SFMLFractal::BeginMousePan()
+void FractalPresenter::BeginMousePan()
 {
     if (!_fractal->IsRendered())
         return;
@@ -229,7 +229,7 @@ void SFMLFractal::BeginMousePan()
         direction = false;
 }
 
-void SFMLFractal::PanByMousePixels(const int pixelDeltaX, const int pixelDeltaY)
+void FractalPresenter::PanByMousePixels(const int pixelDeltaX, const int pixelDeltaY)
 {
     if (!_mousePanning || !_fractal->IsRendered())
         return;
@@ -239,12 +239,12 @@ void SFMLFractal::PanByMousePixels(const int pixelDeltaX, const int pixelDeltaY)
     _posY += pixelDeltaY;
 }
 
-void SFMLFractal::EndMousePan()
+void FractalPresenter::EndMousePan()
 {
     _mousePanning = false;
 }
 
-void SFMLFractal::HandleEvent(const sf::Event& event)
+void FractalPresenter::HandleEvent(const sf::Event& event)
 {
     if (!_fractal->IsRendering() && event.type == sf::Event::KeyPressed)
     {
@@ -268,7 +268,7 @@ void SFMLFractal::HandleEvent(const sf::Event& event)
     }
 }
 
-void SFMLFractal::Resize(const sf::RenderWindow* window)
+void FractalPresenter::Resize(const sf::RenderWindow* window)
 {
     _dontDrawTempImage = true;
     ResetMovement();
@@ -295,7 +295,7 @@ void SFMLFractal::Resize(const sf::RenderWindow* window)
     _outGeom.setTextureRect(size);
 }
 
-void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
+void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 {
     ResetMovement();
     const bool wasPaused = _fractal->IsPausedForPresentation();
@@ -332,7 +332,7 @@ void SFMLFractal::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
     _zoomingBack = false;
 }
 
-void SFMLFractal::ZoomBack()
+void FractalPresenter::ZoomBack()
 {
     const bool stillRendering = _fractal->IsRendering();
     _fractal->StopRender();
@@ -370,17 +370,17 @@ void SFMLFractal::ZoomBack()
     }
 }
 
-Rect SFMLFractal::GetOutermostZoom() const
+Rect FractalPresenter::GetOutermostZoom() const
 {
     return _outermostZoom.ToRect();
 }
 
-Rect SFMLFractal::GetCurrentZoom() const
+Rect FractalPresenter::GetCurrentZoom() const
 {
     return CaptureCurrentView().ToRect();
 }
 
-bool SFMLFractal::HasZoomed() const
+bool FractalPresenter::HasZoomed() const
 {
     const PreciseRect currentZoom = CaptureCurrentView();
     return _outermostZoom.left != currentZoom.left ||
@@ -389,7 +389,7 @@ bool SFMLFractal::HasZoomed() const
         _outermostZoom.top != currentZoom.top;
 }
 
-void SFMLFractal::Redraw()
+void FractalPresenter::Redraw()
 {
     ResetMovement();
 
@@ -410,7 +410,7 @@ void SFMLFractal::Redraw()
     _dontDrawTempImage = true;
 }
 
-void SFMLFractal::SetView(const Rect& view)
+void FractalPresenter::SetView(const Rect& view)
 {
     _fractal->StopRender();
     ResetMovement();
@@ -421,14 +421,14 @@ void SFMLFractal::SetView(const Rect& view)
     _dontDrawTempImage = true;
 }
 
-void SFMLFractal::IncreaseIterations()
+void FractalPresenter::IncreaseIterations()
 {
     ClearImageCache();
     const unsigned change = _fractal->GetIterations() + 100;
     _fractal->SetIterations(change);
 }
 
-void SFMLFractal::DecreaseIterations()
+void FractalPresenter::DecreaseIterations()
 {
     ClearImageCache();
 
@@ -439,115 +439,115 @@ void SFMLFractal::DecreaseIterations()
     }
 }
 
-void SFMLFractal::ChangeIterations(const unsigned int iterations)
+void FractalPresenter::ChangeIterations(const unsigned int iterations)
 {
     ClearImageCache();
     _fractal->SetIterations(iterations);
 }
 
-void SFMLFractal::SetK(const double real, const double imaginary)
+void FractalPresenter::SetK(const double real, const double imaginary)
 {
     ClearImageCache();
     _fractal->SetK(real, imaginary);
 }
 
-void SFMLFractal::SetGradient(const wxGradient& gradient)
+void FractalPresenter::SetGradient(const wxGradient& gradient)
 {
     ClearImageCache();
     _fractal->SetGradient(gradient);
 }
 
-void SFMLFractal::SetGradientSize(const unsigned int size)
+void FractalPresenter::SetGradientSize(const unsigned int size)
 {
     ClearImageCache();
     _fractal->SetGradientSize(size);
 }
 
-void SFMLFractal::SetColorCycleLength(const double cycleLength)
+void FractalPresenter::SetColorCycleLength(const double cycleLength)
 {
     ClearImageCache();
     _fractal->SetColorCycleLength(cycleLength);
 }
 
-void SFMLFractal::SetPaletteMappingMode(const PaletteMappingMode mode)
+void FractalPresenter::SetPaletteMappingMode(const PaletteMappingMode mode)
 {
     ClearImageCache();
     _fractal->SetPaletteMappingMode(mode);
 }
 
-void SFMLFractal::SetPaletteMappingExponent(const double exponent)
+void FractalPresenter::SetPaletteMappingExponent(const double exponent)
 {
     ClearImageCache();
     _fractal->SetPaletteMappingExponent(exponent);
 }
 
-void SFMLFractal::SetColorPalette(const ColorPaletteTypes palette)
+void FractalPresenter::SetColorPalette(const ColorPaletteTypes palette)
 {
     ClearImageCache();
     _fractal->SetColorPalette(palette);
 }
 
-void SFMLFractal::SetExteriorColorMode(const bool mode)
+void FractalPresenter::SetExteriorColorMode(const bool mode)
 {
     ClearImageCache();
     _fractal->SetExteriorColorMode(mode);
 }
 
-void SFMLFractal::SetFractalSetColorMode(const bool mode)
+void FractalPresenter::SetFractalSetColorMode(const bool mode)
 {
     ClearImageCache();
     _fractal->SetFractalSetColorMode(mode);
 }
 
-void SFMLFractal::SetFractalSetColor(const sf::Color color)
+void FractalPresenter::SetFractalSetColor(const sf::Color color)
 {
     ClearImageCache();
     _fractal->SetFractalSetColor(color);
 }
 
-void SFMLFractal::SetRelativeColor(const bool mode)
+void FractalPresenter::SetRelativeColor(const bool mode)
 {
     ClearImageCache();
     _fractal->SetRelativeColor(mode);
 }
 
-void SFMLFractal::ChangeVarGradient()
+void FractalPresenter::ChangeVarGradient()
 {
     ClearImageCache();
     _fractal->ChangeVarGradient();
 }
 
-void SFMLFractal::SetVarGradient(const int offset)
+void FractalPresenter::SetVarGradient(const int offset)
 {
     ClearImageCache();
     _fractal->SetVarGradient(offset);
 }
 
-void SFMLFractal::SetAlgorithm(const RenderingAlgorithmType algorithm)
+void FractalPresenter::SetAlgorithm(const RenderingAlgorithmType algorithm)
 {
     ClearImageCache();
     _fractal->SetAlgorithm(algorithm);
 }
 
-void SFMLFractal::SetRenderingPrecisionMode(const RenderingPrecisionMode mode)
+void FractalPresenter::SetRenderingPrecisionMode(const RenderingPrecisionMode mode)
 {
     ClearImageCache();
     _fractal->SetRenderingPrecisionMode(mode);
 }
 
-void SFMLFractal::SetOrbitTrapMode(const bool mode)
+void FractalPresenter::SetOrbitTrapMode(const bool mode)
 {
     ClearImageCache();
     _fractal->SetOrbitTrapMode(mode);
 }
 
-void SFMLFractal::SetSmoothRender(const bool mode)
+void FractalPresenter::SetSmoothRender(const bool mode)
 {
     ClearImageCache();
     _fractal->SetSmoothRender(mode);
 }
 
-void SFMLFractal::DrawMaps(sf::RenderWindow* window)
+void FractalPresenter::DrawMaps(sf::RenderWindow* window)
 {
     _fractal->PreDrawMaps();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
@@ -582,7 +582,7 @@ void SFMLFractal::DrawMaps(sf::RenderWindow* window)
     window->draw(_output);
 }
 
-void SFMLFractal::DrawGeometry(sf::RenderWindow* window) const
+void FractalPresenter::DrawGeometry(sf::RenderWindow* window) const
 {
     for (const LineData& line : _fractal->GetLines())
     {
@@ -619,7 +619,7 @@ void SFMLFractal::DrawGeometry(sf::RenderWindow* window) const
     }
 }
 
-void SFMLFractal::Show(sf::RenderWindow* window)
+void FractalPresenter::Show(sf::RenderWindow* window)
 {
     if (_fractal->IsRendered() && IsMoving())
     {

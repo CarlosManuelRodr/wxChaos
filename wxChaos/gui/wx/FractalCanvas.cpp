@@ -3,7 +3,7 @@
 #include <string>
 #include "AppPaths.h"
 #include "FractalCanvas.h"
-#include "SizeDialogSave.h"
+#include "ImageExportSizeDialog.h"
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
@@ -53,13 +53,13 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
 
     // Create fractal.
     this->CreateFractal(fractalType);
-    _target = _fractalHandler.GetFractalPtr();
+    _target = _fractalFactory.GetFractalPtr();
     AttachFractalStatusHandler();
-    _sfmlFractal = new SFMLFractal(_target);
-    _sfmlFractal->SetHandleRightClickZoomBack(false);
+    _fractalPresenter = new FractalPresenter(_target);
+    _fractalPresenter->SetHandleRightClickZoomBack(false);
     EnsureFontLoaded();
 
-    _fractalHandler.SetFormula(_userFormula);
+    _fractalFactory.SetFormula(_userFormula);
 
     // Initialize GUI elements.
     _selection = new SelectionRect();
@@ -109,20 +109,20 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
 FractalCanvas::~FractalCanvas()
 {
     // Cleanup.
-    delete _sfmlFractal;
-    _fractalHandler.DeleteFractal();
+    delete _fractalPresenter;
+    _fractalFactory.DeleteFractal();
     delete _play;
     delete _screenPointer;
 }
 void FractalCanvas::CreateFractal(const FractalType type)
 {
     const sf::Vector2u size = this->getSize();
-    _fractalHandler.CreateFractal(type, size.x, size.y);
+    _fractalFactory.CreateFractal(type, size.x, size.y);
 }
 void FractalCanvas::CreateScriptFractal(const ScriptData& scriptData)
 {
     const sf::Vector2u size = this->getSize();
-    _fractalHandler.CreateScriptFractal(size.x, size.y, scriptData);
+    _fractalFactory.CreateScriptFractal(size.x, size.y, scriptData);
 }
 
 void FractalCanvas::AttachFractalStatusHandler() const
@@ -317,7 +317,7 @@ void FractalCanvas::ZoomAtMousePosition(const wxPoint& position) const
     const int left = std::clamp(position.x - zoomWidth / 2, 0, screenWidth - zoomWidth);
     const int top = std::clamp(position.y - zoomHeight / 2, 0, screenHeight - zoomHeight);
 
-    _sfmlFractal->SetAreaOfView(sf::IntRect(left, top, zoomWidth, zoomHeight));
+    _fractalPresenter->SetAreaOfView(sf::IntRect(left, top, zoomWidth, zoomHeight));
 }
 
 void FractalCanvas::OnUpdate()
@@ -328,7 +328,7 @@ void FractalCanvas::OnUpdate()
         // Size change event.
         if (_event.type == sf::Event::Resized)
         {
-            _sfmlFractal->Resize(this);
+            _fractalPresenter->Resize(this);
             _play->Resize(this);
 
             if (_screenPointer != nullptr)
@@ -348,9 +348,9 @@ void FractalCanvas::OnUpdate()
 
         }
 
-        _sfmlFractal->HandleEvent(_event);
+        _fractalPresenter->HandleEvent(_event);
         if (!_target->IsRendering() && _play->HandleEvents(_event))
-            _sfmlFractal->ChangeVarGradient();
+            _fractalPresenter->ChangeVarGradient();
 
         // Keyboard event.
         if (_event.type == sf::Event::KeyPressed)
@@ -375,7 +375,7 @@ void FractalCanvas::OnUpdate()
                         fileName = openFileDialog->GetPath();
                         const int ext = openFileDialog->GetFilterIndex();
                         auto path = string(fileName.mb_str());
-                        const auto diag = new SizeDialogSave(this, path, ext, _type, _target, this);
+                        const auto diag = new ImageExportSizeDialog(this, path, ext, _type, _target, this);
                         diag->Show(true);
                     }
                     openFileDialog->Destroy();
@@ -383,7 +383,7 @@ void FractalCanvas::OnUpdate()
             }
             if (_event.key.code == sf::Keyboard::F5)  // Redraw canvas.
             {
-                _sfmlFractal->Redraw();
+                _fractalPresenter->Redraw();
             }
             if (_event.key.code == sf::Keyboard::P)  // Abort shortcut.
             {
@@ -402,10 +402,10 @@ void FractalCanvas::OnUpdate()
     if (_orbitMode)
         _target->SetOrbitPoint(_kReal, _kImaginary);
     if (_sliderMode && _pointerChange)
-        _sfmlFractal->SetK(_kReal, _kImaginary);
+        _fractalPresenter->SetK(_kReal, _kImaginary);
 
-    _sfmlFractal->Move();
-    _sfmlFractal->Show(this);
+    _fractalPresenter->Move();
+    _fractalPresenter->Show(this);
     DrawIterationsOverlay(this);
 
     // Avoid drawing GUI elements if the fractal is rendering.
@@ -502,9 +502,9 @@ Fractal* FractalCanvas::GetFractalPtr() const
 {
     return _target;
 }
-SFMLFractal* FractalCanvas::GetSFMLFractalPtr() const
+FractalPresenter* FractalCanvas::GetSFMLFractalPtr() const
 {
-    return _sfmlFractal;
+    return _fractalPresenter;
 }
 FractalType FractalCanvas::GetFractalType() const
 {
@@ -527,12 +527,12 @@ void FractalCanvas::ChangeType(const FractalType type)
     // Deletes old fractal and creates a new one.
     this->CreateFractal(type);
     _type = type;
-    _target = _fractalHandler.GetFractalPtr();
+    _target = _fractalFactory.GetFractalPtr();
     AttachFractalStatusHandler();
-    _sfmlFractal->SetFractal(_target);
-    _sfmlFractal->SetHandleRightClickZoomBack(false);
+    _fractalPresenter->SetFractal(_target);
+    _fractalPresenter->SetHandleRightClickZoomBack(false);
     _iterationsOverlayDirty = true;
-    _fractalHandler.SetFormula(_userFormula);
+    _fractalFactory.SetFormula(_userFormula);
 
     // Deletes screen pointer if active.
     if (_orbitMode || _sliderMode)
@@ -555,10 +555,10 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
     _type = FractalType::ScriptFractal;
     _scriptData = scriptData;
     this->CreateScriptFractal(_scriptData);
-    _target = _fractalHandler.GetFractalPtr();
+    _target = _fractalFactory.GetFractalPtr();
     AttachFractalStatusHandler();
-    _sfmlFractal->SetFractal(_target);
-    _sfmlFractal->SetHandleRightClickZoomBack(false);
+    _fractalPresenter->SetFractal(_target);
+    _fractalPresenter->SetHandleRightClickZoomBack(false);
     _iterationsOverlayDirty = true;
 
     // Deletes screen pointer if active.
@@ -619,12 +619,12 @@ void FractalCanvas::Reset()
     else
         this->CreateFractal(_type);
 
-    _target = _fractalHandler.GetFractalPtr();
+    _target = _fractalFactory.GetFractalPtr();
     AttachFractalStatusHandler();
-    _sfmlFractal->SetFractal(_target);
-    _sfmlFractal->SetHandleRightClickZoomBack(false);
+    _fractalPresenter->SetFractal(_target);
+    _fractalPresenter->SetHandleRightClickZoomBack(false);
     _iterationsOverlayDirty = true;
-    _fractalHandler.SetFormula(_userFormula);
+    _fractalFactory.SetFormula(_userFormula);
     _play->Reset();
 
     // Deactivates screen pointer.
@@ -727,7 +727,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         {
             _mouseWheelPanning = true;
             _lastMouseWheelPanPosition = event.GetPosition();
-            _sfmlFractal->BeginMousePan();
+            _fractalPresenter->BeginMousePan();
 
             if (!HasCapture())
                 CaptureMouse();
@@ -755,7 +755,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         }
     }
     // Selection event.
-    else if (!_target->IsRendering() && !_sfmlFractal->IsMoving())
+    else if (!_target->IsRendering() && !_fractalPresenter->IsMoving())
         _selection->ClickEvent(event);
 
     // Mouse event.
@@ -765,9 +765,9 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
             _helpImageMode = false;
     }
 
-    if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_sfmlFractal->IsMoving())
+    if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_fractalPresenter->IsMoving())
     {
-        _sfmlFractal->ZoomBack();
+        _fractalPresenter->ZoomBack();
     }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -778,7 +778,7 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
         if (_mouseWheelPanning)
         {
             _mouseWheelPanning = false;
-            _sfmlFractal->EndMousePan();
+            _fractalPresenter->EndMousePan();
 
             if (HasCapture())
                 ReleaseMouse();
@@ -791,11 +791,11 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
         _screenPointer->ReleaseClickEvent(event);
     else
     {
-        if (!_target->IsRendering() && !_sfmlFractal->IsMoving())
+        if (!_target->IsRendering() && !_fractalPresenter->IsMoving())
         {
             if (_selection->UnClickEvent(event))
             {
-                _sfmlFractal->SetAreaOfView(_selection->GetSelection());
+                _fractalPresenter->SetAreaOfView(_selection->GetSelection());
             }
         }
     }
@@ -804,7 +804,7 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
 {
-    if (_sfmlFractal->IsMoving())
+    if (_fractalPresenter->IsMoving())
     {
         event.Skip();
         return;
@@ -819,13 +819,13 @@ void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
         ZoomAtMousePosition(event.GetPosition());
     }
     else if (rotation < 0)
-        _sfmlFractal->ZoomBack();
+        _fractalPresenter->ZoomBack();
 }
 
 void FractalCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
 {
     _mouseWheelPanning = false;
-    _sfmlFractal->EndMousePan();
+    _fractalPresenter->EndMousePan();
     event.Skip();
 }
 
@@ -838,7 +838,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 
         if (delta.x != 0 || delta.y != 0)
         {
-            _sfmlFractal->PanByMousePixels(delta.x, delta.y);
+            _fractalPresenter->PanByMousePixels(delta.x, delta.y);
             _lastMouseWheelPanPosition = currentPosition;
         }
 
@@ -869,7 +869,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     }
     else
     {
-        if (!_target->IsRendering() && !_sfmlFractal->IsMoving())
+        if (!_target->IsRendering() && !_fractalPresenter->IsMoving())
             _selection->MoveEvent(event);
     }
 
@@ -892,22 +892,22 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     {
         case WXK_UP:
         {
-            _sfmlFractal->SetMovement(Up);
+            _fractalPresenter->SetMovement(Up);
             break;
         }
         case WXK_DOWN:
         {
-            _sfmlFractal->SetMovement(Down);
+            _fractalPresenter->SetMovement(Down);
             break;
         }
         case WXK_LEFT:
         {
-            _sfmlFractal->SetMovement(Left);
+            _fractalPresenter->SetMovement(Left);
             break;
         }
         case WXK_RIGHT:
         {
-            _sfmlFractal->SetMovement(Right);
+            _fractalPresenter->SetMovement(Right);
             break;
         }
         default: break;
@@ -915,13 +915,13 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
 
     const wxChar key = event.GetUnicodeKey();
     if (key == wxT('W') || key == wxT('w'))
-        _sfmlFractal->SetMovement(Up);
+        _fractalPresenter->SetMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
-        _sfmlFractal->SetMovement(Down);
+        _fractalPresenter->SetMovement(Down);
     else if (key == wxT('A') || key == wxT('a'))
-        _sfmlFractal->SetMovement(Left);
+        _fractalPresenter->SetMovement(Left);
     else if (key == wxT('D') || key == wxT('d'))
-        _sfmlFractal->SetMovement(Right);
+        _fractalPresenter->SetMovement(Right);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
@@ -931,22 +931,22 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
     {
         case WXK_UP:
         {
-            _sfmlFractal->ReleaseMovement(Up);
+            _fractalPresenter->ReleaseMovement(Up);
             break;
         }
         case WXK_DOWN:
         {
-            _sfmlFractal->ReleaseMovement(Down);
+            _fractalPresenter->ReleaseMovement(Down);
             break;
         }
         case WXK_LEFT:
         {
-            _sfmlFractal->ReleaseMovement(Left);
+            _fractalPresenter->ReleaseMovement(Left);
             break;
         }
         case WXK_RIGHT:
         {
-            _sfmlFractal->ReleaseMovement(Right);
+            _fractalPresenter->ReleaseMovement(Right);
             break;
         }
         default: break;
@@ -954,11 +954,11 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
 
     const wxChar key = event.GetUnicodeKey();
     if (key == wxT('W') || key == wxT('w'))
-        _sfmlFractal->ReleaseMovement(Up);
+        _fractalPresenter->ReleaseMovement(Up);
     else if (key == wxT('S') || key == wxT('s'))
-        _sfmlFractal->ReleaseMovement(Down);
+        _fractalPresenter->ReleaseMovement(Down);
     else if (key == wxT('A') || key == wxT('a'))
-        _sfmlFractal->ReleaseMovement(Left);
+        _fractalPresenter->ReleaseMovement(Left);
     else if (key == wxT('D') || key == wxT('d'))
-        _sfmlFractal->ReleaseMovement(Right);
+        _fractalPresenter->ReleaseMovement(Right);
 }

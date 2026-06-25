@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
-#include "../Renderer.h"
+#include "../RenderWorker.h"
 
-class PerturbationRenderer : public Renderer
+class PerturbationRenderer : public RenderWorker
 {
 protected:
     struct PerturbationReference

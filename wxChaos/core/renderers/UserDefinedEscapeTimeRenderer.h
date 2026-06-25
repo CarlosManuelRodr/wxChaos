@@ -1,6 +1,6 @@
 #pragma once
 #include "FormulaOptions.h"
-#include "../Renderer.h"
+#include "../RenderWorker.h"
 
 /**
 * @class UserDefinedEscapeTimeRenderer
@@ -9,7 +9,7 @@
 * The renderer evaluates the configured muParserX expression for each orbit
 * step and writes escape state into the shared output maps.
 */
-class UserDefinedEscapeTimeRenderer : public Renderer
+class UserDefinedEscapeTimeRenderer : public RenderWorker
 {
     int bailout;
     bool julia;

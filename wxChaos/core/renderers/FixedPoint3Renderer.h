@@ -1,5 +1,5 @@
 #pragma once
-#include "../Renderer.h"
+#include "../RenderWorker.h"
 
 /**
 * @class FixedPoint3Renderer
@@ -8,7 +8,7 @@
 * The renderer iterates each pixel as the initial complex value and colors the
 * result using the shared convergence-test output maps.
 */
-class FixedPoint3Renderer : public Renderer
+class FixedPoint3Renderer : public RenderWorker
 {
     double _minStep;
 

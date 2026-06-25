@@ -7,15 +7,15 @@
 #include "Options.h"
 
 /**
-* @class Renderer
+* @class RenderWorker
 * @brief Base class for per-region fractal render workers.
 *
-* Renderer stores the shared render options and output maps for one pixel
+* RenderWorker stores the shared render options and output maps for one pixel
 * region. It provides the common pixel scan, optional high-precision coordinate
 * scan, escape-time coloring algorithms, and progress/stop state used by
 * concrete formula renderers.
 */
-class Renderer
+class RenderWorker
 {
 protected:
     static constexpr double InvalidColor = std::numeric_limits<double>::max();
@@ -113,7 +113,7 @@ protected:
     template<class PixelRenderer>
     void RenderPixelsByPrecision(PixelRenderer pixelRenderer);
     template<class TracePoint, class MeasurePoint>
-    void RenderFromPoint(TracePoint tracePoint, double (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure);
+    void RenderFromPoint(TracePoint tracePoint, double (RenderWorker::*colorPoint)(const Point&) const, MeasurePoint measure);
     template<class TracePoint>
     void EscapeTimeRender(TracePoint tracePoint);
     template<class TracePoint>
@@ -124,8 +124,8 @@ protected:
     void TriangleInequalityRender(TracePoint tracePoint);
 
 public:
-    Renderer();
-    virtual ~Renderer() = default;
+    RenderWorker();
+    virtual ~RenderWorker() = default;
 
     virtual void Render() = 0;
     static wxString GetAlgorithmName(RenderingAlgorithmType algorithm);
@@ -149,7 +149,7 @@ public:
     virtual unsigned int GetProgress();
 };
 
-template<class PixelRenderer> void Renderer::RenderPixels(PixelRenderer pixelRenderer)
+template<class PixelRenderer> void RenderWorker::RenderPixels(PixelRenderer pixelRenderer)
 {
     for (_y = _heightOrigin; _y < _heightFinal; _y++)
     {
@@ -162,7 +162,7 @@ template<class PixelRenderer> void Renderer::RenderPixels(PixelRenderer pixelRen
     }
 }
 
-template<class PixelRenderer> void Renderer::RenderPixelsPrecise(PixelRenderer pixelRenderer)
+template<class PixelRenderer> void RenderWorker::RenderPixelsPrecise(PixelRenderer pixelRenderer)
 {
     HighPrecisionReal::PrecisionScope precision(_highPrecisionBits);
     const HighPrecisionReal top = HighPrecisionReal::WithCurrentPrecision(_preciseView.top);
@@ -183,7 +183,7 @@ template<class PixelRenderer> void Renderer::RenderPixelsPrecise(PixelRenderer p
     }
 }
 
-template<class PixelRenderer> void Renderer::RenderPixelsByPrecision(PixelRenderer pixelRenderer)
+template<class PixelRenderer> void RenderWorker::RenderPixelsByPrecision(PixelRenderer pixelRenderer)
 {
     if (_useHighPrecision)
         RenderPixelsPrecise(pixelRenderer);
@@ -192,7 +192,7 @@ template<class PixelRenderer> void Renderer::RenderPixelsByPrecision(PixelRender
 }
 
 template<class TracePoint, class MeasurePoint>
-void Renderer::RenderFromPoint(TracePoint tracePoint, double (Renderer::*colorPoint)(const Point&) const, MeasurePoint measure)
+void RenderWorker::RenderFromPoint(TracePoint tracePoint, double (RenderWorker::*colorPoint)(const Point&) const, MeasurePoint measure)
 {
     const auto renderPixel = [this, tracePoint, colorPoint, measure](const auto& pixelRe, const auto& pixelIm)
     {
@@ -207,7 +207,7 @@ void Renderer::RenderFromPoint(TracePoint tracePoint, double (Renderer::*colorPo
 }
 
 template<class TracePoint>
-void Renderer::EscapeTimeRender(TracePoint tracePoint)
+void RenderWorker::EscapeTimeRender(TracePoint tracePoint)
 {
     if (_myOpt.orbitTrapMode)
     {
@@ -215,16 +215,16 @@ void Renderer::EscapeTimeRender(TracePoint tracePoint)
         {
             MeasureOrbitTrap(point, event, zRe, zIm);
         };
-        RenderFromPoint(tracePoint, &Renderer::EscapeTimeColor, measure);
+        RenderFromPoint(tracePoint, &RenderWorker::EscapeTimeColor, measure);
         return;
     }
 
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(tracePoint, &Renderer::EscapeTimeColor, measure);
+    RenderFromPoint(tracePoint, &RenderWorker::EscapeTimeColor, measure);
 }
 
 template<class TracePoint>
-void Renderer::GaussianIntRender(TracePoint tracePoint)
+void RenderWorker::GaussianIntRender(TracePoint tracePoint)
 {
     if (_myOpt.orbitTrapMode)
     {
@@ -235,7 +235,7 @@ void Renderer::GaussianIntRender(TracePoint tracePoint)
             MeasureOrbitTrap(point, event, zRe, zIm);
             MeasureEscapeMu(point, event, zNorm);
         };
-        RenderFromPoint(tracePoint, &Renderer::GaussianIntegerColor, measure);
+        RenderFromPoint(tracePoint, &RenderWorker::GaussianIntegerColor, measure);
         return;
     }
 
@@ -245,18 +245,18 @@ void Renderer::GaussianIntRender(TracePoint tracePoint)
         MeasureGaussianInteger(point, event, zRe, zIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(tracePoint, &Renderer::GaussianIntegerColor, measure);
+    RenderFromPoint(tracePoint, &RenderWorker::GaussianIntegerColor, measure);
 }
 
 template<class TracePoint>
-void Renderer::EscapeAngleRender(TracePoint tracePoint)
+void RenderWorker::EscapeAngleRender(TracePoint tracePoint)
 {
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
-    RenderFromPoint(tracePoint, &Renderer::EscapeAngleColor, measure);
+    RenderFromPoint(tracePoint, &RenderWorker::EscapeAngleColor, measure);
 }
 
 template<class TracePoint>
-void Renderer::TriangleInequalityRender(TracePoint tracePoint)
+void RenderWorker::TriangleInequalityRender(TracePoint tracePoint)
 {
     const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
                             const double zNorm, const double squaredRe, const double squaredIm, const bool wasInside)
@@ -264,5 +264,5 @@ void Renderer::TriangleInequalityRender(TracePoint tracePoint)
         MeasureTriangleInequality(point, event, iteration, zRe, zIm, squaredRe, squaredIm, wasInside);
         MeasureEscapeMu(point, event, zNorm);
     };
-    RenderFromPoint(tracePoint, &Renderer::TriangleInequalityColor, measure);
+    RenderFromPoint(tracePoint, &RenderWorker::TriangleInequalityColor, measure);
 }

@@ -4,7 +4,7 @@ using namespace std;
 ManowarJuliaRenderer::ManowarJuliaRenderer() = default;
 
 template<class Real, class MeasurePoint>
-Renderer::Point ManowarJuliaRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RenderWorker::Point ManowarJuliaRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Renderer.h"
+#include "../RenderWorker.h"
 #include "../scripting/AngelscriptRenderEngine.h"
 
 /**
@@ -9,7 +9,7 @@
 * The renderer exposes the active render variables to AngelscriptRenderEngine
 * and lets the script fill the shared set, color, and auxiliary maps.
 */
-class ScriptFractalRenderer : public Renderer
+class ScriptFractalRenderer : public RenderWorker
 {
     AngelscriptRenderEngine* _renderEngine;
     std::string _path;

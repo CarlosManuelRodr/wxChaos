@@ -1,5 +1,5 @@
 #pragma once
-#include "../Renderer.h"
+#include "../RenderWorker.h"
 
 /**
 * @class MandelbrotZNRenderer
@@ -8,7 +8,7 @@
 * The renderer owns the formula trace for MandelbrotZN and dispatches the
 * selected escape-time coloring algorithm through the shared Renderer paths.
 */
-class MandelbrotZNRenderer : public Renderer
+class MandelbrotZNRenderer : public RenderWorker
 {
     int _n;
     double _bailout;

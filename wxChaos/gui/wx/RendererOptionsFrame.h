@@ -1,5 +1,5 @@
 /**
-* @file RendererOptions.h
+* @file RendererOptionsFrame.h
 * @brief This header contains the RendererOptions.
 *
 * @author Carlos Manuel Rodriguez Martinez
@@ -16,7 +16,7 @@
 #include <functional>
 #include <vector>
 #include "coloring/ColorPalette.h"
-#include "sfml/SFMLFractal.h"
+#include "sfml/FractalPresenter.h"
 #include "wxGradientDialog.h"
 #include "Fractal.h"
 
@@ -25,10 +25,10 @@
 wxDECLARE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 
 /**
-* @class RendererOptions
+* @class RendererOptionsFrame
 * @brief Frame that allows the user to change several color and algorithm parameters.
 */
-class RendererOptions : public wxFrame
+class RendererOptionsFrame : public wxFrame
 {
     wxScrolledWindow* _mainPanel;
     wxStaticText* _algorithmText;
@@ -65,7 +65,7 @@ class RendererOptions : public wxFrame
     wxStaticText* _colorVarText;
     wxSlider* _colorVarSlider;
     
-    SFMLFractal* _presenter;                        ///< Presenter used to mutate the displayed fractal.
+    FractalPresenter* _fractalPresenter;            ///< Presenter used to mutate the displayed fractal.
     Fractal* _target;                               ///< Target fractal.
     sf::Color _setColor;                            ///< Color of the fractal set.
     ColorPalette _gradFractalColor;                 ///< Color in Grad color mode.
@@ -113,12 +113,12 @@ public:
     ///@param pos Initial frame position.
     ///@param size Initial frame size.
     ///@param windowStyle wxWidgets frame style flags.
-    RendererOptions(SFMLFractal* presenter, wxWindow* parent,
-                    std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
-                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
-                    long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
+    RendererOptionsFrame(FractalPresenter* presenter, wxWindow* parent,
+                         std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
+                         const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
+                         long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
     ///@brief Sets the target fractal.
     ///@param presenter Pointer to target fractal presenter.
-    void SetTarget(SFMLFractal* presenter);
+    void SetTarget(FractalPresenter* presenter);
 
 };

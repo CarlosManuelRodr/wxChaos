@@ -11,14 +11,14 @@
 #include "Fractal.h"
 
 /**
-* @class SFMLFractal
+* @class FractalPresenter
 * @brief Owns the SFML presentation state for a Fractal.
 *
 * SFMLFractal is the bridge between the pure fractal renderer and SFML drawing.
 * It keeps textures, sprites, temporary zoom images, cached zoom-back images,
 * geometry overlays, and SFML event handling out of the Fractal base class.
 */
-class SFMLFractal
+class FractalPresenter
 {
     Fractal* _fractal;                     ///< Fractal model currently being displayed.
     sf::Image _image;                      ///< Current rendered fractal image.
@@ -82,7 +82,7 @@ class SFMLFractal
 public:
     ///@brief Constructs an SFML fractal presenter bound to a fractal.
     ///@param fractal Fractal model to present.
-    explicit SFMLFractal(Fractal* fractal);
+    explicit FractalPresenter(Fractal* fractal);
 
     ///@brief Changes the fractal model shown by this presenter.
     ///@param fractal New fractal model.

@@ -42,7 +42,7 @@ void RenderThreadPool::SetThreadNumber(const unsigned int threadNumber)
         _workers.emplace_back(&RenderThreadPool::WorkerLoop, this, i);
 }
 
-void RenderThreadPool::Render(const std::vector<Renderer*>& renderers, const std::vector<RenderJob>& jobs)
+void RenderThreadPool::Render(const std::vector<RenderWorker*>& renderers, const std::vector<RenderJob>& jobs)
 {
     this->Stop();
     this->SetThreadNumber(static_cast<unsigned int>(renderers.size()));
@@ -75,7 +75,7 @@ void RenderThreadPool::Render(const std::vector<Renderer*>& renderers, const std
 
 void RenderThreadPool::Stop()
 {
-    std::vector<Renderer*> renderers;
+    std::vector<RenderWorker*> renderers;
 
     {
         std::lock_guard<std::mutex> lock(_mutex);
@@ -94,7 +94,7 @@ void RenderThreadPool::Stop()
         }
     }
 
-    for (Renderer* renderer : renderers)
+    for (RenderWorker* renderer : renderers)
     {
         if (renderer != nullptr)
         {
@@ -141,7 +141,7 @@ void RenderThreadPool::WorkerLoop(const unsigned int workerIndex)
     while (true)
     {
         RenderJob job;
-        Renderer* renderer = nullptr;
+        RenderWorker* renderer = nullptr;
 
         {
             std::unique_lock<std::mutex> lock(_mutex);

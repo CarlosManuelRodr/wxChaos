@@ -2,7 +2,7 @@
 #include "IterationsDialog.h"
 #include "TextUtils.h"
 
-IterationsDialog::IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id, const wxString& title,
+IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, wxWindowID id, const wxString& title,
                                    const wxPoint& pos, const wxSize& size, const long style)
                                    : wxFrame(parent, id, title, pos, size, style)
 {
@@ -11,8 +11,8 @@ IterationsDialog::IterationsDialog(bool* Active, SFMLFractal* presenter, wxWindo
     this->SetIcon(icon);
 
     _active = Active;
-    _presenter = presenter;
-    _target = _presenter->GetFractal();
+    _fractalPresenter = presenter;
+    _target = _fractalPresenter->GetFractal();
     this->SetSizeHints(wxSize(420, 180), wxSize(420, 180));
 
     const auto sizer = new wxBoxSizer(wxVERTICAL);
@@ -73,7 +73,7 @@ void IterationsDialog::OnPlus(wxCommandEvent&)
     _number++;
     _text = TextUtils::ToWxString(static_cast<int>(_number));
     _textCtrl->SetValue(_text);
-    _presenter->ChangeIterations(_number);
+    _fractalPresenter->ChangeIterations(_number);
 }
 void IterationsDialog::OnMinus(wxCommandEvent&)
 {
@@ -82,7 +82,7 @@ void IterationsDialog::OnMinus(wxCommandEvent&)
         _number--;
     _text = TextUtils::ToWxString(static_cast<int>(_number));
     _textCtrl->SetValue(_text);
-    _presenter->ChangeIterations(_number);
+    _fractalPresenter->ChangeIterations(_number);
 }
 void IterationsDialog::OnOk(wxCommandEvent&)
 {
@@ -102,12 +102,12 @@ void IterationsDialog::OnApply(wxCommandEvent&)
         return;
     }
     _number = value;
-    _presenter->ChangeIterations(_number);
+    _fractalPresenter->ChangeIterations(_number);
 }
-void IterationsDialog::SetTarget(SFMLFractal* presenter)
+void IterationsDialog::SetTarget(FractalPresenter* presenter)
 {
-    _presenter = presenter;
-    _target = _presenter->GetFractal();
+    _fractalPresenter = presenter;
+    _target = _fractalPresenter->GetFractal();
     _textCtrl->SetValue(TextUtils::ToWxString(static_cast<int>(_target->GetIterations())));
     _number = _target->GetIterations();
 }

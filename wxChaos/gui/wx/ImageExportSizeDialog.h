@@ -1,5 +1,5 @@
 /**
-* @file SizeDialogSave.h
+* @file ImageExportSizeDialog.h
 * @brief A dialog to select the image size and show the rendering progress.
 *
 * @author Carlos Manuel Rodriguez y Martinez
@@ -14,13 +14,13 @@
 #include "FractalCanvas.h"
 
 /**
-* @class SaveProgressDiag
+* @class ImageExportProgressDialog
 * @brief Tracks progress while a high-resolution image render is being saved.
 *
 * The dialog polls the target fractal render progress, allows cancellation when
 * supported, and closes once the save render finishes.
 */
-class SaveProgressDiag : public wxDialog
+class ImageExportProgressDialog : public wxDialog
 {
     wxGauge* _progress;
     wxStaticText* _progressLabel;
@@ -37,24 +37,24 @@ class SaveProgressDiag : public wxDialog
     void OnCancel(wxCommandEvent& event);       ///< Stop threads and close the window.
 
 public:
-    SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable = true, wxWindowID id = wxID_ANY,
-                     const wxString& title = wxT("Saving..."), const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxSize(480, 180), long style = wxDEFAULT_DIALOG_STYLE);
-    ~SaveProgressDiag() override;
+    ImageExportProgressDialog(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable = true, wxWindowID id = wxID_ANY,
+                              const wxString& title = wxT("Saving..."), const wxPoint& pos = wxDefaultPosition,
+                              const wxSize& size = wxSize(480, 180), long style = wxDEFAULT_DIALOG_STYLE);
+    ~ImageExportProgressDialog() override;
 
     ///@brief Inform if the fractal has finished.
     ///@return true if it has finished, false if not.
-    bool IsFinished() const;
+    [[nodiscard]] bool IsFinished() const;
 };
 /**
-* @class SizeDialogSave
+* @class ImageExportSizeDialog
 * @brief Collects export dimensions and starts an off-screen image save render.
 *
-* SizeDialogSave preserves the active canvas aspect ratio while the user changes
+* ImageExportSizeDialog preserves the active canvas aspect ratio while the user changes
 * width or height, copies the current fractal options, renders the requested
-* size through FractalHandler, and writes the selected image format.
+* size through FractalFactory, and writes the selected image format.
 */
-class SizeDialogSave : public wxDialog
+class ImageExportSizeDialog : public wxDialog
 {
     wxPanel* mainPanel;
     wxStaticText* selectText;
@@ -67,7 +67,7 @@ class SizeDialogSave : public wxDialog
     wxSpinCtrl* iterationsSpin;
     wxButton* okButton;
 
-    FractalHandler fractalHandler;
+    FractalFactory fractalFactory;
     FractalCanvas* fCanvas;
     Options opt;
     FractalType fractalType;
@@ -81,9 +81,9 @@ class SizeDialogSave : public wxDialog
     void OnOk(wxCommandEvent& event);             ///< Creates fractal with the parameters from the dialog and saves image.
 
 public:
-    SizeDialogSave(FractalCanvas* mFCanvas, const std::string& filePath, int ext, FractalType type, const Fractal* target, wxWindow* parent,
-                   const std::string& scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
-                   const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 300),
-                   long style = wxDEFAULT_DIALOG_STYLE);
-    ~SizeDialogSave() override;
+    ImageExportSizeDialog(FractalCanvas* mFCanvas, const std::string& filePath, int ext, FractalType type, const Fractal* target, wxWindow* parent,
+                          const std::string& scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = wxT("Select size"),
+                          const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 300),
+                          long style = wxDEFAULT_DIALOG_STYLE);
+    ~ImageExportSizeDialog() override;
 };

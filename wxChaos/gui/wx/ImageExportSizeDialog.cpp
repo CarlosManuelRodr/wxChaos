@@ -1,10 +1,10 @@
 #include <wx/spinctrl.h>
-#include "SizeDialogSave.h"
+#include "ImageExportSizeDialog.h"
 #include "TextUtils.h"
 using namespace std;
 
 // SaveProgressDiag
-SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable, const wxWindowID id,
+ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable, const wxWindowID id,
                                    const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                                    : wxDialog(parent, id, title, pos, size, style)
 {
@@ -51,20 +51,20 @@ SaveProgressDiag::SaveProgressDiag(Fractal* targetFractal, wxWindow* parent, boo
     this->SetSizer(mainSizer);
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
-    this->Bind(wxEVT_UPDATE_UI, &SaveProgressDiag::CalcProgress, this);
-    _cancelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SaveProgressDiag::OnCancel, this);
+    this->Bind(wxEVT_UPDATE_UI, &ImageExportProgressDialog::CalcProgress, this);
+    _cancelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportProgressDialog::OnCancel, this);
 }
-SaveProgressDiag::~SaveProgressDiag()
+ImageExportProgressDialog::~ImageExportProgressDialog()
 {
-    this->Unbind(wxEVT_UPDATE_UI, &SaveProgressDiag::CalcProgress, this);
-    _cancelButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &SaveProgressDiag::OnCancel, this);
+    this->Unbind(wxEVT_UPDATE_UI, &ImageExportProgressDialog::CalcProgress, this);
+    _cancelButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportProgressDialog::OnCancel, this);
 }
-void SaveProgressDiag::OnCancel(wxCommandEvent&)
+void ImageExportProgressDialog::OnCancel(wxCommandEvent&)
 {
     _myFractal->StopRender();
     this->Close(true);
 }
-void SaveProgressDiag::CalcProgress(wxUpdateUIEvent&)
+void ImageExportProgressDialog::CalcProgress(wxUpdateUIEvent&)
 {
     if (_clock.getElapsedTime().asSeconds() >= 0.05f)
     {
@@ -92,13 +92,13 @@ void SaveProgressDiag::CalcProgress(wxUpdateUIEvent&)
         _clock.restart();
     }
 }
-bool SaveProgressDiag::IsFinished() const
+bool ImageExportProgressDialog::IsFinished() const
 {
     return _finished;
 }
 
 // SizeDialogSave
-SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, const string& filePath, const int ext, const FractalType type,
+ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* mFCanvas, const string& filePath, const int ext, const FractalType type,
                                const Fractal* target, wxWindow* parent, const string& scriptPath, const wxWindowID id,
                                const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                                : wxDialog(parent, id, title, pos, size, style)
@@ -174,64 +174,64 @@ SizeDialogSave::SizeDialogSave(FractalCanvas* mFCanvas, const string& filePath, 
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
-    widthSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SizeDialogSave::ChangeWidth, this);
-    heightSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SizeDialogSave::ChangeHeight, this);
-    okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SizeDialogSave::OnOk, this);
+    widthSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
+    heightSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeHeight, this);
+    okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnOk, this);
 }
 
-SizeDialogSave::~SizeDialogSave()
+ImageExportSizeDialog::~ImageExportSizeDialog()
 {
-    widthSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SizeDialogSave::ChangeWidth, this);
-    heightSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SizeDialogSave::ChangeHeight, this);
-    okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &SizeDialogSave::OnOk, this);
+    widthSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
+    heightSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeHeight, this);
+    okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnOk, this);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void SizeDialogSave::ChangeWidth(wxSpinEvent&)
+void ImageExportSizeDialog::ChangeWidth(wxSpinEvent&)
 {
     double value = widthSpin->GetValue();
     value /= screenRatio;
     heightSpin->SetValue(static_cast<int>(value));
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void SizeDialogSave::ChangeHeight(wxSpinEvent&)
+void ImageExportSizeDialog::ChangeHeight(wxSpinEvent&)
 {
     double value = heightSpin->GetValue();
     value *= screenRatio;
     widthSpin->SetValue(static_cast<int>(value));
 }
-void SizeDialogSave::OnOk(wxCommandEvent&)
+void ImageExportSizeDialog::OnOk(wxCommandEvent&)
 {
     // Creates fractal.
     if (fractalType == FractalType::ScriptFractal)
-        fractalHandler.CreateScriptFractal(widthSpin->GetValue(), heightSpin->GetValue(), myScriptPath);
+        fractalFactory.CreateScriptFractal(widthSpin->GetValue(), heightSpin->GetValue(), myScriptPath);
     else
-        fractalHandler.CreateFractal(fractalType, widthSpin->GetValue(), heightSpin->GetValue());
+        fractalFactory.CreateFractal(fractalType, widthSpin->GetValue(), heightSpin->GetValue());
 
-    fractalHandler.SetFormula(fCanvas->GetFormula());
+    fractalFactory.SetFormula(fCanvas->GetFormula());
 
     // Copy parameters.
     opt.maxIter = iterationsSpin->GetValue();
-    fractalHandler.GetFractalPtr()->SetOptions(opt);
+    fractalFactory.GetFractalPtr()->SetOptions(opt);
 
     // Saves image according to extension.
-    const auto diag = new SaveProgressDiag(fractalHandler.GetFractalPtr(), this);
-    fractalHandler.GetFractalPtr()->Render();
+    const auto diag = new ImageExportProgressDialog(fractalFactory.GetFractalPtr(), this);
+    fractalFactory.GetFractalPtr()->Render();
     diag->ShowModal();
     if (diag->IsFinished())
     {
         if (extension == 0 || extension == 1)  // PNG or JPG
         {
-            fractalHandler.GetFractalPtr()->SetRendered(true);
-            const sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
+            fractalFactory.GetFractalPtr()->SetRendered(true);
+            const sf::Image out = fractalFactory.GetFractalPtr()->GetRenderedImage();
             const bool result = out.saveToFile(path);
             if (!result)
                 wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
         }
         else  // BMP
         {
-            fractalHandler.GetFractalPtr()->SetRendered(true);
-            const bool result = fractalHandler.GetFractalPtr()->SaveBmp(path);
+            fractalFactory.GetFractalPtr()->SetRendered(true);
+            const bool result = fractalFactory.GetFractalPtr()->SaveBmp(path);
             if (!result)
                 wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
         }
@@ -239,6 +239,6 @@ void SizeDialogSave::OnOk(wxCommandEvent&)
 
     // Cleanup and close dialog.
     diag->Destroy();
-    fractalHandler.DeleteFractal();
+    fractalFactory.DeleteFractal();
     this->Close(true);
 }

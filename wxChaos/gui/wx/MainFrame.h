@@ -11,11 +11,11 @@
 
 #include <optional>
 #include "config/AppConfigStore.h"
-#include "JuliaMode.h"
+#include "JuliaPreviewWindow.h"
 #include "About.h"
-#include "RendererOptions.h"
+#include "RendererOptionsFrame.h"
 #include "JuliaConstantDialog.h"
-#include "SizeDialogSave.h"
+#include "ImageExportSizeDialog.h"
 #include "IterationsDialog.h"
 #include "FormulaDialog.h"
 #include "ScriptEditor.h"
@@ -92,10 +92,10 @@ class MainFrame : public wxFrame
 {
     FractalCanvas* _fractalCanvas{};
     FormulaDialog* _formulaDialog{};
-    JuliaMode* _juliaModePtr;
+    JuliaPreviewWindow* _juliaPreviewWindow;
     JuliaConstantDialog* _juliaConstantDialog;
     IterationsDialog* _iterationsDialog{};
-    RendererOptions* _rendererOptions;
+    RendererOptionsFrame* _rendererOptions;
     ScriptEditor* _scriptEditor{};
     DimensionFrame* _dimensionCalculator;
     CommandConsole* _commandConsole{};

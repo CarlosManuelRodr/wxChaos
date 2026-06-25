@@ -11,7 +11,7 @@
 
 #include <wx/panel.h>
 #include <wx/dialog.h>
-#include "sfml/SFMLFractal.h"
+#include "sfml/FractalPresenter.h"
 
 /**
 * @class JuliaConstantDialog
@@ -25,7 +25,7 @@ class JuliaConstantDialog : public wxDialog
     wxTextCtrl* _imText;
     wxButton* _okButton;
     wxButton* _applyButton;
-    SFMLFractal* _presenter;
+    FractalPresenter* _presenter;
     Fractal* _target;
 
     double _lastReal, _lastIm;
@@ -36,7 +36,7 @@ class JuliaConstantDialog : public wxDialog
     void OnClose(wxCloseEvent& event);
 
 public:
-    JuliaConstantDialog(bool* active, SFMLFractal* presenter, wxWindow* parent, wxWindowID id = wxID_ANY,
+    JuliaConstantDialog(bool* active, FractalPresenter* presenter, wxWindow* parent, wxWindowID id = wxID_ANY,
                         const wxString& title = wxT("Enter constant"), const wxPoint& pos = wxDefaultPosition,
                         const wxSize& size = wxSize(320, 250), long style = wxDEFAULT_DIALOG_STYLE);
     ~JuliaConstantDialog() override;

@@ -4,7 +4,7 @@
 #include "AppPaths.h"
 #include "DimensionFrame.h"
 #include "TextUtils.h"
-#include "SizeDialogSave.h"
+#include "ImageExportSizeDialog.h"
 #include "BmpImageWriter.h"
 #include "AngelscriptBindings.h"
 #include "HTMLViewer.h"
@@ -35,24 +35,24 @@ double GetMinElement(const vector<double> &in)
 }
 
 // DimensionCalculator
-DimensionCalculator::DimensionCalculator() : _ho(0), _hf(0), _map(nullptr), _size(0), _div(0)
+BoxCountWorker::BoxCountWorker() : _ho(0), _hf(0), _map(nullptr), _size(0), _div(0)
 {
     _running = false;
     _boxCountN = 0;
 }
 
-void DimensionCalculator::SetMap(bool** map, const int size, const int ho, const int hf)
+void BoxCountWorker::SetMap(bool** map, const int size, const int ho, const int hf)
 {
     _map = map;
     _size = size;
     _ho = ho;
     _hf = hf;
 }
-void DimensionCalculator::SetDiv(const int div)
+void BoxCountWorker::SetDiv(const int div)
 {
     _div = div;
 }
-void DimensionCalculator::Run()
+void BoxCountWorker::Run()
 {
     _running = true;
 
@@ -90,15 +90,15 @@ void DimensionCalculator::Run()
     }
     _running = false;
 }
-int DimensionCalculator::GetBoxCount() const
+int BoxCountWorker::GetBoxCount() const
 {
     return _boxCountN;
 }
-bool DimensionCalculator::IsRunning() const
+bool BoxCountWorker::IsRunning() const
 {
     return _running;
 }
-void DimensionCalculator::Terminate()
+void BoxCountWorker::Terminate()
 {
     _running = false;
 }
@@ -1209,7 +1209,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         for (int i = 0; i < _threadNumber; i++)
                         {
                             _dimensionCalculator[i].SetDiv(_div[_divIndex]);
-                            _dimThreads[i] = std::make_unique<sf::Thread>(&DimensionCalculator::Run, &_dimensionCalculator[i]);
+                            _dimThreads[i] = std::make_unique<sf::Thread>(&BoxCountWorker::Run, &_dimensionCalculator[i]);
                             _dimThreads[i]->launch();
                         }
 
@@ -1243,7 +1243,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         for (int i = 0; i < _threadNumber; i++)
                         {
                             _dimensionCalculator[i].SetDiv(_div[_divIndex]);
-                            _dimThreads[i] = std::make_unique<sf::Thread>(&DimensionCalculator::Run, &_dimensionCalculator[i]);
+                            _dimThreads[i] = std::make_unique<sf::Thread>(&BoxCountWorker::Run, &_dimensionCalculator[i]);
                             _dimThreads[i]->launch();
                         }
                     }
@@ -1392,7 +1392,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         _target->PrepareRender();
         _target->Render();
 
-        auto* saveProgress = new SaveProgressDiag(_target, this, false);
+        auto* saveProgress = new ImageExportProgressDialog(_target, this, false);
         saveProgress->ShowModal();
 
         if (saveProgress->IsFinished())

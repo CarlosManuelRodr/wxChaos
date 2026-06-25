@@ -1,9 +1,9 @@
-#include "Renderer.h"
+#include "RenderWorker.h"
 #include "FractalUtilities.h"
 #include <algorithm>
 #include <cmath>
 
-Renderer::Renderer()
+RenderWorker::RenderWorker()
 {
     _setMap = nullptr;
     _colorMap = nullptr;
@@ -27,7 +27,7 @@ Renderer::Renderer()
     _kReal = _kImaginary = 0.0;
 }
 
-wxString Renderer::GetAlgorithmName(const RenderingAlgorithmType algorithm)
+wxString RenderWorker::GetAlgorithmName(const RenderingAlgorithmType algorithm)
 {
     switch (algorithm)
     {
@@ -43,7 +43,7 @@ wxString Renderer::GetAlgorithmName(const RenderingAlgorithmType algorithm)
     }
 }
 
-void Renderer::SetOptions(const Options& opt)
+void RenderWorker::SetOptions(const Options& opt)
 {
     _myOpt = opt;
     _xFactor = opt.xFactor;
@@ -61,22 +61,22 @@ void Renderer::SetOptions(const Options& opt)
     _renderingPrecisionMode = opt.renderingPrecisionMode;
     _type = opt.type;
 }
-void Renderer::SetLimits(const int widthOrigin, const int heightOrigin, const int widthFinal, const int heightFinal)
+void RenderWorker::SetLimits(const int widthOrigin, const int heightOrigin, const int widthFinal, const int heightFinal)
 {
     _widthOrigin = widthOrigin;
     _oldHeightOrigin = _heightOrigin = heightOrigin;
     _heightFinal = heightFinal;
     _widthFinal = widthFinal;
 }
-void Renderer::UpdateLimits(const int heightOrigin)
+void RenderWorker::UpdateLimits(const int heightOrigin)
 {
     _heightOrigin = heightOrigin;
 }
-void Renderer::SetOldHeightOrigin(const int oldHeightOrigin)
+void RenderWorker::SetOldHeightOrigin(const int oldHeightOrigin)
 {
     _oldHeightOrigin = oldHeightOrigin;
 }
-void Renderer::run()
+void RenderWorker::run()
 {
     _y = _heightOrigin;
     _threadRunning = true;
@@ -86,7 +86,7 @@ void Renderer::run()
 
     _threadRunning = false;
 }
-void Renderer::Stop()
+void RenderWorker::Stop()
 {
     if (_type != FractalType::ScriptFractal)
     {
@@ -99,39 +99,39 @@ void Renderer::Stop()
         _y = _heightFinal - 1;
     }
 }
-void Renderer::SetRenderOut(bool** outSetMap, double** outColorMap, unsigned int** outAux)
+void RenderWorker::SetRenderOut(bool** outSetMap, double** outColorMap, unsigned int** outAux)
 {
     _setMap = outSetMap;
     _colorMap = outColorMap;
     _auxMap = outAux;
 }
-void Renderer::SetK(const double re, const double im)
+void RenderWorker::SetK(const double re, const double im)
 {
     _kReal = re;
     _kImaginary = im;
 }
-double Renderer::ToColorMapValue(const double value)
+double RenderWorker::ToColorMapValue(const double value)
 {
     return !std::isfinite(value) || value < 0.0 ? InvalidColor : value;
 }
-double Renderer::SafeDistance(const double distance)
+double RenderWorker::SafeDistance(const double distance)
 {
     return distance == 0.0 ? 0.000001 : distance;
 }
-double Renderer::InitialMu()
+double RenderWorker::InitialMu()
 {
     return 1.0;
 }
-double Renderer::MuFromNorm(const double norm)
+double RenderWorker::MuFromNorm(const double norm)
 {
     return (log(log(2.0)) - log(log(sqrt(norm)))) / log(2.0) + 1;
 }
-void Renderer::MeasureEscapeMu(Point& point, const PointTraceEvent event, const double zNorm)
+void RenderWorker::MeasureEscapeMu(Point& point, const PointTraceEvent event, const double zNorm)
 {
     if (event == PointTraceEvent::Escaped)
         point.mu = MuFromNorm(zNorm);
 }
-void Renderer::MeasureOrbitTrap(Point& point, const PointTraceEvent event, const double zRe, const double zIm)
+void RenderWorker::MeasureOrbitTrap(Point& point, const PointTraceEvent event, const double zRe, const double zIm)
 {
     if (event == PointTraceEvent::Started)
     {
@@ -146,7 +146,7 @@ void Renderer::MeasureOrbitTrap(Point& point, const PointTraceEvent event, const
         point.orbitTrapDistanceY = minVal(point.orbitTrapDistanceY, abs(zIm));
     }
 }
-void Renderer::MeasureGaussianInteger(Point& point, const PointTraceEvent event, const double zRe, const double zIm, const bool wasInside)
+void RenderWorker::MeasureGaussianInteger(Point& point, const PointTraceEvent event, const double zRe, const double zIm, const bool wasInside)
 {
     if (event == PointTraceEvent::Escaped)
     {
@@ -162,7 +162,7 @@ void Renderer::MeasureGaussianInteger(Point& point, const PointTraceEvent event,
     if (!wasInside)
         point.measureGaussianAfterEscape = false;
 }
-void Renderer::MeasureTriangleInequality(Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
+void RenderWorker::MeasureTriangleInequality(Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
                                          const double squaredRe, const double squaredIm, const bool wasInside)
 {
     if (event != PointTraceEvent::Iterated || !wasInside)
@@ -175,15 +175,15 @@ void Renderer::MeasureTriangleInequality(Point& point, const PointTraceEvent eve
         point.triangleIterations++;
     }
 }
-double Renderer::SmoothEscapeValue(const Point& point)
+double RenderWorker::SmoothEscapeValue(const Point& point)
 {
     return point.iterations + 1.0 - log(log(sqrt(point.escapedNorm))) / log(2.0);
 }
-double Renderer::OrbitTrapValue(const Point& point)
+double RenderWorker::OrbitTrapValue(const Point& point)
 {
     return log(1 / SafeDistance(point.orbitTrapDistanceX)) + log(1 / SafeDistance(point.orbitTrapDistanceY));
 }
-double Renderer::EscapeTimeColor(const Point& point) const
+double RenderWorker::EscapeTimeColor(const Point& point) const
 {
     if (_myOpt.orbitTrapMode)
     {
@@ -199,13 +199,13 @@ double Renderer::EscapeTimeColor(const Point& point) const
 
     return point.iterations;
 }
-double Renderer::GaussianIntegerColor(const Point& point) const
+double RenderWorker::GaussianIntegerColor(const Point& point) const
 {
     const double gaussianValue = (point.mu * point.gaussianDistance + (1 - point.mu) * point.previousGaussianDistance) * _myOpt.paletteSize;
     const double orbitTrapValue = _myOpt.orbitTrapMode ? OrbitTrapValue(point) : 0.0;
     return ToColorMapValue(std::max(0.0, gaussianValue + orbitTrapValue));
 }
-double Renderer::EscapeAngleColor(const Point& point) const
+double RenderWorker::EscapeAngleColor(const Point& point) const
 {
     constexpr int color1 = 1;
     const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
@@ -221,7 +221,7 @@ double Renderer::EscapeAngleColor(const Point& point) const
     return point.iterations + color4;
 }
 // ReSharper disable once CppMemberFunctionMayBeStatic
-double Renderer::TriangleInequalityColor(const Point& point) const // NOLINT(*-convert-member-functions-to-static)
+double RenderWorker::TriangleInequalityColor(const Point& point) const // NOLINT(*-convert-member-functions-to-static)
 {
     if (point.triangleIterations <= 1)
         return 0;
@@ -230,42 +230,42 @@ double Renderer::TriangleInequalityColor(const Point& point) const // NOLINT(*-c
     const double distance = point.triangleDistance / point.triangleIterations;
     return ToColorMapValue(std::abs((point.mu * distance + (1 - point.mu) * previousDistance) * 700));
 }
-void Renderer::Reset()
+void RenderWorker::Reset()
 {
     _x = 0;
     _y = 0;
 }
-void Renderer::PreTerminate()
+void RenderWorker::PreTerminate()
 {
     // Do nothing.
 }
-unsigned int Renderer::GetProgress()
+unsigned int RenderWorker::GetProgress()
 {
     if (!_stopped)
         _threadProgress = static_cast<int>(floor(100.0 * (static_cast<double>(_y + 1 - _oldHeightOrigin) / static_cast<double>(_heightFinal - _oldHeightOrigin))));
 
     return _threadProgress;
 }
-Vector2Int Renderer::GetCoords() const
+Vector2Int RenderWorker::GetCoords() const
 {
     const Vector2Int pos{0, _heightOrigin};
     return pos;
 }
-Vector2Int Renderer::GetStartPoints() const
+Vector2Int RenderWorker::GetStartPoints() const
 {
     const Vector2Int pos{_widthOrigin, _heightOrigin};
     return pos;
 }
-Vector2Int Renderer::GetEndPoints() const
+Vector2Int RenderWorker::GetEndPoints() const
 {
     const Vector2Int pos{_widthFinal, _heightFinal};
     return pos;
 }
-bool Renderer::IsRunning() const
+bool RenderWorker::IsRunning() const
 {
     return _threadRunning;
 }
-Options Renderer::GetOptions()
+Options RenderWorker::GetOptions()
 {
     return _myOpt;
 }

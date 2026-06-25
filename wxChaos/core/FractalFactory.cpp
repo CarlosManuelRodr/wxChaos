@@ -1,8 +1,8 @@
-#include "FractalHandler.h"
+#include "FractalFactory.h"
 #include "FractalTypes.h"
 using namespace std;
 
-FractalHandler::FractalHandler()
+FractalFactory::FractalFactory()
 {
     _mandelbrot = nullptr;
     _mandelbrotZN = nullptr;
@@ -32,11 +32,11 @@ FractalHandler::FractalHandler()
     _target = nullptr;
     _type = FractalType::Undefined;
 }
-FractalHandler::~FractalHandler()
+FractalFactory::~FractalFactory()
 {
     this->DeleteFractal();
 }
-void FractalHandler::CreateFractal(const FractalType type, const unsigned int width, const unsigned int height)
+void FractalFactory::CreateFractal(const FractalType type, const unsigned int width, const unsigned int height)
 {
     this->DeleteFractal();
     _type = type;
@@ -165,15 +165,15 @@ void FractalHandler::CreateFractal(const FractalType type, const unsigned int wi
         default: break;
     }
 }
-void FractalHandler::CreateScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData)
+void FractalFactory::CreateScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData)
 {
     _target = _scriptFractal = new ScriptFractal(width, height, scriptData);
 }
-void FractalHandler::CreateScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath)
+void FractalFactory::CreateScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath)
 {
     _target = _scriptFractal = new ScriptFractal(width, height, scriptPath);
 }
-void FractalHandler::SetFormula(FormulaOptions formula) const
+void FractalFactory::SetFormula(FormulaOptions formula) const
 {
     if (_type == FractalType::UserDefinedEscapeTime)
     {
@@ -203,7 +203,7 @@ void FractalHandler::SetFormula(FormulaOptions formula) const
         _newtonUserDefined->SetFormula(formula);
     }
 }
-void FractalHandler::DeleteFractal()
+void FractalFactory::DeleteFractal()
 {
     _target = nullptr;
     if (_mandelbrot != nullptr)
@@ -332,11 +332,11 @@ void FractalHandler::DeleteFractal()
         _scriptFractal = nullptr;
     }
 }
-Fractal* FractalHandler::GetFractalPtr() const
+Fractal* FractalFactory::GetFractalPtr() const
 {
     return _target;
 }
-FractalType FractalHandler::GetType() const
+FractalType FractalFactory::GetType() const
 {
     return _type;
 }

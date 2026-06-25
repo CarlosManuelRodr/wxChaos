@@ -3,14 +3,14 @@
 #include "../scripting/ScriptData.h"
 
 /**
-* @class FractalHandler
+* @class FractalFactory
 * @brief Factory and owner for the currently selected Fractal instance.
 *
 * FractalHandler creates the requested built-in, user-defined, or script-backed
 * fractal at the active render size, forwards formula changes to it, and deletes
 * the previous instance when the selection changes.
 */
-class FractalHandler
+class FractalFactory
 {
     Mandelbrot* _mandelbrot;
     MandelbrotZN* _mandelbrotZN;
@@ -42,8 +42,8 @@ class FractalHandler
     FractalType _type;
 
 public:
-    FractalHandler();
-    ~FractalHandler();
+    FractalFactory();
+    ~FractalFactory();
 
     void CreateFractal(FractalType type, unsigned int width, unsigned int height);
     void CreateScriptFractal(unsigned int width, unsigned int height, const ScriptData& scriptData);

@@ -41,7 +41,7 @@ class ZoomRecorder : public wxDialog
     wxSpinCtrlDouble* _colorSpeedCtrl;
 
     FractalCanvas* _fractalCanvasPtr;
-    FractalHandler _fractalHandler;
+    FractalFactory _fractalHandler;
 
     Rect _outermostZoom, _innermostZoom;
 

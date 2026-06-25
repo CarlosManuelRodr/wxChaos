@@ -41,7 +41,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     AppTheme::SetAppearance(_appConfig.appearance);
     this->SetUpGUI();
 
-    _juliaModePtr = nullptr;
+    _juliaPreviewWindow = nullptr;
     _dimensionCalculator = nullptr;
     _changeKeyboardGuide = false;
     _introConstActive = false;
@@ -56,7 +56,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("wxChaos"), wxDefaultPos
     if (_appConfig.juliaMode) this->UpdateJuliaMode();
     if (_appConfig.colorPaletteWindow)
     {
-        _rendererOptions = new RendererOptions(_fractalCanvas->GetSFMLFractalPtr(), this,
+        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetSFMLFractalPtr(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         _rendererOptions->Show(true);
     }
@@ -434,15 +434,15 @@ void MainFrame::CloseAll()
 }
 void MainFrame::DestroyJuliaMode(const bool requestClose)
 {
-    if (_juliaModePtr == nullptr)
+    if (_juliaPreviewWindow == nullptr)
         return;
 
     if (requestClose)
-        _juliaModePtr->Close();
+        _juliaPreviewWindow->Close();
 
-    _juliaModePtr->Wait();
-    delete _juliaModePtr;
-    _juliaModePtr = nullptr;
+    _juliaPreviewWindow->Wait();
+    delete _juliaPreviewWindow;
+    _juliaPreviewWindow = nullptr;
     _juliaMode->Check(false);
     _fractalCanvas->SetJuliaMode(false);
 }
@@ -534,12 +534,12 @@ void MainFrame::OnSave(wxCommandEvent&)
         const wxString fileName = saveFileDialog->GetPath();
         const int ext = saveFileDialog->GetFilterIndex();
         const auto path = string(fileName.mb_str());
-        SizeDialogSave* sizeDialogSave;
+        ImageExportSizeDialog* sizeDialogSave;
 
         if (_fractalType == FractalType::ScriptFractal && _selectedScriptIndex.has_value())
-            sizeDialogSave = new SizeDialogSave(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractalPtr(), this, _loadedScripts[*_selectedScriptIndex].file);
+            sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractalPtr(), this, _loadedScripts[*_selectedScriptIndex].file);
         else
-            sizeDialogSave = new SizeDialogSave(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractalPtr(), this);
+            sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractalPtr(), this);
 
         sizeDialogSave->Show(true);
     }
@@ -550,7 +550,7 @@ void MainFrame::OnPalette(wxCommandEvent&)
     // Color palette frame.
     if (_rendererOptions == nullptr)
     {
-        _rendererOptions = new RendererOptions(_fractalCanvas->GetSFMLFractalPtr(), this,
+        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetSFMLFractalPtr(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         _rendererOptions->Show(true);
 
@@ -753,7 +753,7 @@ void MainFrame::OnScriptEditor(wxCommandEvent&)
 }
 void MainFrame::OnZoomRecorder(wxCommandEvent&)
 {
-    const SFMLFractal* fractal = _fractalCanvas->GetSFMLFractalPtr();
+    const FractalPresenter* fractal = _fractalCanvas->GetSFMLFractalPtr();
 
     if (const Rect currentZoom = fractal->GetCurrentZoom(), outermostZoom = fractal->GetOutermostZoom();
         outermostZoom._left == currentZoom._left &&
@@ -1190,10 +1190,10 @@ void MainFrame::UpdateMenu()
 void MainFrame::UpdateJuliaMode()
 {
     // Destroy Julia window.
-    if (_juliaModePtr != nullptr)
+    if (_juliaPreviewWindow != nullptr)
     {
         _juliaMode->Check(false);
-        _juliaModePtr->Close();
+        _juliaPreviewWindow->Close();
     }
     // Creates Julia fractal with parameters from the main fractal.
     else
@@ -1216,9 +1216,9 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
         default: return false;
     }
 
-    if (_juliaModePtr != nullptr)
+    if (_juliaPreviewWindow != nullptr)
     {
-        _juliaModePtr->SetConstant(real, imaginary);
+        _juliaPreviewWindow->SetConstant(real, imaginary);
         return true;
     }
 
@@ -1226,8 +1226,8 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
     options.kReal = real;
     options.kImaginary = imaginary;
     _juliaMode->Check(true);
-    _juliaModePtr = new JuliaMode(this, _fractalCanvas, juliaType, options);
-    _juliaModePtr->Launch();
+    _juliaPreviewWindow = new JuliaPreviewWindow(this, _fractalCanvas, juliaType, options);
+    _juliaPreviewWindow->Launch();
     _fractalCanvas->SetJuliaMode(true);
     return true;
 }
@@ -1241,6 +1241,6 @@ void MainFrame::ReloadScripts()
 }
 void MainFrame::UpdateJuliaRendererOptions(const Options& options) const
 {
-    if (_juliaModePtr != nullptr)
-        _juliaModePtr->SetRendererOptions(options);
+    if (_juliaPreviewWindow != nullptr)
+        _juliaPreviewWindow->SetRendererOptions(options);
 }

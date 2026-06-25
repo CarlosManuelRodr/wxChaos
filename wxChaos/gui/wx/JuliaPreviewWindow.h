@@ -1,8 +1,8 @@
 /**
-* @file JuliaMode.h
+* @file JuliaPreviewWindow.h
 * @brief Defines the Julia mode option.
 *
-* @author Carlos Manuel Rodriguez y Martinez
+* @author Carlos Manuel Rodriguez Martinez
 *
 * @date 7/19/2012
 */
@@ -17,23 +17,23 @@
 wxDECLARE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
 /**
-* @class JuliaMode
+* @class JuliaPreviewWindow
 * @brief Owns the separate SFML window that previews the Julia variant.
 *
 * JuliaMode runs its own render loop thread, keeps a Julia fractal synchronized
 * with selected renderer options and constants from the main canvas, and emits a
 * close event back to the wxWidgets parent.
 */
-class JuliaMode
+class JuliaPreviewWindow
 {
     sf::RenderWindow* _window;
     FractalCanvas* _target;
-    SFMLFractal* _sfmlFractal;
+    FractalPresenter* _fractalPresenter;
     SelectionRect* _selection;
     ToggleButton* _play;
     wxWindow* _parent;
 
-    FractalHandler _juliaFractal;
+    FractalFactory _juliaFractal;
     Options _myJuliaOpt;
     FractalType _type;
     wxSize _size;
@@ -64,9 +64,9 @@ public:
     ///@param fractalType Type of Julia fractal to be created.
     ///@param juliaOpt Options to copy from the parent fractal.
     ///@param size
-    JuliaMode(wxWindow* parent, FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt,
-              const wxSize& size = wxSize(640, 480));
-    ~JuliaMode();
+    JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt,
+                       const wxSize& size = wxSize(640, 480));
+    ~JuliaPreviewWindow();
 
     ///@brief Launches the thread.
     void Launch();

@@ -46,7 +46,7 @@ class ZoomRenderer : public wxThread
 protected:
     ExitCode Entry() override {
         // Create and set-up fractal handler
-        FractalHandler fractalHandler;
+        FractalFactory fractalHandler;
         Rect outermostZoom, innermostZoom;
 
         FractalType fractalType = fractalCanvasPtr->GetFractalType();

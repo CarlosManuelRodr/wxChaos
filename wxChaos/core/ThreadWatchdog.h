@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/System.hpp>
-#include "Renderer.h"
+#include "RenderWorker.h"
 
 /**
 * @class ThreadWatchdog
@@ -66,7 +66,7 @@ public:
 * @param watchdog Pointer to the watchdog that will be used.
 * @param threadNumber Number of threads to set.
 */
-template<class MT> void SetWatchdog(MT* myRender, ThreadWatchdog<Renderer>* watchdog, const unsigned int threadNumber)
+template<class MT> void SetWatchdog(MT* myRender, ThreadWatchdog<RenderWorker>* watchdog, const unsigned int threadNumber)
 {
     watchdog->SetThreadNumber(threadNumber);
     for (unsigned int i = 0; i < threadNumber; i++)
@@ -155,7 +155,7 @@ template<class MT> void ThreadWatchdog<MT>::LaunchThreads()
     for (unsigned int i = 0; i < _threadCounter; i++)
     {
         // Create a new thread that will call the run() method of our renderer.
-        _sfmlThreads[i] = new sf::Thread(&Renderer::run, _threadList[i]);
+        _sfmlThreads[i] = new sf::Thread(&RenderWorker::run, _threadList[i]);
         _sfmlThreads[i]->launch();
     }
 }
