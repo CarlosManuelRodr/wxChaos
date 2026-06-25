@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 
-#include "NewtonRootRegistry.h"
+#include "../../wxChaos/core/renderers/utils/NewtonRootRegistry.h"
 
 TEST_CASE("Newton root registry reuses nearby roots")
 {

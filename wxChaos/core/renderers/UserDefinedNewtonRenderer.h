@@ -3,7 +3,7 @@
 #include <complex>
 #include <string>
 #include <wx/string.h>
-#include "../NewtonRootRegistry.h"
+#include "utils/NewtonRootRegistry.h"
 #include "../Renderer.h"
 
 /**

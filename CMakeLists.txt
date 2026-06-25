@@ -158,7 +158,7 @@ if(BUILD_TESTING)
             tests/core/UserFormulaSymbolicCompilerTests.cpp
             tests/core/NewtonRootRegistryTests.cpp
             wxChaos/core/UserFormulaSymbolicCompiler.cpp
-            wxChaos/core/NewtonRootRegistry.cpp
+            wxChaos/core/renderers/utils/NewtonRootRegistry.cpp
             wxChaos/core/coloring/PaletteMapping.cpp
             wxChaos/core/coloring/RenderingAlgorithm.cpp
             wxChaos/core/geometry/Rect.cpp
