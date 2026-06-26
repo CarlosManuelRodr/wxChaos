@@ -9,9 +9,9 @@
 wxDEFINE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 
 RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow* parent,
-                                 std::function<void(const Options&)> optionsChanged, const wxWindowID id,
-                                 const wxString& title, const wxPoint& pos, const wxSize& size, const long windowStyle)
-                                 : wxFrame(parent, id, title, pos, size, windowStyle)
+                                           std::function<void(const Options&)> optionsChanged, const wxWindowID id,
+                                           const wxString& title, const wxPoint& pos, const wxSize& size, const long windowStyle)
+                                           : wxFrame(parent, id, title, pos, size, windowStyle)
 {
     // Constructs the ColorFrame. Gets color values from the target fractal so the frame parameters match the fractal parameters.
     const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
