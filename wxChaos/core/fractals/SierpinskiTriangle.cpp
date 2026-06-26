@@ -14,6 +14,7 @@ SierpinskiTriangle::SierpinskiTriangle(const unsigned int width, const unsigned 
     myRender = new SierpinskiTriangleRenderer[_threadNumber];
 
     _type = FractalType::SierpinskiTriangle;
+    _hasHighPrecisionRender = true;
 }
 void SierpinskiTriangle::Render()
 {

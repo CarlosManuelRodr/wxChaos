@@ -1,4 +1,3 @@
-#include <mpParser.h>
 #include "SierpinskiTriangleRenderer.h"
 using namespace std;
 
@@ -6,35 +5,45 @@ SierpinskiTriangleRenderer::SierpinskiTriangleRenderer() = default;
 
 void SierpinskiTriangleRenderer::Render()
 {
-    for (_y=_heightOrigin; _y<_heightFinal; _y++)
+    const auto renderPixel = [this](const auto& pixelRe, const auto& pixelIm)
     {
-        for (_x=_widthOrigin; _x<_widthFinal; _x++)
+        auto zRe = pixelRe;
+        auto zIm = pixelIm;
+        bool insideSet = true;
+        unsigned int iterations = 0;
+
+        for (unsigned n = 0; n < _maxIter; n++)
         {
-            auto z = complex<double>(_minX + _x * _xFactor, _maxY - _y * _yFactor);
-            bool insideSet = true;
-            unsigned int iterations = 0;
-            for (unsigned n=0; n<_maxIter; n++)
+            if (zRe * zRe + zIm * zIm > decltype(zRe)(4))
             {
-                if (z.real()*z.real() + z.imag()*z.imag() > 4)
-                {
-                    insideSet = false;
-                    break;
-                }
-
-                if (z.imag() > 0.5)
-                    z = complex<double>(2, 0)*z - complex<double>(0, 1);
-                else if (z.real() > 0.5)
-                    z = complex<double>(2, 0)*z - complex<double>(1, 0);
-                else
-                    z = complex<double>(2, 0)*z;
-
-                iterations = n;
+                insideSet = false;
+                break;
             }
-            if (insideSet)
-                _setMap[_x][_y] = true;
 
-            _colorMap[_x][_y] = iterations;
+            if (zIm > decltype(zIm)(0.5))
+            {
+                zRe *= decltype(zRe)(2);
+                zIm = decltype(zIm)(2) * zIm - decltype(zIm)(1);
+            }
+            else if (zRe > decltype(zRe)(0.5))
+            {
+                zRe = decltype(zRe)(2) * zRe - decltype(zRe)(1);
+                zIm *= decltype(zIm)(2);
+            }
+            else
+            {
+                zRe *= decltype(zRe)(2);
+                zIm *= decltype(zIm)(2);
+            }
+
+            iterations = n;
         }
-    }
-}
 
+        if (insideSet)
+            _setMap[_x][_y] = true;
+
+        _colorMap[_x][_y] = iterations;
+    };
+
+    RenderPixelsByPrecision(renderPixel);
+}
