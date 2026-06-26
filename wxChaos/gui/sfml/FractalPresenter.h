@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <optional>
 #include <vector>
 #include "coloring/ColorPaletteTypes.h"
 #include "geometry/Rect.h"
@@ -20,32 +21,36 @@
 */
 class FractalPresenter
 {
-    Fractal* _fractal;                     ///< Fractal model currently being displayed.
-    sf::Image _image;                      ///< Current rendered fractal image.
-    sf::Texture _texture;                  ///< Texture backing the rendered fractal sprite.
-    sf::Sprite _output;                    ///< Sprite used to draw the rendered fractal image.
-    std::vector<sf::Image> _imgCache;      ///< Cached rendered images used when zooming back.
-    sf::Image _tempImage;                  ///< Temporary image shown while a new zoom render is running.
-    sf::Texture _tempTexture;              ///< Texture backing the temporary zoom image.
-    sf::Sprite _tempSprite;                ///< Sprite used to draw the temporary zoom image.
-    sf::Image _geomImage;                  ///< Image layer for orbit and geometry overlays.
-    sf::Texture _geomTexture;              ///< Texture backing the geometry overlay.
-    sf::Sprite _outGeom;                   ///< Sprite used to draw the geometry overlay.
-    std::vector<PreciseRect> _zoomHistory; ///< World-coordinate views available for zoom-back.
-    PreciseRect _outermostZoom;            ///< Farthest world-coordinate view reached by zoom-back.
-    bool _movement[4]{};                   ///< Active keyboard movement state.
+    struct ZoomHistoryEntry
+    {
+        PreciseRect view;
+        std::optional<sf::Image> image;
+    };
+
+    Fractal* _fractal;                          ///< Fractal model currently being displayed.
+    sf::Image _image;                           ///< Current rendered fractal image.
+    sf::Texture _texture;                       ///< Texture backing the rendered fractal sprite.
+    sf::Sprite _output;                         ///< Sprite used to draw the rendered fractal image.
+    sf::Image _tempImage;                       ///< Temporary image shown while a new zoom render is running.
+    sf::Texture _tempTexture;                   ///< Texture backing the temporary zoom image.
+    sf::Sprite _tempSprite;                     ///< Sprite used to draw the temporary zoom image.
+    sf::Image _geomImage;                       ///< Image layer for orbit and geometry overlays.
+    sf::Texture _geomTexture;                   ///< Texture backing the geometry overlay.
+    sf::Sprite _outGeom;                        ///< Sprite used to draw the geometry overlay.
+    std::vector<ZoomHistoryEntry> _zoomHistory; ///< World-coordinate views and optional rendered images for zoom-back.
+    PreciseRect _outermostZoom;                 ///< Farthest world-coordinate view reached by zoom-back.
+    bool _movement[4]{};                        ///< Active keyboard movement state.
     int _xVel;
     int _yVel;
     int _posX;
     int _posY;
-    Vector2Int _committedPanOffset;        ///< Settled pan offset waiting for map reuse.
+    Vector2Int _committedPanOffset;             ///< Settled pan offset waiting for map reuse.
     bool _hasCommittedPanOffset;
-    bool _imgInVector;                     ///< True when there are cached images available for zoom-back.
-    bool _usingRenderImage;                ///< True when the current frame came from a cached zoom-back image.
-    bool _zoomingBack;                     ///< True while the view is being redrawn after zooming back.
-    bool _dontDrawTempImage;               ///< Suppresses drawing the temporary image layer when it would be stale.
-    bool _setHandleRightClickZoomBack;      ///< True when SFML right-click events should zoom back.
-    bool _mousePanning;                    ///< True while a direct mouse pan gesture is active.
+    bool _usingRenderImage;                     ///< True when the current frame came from a cached zoom-back image.
+    bool _zoomingBack;                          ///< True while the view is being redrawn after zooming back.
+    bool _dontDrawTempImage;                    ///< Suppresses drawing the temporary image layer when it would be stale.
+    bool _setHandleRightClickZoomBack;          ///< True when SFML right-click events should zoom back.
+    bool _mousePanning;                         ///< True while a direct mouse pan gesture is active.
 
     ///@brief Draws fractal maps into the SFML image and then draws the output sprite.
     ///@param window Target window.
@@ -70,8 +75,8 @@ class FractalPresenter
     ///@brief Applies a world-coordinate view to the fractal.
     void ApplyView(const PreciseRect& view) const;
 
-    ///@brief Saves the current view for zoom-back.
-    void SaveZoom();
+    ///@brief Saves the current view and, when complete, its rendered image for zoom-back.
+    void SaveZoom(std::optional<sf::Image> image);
 
     ///@brief Clears the zoom-back state and captures the current view as the outermost zoom.
     void ResetZoomHistory();

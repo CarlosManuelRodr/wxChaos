@@ -4,7 +4,6 @@ constexpr int stdSpeed = 1;
 
 FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
 {
-    _imgInVector = false;
     _usingRenderImage = false;
     _zoomingBack = false;
     _dontDrawTempImage = false;
@@ -63,8 +62,9 @@ void FractalPresenter::ClearImageCache()
 {
     const bool usingCachedRenderImage = _usingRenderImage;
 
-    _imgCache.clear();
-    _imgInVector = false;
+    for (ZoomHistoryEntry& entry : _zoomHistory)
+        entry.image.reset();
+
     _usingRenderImage = false;
     _zoomingBack = false;
 
@@ -99,9 +99,9 @@ void FractalPresenter::ApplyView(const PreciseRect& view) const
     _fractal->SetPreciseView(view);
 }
 
-void FractalPresenter::SaveZoom()
+void FractalPresenter::SaveZoom(std::optional<sf::Image> image)
 {
-    _zoomHistory.push_back(CaptureCurrentView());
+    _zoomHistory.push_back({CaptureCurrentView(), std::move(image)});
 }
 
 void FractalPresenter::ResetZoomHistory()
@@ -276,8 +276,9 @@ void FractalPresenter::Resize(const sf::RenderWindow* window)
     _outermostZoom = CaptureCurrentView();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
 
-    for (PreciseRect& view : _zoomHistory)
+    for (ZoomHistoryEntry& entry : _zoomHistory)
     {
+        PreciseRect& view = entry.view;
         view.top = view.bottom + (view.right - view.left) *
             HighPrecisionReal(screenSize.y) / HighPrecisionReal(screenSize.x);
     }
@@ -299,6 +300,7 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 {
     ResetMovement();
     const bool wasPaused = _fractal->IsPausedForPresentation();
+    std::optional<sf::Image> renderedImage;
 
     if (wasPaused)
     {
@@ -307,12 +309,12 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
     }
     else
     {
-        _imgCache.push_back(_image);
-        _imgInVector = true;
+        if (_fractal->IsRendered())
+            renderedImage = _image;
         _dontDrawTempImage = false;
     }
 
-    SaveZoom();
+    SaveZoom(std::move(renderedImage));
 
     ApplyView(_fractal->GetPreciseViewForPixelRect(pixelCoordinates));
     if (wasPaused)
@@ -334,14 +336,16 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 
 void FractalPresenter::ZoomBack()
 {
-    const bool stillRendering = _fractal->IsRendering();
     _fractal->StopRender();
     ResetMovement();
+    std::optional<sf::Image> cachedImage;
 
     if (!_zoomHistory.empty())
     {
-        ApplyView(_zoomHistory.back());
+        ZoomHistoryEntry entry = std::move(_zoomHistory.back());
         _zoomHistory.pop_back();
+        ApplyView(entry.view);
+        cachedImage = std::move(entry.image);
     }
     else
     {
@@ -351,11 +355,10 @@ void FractalPresenter::ZoomBack()
     _fractal->MarkRenderInterrupted();
     _fractal->MarkOrbitDirty();
 
-    if (_imgInVector && !_fractal->IsGradientAnimating() && !_imgCache.empty() && !stillRendering)
+    if (cachedImage.has_value() && !_fractal->IsGradientAnimating())
     {
-        _image = _imgCache.back();
+        _image = *cachedImage;
         _texture.loadFromImage(_image);
-        _imgCache.pop_back();
         _usingRenderImage = true;
         _fractal->MarkRenderComplete();
         _zoomingBack = false;
@@ -363,8 +366,6 @@ void FractalPresenter::ZoomBack()
     }
     else
     {
-        if (stillRendering && !_imgCache.empty())
-            _imgCache.pop_back();
         _fractal->MarkRenderDirty();
         _zoomingBack = true;
     }
