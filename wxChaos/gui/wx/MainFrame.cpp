@@ -146,12 +146,17 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRedraw, this, ID_REDRAW);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMoreIt, this, ID_INCREASE_IT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnLessIt, this, ID_DECREASE_IT);
+    this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateManualIterations, this, ID_IT_MANUAL);
+    this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateManualIterations, this, ID_INCREASE_IT);
+    this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateManualIterations, this, ID_DECREASE_IT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnShowOrbit, this, ID_SHOW_ORBIT);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateShowOrbit, this, ID_SHOW_ORBIT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnManIntroConst, this, ID_ENTER_MAN_CONSTANT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSldIntroConst, this, ID_ENTER_SLD_CONSTANT);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateSliderMode, this, ID_ENTER_SLD_CONSTANT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSetIterations, this, ID_IT_MANUAL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAutomaticIterations, this, ID_AUTOMATIC_ITERATIONS);
+    this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateAutomaticIterations, this, ID_AUTOMATIC_ITERATIONS);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFormulaDialog, this, ID_FORMULA_DIALOG);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFractalOptions, this, ID_OPTION_PANEL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnUserManual, this, ID_USER_MANUAL);
@@ -290,6 +295,9 @@ void MainFrame::SetUpGUI()
 
     _lessIterations = new wxMenuItem(_iterationsMenu, ID_DECREASE_IT, wxString("Decrease iterations") + wxT('\t') + "K", wxEmptyString, wxITEM_NORMAL);
     _iterationsMenu->Append(_lessIterations);
+    _iterationsMenu->AppendSeparator();
+    _automaticIterations = new wxMenuItem(_iterationsMenu, ID_AUTOMATIC_ITERATIONS, wxString("Automatic iterations"), wxEmptyString, wxITEM_CHECK);
+    _iterationsMenu->Append(_automaticIterations);
 
     // Fractal menu.
     _fractalOptionsItem = new wxMenuItem(_fractalMenu, ID_OPTION_PANEL, wxString("Fractal options"), wxEmptyString, wxITEM_CHECK);    // Txt: "Fractal options"
@@ -361,6 +369,7 @@ void MainFrame::SetUpGUI()
     _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
 
     _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(_appConfig.maxIterations);
+    SetAutomaticIterations(_appConfig.automaticIterations);
     _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(_appConfig.colorFractal);
     _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(_appConfig.colorSet);
     _fractalSizer->Add(_fractalCanvas, 1, wxEXPAND | wxALL, 0);
@@ -413,8 +422,15 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     _fractalCanvas->GetFractalPresenterPtr()->SetGradient(gradient);
     _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(config.colorCycleLength);
     _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(config.maxIterations);
+    SetAutomaticIterations(config.automaticIterations);
     _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(config.colorFractal);
     _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(config.colorSet);
+}
+void MainFrame::SetAutomaticIterations(const bool mode)
+{
+    _fractalCanvas->GetFractalPresenterPtr()->SetAutomaticIterations(mode);
+    if (_automaticIterations != nullptr)
+        _automaticIterations->Check(mode);
 }
 void MainFrame::CloseAll()
 {
@@ -604,11 +620,15 @@ void MainFrame::OnReset(wxCommandEvent&)
 void MainFrame::OnMoreIt(wxCommandEvent&)
 {
     _fractalCanvas->GetFractalPresenterPtr()->IncreaseIterations();
+    _appConfig.automaticIterations = false;
+    _automaticIterations->Check(false);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnLessIt(wxCommandEvent&)
 {
     _fractalCanvas->GetFractalPresenterPtr()->DecreaseIterations();
+    _appConfig.automaticIterations = false;
+    _automaticIterations->Check(false);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnShowOrbit(wxCommandEvent&)
@@ -656,6 +676,9 @@ void MainFrame::OnCanvasStatusText(wxCommandEvent& event)
 }
 void MainFrame::OnSetIterations(wxCommandEvent&)
 {
+    SetAutomaticIterations(false);
+    _appConfig.automaticIterations = false;
+
     // Manual iterations.
     if (!_iterationsDialogIsActive)
     {
@@ -669,6 +692,12 @@ void MainFrame::OnSetIterations(wxCommandEvent&)
         _iterationsDialogIsActive = false;
         delete _iterationsDialog;
     }
+}
+void MainFrame::OnAutomaticIterations(wxCommandEvent&)
+{
+    const bool mode = _automaticIterations->IsChecked();
+    _appConfig.automaticIterations = mode;
+    SetAutomaticIterations(mode);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnAbortRender(wxCommandEvent&)
@@ -689,6 +718,14 @@ void MainFrame::OnUpdateShowOrbit(wxUpdateUIEvent& event)
 void MainFrame::OnUpdateSliderMode(wxUpdateUIEvent& event)
 {
     event.Check(_fractalCanvas != nullptr && _fractalCanvas->IsSliderMode());
+}
+void MainFrame::OnUpdateManualIterations(wxUpdateUIEvent& event)
+{
+    event.Enable(_fractalCanvas != nullptr && !_fractalCanvas->GetFractalPresenterPtr()->AutomaticIterationsEnabled());
+}
+void MainFrame::OnUpdateAutomaticIterations(wxUpdateUIEvent& event)
+{
+    event.Check(_fractalCanvas != nullptr && _fractalCanvas->GetFractalPresenterPtr()->AutomaticIterationsEnabled());
 }
 void MainFrame::OnFractalOptions(wxCommandEvent&)
 {
@@ -1147,8 +1184,11 @@ void MainFrame::UpdateMenu()
     else
         _showOrbit->Enable(false);
 
-    _moreIterations->Enable(true);
-    _lessIterations->Enable(true);
+    const bool automaticIterations = _fractalCanvas->GetFractalPresenterPtr()->AutomaticIterationsEnabled();
+    _setIterations->Enable(!automaticIterations);
+    _moreIterations->Enable(!automaticIterations);
+    _lessIterations->Enable(!automaticIterations);
+    _automaticIterations->Check(automaticIterations);
 
     // Closes constant dialog.
     if (_introConstActive)

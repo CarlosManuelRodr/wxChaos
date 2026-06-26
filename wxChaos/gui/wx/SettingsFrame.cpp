@@ -109,10 +109,13 @@ wxPanel* SettingsFrame::CreatePresetsPage()
     _fractalType = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(names), names);
     _maxIterations = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
         wxSP_ARROW_KEYS, 1, 20000000, 100);
+    _automaticIterations = new wxCheckBox(page, wxID_ANY, "Automatic iterations");
     sizer->Add(new wxStaticText(page, wxID_ANY, "Default fractal:"), 0, wxALIGN_CENTER_VERTICAL);
     sizer->Add(_fractalType, 1, wxEXPAND);
     sizer->Add(new wxStaticText(page, wxID_ANY, "Default iterations:"), 0, wxALIGN_CENTER_VERTICAL);
     sizer->Add(_maxIterations, 1, wxEXPAND);
+    sizer->AddSpacer(0);
+    sizer->Add(_automaticIterations, 0, wxEXPAND);
     page->SetSizer(sizer);
     return page;
 }
@@ -213,6 +216,7 @@ void SettingsFrame::LoadControls(const AppConfig& config)
             break;
     }
     _maxIterations->SetValue(config.maxIterations);
+    _automaticIterations->SetValue(config.automaticIterations);
     _paletteSize->SetValue(config.paletteSize);
     _colorCycleLength->SetValue(config.colorCycleLength);
     _colorFractal->SetValue(config.colorFractal);
@@ -251,6 +255,7 @@ AppConfig SettingsFrame::ReadControls()
     if (selection != wxNOT_FOUND)
         config.type = _fractalTypes[selection];
     config.maxIterations = _maxIterations->GetValue();
+    config.automaticIterations = _automaticIterations->GetValue();
     config.paletteSize = _paletteSize->GetValue();
     config.colorCycleLength = _colorCycleLength->GetValue();
     const int colorStyleSelection = _colorStyle->GetSelection();

@@ -25,6 +25,7 @@ class FractalPresenter
     {
         PreciseRect view;
         std::optional<sf::Image> image;
+        unsigned int iterations;
     };
 
     Fractal* _fractal;                          ///< Fractal model currently being displayed.
@@ -51,6 +52,8 @@ class FractalPresenter
     bool _dontDrawTempImage;                    ///< Suppresses drawing the temporary image layer when it would be stale.
     bool _setHandleRightClickZoomBack;          ///< True when SFML right-click events should zoom back.
     bool _mousePanning;                         ///< True while a direct mouse pan gesture is active.
+    bool _automaticIterations;                  ///< True when iterations follow the current zoom level.
+    unsigned int _automaticIterationBase;        ///< Minimum iteration count used by automatic mode.
 
     ///@brief Draws fractal maps into the SFML image and then draws the output sprite.
     ///@param window Target window.
@@ -73,7 +76,13 @@ class FractalPresenter
     PreciseRect CaptureCurrentView() const;
 
     ///@brief Applies a world-coordinate view to the fractal.
-    void ApplyView(const PreciseRect& view) const;
+    void ApplyView(const PreciseRect& view);
+
+    ///@brief Estimates the iteration count that fits the current viewport.
+    unsigned int CalculateAutomaticIterations() const;
+
+    ///@brief Applies automatic iterations when that mode is active.
+    void ApplyAutomaticIterations();
 
     ///@brief Saves the current view and, when complete, its rendered image for zoom-back.
     void SaveZoom(std::optional<sf::Image> image);
@@ -169,6 +178,12 @@ public:
     ///@brief Sets the iteration count and invalidates cached images.
     ///@param iterations New maximum iteration count.
     void ChangeIterations(unsigned int iterations);
+
+    ///@brief Enables or disables viewport-driven iteration counts.
+    void SetAutomaticIterations(bool mode);
+
+    ///@brief Returns true when iterations are controlled by the viewport.
+    bool AutomaticIterationsEnabled() const;
 
     ///@brief Sets the Julia constant and invalidates cached images.
     ///@param real Real component.

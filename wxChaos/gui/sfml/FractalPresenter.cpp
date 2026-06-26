@@ -1,5 +1,8 @@
 #include "FractalPresenter.h"
 
+#include <algorithm>
+#include <cmath>
+
 constexpr int stdSpeed = 1;
 
 FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
@@ -9,7 +12,9 @@ FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vecto
     _dontDrawTempImage = false;
     _setHandleRightClickZoomBack = true;
     _mousePanning = false;
+    _automaticIterations = false;
     _fractal = fractal;
+    _automaticIterationBase = fractal->GetIterations();
     _xVel = 0.0f;
     _yVel = 0.0f;
     _posX = 0;
@@ -26,6 +31,7 @@ void FractalPresenter::SetFractal(Fractal* fractal)
     _dontDrawTempImage = true;
     ResetMovement();
     ResetZoomHistory();
+    ApplyAutomaticIterations();
     ClearImageCache();
     ResetDisplayImages();
 }
@@ -62,7 +68,7 @@ void FractalPresenter::ClearImageCache()
 {
     const bool usingCachedRenderImage = _usingRenderImage;
 
-    for (auto& [view, image] : _zoomHistory)
+    for (auto& [view, image, iterations] : _zoomHistory)
         image.reset();
 
     _usingRenderImage = false;
@@ -94,14 +100,53 @@ PreciseRect FractalPresenter::CaptureCurrentView() const
     return _fractal->GetPreciseView();
 }
 
-void FractalPresenter::ApplyView(const PreciseRect& view) const
+void FractalPresenter::ApplyView(const PreciseRect& view)
 {
     _fractal->SetPreciseView(view);
+    ApplyAutomaticIterations();
+}
+
+unsigned int FractalPresenter::CalculateAutomaticIterations() const
+{
+    const PreciseRect view = CaptureCurrentView();
+    const double width = ToDouble(RealAbs(view.right - view.left));
+    if (!std::isfinite(width) || width <= 0.0)
+        return _automaticIterationBase;
+
+    constexpr double referenceWidth = 3.5;
+    constexpr double iterationsPerZoomDoubling = 18.0;
+    constexpr unsigned int maximumAutomaticIterations = 20000000;
+
+    const double zoomDepth = std::max(0.0, std::log2(referenceWidth / width));
+    const double wantedExtraIterations = std::ceil(zoomDepth * iterationsPerZoomDoubling);
+    if (!std::isfinite(wantedExtraIterations))
+        return maximumAutomaticIterations;
+
+    const auto maximumExtraIterations = static_cast<double>(maximumAutomaticIterations - std::min(_automaticIterationBase, maximumAutomaticIterations));
+    const auto extraIterations = static_cast<unsigned int>(std::clamp(wantedExtraIterations, 0.0, maximumExtraIterations));
+    return std::min(_automaticIterationBase + extraIterations, maximumAutomaticIterations);
+}
+
+void FractalPresenter::ApplyAutomaticIterations()
+{
+    if (!_automaticIterations)
+        return;
+
+    const unsigned int iterations = CalculateAutomaticIterations();
+    if (_fractal->GetIterations() != iterations)
+    {
+        const bool usingCachedRenderImage = _usingRenderImage;
+        _usingRenderImage = false;
+        _zoomingBack = false;
+        _fractal->SetIterations(iterations);
+        if (usingCachedRenderImage)
+            _dontDrawTempImage = true;
+    }
 }
 
 void FractalPresenter::SaveZoom(std::optional<sf::Image> image)
 {
-    _zoomHistory.push_back({CaptureCurrentView(), std::move(image)});
+    _zoomHistory.push_back({CaptureCurrentView(), std::move(image), _fractal->GetIterations()});
 }
 
 void FractalPresenter::ResetZoomHistory()
@@ -274,6 +319,7 @@ void FractalPresenter::Resize(const sf::RenderWindow* window)
     ResetMovement();
     _fractal->Resize(window->getSize().x, window->getSize().y);
     _outermostZoom = CaptureCurrentView();
+    ApplyAutomaticIterations();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
 
     for (ZoomHistoryEntry& entry : _zoomHistory)
@@ -339,6 +385,7 @@ void FractalPresenter::ZoomBack()
     _fractal->StopRender();
     ResetMovement();
     std::optional<sf::Image> cachedImage;
+    unsigned int cachedImageIterations = 0;
 
     if (!_zoomHistory.empty())
     {
@@ -346,6 +393,7 @@ void FractalPresenter::ZoomBack()
         _zoomHistory.pop_back();
         ApplyView(entry.view);
         cachedImage = std::move(entry.image);
+        cachedImageIterations = entry.iterations;
     }
     else
     {
@@ -355,7 +403,7 @@ void FractalPresenter::ZoomBack()
     _fractal->MarkRenderInterrupted();
     _fractal->MarkOrbitDirty();
 
-    if (cachedImage.has_value() && !_fractal->IsGradientAnimating())
+    if (cachedImage.has_value() && cachedImageIterations == _fractal->GetIterations() && !_fractal->IsGradientAnimating())
     {
         _image = *cachedImage;
         _texture.loadFromImage(_image);
@@ -424,6 +472,7 @@ void FractalPresenter::SetView(const Rect& view)
 
 void FractalPresenter::IncreaseIterations()
 {
+    _automaticIterations = false;
     ClearImageCache();
     const unsigned change = _fractal->GetIterations() + 100;
     _fractal->SetIterations(change);
@@ -431,6 +480,7 @@ void FractalPresenter::IncreaseIterations()
 
 void FractalPresenter::DecreaseIterations()
 {
+    _automaticIterations = false;
     ClearImageCache();
 
     if (_fractal->GetIterations() > 100)
@@ -442,8 +492,27 @@ void FractalPresenter::DecreaseIterations()
 
 void FractalPresenter::ChangeIterations(const unsigned int iterations)
 {
+    _automaticIterations = false;
+    _automaticIterationBase = iterations;
     ClearImageCache();
     _fractal->SetIterations(iterations);
+}
+
+void FractalPresenter::SetAutomaticIterations(const bool mode)
+{
+    _automaticIterations = mode;
+    _automaticIterationBase = _fractal->GetIterations();
+    ApplyAutomaticIterations();
+    if (mode)
+    {
+        _fractal->MarkRenderDirty();
+        _fractal->MarkOrbitDirty();
+    }
+}
+
+bool FractalPresenter::AutomaticIterationsEnabled() const
+{
+    return _automaticIterations;
 }
 
 void FractalPresenter::SetK(const double real, const double imaginary)

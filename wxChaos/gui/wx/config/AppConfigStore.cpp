@@ -280,6 +280,7 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
 
     config.type = FractalTypeFromString(ReadString(values, "FRACTAL_TYPE", "Mandelbrot"), config.type);
     config.maxIterations = ReadInt(values, "DEFAULT_ITERATION", config.maxIterations);
+    config.automaticIterations = ReadBool(values, "AUTOMATIC_ITERATIONS", config.automaticIterations);
     config.paletteSize = ReadInt(values, "PALETTE_SIZE", config.paletteSize);
     config.colorCycleLength = ReadInt(values, "COLOR_CYCLE_LENGTH", config.colorCycleLength);
     config.colorStyleGrad = ReadString(values, "COLOR_STYLE", config.colorStyleGrad);
@@ -353,6 +354,7 @@ AppConfig AppConfigStore::Load() const
     long intValue = config.maxIterations;
     fileConfig.Read("/Fractal/default_iteration", &intValue, config.maxIterations);
     config.maxIterations = static_cast<int>(intValue);
+    fileConfig.Read("/Fractal/automatic_iterations", &config.automaticIterations, config.automaticIterations);
 
     intValue = config.paletteSize;
     fileConfig.Read("/Fractal/palette_size", &intValue, config.paletteSize);
@@ -395,6 +397,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Fractal/color_style", ToWxString(config.colorStyleGrad));
     fileConfig.Write("/Fractal/fractal_type", ToWxString(FractalTypeToString(config.type)));
     fileConfig.Write("/Fractal/default_iteration", static_cast<long>(config.maxIterations));
+    fileConfig.Write("/Fractal/automatic_iterations", config.automaticIterations);
     fileConfig.Write("/Fractal/constant_window", config.constantWindow);
     fileConfig.Write("/Fractal/julia_mode", config.juliaMode);
     fileConfig.Write("/Fractal/command_console", config.commandConsole);

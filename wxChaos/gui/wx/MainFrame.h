@@ -76,7 +76,8 @@ enum IDS
     ID_ZOOM_RECORDER,
     ID_DIMENSION_CALCULATOR,
     ID_COMMAND_CONSOLE,
-    ID_SETTINGS
+    ID_SETTINGS,
+    ID_AUTOMATIC_ITERATIONS
 };
 
 /**
@@ -125,6 +126,7 @@ class MainFrame : public wxFrame
     wxMenuItem* _setIterations{};
     wxMenuItem* _moreIterations{};
     wxMenuItem* _lessIterations{};
+    wxMenuItem* _automaticIterations{};
     wxMenuItem* _fractalOptionsItem{};
     wxMenu* _introConstant{};
     wxMenu *_typeComplex{}, *_typeNumericalMethod{}, *_typePhysics{}, *_typeOther{};
@@ -177,6 +179,7 @@ class MainFrame : public wxFrame
     /// @brief Applies saved settings that can safely change during the current session.
     /// @param config Newly saved application configuration.
     void ApplyAppConfig(const AppConfig& config);
+    void SetAutomaticIterations(bool mode);
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
 
@@ -228,6 +231,8 @@ public :
     void OnUpdateAbortRender(wxUpdateUIEvent& event);
     void OnUpdateShowOrbit(wxUpdateUIEvent& event);
     void OnUpdateSliderMode(wxUpdateUIEvent& event);
+    void OnUpdateManualIterations(wxUpdateUIEvent& event);
+    void OnUpdateAutomaticIterations(wxUpdateUIEvent& event);
     void OnRedraw(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);
     void OnMoreIt(wxCommandEvent& event);
@@ -236,6 +241,7 @@ public :
     void OnManIntroConst(wxCommandEvent& event);
     void OnSldIntroConst(wxCommandEvent& event);
     void OnSetIterations(wxCommandEvent& event);
+    void OnAutomaticIterations(wxCommandEvent& event);
     void OnFormulaDialog(wxCommandEvent& event);
     void OnFractalOptions(wxCommandEvent& event);
     void OnApplyPanelOpt(wxCommandEvent& event);

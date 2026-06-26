@@ -20,6 +20,7 @@ struct AppConfig
 
     FractalType type = FractalType::Mandelbrot;
     int maxIterations = 100;
+    bool automaticIterations = false;
     int paletteSize = 0;
     int colorCycleLength = 0;
     ColorPaletteTypes colorStyle = ClassicMandelbrot; ///< Default gradient preset, or CustomGradient for user-edited gradients.
