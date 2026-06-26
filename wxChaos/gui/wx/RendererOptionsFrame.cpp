@@ -389,11 +389,13 @@ void RendererOptionsFrame::SetAlgorithmChoices()
                     _algorithmChoice->Append("Convergence test");
                     _convergenceTestIndex = static_cast<int>(i);
                 }
+                break;
             case RenderingAlgorithmType::Buddhabrot:
                 {
                     _algorithmChoice->Append("Buddhabrot");
                     _buddhabrotIndex = static_cast<int>(i);
                 }
+                break;
             case RenderingAlgorithmType::Other:
                 break;
         };
@@ -448,6 +450,10 @@ void RendererOptionsFrame::SetTarget(FractalPresenter* presenter)
     _gaussIntIndex = -1;
     _buddhabrotIndex = -1;
     _escapeAngleIndex = -1;
+    _triangleIneqIndex = -1;
+    _chaoticMapIndex = -1;
+    _lyapunovIndex = -1;
+    _convergenceTestIndex = -1;
     this->SetAlgorithmChoices();
 
     switch (_target->GetCurrentAlg())
@@ -471,6 +477,8 @@ void RendererOptionsFrame::SetTarget(FractalPresenter* presenter)
             _algorithmChoice->SetSelection(0);
             break;
     }
+    if (_algorithmChoice->GetSelection() == wxNOT_FOUND && _algorithmChoice->GetCount() > 0)
+        _algorithmChoice->SetSelection(0);
 
     _typeNotebook->ChangeSelection(0);
     SyncRelativeColorControl();
