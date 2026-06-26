@@ -22,12 +22,12 @@ using namespace std;
 */
 class ZoomRenderer : public wxThread
 {
-    FractalCanvas* fractalCanvasPtr;
-    int currentFrame;
-    int totalFrames;
-    int width, height;
-    double zoomSpeed, colorSpeed;
-    string filepath;
+    FractalCanvas* _fractalCanvasPtr;
+    int _currentFrame;
+    int _totalFrames;
+    int _width, _height;
+    double _zoomSpeed, _colorSpeed;
+    string _filepath;
 
     static string QuoteCommandArg(const string& value)
     {
@@ -49,51 +49,51 @@ protected:
         FractalFactory fractalHandler;
         Rect outermostZoom, innermostZoom;
 
-        FractalType fractalType = fractalCanvasPtr->GetFractalType();
-        Options fractalOptions = fractalCanvasPtr->GetFractalPtr()->GetOptions();
-        fractalOptions.screenWidth = width;
-        fractalOptions.screenHeight = height;
+        FractalType fractalType = _fractalCanvasPtr->GetFractalType();
+        Options fractalOptions = _fractalCanvasPtr->GetFractalPtr()->GetOptions();
+        fractalOptions.screenWidth = _width;
+        fractalOptions.screenHeight = _height;
         fractalOptions.xFactor = (fractalOptions.maxX - fractalOptions.minX) / (fractalOptions.screenWidth - 1);
         fractalOptions.yFactor = (fractalOptions.maxY - fractalOptions.minY) / (fractalOptions.screenHeight - 1);
 
-        outermostZoom = fractalCanvasPtr->GetFractalPresenterPtr()->GetOutermostZoom();
-        innermostZoom = fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
+        outermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetOutermostZoom();
+        innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
 
         if (fractalType == FractalType::ScriptFractal)
         {
-            auto scriptFractalPtr = reinterpret_cast<ScriptFractal*>(fractalCanvasPtr->GetFractalPtr());
-            fractalHandler.CreateScriptFractal(width, height, scriptFractalPtr->GetPath());
+            auto scriptFractalPtr = reinterpret_cast<ScriptFractal*>(_fractalCanvasPtr->GetFractalPtr());
+            fractalHandler.CreateScriptFractal(_width, _height, scriptFractalPtr->GetPath());
         }
         else
-            fractalHandler.CreateFractal(fractalType, width, height);
+            fractalHandler.CreateFractal(fractalType, _width, _height);
 
-        fractalHandler.SetFormula(fractalCanvasPtr->GetFormula());
+        fractalHandler.SetFormula(_fractalCanvasPtr->GetFormula());
         fractalHandler.GetFractalPtr()->SetOptions(fractalOptions);
 
         // Render frames
-        int outputFileDigits = int(log10(totalFrames) + 1);
+        int outputFileDigits = int(log10(_totalFrames) + 1);
         Vector2Double outermostLo = outermostZoom.GetLowerBound();
         Vector2Double outermostHi = outermostZoom.GetUpperBound();
         Vector2Double innermostLo = innermostZoom.GetLowerBound();
         Vector2Double innermostHi = innermostZoom.GetUpperBound();
 
-        for (currentFrame = 0; currentFrame < totalFrames; currentFrame++)
+        for (_currentFrame = 0; _currentFrame < _totalFrames; _currentFrame++)
         {
-            double t = currentFrame;
+            double t = _currentFrame;
             Rect viewport;
-            viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeed * t / totalFrames)) * (innermostLo - outermostLo));
-            viewport.SetUpperBound(outermostHi - (1 - exp(-zoomSpeed * t / totalFrames)) * (outermostHi - innermostHi));
+            viewport.SetLowerBound(outermostLo + (1 - exp(-_zoomSpeed * t / _totalFrames)) * (innermostLo - outermostLo));
+            viewport.SetUpperBound(outermostHi - (1 - exp(-_zoomSpeed * t / _totalFrames)) * (outermostHi - innermostHi));
 
             fractalHandler.GetFractalPtr()->SetView(viewport);
 
-            if (colorSpeed != -1)
-                fractalHandler.GetFractalPtr()->SetVarGradient(static_cast<int>(colorSpeed * t));
+            if (_colorSpeed != -1)
+                fractalHandler.GetFractalPtr()->SetVarGradient(static_cast<int>(_colorSpeed * t));
             else
                 fractalHandler.GetFractalPtr()->SetVarGradient(0);
 
             sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
-            string filename = "frame_" + FixedLengthToString(currentFrame, outputFileDigits) + ".jpg";
-            string fullPath = AppPaths::JoinStd(filepath, filename);
+            string filename = "frame_" + FixedLengthToString(_currentFrame, outputFileDigits) + ".jpg";
+            string fullPath = AppPaths::JoinStd(_filepath, filename);
 
             // ReSharper disable once CppExpressionWithoutSideEffects
             out.saveToFile(fullPath);
@@ -102,8 +102,8 @@ protected:
         // Render video from frames.
         const string ffmpegPath = AppPaths::FfmpegFileStd();
         const string fileTemplate = "frame_%0" + to_string(outputFileDigits) + "d.jpg";
-        const string inputFrames = AppPaths::JoinStd(filepath, fileTemplate);
-        const string outputVideo = AppPaths::JoinStd(filepath, "Zoom.mp4");
+        const string inputFrames = AppPaths::JoinStd(_filepath, fileTemplate);
+        const string outputVideo = AppPaths::JoinStd(_filepath, "Zoom.mp4");
         const string renderVideoCommand = QuoteCommandArg(ffmpegPath) + " -i " + QuoteCommandArg(inputFrames) +
             " -c:v libx264 -vf fps=30 -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\" -pix_fmt yuv420p " + QuoteCommandArg(outputVideo);
 
@@ -113,17 +113,17 @@ protected:
     }
 
 public:
-    ZoomRenderer(string p_filepath, FractalCanvas* p_fcanvas, int p_width, int p_height, int p_total_frames,
-                 double p_zoom_speed, double p_color_speed)
+    ZoomRenderer(string filepath, FractalCanvas* fractalCanvas, const int width, const int height, const int totalFrames,
+                 const double zoomSpeed, const double colorSpeed)
     {
-        filepath = std::move(p_filepath);
-        fractalCanvasPtr = p_fcanvas;
-        currentFrame = 0;
-        totalFrames = p_total_frames;
-        width = p_width;
-        height = p_height;
-        zoomSpeed = p_zoom_speed;
-        colorSpeed = p_color_speed;
+        _filepath = std::move(filepath);
+        _fractalCanvasPtr = fractalCanvas;
+        _currentFrame = 0;
+        _totalFrames = totalFrames;
+        _width = width;
+        _height = height;
+        _zoomSpeed = zoomSpeed;
+        _colorSpeed = colorSpeed;
     }
 
     static string FixedLengthToString(const int i, const int length)
@@ -137,7 +137,7 @@ public:
     }
 
     int GetProgress() const {
-        return currentFrame;
+        return _currentFrame;
     }
 };
 
