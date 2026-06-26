@@ -10,6 +10,8 @@
 #include <wx/frame.h>
 #include "FractalCanvas.h"
 
+class ZoomRenderer;
+
 /**
 * @class ZoomRecorder
 * @brief Configures and previews a zoom animation export.
@@ -20,6 +22,8 @@
 */
 class ZoomRecorder : public wxDialog
 {
+    friend class ZoomRenderer;
+
     wxPanel* _panel;
     wxStaticBitmap* _previewBitmap;
     wxStaticText* _previewFrameText;
@@ -58,9 +62,13 @@ class ZoomRecorder : public wxDialog
     void RenderPreview();
     void UpdateTotalFrames();
     [[nodiscard]] int GetTotalFrames() const;
+    static void CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
+    static Rect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
 public:
     ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Zoom recorder",
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(960, 720),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ZoomRecorder() override;
+
+    static Rect GetDefaultView(FractalCanvas* fractalCanvas, int width, int height);
 };

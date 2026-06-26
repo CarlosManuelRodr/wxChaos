@@ -754,12 +754,14 @@ void MainFrame::OnScriptEditor(wxCommandEvent&)
 void MainFrame::OnZoomRecorder(wxCommandEvent&)
 {
     const FractalPresenter* fractal = _fractalCanvas->GetFractalPresenterPtr();
+    const sf::Vector2u screenSize = _fractalCanvas->GetFractalPtr()->GetScreenSize();
 
-    if (const Rect currentZoom = fractal->GetCurrentZoom(), outermostZoom = fractal->GetOutermostZoom();
-        outermostZoom._left == currentZoom._left &&
-        outermostZoom._right == currentZoom._right &&
-        outermostZoom._bottom == currentZoom._bottom &&
-        outermostZoom._top == currentZoom._top)
+    if (const Rect currentZoom = fractal->GetCurrentZoom(),
+        defaultZoom = ZoomRecorder::GetDefaultView(_fractalCanvas, static_cast<int>(screenSize.x), static_cast<int>(screenSize.y));
+        defaultZoom._left == currentZoom._left &&
+        defaultZoom._right == currentZoom._right &&
+        defaultZoom._bottom == currentZoom._bottom &&
+        defaultZoom._top == currentZoom._top)
     {
         wxMessageBox(
             "To use the zoom recorder you need to first perform a zoom on the main window.",

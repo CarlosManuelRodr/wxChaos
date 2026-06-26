@@ -47,28 +47,8 @@ protected:
     ExitCode Entry() override {
         // Create and set-up fractal factory
         FractalFactory fractalHandler;
-        Rect outermostZoom, innermostZoom;
-
-        FractalType fractalType = _fractalCanvasPtr->GetFractalType();
-        Options fractalOptions = _fractalCanvasPtr->GetFractalPtr()->GetOptions();
-        fractalOptions.screenWidth = _width;
-        fractalOptions.screenHeight = _height;
-        fractalOptions.xFactor = (fractalOptions.maxX - fractalOptions.minX) / (fractalOptions.screenWidth - 1);
-        fractalOptions.yFactor = (fractalOptions.maxY - fractalOptions.minY) / (fractalOptions.screenHeight - 1);
-
-        outermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetOutermostZoom();
-        innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
-
-        if (fractalType == FractalType::ScriptFractal)
-        {
-            auto scriptFractalPtr = reinterpret_cast<ScriptFractal*>(_fractalCanvasPtr->GetFractalPtr());
-            fractalHandler.CreateScriptFractal(_width, _height, scriptFractalPtr->GetPath());
-        }
-        else
-            fractalHandler.CreateFractal(fractalType, _width, _height);
-
-        fractalHandler.SetFormula(_fractalCanvasPtr->GetFormula());
-        fractalHandler.GetFractalPtr()->SetOptions(fractalOptions);
+        const Rect outermostZoom = ZoomRecorder::CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height);
+        const Rect innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
 
         // Render frames
         int outputFileDigits = int(log10(_totalFrames) + 1);
@@ -302,30 +282,38 @@ ZoomRecorder::~ZoomRecorder()
     _colorSpeedCtrl->Unbind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
 
-void ZoomRecorder::CreateFractalFactory()
+void ZoomRecorder::CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
 {
-    FractalType fractalType = _fractalCanvasPtr->GetFractalType();
-    Options fractalOptions = _fractalCanvasPtr->GetFractalPtr()->GetOptions();
-    fractalOptions.screenWidth = 250;
-    fractalOptions.screenHeight = 166;
-    fractalOptions.xFactor = (fractalOptions.maxX - fractalOptions.minX) / (fractalOptions.screenWidth - 1);
-    fractalOptions.yFactor = (fractalOptions.maxY - fractalOptions.minY) / (fractalOptions.screenHeight - 1);
-
-    _outermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetOutermostZoom();
-    _innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
-
+    const FractalType fractalType = fractalCanvas->GetFractalType();
     if (fractalType == FractalType::ScriptFractal)
     {
-        auto* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(_fractalCanvasPtr->GetFractalPtr());
-        _fractalFactory.CreateScriptFractal(250, 166, scriptFractalPtr->GetPath());
+        auto* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(fractalCanvas->GetFractalPtr());
+        fractalFactory.CreateScriptFractal(width, height, scriptFractalPtr->GetPath());
     }
     else
-        _fractalFactory.CreateFractal(fractalType, 250, 166);
+        fractalFactory.CreateFractal(fractalType, width, height);
+}
 
-    _fractalFactory.SetFormula(_fractalCanvasPtr->GetFormula());
+Rect ZoomRecorder::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
+{
+    CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
+    const Rect defaultView = fractalFactory.GetFractalPtr()->GetView();
+    fractalFactory.SetFormula(fractalCanvas->GetFormula());
+    fractalFactory.GetFractalPtr()->SetOptions(fractalCanvas->GetFractalPtr()->GetOptions());
+    return defaultView;
+}
 
-    // Copy parameters.
-    _fractalFactory.GetFractalPtr()->SetOptions(fractalOptions);
+Rect ZoomRecorder::GetDefaultView(FractalCanvas* fractalCanvas, const int width, const int height)
+{
+    FractalFactory fractalFactory;
+    ZoomRecorder::CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
+    return fractalFactory.GetFractalPtr()->GetView();
+}
+
+void ZoomRecorder::CreateFractalFactory()
+{
+    _outermostZoom = CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, 250, 166);
+    _innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
 }
 void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const double colorSpeed) const
 {

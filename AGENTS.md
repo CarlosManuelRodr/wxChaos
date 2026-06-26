@@ -5,8 +5,9 @@ The author of this project created it circa 2012 as a learning exercise and to e
 
 ## Code Style
 
-- For helper logic that exists only to support a class, prefer a private member function over an anonymous-namespace free function. Avoid adding namespace-scope helper functions unless the behavior is genuinely shared outside a single class.
-- If an anonymous namespace is used, indent its contents.
+- For helper logic that exists only to support a class, use a private member function so the class declaration shows what the class does. Do not add anonymous-namespace free functions for class-local behavior.
+- Avoid adding namespace-scope helper functions unless the behavior is genuinely shared outside a single class.
+- If touching an existing anonymous namespace, keep its contents indented, but do not add new anonymous-namespace functions for class helper behavior.
 
 ## Escape-Time Renderer Architecture
 
