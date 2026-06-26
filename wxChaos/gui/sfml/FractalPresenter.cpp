@@ -62,8 +62,8 @@ void FractalPresenter::ClearImageCache()
 {
     const bool usingCachedRenderImage = _usingRenderImage;
 
-    for (ZoomHistoryEntry& entry : _zoomHistory)
-        entry.image.reset();
+    for (auto& [view, image] : _zoomHistory)
+        image.reset();
 
     _usingRenderImage = false;
     _zoomingBack = false;
