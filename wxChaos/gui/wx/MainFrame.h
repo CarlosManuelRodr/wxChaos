@@ -122,7 +122,7 @@ class MainFrame : public wxFrame
     wxMenuItem* _showOrbit{};
     wxMenuItem* _sliderJuliaConstant{};
     wxMenuItem* _manualJuliaConstant{};
-    wxMenuItem* _manualIterations{};
+    wxMenuItem* _setIterations{};
     wxMenuItem* _moreIterations{};
     wxMenuItem* _lessIterations{};
     wxMenuItem* _fractalOptionsItem{};
@@ -235,7 +235,7 @@ public :
     void OnShowOrbit(wxCommandEvent& event);
     void OnManIntroConst(wxCommandEvent& event);
     void OnSldIntroConst(wxCommandEvent& event);
-    void OnItManual(wxCommandEvent& event);
+    void OnSetIterations(wxCommandEvent& event);
     void OnFormulaDialog(wxCommandEvent& event);
     void OnFractalOptions(wxCommandEvent& event);
     void OnApplyPanelOpt(wxCommandEvent& event);

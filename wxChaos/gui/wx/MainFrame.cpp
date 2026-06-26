@@ -151,7 +151,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnManIntroConst, this, ID_ENTER_MAN_CONSTANT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSldIntroConst, this, ID_ENTER_SLD_CONSTANT);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateSliderMode, this, ID_ENTER_SLD_CONSTANT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnItManual, this, ID_IT_MANUAL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSetIterations, this, ID_IT_MANUAL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFormulaDialog, this, ID_FORMULA_DIALOG);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFractalOptions, this, ID_OPTION_PANEL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnUserManual, this, ID_USER_MANUAL);
@@ -283,8 +283,8 @@ void MainFrame::SetUpGUI()
     _toolMenu->Append(ID_DIMENSION_CALCULATOR, wxT("Dimension calculator"), wxT("Calculate fractal dimension."));
 
     // Iterations.
-    _manualIterations = new wxMenuItem(_iterationsMenu, ID_IT_MANUAL, wxString(wxT("Manual iterations")), wxEmptyString, wxITEM_NORMAL);
-    _iterationsMenu->Append(_manualIterations);
+    _setIterations = new wxMenuItem(_iterationsMenu, ID_IT_MANUAL, wxString(wxT("Set iterations")), wxEmptyString, wxITEM_NORMAL);
+    _iterationsMenu->Append(_setIterations);
     _moreIterations = new wxMenuItem(_iterationsMenu, ID_INCREASE_IT, wxString(wxT("Increase iterations")) + wxT('\t') + wxT("L"), wxEmptyString, wxITEM_NORMAL);
     _iterationsMenu->Append(_moreIterations);
 
@@ -654,7 +654,7 @@ void MainFrame::OnCanvasStatusText(wxCommandEvent& event)
 {
     _statusBar->SetStatusText(event.GetString());
 }
-void MainFrame::OnItManual(wxCommandEvent&)
+void MainFrame::OnSetIterations(wxCommandEvent&)
 {
     // Manual iterations.
     if (!_iterationsDialogIsActive)
