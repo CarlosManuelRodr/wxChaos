@@ -7,9 +7,9 @@
 AngelscriptRenderEngine::AngelscriptRenderEngine()
 {
     engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-    engine->SetMessageCallback(asFUNCTION(MessageCallback), nullptr, asCALL_CDECL);
-    engine->SetEngineProperty(asEP_AUTO_GARBAGE_COLLECT, false);
-    engine->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, true);
+    ctx = nullptr;
+    abortRequested = false;
+
     if (engine == nullptr)
     {
         errorInfo = "Failed to create Angelscript engine.";
@@ -17,17 +17,39 @@ AngelscriptRenderEngine::AngelscriptRenderEngine()
         return;
     }
 
+    engine->SetMessageCallback(asFUNCTION(MessageCallback), nullptr, asCALL_CDECL);
+    engine->SetEngineProperty(asEP_AUTO_GARBAGE_COLLECT, false);
+
     status = EngineStatus::Ok;
 
     RegisterStdString(engine);
     RegisterScriptMathReal(engine);
     RegisterScriptMathComplex(engine);
     RegisterWxChaosInterface(engine);
-
-    ctx = nullptr;
 }
 
 AngelscriptRenderEngine::~AngelscriptRenderEngine()
+{
+    ReleaseContext();
+    ReleaseEngine();
+}
+
+void AngelscriptRenderEngine::AbortIfRequested(asIScriptContext* context) const
+{
+    if (abortRequested.load())
+        context->Abort();
+}
+
+void AngelscriptRenderEngine::ReleaseContext()
+{
+    if (ctx != nullptr)
+    {
+        ctx->Release();
+        ctx = nullptr;
+    }
+}
+
+void AngelscriptRenderEngine::ReleaseEngine()
 {
     if (engine != nullptr)
     {
@@ -38,11 +60,12 @@ AngelscriptRenderEngine::~AngelscriptRenderEngine()
 
 bool AngelscriptRenderEngine::RegisterGlobalVariable(const char* declaration, void* pointer)
 {
-    const int r = engine->RegisterGlobalProperty(declaration, pointer);
-    if (r < 0)
+    if (engine == nullptr)
+        return false;
+
+    if (const int r = engine->RegisterGlobalProperty(declaration, pointer); r < 0)
     {
-        engine->Release();
-        engine = nullptr;
+        ReleaseEngine();
         errorInfo = "Error while registering global variable.";
         status = EngineStatus::Error;
         return false;
@@ -51,13 +74,14 @@ bool AngelscriptRenderEngine::RegisterGlobalVariable(const char* declaration, vo
     return true;
 }
 
-bool AngelscriptRenderEngine::CompileFromPath(std::string path)
+bool AngelscriptRenderEngine::CompileFromPath(const std::string& path)
 {
-    const int r = CompileScriptFromPath(engine, std::move(path));
-    if (r < 0)
+    if (engine == nullptr)
+        return false;
+
+    if (const int r = CompileScriptFromPath(engine, path); r < 0)
     {
-        engine->Release();
-        engine = nullptr;
+        ReleaseEngine();
         errorInfo = "Compile error.";
         status = EngineStatus::Error;
         return false;
@@ -67,11 +91,14 @@ bool AngelscriptRenderEngine::CompileFromPath(std::string path)
 
 bool AngelscriptRenderEngine::Execute()
 {
+    if (engine == nullptr)
+        return false;
+
     ctx = engine->CreateContext();
     if (ctx == nullptr)
     {
         errorInfo = "Failed to create the context.";
-        engine->Release();
+        ReleaseEngine();
         status = EngineStatus::Error;
         return false;
     }
@@ -80,11 +107,9 @@ bool AngelscriptRenderEngine::Execute()
     if (renderFunc == nullptr)
     {
         errorInfo = "The function 'Render' was not found.";
-        ctx->Release();
-        engine->Release();
+        ReleaseContext();
+        ReleaseEngine();
         status = EngineStatus::Error;
-        engine = nullptr;
-        ctx = nullptr;
         return false;
     }
 
@@ -93,25 +118,42 @@ bool AngelscriptRenderEngine::Execute()
     {
         errorInfo = "Failed to prepare the context.";
         status = EngineStatus::Error;
-        ctx->Release();
-        engine->Release();
+        ReleaseContext();
+        ReleaseEngine();
         return false;
     }
-    ctx->Execute();
 
-    ctx->Release();
-    engine->Release();
-    engine = nullptr;
-    ctx = nullptr;
+    r = ctx->SetLineCallback(asMETHOD(AngelscriptRenderEngine, AbortIfRequested), this, asCALL_THISCALL);
+    if (r < 0)
+    {
+        errorInfo = "Failed to configure the abort callback.";
+        status = EngineStatus::Error;
+        ReleaseContext();
+        ReleaseEngine();
+        return false;
+    }
+
+    r = ctx->Execute();
+    if (r != asEXECUTION_FINISHED && r != asEXECUTION_ABORTED)
+    {
+        errorInfo = "Script execution failed.";
+        status = EngineStatus::Error;
+        ReleaseContext();
+        ReleaseEngine();
+        asThreadCleanup();
+        return false;
+    }
+
+    ReleaseContext();
+    ReleaseEngine();
     asThreadCleanup();
 
     return true;
 }
 
-void AngelscriptRenderEngine::Abort() const
+void AngelscriptRenderEngine::Abort()
 {
-    if (ctx != nullptr)
-        ctx->Abort();
+    abortRequested = true;
 }
 
 EngineStatus AngelscriptRenderEngine::GetStatus() const

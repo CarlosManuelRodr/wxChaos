@@ -7,6 +7,8 @@ using namespace std;
 ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData,
                              const int renderThreads) : Fractal(width, height)
 {
+    asPrepareMultithread();
+
     if (renderThreads != -1)
         _threadNumber = static_cast<unsigned>(renderThreads);
 
@@ -37,6 +39,8 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
 ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath)
                              : Fractal(width, height)
 {
+    asPrepareMultithread();
+
     _path = scriptPath;
     AngelscriptConfigurationEngine configEngine;
     if (configEngine.CompileFromPath(_path) && configEngine.Execute())
@@ -58,6 +62,7 @@ ScriptFractal::~ScriptFractal()
 {
     this->StopRender();
     delete[] _myRender;
+    asUnprepareMultithread();
 }
 const ScriptData& ScriptFractal::GetScriptData() const
 {
@@ -67,9 +72,7 @@ void ScriptFractal::Render()
 {
     asSetMap = _setMap;
     asColorMap = _colorMap;
-    asPrepareMultithread();
     this->SetRendererBounds<ScriptFractalRenderer>(_myRender);
-    asUnprepareMultithread();
 }
 void ScriptFractal::PostRender()
 {

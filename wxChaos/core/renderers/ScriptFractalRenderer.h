@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+#include <mutex>
 #include "../RenderWorker.h"
 #include "../scripting/AngelscriptRenderEngine.h"
 
@@ -11,11 +13,11 @@
 */
 class ScriptFractalRenderer : public RenderWorker
 {
-    AngelscriptRenderEngine* _renderEngine;
+    std::shared_ptr<AngelscriptRenderEngine> _renderEngine;
+    std::mutex _renderEngineMutex;
     std::string _path;
     wxString _errorInfo;
     unsigned int _threadIndex;
-    bool _hasEnded;
 public:
     ScriptFractalRenderer();
     ~ScriptFractalRenderer() override;

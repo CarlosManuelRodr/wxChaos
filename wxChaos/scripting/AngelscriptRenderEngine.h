@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <angelscript.h>
 #include <wx/string.h>
 #include "types/EngineStatus.h"
@@ -16,16 +17,21 @@ class AngelscriptRenderEngine
 {
     asIScriptEngine* engine;
     asIScriptContext* ctx;
+    std::atomic_bool abortRequested;
     EngineStatus status;
     wxString errorInfo;
+
+    void AbortIfRequested(asIScriptContext* context) const;
+    void ReleaseContext();
+    void ReleaseEngine();
 public:
     AngelscriptRenderEngine();
     ~AngelscriptRenderEngine();
 
     bool RegisterGlobalVariable(const char* declaration, void* pointer);
-    bool CompileFromPath(std::string path);
+    bool CompileFromPath(const std::string& path);
     bool Execute();
-    void Abort() const;
+    void Abort();
     EngineStatus GetStatus() const;
     wxString GetErrorInfo();
 };
