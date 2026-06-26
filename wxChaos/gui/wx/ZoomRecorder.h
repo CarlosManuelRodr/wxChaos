@@ -41,7 +41,7 @@ class ZoomRecorder : public wxDialog
     FractalCanvas* _fractalCanvasPtr;
     FractalFactory _fractalFactory;
 
-    Rect _outermostZoom, _innermostZoom;
+    PreciseRect _outermostZoom, _innermostZoom;
 
     void OnScrollPreview(wxScrollEvent& event);
     void OnSaveVideo(wxCommandEvent&);
@@ -56,7 +56,7 @@ class ZoomRecorder : public wxDialog
     void UpdateTotalFrames();
     [[nodiscard]] int GetTotalFrames() const;
     static void CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
-    static Rect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
+    static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
 public:
     ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Zoom recorder",
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(960, 720),

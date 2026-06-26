@@ -19,7 +19,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     // fractal factory initialization
     _fractalCanvasPtr = fractalCanvas;
     this->CreateFractalFactory();
-    _fractalFactory.GetFractalPtr()->SetView(_outermostZoom);
+    _fractalFactory.GetFractalPtr()->SetPreciseView(_outermostZoom);
 
     // UI initialization
     this->SetSizeHints(wxSize(900, 680), wxSize(1400, 900));
@@ -176,10 +176,10 @@ void ZoomRecorder::CreateFractalInstance(FractalFactory& fractalFactory, Fractal
         fractalFactory.CreateFractal(fractalType, width, height);
 }
 
-Rect ZoomRecorder::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
+PreciseRect ZoomRecorder::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
 {
     CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
-    const Rect defaultView = fractalFactory.GetFractalPtr()->GetView();
+    const PreciseRect defaultView = fractalFactory.GetFractalPtr()->GetPreciseView();
     fractalFactory.SetFormula(fractalCanvas->GetFormula());
     fractalFactory.GetFractalPtr()->SetOptions(fractalCanvas->GetFractalPtr()->GetOptions());
     return defaultView;
@@ -195,16 +195,16 @@ Rect ZoomRecorder::GetDefaultView(FractalCanvas* fractalCanvas, const int width,
 void ZoomRecorder::CreateFractalFactory()
 {
     _outermostZoom = CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, 250, 166);
-    _innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
+    _innermostZoom = _fractalCanvasPtr->GetFractalPtr()->GetPreciseView();
 }
 void ZoomRecorder::RenderPreview(const int zoom, const double colorSpeed) const
 {
     const int totalFrames = this->GetTotalFrames();
     const double t = zoom;
     const double progress = ZoomRenderer::GetFrameProgress(zoom, totalFrames);
-    const Rect viewport = ZoomRenderer::GetZoomViewport(_outermostZoom, _innermostZoom, progress);
+    const PreciseRect viewport = ZoomRenderer::GetZoomViewport(_outermostZoom, _innermostZoom, progress);
 
-    _fractalFactory.GetFractalPtr()->SetView(viewport);
+    _fractalFactory.GetFractalPtr()->SetPreciseView(viewport);
 
     if (colorSpeed != -1)
         _fractalFactory.GetFractalPtr()->SetVarGradient(static_cast<int>(colorSpeed * t));

@@ -20,10 +20,10 @@ void ZoomRenderer::CreateFractalInstance(FractalFactory& fractalFactory, Fractal
         fractalFactory.CreateFractal(fractalType, width, height);
 }
 
-Rect ZoomRenderer::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
+PreciseRect ZoomRenderer::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
 {
     CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
-    const Rect defaultView = fractalFactory.GetFractalPtr()->GetView();
+    const PreciseRect defaultView = fractalFactory.GetFractalPtr()->GetPreciseView();
     fractalFactory.SetFormula(fractalCanvas->GetFormula());
     fractalFactory.GetFractalPtr()->SetOptions(fractalCanvas->GetFractalPtr()->GetOptions());
     return defaultView;
@@ -37,38 +37,38 @@ double ZoomRenderer::GetFrameProgress(const int frame, const int totalFrames)
     return static_cast<double>(frame) / static_cast<double>(totalFrames - 1);
 }
 
-Rect ZoomRenderer::GetZoomViewport(const Rect& outermostZoom, const Rect& innermostZoom, const double progress)
+PreciseRect ZoomRenderer::GetZoomViewport(const PreciseRect& outermostZoom, const PreciseRect& innermostZoom, const double progress)
 {
     if (progress <= 0.0)
         return outermostZoom;
     if (progress >= 1.0)
         return innermostZoom;
 
-    const double outermostWidth = outermostZoom._right - outermostZoom._left;
-    const double outermostHeight = outermostZoom._top - outermostZoom._bottom;
-    const double innermostWidth = innermostZoom._right - innermostZoom._left;
-    const double innermostHeight = innermostZoom._top - innermostZoom._bottom;
-    const double width = outermostWidth * std::pow(innermostWidth / outermostWidth, progress);
-    const double height = outermostHeight * std::pow(innermostHeight / outermostHeight, progress);
+    const HighPrecisionReal outermostWidth = outermostZoom.right - outermostZoom.left;
+    const HighPrecisionReal outermostHeight = outermostZoom.top - outermostZoom.bottom;
+    const HighPrecisionReal innermostWidth = innermostZoom.right - innermostZoom.left;
+    const HighPrecisionReal innermostHeight = innermostZoom.top - innermostZoom.bottom;
+    const HighPrecisionReal progressValue(progress);
+    const HighPrecisionReal width = outermostWidth * pow(innermostWidth / outermostWidth, progressValue);
+    const HighPrecisionReal height = outermostHeight * pow(innermostHeight / outermostHeight, progressValue);
 
-    constexpr double epsilon = 1e-12;
-    double left;
-    if (std::abs(outermostWidth - innermostWidth) < epsilon)
-        left = outermostZoom._left + progress * (innermostZoom._left - outermostZoom._left);
+    HighPrecisionReal left;
+    if (outermostWidth == innermostWidth)
+        left = outermostZoom.left + progressValue * (innermostZoom.left - outermostZoom.left);
     else
     {
-        const double targetPosition = (innermostZoom._left - outermostZoom._left) / (outermostWidth - innermostWidth);
-        const double target = outermostZoom._left + targetPosition * outermostWidth;
+        const HighPrecisionReal targetPosition = (innermostZoom.left - outermostZoom.left) / (outermostWidth - innermostWidth);
+        const HighPrecisionReal target = outermostZoom.left + targetPosition * outermostWidth;
         left = target - targetPosition * width;
     }
 
-    double bottom;
-    if (std::abs(outermostHeight - innermostHeight) < epsilon)
-        bottom = outermostZoom._bottom + progress * (innermostZoom._bottom - outermostZoom._bottom);
+    HighPrecisionReal bottom;
+    if (outermostHeight == innermostHeight)
+        bottom = outermostZoom.bottom + progressValue * (innermostZoom.bottom - outermostZoom.bottom);
     else
     {
-        const double targetPosition = (innermostZoom._bottom - outermostZoom._bottom) / (outermostHeight - innermostHeight);
-        const double target = outermostZoom._bottom + targetPosition * outermostHeight;
+        const HighPrecisionReal targetPosition = (innermostZoom.bottom - outermostZoom.bottom) / (outermostHeight - innermostHeight);
+        const HighPrecisionReal target = outermostZoom.bottom + targetPosition * outermostHeight;
         bottom = target - targetPosition * height;
     }
 
@@ -102,8 +102,8 @@ std::string ZoomRenderer::QuoteCommandArg(const std::string& value)
 wxThread::ExitCode ZoomRenderer::Entry()
 {
     FractalFactory fractalHandler;
-    const Rect outermostZoom = CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height);
-    const Rect innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
+    const PreciseRect outermostZoom = CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height);
+    const PreciseRect innermostZoom = _fractalCanvasPtr->GetFractalPtr()->GetPreciseView();
 
     const int outputFileDigits = static_cast<int>(std::log10(_totalFrames) + 1);
 
@@ -111,9 +111,9 @@ wxThread::ExitCode ZoomRenderer::Entry()
     {
         const double t = _currentFrame;
         const double progress = GetFrameProgress(_currentFrame, _totalFrames);
-        const Rect viewport = GetZoomViewport(outermostZoom, innermostZoom, progress);
+        const PreciseRect viewport = GetZoomViewport(outermostZoom, innermostZoom, progress);
 
-        fractalHandler.GetFractalPtr()->SetView(viewport);
+        fractalHandler.GetFractalPtr()->SetPreciseView(viewport);
 
         if (_colorSpeed != -1)
             fractalHandler.GetFractalPtr()->SetVarGradient(static_cast<int>(_colorSpeed * t));

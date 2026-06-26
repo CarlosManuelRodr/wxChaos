@@ -19,7 +19,7 @@ class ZoomRenderer : public wxThread
     std::string _filepath;
 
     static void CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
-    static Rect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
+    static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
     static std::string FixedLengthToString(int i, int length);
     static std::string QuoteCommandArg(const std::string& value);
 
@@ -30,7 +30,7 @@ public:
     ZoomRenderer(std::string filepath, FractalCanvas* fractalCanvas, int width, int height, int totalFrames, double colorSpeed);
 
     static double GetFrameProgress(int frame, int totalFrames);
-    static Rect GetZoomViewport(const Rect& outermostZoom, const Rect& innermostZoom, double progress);
+    static PreciseRect GetZoomViewport(const PreciseRect& outermostZoom, const PreciseRect& innermostZoom, double progress);
 
     [[nodiscard]] int GetProgress() const;
 };
