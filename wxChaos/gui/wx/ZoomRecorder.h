@@ -10,8 +10,6 @@
 #include <wx/frame.h>
 #include "FractalCanvas.h"
 
-class ZoomRenderer;
-
 /**
 * @class ZoomRecorder
 * @brief Configures and previews a zoom animation export.
@@ -22,8 +20,6 @@ class ZoomRenderer;
 */
 class ZoomRecorder : public wxDialog
 {
-    friend class ZoomRenderer;
-
     wxPanel* _panel;
     wxStaticBitmap* _previewBitmap;
     wxStaticText* _previewFrameText;
@@ -39,8 +35,6 @@ class ZoomRecorder : public wxDialog
     wxSpinCtrl* _framerateSpinCtrl;
     wxStaticText* _framesPerSecondText;
     wxCheckBox* _rotateCheckbox;
-    wxStaticText* _zoomSpeedText;
-    wxSpinCtrl* _zoomSpeedCtrl;
     wxStaticText* _colorRotateSpeedText;
     wxSpinCtrlDouble* _colorSpeedCtrl;
 
@@ -54,11 +48,10 @@ class ZoomRecorder : public wxDialog
     void OnCancel(wxCommandEvent&);
     void OnUpdateTotalFrames(wxSpinEvent&);
     void OnColorRotate(wxCommandEvent&);
-    void OnChangeSpeed(wxSpinEvent&);
     void OnChangeSpeedDbl(wxSpinDoubleEvent&);
 
     void CreateFractalFactory();
-    void RenderPreview(int zoom, int zoomSpeed = 1, double colorSpeed = -1.0) const;
+    void RenderPreview(int zoom, double colorSpeed = -1.0) const;
     void RenderPreview();
     void UpdateTotalFrames();
     [[nodiscard]] int GetTotalFrames() const;

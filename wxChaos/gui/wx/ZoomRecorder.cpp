@@ -7,119 +7,10 @@
 #include <wx/statbox.h>
 #include <wx/button.h>
 #include <wx/stattext.h>
-#include <sstream>
-#include <iomanip>
-#include <cstdlib>
-#include <utility>
 #include "SFML/System.hpp"
 #include "AppPaths.h"
 #include "ZoomRecorder.h"
-using namespace std;
-
-/**
-* @class ZoomRenderer
-* @brief This is a worker thread that performs the zoom rendering.
-*/
-class ZoomRenderer : public wxThread
-{
-    FractalCanvas* _fractalCanvasPtr;
-    int _currentFrame;
-    int _totalFrames;
-    int _width, _height;
-    double _zoomSpeed, _colorSpeed;
-    string _filepath;
-
-    static string QuoteCommandArg(const string& value)
-    {
-        string quoted = "\"";
-        for (const char ch : value)
-        {
-            if (ch == '"')
-                quoted += "\\\"";
-            else
-                quoted += ch;
-        }
-        quoted += "\"";
-        return quoted;
-    }
-
-protected:
-    ExitCode Entry() override {
-        // Create and set-up fractal factory
-        FractalFactory fractalHandler;
-        const Rect outermostZoom = ZoomRecorder::CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height);
-        const Rect innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
-
-        // Render frames
-        int outputFileDigits = int(log10(_totalFrames) + 1);
-        Vector2Double outermostLo = outermostZoom.GetLowerBound();
-        Vector2Double outermostHi = outermostZoom.GetUpperBound();
-        Vector2Double innermostLo = innermostZoom.GetLowerBound();
-        Vector2Double innermostHi = innermostZoom.GetUpperBound();
-
-        for (_currentFrame = 0; _currentFrame < _totalFrames; _currentFrame++)
-        {
-            double t = _currentFrame;
-            Rect viewport;
-            viewport.SetLowerBound(outermostLo + (1 - exp(-_zoomSpeed * t / _totalFrames)) * (innermostLo - outermostLo));
-            viewport.SetUpperBound(outermostHi - (1 - exp(-_zoomSpeed * t / _totalFrames)) * (outermostHi - innermostHi));
-
-            fractalHandler.GetFractalPtr()->SetView(viewport);
-
-            if (_colorSpeed != -1)
-                fractalHandler.GetFractalPtr()->SetVarGradient(static_cast<int>(_colorSpeed * t));
-            else
-                fractalHandler.GetFractalPtr()->SetVarGradient(0);
-
-            sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
-            string filename = "frame_" + FixedLengthToString(_currentFrame, outputFileDigits) + ".jpg";
-            string fullPath = AppPaths::JoinStd(_filepath, filename);
-
-            // ReSharper disable once CppExpressionWithoutSideEffects
-            out.saveToFile(fullPath);
-        }
-
-        // Render video from frames.
-        const string ffmpegPath = AppPaths::FfmpegFileStd();
-        const string fileTemplate = "frame_%0" + to_string(outputFileDigits) + "d.jpg";
-        const string inputFrames = AppPaths::JoinStd(_filepath, fileTemplate);
-        const string outputVideo = AppPaths::JoinStd(_filepath, "Zoom.mp4");
-        const string renderVideoCommand = QuoteCommandArg(ffmpegPath) + " -i " + QuoteCommandArg(inputFrames) +
-            " -c:v libx264 -vf fps=30 -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\" -pix_fmt yuv420p " + QuoteCommandArg(outputVideo);
-
-        system(renderVideoCommand.c_str());
-
-        return nullptr;
-    }
-
-public:
-    ZoomRenderer(string filepath, FractalCanvas* fractalCanvas, const int width, const int height, const int totalFrames,
-                 const double zoomSpeed, const double colorSpeed)
-    {
-        _filepath = std::move(filepath);
-        _fractalCanvasPtr = fractalCanvas;
-        _currentFrame = 0;
-        _totalFrames = totalFrames;
-        _width = width;
-        _height = height;
-        _zoomSpeed = zoomSpeed;
-        _colorSpeed = colorSpeed;
-    }
-
-    static string FixedLengthToString(const int i, const int length)
-    {
-        ostringstream ostr;
-        if (i < 0)
-            ostr << '-';
-
-        ostr << setfill('0') << setw(length) << (i < 0 ? -i : i);
-        return ostr.str();
-    }
-
-    int GetProgress() const {
-        return _currentFrame;
-    }
-};
+#include "ZoomRenderer.h"
 
 // ZoomRecorder implementation.
 ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const wxWindowID id, const wxString& title,
@@ -152,7 +43,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _previewFrameText->Wrap(-1);
     previewSizer->Add(_previewFrameText, 0, wxALL, 5);
 
-    _previewSlider = new wxSlider(previewSizer->GetStaticBox(), wxID_ANY, 0, 0, 1800, wxDefaultPosition, wxDefaultSize,
+    _previewSlider = new wxSlider(previewSizer->GetStaticBox(), wxID_ANY, 0, 0, 1799, wxDefaultPosition, wxDefaultSize,
         wxSL_AUTOTICKS | wxSL_BOTTOM | wxSL_HORIZONTAL | wxSL_LABELS);
     previewSizer->Add(_previewSlider, 0, wxALL | wxEXPAND, 5);
     previewAndButtonsSizer->Add(previewSizer, 1, wxEXPAND, 5);
@@ -211,13 +102,6 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     framerateSize->Add(_framesPerSecondText, 0, wxALL, 5);
     optionsSizer->Add(framerateSize, 0, wxEXPAND, 5);
 
-    _zoomSpeedText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Zoom speed:", wxDefaultPosition, wxDefaultSize, 0);
-    _zoomSpeedText->Wrap(-1);
-    optionsSizer->Add(_zoomSpeedText, 0, wxALL, 5);
-
-    _zoomSpeedCtrl = new wxSpinCtrl(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4);
-    optionsSizer->Add(_zoomSpeedCtrl, 0, wxALL, 5);
-
     _rotateCheckbox = new wxCheckBox(optionsSizer->GetStaticBox(), wxID_ANY, "Rotate colors", wxDefaultPosition, wxDefaultSize, 0);
     optionsSizer->Add(_rotateCheckbox, 0, wxALL, 5);
 
@@ -255,7 +139,6 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _minutesSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _secondsSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _framerateSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
-    _zoomSpeedCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnChangeSpeed, this);
     _rotateCheckbox->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &ZoomRecorder::OnColorRotate, this);
     _colorSpeedCtrl->Bind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
@@ -277,7 +160,6 @@ ZoomRecorder::~ZoomRecorder()
     _minutesSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _secondsSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _framerateSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
-    _zoomSpeedCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnChangeSpeed, this);
     _rotateCheckbox->Unbind(wxEVT_COMMAND_CHECKBOX_CLICKED, &ZoomRecorder::OnColorRotate, this);
     _colorSpeedCtrl->Unbind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
@@ -315,20 +197,12 @@ void ZoomRecorder::CreateFractalFactory()
     _outermostZoom = CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, 250, 166);
     _innermostZoom = _fractalCanvasPtr->GetFractalPresenterPtr()->GetCurrentZoom();
 }
-void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const double colorSpeed) const
+void ZoomRecorder::RenderPreview(const int zoom, const double colorSpeed) const
 {
-    const double totalFrames = this->GetTotalFrames();
-    const double zoomSpeedFloat = zoomSpeed;
-
-    Vector2Double outermostLo = _outermostZoom.GetLowerBound();
-    Vector2Double outermostHi = _outermostZoom.GetUpperBound();
-    Vector2Double innermostLo = _innermostZoom.GetLowerBound();
-    Vector2Double innermostHi = _innermostZoom.GetUpperBound();
-
+    const int totalFrames = this->GetTotalFrames();
     const double t = zoom;
-    Rect viewport;
-    viewport.SetLowerBound(outermostLo + (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (innermostLo - outermostLo));
-    viewport.SetUpperBound(outermostHi - (1 - exp(-zoomSpeedFloat * t / totalFrames)) * (outermostHi - innermostHi));
+    const double progress = ZoomRenderer::GetFrameProgress(zoom, totalFrames);
+    const Rect viewport = ZoomRenderer::GetZoomViewport(_outermostZoom, _innermostZoom, progress);
 
     _fractalFactory.GetFractalPtr()->SetView(viewport);
 
@@ -342,22 +216,23 @@ void ZoomRecorder::RenderPreview(const int zoom, const int zoomSpeed, const doub
 void ZoomRecorder::RenderPreview()
 {
     if (_rotateCheckbox->GetValue())
-        this->RenderPreview(_previewSlider->GetValue(), _zoomSpeedCtrl->GetValue(), _colorSpeedCtrl->GetValue());
+        this->RenderPreview(_previewSlider->GetValue(), _colorSpeedCtrl->GetValue());
     else
-        this->RenderPreview(_previewSlider->GetValue(), _zoomSpeedCtrl->GetValue());
+        this->RenderPreview(_previewSlider->GetValue());
 }
 int ZoomRecorder::GetTotalFrames() const
 {
     const int seconds = _secondsSpinCtrl->GetValue();
     const int minutes = _minutesSpinCtrl->GetValue();
     const int framerate = _framerateSpinCtrl->GetValue();
+    const int totalFrames = (60 * minutes + seconds) * framerate;
 
-    return (60 * minutes + seconds) * framerate;
+    return totalFrames > 0 ? totalFrames : 1;
 }
 void ZoomRecorder::UpdateTotalFrames()
 {
     const int totalFrames = this->GetTotalFrames();
-    _previewSlider->SetMax(totalFrames);
+    _previewSlider->SetMax(totalFrames - 1);
     _previewSlider->SetValue(0);
     this->RenderPreview(0);
 }
@@ -368,9 +243,9 @@ void ZoomRecorder::UpdateTotalFrames()
 void ZoomRecorder::OnScrollPreview(wxScrollEvent& event)
 {
     if (_rotateCheckbox->GetValue())
-        this->RenderPreview(event.GetPosition(), _zoomSpeedCtrl->GetValue(), _colorSpeedCtrl->GetValue());
+        this->RenderPreview(event.GetPosition(), _colorSpeedCtrl->GetValue());
     else
-        this->RenderPreview(event.GetPosition(), _zoomSpeedCtrl->GetValue());
+        this->RenderPreview(event.GetPosition());
 }
 void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
 {
@@ -391,7 +266,6 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
 
     // Create ZoomRenderer and execute it.
     const int totalFrames = this->GetTotalFrames();
-    const double zoomSpeed = _zoomSpeedCtrl->GetValue();
     const double colorSpeed = _colorSpeedCtrl->GetValue();
     // wxString::mb_str() returns a wxCharBuffer which cannot be implicitly
     // converted to std::string on GCC.  Explicitly construct the std::string
@@ -399,7 +273,7 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
     const std::string selectedDirPath(selectedFile.mb_str());
 
     wxProgressDialog progressDialog("Generating video...", "Please wait until the process is complete.", totalFrames, this);
-    auto* renderer = new ZoomRenderer(selectedDirPath, _fractalCanvasPtr, 2500, 1660, totalFrames, zoomSpeed, colorSpeed);
+    auto* renderer = new ZoomRenderer(selectedDirPath, _fractalCanvasPtr, 2500, 1660, totalFrames, colorSpeed);
     wxThreadError err = renderer->Create();
 
     if (err != wxTHREAD_NO_ERROR)
@@ -442,10 +316,6 @@ void ZoomRecorder::OnUpdateTotalFrames(wxSpinEvent&)
     this->UpdateTotalFrames();
 }
 void ZoomRecorder::OnColorRotate(wxCommandEvent&)
-{
-    this->RenderPreview();
-}
-void ZoomRecorder::OnChangeSpeed(wxSpinEvent&)
 {
     this->RenderPreview();
 }
