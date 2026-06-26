@@ -10,17 +10,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Use static linking if needed
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-# ------
-# SFML -
-# ------
-include(FetchContent)
-FetchContent_Declare(SFML
-        GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG 2.6.x
-        GIT_SHALLOW ON
-        SYSTEM)
-FetchContent_MakeAvailable(SFML)
-
 # -----------
 # wxWidgets -
 # -----------
@@ -30,6 +19,7 @@ message(STATUS "wxWidgets libraries: ${wxWidgets_LIBRARIES}")
 include(${wxWidgets_USE_FILE})
 
 find_package(doctest CONFIG REQUIRED)
+find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS graphics window system main)
 
 # SymEngine's exported CMake config currently declares compatibility with
 # CMake 2.8.12, which CMake 4 rejects. Keep this workaround local to package
@@ -97,7 +87,6 @@ target_include_directories(wxChaos PRIVATE
 # Definitions
 # -------------------------------------------------------------------
 target_compile_definitions(wxChaos PRIVATE
-        SFML_STATIC
         WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
         WXCHAOS_BUILD_TYPE="$<CONFIG>"
         $<$<CONFIG:Debug>:__WXDEBUG__>
@@ -217,7 +206,6 @@ if(BUILD_TESTING)
     )
 
     target_compile_definitions(wxChaosGuiTests PRIVATE
-            SFML_STATIC
             WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
             $<$<CONFIG:Debug>:__WXDEBUG__>
             _HAS_STD_BYTE=0

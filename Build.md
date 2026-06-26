@@ -1,7 +1,7 @@
 # Build
 
-wxChaos currently builds on Windows with MSVC, CMake, Ninja, wxWidgets, SFML 2.6
-through CMake FetchContent, and several vcpkg dependencies.
+wxChaos currently builds on Windows with MSVC, CMake, Ninja, wxWidgets, SFML
+2.6.2 through vcpkg, and several other vcpkg dependencies.
 
 These notes describe the known-good setup used by the current development tree.
 
@@ -59,10 +59,15 @@ This installs dependencies such as:
 
 - doctest
 - mpfr
+- SFML 2.6.2
 - symengine
 
 The generated `vcpkg_installed` directory is build output. Do not edit it by
 hand.
+
+The manifest pins SFML with a vcpkg override. Keep that override in place while
+the codebase remains on the SFML 2 API; `version>= 2.6.2` alone is only a
+minimum and may otherwise resolve to SFML 3 on newer registries.
 
 ## Configure with CMake
 

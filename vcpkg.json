@@ -1,8 +1,16 @@
 {
+  "builtin-baseline" : "e9f78231ca3bfb81ac6559a586aa2d80120327a6",
   "name" : "wx-chaos",
   "version-string" : "1.0.0",
   "dependencies" : [ "mpfr", "doctest", {
     "name" : "symengine",
     "default-features" : false
+  }, {
+    "name" : "sfml",
+    "version>=" : "2.6.2"
+  } ],
+  "overrides" : [ {
+    "name" : "sfml",
+    "version" : "2.6.2"
   } ]
 }
