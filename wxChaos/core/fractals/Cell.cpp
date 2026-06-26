@@ -14,7 +14,7 @@ Cell::Cell(const unsigned int width, const unsigned int height) : Fractal(width,
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &bailout, "2");
     bailout = 2;
 
     _hasOrbit = true;

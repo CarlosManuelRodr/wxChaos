@@ -61,7 +61,7 @@ namespace AppPaths
 
     wxString ResourceFile(const std::vector<wxString>& pathParts)
     {
-        std::vector<wxString> appPath = {wxT("Resources")};
+        std::vector<wxString> appPath = {"Resources"};
         appPath.insert(appPath.end(), pathParts.begin(), pathParts.end());
         return AppFile(appPath);
     }
@@ -73,7 +73,7 @@ namespace AppPaths
 
     wxString DocFile(const wxString& filename)
     {
-        return AppFile({wxT("Doc"), filename});
+        return AppFile({"Doc", filename});
     }
 
     std::string DocFileStd(const wxString& filename)
@@ -83,12 +83,12 @@ namespace AppPaths
 
     wxString ConfigFile()
     {
-        return AppFile({wxT("config.ini")});
+        return AppFile({"config.ini"});
     }
 
     wxString UserScriptsDir()
     {
-        return AppDirectory({wxT("UserScripts")});
+        return AppDirectory({"UserScripts"});
     }
 
     std::string UserScriptsDirStd()
@@ -98,7 +98,7 @@ namespace AppPaths
 
     wxString UserScriptFile(const wxString& filename)
     {
-        return AppFile({wxT("UserScripts"), filename});
+        return AppFile({"UserScripts", filename});
     }
 
     std::string UserScriptFileStd(const wxString& filename)
@@ -115,7 +115,7 @@ namespace AppPaths
             return scriptFiles;
 
         wxString filename;
-        bool hasFile = directory.GetFirst(&filename, wxT("*.as"), wxDIR_FILES);
+        bool hasFile = directory.GetFirst(&filename, "*.as", wxDIR_FILES);
         while (hasFile)
         {
             scriptFiles.push_back(ToStdPath(filename));
@@ -128,7 +128,7 @@ namespace AppPaths
 
     wxString FfmpegFile()
     {
-        return AppFile({wxT("FFmpeg"), wxT("ffmpeg.exe")});
+        return AppFile({"FFmpeg", "ffmpeg.exe"});
     }
 
     std::string FfmpegFileStd()
@@ -138,7 +138,7 @@ namespace AppPaths
 
     wxString DumpFile()
     {
-        return AppFile({wxT("dump.csv")});
+        return AppFile({"dump.csv"});
     }
 
     wxString Join(const wxString& directory, const wxString& filename)

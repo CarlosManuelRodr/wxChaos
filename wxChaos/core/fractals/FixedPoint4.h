@@ -18,7 +18,7 @@ class FixedPoint4 : public Fractal
 public:
     FixedPoint4(unsigned int width, unsigned int height);
     ~FixedPoint4() override;
-    wxString GetName() const override { return wxT("Fixed Point: z^2"); }
+    wxString GetName() const override { return "Fixed Point: z^2"; }
 
     void Render() override;
     void DrawOrbit() override;

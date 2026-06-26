@@ -18,7 +18,7 @@ class FixedPoint3 : public Fractal
 public:
     FixedPoint3(unsigned int width, unsigned int height);
     ~FixedPoint3() override;
-    wxString GetName() const override { return wxT("Fixed Point: tan(z)"); }
+    wxString GetName() const override { return "Fixed Point: tan(z)"; }
 
     void Render() override;
     void DrawOrbit() override;

@@ -48,7 +48,7 @@ TEST_CASE("wxGradient parses and serializes CSS color stops")
 {
     wxGradient gradient;
 
-    gradient.FromString(wxT("rgb(1,2,3);rgb(4,5,6);"));
+    gradient.FromString("rgb(1,2,3);rgb(4,5,6);");
 
     const std::vector<wxColour> stops = gradient.GetStops();
     REQUIRE(stops.size() == 2);

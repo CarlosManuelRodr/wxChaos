@@ -19,7 +19,7 @@ private:
 public:
     MandelbrotZN(unsigned int width, unsigned int height);
     ~MandelbrotZN() override;
-    wxString GetName() const override { return wxT("Mandelbrot ZN"); }
+    wxString GetName() const override { return "Mandelbrot ZN"; }
 
     void Render() override;
     void DrawOrbit() override;

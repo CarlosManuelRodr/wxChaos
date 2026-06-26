@@ -89,7 +89,7 @@ class ScriptEditor : public wxFrame
     void OnRunScript(wxCommandEvent& event);
     void OnDebugPanel(wxCollapsiblePaneEvent& event);
 public:
-    explicit ScriptEditor(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Script editor"),
+    explicit ScriptEditor(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Script editor",
                           const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 900),
                           long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ScriptEditor() override;

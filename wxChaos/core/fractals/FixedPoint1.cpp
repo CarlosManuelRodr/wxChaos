@@ -20,7 +20,7 @@ FixedPoint1::FixedPoint1(const unsigned int width, const unsigned int height) : 
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &minStep, wxT("0.001"));
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Min step: ", &minStep, "0.001");
     minStep = 0.001;
 
     // Specify algorithms.

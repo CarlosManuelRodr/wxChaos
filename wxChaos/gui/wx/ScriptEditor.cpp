@@ -37,13 +37,13 @@ ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const 
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    const auto scriptNameSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, wxT("Set a name for the script")), wxHORIZONTAL);
+    const auto scriptNameSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, "Set a name for the script"), wxHORIZONTAL);
 
-    _scriptNameText = new wxStaticText(scriptNameSizer->GetStaticBox(), wxID_ANY, wxT("Script name: "), wxDefaultPosition, wxDefaultSize, 0);
+    _scriptNameText = new wxStaticText(scriptNameSizer->GetStaticBox(), wxID_ANY, "Script name: ", wxDefaultPosition, wxDefaultSize, 0);
     _scriptNameText->Wrap(-1);
     scriptNameSizer->Add(_scriptNameText, 0, wxALL, 5);
 
-    _scriptNameCtrl = new wxTextCtrl(scriptNameSizer->GetStaticBox(), wxID_ANY, wxT("MyNewScript"), wxDefaultPosition, wxDefaultSize, 0);
+    _scriptNameCtrl = new wxTextCtrl(scriptNameSizer->GetStaticBox(), wxID_ANY, "MyNewScript", wxDefaultPosition, wxDefaultSize, 0);
     scriptNameSizer->Add(_scriptNameCtrl, 1, wxALL, 5);
 
     mainSizer->Add(scriptNameSizer, 0, wxEXPAND, 5);
@@ -96,7 +96,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     this->SetSizeHints(wxSize(1200, 760), wxDefaultSize);
 
-    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -107,36 +107,36 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     _scriptPanel = new wxPanel(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    const auto scriptListSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, wxT("Scripts")), wxVERTICAL);
+    const auto scriptListSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, "Scripts"), wxVERTICAL);
 
     scriptListSizer->SetMinSize(wxSize(250, -1));
     _scriptsListBox = new wxListBox(scriptListSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, wxLB_ALWAYS_SB | wxLB_HSCROLL);
     scriptListSizer->Add(_scriptsListBox, 1, wxALL | wxEXPAND, 5);
 
-    _saveChangesButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, wxT("Save Changes"), wxDefaultPosition, wxDefaultSize, 0);
+    _saveChangesButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Save Changes", wxDefaultPosition, wxDefaultSize, 0);
 
     _saveChangesButton->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR));
     _saveChangesButton->Enable(false);
 
     scriptListSizer->Add(_saveChangesButton, 0, wxALL | wxEXPAND, 5);
 
-    _newButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, wxT("New script"), wxDefaultPosition, wxDefaultSize, 0);
+    _newButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "New script", wxDefaultPosition, wxDefaultSize, 0);
 
     _newButton->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR));
     scriptListSizer->Add(_newButton, 0, wxALL | wxEXPAND, 5);
 
-    _removeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, wxT("Delete script"), wxDefaultPosition, wxDefaultSize, 0);
+    _removeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Delete script", wxDefaultPosition, wxDefaultSize, 0);
 
     _removeButton->SetBitmap(wxArtProvider::GetBitmap(wxART_DELETE, wxART_TOOLBAR));
     scriptListSizer->Add(_removeButton, 0, wxALL | wxEXPAND, 5);
 
-    _closeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, wxT("Close and reload"), wxDefaultPosition, wxDefaultSize, 0);
+    _closeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Close and reload", wxDefaultPosition, wxDefaultSize, 0);
 
     _closeButton->SetBitmap(wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR));
     scriptListSizer->Add(_closeButton, 0, wxALL | wxEXPAND, 5);
     panelSizer->Add(scriptListSizer, 0, wxEXPAND, 5);
 
-    const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, wxT("Code editor")), wxVERTICAL);
+    const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, "Code editor"), wxVERTICAL);
 
     _codeEditor = new wxStyledTextCtrl(codeSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString);
     _codeEditor->SetUseTabs(false);
@@ -152,29 +152,29 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     _codeEditor->SetMarginMask(1, wxSTC_MASK_FOLDERS);
     _codeEditor->SetMarginWidth(1, 16);
     _codeEditor->SetMarginSensitive(1, true);
-    _codeEditor->SetProperty(wxT("fold"), wxT("1"));
+    _codeEditor->SetProperty("fold", "1");
     _codeEditor->SetFoldFlags(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED);
     _codeEditor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
-    _codeEditor->SetMarginWidth(0, _codeEditor->TextWidth(wxSTC_STYLE_LINENUMBER, wxT("_99999")));
+    _codeEditor->SetMarginWidth(0, _codeEditor->TextWidth(wxSTC_STYLE_LINENUMBER, "_99999"));
     _codeEditor->MarkerDefine(wxSTC_MARKNUM_FOLDER, wxSTC_MARK_BOXPLUS);
-    _codeEditor->MarkerSetBackground(wxSTC_MARKNUM_FOLDER, wxColour(wxT("BLACK")));
-    _codeEditor->MarkerSetForeground(wxSTC_MARKNUM_FOLDER, wxColour(wxT("WHITE")));
+    _codeEditor->MarkerSetBackground(wxSTC_MARKNUM_FOLDER, wxColour("BLACK"));
+    _codeEditor->MarkerSetForeground(wxSTC_MARKNUM_FOLDER, wxColour("WHITE"));
     _codeEditor->MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN, wxSTC_MARK_BOXMINUS);
-    _codeEditor->MarkerSetBackground(wxSTC_MARKNUM_FOLDEROPEN, wxColour(wxT("BLACK")));
-    _codeEditor->MarkerSetForeground(wxSTC_MARKNUM_FOLDEROPEN, wxColour(wxT("WHITE")));
+    _codeEditor->MarkerSetBackground(wxSTC_MARKNUM_FOLDEROPEN, wxColour("BLACK"));
+    _codeEditor->MarkerSetForeground(wxSTC_MARKNUM_FOLDEROPEN, wxColour("WHITE"));
     _codeEditor->MarkerDefine(wxSTC_MARKNUM_FOLDERSUB, wxSTC_MARK_EMPTY);
     _codeEditor->MarkerDefine(wxSTC_MARKNUM_FOLDEREND, wxSTC_MARK_BOXPLUS);
-    _codeEditor->MarkerSetBackground(wxSTC_MARKNUM_FOLDEREND, wxColour(wxT("BLACK")));
-    _codeEditor->MarkerSetForeground(wxSTC_MARKNUM_FOLDEREND, wxColour(wxT("WHITE")));
+    _codeEditor->MarkerSetBackground(wxSTC_MARKNUM_FOLDEREND, wxColour("BLACK"));
+    _codeEditor->MarkerSetForeground(wxSTC_MARKNUM_FOLDEREND, wxColour("WHITE"));
     _codeEditor->MarkerDefine(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_BOXMINUS);
-    _codeEditor->MarkerSetBackground(wxSTC_MARKNUM_FOLDEROPENMID, wxColour(wxT("BLACK")));
-    _codeEditor->MarkerSetForeground(wxSTC_MARKNUM_FOLDEROPENMID, wxColour(wxT("WHITE")));
+    _codeEditor->MarkerSetBackground(wxSTC_MARKNUM_FOLDEROPENMID, wxColour("BLACK"));
+    _codeEditor->MarkerSetForeground(wxSTC_MARKNUM_FOLDEROPENMID, wxColour("WHITE"));
     _codeEditor->MarkerDefine(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY);
     _codeEditor->MarkerDefine(wxSTC_MARKNUM_FOLDERTAIL, wxSTC_MARK_EMPTY);
     _codeEditor->SetSelBackground(true, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
     _codeEditor->SetSelForeground(true, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT));
 
-    const auto font = wxFont(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Consolas"));
+    const auto font = wxFont(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Consolas");
     _codeEditor->StyleSetFont(wxSTC_STYLE_DEFAULT, font);
     this->SetUpLexer();
     codeSizer->Add(_codeEditor, 1, wxEXPAND | wxALL, 5);
@@ -186,7 +186,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     panelSizer->Fit(_scriptPanel);
     mainPanelSizer->Add(_scriptPanel, 1, wxEXPAND | wxALL, 5);
 
-    _debugCollapsiblePane = new wxGenericCollapsiblePane(_mainPanel, wxID_ANY, wxT("Debugger"), wxDefaultPosition, wxDefaultSize,
+    _debugCollapsiblePane = new wxGenericCollapsiblePane(_mainPanel, wxID_ANY, "Debugger", wxDefaultPosition, wxDefaultSize,
                                                    wxCP_DEFAULT_STYLE | wxCP_NO_TLW_RESIZE);
     _debugCollapsiblePane->Collapse(true);
     _debugCollapsiblePane->SetMinSize(wxSize(750, -1));
@@ -196,36 +196,36 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     _debugPanel = new wxPanel(_debugCollapsiblePane->GetPane(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto debugElementsSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    const auto debugButtonsSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, wxT("Actions")), wxVERTICAL);
+    const auto debugButtonsSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, "Actions"), wxVERTICAL);
 
-    _validateButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, wxT("Validate"), wxDefaultPosition, wxDefaultSize, 0);
+    _validateButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, "Validate", wxDefaultPosition, wxDefaultSize, 0);
 
     _validateButton->SetBitmap(wxArtProvider::GetBitmap(wxART_WARNING, wxART_TOOLBAR));
     debugButtonsSizer->Add(_validateButton, 0, wxALL | wxEXPAND, 5);
 
-    _runButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, wxT("Run"), wxDefaultPosition, wxDefaultSize, 0);
+    _runButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, "Run", wxDefaultPosition, wxDefaultSize, 0);
 
-    _runButton->SetBitmap(wxBitmap(AppPaths::ResourceFile({wxT("play.png")}), wxBITMAP_TYPE_ANY));
+    _runButton->SetBitmap(wxBitmap(AppPaths::ResourceFile({"play.png"}), wxBITMAP_TYPE_ANY));
     debugButtonsSizer->Add(_runButton, 0, wxALL | wxEXPAND, 5);
     debugElementsSizer->Add(debugButtonsSizer, 0, wxEXPAND, 5);
 
-    const auto consoleSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, wxT("Console")), wxVERTICAL);
+    const auto consoleSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, "Console"), wxVERTICAL);
     consoleSizer->SetMinSize(wxSize(300, -1));
 
     _console = new wxRichTextCtrl(consoleSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 
                                  wxTE_READONLY | wxVSCROLL | wxHSCROLL | wxNO_BORDER | wxWANTS_CHARS);
     _console->SetMinSize(wxSize(300, -1));
-    _console->SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Consolas")));
+    _console->SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Consolas"));
     _console->SetBackgroundColour(wxColour(37, 52, 80));
     this->ConsoleSetWelcomeText();
 
     consoleSizer->Add(_console, 1, wxEXPAND | wxALL, 5);
     debugElementsSizer->Add(consoleSizer, 1, wxEXPAND, 5);
 
-    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, wxT("Preview")), wxVERTICAL);
+    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, "Preview"), wxVERTICAL);
 
     _renderPreviewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY, 
-                                             wxBitmap(AppPaths::ResourceFile({wxT("fractal_thumbnail.png")}), wxBITMAP_TYPE_ANY),
+                                             wxBitmap(AppPaths::ResourceFile({"fractal_thumbnail.png"}), wxBITMAP_TYPE_ANY),
                                              wxDefaultPosition, wxDefaultSize, 0);
     previewSizer->Add(_renderPreviewBitmap, 0, wxALL, 5);
     debugElementsSizer->Add(previewSizer, 0, wxEXPAND, 5);
@@ -297,7 +297,7 @@ void ScriptEditor::SetUpLexer() const
 
     // Give a list of keywords. They will be given the style specified for
     // wxSTC_C_WORD items.
-    _codeEditor->SetKeyWords(0, wxT("void bool int char complex float double"));
+    _codeEditor->SetKeyWords(0, "void bool int char complex float double");
 }
 void ScriptEditor::FetchUserScripts()
 {
@@ -402,7 +402,7 @@ void ScriptEditor::OnCodeChange(wxKeyEvent& event)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnValidateScript(wxCommandEvent&)
 {
-    this->ConsolePrepareInput(wxT("Validate script"));
+    this->ConsolePrepareInput("Validate script");
     this->ConsolePrepareOutput();
 
     AngelscriptConfigurationEngine configEngine;
@@ -418,7 +418,7 @@ void ScriptEditor::OnValidateScript(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnRunScript(wxCommandEvent&)
 {
-    this->ConsolePrepareInput(wxT("Run script"));
+    this->ConsolePrepareInput("Run script");
 
     // Start timer
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -439,7 +439,7 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
         scriptFractal.ClearErrorInfo();
     }
     else
-        this->ConsoleSetText(wxString("Time elapsed: ") << elapsed.count() << wxT(" milliseconds"));
+        this->ConsoleSetText(wxString("Time elapsed: ") << elapsed.count() << " milliseconds");
 }
 void ScriptEditor::OnDebugPanel(wxCollapsiblePaneEvent&)
 {
@@ -469,20 +469,20 @@ void ScriptEditor::ConsoleSetText(const wxString& text) const
 void ScriptEditor::ConsoleSetWelcomeText() const
 {
     _console->BeginTextColour(wxColour(255, 255, 255));
-    _console->WriteText(wxT("wxChaos "));
+    _console->WriteText("wxChaos ");
     _console->WriteText(wxString::FromUTF8(APP_VERSION));
-    _console->WriteText(wxT(" Console\n=====================\n"));
+    _console->WriteText(" Console\n=====================\n");
     _console->EndTextColour();
 }
 void ScriptEditor::ConsolePrepareInput(const wxString& command) const
 {
     _console->BeginTextColour(wxColour(15, 181, 57));
-    _console->WriteText(wxString("\nInput << ") << command << wxT("\n"));
+    _console->WriteText(wxString("\nInput << ") << command << "\n");
     _console->EndTextColour();
 }
 void ScriptEditor::ConsolePrepareOutput() const
 {
     _console->BeginTextColour(wxColour(172, 181, 15));
-    _console->WriteText(wxT("Output >> \n"));
+    _console->WriteText("Output >> \n");
     _console->EndTextColour();
 }

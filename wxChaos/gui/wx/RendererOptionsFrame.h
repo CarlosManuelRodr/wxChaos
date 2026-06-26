@@ -114,7 +114,7 @@ public:
     ///@param size Initial frame size.
     ///@param windowStyle wxWidgets frame style flags.
     RendererOptionsFrame(FractalPresenter* presenter, wxWindow* parent,
-                         std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = wxT("Renderer options"),
+                         std::function<void(const Options&)> optionsChanged = {}, wxWindowID id = wxID_ANY, const wxString& title = "Renderer options",
                          const wxPoint& pos = wxDefaultPosition, const wxSize& size = RendererOptionsFrameSize,
                          long windowStyle = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU | wxTAB_TRAVERSAL | wxRESIZE_BORDER);
     ///@brief Sets the target fractal.

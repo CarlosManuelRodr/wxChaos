@@ -16,7 +16,7 @@ class Sinusoidal : public Fractal
 public:
     Sinusoidal(unsigned int width, unsigned int height);
     ~Sinusoidal() override;
-    wxString GetName() const override { return wxT("Sine"); }
+    wxString GetName() const override { return "Sine"; }
 
     void Render() override;
     void DrawOrbit() override;

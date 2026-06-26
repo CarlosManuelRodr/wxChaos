@@ -66,7 +66,7 @@ class FormulaDialog : public wxDialog
 public:
     FormulaDialog(int userDefinedId, int fPUserDefinedId, int newtonUserDefinedId, wxMenuItem* juliaSlider,
                   wxMenuItem* juliaManual, bool* active, FractalCanvas* fCanvas, wxWindow* parent,
-                  wxWindowID id = wxID_ANY, const wxString& title = wxT("User formula"), const wxPoint& pos = wxDefaultPosition,
+                  wxWindowID id = wxID_ANY, const wxString& title = "User formula", const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
     ~FormulaDialog() override;
 };

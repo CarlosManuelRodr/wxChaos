@@ -15,17 +15,17 @@ DoublePendulum::DoublePendulum(unsigned int width, unsigned int height) : Fracta
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" θ1 Bailout"), &th1Bailout, wxT("true"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Value: "), &th1NumBailout, wxT("3.14159"));
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" θ2 Bailout"), &th2Bailout, wxT("true"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Value: "), &th2NumBailout, wxT("3.14159"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("DeltaT: "), &dt, wxT("0.005"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m1: "), &m1, wxT("10"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("m2: "), &m2, wxT("10"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Longitude: "), &l, wxT("20"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Gravity: "), &g, wxT("9.81"));
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Relative angles"), &referenced, wxT("false"));
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, wxT(" Runge-Kutta"), &rungeKutta, wxT("false"));
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, " θ1 Bailout", &th1Bailout, "true");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Value: ", &th1NumBailout, "3.14159");
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, " θ2 Bailout", &th2Bailout, "true");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Value: ", &th2NumBailout, "3.14159");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "DeltaT: ", &dt, "0.005");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "m1: ", &m1, "10");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "m2: ", &m2, "10");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Longitude: ", &l, "20");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Gravity: ", &g, "9.81");
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, " Relative angles", &referenced, "false");
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, " Runge-Kutta", &rungeKutta, "false");
     th1Bailout = true;
     th2Bailout = true;
     th1NumBailout = 3.14159;

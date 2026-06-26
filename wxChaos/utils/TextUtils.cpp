@@ -24,7 +24,7 @@ namespace TextUtils
 
     wxString ToWxString(const int value)
     {
-        return wxString::Format(wxT("%d"), value);
+        return wxString::Format("%d", value);
     }
 
     wxString ToWxString(const double value)

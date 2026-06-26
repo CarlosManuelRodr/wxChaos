@@ -18,7 +18,7 @@ class UserDefinedFixedPoint : public Fractal
 public:
     UserDefinedFixedPoint(unsigned int width, unsigned int height);
     ~UserDefinedFixedPoint() override;
-    wxString GetName() const override { return wxT("User Defined Fixed Point"); }
+    wxString GetName() const override { return "User Defined Fixed Point"; }
 
     void Render() override;
     void SetFormula(FormulaOptions formula) override;        ///< Sets user formula.

@@ -75,7 +75,7 @@ void UserDefinedNewtonRenderer::Render()
     if (!HasCompiledFormula())
     {
         if (_errorInfo.empty())
-            _errorInfo = wxT("Could not compile Newton formula.");
+            _errorInfo = "Could not compile Newton formula.";
         FillFailedRegion();
         return;
     }
@@ -153,7 +153,7 @@ void UserDefinedNewtonRenderer::Render()
     }
     catch (const mup::ParserError& e)
     {
-        _errorInfo = wxT("Could not compile derivative expression.\n");
+        _errorInfo = "Could not compile derivative expression.\n";
         _errorInfo += wxString(e.GetMsg());
         FillFailedRegion();
     }

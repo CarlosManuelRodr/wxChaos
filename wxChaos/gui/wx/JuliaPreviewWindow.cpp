@@ -64,8 +64,8 @@ void JuliaPreviewWindow::HandleEvent()
         {
             if (_event.key.code == sf::Keyboard::F4)
             {
-                const auto openFileDialog = new wxFileDialog(nullptr, wxT("Select file name"), wxT(""), wxT("fractal.png"),
-                                                             wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);    // Txt: "Select a file name"
+                const auto openFileDialog = new wxFileDialog(nullptr, "Select file name", "", "fractal.png",
+                                                             "PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp", wxFD_SAVE);    // Txt: "Select a file name"
                 if (openFileDialog->ShowModal() == wxID_OK)
                 {
                     wxString fileName = openFileDialog->GetPath();

@@ -15,7 +15,7 @@ class Julia: public Fractal
 public:
     Julia(unsigned int width, unsigned int height);
     ~Julia();
-    wxString GetName() const override { return wxT("Julia"); }
+    wxString GetName() const override { return "Julia"; }
 
     void Render();
     void DrawOrbit();

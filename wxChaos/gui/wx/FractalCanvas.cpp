@@ -10,7 +10,7 @@ wxDEFINE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 
 wxString FractalCanvas::FormatStatusCoordinate(const double value)
 {
-    return wxString::Format(wxT("%.15g"), value);
+    return wxString::Format("%.15g", value);
 }
 
 // Fractal Canvas
@@ -48,7 +48,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     // UserFormula
     _userFormula.bailout = 2;
     _userFormula.julia = false;
-    _userFormula.userFormula = wxT("z = z^2 + c");
+    _userFormula.userFormula = "z = z^2 + c";
     _userFormula.type = FormulaType::Complex;
 
     // Create fractal.
@@ -65,8 +65,8 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _selection = new SelectionRect();
 
     _play = new ToggleButton(
-        AppPaths::ResourceFileStd({wxT("Play.tga")}),
-        AppPaths::ResourceFileStd({wxT("Stop.tga")}),
+        AppPaths::ResourceFileStd({"Play.tga"}),
+        AppPaths::ResourceFileStd({"Stop.tga"}),
         0,
         4,
         this);
@@ -74,9 +74,9 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _play->Resize(this);
 
     _screenPointer = new CoordinateSelector(this);
-    _keyboardImage.loadFromFile(AppPaths::ResourceFileStd({wxT("keyboard.png")}));
-    _mouseImage.loadFromFile(AppPaths::ResourceFileStd({wxT("mouse.png")}));
-    _helpImage.loadFromFile(AppPaths::ResourceFileStd({wxT("HelpImage.png")}));
+    _keyboardImage.loadFromFile(AppPaths::ResourceFileStd({"keyboard.png"}));
+    _mouseImage.loadFromFile(AppPaths::ResourceFileStd({"mouse.png"}));
+    _helpImage.loadFromFile(AppPaths::ResourceFileStd({"HelpImage.png"}));
 
     _keyboardTexture.loadFromImage(_keyboardImage);
     _mouseTexture.loadFromImage(_mouseImage);
@@ -141,7 +141,7 @@ void FractalCanvas::EnsureFontLoaded()
     if (!_font.getInfo().family.empty())
         return;
 
-    _font.loadFromFile(AppPaths::ResourceFileStd({wxT("PublicSans-Regular.otf")}));
+    _font.loadFromFile(AppPaths::ResourceFileStd({"PublicSans-Regular.otf"}));
     _iterationsText.setFont(_font);
     _renderingText.setFont(_font);
 }
@@ -259,23 +259,23 @@ wxString FractalCanvas::BuildStatusText() const
     {
         if (_type == FractalType::DoublePendulum)
         {
-            text = wxT("θ2: ");
+            text = "θ2: ";
             text += FormatStatusCoordinate(_target->GetX(_lastMousePosition.x));
-            text += wxT("   θ1: ");
+            text += "   θ1: ";
             text += FormatStatusCoordinate(_target->GetY(_lastMousePosition.y));
         }
         else if (_type == FractalType::SierpinskiTriangle || _type == FractalType::ScriptFractal)
         {
-            text = wxT("x: ");
+            text = "x: ";
             text += FormatStatusCoordinate(_target->GetX(_lastMousePosition.x));
-            text += wxT("   y: ");
+            text += "   y: ";
             text += FormatStatusCoordinate(_target->GetY(_lastMousePosition.y));
         }
         else
         {
-            text = wxT("Real: ");
+            text = "Real: ";
             text += FormatStatusCoordinate(_target->GetX(_lastMousePosition.x));
-            text += wxT("   Imaginary: ");
+            text += "   Imaginary: ";
             text += FormatStatusCoordinate(_target->GetY(_lastMousePosition.y));
         }
     }
@@ -283,11 +283,11 @@ wxString FractalCanvas::BuildStatusText() const
     if (_target->IsHighPrecisionRenderActive())
     {
         if (!text.empty())
-            text += wxT("   ");
+            text += "   ";
 
-        text += wxT("Multiprecision: ");
-        text += wxString::Format(wxT("%u"), _target->GetHighPrecisionRenderBits());
-        text += wxT("-bit");
+        text += "Multiprecision: ";
+        text += wxString::Format("%u", _target->GetHighPrecisionRenderBits());
+        text += "-bit";
     }
 
     return text;
@@ -367,8 +367,8 @@ void FractalCanvas::OnUpdate()
                 }
                 if (_event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
-                    const auto openFileDialog = new wxFileDialog(this, wxT("Select file name"), wxT(""),
-                        wxT("fractal.png"), wxT("PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp"), wxFD_SAVE);
+                    const auto openFileDialog = new wxFileDialog(this, "Select file name", "",
+                        "fractal.png", "PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp", wxFD_SAVE);
                     if (openFileDialog->ShowModal() == wxID_OK)
                     {
                         wxString fileName;

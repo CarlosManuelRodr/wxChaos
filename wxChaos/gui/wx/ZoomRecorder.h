@@ -59,7 +59,7 @@ class ZoomRecorder : public wxDialog
     void UpdateTotalFrames();
     [[nodiscard]] int GetTotalFrames() const;
 public:
-    ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Zoom recorder"),
+    ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Zoom recorder",
                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(960, 720),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ZoomRecorder() override;

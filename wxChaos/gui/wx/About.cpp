@@ -46,7 +46,7 @@ void AboutDialog::CreateControls()
     constexpr int bannerHeight = 160;
     const wxSize bannerSize(bannerWidth, bannerHeight);
     _bannerImage.LoadFile(
-        AppPaths::ResourceFile({wxT("wxChaosAbout.png")}),
+        AppPaths::ResourceFile({"wxChaosAbout.png"}),
         wxBITMAP_TYPE_PNG);
     wxASSERT_MSG(_bannerImage.IsOk(), _("Could not load the About banner"));
 
@@ -85,12 +85,12 @@ void AboutDialog::CreateControls()
         content,
         wxID_ANY,
         _("Source code"),
-        wxT("https://github.com/CarlosManuelRodr/wxChaos"));
+        "https://github.com/CarlosManuelRodr/wxChaos");
     auto* emailLink = new wxHyperlinkCtrl(
         content,
         wxID_ANY,
         _("Contact the author"),
-        wxT("mailto:fis.carlosmanuel@gmail.com"));
+        "mailto:fis.carlosmanuel@gmail.com");
     sourceLink->SetNormalColour(accent);
     emailLink->SetNormalColour(accent);
     links->Add(sourceLink);
@@ -119,7 +119,7 @@ void AboutDialog::CreateControls()
             _("Application"),
             {
                 {_("Version"), wxString::FromUTF8(APP_VERSION)},
-                {_("Build"), wxString::Format(wxT("%s (%s)"), GetBuildType(), GetArchitecture())},
+                {_("Build"), wxString::Format("%s (%s)", GetBuildType(), GetArchitecture())},
                 {_("Compiler"), GetCompiler()},
             }),
         1,
@@ -130,10 +130,10 @@ void AboutDialog::CreateControls()
         addSection(
             _("Built with"),
             {
-                {wxT("wxWidgets"), wxVERSION_STRING},
-                {wxT("SFML"), wxString::Format(wxT("%d.%d.%d"), SFML_VERSION_MAJOR, SFML_VERSION_MINOR, SFML_VERSION_PATCH)},
-                {wxT("AngelScript"), wxString::FromUTF8(ANGELSCRIPT_VERSION_STRING)},
-                {wxT("muParserX"), wxString(MUP_PARSER_VERSION)},
+                {"wxWidgets", wxVERSION_STRING},
+                {"SFML", wxString::Format("%d.%d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR, SFML_VERSION_PATCH)},
+                {"AngelScript", wxString::FromUTF8(ANGELSCRIPT_VERSION_STRING)},
+                {"muParserX", wxString(MUP_PARSER_VERSION)},
             }),
         1,
         wxEXPAND | wxLEFT,
@@ -209,34 +209,34 @@ wxString AboutDialog::GetBuildType()
 #ifdef WXCHAOS_BUILD_TYPE
     return wxString::FromUTF8(WXCHAOS_BUILD_TYPE);
 #elif defined(NDEBUG)
-    return wxT("Release");
+    return "Release";
 #else
-    return wxT("Debug");
+    return "Debug";
 #endif
 }
 
 wxString AboutDialog::GetArchitecture()
 {
 #if defined(_M_X64) || defined(__x86_64__)
-    return wxT("x64");
+    return "x64";
 #elif defined(_M_IX86) || defined(__i386__)
-    return wxT("x86");
+    return "x86";
 #elif defined(_M_ARM64) || defined(__aarch64__)
-    return wxT("ARM64");
+    return "ARM64";
 #else
-    return wxT("unknown architecture");
+    return "unknown architecture";
 #endif
 }
 
 wxString AboutDialog::GetCompiler()
 {
 #if defined(_MSC_VER)
-    return wxString::Format(wxT("MSVC %d.%02d"), _MSC_VER / 100, _MSC_VER % 100);
+    return wxString::Format("MSVC %d.%02d", _MSC_VER / 100, _MSC_VER % 100);
 #elif defined(__clang__)
-    return wxString::Format(wxT("Clang %d.%d.%d"), __clang_major__, __clang_minor__, __clang_patchlevel__);
+    return wxString::Format("Clang %d.%d.%d", __clang_major__, __clang_minor__, __clang_patchlevel__);
 #elif defined(__GNUC__)
-    return wxString::Format(wxT("GCC %d.%d.%d"), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+    return wxString::Format("GCC %d.%d.%d", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #else
-    return wxT("Unknown compiler");
+    return "Unknown compiler";
 #endif
 }

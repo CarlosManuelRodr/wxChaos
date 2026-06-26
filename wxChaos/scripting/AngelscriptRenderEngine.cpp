@@ -12,7 +12,7 @@ AngelscriptRenderEngine::AngelscriptRenderEngine()
     engine->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, true);
     if (engine == nullptr)
     {
-        errorInfo = wxT("Failed to create Angelscript engine.");
+        errorInfo = "Failed to create Angelscript engine.";
         status = EngineStatus::Error;
         return;
     }
@@ -43,7 +43,7 @@ bool AngelscriptRenderEngine::RegisterGlobalVariable(const char* declaration, vo
     {
         engine->Release();
         engine = nullptr;
-        errorInfo = wxT("Error while registering global variable.");
+        errorInfo = "Error while registering global variable.";
         status = EngineStatus::Error;
         return false;
     }
@@ -58,7 +58,7 @@ bool AngelscriptRenderEngine::CompileFromPath(std::string path)
     {
         engine->Release();
         engine = nullptr;
-        errorInfo = wxT("Compile error.");
+        errorInfo = "Compile error.";
         status = EngineStatus::Error;
         return false;
     }
@@ -70,7 +70,7 @@ bool AngelscriptRenderEngine::Execute()
     ctx = engine->CreateContext();
     if (ctx == nullptr)
     {
-        errorInfo = wxT("Failed to create the context.");
+        errorInfo = "Failed to create the context.";
         engine->Release();
         status = EngineStatus::Error;
         return false;
@@ -79,7 +79,7 @@ bool AngelscriptRenderEngine::Execute()
     asIScriptFunction* renderFunc = engine->GetModule(nullptr)->GetFunctionByDecl("void Render()");
     if (renderFunc == nullptr)
     {
-        errorInfo = wxT("The function 'Render' was not found.");
+        errorInfo = "The function 'Render' was not found.";
         ctx->Release();
         engine->Release();
         status = EngineStatus::Error;
@@ -91,7 +91,7 @@ bool AngelscriptRenderEngine::Execute()
     int r = ctx->Prepare(renderFunc);
     if (r < 0)
     {
-        errorInfo = wxT("Failed to prepare the context.");
+        errorInfo = "Failed to prepare the context.";
         status = EngineStatus::Error;
         ctx->Release();
         engine->Release();

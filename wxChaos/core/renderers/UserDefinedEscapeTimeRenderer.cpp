@@ -69,7 +69,7 @@ void UserDefinedEscapeTimeRenderer::Render()
     catch (mup::ParserError& e)
     {
         // Reports error and fill screen with null values.
-        errorInfo = wxT("Error: ");
+        errorInfo = "Error: ";
         errorInfo += wxString(e.GetMsg());
 
         for (int y=_heightOrigin; y<_heightFinal; y++)

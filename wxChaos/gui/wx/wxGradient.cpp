@@ -102,7 +102,7 @@ void wxGradient::FromString(wxString str)
 
 wxString wxGradient::ToString()
 {
-    wxString str = wxT("");
+    wxString str = "";
     for (auto itr = _stops.begin(); itr!=_stops.end(); ++itr)
     {
         str.Append(itr->GetAsString(wxC2S_CSS_SYNTAX));

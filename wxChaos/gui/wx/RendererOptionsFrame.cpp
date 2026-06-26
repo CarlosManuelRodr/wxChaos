@@ -14,7 +14,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
                                  : wxFrame(parent, id, title, pos, size, windowStyle)
 {
     // Constructs the ColorFrame. Gets color values from the target fractal so the frame parameters match the fractal parameters.
-    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     _fractalPresenter = presenter;
@@ -30,7 +30,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     const auto mainSizer = new wxBoxSizer(wxHORIZONTAL);
     auto* setSizer = new wxBoxSizer(wxVERTICAL);
 
-    _algorithmText = new wxStaticText(_mainPanel, wxID_ANY, wxT("Color algorithm"), wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Color algorithm"
+    _algorithmText = new wxStaticText(_mainPanel, wxID_ANY, "Color algorithm", wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Color algorithm"
     _algorithmText->Wrap(-1);
     setSizer->Add(_algorithmText, 0, wxALL, 5);
 
@@ -47,7 +47,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
 
     setSizer->Add(_algorithmChoice, 0, wxALL|wxEXPAND, 5);
 
-    _renderingPrecisionText = new wxStaticText(_mainPanel, wxID_ANY, wxT("Rendering precision"), wxDefaultPosition, wxDefaultSize, 0);
+    _renderingPrecisionText = new wxStaticText(_mainPanel, wxID_ANY, "Rendering precision", wxDefaultPosition, wxDefaultSize, 0);
     _renderingPrecisionText->Wrap(-1);
     setSizer->Add(_renderingPrecisionText, 0, wxALL, 5);
 
@@ -55,41 +55,41 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     setSizer->Add(_renderingPrecisionChoice, 0, wxALL | wxEXPAND, 5);
     SyncRenderingPrecisionControl();
 
-    _optionsText = new wxStaticText(_mainPanel, wxID_ANY, wxT("Options"), wxDefaultPosition, wxDefaultSize, 0);
+    _optionsText = new wxStaticText(_mainPanel, wxID_ANY, "Options", wxDefaultPosition, wxDefaultSize, 0);
     _optionsText->Wrap(-1);
     setSizer->Add(_optionsText, 0, wxALL, 5);
 
-    _relativeCheck = new wxCheckBox(_mainPanel, wxID_ANY, wxT(" Relative colors"), wxDefaultPosition, wxDefaultSize, 0);
+    _relativeCheck = new wxCheckBox(_mainPanel, wxID_ANY, " Relative colors", wxDefaultPosition, wxDefaultSize, 0);
     _relativeCheck->SetValue(_target->GetRelativeColorMode());
     setSizer->Add(_relativeCheck, 0, wxALL, 5);
 
-    _colorFractal = new wxCheckBox(_mainPanel, wxID_ANY, wxT(" Fractal color (external color)"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorFractal = new wxCheckBox(_mainPanel, wxID_ANY, " Fractal color (external color)", wxDefaultPosition, wxDefaultSize, 0);
     _colorFractal->SetValue(_target->GetExteriorColorMode());
     setSizer->Add(_colorFractal, 0, wxALL, 5);
 
-    _colorSet = new wxCheckBox(_mainPanel, wxID_ANY, wxT(" Set color (internal color)"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorSet = new wxCheckBox(_mainPanel, wxID_ANY, " Set color (internal color)", wxDefaultPosition, wxDefaultSize, 0);
     _colorSet->SetValue(_target->GetInteriorColorMode());
     setSizer->Add(_colorSet, 0, wxALL, 5);
 
-    _orbitTrap = new wxCheckBox(_mainPanel, wxID_ANY, wxT(" Orbit traps"), wxDefaultPosition, wxDefaultSize, 0);
+    _orbitTrap = new wxCheckBox(_mainPanel, wxID_ANY, " Orbit traps", wxDefaultPosition, wxDefaultSize, 0);
     _orbitTrap->Enable(_target->HasOrbitTrapMode());
     _orbitTrap->SetValue(_target->OrbitTrapActivated());
     setSizer->Add(_orbitTrap, 0, wxALL, 5);
 
-    _smoothRender = new wxCheckBox(_mainPanel, wxID_ANY, wxT(" Smooth render"), wxDefaultPosition, wxDefaultSize, 0);
+    _smoothRender = new wxCheckBox(_mainPanel, wxID_ANY, " Smooth render", wxDefaultPosition, wxDefaultSize, 0);
     _smoothRender->Enable(_target->HasSmoothRenderMode());
     _smoothRender->SetValue(_target->SmoothRenderActivated());
 
     setSizer->Add(_smoothRender, 0, wxALL, 5);
 
-    _colorVarText = new wxStaticText(_mainPanel, wxID_ANY, wxT("Color variation"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorVarText = new wxStaticText(_mainPanel, wxID_ANY, "Color variation", wxDefaultPosition, wxDefaultSize, 0);
     _colorVarText->Wrap(-1);
     setSizer->Add(_colorVarText, 0, wxALL, 5);
 
     _colorVarSlider = new wxSlider(_mainPanel, wxID_ANY, 0, 0, 300, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
     setSizer->Add(_colorVarSlider, 0, wxALL|wxEXPAND, 5);
 
-    auto* colorSetSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, wxT("Set color")), wxVERTICAL);
+    auto* colorSetSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Set color"), wxVERTICAL);
 
     wxString text = L"Red: ";
     _setColor = _target->GetSetColor();
@@ -101,7 +101,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _redSetSld = new wxSlider(_mainPanel, wxID_ANY, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
     colorSetSizer->Add(_redSetSld, 0, wxALL|wxEXPAND, 5);
 
-    text = wxT("Green: ");
+    text = "Green: ";
     text += TextUtils::ToWxString(_setColor.g);
     _greenSetText = new wxStaticText(_mainPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     _greenSetText->Wrap(-1);
@@ -110,7 +110,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _greenSetSld = new wxSlider(_mainPanel, wxID_ANY, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
     colorSetSizer->Add(_greenSetSld, 0, wxALL|wxEXPAND, 5);
 
-    text = wxT("Blue: ");
+    text = "Blue: ";
     text += TextUtils::ToWxString(_setColor.b);
     _blueSetText = new wxStaticText(_mainPanel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 0);
     _blueSetText->Wrap(-1);
@@ -121,7 +121,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
 
     setSizer->Add(colorSetSizer, 1, wxEXPAND, 5);
 
-    _okButton = new wxButton(_mainPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);
+    _okButton = new wxButton(_mainPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
     setSizer->Add(_okButton, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     mainSizer->Add(setSizer, 1, wxEXPAND, 5);
@@ -130,25 +130,25 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _gradientPanel = new wxPanel(_typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     auto* gradSizer = new wxBoxSizer(wxVERTICAL);
 
-    _gradStylesLabel = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Color styles:"), wxDefaultPosition, wxDefaultSize, 0);
+    _gradStylesLabel = new wxStaticText(_gradientPanel, wxID_ANY, "Color styles:", wxDefaultPosition, wxDefaultSize, 0);
     _gradStylesLabel->Wrap(-1);
     gradSizer->Add(_gradStylesLabel, 0, wxALL, 5);
 
     wxString gradStyleChoiceChoices[] = {
-        wxT("Retro"),
-        wxT("Hakim"),
-        wxT("Aquamarine"),
-        wxT("Pastel Dream"),
-        wxT("Rose Gold"),
-        wxT("Gunmetal"),
-        wxT("Sunset Drive"),
-        wxT("Aurora Borealis"),
-        wxT("Vaporwave"),
-        wxT("Deep Ocean"),
-        wxT("Ember"),
-        wxT("Rainbow Fire"),
-        wxT("Classic Mandelbrot"),
-        wxT("Custom")
+        "Retro",
+        "Hakim",
+        "Aquamarine",
+        "Pastel Dream",
+        "Rose Gold",
+        "Gunmetal",
+        "Sunset Drive",
+        "Aurora Borealis",
+        "Vaporwave",
+        "Deep Ocean",
+        "Ember",
+        "Rainbow Fire",
+        "Classic Mandelbrot",
+        "Custom"
     };
     constexpr int gradStyleChoiceNChoices = sizeof(gradStyleChoiceChoices) / sizeof(wxString);
     _gradStylesChoice = new wxChoice(_gradientPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, gradStyleChoiceNChoices, gradStyleChoiceChoices, 0);
@@ -158,10 +158,10 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _gradientMap = new wxStaticBitmap(_gradientPanel, wxID_ANY, PaintGradient(), wxDefaultPosition, wxDefaultSize, 0);
     gradSizer->Add(_gradientMap, 0, wxALL, 5);
 
-    _gradButton = new wxButton(_gradientPanel, wxID_ANY, wxT("Change gradient"), wxDefaultPosition, wxDefaultSize, 0);
+    _gradButton = new wxButton(_gradientPanel, wxID_ANY, "Change gradient", wxDefaultPosition, wxDefaultSize, 0);
     gradSizer->Add(_gradButton, 0, wxALL, 5);
 
-    _gradPalText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Palette size:"), wxDefaultPosition, wxDefaultSize, 0);
+    _gradPalText = new wxStaticText(_gradientPanel, wxID_ANY, "Palette size:", wxDefaultPosition, wxDefaultSize, 0);
     _gradPalText->Wrap(-1);
     gradSizer->Add(_gradPalText, 0, wxALL, 5);
 
@@ -170,7 +170,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     const auto gradientSize = static_cast<int>(_target->GetGradient()->GetMax() - _target->GetGradient()->GetMin());
     _gradPalSize->SetValue(gradientSize);
 
-    _colorCycleText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Color cycle length:"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorCycleText = new wxStaticText(_gradientPanel, wxID_ANY, "Color cycle length:", wxDefaultPosition, wxDefaultSize, 0);
     _colorCycleText->Wrap(-1);
     gradSizer->Add(_colorCycleText, 0, wxALL, 5);
 
@@ -179,23 +179,23 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     gradSizer->Add(_colorCycleLength, 0, wxALL, 5);
 
     auto* advancedColorSizer = new wxStaticBoxSizer(
-        new wxStaticBox(_gradientPanel, wxID_ANY, wxT("Advanced color options")),
+        new wxStaticBox(_gradientPanel, wxID_ANY, "Advanced color options"),
         wxVERTICAL);
     auto* paletteMappingSizer = new wxBoxSizer(wxHORIZONTAL);
-    _paletteMappingText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Palette mapping:"), wxDefaultPosition, wxDefaultSize, 0);
+    _paletteMappingText = new wxStaticText(_gradientPanel, wxID_ANY, "Palette mapping:", wxDefaultPosition, wxDefaultSize, 0);
     _paletteMappingText->Wrap(-1);
     paletteMappingSizer->Add(_paletteMappingText, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
     const wxString paletteMappingChoices[] = {
-        wxT("Linear"),
-        wxT("Exponentially mapped")
+        "Linear",
+        "Exponentially mapped"
     };
     constexpr int paletteMappingNChoices = sizeof(paletteMappingChoices) / sizeof(wxString);
     _paletteMappingMode = new wxChoice(_gradientPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                        paletteMappingNChoices, paletteMappingChoices, 0);
     paletteMappingSizer->Add(_paletteMappingMode, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    _paletteMappingExponentText = new wxStaticText(_gradientPanel, wxID_ANY, wxT("Exponent:"), wxDefaultPosition, wxDefaultSize, 0);
+    _paletteMappingExponentText = new wxStaticText(_gradientPanel, wxID_ANY, "Exponent:", wxDefaultPosition, wxDefaultSize, 0);
     _paletteMappingExponentText->Wrap(-1);
     paletteMappingSizer->Add(_paletteMappingExponentText, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
@@ -210,7 +210,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _gradientPanel->SetSizer(gradSizer);
     _gradientPanel->Layout();
     gradSizer->Fit(_gradientPanel);
-    _typeNotebook->AddPage(_gradientPanel, wxT("Gradient color"), true);
+    _typeNotebook->AddPage(_gradientPanel, "Gradient color", true);
 
     mainSizer->Add(_typeNotebook, 2, wxEXPAND | wxALL, 5);
 
@@ -293,7 +293,7 @@ void RendererOptionsFrame::SyncRenderingPrecisionControl()
     _renderingPrecisionModes = _target->GetAvailableRenderingPrecisionModes();
     if (_renderingPrecisionModes.empty())
     {
-        _renderingPrecisionChoice->Append(wxT("N/A"));
+        _renderingPrecisionChoice->Append("N/A");
         _renderingPrecisionChoice->SetSelection(0);
         _renderingPrecisionChoice->Enable(false);
         return;
@@ -307,13 +307,13 @@ void RendererOptionsFrame::SyncRenderingPrecisionControl()
         switch (_renderingPrecisionModes[i])
         {
             case RenderingPrecisionMode::Adaptative:
-                _renderingPrecisionChoice->Append(wxT("Adaptative"));
+                _renderingPrecisionChoice->Append("Adaptative");
                 break;
             case RenderingPrecisionMode::Precise:
-                _renderingPrecisionChoice->Append(wxT("Precise"));
+                _renderingPrecisionChoice->Append("Precise");
                 break;
             case RenderingPrecisionMode::Fast:
-                _renderingPrecisionChoice->Append(wxT("Fast"));
+                _renderingPrecisionChoice->Append("Fast");
                 break;
         }
 
@@ -350,48 +350,48 @@ void RendererOptionsFrame::SetAlgorithmChoices()
         {
             case RenderingAlgorithmType::EscapeTime:
                 {
-                    _algorithmChoice->Append(wxT("Escape time"));
+                    _algorithmChoice->Append("Escape time");
                     _escapeTimeIndex = static_cast<int>(i);
                 }
                 break;
             case RenderingAlgorithmType::GaussianInt:
                 {
-                    _algorithmChoice->Append(wxT("Gaussian integer"));
+                    _algorithmChoice->Append("Gaussian integer");
                     _gaussIntIndex = static_cast<int>(i);
                 }
                 break;
             case RenderingAlgorithmType::EscapeAngle:
                 {
-                    _algorithmChoice->Append(wxT("Escape angle"));
+                    _algorithmChoice->Append("Escape angle");
                     _escapeAngleIndex = static_cast<int>(i);
                 }
                 break;
             case RenderingAlgorithmType::TriangleInequality:
                 {
-                    _algorithmChoice->Append(wxT("Triangle inequality"));
+                    _algorithmChoice->Append("Triangle inequality");
                     _triangleIneqIndex = static_cast<int>(i);
                 }
                 break;
             case RenderingAlgorithmType::ChaoticMap:
                 {
-                    _algorithmChoice->Append(wxT("Chaotic map"));
+                    _algorithmChoice->Append("Chaotic map");
                     _chaoticMapIndex = static_cast<int>(i);
                 }
                 break;
             case RenderingAlgorithmType::Lyapunov:
                 {
-                    _algorithmChoice->Append(wxT("Lyapunov"));
+                    _algorithmChoice->Append("Lyapunov");
                     _lyapunovIndex = static_cast<int>(i);
                 }
                 break;
             case RenderingAlgorithmType::ConvergenceTest:
                 {
-                    _algorithmChoice->Append(wxT("Convergence test"));
+                    _algorithmChoice->Append("Convergence test");
                     _convergenceTestIndex = static_cast<int>(i);
                 }
             case RenderingAlgorithmType::Buddhabrot:
                 {
-                    _algorithmChoice->Append(wxT("Buddhabrot"));
+                    _algorithmChoice->Append("Buddhabrot");
                     _buddhabrotIndex = static_cast<int>(i);
                 }
             case RenderingAlgorithmType::Other:
@@ -403,7 +403,7 @@ void RendererOptionsFrame::SetAlgorithmChoices()
     }
     if (_algorithmChoice->GetCount() == 0)
     {
-        _algorithmChoice->Append(wxT("Special algorithm"));
+        _algorithmChoice->Append("Special algorithm");
         _algorithmChoice->SetSelection(0);
     }
 
@@ -478,9 +478,9 @@ void RendererOptionsFrame::SetTarget(FractalPresenter* presenter)
     _colorFractal->SetValue(_target->GetExteriorColorMode());
 
     // Color of the set.
-    _redSetText->SetLabel(wxString(wxT("Red: ")) + wxT("0"));
-    _greenSetText->SetLabel(wxString(wxT("Green: ")) + wxT("0"));
-    _blueSetText->SetLabel(wxString(wxT("Blue: ")) + wxT("0"));
+    _redSetText->SetLabel(wxString("Red: ") + "0");
+    _greenSetText->SetLabel(wxString("Green: ") + "0");
+    _blueSetText->SetLabel(wxString("Blue: ") + "0");
     _redSetSld->SetValue(0);
     _greenSetSld->SetValue(0);
     _blueSetSld->SetValue(0);

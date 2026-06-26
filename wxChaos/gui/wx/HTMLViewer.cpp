@@ -7,7 +7,7 @@ HTMLViewer::HTMLViewer(const wxString& htmlFile, wxWindow* parent, const wxWindo
 {
     this->SetSizeHints(wxSize(900, 620), wxDefaultSize);
 
-    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -19,7 +19,7 @@ HTMLViewer::HTMLViewer(const wxString& htmlFile, wxWindow* parent, const wxWindo
     mainSizer->Add(textSizer, 9, wxEXPAND, 5);
 
     const auto buttonSizer = new wxBoxSizer(wxVERTICAL);
-    _closeButton = new wxButton(this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0);
+    _closeButton = new wxButton(this, wxID_ANY, "Close", wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_closeButton, 0, wxALL, 5);
     mainSizer->Add(buttonSizer, 0, wxEXPAND, 5);
 

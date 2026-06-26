@@ -33,8 +33,8 @@ JuliaZN::JuliaZN(const unsigned int width, const unsigned int height) : Fractal(
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkInt(PanelOptionType::Spin, wxT("n: "), &n, wxT("2"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Bailout: "), &bailout, wxT("2"));
+    _panelOpt.LinkInt(PanelOptionType::Spin, "n: ", &n, "2");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &bailout, "2");
     n = 2;
     bailout = 2;
 }

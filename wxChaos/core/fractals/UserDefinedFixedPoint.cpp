@@ -20,7 +20,7 @@ UserDefinedFixedPoint::UserDefinedFixedPoint(const unsigned int width, const uns
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Min step: "), &_minStep, wxT("0.001"));
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Min step: ", &_minStep, "0.001");
     _minStep = 0.001;
 
     // Specify algorithms.
@@ -80,9 +80,9 @@ void UserDefinedFixedPoint::PostRender()
 {
     if (_myRender[0].IsThereError())
     {
-        const wxString out = wxString(wxT("Fatal error in formula.\n")) + _myRender[0].GetErrorInfo() + wxT("\n");
+        const wxString out = wxString("Fatal error in formula.\n") + _myRender[0].GetErrorInfo() + "\n";
         _myRender[0].ClearErrorInfo();
-        wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
+        wxMessageDialog errorDialog(nullptr, out, "Error", wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }
 }

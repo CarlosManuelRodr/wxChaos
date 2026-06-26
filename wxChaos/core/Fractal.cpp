@@ -932,7 +932,7 @@ const std::vector<CircleData>& Fractal::GetCircles() const
 wxString Fractal::DescribeOrbit(const bool escaped) const
 {
     if (_orbitLines.empty())
-        return wxT("Orbit: no transitions were recorded.");
+        return "Orbit: no transitions were recorded.";
 
     const double startRe = _orbitLines.front().x1;
     const double startIm = _orbitLines.front().y1;
@@ -962,30 +962,30 @@ wxString Fractal::DescribeOrbit(const bool escaped) const
     const double finalAngle = atan2(finalIm, finalRe) * radiansToDegrees;
 
     wxString output;
-    output << wxT("Orbit transitions: ") << _orbitLines.size() << wxT("\n")
-           << wxT("Orbit path length: ") << FormatNumber(totalDistance) << wxT("\n")
-           << wxT("Straight-line displacement: ") << FormatNumber(displacement)
-           << wxT(" (") << FormatNumber(pathEfficiency) << wxT("% of path length)\n")
-           << wxT("Average / largest step: ") << FormatNumber(averageStep) << wxT(" / ")
-           << FormatNumber(largestStep) << wxT("\n")
-           << wxT("Closest / farthest from origin: ") << FormatNumber(closestToOrigin) << wxT(" / ")
-           << FormatNumber(farthestFromOrigin) << wxT("\n")
-           << (escaped ? wxT("Escape value: ") : wxT("Last recorded value: "))
-           << FormatComplex(finalRe, finalIm) << wxT("\n")
-           << wxT("Final modulus / angle: ") << FormatNumber(finalModulus) << wxT(" / ")
-           << FormatNumber(finalAngle) << wxT(" degrees");
+    output << "Orbit transitions: " << _orbitLines.size() << "\n"
+           << "Orbit path length: " << FormatNumber(totalDistance) << "\n"
+           << "Straight-line displacement: " << FormatNumber(displacement)
+           << " (" << FormatNumber(pathEfficiency) << "% of path length)\n"
+           << "Average / largest step: " << FormatNumber(averageStep) << " / "
+           << FormatNumber(largestStep) << "\n"
+           << "Closest / farthest from origin: " << FormatNumber(closestToOrigin) << " / "
+           << FormatNumber(farthestFromOrigin) << "\n"
+           << (escaped ? "Escape value: " : "Last recorded value: ")
+           << FormatComplex(finalRe, finalIm) << "\n"
+           << "Final modulus / angle: " << FormatNumber(finalModulus) << " / "
+           << FormatNumber(finalAngle) << " degrees";
     return output;
 }
 
 wxString Fractal::FormatNumber(const double value)
 {
-    return wxString::Format(wxT("%.10g"), value);
+    return wxString::Format("%.10g", value);
 }
 
 wxString Fractal::FormatComplex(const double real, const double imaginary)
 {
-    return FormatNumber(real) + (imaginary < 0.0 ? wxT(" - ") : wxT(" + "))
-           + FormatNumber(abs(imaginary)) + wxT("i");
+    return FormatNumber(real) + (imaginary < 0.0 ? " - " : " + ")
+           + FormatNumber(abs(imaginary)) + "i";
 }
 
 void Fractal::RenderBlocking()
@@ -1023,7 +1023,7 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
     {
         const auto* scriptFractal = dynamic_cast<const ScriptFractal*>(this);
         if (scriptFractal == nullptr)
-            return wxT("This fractal cannot be inspected.");
+            return "This fractal cannot be inspected.";
         probeHandler.CreateScriptFractal(probeSize, probeSize, scriptFractal->GetScriptData());
     }
     else
@@ -1031,7 +1031,7 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
 
     Fractal* probe = probeHandler.GetFractalPtr();
     if (probe == nullptr)
-        return wxT("This fractal cannot be inspected.");
+        return "This fractal cannot be inspected.";
 
     Options options = GetOptions();
     const vector<RenderingAlgorithmType> algorithms = probe->GetAvailableAlg();
@@ -1055,26 +1055,26 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
 
     const PointSample sample = probe->GetPointSample(1, 1);
     wxString output;
-    output << wxT("Fractal: ") << probe->GetName() << wxT("\n")
-           << wxT("Point: ") << FormatComplex(real, imaginary) << wxT("\n")
-           << wxT("Algorithm: ") << probe->GetRenderingAlgorithmName() << wxT("\n")
-           << wxT("Maximum iterations: ") << options.maxIter << wxT("\n");
+    output << "Fractal: " << probe->GetName() << "\n"
+           << "Point: " << FormatComplex(real, imaginary) << "\n"
+           << "Algorithm: " << probe->GetRenderingAlgorithmName() << "\n"
+           << "Maximum iterations: " << options.maxIter << "\n";
 
     if (sample.inSet)
-        output << wxT("Result: inside after ") << options.maxIter << wxT(" iterations");
+        output << "Result: inside after " << options.maxIter << " iterations";
     else if (sample.hasValue && options.alg == RenderingAlgorithmType::EscapeTime)
-        output << wxT("Result: escaped at iteration ") << sample.value;
+        output << "Result: escaped at iteration " << sample.value;
     else if (sample.hasValue)
-        output << wxT("Renderer value: ") << sample.value;
+        output << "Renderer value: " << sample.value;
     else
-        output << wxT("Result: no value produced");
+        output << "Result: no value produced";
 
     if (probe->HasOrbit())
     {
         probe->SetOrbitMode(true);
         probe->SetOrbitPoint(real, imaginary);
         probe->DrawOrbit();
-        output << wxT("\n") << probe->DescribeOrbit(!sample.inSet);
+        output << "\n" << probe->DescribeOrbit(!sample.inSet);
     }
 
     return output;

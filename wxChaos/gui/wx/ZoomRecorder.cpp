@@ -153,7 +153,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     // UI initialization
     this->SetSizeHints(wxSize(900, 680), wxSize(1400, 900));
 
-    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -161,14 +161,14 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
     const auto previewAndButtonsSizer = new wxBoxSizer(wxVERTICAL);
-    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, wxT("Preview")), wxVERTICAL);
+    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, "Preview"), wxVERTICAL);
 
     _previewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY,
         _fractalFactory.GetFractalPtr()->GetRenderedWxBitmap(),
         wxDefaultPosition, wxDefaultSize, 0);
     previewSizer->Add(_previewBitmap, 0, wxALL | wxEXPAND, 5);
 
-    _previewFrameText = new wxStaticText(previewSizer->GetStaticBox(), wxID_ANY, wxT("Frame:"), wxDefaultPosition, wxDefaultSize, 0);
+    _previewFrameText = new wxStaticText(previewSizer->GetStaticBox(), wxID_ANY, "Frame:", wxDefaultPosition, wxDefaultSize, 0);
     _previewFrameText->Wrap(-1);
     previewSizer->Add(_previewFrameText, 0, wxALL, 5);
 
@@ -179,20 +179,20 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _saveButton = new wxButton(_panel, wxID_ANY, wxT("Save video"), wxDefaultPosition, wxDefaultSize, 0);
+    _saveButton = new wxButton(_panel, wxID_ANY, "Save video", wxDefaultPosition, wxDefaultSize, 0);
     _saveButton->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR));
     buttonSizer->Add(_saveButton, 0, wxALL, 5);
 
-    _cancelButton = new wxButton(_panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);
+    _cancelButton = new wxButton(_panel, wxID_ANY, "Cancel", wxDefaultPosition, wxDefaultSize, 0);
     _cancelButton->SetBitmap(wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR));
     buttonSizer->Add(_cancelButton, 0, wxALL, 5);
 
     previewAndButtonsSizer->Add(buttonSizer, 0, 0, 5);
     panelSizer->Add(previewAndButtonsSizer, 0, wxEXPAND, 5);
 
-    auto* optionsSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, wxT("Options")), wxVERTICAL);
+    auto* optionsSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, "Options"), wxVERTICAL);
 
-    _videoDurationText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Video duration:"), wxDefaultPosition, wxDefaultSize, 0);
+    _videoDurationText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Video duration:", wxDefaultPosition, wxDefaultSize, 0);
     _videoDurationText->Wrap(-1);
     optionsSizer->Add(_videoDurationText, 0, wxALL, 5);
 
@@ -203,7 +203,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
 
     videoDurationSizer->Add(_minutesSpinCtrl, 0, wxTOP | wxBOTTOM, 5);
 
-    _minutesText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Minutes"), wxDefaultPosition, wxDefaultSize, 0);
+    _minutesText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Minutes", wxDefaultPosition, wxDefaultSize, 0);
     _minutesText->Wrap(-1);
     videoDurationSizer->Add(_minutesText, 0, wxALL, 5);
 
@@ -212,12 +212,12 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
 
     videoDurationSizer->Add(_secondsSpinCtrl, 0, wxTOP | wxBOTTOM | wxRIGHT, 5);
 
-    _secondsText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Seconds"), wxDefaultPosition, wxDefaultSize, 0);
+    _secondsText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Seconds", wxDefaultPosition, wxDefaultSize, 0);
     _secondsText->Wrap(-1);
     videoDurationSizer->Add(_secondsText, 0, wxALL, 5);
     optionsSizer->Add(videoDurationSizer, 0, wxLEFT, 5);
 
-    _framerateText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Framerate:"), wxDefaultPosition, wxDefaultSize, 0);
+    _framerateText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Framerate:", wxDefaultPosition, wxDefaultSize, 0);
     _framerateText->Wrap(-1);
     optionsSizer->Add(_framerateText, 0, wxALL, 5);
 
@@ -226,22 +226,22 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _framerateSpinCtrl = new wxSpinCtrl(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 120, 30);
     framerateSize->Add(_framerateSpinCtrl, 0, wxALL, 5);
 
-    _framesPerSecondText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Frames Per Second"), wxDefaultPosition, wxDefaultSize, 0);
+    _framesPerSecondText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Frames Per Second", wxDefaultPosition, wxDefaultSize, 0);
     _framesPerSecondText->Wrap(-1);
     framerateSize->Add(_framesPerSecondText, 0, wxALL, 5);
     optionsSizer->Add(framerateSize, 0, wxEXPAND, 5);
 
-    _zoomSpeedText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Zoom speed:"), wxDefaultPosition, wxDefaultSize, 0);
+    _zoomSpeedText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Zoom speed:", wxDefaultPosition, wxDefaultSize, 0);
     _zoomSpeedText->Wrap(-1);
     optionsSizer->Add(_zoomSpeedText, 0, wxALL, 5);
 
     _zoomSpeedCtrl = new wxSpinCtrl(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4);
     optionsSizer->Add(_zoomSpeedCtrl, 0, wxALL, 5);
 
-    _rotateCheckbox = new wxCheckBox(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Rotate colors"), wxDefaultPosition, wxDefaultSize, 0);
+    _rotateCheckbox = new wxCheckBox(optionsSizer->GetStaticBox(), wxID_ANY, "Rotate colors", wxDefaultPosition, wxDefaultSize, 0);
     optionsSizer->Add(_rotateCheckbox, 0, wxALL, 5);
 
-    _colorRotateSpeedText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, wxT("Color rotation speed:"), wxDefaultPosition, wxDefaultSize, 0);
+    _colorRotateSpeedText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Color rotation speed:", wxDefaultPosition, wxDefaultSize, 0);
     _colorRotateSpeedText->Wrap(-1);
     optionsSizer->Add(_colorRotateSpeedText, 0, wxALL, 5);
 
@@ -410,7 +410,7 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
     // from the buffer.
     const std::string selectedDirPath(selectedFile.mb_str());
 
-    wxProgressDialog progressDialog(wxT("Generating video..."), wxT("Please wait until the process is complete."), totalFrames, this);
+    wxProgressDialog progressDialog("Generating video...", "Please wait until the process is complete.", totalFrames, this);
     auto* renderer = new ZoomRenderer(selectedDirPath, _fractalCanvasPtr, 2500, 1660, totalFrames, zoomSpeed, colorSpeed);
     wxThreadError err = renderer->Create();
 

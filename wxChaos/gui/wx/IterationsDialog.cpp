@@ -7,7 +7,7 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
                                    : wxFrame(parent, id, title, pos, size, style)
 {
     // WX Frame.
-    const wxIcon icon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     _active = Active;
@@ -20,26 +20,26 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
     _panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto  subSizer = new wxBoxSizer(wxVERTICAL);
 
-    const auto  textSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, wxT("Iterations")), wxHORIZONTAL);
+    const auto  textSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, "Iterations"), wxHORIZONTAL);
 
     _number = _target->GetIterations();
     _text = TextUtils::ToWxString(static_cast<int>(_number));
     _textCtrl = new wxTextCtrl(_panel, wxID_ANY, _text, wxDefaultPosition, wxDefaultSize, 0);
     textSizer->Add(_textCtrl, 0, wxALL, 5);
 
-    _plusButton = new wxButton(_panel, wxID_ANY, wxT("+"), wxDefaultPosition, wxDefaultSize, 0);
+    _plusButton = new wxButton(_panel, wxID_ANY, "+", wxDefaultPosition, wxDefaultSize, 0);
     textSizer->Add(_plusButton, 0, wxALL, 5);
 
-    _minusButton = new wxButton(_panel, wxID_ANY, wxT("-"), wxDefaultPosition, wxDefaultSize, 0);
+    _minusButton = new wxButton(_panel, wxID_ANY, "-", wxDefaultPosition, wxDefaultSize, 0);
     textSizer->Add(_minusButton, 0, wxALL, 5);
     subSizer->Add(textSizer, 1, wxEXPAND, 5);
 
     const auto  buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _acceptButton = new wxButton(_panel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);
+    _acceptButton = new wxButton(_panel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_acceptButton, 0, wxALL, 5);
 
-    _applyButton = new wxButton(_panel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
+    _applyButton = new wxButton(_panel, wxID_ANY, "Apply", wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_applyButton, 0, wxALL, 5);
     subSizer->Add(buttonSizer, 0, 0, 5);
 

@@ -51,7 +51,7 @@ void UserDefinedFixedPointRenderer::Render()
     }
     catch (mup::ParserError &e)
     {
-        _errorInfo = wxT("Error: ");
+        _errorInfo = "Error: ";
         _errorInfo += wxString(e.GetMsg());
         for (int y = _heightOrigin; y < _heightFinal; y++)
         {

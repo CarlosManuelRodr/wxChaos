@@ -24,7 +24,7 @@ CommandConsole::CommandConsole(FractalCanvas* fractalCanvas, std::function<void(
       _historyIndex(0)
 {
     this->SetSizeHints(wxSize(620, 380), wxDefaultSize);
-    this->SetIcon(wxIcon(AppPaths::ResourceFile({wxT("icon.ico")}), wxBITMAP_TYPE_ICO));
+    this->SetIcon(wxIcon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO));
 
     const auto panel = new wxPanel(this);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
@@ -33,12 +33,12 @@ CommandConsole::CommandConsole(FractalCanvas* fractalCanvas, std::function<void(
     panelSizer->Add(_output, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 10);
 
     const auto inputSizer = new wxBoxSizer(wxHORIZONTAL);
-    _prompt = new wxStaticText(panel, wxID_ANY, wxT(">"));
+    _prompt = new wxStaticText(panel, wxID_ANY, ">");
     inputSizer->Add(_prompt, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
     _input = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
                             wxTE_PROCESS_ENTER | wxTE_PROCESS_TAB);
     inputSizer->Add(_input, 1, wxEXPAND | wxRIGHT, 8);
-    _enterButton = new wxButton(panel, wxID_ANY, wxT("Run"));
+    _enterButton = new wxButton(panel, wxID_ANY, "Run");
     inputSizer->Add(_enterButton, 0, wxEXPAND);
     panelSizer->Add(inputSizer, 0, wxEXPAND | wxALL, 10);
 
@@ -48,11 +48,11 @@ CommandConsole::CommandConsole(FractalCanvas* fractalCanvas, std::function<void(
     this->SetSizer(frameSizer);
 
     _commandNames = {
-        wxT("AskInfo("), wxT("SetBoundaries("), wxT("Redraw()"), wxT("Abort()"),
-        wxT("DrawLine("), wxT("DrawCircle("), wxT("DeleteFigures()"),
-        wxT("FocusView("), wxT("OpenJuliaMode("),
-        wxT("SetIterations("), wxT("GetIterations()"), wxT("ReloadScripts()"),
-        wxT("Help()"), wxT("Clear()")
+        "AskInfo(", "SetBoundaries(", "Redraw()", "Abort()",
+        "DrawLine(", "DrawCircle(", "DeleteFigures()",
+        "FocusView(", "OpenJuliaMode(",
+        "SetIterations(", "GetIterations()", "ReloadScripts()",
+        "Help()", "Clear()"
     };
 
     this->ApplyTheme();
@@ -95,7 +95,7 @@ void CommandConsole::ApplyTheme()
     const wxColour frameBackground = AppTheme::IsDark() ? wxColour(12, 17, 27) : AppTheme::Background();
     const wxColour controlBackground = AppTheme::IsDark() ? wxColour(17, 24, 39) : AppTheme::ControlBackground();
     const wxColour foreground = OutputColor();
-    const wxFont font = wxFontInfo(10).Family(wxFONTFAMILY_TELETYPE).FaceName(wxT("Consolas"));
+    const wxFont font = wxFontInfo(10).Family(wxFONTFAMILY_TELETYPE).FaceName("Consolas");
 
     this->SetBackgroundColour(frameBackground);
     _output->GetParent()->SetBackgroundColour(frameBackground);
@@ -115,10 +115,10 @@ void CommandConsole::ApplyTheme()
 
 void CommandConsole::WriteWelcome() const
 {
-    WriteText(wxT("wxChaos ") + wxString::FromUTF8(APP_VERSION) + wxT(" command console\n"), InfoColor());
-    WriteText(wxT("Type Help() for commands. Named and positional arguments are supported.\n\n"),
+    WriteText("wxChaos " + wxString::FromUTF8(APP_VERSION) + " command console\n", InfoColor());
+    WriteText("Type Help() for commands. Named and positional arguments are supported.\n\n",
               MutedColor());
-    WriteText(wxT("Ready.\n"), OutputColor());
+    WriteText("Ready.\n", OutputColor());
 }
 
 void CommandConsole::WriteText(const wxString& text, const wxColour& color) const
@@ -141,18 +141,18 @@ void CommandConsole::RunCommand()
     _history.push_back(input);
     _historyIndex = _history.size();
     _input->Clear();
-    WriteText(wxT("\n> ") + input + wxT("\n"), PromptColor());
+    WriteText("\n> " + input + "\n", PromptColor());
 
     wxString error;
     const std::optional<ParsedCommand> command = Parse(input, error);
     if (!command.has_value())
     {
-        WriteText(error + wxT("\n"), ErrorColor());
+        WriteText(error + "\n", ErrorColor());
         return;
     }
 
     const wxString result = Execute(*command);
-    WriteText(result + wxT("\n"), result.StartsWith(wxT("Error:")) ? ErrorColor() : OutputColor());
+    WriteText(result + "\n", result.StartsWith("Error:") ? ErrorColor() : OutputColor());
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
@@ -161,48 +161,48 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
     Fractal* fractal = _fractalCanvas->GetFractalPtr();
     wxString error;
 
-    if (command.name == wxT("help"))
+    if (command.name == "help")
         return HelpText();
-    if (command.name == wxT("clear") || command.name == wxT("clc"))
+    if (command.name == "clear" || command.name == "clc")
     {
         _output->Clear();
-        return wxT("Console cleared.");
+        return "Console cleared.";
     }
-    if (command.name == wxT("reloadscripts"))
+    if (command.name == "reloadscripts")
     {
         _reloadScripts();
-        return wxT("Scripts reloaded.");
+        return "Scripts reloaded.";
     }
-    if (command.name == wxT("redraw"))
+    if (command.name == "redraw")
     {
         _fractalCanvas->GetFractalPresenterPtr()->Redraw();
-        return wxT("Redraw requested.");
+        return "Redraw requested.";
     }
-    if (command.name == wxT("abort"))
+    if (command.name == "abort")
     {
         if (!_fractalCanvas->CanAbortRender())
-            return wxT("Nothing to abort.");
+            return "Nothing to abort.";
         _fractalCanvas->AbortRender();
-        return wxT("Render aborted.");
+        return "Render aborted.";
     }
-    if (command.name == wxT("deletefigures"))
+    if (command.name == "deletefigures")
     {
         fractal->ClearGeometryFigures();
-        return wxT("Figures deleted.");
+        return "Figures deleted.";
     }
-    if (command.name == wxT("getiterations"))
-        return wxString::Format(wxT("Maximum iterations: %u"), fractal->GetIterations());
-    if (command.name == wxT("setiterations"))
+    if (command.name == "getiterations")
+        return wxString::Format("Maximum iterations: %u", fractal->GetIterations());
+    if (command.name == "setiterations")
     {
         const optional<unsigned int> iterations = ReadUnsigned(command, {"iterations", "value", "n"}, 0, error);
         if (!iterations.has_value())
             return error;
         if (*iterations == 0)
-            return wxT("Error: iterations must be greater than zero.");
+            return "Error: iterations must be greater than zero.";
         _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(*iterations);
-        return wxString::Format(wxT("Maximum iterations set to %u."), *iterations);
+        return wxString::Format("Maximum iterations set to %u.", *iterations);
     }
-    if (command.name == wxT("askinfo"))
+    if (command.name == "askinfo")
     {
         const optional<double> real = ReadDouble(command, {"re", "real", "x"}, 0, error);
         if (!real.has_value()) return error;
@@ -214,11 +214,11 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         {
             iterations = ReadUnsigned(command, {"iterations", "maxiter", "n"}, 2, error);
             if (!iterations.has_value()) return error;
-            if (*iterations == 0) return wxT("Error: iterations must be greater than zero.");
+            if (*iterations == 0) return "Error: iterations must be greater than zero.";
         }
         return fractal->InspectPoint(*real, *imaginary, iterations);
     }
-    if (command.name == wxT("drawcircle"))
+    if (command.name == "drawcircle")
     {
         const optional<double> x = ReadDouble(command, {"x", "re", "real"}, 0, error);
         if (!x.has_value()) return error;
@@ -226,15 +226,15 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         if (!y.has_value()) return error;
         const optional<double> radius = ReadDouble(command, {"r", "radius"}, 2, error);
         if (!radius.has_value()) return error;
-        if (*radius <= 0.0) return wxT("Error: radius must be greater than zero.");
+        if (*radius <= 0.0) return "Error: radius must be greater than zero.";
         const sf::Color color = ReadColor(command, 3, error);
         if (!error.empty()) return error;
         const optional<bool> filled = ReadBool(command, {"filled", "fill"}, 6, error);
         if (!error.empty()) return error;
         fractal->DrawCircle(*x, *y, *radius, color, filled.value_or(false));
-        return filled.value_or(false) ? wxT("Filled circle drawn.") : wxT("Circle drawn.");
+        return filled.value_or(false) ? "Filled circle drawn." : "Circle drawn.";
     }
-    if (command.name == wxT("drawline"))
+    if (command.name == "drawline")
     {
         const optional<double> x1 = ReadDouble(command, {"x1", "re1", "real1"}, 0, error);
         if (!x1.has_value()) return error;
@@ -247,9 +247,9 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         const sf::Color color = ReadColor(command, 4, error);
         if (!error.empty()) return error;
         fractal->DrawLine(*x1, *y1, *x2, *y2, color);
-        return wxT("Line drawn.");
+        return "Line drawn.";
     }
-    if (command.name == wxT("focusview"))
+    if (command.name == "focusview")
     {
         const optional<double> x = ReadDouble(command, {"x", "re", "real"}, 0, error);
         if (!x.has_value()) return error;
@@ -257,21 +257,21 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         if (!y.has_value()) return error;
         const optional<double> radius = ReadDouble(command, {"r", "radius"}, 2, error);
         if (!radius.has_value()) return error;
-        if (*radius <= 0.0) return wxT("Error: radius must be greater than zero.");
+        if (*radius <= 0.0) return "Error: radius must be greater than zero.";
         _fractalCanvas->GetFractalPresenterPtr()->SetView(fractal->GetCenteredView(*x, *y, *radius));
-        return wxT("View focused.");
+        return "View focused.";
     }
-    if (command.name == wxT("openjuliamode"))
+    if (command.name == "openjuliamode")
     {
         const optional<double> real = ReadDouble(command, {"re", "x", "real"}, 0, error);
         if (!real.has_value()) return error;
         const optional<double> imaginary = ReadDouble(command, {"im", "y", "imaginary"}, 1, error);
         if (!imaginary.has_value()) return error;
         if (!_openJuliaMode(*real, *imaginary))
-            return wxT("Error: Julia mode is unavailable for the current fractal.");
-        return wxT("Julia mode opened or updated at the requested point.");
+            return "Error: Julia mode is unavailable for the current fractal.";
+        return "Julia mode opened or updated at the requested point.";
     }
-    if (command.name == wxT("setboundaries"))
+    if (command.name == "setboundaries")
     {
         const optional<double> minX = ReadDouble(command, {"minx", "minre"}, 0, error);
         if (!minX.has_value()) return error;
@@ -282,12 +282,12 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         const optional<double> maxY = ReadDouble(command, {"maxy", "maxim"}, 3, error);
         if (!maxY.has_value()) return error;
         if (*minX >= *maxX || *minY >= *maxY)
-            return wxT("Error: minimum boundaries must be smaller than maximum boundaries.");
+            return "Error: minimum boundaries must be smaller than maximum boundaries.";
         _fractalCanvas->GetFractalPresenterPtr()->SetView({*minX, *minY, *maxX, *maxY});
-        return wxT("View boundaries updated.");
+        return "View boundaries updated.";
     }
 
-    return wxT("Error: unknown command. Type Help() for the command list.");
+    return "Error: unknown command. Type Help() for the command list.";
 }
 
 optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& text, wxString& error)
@@ -298,7 +298,7 @@ optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& te
     const int closeParenthesis = commandText.Find(wxT(')'), true);
     if (openParenthesis <= 0 || closeParenthesis != static_cast<int>(commandText.length()) - 1)
     {
-        error = wxT("Error: expected Command(argument=value, ...).");
+        error = "Error: expected Command(argument=value, ...).";
         return nullopt;
     }
 
@@ -319,7 +319,7 @@ optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& te
         arguments.Trim(true).Trim(false);
         if (argument.empty())
         {
-            error = wxT("Error: empty argument.");
+            error = "Error: empty argument.";
             return nullopt;
         }
 
@@ -334,12 +334,12 @@ optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& te
             value.Trim(true).Trim(false);
             if (name.empty() || value.empty())
             {
-                error = wxT("Error: invalid named argument.");
+                error = "Error: invalid named argument.";
                 return nullopt;
             }
             if (!command.namedArguments.emplace(name, value).second)
             {
-                error = wxT("Error: duplicate argument '") + name + wxT("'.");
+                error = "Error: duplicate argument '" + name + "'.";
                 return nullopt;
             }
         }
@@ -371,13 +371,13 @@ optional<double> CommandConsole::ReadDouble(const ParsedCommand& command,
     const optional<wxString> value = FindArgument(command, names, positionalIndex);
     if (!value.has_value())
     {
-        error = wxT("Error: missing numeric argument.");
+        error = "Error: missing numeric argument.";
         return nullopt;
     }
     double number;
     if (!value->ToDouble(&number))
     {
-        error = wxT("Error: '") + *value + wxT("' is not a number.");
+        error = "Error: '" + *value + "' is not a number.";
         return nullopt;
     }
     return number;
@@ -391,13 +391,13 @@ optional<unsigned int> CommandConsole::ReadUnsigned(const ParsedCommand& command
     const optional<wxString> value = FindArgument(command, names, positionalIndex);
     if (!value.has_value())
     {
-        error = wxT("Error: missing integer argument.");
+        error = "Error: missing integer argument.";
         return nullopt;
     }
     unsigned long number;
     if (!value->ToULong(&number) || number > numeric_limits<unsigned int>::max())
     {
-        error = wxT("Error: '") + *value + wxT("' is not a valid non-negative integer.");
+        error = "Error: '" + *value + "' is not a valid non-negative integer.";
         return nullopt;
     }
     return static_cast<unsigned int>(number);
@@ -417,7 +417,7 @@ sf::Color CommandConsole::ReadColor(const ParsedCommand& command, const size_t p
     {
         if (positionalIndex + 2 >= command.positionalArguments.size())
         {
-            error = wxT("Error: positional colors require red, green, and blue values.");
+            error = "Error: positional colors require red, green, and blue values.";
             return {};
         }
         redValue = command.positionalArguments[positionalIndex];
@@ -435,7 +435,7 @@ sf::Color CommandConsole::ReadColor(const ParsedCommand& command, const size_t p
         unsigned long parsed;
         if (!value->ToULong(&parsed) || parsed > 255)
         {
-            error = wxT("Error: color components must be integers between 0 and 255.");
+            error = "Error: color components must be integers between 0 and 255.";
             return false;
         }
         component = static_cast<unsigned int>(parsed);
@@ -457,12 +457,12 @@ optional<bool> CommandConsole::ReadBool(const ParsedCommand& command,
         return nullopt;
 
     const wxString normalized = value->Lower();
-    if (normalized == wxT("true") || normalized == wxT("yes") || normalized == wxT("1"))
+    if (normalized == "true" || normalized == "yes" || normalized == "1")
         return true;
-    if (normalized == wxT("false") || normalized == wxT("no") || normalized == wxT("0"))
+    if (normalized == "false" || normalized == "no" || normalized == "0")
         return false;
 
-    error = wxT("Error: '") + *value + wxT("' is not a boolean. Use true or false.");
+    error = "Error: '" + *value + "' is not a boolean. Use true or false.";
     return nullopt;
 }
 

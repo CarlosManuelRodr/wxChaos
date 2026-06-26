@@ -18,7 +18,7 @@ JuliaConstantDialog::JuliaConstantDialog(bool* active, FractalPresenter* present
     _dumbPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto sizer = new wxBoxSizer(wxVERTICAL);
 
-    const auto realSizer = new wxStaticBoxSizer(new wxStaticBox(_dumbPanel, wxID_ANY, wxT("Real value")), wxVERTICAL);
+    const auto realSizer = new wxStaticBoxSizer(new wxStaticBox(_dumbPanel, wxID_ANY, "Real value"), wxVERTICAL);
     
     _lastReal = _target->GetKReal();
     wxString text = TextUtils::ToWxString(_target->GetKReal());
@@ -26,7 +26,7 @@ JuliaConstantDialog::JuliaConstantDialog(bool* active, FractalPresenter* present
     realSizer->Add(_realText, 0, wxALL|wxEXPAND, 5);
     sizer->Add(realSizer, 2, wxEXPAND, 5);
 
-    const auto imSizer = new wxStaticBoxSizer(new wxStaticBox(_dumbPanel, wxID_ANY, wxT("Imaginary value")), wxVERTICAL);
+    const auto imSizer = new wxStaticBoxSizer(new wxStaticBox(_dumbPanel, wxID_ANY, "Imaginary value"), wxVERTICAL);
     
     _lastIm = _target->GetKImaginary();
     text = TextUtils::ToWxString(_target->GetKImaginary());
@@ -38,13 +38,13 @@ JuliaConstantDialog::JuliaConstantDialog(bool* active, FractalPresenter* present
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
     const auto okSizer = new wxBoxSizer(wxVERTICAL);
     
-    _okButton = new wxButton(_dumbPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);
+    _okButton = new wxButton(_dumbPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
     okSizer->Add(_okButton, 0, wxALL, 5);
     buttonSizer->Add(okSizer, 1, wxEXPAND, 5);
 
     const auto applySizer = new wxBoxSizer(wxVERTICAL);
     
-    _applyButton = new wxButton(_dumbPanel, wxID_ANY, wxT("Apply"), wxDefaultPosition, wxDefaultSize, 0);
+    _applyButton = new wxButton(_dumbPanel, wxID_ANY, "Apply", wxDefaultPosition, wxDefaultSize, 0);
     applySizer->Add(_applyButton, 0, wxALL, 5);
     buttonSizer->Add(applySizer, 1, wxEXPAND, 5);
     sizer->Add(buttonSizer, 1, wxEXPAND, 5);

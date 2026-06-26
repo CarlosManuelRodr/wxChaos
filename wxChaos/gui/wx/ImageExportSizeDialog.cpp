@@ -21,7 +21,7 @@ ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxW
     _myType = _myFractal->GetType();
     if (_myType == FractalType::ScriptFractal)
     {
-        _progressLabel = new wxStaticText(this, wxID_ANY, wxT("Saving..."), wxDefaultPosition, wxDefaultSize, 0);
+        _progressLabel = new wxStaticText(this, wxID_ANY, "Saving...", wxDefaultPosition, wxDefaultSize, 0);
         _progressLabel->Wrap(-1);
         progressSizer->Add(_progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
         _progress = nullptr;
@@ -31,7 +31,7 @@ ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxW
         _progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
         progressSizer->Add(_progress, 0, wxALL | wxEXPAND, 5);
 
-        _progressLabel = new wxStaticText(this, wxID_ANY, wxString(wxT("Rendering: ")) + wxT("0%"), wxDefaultPosition, wxDefaultSize, 0);
+        _progressLabel = new wxStaticText(this, wxID_ANY, wxString("Rendering: ") + "0%", wxDefaultPosition, wxDefaultSize, 0);
         _progressLabel->Wrap(-1);
         progressSizer->Add(_progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
     }
@@ -43,7 +43,7 @@ ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxW
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _cancelButton = new wxButton(this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);
+    _cancelButton = new wxButton(this, wxID_ANY, "Cancel", wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_cancelButton, 0, wxALL, 5);
 
     mainSizer->Add(buttonSizer, 1, wxEXPAND, 5);
@@ -72,7 +72,7 @@ void ImageExportProgressDialog::CalcProgress(wxUpdateUIEvent&)
         if (_myFractal->GetType() != FractalType::ScriptFractal)
         {
             const int progressValue = _myFractal->GetRenderProgress();
-            _progressLabel->SetLabel(wxString(wxT("Rendering: ")) + TextUtils::ToWxString(progressValue) + wxT("%"));
+            _progressLabel->SetLabel(wxString("Rendering: ") + TextUtils::ToWxString(progressValue) + "%");
 
             _progress->SetValue(progressValue);
             if (progressValue >= 100 && !_myFractal->IsRendering())
@@ -121,11 +121,11 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* mFCanvas, const stri
     const auto sizeSizer = new wxBoxSizer(wxHORIZONTAL);
     const auto bSizer6 = new wxBoxSizer(wxVERTICAL);
 
-    selectText = new wxStaticText(mainPanel, wxID_ANY, wxT("Select image size"), wxDefaultPosition, wxDefaultSize, 0);
+    selectText = new wxStaticText(mainPanel, wxID_ANY, "Select image size", wxDefaultPosition, wxDefaultSize, 0);
     selectText->Wrap(-1);
     bSizer6->Add(selectText, 0, wxALL, 5);
 
-    widthText = new wxStaticText(mainPanel, wxID_ANY, wxT("Width"), wxDefaultPosition, wxDefaultSize, 0);
+    widthText = new wxStaticText(mainPanel, wxID_ANY, "Width", wxDefaultPosition, wxDefaultSize, 0);
     widthText->Wrap(-1);
     bSizer6->Add(widthText, 0, wxALL, 5);
 
@@ -140,7 +140,7 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* mFCanvas, const stri
     dumbText->Wrap(-1);
     bSizer8->Add(dumbText, 0, wxALL, 5);
 
-    heightText = new wxStaticText(mainPanel, wxID_ANY, wxT("Height"), wxDefaultPosition, wxDefaultSize, 0);
+    heightText = new wxStaticText(mainPanel, wxID_ANY, "Height", wxDefaultPosition, wxDefaultSize, 0);
     heightText->Wrap(-1);
     bSizer8->Add(heightText, 0, wxALL, 5);
 
@@ -153,7 +153,7 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* mFCanvas, const stri
 
     const auto okSizer = new wxBoxSizer(wxVERTICAL);
 
-    iterationsText = new wxStaticText(mainPanel, wxID_ANY, wxT("Iterations"), wxDefaultPosition, wxDefaultSize, 0);
+    iterationsText = new wxStaticText(mainPanel, wxID_ANY, "Iterations", wxDefaultPosition, wxDefaultSize, 0);
     iterationsText->Wrap(-1);
     okSizer->Add(iterationsText, 0, wxALL, 5);
 
@@ -161,7 +161,7 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* mFCanvas, const stri
     okSizer->Add(iterationsSpin, 0, wxALL, 5);
     iterationsSpin->SetValue(static_cast<int>(opt.maxIter));
 
-    okButton = new wxButton(mainPanel, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0);
+    okButton = new wxButton(mainPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
     okSizer->Add(okButton, 0, wxALL, 5);
     panelSizer->Add(okSizer, 1, wxEXPAND, 5);
 

@@ -20,7 +20,7 @@ public:
     ScriptFractal(unsigned int width, unsigned int height, const ScriptData& scriptData, int renderThreads = -1);
     ScriptFractal(unsigned int width, unsigned int height, const std::string& scriptPath);
     ~ScriptFractal() override;
-    wxString GetName() const override { return wxT("Script Fractal"); }
+    wxString GetName() const override { return "Script Fractal"; }
 
     void Render() override;
     void PostRender() override;

@@ -726,7 +726,7 @@ public:
 		@param flags Set the position of the scale with respect to the window.
 		@param ticks Select ticks or grid. Give TRUE (default) for drawing axis ticks, FALSE for drawing the grid.
 		@param type mpX_NORMAL for normal labels, mpX_TIME for time axis in hours, minutes, seconds. */
-    mpScaleX(wxString name = wxT("X"), int flags = mpALIGN_CENTER, bool ticks = true, unsigned int type = mpX_NORMAL);
+    mpScaleX(wxString name = "X", int flags = mpALIGN_CENTER, bool ticks = true, unsigned int type = mpX_NORMAL);
 
     /** Layer plot handler.
         This implementation will plot the ruler adjusted to the visible area. */
@@ -786,7 +786,7 @@ public:
     /** @param name Label to plot by the ruler
         @param flags Set position of the scale respect to the window.
         @param ticks Select ticks or grid. Give TRUE (default) for drawing axis ticks, FALSE for drawing the grid */
-    mpScaleY(wxString name = wxT("Y"), int flags = mpALIGN_CENTER, bool ticks = true);
+    mpScaleY(wxString name = "Y", int flags = mpALIGN_CENTER, bool ticks = true);
 
     /** Layer plot handler.
         This implementation will plot the ruler adjusted to the visible area.
@@ -1388,7 +1388,7 @@ public:
     /** @param name text to be drawn in the plot
         @param offsetx holds offset for the X location in percentage (0-100)
         @param offsety holds offset for the Y location in percentage (0-100) */
-    mpText(wxString name = wxT("Title"), int offsetx = 5, int offsety = 50);
+    mpText(wxString name = "Title", int offsetx = 5, int offsety = 50);
 
     /** Text Layer plot handler.
         This implementation will plot text adjusted to the visible area. */
@@ -1558,7 +1558,7 @@ public:
             double cov_01 = 0,
             double quantiles = 2,
             int    segments = 32,
-            const wxString & layerName = wxT("") ) :
+            const wxString & layerName = "" ) :
             m_cov_00(cov_00),
             m_cov_11(cov_11),
             m_cov_01(cov_01),
@@ -1632,7 +1632,7 @@ class WXDLLIMPEXP_MATHPLOT mpPolygon : public mpMovableObject
 public:
     /** Default constructor.
       */
-    mpPolygon( const wxString & layerName = wxT("") )
+    mpPolygon( const wxString & layerName = "" )
     {
         m_continuous = true;
         m_name = layerName;

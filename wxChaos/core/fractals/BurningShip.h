@@ -16,7 +16,7 @@ class BurningShip : public Fractal
 public:
     BurningShip(unsigned int width, unsigned int height);
     ~BurningShip() override;
-    wxString GetName() const override { return wxT("Burning Ship"); }
+    wxString GetName() const override { return "Burning Ship"; }
 
     void Render() override;
     void DrawOrbit() override;

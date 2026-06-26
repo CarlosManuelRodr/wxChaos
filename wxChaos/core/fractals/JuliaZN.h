@@ -18,7 +18,7 @@ class JuliaZN: public Fractal
 public:
     JuliaZN(unsigned int width, unsigned int height);
     ~JuliaZN() override;
-    wxString GetName() const override { return wxT("Julia ZN"); }
+    wxString GetName() const override { return "Julia ZN"; }
 
     void CopyOptFromPanel() override;
     void Render() override;

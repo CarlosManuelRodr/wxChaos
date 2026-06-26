@@ -139,7 +139,7 @@ class ConfigFractalOptionsDialog : public wxDialog
     void DeleteOptPanel();        ///< Deletes all the elements in the option panel.
 
 public:
-    ConfigFractalOptionsDialog(Fractal* target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Fractal options"),
+    ConfigFractalOptionsDialog(Fractal* target, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Fractal options",
                                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 560), long style = wxCAPTION);
     ~ConfigFractalOptionsDialog() override;
 
@@ -180,9 +180,9 @@ class PlotWindow : public wxFrame
     wxWindowID _id{};
 
 public:
-    PlotWindow(const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
+    PlotWindow(const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Plot",
                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
-    PlotWindow(LineParams params, const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Plot"),
+    PlotWindow(LineParams params, const std::vector<double> &xList, const std::vector<double> &yList, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Plot",
                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(720, 640), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~PlotWindow() override;
 };
@@ -292,7 +292,7 @@ class DimensionFrame : public wxFrame
     void GetScriptFractals();                   ///< Creates the menu elements corresponding to the script fractals.
     void WriteText(const wxString &txt) const;  ///< Writes text to the output panel.
 public:
-    explicit DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Calculate Dimension"),
+    explicit DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Calculate Dimension",
                             const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
                             long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~DimensionFrame() override;

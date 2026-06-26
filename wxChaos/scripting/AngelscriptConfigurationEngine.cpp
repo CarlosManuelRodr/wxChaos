@@ -8,7 +8,7 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
     engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
     if (engine == nullptr)
     {
-        errorInfo = wxT("Failed to create script engine.");
+        errorInfo = "Failed to create script engine.";
         status = EngineStatus::Error;
         return;
     }
@@ -73,7 +73,7 @@ bool AngelscriptConfigurationEngine::Execute()
     asIScriptContext* ctx = engine->CreateContext();
     if (ctx == nullptr)
     {
-        errorInfo = wxT("Error creating script context.");
+        errorInfo = "Error creating script context.";
         status = EngineStatus::Error;
         engine->Release();
         engine = nullptr;
@@ -83,7 +83,7 @@ bool AngelscriptConfigurationEngine::Execute()
     asIScriptFunction* renderFunc = engine->GetModule(nullptr)->GetFunctionByDecl("void Configure()");
     if (renderFunc == nullptr)
     {
-        errorInfo = wxT("Couldn't find the Configure() function.");
+        errorInfo = "Couldn't find the Configure() function.";
         status = EngineStatus::Error;
         ctx->Release();
         engine->Release();
@@ -94,7 +94,7 @@ bool AngelscriptConfigurationEngine::Execute()
     r = ctx->Prepare(renderFunc);
     if (r < 0)
     {
-        errorInfo = wxT("Error while preparing the script context.");
+        errorInfo = "Error while preparing the script context.";
         status = EngineStatus::Error;
         ctx->Release();
         engine->Release();

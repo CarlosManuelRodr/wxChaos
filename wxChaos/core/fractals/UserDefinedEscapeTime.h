@@ -17,7 +17,7 @@ class UserDefinedEscapeTime : public Fractal
 public:
     UserDefinedEscapeTime(unsigned int width, unsigned int height);
     ~UserDefinedEscapeTime() override;
-    wxString GetName() const override { return wxT("User Defined"); }
+    wxString GetName() const override { return "User Defined"; }
 
     void Render() override;
     void SetFormula(FormulaOptions formula) override;        ///< Sets user formula.

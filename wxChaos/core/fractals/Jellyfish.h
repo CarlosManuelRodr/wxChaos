@@ -16,7 +16,7 @@ class Jellyfish : public Fractal
 public:
     Jellyfish(unsigned int width, unsigned int height);
     ~Jellyfish() override;
-    wxString GetName() const override { return wxT("Jellyfish"); }
+    wxString GetName() const override { return "Jellyfish"; }
 
     void Render() override;
     void DrawOrbit() override;

@@ -180,7 +180,7 @@ void FractalFactory::SetFormula(FormulaOptions formula) const
         if (formula.type != FormulaType::Complex)
         {
             formula.type = FormulaType::Complex;
-            formula.userFormula = wxT("z = z^2 + c");
+            formula.userFormula = "z = z^2 + c";
         }
         _userDefined->SetFormula(formula);
     }
@@ -189,7 +189,7 @@ void FractalFactory::SetFormula(FormulaOptions formula) const
         if (formula.type != FormulaType::FixedPoint)
         {
             formula.type = FormulaType::FixedPoint;
-            formula.userFormula = wxT("z = sin(z)");
+            formula.userFormula = "z = sin(z)";
         }
         _fpUserDefined->SetFormula(formula);
     }
@@ -198,7 +198,7 @@ void FractalFactory::SetFormula(FormulaOptions formula) const
         if (formula.type != FormulaType::NewtonRaphson)
         {
             formula.type = FormulaType::NewtonRaphson;
-            formula.userFormula = wxT("z^3 - 1");
+            formula.userFormula = "z^3 - 1";
         }
         _newtonUserDefined->SetFormula(formula);
     }

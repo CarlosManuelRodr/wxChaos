@@ -73,23 +73,23 @@ void ScriptFractal::Render()
 }
 void ScriptFractal::PostRender()
 {
-    wxString errorLog = wxT("");
+    wxString errorLog = "";
     for (unsigned int i=0; i<_threadNumber; i++)
     {
         if (_myRender[i].IsThereError())
         {
-            errorLog += wxT("Thread ");
+            errorLog += "Thread ";
             errorLog += TextUtils::ToWxString(static_cast<int>(i));
-            errorLog += wxT(" says:\n");
+            errorLog += " says:\n";
             errorLog += _myRender[i].GetErrorInfo();
-            errorLog += wxT("\n");
+            errorLog += "\n";
             _myRender[i].ClearErrorInfo();
         }
     }
     if (errorLog.size() != 0)
     {
-        const wxString out = wxString(wxT("Fatal error in script.\n")) + errorLog;
-        wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
+        const wxString out = wxString("Fatal error in script.\n") + errorLog;
+        wxMessageDialog errorDialog(nullptr, out, "Error", wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }
 }

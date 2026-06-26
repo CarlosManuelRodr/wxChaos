@@ -16,7 +16,7 @@ class Manowar : public Fractal
 public:
     Manowar(unsigned int width, unsigned int height);
     ~Manowar() override;
-    wxString GetName() const override { return wxT("Manowar"); }
+    wxString GetName() const override { return "Manowar"; }
 
     void Render() override;
     void DrawOrbit() override;

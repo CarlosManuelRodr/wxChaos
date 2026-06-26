@@ -84,9 +84,9 @@ void UserDefinedEscapeTime::PostRender()
 {
     if (_myRender[0].IsThereError())
     {
-        const wxString out = wxString(wxT("Fatal error in formula.\n")) + _myRender[0].GetErrorInfo() + wxT("\n");
+        const wxString out = wxString("Fatal error in formula.\n") + _myRender[0].GetErrorInfo() + "\n";
         _myRender[0].ClearErrorInfo();
-        wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
+        wxMessageDialog errorDialog(nullptr, out, "Error", wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }
 }

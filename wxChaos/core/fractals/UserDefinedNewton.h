@@ -65,7 +65,7 @@ public:
     ~UserDefinedNewton() override;
 
     /** @brief Return the display name used by menus and panels. */
-    wxString GetName() const override { return wxT("User Defined Newton-Raphson"); }
+    wxString GetName() const override { return "User Defined Newton-Raphson"; }
 
     /** @brief Render the current compiled formula. */
     void Render() override;

@@ -16,7 +16,7 @@ class SierpinskiTriangle : public Fractal
     SierpinskiTriangleRenderer* myRender;
 public:
     SierpinskiTriangle(unsigned int width, unsigned int height);
-    wxString GetName() const override { return wxT("Sierpinski Triangle"); }
+    wxString GetName() const override { return "Sierpinski Triangle"; }
 
     void Render() override;
 };

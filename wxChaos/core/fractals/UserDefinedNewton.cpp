@@ -33,11 +33,11 @@ UserDefinedNewton::UserDefinedNewton(const unsigned int width, const unsigned in
     _escapeRadius = 1e6;
 
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Convergence epsilon: "), &_convergenceEpsilon, wxT("0.00000001"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Function epsilon: "), &_functionEpsilon, wxT("0.00000001"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Derivative epsilon: "), &_derivativeEpsilon, wxT("0.000000000001"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Root tolerance: "), &_rootTolerance, wxT("0.00001"));
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, wxT("Escape radius: "), &_escapeRadius, wxT("1000000"));
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Convergence epsilon: ", &_convergenceEpsilon, "0.00000001");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Function epsilon: ", &_functionEpsilon, "0.00000001");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Derivative epsilon: ", &_derivativeEpsilon, "0.000000000001");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Root tolerance: ", &_rootTolerance, "0.00001");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Escape radius: ", &_escapeRadius, "1000000");
 
     _algorithm = RenderingAlgorithmType::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);
@@ -178,18 +178,18 @@ void UserDefinedNewton::PostRender()
 {
     if (!_errorInfo.empty())
     {
-        const wxString out = wxString(wxT("Fatal error in formula.\n")) + _errorInfo + wxT("\n");
+        const wxString out = wxString("Fatal error in formula.\n") + _errorInfo + "\n";
         _errorInfo.clear();
-        wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
+        wxMessageDialog errorDialog(nullptr, out, "Error", wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
         return;
     }
 
     if (_myRender[0].IsThereError())
     {
-        const wxString out = wxString(wxT("Fatal error in formula.\n")) + _myRender[0].GetErrorInfo() + wxT("\n");
+        const wxString out = wxString("Fatal error in formula.\n") + _myRender[0].GetErrorInfo() + "\n";
         _myRender[0].ClearErrorInfo();
-        wxMessageDialog errorDialog(nullptr, out, wxT("Error"), wxOK | wxICON_ERROR);
+        wxMessageDialog errorDialog(nullptr, out, "Error", wxOK | wxICON_ERROR);
         errorDialog.ShowModal();
     }
 }

@@ -15,13 +15,13 @@ TEST_CASE("PanelOptions stores linked integer option metadata")
     int iterations = 100;
     PanelOptions options;
 
-    options.LinkInt(PanelOptionType::Spin, wxT("Iterations"), &iterations, wxT("100"));
+    options.LinkInt(PanelOptionType::Spin, "Iterations", &iterations, "100");
 
     CHECK(options.GetElementsSize() == 1);
     CHECK(options.GetPanelOptType(0) == PanelOptionType::Spin);
     CHECK(options.GetLinkType(0) == LinkTo::ToInt);
-    CHECK(options.GetLabelElement(0) == wxT("Iterations"));
-    CHECK(options.GetDefault(0) == wxT("100"));
+    CHECK(options.GetLabelElement(0) == "Iterations");
+    CHECK(options.GetDefault(0) == "100");
     CHECK(options.GetIntElement(0) == &iterations);
 }
 
@@ -30,13 +30,13 @@ TEST_CASE("PanelOptions stores linked double option metadata")
     double exponent = 2.0;
     PanelOptions options;
 
-    options.LinkDbl(PanelOptionType::TextCtrl, wxT("Exponent"), &exponent, wxT("2.0"));
+    options.LinkDbl(PanelOptionType::TextCtrl, "Exponent", &exponent, "2.0");
 
     CHECK(options.GetElementsSize() == 1);
     CHECK(options.GetPanelOptType(0) == PanelOptionType::TextCtrl);
     CHECK(options.GetLinkType(0) == LinkTo::ToDouble);
-    CHECK(options.GetLabelElement(0) == wxT("Exponent"));
-    CHECK(options.GetDefault(0) == wxT("2.0"));
+    CHECK(options.GetLabelElement(0) == "Exponent");
+    CHECK(options.GetDefault(0) == "2.0");
     CHECK(options.GetDoubleElement(0) == &exponent);
 }
 
@@ -45,13 +45,13 @@ TEST_CASE("PanelOptions stores linked bool option metadata")
     bool enabled = true;
     PanelOptions options;
 
-    options.LinkBool(PanelOptionType::CheckBox, wxT("Enabled"), &enabled, wxT("true"));
+    options.LinkBool(PanelOptionType::CheckBox, "Enabled", &enabled, "true");
 
     CHECK(options.GetElementsSize() == 1);
     CHECK(options.GetPanelOptType(0) == PanelOptionType::CheckBox);
     CHECK(options.GetLinkType(0) == LinkTo::ToBool);
-    CHECK(options.GetLabelElement(0) == wxT("Enabled"));
-    CHECK(options.GetDefault(0) == wxT("true"));
+    CHECK(options.GetLabelElement(0) == "Enabled");
+    CHECK(options.GetDefault(0) == "true");
     CHECK(options.GetBoolElement(0) == &enabled);
 }
 
