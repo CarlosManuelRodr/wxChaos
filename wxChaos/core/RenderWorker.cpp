@@ -195,7 +195,7 @@ double RenderWorker::EscapeTimeColor(const Point& point) const
     }
 
     if (_myOpt.smoothRender && !point.insideSet)
-        return ToColorMapValue(SmoothEscapeValue(point));
+        return ToColorMapValue(std::max(0.0, SmoothEscapeValue(point)));
 
     return point.iterations;
 }
