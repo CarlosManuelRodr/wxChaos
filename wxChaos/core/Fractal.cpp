@@ -120,7 +120,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _colorCycleLength = defaultPalette.colorCycleLength;
 
     _palette.resize(_paletteSize);
-    _colorRotationSpeed = static_cast<double>(_paletteSize) / 2.0;
+    _colorRotationSpeed = 120.0;
     this->RebuildPalette();
 }
 
@@ -842,7 +842,7 @@ void Fractal::AdvanceGradientOffset(const double elapsedSeconds)
 
 void Fractal::RefreshAnimatedColors(sf::Image& image)
 {
-    /* This is admittedly an awful and inneficient algorithm, but the alternative is to use a GPU shader and redesign
+    /* This is admittedly an awful and inefficient algorithm, but the alternative is to use a GPU shader and redesign
      * from scratch the rendering pipeline. So I'm keeping this unless anyone complains. */
 
     UpdateMaxColorMapValue();

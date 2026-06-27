@@ -65,7 +65,7 @@ inline Options::Options()
     type = FractalType::Undefined;
     paletteSize = gradPaletteSize = 0;
     colorCycleLength = 0.0;
-    colorRotationSpeed = 0.0;
+    colorRotationSpeed = 120.0;
     paletteMappingMode = PaletteMappingMode::Linear;
     paletteMappingExponent = 1.5;
     kReal = kImaginary = 0.0;
