@@ -100,18 +100,21 @@ bool SelectionRect::UnClickEvent(wxMouseEvent& event)
 }
 
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
-void SelectionRect::MoveEvent(wxMouseEvent& event)
+bool SelectionRect::MoveEvent(wxMouseEvent& event)
 {
-    if (_inSelection)
-    {
-        _x = event.GetPosition().x;
-        _y = event.GetPosition().y;
+    if (!_inSelection)
+        return false;
 
-        _pos.left = std::min(_x, _xSelect);
-        _pos.top  = std::min(_y, _ySelect);
-        _pos.width  = std::abs(_x - _xSelect);
-        _pos.height = std::abs(_y - _ySelect);
-    }
+    _x = event.GetPosition().x;
+    _y = event.GetPosition().y;
+
+    const sf::IntRect previousPosition = _pos;
+    _pos.left = std::min(_x, _xSelect);
+    _pos.top  = std::min(_y, _ySelect);
+    _pos.width  = std::abs(_x - _xSelect);
+    _pos.height = std::abs(_y - _ySelect);
+
+    return _pos != previousPosition;
 }
 
 sf::IntRect SelectionRect::GetSelection() const

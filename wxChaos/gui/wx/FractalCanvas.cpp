@@ -863,9 +863,8 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     if (_mouseWheelPanning)
     {
         const wxPoint currentPosition = event.GetPosition();
-        const wxPoint delta = currentPosition - _lastMouseWheelPanPosition;
 
-        if (delta.x != 0 || delta.y != 0)
+        if (const wxPoint delta = currentPosition - _lastMouseWheelPanPosition; delta.x != 0 || delta.y != 0)
         {
             _fractalPresenter->PanByMousePixels(delta.x, delta.y);
             _lastMouseWheelPanPosition = currentPosition;
@@ -899,7 +898,14 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     else
     {
         if (!_fractal->IsRendering() && !_fractalPresenter->IsMoving())
-            _selectionRect->MoveEvent(event);
+        {
+            if (_selectionRect->MoveEvent(event))
+            {
+                // We do this to make the selection rectangle feel responsive.
+                Refresh(false);
+                Update();
+            }
+        }
     }
 
     // Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.

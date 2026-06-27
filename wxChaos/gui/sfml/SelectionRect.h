@@ -21,6 +21,6 @@ public:
     bool HandleEvents(const sf::Event& event);
     void ClickEvent(wxMouseEvent& event);
     bool UnClickEvent(wxMouseEvent& event);
-    void MoveEvent(wxMouseEvent& event);
+    bool MoveEvent(wxMouseEvent& event);
     sf::IntRect GetSelection() const;
 };
