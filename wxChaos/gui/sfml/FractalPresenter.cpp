@@ -18,6 +18,7 @@ FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vecto
     _zoomAnimationActive = false;
     _zoomAnimationElapsed = 0.0;
     _zoomAnimationStartPosition = {0.0F, 0.0F};
+    _zoomAnimationTargetPosition = {0.0F, 0.0F};
     _zoomAnimationStartScale = {1.0F, 1.0F};
     _zoomAnimationTargetScale = {1.0F, 1.0F};
     _fractal = fractal;
@@ -152,13 +153,17 @@ void FractalPresenter::StartZoomAnimation(const sf::Rect<int>& pixelCoordinates)
     _zoomAnimationActive = true;
     _zoomAnimationElapsed = 0.0;
     _zoomAnimationStartPosition = {
-        static_cast<float>(pixelCoordinates.left),
-        static_cast<float>(pixelCoordinates.top)
+        0.0F,
+        0.0F
+    };
+    _zoomAnimationTargetPosition = {
+        -static_cast<float>(pixelCoordinates.left) * scaleX,
+        -static_cast<float>(pixelCoordinates.top) * scaleY
     };
     _zoomAnimationStartScale = {1.0F, 1.0F};
     _zoomAnimationTargetScale = {scaleX, scaleY};
 
-    _tempSprite.setTextureRect(pixelCoordinates);
+    _tempSprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(screenSize.x), static_cast<int>(screenSize.y)));
     _tempSprite.setPosition(_zoomAnimationStartPosition);
     _tempSprite.setScale(_zoomAnimationStartScale);
 }
@@ -173,8 +178,8 @@ bool FractalPresenter::UpdateZoomAnimation(const double elapsedSeconds)
     const auto easedProgress = static_cast<float>(1.0 - std::pow(1.0 - progress, 3.0));
 
     const sf::Vector2f position = {
-        _zoomAnimationStartPosition.x * (1.0F - easedProgress),
-        _zoomAnimationStartPosition.y * (1.0F - easedProgress)
+        _zoomAnimationStartPosition.x + (_zoomAnimationTargetPosition.x - _zoomAnimationStartPosition.x) * easedProgress,
+        _zoomAnimationStartPosition.y + (_zoomAnimationTargetPosition.y - _zoomAnimationStartPosition.y) * easedProgress
     };
     const sf::Vector2f scale = {
         _zoomAnimationStartScale.x + (_zoomAnimationTargetScale.x - _zoomAnimationStartScale.x) * easedProgress,
@@ -187,7 +192,7 @@ bool FractalPresenter::UpdateZoomAnimation(const double elapsedSeconds)
     if (progress < 1.0)
         return false;
 
-    _tempSprite.setPosition(0, 0);
+    _tempSprite.setPosition(_zoomAnimationTargetPosition);
     _tempSprite.setScale(_zoomAnimationTargetScale);
     _zoomAnimationActive = false;
     return true;

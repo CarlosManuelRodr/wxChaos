@@ -59,6 +59,7 @@ class FractalPresenter
     bool _zoomAnimationActive;                  ///< True while the temporary zoom preview is easing into place.
     double _zoomAnimationElapsed;               ///< Seconds elapsed in the active zoom animation.
     sf::Vector2f _zoomAnimationStartPosition;   ///< Starting sprite position for the zoom preview.
+    sf::Vector2f _zoomAnimationTargetPosition;  ///< Final sprite position for the zoom preview.
     sf::Vector2f _zoomAnimationStartScale;      ///< Starting sprite scale for the zoom preview.
     sf::Vector2f _zoomAnimationTargetScale;     ///< Final sprite scale for the zoom preview.
 
