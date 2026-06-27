@@ -868,6 +868,8 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
         {
             _fractalPresenter->PanByMousePixels(delta.x, delta.y);
             _lastMouseWheelPanPosition = currentPosition;
+            Refresh(false);
+            Update();
         }
 
         _lastMousePosition = currentPosition;
