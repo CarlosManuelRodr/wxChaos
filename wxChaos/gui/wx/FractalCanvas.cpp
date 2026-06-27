@@ -116,12 +116,12 @@ FractalCanvas::~FractalCanvas()
 }
 void FractalCanvas::CreateFractal(const FractalType type)
 {
-    const sf::Vector2u size = this->getSize();
+    const sf::Vector2u size = GetCurrentRenderSize();
     _fractalFactory.CreateFractal(type, size.x, size.y);
 }
 void FractalCanvas::CreateScriptFractal(const ScriptData& scriptData)
 {
-    const sf::Vector2u size = this->getSize();
+    const sf::Vector2u size = GetCurrentRenderSize();
     _fractalFactory.CreateScriptFractal(size.x, size.y, scriptData);
 }
 
@@ -320,6 +320,37 @@ void FractalCanvas::ZoomAtMousePosition(const wxPoint& position) const
     _fractalPresenter->SetAreaOfView(sf::IntRect(left, top, zoomWidth, zoomHeight));
 }
 
+sf::Vector2u FractalCanvas::GetCurrentRenderSize() const
+{
+    const sf::Vector2u sfmlSize = this->getSize();
+    if (sfmlSize.x > 0 && sfmlSize.y > 0)
+        return sfmlSize;
+
+    const int width = std::max(1, _canvasSize.GetWidth());
+    const int height = std::max(1, _canvasSize.GetHeight());
+    return sf::Vector2u(static_cast<unsigned int>(width), static_cast<unsigned int>(height));
+}
+
+void FractalCanvas::ResizePresentation(const wxSize size)
+{
+    _canvasSize = size;
+
+    const int width = size.GetWidth();
+    const int height = size.GetHeight();
+    if (width <= 0 || height <= 0)
+        return;
+
+    const sf::Vector2u sfmlSize(static_cast<unsigned int>(width), static_cast<unsigned int>(height));
+    if (this->getSize() != sfmlSize)
+        this->setSize(sfmlSize);
+
+    _fractalPresenter->Resize(this);
+    _play->Resize(this);
+
+    if (_screenPointer != nullptr)
+        _screenPointer->Resize(this);
+}
+
 void FractalCanvas::OnUpdate()
 {
     // Handles SFML events.
@@ -328,11 +359,9 @@ void FractalCanvas::OnUpdate()
         // Size change event.
         if (_event.type == sf::Event::Resized)
         {
-            _fractalPresenter->Resize(this);
-            _play->Resize(this);
-
-            if (_screenPointer != nullptr)
-                _screenPointer->Resize(this);
+            ResizePresentation(wxSize(
+                static_cast<int>(_event.size.width),
+                static_cast<int>(_event.size.height)));
 
             if (_keyboardGuide && _keyboardGuideMode)
             {
@@ -695,7 +724,7 @@ FormulaOptions FractalCanvas::GetFormula()
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnResize(wxSizeEvent& event)
 {
-    _canvasSize = event.GetSize();
+    ResizePresentation(event.GetSize());
 
     // Adjust position of the keyboard guide.
     if (_keyboardGuideMode)

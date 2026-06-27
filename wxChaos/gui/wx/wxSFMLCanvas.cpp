@@ -3,10 +3,13 @@
 wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                            const long style) : wxControl(parent, id, position, size, style)
 {
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
+    SetDoubleBuffered(false);
+
     Bind(wxEVT_IDLE, &wxSFMLCanvas::OnIdle, this);
     Bind(wxEVT_PAINT, &wxSFMLCanvas::OnPaintEvent, this);
     Bind(wxEVT_ERASE_BACKGROUND, &wxSFMLCanvas::OnEraseBackground, this);
-    Window::create(wxWindow::GetHandle());
+    sf::RenderWindow::create(wxWindow::GetHandle());
 }
 
 wxSFMLCanvas::~wxSFMLCanvas() = default;

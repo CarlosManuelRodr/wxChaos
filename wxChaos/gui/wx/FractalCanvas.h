@@ -98,6 +98,8 @@ class FractalCanvas : public wxSFMLCanvas
     wxString BuildStatusText() const;
     void EmitStatusText() const;
     void ZoomAtMousePosition(const wxPoint& position) const;
+    sf::Vector2u GetCurrentRenderSize() const;
+    void ResizePresentation(wxSize size);
     static wxString FormatStatusCoordinate(double value);
 
 public:
