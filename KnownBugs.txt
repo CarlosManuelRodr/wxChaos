@@ -1,0 +1,1 @@
+- Zoom recorder registers a zoom even though there is no zoom.
