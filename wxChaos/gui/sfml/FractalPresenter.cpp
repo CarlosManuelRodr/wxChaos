@@ -124,6 +124,68 @@ void FractalPresenter::ResetMovement()
     _hasCommittedPanOffset = false;
 }
 
+sf::Rect<int> FractalPresenter::GetMouseWheelZoomRect(const int pixelX, const int pixelY) const
+{
+    const sf::Vector2u screenSize = _fractal->GetScreenSize();
+    const auto screenWidth = static_cast<int>(screenSize.x);
+    const auto screenHeight = static_cast<int>(screenSize.y);
+
+    if (screenWidth <= 0 || screenHeight <= 0)
+        return sf::IntRect(0, 0, 1, 1);
+
+    const int clampedX = std::clamp(pixelX, 0, screenWidth - 1);
+    const int clampedY = std::clamp(pixelY, 0, screenHeight - 1);
+    const int zoomWidth = std::clamp(
+        static_cast<int>(std::round(static_cast<double>(screenWidth) * _mouseWheelZoomScale)),
+        1,
+        screenWidth);
+    const int zoomHeight = std::clamp(
+        static_cast<int>(std::round(static_cast<double>(screenHeight) * _mouseWheelZoomScale)),
+        1,
+        screenHeight);
+    const int left = std::clamp(
+        static_cast<int>(std::round(static_cast<double>(clampedX) * (1.0 - _mouseWheelZoomScale))),
+        0,
+        screenWidth - zoomWidth);
+    const int top = std::clamp(
+        static_cast<int>(std::round(static_cast<double>(clampedY) * (1.0 - _mouseWheelZoomScale))),
+        0,
+        screenHeight - zoomHeight);
+
+    return sf::IntRect(left, top, zoomWidth, zoomHeight);
+}
+
+PreciseRect FractalPresenter::GetMouseWheelZoomView(const int pixelX, const int pixelY) const
+{
+    const sf::Vector2u screenSize = _fractal->GetScreenSize();
+    const auto screenWidth = static_cast<int>(screenSize.x);
+    const auto screenHeight = static_cast<int>(screenSize.y);
+    const PreciseRect currentView = CaptureCurrentView();
+
+    if (screenWidth <= 0 || screenHeight <= 0)
+        return currentView;
+
+    const int clampedX = std::clamp(pixelX, 0, screenWidth - 1);
+    const int clampedY = std::clamp(pixelY, 0, screenHeight - 1);
+    const HighPrecisionReal width = currentView.right - currentView.left;
+    const HighPrecisionReal height = currentView.top - currentView.bottom;
+    const HighPrecisionReal targetWidth = width * HighPrecisionReal(_mouseWheelZoomScale);
+    const HighPrecisionReal targetHeight = height * HighPrecisionReal(_mouseWheelZoomScale);
+    const HighPrecisionReal xDivisor = HighPrecisionReal(screenWidth > 1 ? screenWidth - 1 : 1);
+    const HighPrecisionReal yDivisor = HighPrecisionReal(screenHeight > 1 ? screenHeight - 1 : 1);
+    const HighPrecisionReal xRatio = HighPrecisionReal(clampedX) / xDivisor;
+    const HighPrecisionReal yRatio = HighPrecisionReal(clampedY) / yDivisor;
+    const HighPrecisionReal mouseRe = currentView.left + xRatio * width;
+    const HighPrecisionReal mouseIm = currentView.top - yRatio * height;
+
+    PreciseRect targetView;
+    targetView.left = mouseRe - xRatio * targetWidth;
+    targetView.right = targetView.left + targetWidth;
+    targetView.top = mouseIm + yRatio * targetHeight;
+    targetView.bottom = targetView.top - targetHeight;
+    return targetView;
+}
+
 sf::Image FractalPresenter::CapturePreviewImage()
 {
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
@@ -489,6 +551,11 @@ void FractalPresenter::Resize(const sf::RenderWindow* window)
 
 void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 {
+    SetAreaOfView(pixelCoordinates, _fractal->GetPreciseViewForPixelRect(pixelCoordinates));
+}
+
+void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates, const PreciseRect& targetView)
+{
     ResetMovement();
     const bool wasPaused = _fractal->IsPausedForPresentation();
     const bool wasRendering = _fractal->StopRender();
@@ -510,7 +577,7 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 
     _tempImage = CapturePreviewImage();
 
-    ApplyView(_fractal->GetPreciseViewForPixelRect(pixelCoordinates));
+    ApplyView(targetView);
     if (wasPaused || wasRendering)
         _fractal->MarkRenderInterrupted();
 
@@ -520,6 +587,11 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
     StartZoomAnimation(pixelCoordinates);
     _usingRenderImage = false;
     _zoomingBack = false;
+}
+
+void FractalPresenter::ZoomAtPixel(const int pixelX, const int pixelY)
+{
+    SetAreaOfView(GetMouseWheelZoomRect(pixelX, pixelY), GetMouseWheelZoomView(pixelX, pixelY));
 }
 
 void FractalPresenter::ZoomBack()

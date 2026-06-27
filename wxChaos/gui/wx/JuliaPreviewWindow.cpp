@@ -46,21 +46,7 @@ JuliaPreviewWindow::~JuliaPreviewWindow()
 
 void JuliaPreviewWindow::ZoomAtMousePosition(const sf::Vector2i& position) const
 {
-    const double zoomScale = _fractalPresenter->GetMouseWheelZoomScale();
-
-    const sf::Vector2u screenSize = _juliaFractal.GetFractal()->GetScreenSize();
-    const auto screenWidth = static_cast<int>(screenSize.x);
-    const auto screenHeight = static_cast<int>(screenSize.y);
-
-    if (screenWidth <= 0 || screenHeight <= 0)
-        return;
-
-    const int zoomWidth = std::max(1, static_cast<int>(std::round(static_cast<double>(screenWidth) * zoomScale)));
-    const int zoomHeight = std::max(1, static_cast<int>(std::round(static_cast<double>(screenHeight) * zoomScale)));
-    const int left = std::clamp(position.x - zoomWidth / 2, 0, screenWidth - zoomWidth);
-    const int top = std::clamp(position.y - zoomHeight / 2, 0, screenHeight - zoomHeight);
-
-    _fractalPresenter->SetAreaOfView(sf::IntRect(left, top, zoomWidth, zoomHeight));
+    _fractalPresenter->ZoomAtPixel(position.x, position.y);
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall

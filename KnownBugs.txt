@@ -3,7 +3,6 @@ Bugs:
 - When the main fractal is panned while in Julia mode, the C constant is not updated.
 
 Improvements to get to a release version:
-- Zooming should be smooth.
 - Status bar precision should be adjusted to the current zoom level.
 - Julia mode must have an "Iterations" display, must have a menu bar to switch the main fractal to a julia set on the
 specific current point.
