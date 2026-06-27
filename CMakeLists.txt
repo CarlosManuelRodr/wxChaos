@@ -26,6 +26,7 @@ set(WXCHAOS_WX_LIBRARIES
 
 find_package(doctest CONFIG REQUIRED)
 find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS graphics window system main)
+find_package(Angelscript CONFIG REQUIRED)
 
 # SymEngine's exported CMake config currently declares compatibility with
 # CMake 2.8.12, which CMake 4 rejects. Keep this workaround local to package
@@ -45,15 +46,6 @@ find_library(GMP_LIBRARY NAMES gmp REQUIRED)
 # -------------
 
 find_package(Threads REQUIRED)
-add_subdirectory(
-        ${CMAKE_SOURCE_DIR}/third_party/angelscript/sdk/angelscript/projects/cmake
-        ${CMAKE_BINARY_DIR}/angelscript-build
-)
-
-target_sources(angelscript PRIVATE
-        ${CMAKE_SOURCE_DIR}/third_party/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.cpp
-        ${CMAKE_SOURCE_DIR}/third_party/angelscript/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp
-)
 
 # -------------------------------------------------------------------
 # Source Files (trimmed here for readability)
@@ -82,8 +74,7 @@ target_include_directories(wxChaos PRIVATE
         wxChaos/gui
         wxChaos/utils
         wxChaos/scripting
-        third_party/angelscript/sdk/angelscript/include
-        third_party/angelscript/sdk/add_on/scriptstdstring
+        wxChaos/scripting/angelscript
         third_party/muParserX
         third_party/wxMathPlot
 )
@@ -107,7 +98,7 @@ target_link_libraries(wxChaos PRIVATE
         sfml-window
         sfml-system
         sfml-main
-        angelscript
+        Angelscript::angelscript
         ${SYMENGINE_LIBRARIES}
         ${MPFR_LIBRARY}
         ${GMP_LIBRARY}

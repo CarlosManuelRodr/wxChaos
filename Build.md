@@ -33,6 +33,7 @@ C:\Users\fisca\.vcpkg-clion\vcpkg\vcpkg.exe install --triplet x64-windows --x-ma
 
 This installs dependencies such as:
 
+- AngelScript
 - doctest
 - mpfr
 - SFML 2.6.2
