@@ -952,7 +952,7 @@ void DimensionFrame::CreateFractal(int size)
     else
         _scriptSelected = false;
 
-    _target = _fractalFactory.GetFractalPtr();
+    _target = _fractalFactory.GetFractal();
     if (_confFractOptDialog != nullptr)
         _confFractOptDialog->SetNewTarget(_target);
 }

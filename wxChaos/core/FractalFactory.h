@@ -38,8 +38,8 @@ class FractalFactory
     UserDefinedNewton* _newtonUserDefined;
     ScriptFractal* _scriptFractal;
 
-    Fractal* _target;
-    FractalType _type;
+    Fractal* _fractal;
+    FractalType _fractalType;
 
 public:
     FractalFactory();
@@ -50,6 +50,6 @@ public:
     void CreateScriptFractal(unsigned int width, unsigned int height, const std::string& scriptPath);
     void SetFormula(FormulaOptions formula) const;
     void DeleteFractal();
-    [[nodiscard]] Fractal* GetFractalPtr() const;
+    [[nodiscard]] Fractal* GetFractal() const;
     [[nodiscard]] FractalType GetType() const;
 };

@@ -23,9 +23,9 @@ void ZoomRenderer::CreateFractalInstance(FractalFactory& fractalFactory, Fractal
 PreciseRect ZoomRenderer::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
 {
     CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
-    const PreciseRect defaultView = fractalFactory.GetFractalPtr()->GetPreciseView();
+    const PreciseRect defaultView = fractalFactory.GetFractal()->GetPreciseView();
     fractalFactory.SetFormula(fractalCanvas->GetFormula());
-    fractalFactory.GetFractalPtr()->SetOptions(fractalCanvas->GetFractalPtr()->GetOptions());
+    fractalFactory.GetFractal()->SetOptions(fractalCanvas->GetFractalPtr()->GetOptions());
     return defaultView;
 }
 
@@ -113,14 +113,14 @@ wxThread::ExitCode ZoomRenderer::Entry()
         const double progress = GetFrameProgress(_currentFrame, _totalFrames);
         const PreciseRect viewport = GetZoomViewport(outermostZoom, innermostZoom, progress);
 
-        fractalHandler.GetFractalPtr()->SetPreciseView(viewport);
+        fractalHandler.GetFractal()->SetPreciseView(viewport);
 
         if (_colorSpeed != -1)
-            fractalHandler.GetFractalPtr()->SetVarGradient(static_cast<int>(_colorSpeed * t));
+            fractalHandler.GetFractal()->SetVarGradient(static_cast<int>(_colorSpeed * t));
         else
-            fractalHandler.GetFractalPtr()->SetVarGradient(0);
+            fractalHandler.GetFractal()->SetVarGradient(0);
 
-        const sf::Image out = fractalHandler.GetFractalPtr()->GetRenderedImage();
+        const sf::Image out = fractalHandler.GetFractal()->GetRenderedImage();
         const std::string filename = "frame_" + FixedLengthToString(_currentFrame, outputFileDigits) + ".jpg";
         const std::string fullPath = AppPaths::JoinStd(_filepath, filename);
 

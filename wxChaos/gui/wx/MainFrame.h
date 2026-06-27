@@ -179,7 +179,7 @@ class MainFrame : public wxFrame
     /// @brief Applies saved settings that can safely change during the current session.
     /// @param config Newly saved application configuration.
     void ApplyAppConfig(const AppConfig& config);
-    void SetAutomaticIterations(bool mode);
+    void SetAutomaticIterations(bool mode) const;
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
 

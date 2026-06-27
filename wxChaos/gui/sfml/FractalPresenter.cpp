@@ -1,7 +1,5 @@
-#include "FractalPresenter.h"
-
 #include <algorithm>
-#include <cmath>
+#include "FractalPresenter.h"
 
 constexpr int stdSpeed = 1;
 
@@ -325,8 +323,7 @@ void FractalPresenter::Resize(const sf::RenderWindow* window)
     for (ZoomHistoryEntry& entry : _zoomHistory)
     {
         PreciseRect& view = entry.view;
-        view.top = view.bottom + (view.right - view.left) *
-            HighPrecisionReal(screenSize.y) / HighPrecisionReal(screenSize.x);
+        view.top = view.bottom + (view.right - view.left) * HighPrecisionReal(screenSize.y) / HighPrecisionReal(screenSize.x);
     }
 
     _fractal->MarkRenderDirty();
@@ -365,6 +362,7 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
     ApplyView(_fractal->GetPreciseViewForPixelRect(pixelCoordinates));
     if (wasPaused)
         _fractal->MarkRenderInterrupted();
+
     _fractal->MarkOrbitDirty();
     _tempImage = _image;
     _tempTexture.loadFromImage(_tempImage);
@@ -396,9 +394,7 @@ void FractalPresenter::ZoomBack()
         cachedImageIterations = entry.iterations;
     }
     else
-    {
         ExpandCurrentView();
-    }
 
     _fractal->MarkRenderInterrupted();
     _fractal->MarkOrbitDirty();
@@ -660,7 +656,7 @@ void FractalPresenter::DrawGeometry(sf::RenderWindow* window) const
         const auto y1 = static_cast<float>(_fractal->GetPixelY(line.y1));
         const auto x2 = static_cast<float>(_fractal->GetPixelX(line.x2));
         const auto y2 = static_cast<float>(_fractal->GetPixelY(line.y2));
-        sf::Vertex vertices[] = { sf::Vertex(sf::Vector2f(x1, y1), line.color), sf::Vertex(sf::Vector2f(x2, y2), line.color) };
+        const sf::Vertex vertices[] = { sf::Vertex(sf::Vector2f(x1, y1), line.color), sf::Vertex(sf::Vector2f(x2, y2), line.color) };
         window->draw(vertices, 2, sf::Lines);
     }
 
@@ -670,7 +666,7 @@ void FractalPresenter::DrawGeometry(sf::RenderWindow* window) const
         const auto y1 = static_cast<float>(_fractal->GetPixelY(orbitLine.y1));
         const auto x2 = static_cast<float>(_fractal->GetPixelX(orbitLine.x2));
         const auto y2 = static_cast<float>(_fractal->GetPixelY(orbitLine.y2));
-        sf::Vertex vertices[] = { sf::Vertex(sf::Vector2f(x1, y1), orbitLine.color), sf::Vertex(sf::Vector2f(x2, y2), orbitLine.color) };
+        const sf::Vertex vertices[] = { sf::Vertex(sf::Vector2f(x1, y1), orbitLine.color), sf::Vertex(sf::Vector2f(x2, y2), orbitLine.color) };
         window->draw(vertices, 2, sf::Lines);
     }
 
@@ -743,20 +739,15 @@ void FractalPresenter::Show(sf::RenderWindow* window)
         }
 
         if (_fractal->ConsumePausePresentationRefresh())
-        {
             DrawMaps(window);
-        }
 
         if (_fractal->ConsumeImageRefreshRequest())
-        {
             DrawMaps(window);
-        }
 
         const bool gradientChanged = _fractal->ConsumeGradientChangeRequest();
         if (_fractal->IsGradientAnimating() || gradientChanged)
         {
             _fractal->AdvanceGradientOffset();
-
             if (_fractal->IsRendered())
             {
                 _fractal->RefreshAnimatedColors(_image);

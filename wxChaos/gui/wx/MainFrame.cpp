@@ -426,7 +426,7 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(config.colorFractal);
     _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(config.colorSet);
 }
-void MainFrame::SetAutomaticIterations(const bool mode)
+void MainFrame::SetAutomaticIterations(const bool mode) const
 {
     _fractalCanvas->GetFractalPresenterPtr()->SetAutomaticIterations(mode);
     if (_automaticIterations != nullptr)
@@ -719,10 +719,12 @@ void MainFrame::OnUpdateSliderMode(wxUpdateUIEvent& event)
 {
     event.Check(_fractalCanvas != nullptr && _fractalCanvas->IsSliderMode());
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateManualIterations(wxUpdateUIEvent& event)
 {
     event.Enable(_fractalCanvas != nullptr && !_fractalCanvas->GetFractalPresenterPtr()->AutomaticIterationsEnabled());
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateAutomaticIterations(wxUpdateUIEvent& event)
 {
     event.Check(_fractalCanvas != nullptr && _fractalCanvas->GetFractalPresenterPtr()->AutomaticIterationsEnabled());

@@ -212,26 +212,26 @@ void ImageExportSizeDialog::OnOk(wxCommandEvent&)
 
     // Copy parameters.
     opt.maxIter = iterationsSpin->GetValue();
-    fractalFactory.GetFractalPtr()->SetOptions(opt);
+    fractalFactory.GetFractal()->SetOptions(opt);
 
     // Saves image according to extension.
-    const auto diag = new ImageExportProgressDialog(fractalFactory.GetFractalPtr(), this);
-    fractalFactory.GetFractalPtr()->Render();
+    const auto diag = new ImageExportProgressDialog(fractalFactory.GetFractal(), this);
+    fractalFactory.GetFractal()->Render();
     diag->ShowModal();
     if (diag->IsFinished())
     {
         if (extension == 0 || extension == 1)  // PNG or JPG
         {
-            fractalFactory.GetFractalPtr()->SetRendered(true);
-            const sf::Image out = fractalFactory.GetFractalPtr()->GetRenderedImage();
+            fractalFactory.GetFractal()->SetRendered(true);
+            const sf::Image out = fractalFactory.GetFractal()->GetRenderedImage();
             const bool result = out.saveToFile(path);
             if (!result)
                 wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
         }
         else  // BMP
         {
-            fractalFactory.GetFractalPtr()->SetRendered(true);
-            const bool result = fractalFactory.GetFractalPtr()->SaveBmp(path);
+            fractalFactory.GetFractal()->SetRendered(true);
+            const bool result = fractalFactory.GetFractal()->SaveBmp(path);
             if (!result)
                 wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
         }

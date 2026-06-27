@@ -23,7 +23,7 @@ JuliaPreviewWindow::JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, con
     _constantPending = false;
 
     _juliaFractal.CreateFractal(_type, _size.GetWidth(), _size.GetHeight());
-    _fractalPresenter = new FractalPresenter(_juliaFractal.GetFractalPtr());
+    _fractalPresenter = new FractalPresenter(_juliaFractal.GetFractal());
 }
 
 JuliaPreviewWindow::~JuliaPreviewWindow()
@@ -43,7 +43,7 @@ void JuliaPreviewWindow::HandleEvent()
         // Window closed.
         if (_event.type == sf::Event::Closed)
         {
-            _juliaFractal.GetFractalPtr()->StopRender();
+            _juliaFractal.GetFractal()->StopRender();
             _window->close();
         }
         if (_event.type == sf::Event::Resized)
@@ -71,7 +71,7 @@ void JuliaPreviewWindow::HandleEvent()
                     wxString fileName = openFileDialog->GetPath();
                     const int ext = openFileDialog->GetFilterIndex();
                     const auto path = string(fileName.mb_str());
-                    const auto diag = new ImageExportSizeDialog(nullptr, path, ext, _type, _juliaFractal.GetFractalPtr(), _parent);
+                    const auto diag = new ImageExportSizeDialog(nullptr, path, ext, _type, _juliaFractal.GetFractal(), _parent);
                     diag->Show(true);
                 }
                 openFileDialog->Destroy();
@@ -144,8 +144,8 @@ void JuliaPreviewWindow::Run()
     if (sf::Image icon; icon.loadFromFile("Resources/iconPNG.png"))
         _window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-    _juliaFractal.GetFractalPtr()->SetOptions(_myJuliaOpt, true);
-    _juliaFractal.GetFractalPtr()->SetJuliaMode(true);
+    _juliaFractal.GetFractal()->SetOptions(_myJuliaOpt, true);
+    _juliaFractal.GetFractal()->SetJuliaMode(true);
 
     _selection = new SelectionRect();
     _play = new ToggleButton("Resources/Play.tga", "Resources/Stop.tga", 0, 4, _window);
@@ -182,7 +182,7 @@ void JuliaPreviewWindow::Run()
 
         if (_closeRequested.load())
         {
-            _juliaFractal.GetFractalPtr()->StopRender();
+            _juliaFractal.GetFractal()->StopRender();
             _window->close();
             break;
         }

@@ -25,7 +25,7 @@ class FractalPresenter
     {
         PreciseRect view;
         std::optional<sf::Image> image;
-        unsigned int iterations;
+        unsigned int iterations{};
     };
 
     Fractal* _fractal;                          ///< Fractal model currently being displayed.

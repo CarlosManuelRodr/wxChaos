@@ -33,14 +33,13 @@ wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 */
 class FractalCanvas : public wxSFMLCanvas
 {
-    // Fractal
     FractalFactory _fractalFactory;
     FractalPresenter* _fractalPresenter;
-    SelectionRect* _selection;
-    ToggleButton* _play;
+    SelectionRect* _selectionRect;
+    ToggleButton* _playToggleButton;
     CoordinateSelector* _screenPointer;
-    FractalType _type;
-    Fractal* _target;                       ///< Internally, the methods of this class communicate with the fractal through this pointer.
+    FractalType _fractalType;
+    Fractal* _fractal;
 
     sf::RectangleShape _iterationsOverlay;  ///< Background shape for the iteration-count overlay.
     sf::Font _font;                         ///< Font used by SFML text overlays.

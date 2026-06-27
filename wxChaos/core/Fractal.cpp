@@ -1029,7 +1029,7 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
     else
         probeHandler.CreateFractal(_type, probeSize, probeSize);
 
-    Fractal* probe = probeHandler.GetFractalPtr();
+    Fractal* probe = probeHandler.GetFractal();
     if (probe == nullptr)
         return "This fractal cannot be inspected.";
 
