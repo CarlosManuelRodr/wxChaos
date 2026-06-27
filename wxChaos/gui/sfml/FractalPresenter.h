@@ -56,6 +56,11 @@ class FractalPresenter
     bool _mousePanning;                         ///< True while a direct mouse pan gesture is active.
     bool _automaticIterations;                  ///< True when iterations follow the current zoom level.
     unsigned int _automaticIterationBase;        ///< Minimum iteration count used by automatic mode.
+    bool _zoomAnimationActive;                  ///< True while the temporary zoom preview is easing into place.
+    double _zoomAnimationElapsed;               ///< Seconds elapsed in the active zoom animation.
+    sf::Vector2f _zoomAnimationStartPosition;   ///< Starting sprite position for the zoom preview.
+    sf::Vector2f _zoomAnimationStartScale;      ///< Starting sprite scale for the zoom preview.
+    sf::Vector2f _zoomAnimationTargetScale;     ///< Final sprite scale for the zoom preview.
 
     ///@brief Draws fractal maps into the SFML image and then draws the output sprite.
     ///@param window Target window.
@@ -94,6 +99,19 @@ class FractalPresenter
 
     ///@brief Expands the current view when zoom-back has no saved view.
     void ExpandCurrentView();
+
+    ///@brief Captures the best current preview, including any visible partial render pixels.
+    sf::Image CapturePreviewImage();
+
+    ///@brief Starts the temporary image easing from the selected source rectangle to the full canvas.
+    void StartZoomAnimation(const sf::Rect<int>& pixelCoordinates);
+
+    ///@brief Advances the temporary zoom preview animation.
+    ///@return True on the frame where the preview reaches the target viewport.
+    bool UpdateZoomAnimation(double elapsedSeconds);
+
+    ///@brief Finishes any active temporary zoom animation.
+    void StopZoomAnimation();
 
 public:
     ///@brief Constructs an SFML fractal presenter bound to a fractal.

@@ -842,9 +842,6 @@ void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
 
     if (const int rotation = event.GetWheelRotation(); rotation > 0)
     {
-        if (_fractal->StopRender())
-            _fractal->MarkRenderInterrupted();
-
         ZoomAtMousePosition(event.GetPosition());
     }
     else if (rotation < 0)

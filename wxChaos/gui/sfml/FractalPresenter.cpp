@@ -5,6 +5,7 @@
 constexpr double OldMovementFrameRate = 31.0;
 constexpr double MovementAcceleration = OldMovementFrameRate * OldMovementFrameRate;
 constexpr double MaximumMovementStepSeconds = 0.05;
+constexpr double ZoomAnimationDurationSeconds = 0.18;
 
 FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
 {
@@ -14,6 +15,11 @@ FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vecto
     _setHandleRightClickZoomBack = true;
     _mousePanning = false;
     _automaticIterations = false;
+    _zoomAnimationActive = false;
+    _zoomAnimationElapsed = 0.0;
+    _zoomAnimationStartPosition = {0.0F, 0.0F};
+    _zoomAnimationStartScale = {1.0F, 1.0F};
+    _zoomAnimationTargetScale = {1.0F, 1.0F};
     _fractal = fractal;
     _automaticIterationBase = fractal->GetIterations();
     _xVel = 0.0;
@@ -62,6 +68,8 @@ void FractalPresenter::ResetDisplayImages()
 
     _tempTexture.loadFromImage(_tempImage);
     _tempSprite.setTexture(_tempTexture);
+    _tempSprite.setPosition(0, 0);
+    _tempSprite.setScale(1.0F, 1.0F);
 
     _geomTexture.loadFromImage(_geomImage);
     _outGeom.setTexture(_geomTexture);
@@ -76,6 +84,7 @@ void FractalPresenter::ClearImageCache()
 
     _usingRenderImage = false;
     _zoomingBack = false;
+    StopZoomAnimation();
 
     if (usingCachedRenderImage)
     {
@@ -98,6 +107,96 @@ void FractalPresenter::ResetMovement()
     _posY = 0;
     _committedPanOffset = {0, 0};
     _hasCommittedPanOffset = false;
+}
+
+sf::Image FractalPresenter::CapturePreviewImage()
+{
+    const sf::Vector2u screenSize = _fractal->GetScreenSize();
+    sf::Image preview;
+    preview.create(screenSize.x, screenSize.y, sf::Color::White);
+
+    sf::RenderTexture renderTexture;
+    if (renderTexture.create(screenSize.x, screenSize.y))
+    {
+        renderTexture.clear(sf::Color::White);
+        if (_zoomAnimationActive && _tempImage.getSize().x > 0 && _tempImage.getSize().y > 0)
+            renderTexture.draw(_tempSprite);
+        else if (_image.getSize().x == screenSize.x && _image.getSize().y == screenSize.y)
+            renderTexture.draw(_output);
+
+        renderTexture.display();
+        preview = renderTexture.getTexture().copyToImage();
+    }
+    else if (_image.getSize().x == screenSize.x && _image.getSize().y == screenSize.y)
+        preview = _image;
+
+    _fractal->PrepareDisplayColorLookup();
+    for (unsigned int x = 0; x < screenSize.x; x++)
+    {
+        for (unsigned int y = 0; y < screenSize.y; y++)
+        {
+            if (_fractal->HasDisplayPixelColor(x, y))
+                preview.setPixel(x, y, _fractal->GetRenderedPixelColor(x, y));
+        }
+    }
+
+    return preview;
+}
+
+void FractalPresenter::StartZoomAnimation(const sf::Rect<int>& pixelCoordinates)
+{
+    const sf::Vector2u screenSize = _fractal->GetScreenSize();
+    const float scaleX = static_cast<float>(screenSize.x) / static_cast<float>(pixelCoordinates.width);
+    const float scaleY = static_cast<float>(screenSize.y) / static_cast<float>(pixelCoordinates.height);
+
+    _zoomAnimationActive = true;
+    _zoomAnimationElapsed = 0.0;
+    _zoomAnimationStartPosition = {
+        static_cast<float>(pixelCoordinates.left),
+        static_cast<float>(pixelCoordinates.top)
+    };
+    _zoomAnimationStartScale = {1.0F, 1.0F};
+    _zoomAnimationTargetScale = {scaleX, scaleY};
+
+    _tempSprite.setTextureRect(pixelCoordinates);
+    _tempSprite.setPosition(_zoomAnimationStartPosition);
+    _tempSprite.setScale(_zoomAnimationStartScale);
+}
+
+bool FractalPresenter::UpdateZoomAnimation(const double elapsedSeconds)
+{
+    if (!_zoomAnimationActive)
+        return false;
+
+    _zoomAnimationElapsed += std::clamp(elapsedSeconds, 0.0, MaximumMovementStepSeconds);
+    const double progress = std::clamp(_zoomAnimationElapsed / ZoomAnimationDurationSeconds, 0.0, 1.0);
+    const auto easedProgress = static_cast<float>(1.0 - std::pow(1.0 - progress, 3.0));
+
+    const sf::Vector2f position = {
+        _zoomAnimationStartPosition.x * (1.0F - easedProgress),
+        _zoomAnimationStartPosition.y * (1.0F - easedProgress)
+    };
+    const sf::Vector2f scale = {
+        _zoomAnimationStartScale.x + (_zoomAnimationTargetScale.x - _zoomAnimationStartScale.x) * easedProgress,
+        _zoomAnimationStartScale.y + (_zoomAnimationTargetScale.y - _zoomAnimationStartScale.y) * easedProgress
+    };
+
+    _tempSprite.setPosition(position);
+    _tempSprite.setScale(scale);
+
+    if (progress < 1.0)
+        return false;
+
+    _tempSprite.setPosition(0, 0);
+    _tempSprite.setScale(_zoomAnimationTargetScale);
+    _zoomAnimationActive = false;
+    return true;
+}
+
+void FractalPresenter::StopZoomAnimation()
+{
+    _zoomAnimationActive = false;
+    _zoomAnimationElapsed = 0.0;
 }
 
 PreciseRect FractalPresenter::CaptureCurrentView() const
@@ -363,6 +462,7 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 {
     ResetMovement();
     const bool wasPaused = _fractal->IsPausedForPresentation();
+    const bool wasRendering = _fractal->StopRender();
     std::optional<sf::Image> renderedImage;
 
     if (wasPaused)
@@ -379,21 +479,16 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 
     SaveZoom(std::move(renderedImage));
 
+    _tempImage = CapturePreviewImage();
+
     ApplyView(_fractal->GetPreciseViewForPixelRect(pixelCoordinates));
-    if (wasPaused)
+    if (wasPaused || wasRendering)
         _fractal->MarkRenderInterrupted();
 
     _fractal->MarkOrbitDirty();
-    _tempImage = _image;
     _tempTexture.loadFromImage(_tempImage);
     _tempSprite.setTexture(_tempTexture);
-    _tempSprite.setTextureRect(pixelCoordinates);
-    _tempSprite.setPosition(0, 0);
-
-    const sf::Vector2u screenSize = _fractal->GetScreenSize();
-    const float scaleX = static_cast<float>(screenSize.x) / static_cast<float>(pixelCoordinates.width);
-    const float scaleY = static_cast<float>(screenSize.y) / static_cast<float>(pixelCoordinates.height);
-    _tempSprite.setScale(scaleX, scaleY);
+    StartZoomAnimation(pixelCoordinates);
     _usingRenderImage = false;
     _zoomingBack = false;
 }
@@ -401,6 +496,7 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 void FractalPresenter::ZoomBack()
 {
     _fractal->StopRender();
+    StopZoomAnimation();
     ResetMovement();
     std::optional<sf::Image> cachedImage;
     unsigned int cachedImageIterations = 0;
@@ -643,7 +739,7 @@ void FractalPresenter::DrawMaps(sf::RenderWindow* window)
     _fractal->PreDrawMaps();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
 
-    if (_zoomingBack || _dontDrawTempImage || !_fractal->IsExteriorColorEnabled())
+    if (_zoomingBack || _dontDrawTempImage || !_fractal->IsExteriorColorEnabled() || _zoomAnimationActive)
         _image.create(screenSize.x, screenSize.y, sf::Color(255, 255, 255));
     else
     {
@@ -712,6 +808,8 @@ void FractalPresenter::DrawGeometry(sf::RenderWindow* window) const
 
 void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSeconds)
 {
+    const bool zoomAnimationFinished = UpdateZoomAnimation(elapsedSeconds);
+
     if (_fractal->IsRendered() && IsMoving())
     {
         // While panning, only draw the shifted render output. Showing the
@@ -750,7 +848,8 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
 
             _committedPanOffset = {0, 0};
 
-            DrawMaps(window);
+            if (!_zoomAnimationActive)
+                DrawMaps(window);
 
             if (!_fractal->IsRendering())
             {
@@ -758,15 +857,19 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
                 _dontDrawTempImage = false;
                 _zoomingBack = false;
                 _fractal->PostRender();
-                DrawMaps(window);
+                if (!_zoomAnimationActive)
+                    DrawMaps(window);
                 _fractal->ConsumeImageRefreshRequest();
             }
         }
 
-        if (_fractal->ConsumePausePresentationRefresh())
+        if (_fractal->ConsumePausePresentationRefresh() && !_zoomAnimationActive)
             DrawMaps(window);
 
-        if (_fractal->ConsumeImageRefreshRequest())
+        if (_fractal->ConsumeImageRefreshRequest() && !_zoomAnimationActive)
+            DrawMaps(window);
+
+        if (zoomAnimationFinished && _fractal->IsRendered())
             DrawMaps(window);
 
         const bool gradientChanged = _fractal->ConsumeGradientChangeRequest();
@@ -781,6 +884,12 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
                 _texture.loadFromImage(_image);
             }
         }
+    }
+
+    if (_zoomAnimationActive && _fractal->IsExteriorColorEnabled())
+    {
+        window->draw(_tempSprite);
+        return;
     }
 
     if (!_dontDrawTempImage && _fractal->IsExteriorColorEnabled())
