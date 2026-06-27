@@ -186,7 +186,7 @@ void MainFrame::SetUpGUI()
     wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *dPendulum;
 
 #ifdef _WIN32
-#define menuSeparator wxT('\t')
+#define menuSeparator '\t'
 #elif __linux__
 #define menuSeparator "    "
 #endif
@@ -258,7 +258,7 @@ void MainFrame::SetUpGUI()
     _introConstant->Append(_manualJuliaConstant);
     _manualJuliaConstant->Enable(false);
 
-    _sliderJuliaConstant = new wxMenuItem(_introConstant, ID_ENTER_SLD_CONSTANT, wxString("Slider") + wxT('\t') + "F1", wxEmptyString, wxITEM_CHECK);
+    _sliderJuliaConstant = new wxMenuItem(_introConstant, ID_ENTER_SLD_CONSTANT, wxString("Slider") + '\t' + "F1", wxEmptyString, wxITEM_CHECK);
     _introConstant->Append(_sliderJuliaConstant);
     _sliderJuliaConstant->Enable(false);
     _sliderJuliaConstant->Check(false);
@@ -266,7 +266,7 @@ void MainFrame::SetUpGUI()
 
     // Julia constant and show orbit.
     _juliaMode = new wxMenuItem(_fractalMenu, ID_JULIA_MODE, wxString("Julia mode"), wxEmptyString, wxITEM_CHECK);
-    _showOrbit = new wxMenuItem(_fractalMenu, ID_SHOW_ORBIT, wxString("Show orbit") + wxT('\t') + "F2", wxEmptyString, wxITEM_CHECK);
+    _showOrbit = new wxMenuItem(_fractalMenu, ID_SHOW_ORBIT, wxString("Show orbit") + '\t' + "F2", wxEmptyString, wxITEM_CHECK);
 
     _fractalMenu->Append(_juliaMode);
 
@@ -275,7 +275,7 @@ void MainFrame::SetUpGUI()
     _showOrbit->Check(false);
 
     // File menu.
-    _fileMenu->Append(ID_SAVE, wxString("Save image") + wxT('\t') + "F4");
+    _fileMenu->Append(ID_SAVE, wxString("Save image") + '\t' + "F4");
     _fileMenu->AppendSeparator();
     _fileMenu->Append(ID_SETTINGS, "Settings...");
     _fileMenu->AppendSeparator();
@@ -290,10 +290,10 @@ void MainFrame::SetUpGUI()
     // Iterations.
     _setIterations = new wxMenuItem(_iterationsMenu, ID_IT_MANUAL, wxString("Set iterations"), wxEmptyString, wxITEM_NORMAL);
     _iterationsMenu->Append(_setIterations);
-    _moreIterations = new wxMenuItem(_iterationsMenu, ID_INCREASE_IT, wxString("Increase iterations") + wxT('\t') + "L", wxEmptyString, wxITEM_NORMAL);
+    _moreIterations = new wxMenuItem(_iterationsMenu, ID_INCREASE_IT, wxString("Increase iterations") + '\t' + "L", wxEmptyString, wxITEM_NORMAL);
     _iterationsMenu->Append(_moreIterations);
 
-    _lessIterations = new wxMenuItem(_iterationsMenu, ID_DECREASE_IT, wxString("Decrease iterations") + wxT('\t') + "K", wxEmptyString, wxITEM_NORMAL);
+    _lessIterations = new wxMenuItem(_iterationsMenu, ID_DECREASE_IT, wxString("Decrease iterations") + '\t' + "K", wxEmptyString, wxITEM_NORMAL);
     _iterationsMenu->Append(_lessIterations);
     _iterationsMenu->AppendSeparator();
     _automaticIterations = new wxMenuItem(_iterationsMenu, ID_AUTOMATIC_ITERATIONS, wxString("Automatic iterations"), wxEmptyString, wxITEM_CHECK);
@@ -305,9 +305,9 @@ void MainFrame::SetUpGUI()
     _fractalMenu->Append(ID_FORMULA_DIALOG, "Enter user formula"); // Txt: "Enter user formula"
     _fractalMenu->AppendSeparator();
 
-    _abortRenderItem = _fractalMenu->Append(ID_ABORT_RENDER, wxString("Abort") + wxT('\t') + "P");
+    _abortRenderItem = _fractalMenu->Append(ID_ABORT_RENDER, wxString("Abort") + '\t' + "P");
     _abortRenderItem->Enable(false);
-    _fractalMenu->Append(ID_REDRAW, wxString("Redraw") + wxT('\t') + "F5");
+    _fractalMenu->Append(ID_REDRAW, wxString("Redraw") + '\t' + "F5");
     _fractalMenu->Append(ID_RESET, wxString("Reset"));
     _rendererMenu->Append(ID_PALETTE, "Renderer options");
 
@@ -1222,7 +1222,7 @@ void MainFrame::UpdateMenu()
         }
     }
 
-    _abortRenderItem->SetItemLabel(wxString("Abort")+ wxT('\t') + "P");
+    _abortRenderItem->SetItemLabel(wxString("Abort")+ '\t' + "P");
     _abortRenderItem->Enable(false);
 
     // If Julia mode is opened, closes it.

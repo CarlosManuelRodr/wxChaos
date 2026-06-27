@@ -294,8 +294,8 @@ optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& te
 {
     wxString commandText = text;
     commandText.Trim(true).Trim(false);
-    const int openParenthesis = commandText.Find(wxT('('));
-    const int closeParenthesis = commandText.Find(wxT(')'), true);
+    const int openParenthesis = commandText.Find('(');
+    const int closeParenthesis = commandText.Find(')', true);
     if (openParenthesis <= 0 || closeParenthesis != static_cast<int>(commandText.length()) - 1)
     {
         error = "Error: expected Command(argument=value, ...).";
@@ -312,7 +312,7 @@ optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& te
 
     while (!arguments.empty())
     {
-        const int comma = arguments.Find(wxT(','));
+        const int comma = arguments.Find(',');
         wxString argument = comma == wxNOT_FOUND ? arguments : arguments.Left(comma);
         arguments = comma == wxNOT_FOUND ? wxEmptyString : arguments.Mid(comma + 1);
         argument.Trim(true).Trim(false);
@@ -323,7 +323,7 @@ optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& te
             return nullopt;
         }
 
-        const int equals = argument.Find(wxT('='));
+        const int equals = argument.Find('=');
         if (equals == wxNOT_FOUND)
             command.positionalArguments.push_back(argument);
         else
@@ -469,36 +469,36 @@ optional<bool> CommandConsole::ReadBool(const ParsedCommand& command,
 // ReSharper disable once CppDFAUnreachableFunctionCall
 wxString CommandConsole::HelpText()
 {
-    return wxT(
-        "Coordinates may be named x/y or re/im.\n"
-        "RGB colors use integer components from 0 to 255. White is 255,255,255.\n\n"
-        "AskInfo(x, y, iterations=optional)\n"
-        "AskInfo(re=..., im=..., iterations=optional)\n"
-        "DrawCircle(x, y, radius, red, green, blue)\n"
-        "DrawCircle(re=..., im=..., radius=..., red=..., green=..., blue=..., filled=true)\n"
-        "DrawCircle(x, y, radius, red, green, blue, filled)\n"
-        "DrawLine(x1, y1, x2, y2, red, green, blue)\n"
-        "DrawLine(re1=..., im1=..., re2=..., im2=..., red=..., green=..., blue=...)\n"
-        "FocusView(x, y, radius)\n"
-        "FocusView(re=..., im=..., radius=...)\n"
-        "  radius is the horizontal half-width; vertical range follows the canvas aspect ratio.\n"
-        "OpenJuliaMode(x, y)\n"
-        "OpenJuliaMode(re=..., im=...)\n"
-        "DeleteFigures()\n"
-        "SetBoundaries(minX, maxX, minY, maxY) or minRe/maxRe/minIm/maxIm\n"
-        "SetIterations(iterations)\n"
-        "GetIterations()\n"
-        "Redraw()\n"
-        "Abort()\n"
-        "ReloadScripts()\n"
-        "Clear() or Clc()\n"
-        "Help()\n\n"
-        "Examples:\n"
-        "DrawCircle(1, 0, 1.4, 255, 255, 255)\n"
-        "DrawCircle(re=1, im=0, radius=1.4, red=255, green=255, blue=255, filled=true)\n"
-        "FocusView(re=-0.75, im=0.1, radius=0.02)\n"
-        "OpenJuliaMode(re=-0.8, im=0.156)"
-    );
+    return R"(Coordinates may be named x/y or re/im.
+    RGB colors use integer components from 0 to 255. White is 255,255,255.
+
+    AskInfo(x, y, iterations=optional)
+    AskInfo(re=..., im=..., iterations=optional)
+    DrawCircle(x, y, radius, red, green, blue)
+    DrawCircle(re=..., im=..., radius=..., red=..., green=..., blue=..., filled=true)
+    DrawCircle(x, y, radius, red, green, blue, filled)
+    DrawLine(x1, y1, x2, y2, red, green, blue)
+    DrawLine(re1=..., im1=..., re2=..., im2=..., red=..., green=..., blue=...)
+    FocusView(x, y, radius)
+    FocusView(re=..., im=..., radius=...)
+      radius is the horizontal half-width; vertical range follows the canvas aspect ratio.
+    OpenJuliaMode(x, y)
+    OpenJuliaMode(re=..., im=...)
+    DeleteFigures()
+    SetBoundaries(minX, maxX, minY, maxY) or minRe/maxRe/minIm/maxIm
+    SetIterations(iterations)
+    GetIterations()
+    Redraw()
+    Abort()
+    ReloadScripts()
+    Clear() or Clc()
+    Help()
+
+    Examples:
+    DrawCircle(1, 0, 1.4, 255, 255, 255)
+    DrawCircle(re=1, im=0, radius=1.4, red=255, green=255, blue=255, filled=true)
+    FocusView(re=-0.75, im=0.1, radius=0.02)
+    OpenJuliaMode(re=-0.8, im=0.156))";
 }
 
 void CommandConsole::OnClose(wxCloseEvent&)

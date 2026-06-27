@@ -60,7 +60,7 @@ bool AngelscriptConfigurationEngine::CompileFromPath(const std::string& path)
     {
         engine->Release();
         engine = nullptr;
-        errorInfo = wxT("Compile error in file: " + path);
+        errorInfo = "Compile error in file: " + path;
         status = EngineStatus::Error;
         return false;
     }

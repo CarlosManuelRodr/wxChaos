@@ -63,7 +63,7 @@ namespace TextUtils
         while (std::getline(input, token, ','))
             numbers.push_back(ToInt(token));
 
-        if (!value.empty() && value.Last() == wxT(','))
+        if (!value.empty() && value.Last() == ',')
             numbers.push_back(0);
 
         return numbers;

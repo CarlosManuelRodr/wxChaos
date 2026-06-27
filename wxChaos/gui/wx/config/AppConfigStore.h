@@ -23,7 +23,7 @@ struct AppConfig
     bool automaticIterations = false;
     int paletteSize = 0;
     int colorCycleLength = 0;
-    ColorPaletteTypes colorStyle = ClassicMandelbrot; ///< Default gradient preset, or CustomGradient for user-edited gradients.
+    ColorPaletteTypes colorStyle = SunsetDrive; ///< Default gradient preset, or CustomGradient for user-edited gradients.
     std::string colorStyleGrad;
     bool constantWindow = false;
     bool commandConsole = false;

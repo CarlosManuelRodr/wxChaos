@@ -943,13 +943,13 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     }
 
     const wxChar key = event.GetUnicodeKey();
-    if (key == wxT('W') || key == wxT('w'))
+    if (key == 'W' || key == 'w')
         _fractalPresenter->SetMovement(Up);
-    else if (key == wxT('S') || key == wxT('s'))
+    else if (key == 'S' || key == 's')
         _fractalPresenter->SetMovement(Down);
-    else if (key == wxT('A') || key == wxT('a'))
+    else if (key == 'A' || key == 'a')
         _fractalPresenter->SetMovement(Left);
-    else if (key == wxT('D') || key == wxT('d'))
+    else if (key == 'D' || key == 'd')
         _fractalPresenter->SetMovement(Right);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -982,12 +982,12 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
     }
 
     const wxChar key = event.GetUnicodeKey();
-    if (key == wxT('W') || key == wxT('w'))
+    if (key == 'W' || key == 'w')
         _fractalPresenter->ReleaseMovement(Up);
-    else if (key == wxT('S') || key == wxT('s'))
+    else if (key == 'S' || key == 's')
         _fractalPresenter->ReleaseMovement(Down);
-    else if (key == wxT('A') || key == wxT('a'))
+    else if (key == 'A' || key == 'a')
         _fractalPresenter->ReleaseMovement(Left);
-    else if (key == wxT('D') || key == wxT('d'))
+    else if (key == 'D' || key == 'd')
         _fractalPresenter->ReleaseMovement(Right);
 }
