@@ -1,10 +1,8 @@
 #pragma once
-#include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/string.h>
 #include <wx/listbox.h>
 #include <wx/gdicmn.h>
-#include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/stc/stc.h>
 #include <wx/richtext/richtextctrl.h>
@@ -43,7 +41,7 @@ public:
 * @class ScriptEditor
 * @brief Editor and validation tool for user AngelScript fractals.
 *
-* ScriptEditor lists saved user scripts, edits source with a styled code
+* ScriptEditor lists saved user scripts, edits scripts with a styled code
 * control, validates configuration/render entry points, and shows console and
 * preview output for debugging script fractals.
 */

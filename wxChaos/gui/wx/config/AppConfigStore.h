@@ -20,7 +20,7 @@ struct AppConfig
 
     FractalType type = FractalType::Mandelbrot;
     int maxIterations = 100;
-    bool automaticIterations = false;
+    bool automaticIterations = true;
     int paletteSize = 0;
     int colorCycleLength = 0;
     ColorPaletteTypes colorStyle = SunsetDrive; ///< Default gradient preset, or CustomGradient for user-edited gradients.

@@ -159,7 +159,7 @@ class MainFrame : public wxFrame
 
     void SetUpGUI();                      ///< Create the main window.
     void UpdateMenu();                    ///< Adjust menu items when a new fractal type is selected.
-    void UpdateOptionsPanel();                ///< Adjust the option panel when a new fractal type is selected.
+    void UpdateOptionsPanel();            ///< Adjust the option panel when a new fractal type is selected.
     void UpdateJuliaMode();               ///< Closes the Julia window when a new fractal is selected.
     void UpdateJuliaRendererOptions(const Options& options) const;
     ///@brief Changes the fractal type.
@@ -194,12 +194,12 @@ public :
     void OnQuit(wxCommandEvent& event);
     void OnSettings(wxCommandEvent& event);                 ///< Opens or focuses the settings frame.
     void OnSettingsFrameClosed(wxCommandEvent& event);      ///< Clears the settings frame reference after closure.
-    void OnResize(wxSizeEvent& event);                     ///< Resizes the frame.
-    void OnJuliaModeClosed(wxCommandEvent& event);         ///< Handles the Julia window closed event.
-    void OnRendererOptionsClosed(wxCommandEvent& event);   ///< Handles the renderer options window closed event.
-    void OnScriptEditorClosed(wxCommandEvent& event);      ///< Handles the script editor window closed event.
-    void OnDimensionFrameClosed(wxCommandEvent& event);    ///< Handles the dimension window closed event.
-    void OnCommandConsoleClosed(wxCommandEvent& event);    ///< Handles the command console closed event.
+    void OnResize(wxSizeEvent& event);                      ///< Resizes the frame.
+    void OnJuliaModeClosed(wxCommandEvent& event);          ///< Handles the Julia window closed event.
+    void OnRendererOptionsClosed(wxCommandEvent& event);    ///< Handles the renderer options window closed event.
+    void OnScriptEditorClosed(wxCommandEvent& event);       ///< Handles the script editor window closed event.
+    void OnDimensionFrameClosed(wxCommandEvent& event);     ///< Handles the dimension window closed event.
+    void OnCommandConsoleClosed(wxCommandEvent& event);     ///< Handles the command console closed event.
     void ChangeMandelbrot(wxCommandEvent& event);
     void ChangeMandelbrotZN(wxCommandEvent& event);
     void ChangeJulia(wxCommandEvent& event);

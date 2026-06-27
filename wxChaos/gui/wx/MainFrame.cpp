@@ -976,10 +976,8 @@ void MainFrame::GetParserOpt()
 }
 void MainFrame::UpdateOptionsPanel()
 {
-    PanelOptions* pOptions = _fractalCanvas->GetFractal()->GetOptPanel();
-
     // If there are elements in pOptions creates panel.
-    if (pOptions->GetElementsSize() > 0)
+    if (PanelOptions* panelOptions = _fractalCanvas->GetFractal()->GetOptPanel(); panelOptions->GetElementsSize() > 0)
     {
         unsigned int labelIndex;
         unsigned int index;
@@ -990,7 +988,7 @@ void MainFrame::UpdateOptionsPanel()
             this->DeleteOptPanel();
         }
 
-        if (pOptions->GetForceShow())
+        if (panelOptions->GetForceShow())
         {
             _fractalOptionsItem->Check(true);
             _optionPanel->Show();
@@ -1005,58 +1003,58 @@ void MainFrame::UpdateOptionsPanel()
             _fractalOptionsItem->Check(false);
 
         // Creates elements from each kind.
-        for (int i=0; i<pOptions->GetElementsSize(); i++)
+        for (int i=0; i<panelOptions->GetElementsSize(); i++)
         {
-            switch(pOptions->GetPanelOptType(i))
+            switch(panelOptions->GetPanelOptType(i))
             {
-            case PanelOptionType::Label:
-                {
-                    _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    labelIndex = _labels.size()-1;
-                    _labels[labelIndex]->Wrap(-1);
-                    _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
-                    _foundLabels.push_back(i);
-                }
-                break;
-            case PanelOptionType::TextCtrl:
-                {
-                    _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    labelIndex = _labels.size()-1;
-                    _labels[labelIndex]->Wrap(-1);
-                    _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
+                case PanelOptionType::Label:
+                    {
+                        _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                        labelIndex = _labels.size()-1;
+                        _labels[labelIndex]->Wrap(-1);
+                        _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
+                        _foundLabels.push_back(i);
+                    }
+                    break;
+                case PanelOptionType::TextCtrl:
+                    {
+                        _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                        labelIndex = _labels.size()-1;
+                        _labels[labelIndex]->Wrap(-1);
+                        _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
 
-                    _textControls.push_back(new wxTextCtrl(_optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    index = _textControls.size()-1;
-                    _optionSizer->Add(_textControls[index], 0, wxALL|wxEXPAND, 5);
-                    _foundTextControls.push_back(i);
-                }
-                break;
-            case PanelOptionType::Spin:
-                {
-                    _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    labelIndex = _labels.size()-1;
-                    _labels[labelIndex]->Wrap(-1);
-                    _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
+                        _textControls.push_back(new wxTextCtrl(_optionPanel, wxID_ANY, wxString(panelOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                        index = _textControls.size()-1;
+                        _optionSizer->Add(_textControls[index], 0, wxALL|wxEXPAND, 5);
+                        _foundTextControls.push_back(i);
+                    }
+                    break;
+                case PanelOptionType::Spin:
+                    {
+                        _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                        labelIndex = _labels.size()-1;
+                        _labels[labelIndex]->Wrap(-1);
+                        _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
 
-                    _spinControls.push_back(new wxSpinCtrl(_optionPanel, wxID_ANY, wxString(pOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 ));
-                    index = _spinControls.size()-1;
-                    _optionSizer->Add(_spinControls[index], 0, wxALL|wxEXPAND, 5);
-                    _foundSpinControls.push_back(i);
-                }
-                break;
-            case PanelOptionType::CheckBox:
-                {
-                    _checkBoxes.push_back(new wxCheckBox(_optionPanel, wxID_ANY, wxString(pOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                    index = _checkBoxes.size()-1;
-                    if (pOptions->GetDefault(i) == "true")
-                        _checkBoxes[index]->SetValue(true);
-                    else
-                        _checkBoxes[index]->SetValue(false);
+                        _spinControls.push_back(new wxSpinCtrl(_optionPanel, wxID_ANY, wxString(panelOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 ));
+                        index = _spinControls.size()-1;
+                        _optionSizer->Add(_spinControls[index], 0, wxALL|wxEXPAND, 5);
+                        _foundSpinControls.push_back(i);
+                    }
+                    break;
+                case PanelOptionType::CheckBox:
+                    {
+                        _checkBoxes.push_back(new wxCheckBox(_optionPanel, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
+                        index = _checkBoxes.size()-1;
+                        if (panelOptions->GetDefault(i) == "true")
+                            _checkBoxes[index]->SetValue(true);
+                        else
+                            _checkBoxes[index]->SetValue(false);
 
-                    _optionSizer->Add(_checkBoxes[index], 0, wxALL|wxEXPAND, 5);
-                    _foundCheckBoxes.push_back(i);
-                }
-                break;
+                        _optionSizer->Add(_checkBoxes[index], 0, wxALL|wxEXPAND, 5);
+                        _foundCheckBoxes.push_back(i);
+                    }
+                    break;
             };
         }
 
@@ -1088,13 +1086,13 @@ void MainFrame::DeleteOptPanel()
 
     _textControls.clear();
     _foundTextControls.clear();
-    for (auto & spinControl : _spinControls)
+    for (const auto & spinControl : _spinControls)
         spinControl->Destroy();
 
     _spinControls.clear();
     _foundSpinControls.clear();
-    for (auto & checkBoxe : _checkBoxes)
-        checkBoxe->Destroy();
+    for (const auto & checkBox : _checkBoxes)
+        checkBox->Destroy();
 
     _checkBoxes.clear();
     _foundCheckBoxes.clear();
@@ -1179,10 +1177,7 @@ void MainFrame::UpdateMenu()
         _iterationsDialog->SetTarget(_fractalCanvas->GetFractalPresenter());
 
     _showOrbit->Check(false);
-    if (_fractalCanvas->GetFractal()->HasOrbit())
-        _showOrbit->Enable(true);
-    else
-        _showOrbit->Enable(false);
+    _showOrbit->Enable(_fractalCanvas->GetFractal()->HasOrbit());
 
     const bool automaticIterations = _fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled();
     _setIterations->Enable(!automaticIterations);
