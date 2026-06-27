@@ -120,14 +120,22 @@ sf::Image FractalPresenter::CapturePreviewImage()
     if (renderTexture.create(screenSize.x, screenSize.y))
     {
         renderTexture.clear(sf::Color::White);
-        if (_zoomAnimationActive && _tempImage.getSize().x > 0 && _tempImage.getSize().y > 0)
+        const bool hasTemporaryPreview = !_dontDrawTempImage &&
+            _fractal->IsExteriorColorEnabled() &&
+            _tempImage.getSize().x == screenSize.x &&
+            _tempImage.getSize().y == screenSize.y;
+
+        if (hasTemporaryPreview)
             renderTexture.draw(_tempSprite);
-        else if (_image.getSize().x == screenSize.x && _image.getSize().y == screenSize.y)
+
+        if (!_zoomAnimationActive && _image.getSize().x == screenSize.x && _image.getSize().y == screenSize.y)
             renderTexture.draw(_output);
 
         renderTexture.display();
         preview = renderTexture.getTexture().copyToImage();
     }
+    else if (!_dontDrawTempImage && _tempImage.getSize().x == screenSize.x && _tempImage.getSize().y == screenSize.y)
+        preview = _tempImage;
     else if (_image.getSize().x == screenSize.x && _image.getSize().y == screenSize.y)
         preview = _image;
 
