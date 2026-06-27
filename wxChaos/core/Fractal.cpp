@@ -67,7 +67,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _kImaginary = 0;
     _changeGradient = 0;
     _rendered = false;
-    _varGradient = false;
+    _colorRotation = false;
     _colorMode = true;
     _juliaMode = false;
     _hasOrbit = false;
@@ -813,7 +813,7 @@ bool Fractal::IsSetColorEnabled() const
 
 bool Fractal::IsGradientAnimating() const
 {
-    return _varGradient;
+    return _colorRotation;
 }
 
 bool Fractal::ConsumeGradientChangeRequest()
@@ -1456,7 +1456,7 @@ bool Fractal::GetInteriorColorMode() const
 }
 void Fractal::ToggleColorRotation()
 {
-    _varGradient = !_varGradient;
+    _colorRotation = !_colorRotation;
 }
 void Fractal::SetPaletteSize(const unsigned int size)
 {

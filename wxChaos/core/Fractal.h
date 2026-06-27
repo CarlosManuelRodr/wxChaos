@@ -106,7 +106,7 @@ protected:
     bool _rendering;
     bool _paused;
     bool _pausing;
-    bool _varGradient;                      ///< If this is activated (by the play button), the gradient variation mode starts.
+    bool _colorRotation;                      ///< If this is activated (by the play button), the gradient variation mode starts.
     bool _onSnapshot;
     bool _waitRoutine;
     bool _redrawAll;
