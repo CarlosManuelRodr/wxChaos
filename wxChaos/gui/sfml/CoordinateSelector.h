@@ -6,7 +6,7 @@ class Fractal; // forward declaration
 
 /**
  * @class CoordinateSelector
- * @brief A selection cross to point to a coordinate on the rendering plane.
+ * @brief A selection slider to pick a coordinate on the rendering plane.
  */
 class CoordinateSelector
 {

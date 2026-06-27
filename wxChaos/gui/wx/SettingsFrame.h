@@ -92,27 +92,27 @@ private:
     /// @param event Window close event.
     void OnClose(wxCloseEvent& event);
 
-    wxListbook* _pages{};                         ///< Vertically tabbed settings container.
-    wxCheckBox* _constantWindow{};                ///< Opens the Julia constant window at startup.
-    wxCheckBox* _commandConsole{};                ///< Opens the command console at startup.
-    wxCheckBox* _juliaMode{};                     ///< Opens Julia mode at startup.
-    wxCheckBox* _colorPaletteWindow{};            ///< Opens renderer options at startup.
-    wxCheckBox* _firstUse{};                      ///< Shows the welcome guide on the next launch.
-    wxChoice* _theme{};                           ///< Selects the system, light, or dark application appearance.
-    wxChoice* _fractalType{};                     ///< Selects the default fractal type.
-    wxChoice* _colorStyle{};                      ///< Selects the default gradient color style.
-    wxSpinCtrl* _maxIterations{};                 ///< Selects the default iteration limit.
-    wxCheckBox* _automaticIterations{};           ///< Enables viewport-driven iteration counts.
-    wxSpinCtrl* _paletteSize{};                   ///< Selects the default gradient palette size.
-    wxSpinCtrl* _colorCycleLength{};              ///< Selects the default palette cycle length.
-    wxCheckBox* _colorFractal{};                  ///< Enables coloring outside the fractal set.
-    wxCheckBox* _colorSet{};                      ///< Enables coloring inside the fractal set.
-    wxSpinCtrl* _zoomStepPercent{};               ///< Selects the percentage zoomed by each mouse-wheel notch.
-    wxSpinCtrl* _zoomInertiaMilliseconds{};       ///< Selects the preview easing duration in milliseconds.
-    wxStaticBitmap* _gradientPreview{};           ///< Displays the current default gradient.
-    wxGradient _gradient;                         ///< Gradient being edited by the frame.
-    std::vector<FractalType> _fractalTypes;       ///< Values corresponding to the fractal choice entries.
-    std::vector<ColorPaletteTypes> _colorStyles;  ///< Values corresponding to the color style choice entries.
+    wxListbook* _pages{};                                 ///< Vertically tabbed settings container.
+    wxCheckBox* _constantWindow{};                        ///< Opens the Julia constant window at startup.
+    wxCheckBox* _commandConsole{};                        ///< Opens the command console at startup.
+    wxCheckBox* _juliaMode{};                             ///< Opens Julia mode at startup.
+    wxCheckBox* _colorPaletteWindow{};                    ///< Opens renderer options at startup.
+    wxCheckBox* _firstUse{};                              ///< Shows the welcome guide on the next launch.
+    wxChoice* _theme{};                                   ///< Selects the system, light, or dark application appearance.
+    wxChoice* _fractalType{};                             ///< Selects the default fractal type.
+    wxChoice* _colorStyle{};                              ///< Selects the default gradient color style.
+    wxSpinCtrl* _maxIterations{};                         ///< Selects the default iteration limit.
+    wxCheckBox* _automaticIterations{};                   ///< Enables viewport-driven iteration counts.
+    wxSpinCtrl* _paletteSize{};                           ///< Selects the default gradient palette size.
+    wxSpinCtrl* _colorCycleLength{};                      ///< Selects the default palette cycle length.
+    wxCheckBox* _colorFractal{};                          ///< Enables coloring outside the fractal set.
+    wxCheckBox* _colorSet{};                              ///< Enables coloring inside the fractal set.
+    wxSpinCtrl* _zoomStepPercent{};                       ///< Selects the percentage zoomed by each mouse-wheel notch.
+    wxSpinCtrl* _zoomInertiaMilliseconds{};               ///< Selects the preview easing duration in milliseconds.
+    wxStaticBitmap* _gradientPreview{};                   ///< Displays the current default gradient.
+    wxGradient _gradient;                                 ///< Gradient being edited by the frame.
+    std::vector<FractalType> _fractalTypes;               ///< Values corresponding to the fractal choice entries.
+    std::vector<ColorPaletteTypes> _colorStyles;          ///< Values corresponding to the color style choice entries.
     std::function<void(const AppConfig&)> _configChanged; ///< Applies saved settings to the running application.
-    bool _closing{};                              ///< Prevents duplicate close notifications.
+    bool _closing{};                                      ///< Prevents duplicate close notifications.
 };

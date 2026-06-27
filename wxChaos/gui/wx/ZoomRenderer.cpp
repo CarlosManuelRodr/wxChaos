@@ -13,7 +13,7 @@ void ZoomRenderer::CreateFractalInstance(FractalFactory& fractalFactory, Fractal
     const FractalType fractalType = fractalCanvas->GetFractalType();
     if (fractalType == FractalType::ScriptFractal)
     {
-        auto* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(fractalCanvas->GetFractalPtr());
+        auto* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(fractalCanvas->GetFractal());
         fractalFactory.CreateScriptFractal(width, height, scriptFractalPtr->GetPath());
     }
     else
@@ -25,7 +25,7 @@ PreciseRect ZoomRenderer::CreateRecordingFractal(FractalFactory& fractalFactory,
     CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
     const PreciseRect defaultView = fractalFactory.GetFractal()->GetPreciseView();
     fractalFactory.SetFormula(fractalCanvas->GetFormula());
-    fractalFactory.GetFractal()->SetOptions(fractalCanvas->GetFractalPtr()->GetOptions());
+    fractalFactory.GetFractal()->SetOptions(fractalCanvas->GetFractal()->GetOptions());
     return defaultView;
 }
 
@@ -103,7 +103,7 @@ wxThread::ExitCode ZoomRenderer::Entry()
 {
     FractalFactory fractalHandler;
     const PreciseRect outermostZoom = CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height);
-    const PreciseRect innermostZoom = _fractalCanvasPtr->GetFractalPtr()->GetPreciseView();
+    const PreciseRect innermostZoom = _fractalCanvasPtr->GetFractal()->GetPreciseView();
 
     const int outputFileDigits = static_cast<int>(std::log10(_totalFrames) + 1);
 

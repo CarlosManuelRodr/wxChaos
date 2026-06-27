@@ -3,8 +3,8 @@
 wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                            const long style) : wxControl(parent, id, position, size, style)
 {
-    SetBackgroundStyle(wxBG_STYLE_PAINT);
-    SetDoubleBuffered(false);
+    wxWindowBase::SetBackgroundStyle(wxBG_STYLE_PAINT);
+    wxWindow::SetDoubleBuffered(false);
 
     Bind(wxEVT_IDLE, &wxSFMLCanvas::OnIdle, this);
     Bind(wxEVT_PAINT, &wxSFMLCanvas::OnPaintEvent, this);

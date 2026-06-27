@@ -19,7 +19,7 @@ struct Options
     double xFactor;
     double yFactor;
     unsigned maxIter;
-    unsigned int changeGradient;
+    unsigned int colorVariationOffset;
     wxGradient gradient;
     RenderingAlgorithmType alg;
     RenderingPrecisionMode renderingPrecisionMode;
@@ -59,7 +59,7 @@ inline Options::Options()
     minX = maxX = minY = maxY = 0.0;
     xFactor = yFactor = 0.0;
     maxIter = 0;
-    changeGradient = 0;
+    colorVariationOffset = 0;
     alg = RenderingAlgorithmType::Other;
     renderingPrecisionMode = RenderingPrecisionMode::Adaptative;
     type = FractalType::Undefined;

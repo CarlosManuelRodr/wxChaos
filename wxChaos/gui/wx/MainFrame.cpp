@@ -56,18 +56,18 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     if (_appConfig.juliaMode) this->UpdateJuliaMode();
     if (_appConfig.colorPaletteWindow)
     {
-        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetFractalPresenterPtr(), this,
+        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetFractalPresenter(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         _rendererOptions->Show(true);
     }
     if (_appConfig.constantWindow)
     {
-        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetFractalPresenterPtr(), this);
+        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetFractalPresenter(), this);
         _juliaConstantDialog->Show(true);
         _introConstActive = true;
     }
     if (!_appConfig.colorSet)
-        _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(false);
+        _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(false);
 
     if (_appConfig.firstUse)
     {
@@ -364,15 +364,15 @@ void MainFrame::SetUpGUI()
     grad.SetMin(0);
     grad.SetMax(_appConfig.paletteSize);
     grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(_appConfig.colorStyle);
-    _fractalCanvas->GetFractalPresenterPtr()->SetGradient(grad);
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
+    _fractalCanvas->GetFractalPresenter()->SetColorPalette(_appConfig.colorStyle);
+    _fractalCanvas->GetFractalPresenter()->SetGradient(grad);
+    _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(_appConfig.colorCycleLength);
 
-    _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(_appConfig.maxIterations);
+    _fractalCanvas->GetFractalPresenter()->ChangeIterations(_appConfig.maxIterations);
     SetAutomaticIterations(_appConfig.automaticIterations);
-    _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(_appConfig.colorFractal);
-    _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(_appConfig.colorSet);
-    _fractalCanvas->GetFractalPresenterPtr()->SetZoomOptions(_appConfig.zoomStepPercent, _appConfig.zoomInertiaMilliseconds);
+    _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(_appConfig.colorFractal);
+    _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(_appConfig.colorSet);
+    _fractalCanvas->GetFractalPresenter()->SetZoomOptions(_appConfig.zoomStepPercent, _appConfig.zoomInertiaMilliseconds);
     _fractalSizer->Add(_fractalCanvas, 1, wxEXPAND | wxALL, 0);
 }
 
@@ -419,20 +419,20 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     gradient.SetMin(0);
     gradient.SetMax(config.paletteSize);
     gradient.FromString(wxString::FromUTF8(config.colorStyleGrad.c_str()));
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(config.colorStyle);
-    _fractalCanvas->GetFractalPresenterPtr()->SetGradient(gradient);
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(config.colorCycleLength);
-    _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(config.maxIterations);
+    _fractalCanvas->GetFractalPresenter()->SetColorPalette(config.colorStyle);
+    _fractalCanvas->GetFractalPresenter()->SetGradient(gradient);
+    _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(config.colorCycleLength);
+    _fractalCanvas->GetFractalPresenter()->ChangeIterations(config.maxIterations);
     SetAutomaticIterations(config.automaticIterations);
-    _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(config.colorFractal);
-    _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(config.colorSet);
-    _fractalCanvas->GetFractalPresenterPtr()->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
+    _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(config.colorFractal);
+    _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(config.colorSet);
+    _fractalCanvas->GetFractalPresenter()->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
     if (_juliaPreviewWindow != nullptr)
         _juliaPreviewWindow->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
 }
 void MainFrame::SetAutomaticIterations(const bool mode) const
 {
-    _fractalCanvas->GetFractalPresenterPtr()->SetAutomaticIterations(mode);
+    _fractalCanvas->GetFractalPresenter()->SetAutomaticIterations(mode);
     if (_automaticIterations != nullptr)
         _automaticIterations->Check(mode);
 }
@@ -557,9 +557,9 @@ void MainFrame::OnSave(wxCommandEvent&)
         ImageExportSizeDialog* sizeDialogSave;
 
         if (_fractalType == FractalType::ScriptFractal && _selectedScriptIndex.has_value())
-            sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractalPtr(), this, _loadedScripts[*_selectedScriptIndex].file);
+            sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractal(), this, _loadedScripts[*_selectedScriptIndex].file);
         else
-            sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractalPtr(), this);
+            sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractal(), this);
 
         sizeDialogSave->Show(true);
     }
@@ -570,7 +570,7 @@ void MainFrame::OnPalette(wxCommandEvent&)
     // Color palette frame.
     if (_rendererOptions == nullptr)
     {
-        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetFractalPresenterPtr(), this,
+        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetFractalPresenter(), this,
             [this](const Options& options) { UpdateJuliaRendererOptions(options); });
         _rendererOptions->Show(true);
 
@@ -606,7 +606,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnRedraw(wxCommandEvent&)
 {
-    _fractalCanvas->GetFractalPresenterPtr()->Redraw();
+    _fractalCanvas->GetFractalPresenter()->Redraw();
 }
 void MainFrame::OnReset(wxCommandEvent&)
 {
@@ -615,22 +615,22 @@ void MainFrame::OnReset(wxCommandEvent&)
     grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
     grad.SetMin(0);
     grad.SetMax(_appConfig.paletteSize);
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(_appConfig.colorStyle);
-    _fractalCanvas->GetFractalPresenterPtr()->SetGradient(grad);
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(_appConfig.colorCycleLength);
+    _fractalCanvas->GetFractalPresenter()->SetColorPalette(_appConfig.colorStyle);
+    _fractalCanvas->GetFractalPresenter()->SetGradient(grad);
+    _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(_appConfig.colorCycleLength);
     this->UpdateMenu();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnMoreIt(wxCommandEvent&)
 {
-    _fractalCanvas->GetFractalPresenterPtr()->IncreaseIterations();
+    _fractalCanvas->GetFractalPresenter()->IncreaseIterations();
     _appConfig.automaticIterations = false;
     _automaticIterations->Check(false);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnLessIt(wxCommandEvent&)
 {
-    _fractalCanvas->GetFractalPresenterPtr()->DecreaseIterations();
+    _fractalCanvas->GetFractalPresenter()->DecreaseIterations();
     _appConfig.automaticIterations = false;
     _automaticIterations->Check(false);
 }
@@ -646,7 +646,7 @@ void MainFrame::OnManIntroConst(wxCommandEvent&)
     // Manual constant.
     if (!_introConstActive)
     {
-        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetFractalPresenterPtr(), this);
+        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetFractalPresenter(), this);
         _juliaConstantDialog->Show(true);
         _introConstActive = true;
     }
@@ -686,7 +686,7 @@ void MainFrame::OnSetIterations(wxCommandEvent&)
     // Manual iterations.
     if (!_iterationsDialogIsActive)
     {
-        _iterationsDialog = new IterationsDialog(&_iterationsDialogIsActive, _fractalCanvas->GetFractalPresenterPtr(), this);
+        _iterationsDialog = new IterationsDialog(&_iterationsDialogIsActive, _fractalCanvas->GetFractalPresenter(), this);
         _iterationsDialog->Show(true);
         _iterationsDialogIsActive = true;
     }
@@ -726,12 +726,12 @@ void MainFrame::OnUpdateSliderMode(wxUpdateUIEvent& event)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateManualIterations(wxUpdateUIEvent& event)
 {
-    event.Enable(_fractalCanvas != nullptr && !_fractalCanvas->GetFractalPresenterPtr()->AutomaticIterationsEnabled());
+    event.Enable(_fractalCanvas != nullptr && !_fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateAutomaticIterations(wxUpdateUIEvent& event)
 {
-    event.Check(_fractalCanvas != nullptr && _fractalCanvas->GetFractalPresenterPtr()->AutomaticIterationsEnabled());
+    event.Check(_fractalCanvas != nullptr && _fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
 }
 void MainFrame::OnFractalOptions(wxCommandEvent&)
 {
@@ -762,7 +762,7 @@ void MainFrame::OnFractalOptions(wxCommandEvent&)
 void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
 {
     // Pass parameters to the fractal and redraws it.
-    const PanelOptions* pOptions = _fractalCanvas->GetFractalPtr()->GetOptPanel();
+    const PanelOptions* pOptions = _fractalCanvas->GetFractal()->GetOptPanel();
     for (unsigned int i=0; i<_foundTextControls.size(); i++)
         *pOptions->GetDoubleElement(i) = TextUtils::ToDouble(_textControls[i]->GetValue());
 
@@ -777,7 +777,7 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
             *pOptions->GetBoolElement(i) = false;
     }
     _fractalCanvas->SetFocus();
-    _fractalCanvas->GetFractalPresenterPtr()->Redraw();
+    _fractalCanvas->GetFractalPresenter()->Redraw();
 }
 // ReSharper disable once CppMemberFunctionMayBeStatic
 void MainFrame::OnUserManual(wxCommandEvent&) // NOLINT(*-convert-member-functions-to-static)
@@ -796,7 +796,7 @@ void MainFrame::OnScriptEditor(wxCommandEvent&)
 }
 void MainFrame::OnZoomRecorder(wxCommandEvent&)
 {
-    if (const FractalPresenter* fractal = _fractalCanvas->GetFractalPresenterPtr(); !fractal->HasZoomed())
+    if (const FractalPresenter* fractal = _fractalCanvas->GetFractalPresenter(); !fractal->HasZoomed())
     {
         wxMessageBox(
             "To use the zoom recorder you need to first perform a zoom on the main window.",
@@ -933,13 +933,13 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
     if (_fractalType != type || _fractalType == FractalType::UserDefinedEscapeTime || _fractalType == FractalType::UserDefinedFixedPoint
         || _fractalType == FractalType::UserDefinedNewtonRaphson)
     {
-        const Options fractOpt = _fractalCanvas->GetFractalPtr()->GetOptions();
-        const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractalPtr()->GetColorPalette();
+        const Options fractOpt = _fractalCanvas->GetFractal()->GetOptions();
+        const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractal()->GetColorPalette();
         _fractalCanvas->ChangeType(type);
-        _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(colorPalette);
-        _fractalCanvas->GetFractalPresenterPtr()->SetGradient(fractOpt.gradient);
-        _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
-        _fractalCanvas->GetFractalPresenterPtr()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
+        _fractalCanvas->GetFractalPresenter()->SetColorPalette(colorPalette);
+        _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
+        _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
+        _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
         _fractalType = type;
         this->UpdateMenu();
         _juliaMode->Enable(enableJulia);
@@ -951,16 +951,16 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     const unsigned int id = event.GetId() - SCRIPT_ID_INDEX;
     _selectedScriptIndex = id;
 
-    if (_fractalCanvas->GetFractalPtr()->IsRendering())
-        _fractalCanvas->GetFractalPtr()->StopRender();
+    if (_fractalCanvas->GetFractal()->IsRendering())
+        _fractalCanvas->GetFractal()->StopRender();
 
-    const Options fractOpt = _fractalCanvas->GetFractalPtr()->GetOptions();
-    const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractalPtr()->GetColorPalette();
+    const Options fractOpt = _fractalCanvas->GetFractal()->GetOptions();
+    const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractal()->GetColorPalette();
     _fractalCanvas->ChangeToScript(_loadedScripts[id]);
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(colorPalette);
-    _fractalCanvas->GetFractalPresenterPtr()->SetGradient(fractOpt.gradient);
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
-    _fractalCanvas->GetFractalPresenterPtr()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
+    _fractalCanvas->GetFractalPresenter()->SetColorPalette(colorPalette);
+    _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
+    _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
+    _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
 
     _fractalType = FractalType::ScriptFractal;
     this->UpdateMenu();
@@ -976,7 +976,7 @@ void MainFrame::GetParserOpt()
 }
 void MainFrame::UpdateOptionsPanel()
 {
-    PanelOptions* pOptions = _fractalCanvas->GetFractalPtr()->GetOptPanel();
+    PanelOptions* pOptions = _fractalCanvas->GetFractal()->GetOptPanel();
 
     // If there are elements in pOptions creates panel.
     if (pOptions->GetElementsSize() > 0)
@@ -1174,17 +1174,17 @@ void MainFrame::UpdateMenu()
 {
     // Adjust menu options when the fractal type is changed.
     if (_rendererOptions != nullptr)
-        _rendererOptions->SetTarget(_fractalCanvas->GetFractalPresenterPtr());
+        _rendererOptions->SetTarget(_fractalCanvas->GetFractalPresenter());
     if (_iterationsDialogIsActive)
-        _iterationsDialog->SetTarget(_fractalCanvas->GetFractalPresenterPtr());
+        _iterationsDialog->SetTarget(_fractalCanvas->GetFractalPresenter());
 
     _showOrbit->Check(false);
-    if (_fractalCanvas->GetFractalPtr()->HasOrbit())
+    if (_fractalCanvas->GetFractal()->HasOrbit())
         _showOrbit->Enable(true);
     else
         _showOrbit->Enable(false);
 
-    const bool automaticIterations = _fractalCanvas->GetFractalPresenterPtr()->AutomaticIterationsEnabled();
+    const bool automaticIterations = _fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled();
     _setIterations->Enable(!automaticIterations);
     _moreIterations->Enable(!automaticIterations);
     _lessIterations->Enable(!automaticIterations);
@@ -1199,7 +1199,7 @@ void MainFrame::UpdateMenu()
     }
 
     // Adjust Julia's constant menu items.
-    if (_fractalCanvas->GetFractalPtr()->IsJuliaVariety())
+    if (_fractalCanvas->GetFractal()->IsJuliaVariety())
     {
         _manualJuliaConstant->Enable(true);
         _sliderJuliaConstant->Enable(true);
@@ -1240,7 +1240,7 @@ void MainFrame::UpdateJuliaMode()
     // Creates Julia fractal with parameters from the main fractal.
     else
     {
-        const Options options = _fractalCanvas->GetFractalPtr()->GetOptions();
+        const Options options = _fractalCanvas->GetFractal()->GetOptions();
         if (!OpenJuliaModeAt(options.kReal, options.kImaginary))
             _juliaMode->Check(false);
     }
@@ -1264,7 +1264,7 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
         return true;
     }
 
-    Options options = _fractalCanvas->GetFractalPtr()->GetOptions();
+    Options options = _fractalCanvas->GetFractal()->GetOptions();
     options.kReal = real;
     options.kImaginary = imaginary;
     _juliaMode->Check(true);

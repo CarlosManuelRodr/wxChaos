@@ -113,7 +113,7 @@ class FractalPresenter
     void SetAreaOfView(const sf::Rect<int>& pixelCoordinates, const PreciseRect& targetView);
 
     ///@brief Captures the best current preview, including any visible partial render pixels.
-    sf::Image CapturePreviewImage();
+    sf::Image CapturePreviewImage() const;
 
     ///@brief Starts the temporary image easing from the selected source rectangle to the full canvas.
     void StartZoomAnimation(const sf::Rect<int>& pixelCoordinates);
@@ -147,7 +147,7 @@ public:
     ///@param inertiaMilliseconds Preview easing duration in milliseconds.
     void SetZoomOptions(int zoomStepPercent, int inertiaMilliseconds);
 
-    ///@brief Returns the fraction of the current view kept for one wheel zoom.
+    ///@brief Returns the fraction of the current view kept for one-wheel zoom.
     double GetMouseWheelZoomScale() const;
 
     ///@brief Handles SFML input events that affect the fractal view.
@@ -282,7 +282,7 @@ public:
 
     ///@brief Sets the color variation offset and invalidates cached images.
     ///@param offset Color variation offset.
-    void SetColorVariationOffset(int offset);
+    void SetColorVariationOffset(unsigned int offset);
 
     ///@brief Sets the rendering algorithm and invalidates cached images.
     ///@param algorithm New rendering algorithm.

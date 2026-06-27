@@ -57,9 +57,6 @@ class JuliaPreviewWindow
     ///@brief Handles the window's events.
     void HandleEvent();
 
-    ///@brief Zooms into the preview around a pixel position.
-    void ZoomAtMousePosition(const sf::Vector2i& position) const;
-
     ///@brief The main loop for the Julia window thread.
     void Run();
 
@@ -72,10 +69,11 @@ public:
     ///@param ptr Pointer to the fractalCanvas.
     ///@param fractalType Type of Julia fractal to be created.
     ///@param juliaOpt Options to copy from the parent fractal.
+    ///@param zoomStepPercent
+    ///@param zoomInertiaMilliseconds
     ///@param size
     JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt,
-                       int zoomStepPercent, int zoomInertiaMilliseconds,
-                       const wxSize& size = wxSize(640, 480));
+                       int zoomStepPercent, int zoomInertiaMilliseconds, const wxSize& size = wxSize(640, 480));
     ~JuliaPreviewWindow();
 
     ///@brief Launches the thread.

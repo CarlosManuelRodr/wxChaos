@@ -6,9 +6,10 @@ using namespace std;
 
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
-JuliaPreviewWindow::JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, const FractalType fractalType, const Options& juliaOpt,
-                     const int zoomStepPercent, const int zoomInertiaMilliseconds,
-                     const wxSize& size) : _event(), m_thread(&JuliaPreviewWindow::Run, this), _pendingRendererOptions()
+JuliaPreviewWindow::JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, const FractalType fractalType,
+                                       const Options& juliaOpt, const int zoomStepPercent,
+                                       const int zoomInertiaMilliseconds, const wxSize& size)
+                                       : _event(), m_thread(&JuliaPreviewWindow::Run, this)
 {
     _parent = parent;
     _myJuliaOpt = juliaOpt;
@@ -44,11 +45,6 @@ JuliaPreviewWindow::~JuliaPreviewWindow()
     delete _window;
 }
 
-void JuliaPreviewWindow::ZoomAtMousePosition(const sf::Vector2i& position) const
-{
-    _fractalPresenter->ZoomAtPixel(position.x, position.y);
-}
-
 // ReSharper disable once CppDFAUnreachableFunctionCall
 void JuliaPreviewWindow::HandleEvent()
 {
@@ -77,7 +73,8 @@ void JuliaPreviewWindow::HandleEvent()
         {
             if (_event.mouseWheelScroll.delta > 0.0F)
             {
-                ZoomAtMousePosition(sf::Vector2i(_event.mouseWheelScroll.x, _event.mouseWheelScroll.y));
+                const auto position = sf::Vector2i(_event.mouseWheelScroll.x, _event.mouseWheelScroll.y);
+                _fractalPresenter->ZoomAtPixel(position.x, position.y);
             }
             else if (_event.mouseWheelScroll.delta < 0.0F)
                 _fractalPresenter->ZoomBack();
@@ -116,8 +113,15 @@ void JuliaPreviewWindow::HandleEvent()
         {
             if (_event.key.code == sf::Keyboard::F4)
             {
-                const auto openFileDialog = new wxFileDialog(nullptr, "Select file name", "", "fractal.png",
-                                                             "PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp", wxFD_SAVE);    // Txt: "Select a file name"
+                const auto openFileDialog = new wxFileDialog(
+                    nullptr,
+                    "Select file name",
+                    "",
+                    "fractal.png",
+                    "PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp",
+                    wxFD_SAVE
+                    );
+
                 if (openFileDialog->ShowModal() == wxID_OK)
                 {
                     wxString fileName = openFileDialog->GetPath();
@@ -128,10 +132,9 @@ void JuliaPreviewWindow::HandleEvent()
                 }
                 openFileDialog->Destroy();
             }
-            if (_event.key.code == sf::Keyboard::F5)  // Redraw fractal.
-            {
+            if (_event.key.code == sf::Keyboard::F5)
                 _fractalPresenter->Redraw();
-            }
+
             // Handle movement
             switch (_event.key.code)
             {
@@ -167,10 +170,8 @@ void JuliaPreviewWindow::HandleEvent()
         _fractalPresenter->HandleEvent(_event);
     }
 
-    if (_target->ChangeInPointer())
-    {
+    if (_target->ChangeInCoordinateSelector())
         _fractalPresenter->SetK(_target->GetKReal(), _target->GetKImaginary());
-    }
 
     // Updates window.
     _window->clear();
@@ -276,7 +277,7 @@ void JuliaPreviewWindow::ApplyRendererOptions(const Options& options) const
 {
     _fractalPresenter->SetGradient(options.gradient);
     _fractalPresenter->SetGradientSize(options.gradPaletteSize);
-    _fractalPresenter->SetColorVariationOffset(options.changeGradient);
+    _fractalPresenter->SetColorVariationOffset(options.colorVariationOffset);
     _fractalPresenter->SetColorRotationSpeed(options.colorRotationSpeed);
     _fractalPresenter->SetAlgorithm(options.alg);
     _fractalPresenter->SetRenderingPrecisionMode(options.renderingPrecisionMode);

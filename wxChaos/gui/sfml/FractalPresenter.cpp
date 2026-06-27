@@ -131,7 +131,7 @@ sf::Rect<int> FractalPresenter::GetMouseWheelZoomRect(const int pixelX, const in
     const auto screenHeight = static_cast<int>(screenSize.y);
 
     if (screenWidth <= 0 || screenHeight <= 0)
-        return sf::IntRect(0, 0, 1, 1);
+        return {0, 0, 1, 1};
 
     const int clampedX = std::clamp(pixelX, 0, screenWidth - 1);
     const int clampedY = std::clamp(pixelY, 0, screenHeight - 1);
@@ -152,7 +152,7 @@ sf::Rect<int> FractalPresenter::GetMouseWheelZoomRect(const int pixelX, const in
         0,
         screenHeight - zoomHeight);
 
-    return sf::IntRect(left, top, zoomWidth, zoomHeight);
+    return {left, top, zoomWidth, zoomHeight};
 }
 
 PreciseRect FractalPresenter::GetMouseWheelZoomView(const int pixelX, const int pixelY) const
@@ -160,7 +160,7 @@ PreciseRect FractalPresenter::GetMouseWheelZoomView(const int pixelX, const int 
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
     const auto screenWidth = static_cast<int>(screenSize.x);
     const auto screenHeight = static_cast<int>(screenSize.y);
-    const PreciseRect currentView = CaptureCurrentView();
+    PreciseRect currentView = CaptureCurrentView();
 
     if (screenWidth <= 0 || screenHeight <= 0)
         return currentView;
@@ -186,7 +186,7 @@ PreciseRect FractalPresenter::GetMouseWheelZoomView(const int pixelX, const int 
     return targetView;
 }
 
-sf::Image FractalPresenter::CapturePreviewImage()
+sf::Image FractalPresenter::CapturePreviewImage() const
 {
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
     sf::Image preview;
@@ -805,7 +805,7 @@ void FractalPresenter::ToggleColorRotation()
     _fractal->ToggleColorRotation();
 }
 
-void FractalPresenter::SetColorVariationOffset(const int offset)
+void FractalPresenter::SetColorVariationOffset(const unsigned int offset)
 {
     ClearImageCache();
     _fractal->SetVarGradient(offset);

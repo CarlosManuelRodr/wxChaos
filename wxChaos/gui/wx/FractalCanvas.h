@@ -67,7 +67,7 @@ class FractalCanvas : public wxSFMLCanvas
     double _kImaginary;
     double _prevKReal;
     double _prevKImag;
-    bool _pointerChange;                    ///< If there is a change in the pointer, this boolean is activated.
+    bool _coordinateSelectorChange;                    ///< If there is a change in the pointer, this boolean is activated.
     bool _keyboardGuide;                    ///< State of the keyboard guide.
     bool _keyboardGuideMode;
     bool _helpImageMode;
@@ -97,7 +97,6 @@ class FractalCanvas : public wxSFMLCanvas
     void DrawIterationsOverlay(RenderWindow* window);
     wxString BuildStatusText() const;
     void EmitStatusText() const;
-    void ZoomAtMousePosition(const wxPoint& position) const;
     sf::Vector2u GetCurrentRenderSize() const;
     void ResizePresentation(wxSize size);
     static wxString FormatStatusCoordinate(double value);
@@ -131,7 +130,7 @@ public:
 
     ///@brief State of the ScreenPointer.
     ///@return true if there was a change in the pointer. false if not.
-    bool ChangeInPointer();
+    bool ChangeInCoordinateSelector();
 
     ///@brief Changes the fractal type.
     ///@param type New fractal type.
@@ -142,10 +141,10 @@ public:
     void ChangeToScript(const ScriptData &scriptData);
 
     ///@return A pointer to the fractal.
-    Fractal* GetFractalPtr() const;
+    Fractal* GetFractal() const;
 
     ///@return A pointer to the SFML fractal presenter.
-    FractalPresenter* GetFractalPresenterPtr() const;
+    FractalPresenter* GetFractalPresenter() const;
 
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;

@@ -158,7 +158,7 @@ void CommandConsole::RunCommand()
 // ReSharper disable once CppDFAUnreachableFunctionCall
 wxString CommandConsole::Execute(const ParsedCommand& command) const
 {
-    Fractal* fractal = _fractalCanvas->GetFractalPtr();
+    Fractal* fractal = _fractalCanvas->GetFractal();
     wxString error;
 
     if (command.name == "help")
@@ -175,7 +175,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
     }
     if (command.name == "redraw")
     {
-        _fractalCanvas->GetFractalPresenterPtr()->Redraw();
+        _fractalCanvas->GetFractalPresenter()->Redraw();
         return "Redraw requested.";
     }
     if (command.name == "abort")
@@ -199,7 +199,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
             return error;
         if (*iterations == 0)
             return "Error: iterations must be greater than zero.";
-        _fractalCanvas->GetFractalPresenterPtr()->ChangeIterations(*iterations);
+        _fractalCanvas->GetFractalPresenter()->ChangeIterations(*iterations);
         return wxString::Format("Maximum iterations set to %u.", *iterations);
     }
     if (command.name == "askinfo")
@@ -258,7 +258,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         const optional<double> radius = ReadDouble(command, {"r", "radius"}, 2, error);
         if (!radius.has_value()) return error;
         if (*radius <= 0.0) return "Error: radius must be greater than zero.";
-        _fractalCanvas->GetFractalPresenterPtr()->SetView(fractal->GetCenteredView(*x, *y, *radius));
+        _fractalCanvas->GetFractalPresenter()->SetView(fractal->GetCenteredView(*x, *y, *radius));
         return "View focused.";
     }
     if (command.name == "openjuliamode")
@@ -283,7 +283,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         if (!maxY.has_value()) return error;
         if (*minX >= *maxX || *minY >= *maxY)
             return "Error: minimum boundaries must be smaller than maximum boundaries.";
-        _fractalCanvas->GetFractalPresenterPtr()->SetView({*minX, *minY, *maxX, *maxY});
+        _fractalCanvas->GetFractalPresenter()->SetView({*minX, *minY, *maxX, *maxY});
         return "View boundaries updated.";
     }
 

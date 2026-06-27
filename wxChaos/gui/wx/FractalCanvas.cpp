@@ -27,7 +27,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _kImaginary = 0;
     _prevKReal = 0;
     _prevKImag = 0;
-    _pointerChange = false;
+    _coordinateSelectorChange = false;
     _keyboardGuide = false;
     _keyboardGuideMode = false;
     _helpImageMode = false;
@@ -211,7 +211,8 @@ void FractalCanvas::DrawLoadingSpinner(sf::RenderWindow* window)
         dot.setFillColor(sf::Color(255, 255, 255, alpha));
         dot.setPosition(
             _spinnerCenter.x + std::cos(angle) * _spinnerRadius,
-            _spinnerCenter.y + std::sin(angle) * _spinnerRadius);
+            _spinnerCenter.y + std::sin(angle) * _spinnerRadius
+            );
         window->draw(dot);
     }
 
@@ -299,11 +300,6 @@ void FractalCanvas::EmitStatusText() const
     GetParent()->GetEventHandler()->ProcessEvent(statusEvent);
 }
 
-void FractalCanvas::ZoomAtMousePosition(const wxPoint& position) const
-{
-    _fractalPresenter->ZoomAtPixel(position.x, position.y);
-}
-
 sf::Vector2u FractalCanvas::GetCurrentRenderSize() const
 {
     const sf::Vector2u sfmlSize = this->getSize();
@@ -371,13 +367,9 @@ void FractalCanvas::OnUpdate()
             if (!_fractal->IsRendering())
             {
                 if (_event.key.code == sf::Keyboard::F1)  // Open or close slider.
-                {
                     this->SetSliderMode(!_sliderMode);
-                }
                 if (_event.key.code == sf::Keyboard::F2)  // Shows or hides fractal orbit.
-                {
                     this->SetOrbitMode(!_orbitMode);
-                }
                 if (_event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
                     const auto openFileDialog = new wxFileDialog(
@@ -416,7 +408,7 @@ void FractalCanvas::OnUpdate()
 
     if (_orbitMode)
         _fractal->SetOrbitPoint(_kReal, _kImaginary);
-    if (_sliderMode && _pointerChange)
+    if (_sliderMode && _coordinateSelectorChange)
         _fractalPresenter->SetK(_kReal, _kImaginary);
 
     const double elapsedSeconds = _movementClock.restart().asSeconds();
@@ -505,20 +497,20 @@ double FractalCanvas::GetKImaginary() const
     return !_onUpdate ? _kImaginary : _prevKImag;
 }
 
-bool FractalCanvas::ChangeInPointer()
+bool FractalCanvas::ChangeInCoordinateSelector()
 {
-    if (_pointerChange)
+    if (_coordinateSelectorChange)
     {
-        _pointerChange = false;
+        _coordinateSelectorChange = false;
         return true;
     }
     return false;
 }
-Fractal* FractalCanvas::GetFractalPtr() const
+Fractal* FractalCanvas::GetFractal() const
 {
     return _fractal;
 }
-FractalPresenter* FractalCanvas::GetFractalPresenterPtr() const
+FractalPresenter* FractalCanvas::GetFractalPresenter() const
 {
     return _fractalPresenter;
 }
@@ -762,7 +754,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
             _onUpdate = true;
             _kReal = _screenPointer->GetX(_fractal);
             _kImaginary = _screenPointer->GetY(_fractal);
-            _pointerChange = true;
+            _coordinateSelectorChange = true;
 
             if (_orbitMode)
                 _fractal->SetOrbitChange();
@@ -782,9 +774,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     }
 
     if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_fractalPresenter->IsMoving())
-    {
         _fractalPresenter->ZoomBack();
-    }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
@@ -810,9 +800,7 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
         if (!_fractal->IsRendering() && !_fractalPresenter->IsMoving())
         {
             if (_selectionRect->UnClickEvent(event))
-            {
                 _fractalPresenter->SetAreaOfView(_selectionRect->GetSelection());
-            }
         }
     }
 }
@@ -828,7 +816,8 @@ void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
 
     if (const int rotation = event.GetWheelRotation(); rotation > 0)
     {
-        ZoomAtMousePosition(event.GetPosition());
+        const wxPoint position = event.GetPosition();
+        _fractalPresenter->ZoomAtPixel(position.x, position.y);
     }
     else if (rotation < 0)
         _fractalPresenter->ZoomBack();
@@ -872,7 +861,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
             _onUpdate = true;
             _kReal = _screenPointer->GetX(_fractal);
             _kImaginary = _screenPointer->GetY(_fractal);
-            _pointerChange = true;
+            _coordinateSelectorChange = true;
 
             if (_orbitMode)
                 _fractal->SetOrbitChange();

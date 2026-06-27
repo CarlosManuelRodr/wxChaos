@@ -169,7 +169,7 @@ void ZoomRecorder::CreateFractalInstance(FractalFactory& fractalFactory, Fractal
     const FractalType fractalType = fractalCanvas->GetFractalType();
     if (fractalType == FractalType::ScriptFractal)
     {
-        auto* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(fractalCanvas->GetFractalPtr());
+        auto* scriptFractalPtr = reinterpret_cast<ScriptFractal*>(fractalCanvas->GetFractal());
         fractalFactory.CreateScriptFractal(width, height, scriptFractalPtr->GetPath());
     }
     else
@@ -181,7 +181,7 @@ PreciseRect ZoomRecorder::CreateRecordingFractal(FractalFactory& fractalFactory,
     CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
     const PreciseRect defaultView = fractalFactory.GetFractal()->GetPreciseView();
     fractalFactory.SetFormula(fractalCanvas->GetFormula());
-    fractalFactory.GetFractal()->SetOptions(fractalCanvas->GetFractalPtr()->GetOptions());
+    fractalFactory.GetFractal()->SetOptions(fractalCanvas->GetFractal()->GetOptions());
     return defaultView;
 }
 
@@ -195,7 +195,7 @@ Rect ZoomRecorder::GetDefaultView(FractalCanvas* fractalCanvas, const int width,
 void ZoomRecorder::CreateFractalFactory()
 {
     _outermostZoom = CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, 250, 166);
-    _innermostZoom = _fractalCanvasPtr->GetFractalPtr()->GetPreciseView();
+    _innermostZoom = _fractalCanvasPtr->GetFractal()->GetPreciseView();
 }
 void ZoomRecorder::RenderPreview(const int zoom, const double colorSpeed) const
 {

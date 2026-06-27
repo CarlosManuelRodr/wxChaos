@@ -26,7 +26,7 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
     _pages->AddPage(CreateZoomPage(), "Zoom");
 #ifdef __WXMSW__
     // wxMSW uses a no-header report view for left-side listbook labels.
-    // Autosize its text column so page titles are not ellipsized.
+    // Autosize its text column so page titles are not occluded.
     _pages->GetListView()->SetColumnWidth(0, wxLIST_AUTOSIZE);
 #endif
     mainSizer->Add(_pages, 1, wxEXPAND | wxALL, 12);

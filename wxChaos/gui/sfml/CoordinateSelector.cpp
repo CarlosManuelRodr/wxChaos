@@ -7,8 +7,7 @@ int CoordinateSelector::ClampCoordinate(const int value, const unsigned int size
         return 0;
     if (value < 0)
         return 0;
-    const int maxValue = static_cast<int>(size - 1);
-    if (value > maxValue)
+    if (const int maxValue = static_cast<int>(size - 1); value > maxValue)
         return maxValue;
     return value;
 }
@@ -102,9 +101,7 @@ bool CoordinateSelector::ClickEvent(wxMouseEvent& event)
 void CoordinateSelector::ReleaseClickEvent(wxMouseEvent& event)
 {
     if (event.ButtonUp(wxMOUSE_BTN_LEFT))
-    {
         _inSelection = false;
-    }
 }
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 bool CoordinateSelector::MoveEvent(wxMouseEvent& event)
