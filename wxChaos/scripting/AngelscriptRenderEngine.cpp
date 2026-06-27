@@ -2,7 +2,6 @@
 #include "AngelscriptRenderEngine.h"
 #include "AngelscriptBindings.h"
 #include <scriptstdstring.h>
-#include <utility>
 
 AngelscriptRenderEngine::AngelscriptRenderEngine()
 {

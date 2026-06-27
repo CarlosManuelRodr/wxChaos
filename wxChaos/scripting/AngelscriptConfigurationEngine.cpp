@@ -69,7 +69,6 @@ bool AngelscriptConfigurationEngine::CompileFromPath(const std::string& path)
 
 bool AngelscriptConfigurationEngine::Execute()
 {
-    int r;
     asIScriptContext* ctx = engine->CreateContext();
     if (ctx == nullptr)
     {
@@ -91,8 +90,7 @@ bool AngelscriptConfigurationEngine::Execute()
         return false;
     }
 
-    r = ctx->Prepare(renderFunc);
-    if (r < 0)
+    if (const int r = ctx->Prepare(renderFunc); r < 0)
     {
         errorInfo = "Error while preparing the script context.";
         status = EngineStatus::Error;
