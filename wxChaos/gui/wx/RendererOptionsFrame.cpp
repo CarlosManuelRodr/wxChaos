@@ -728,6 +728,7 @@ void RendererOptionsFrame::OnColorVar(wxScrollEvent&)
     _fractalPresenter->SetColorVariationOffset(_colorVarSlider->GetValue());
     NotifyOptionsChanged();
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void RendererOptionsFrame::OnColorRotationSpeed(wxSpinEvent&)
 {
     _fractalPresenter->SetColorRotationSpeed(_colorRotationSpeed->GetValue());
