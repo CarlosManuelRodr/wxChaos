@@ -208,7 +208,7 @@ public:
 
     ///@brief Sets animated color rotation speed in palette units per second.
     ///@param speed New color rotation speed.
-    void SetColorRotationSpeed(double speed);
+    void SetColorRotationSpeed(double speed) const;
 
     ///@brief Sets how renderer values are mapped into the active palette.
     void SetPaletteMappingMode(PaletteMappingMode mode);

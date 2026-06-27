@@ -1086,7 +1086,7 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
     return output;
 }
 // Thread control
-int Fractal::GetRenderProgress()
+int Fractal::GetRenderProgress() const
 {
     return _renderPool.GetProgress();
 }

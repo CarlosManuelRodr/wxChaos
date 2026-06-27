@@ -331,7 +331,7 @@ public:
 
     ///@brief Returns progress for the active render backend.
     ///@return A value from 0 to 100.
-    int GetRenderProgress();
+    int GetRenderProgress() const;
 
     ///@brief Pauses or resumes the rendering.
     void PauseContinue();

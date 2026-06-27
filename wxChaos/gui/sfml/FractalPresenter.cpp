@@ -555,7 +555,7 @@ void FractalPresenter::SetColorCycleLength(const double cycleLength)
     _fractal->SetColorCycleLength(cycleLength);
 }
 
-void FractalPresenter::SetColorRotationSpeed(const double speed)
+void FractalPresenter::SetColorRotationSpeed(const double speed) const
 {
     _fractal->SetColorRotationSpeed(speed);
 }
