@@ -13,10 +13,16 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 # -----------
 # wxWidgets -
 # -----------
-find_package(wxWidgets REQUIRED COMPONENTS core base adv html stc richtext xml)
-message(STATUS "wxWidgets libraries: ${wxWidgets_LIBRARIES}")
-
-include(${wxWidgets_USE_FILE})
+find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base adv html stc richtext xml)
+set(WXCHAOS_WX_LIBRARIES
+        wx::core
+        wx::base
+        wx::adv
+        wx::html
+        wx::stc
+        wx::richtext
+        wx::xml
+)
 
 find_package(doctest CONFIG REQUIRED)
 find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS graphics window system main)
@@ -69,7 +75,6 @@ add_executable(wxChaos WIN32 ${SRC_FILES}
 # Include Directories (use target-based)
 # -------------------------------------------------------------------
 target_include_directories(wxChaos PRIVATE
-        ${wxWidgets_INCLUDE_DIRS}
         ${SYMENGINE_INCLUDE_DIRS}
         ${MPFR_INCLUDE_DIR}
         ${SFML_INCLUDE_DIRS}
@@ -97,7 +102,7 @@ target_compile_definitions(wxChaos PRIVATE
 # Linking
 # -------------------------------------------------------------------
 target_link_libraries(wxChaos PRIVATE
-        ${wxWidgets_LIBRARIES}
+        ${WXCHAOS_WX_LIBRARIES}
         sfml-graphics
         sfml-window
         sfml-system
@@ -157,7 +162,6 @@ if(BUILD_TESTING)
     )
 
     target_include_directories(wxChaosCoreTests PRIVATE
-            ${wxWidgets_INCLUDE_DIRS}
             ${SYMENGINE_INCLUDE_DIRS}
             wxChaos/core
             wxChaos/utils
@@ -165,7 +169,7 @@ if(BUILD_TESTING)
 
     target_link_libraries(wxChaosCoreTests PRIVATE
             doctest::doctest
-            ${wxWidgets_LIBRARIES}
+            ${WXCHAOS_WX_LIBRARIES}
             ${SYMENGINE_LIBRARIES}
     )
 
@@ -190,7 +194,6 @@ if(BUILD_TESTING)
     )
 
     target_include_directories(wxChaosGuiTests PRIVATE
-            ${wxWidgets_INCLUDE_DIRS}
             ${SFML_INCLUDE_DIRS}
             wxChaos/core
             wxChaos/gui
@@ -199,7 +202,7 @@ if(BUILD_TESTING)
 
     target_link_libraries(wxChaosGuiTests PRIVATE
             doctest::doctest
-            ${wxWidgets_LIBRARIES}
+            ${WXCHAOS_WX_LIBRARIES}
             sfml-graphics
             sfml-window
             sfml-system

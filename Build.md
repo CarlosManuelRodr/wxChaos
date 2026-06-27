@@ -1,7 +1,7 @@
 # Build
 
-wxChaos currently builds on Windows with MSVC, CMake, Ninja, wxWidgets, SFML
-2.6.2 through vcpkg, and several other vcpkg dependencies.
+wxChaos currently builds on Windows with MSVC, CMake, Ninja, and vcpkg-managed
+dependencies including wxWidgets and SFML 2.6.2.
 
 These notes describe the known-good setup used by the current development tree.
 
@@ -10,12 +10,10 @@ These notes describe the known-good setup used by the current development tree.
 - Visual Studio 2026 or newer with the Desktop development with C++ workload.
 - CLion, or another CMake/Ninja-capable IDE.
 - Ninja.
-- wxWidgets 3.3.x built locally with MSVC x64.
 - vcpkg.
 
 The current local setup uses:
 
-- wxWidgets at `C:\wxWidgets-3.3.2`
 - vcpkg at `C:\Users\fisca\.vcpkg-clion\vcpkg`
 - CLion bundled CMake at
   `C:\Users\fisca\AppData\Local\Programs\CLion\bin\cmake\win\x64\bin\cmake.exe`
@@ -23,28 +21,6 @@ The current local setup uses:
   `C:\Users\fisca\AppData\Local\Programs\CLion\bin\ninja\win\x64\ninja.exe`
 
 Adjust paths for a different machine.
-
-## Build wxWidgets
-
-Install wxWidgets and build the MSVC x64 static libraries. The project expects
-wxWidgets to provide the components used in `CMakeLists.txt`:
-
-- core
-- base
-- adv
-- html
-- stc
-- richtext
-- xml
-
-For the current local setup, CMake finds libraries under:
-
-```text
-C:\wxWidgets-3.3.2\lib\vc_x64_lib
-```
-
-If wxWidgets is installed somewhere else, set `wxWidgets_ROOT_DIR` or the
-standard wxWidgets CMake variables in your CMake profile.
 
 ## Install vcpkg Dependencies
 
@@ -61,6 +37,7 @@ This installs dependencies such as:
 - mpfr
 - SFML 2.6.2
 - symengine
+- wxWidgets
 
 The generated `vcpkg_installed` directory is build output. Do not edit it by
 hand.

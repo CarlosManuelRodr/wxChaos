@@ -8,6 +8,9 @@
   }, {
     "name" : "sfml",
     "version>=" : "2.6.2"
+  }, {
+    "name" : "wxwidgets",
+    "version>=" : "3.3.1#1"
   } ],
   "overrides" : [ {
     "name" : "sfml",
