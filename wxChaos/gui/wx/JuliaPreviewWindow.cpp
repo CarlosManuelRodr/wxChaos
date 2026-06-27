@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <cmath>
 #include "JuliaPreviewWindow.h"
 #include "ImageExportSizeDialog.h"
 using namespace std;
@@ -21,6 +23,8 @@ JuliaPreviewWindow::JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, con
     _pendingKReal = 0.0;
     _pendingKImaginary = 0.0;
     _constantPending = false;
+    _mouseWheelPanning = false;
+    _lastMouseWheelPanPosition = sf::Vector2i(0, 0);
 
     _juliaFractal.CreateFractal(_type, _size.GetWidth(), _size.GetHeight());
     _fractalPresenter = new FractalPresenter(_juliaFractal.GetFractal());
@@ -33,6 +37,25 @@ JuliaPreviewWindow::~JuliaPreviewWindow()
     delete _fractalPresenter;
     _juliaFractal.DeleteFractal();
     delete _window;
+}
+
+void JuliaPreviewWindow::ZoomAtMousePosition(const sf::Vector2i& position) const
+{
+    constexpr double zoomScale = 0.75;
+
+    const sf::Vector2u screenSize = _juliaFractal.GetFractal()->GetScreenSize();
+    const auto screenWidth = static_cast<int>(screenSize.x);
+    const auto screenHeight = static_cast<int>(screenSize.y);
+
+    if (screenWidth <= 0 || screenHeight <= 0)
+        return;
+
+    const int zoomWidth = std::max(1, static_cast<int>(std::round(static_cast<double>(screenWidth) * zoomScale)));
+    const int zoomHeight = std::max(1, static_cast<int>(std::round(static_cast<double>(screenHeight) * zoomScale)));
+    const int left = std::clamp(position.x - zoomWidth / 2, 0, screenWidth - zoomWidth);
+    const int top = std::clamp(position.y - zoomHeight / 2, 0, screenHeight - zoomHeight);
+
+    _fractalPresenter->SetAreaOfView(sf::IntRect(left, top, zoomWidth, zoomHeight));
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
@@ -58,6 +81,47 @@ void JuliaPreviewWindow::HandleEvent()
             _fractalPresenter->SetAreaOfView(_selection->GetSelection());
         if (_play->HandleEvents(_event))
             _fractalPresenter->ToggleColorRotation();
+
+        if (_event.type == sf::Event::MouseWheelScrolled && !_fractalPresenter->IsMoving())
+        {
+            if (_event.mouseWheelScroll.delta > 0.0F)
+            {
+                if (_juliaFractal.GetFractal()->StopRender())
+                    _juliaFractal.GetFractal()->MarkRenderInterrupted();
+
+                ZoomAtMousePosition(sf::Vector2i(_event.mouseWheelScroll.x, _event.mouseWheelScroll.y));
+            }
+            else if (_event.mouseWheelScroll.delta < 0.0F)
+                _fractalPresenter->ZoomBack();
+        }
+
+        if (_event.type == sf::Event::MouseButtonPressed && _event.mouseButton.button == sf::Mouse::Middle)
+        {
+            if (!_juliaFractal.GetFractal()->IsRendering() && _juliaFractal.GetFractal()->IsRendered())
+            {
+                _mouseWheelPanning = true;
+                _lastMouseWheelPanPosition = sf::Vector2i(_event.mouseButton.x, _event.mouseButton.y);
+                _fractalPresenter->BeginMousePan();
+            }
+        }
+
+        if (_event.type == sf::Event::MouseButtonReleased && _event.mouseButton.button == sf::Mouse::Middle)
+        {
+            _mouseWheelPanning = false;
+            _fractalPresenter->EndMousePan();
+        }
+
+        if (_event.type == sf::Event::MouseMoved && _mouseWheelPanning)
+        {
+            const sf::Vector2i currentPosition(_event.mouseMove.x, _event.mouseMove.y);
+            const sf::Vector2i delta = currentPosition - _lastMouseWheelPanPosition;
+
+            if (delta.x != 0 || delta.y != 0)
+            {
+                _fractalPresenter->PanByMousePixels(delta.x, delta.y);
+                _lastMouseWheelPanPosition = currentPosition;
+            }
+        }
 
         // Keyboad events.
         if (_event.type == sf::Event::KeyPressed)

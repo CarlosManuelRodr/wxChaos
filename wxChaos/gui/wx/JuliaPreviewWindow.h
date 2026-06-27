@@ -48,9 +48,14 @@ class JuliaPreviewWindow
     double _pendingKReal;
     double _pendingKImaginary;
     bool _constantPending;
+    bool _mouseWheelPanning;
+    sf::Vector2i _lastMouseWheelPanPosition;
 
     ///@brief Handles the window's events.
     void HandleEvent();
+
+    ///@brief Zooms into the preview around a pixel position.
+    void ZoomAtMousePosition(const sf::Vector2i& position) const;
 
     ///@brief The main loop for the Julia window thread.
     void Run();
