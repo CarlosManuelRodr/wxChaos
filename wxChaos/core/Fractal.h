@@ -424,7 +424,7 @@ public:
     void SetFractalSetColor(sf::Color color);
     bool GetExteriorColorMode() const;
     bool GetInteriorColorMode() const;
-    void ChangeVarGradient();
+    void ToggleColorRotation();
     void SetPaletteSize(unsigned int size);
     unsigned int GetPaletteSize() const;
     void SetColorCycleLength(double cycleLength);

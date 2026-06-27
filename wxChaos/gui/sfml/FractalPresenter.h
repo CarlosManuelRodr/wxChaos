@@ -232,7 +232,7 @@ public:
     void SetRelativeColor(bool mode);
 
     ///@brief Toggles animated gradient variation and invalidates cached images.
-    void ChangeVarGradient();
+    void ToggleColorRotation();
 
     ///@brief Sets the color variation offset and invalidates cached images.
     ///@param offset Color variation offset.

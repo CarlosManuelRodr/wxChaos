@@ -597,10 +597,10 @@ void FractalPresenter::SetRelativeColor(const bool mode)
     _fractal->SetRelativeColor(mode);
 }
 
-void FractalPresenter::ChangeVarGradient()
+void FractalPresenter::ToggleColorRotation()
 {
     ClearImageCache();
-    _fractal->ChangeVarGradient();
+    _fractal->ToggleColorRotation();
 }
 
 void FractalPresenter::SetColorVariationOffset(const int offset)

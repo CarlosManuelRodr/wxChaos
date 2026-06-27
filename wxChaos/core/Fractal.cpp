@@ -1454,7 +1454,7 @@ bool Fractal::GetInteriorColorMode() const
 {
     return _colorSet;
 }
-void Fractal::ChangeVarGradient()
+void Fractal::ToggleColorRotation()
 {
     _varGradient = !_varGradient;
 }

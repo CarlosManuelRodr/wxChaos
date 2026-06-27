@@ -377,7 +377,7 @@ void FractalCanvas::OnUpdate()
 
         _fractalPresenter->HandleEvent(_event);
         if (!_fractal->IsRendering() && _playToggleButton->HandleEvents(_event))
-            _fractalPresenter->ChangeVarGradient();
+            _fractalPresenter->ToggleColorRotation();
 
         // Keyboard event.
         if (_event.type == sf::Event::KeyPressed)

@@ -57,7 +57,7 @@ void JuliaPreviewWindow::HandleEvent()
         if (_selection->HandleEvents(_event))
             _fractalPresenter->SetAreaOfView(_selection->GetSelection());
         if (_play->HandleEvents(_event))
-            _fractalPresenter->ChangeVarGradient();
+            _fractalPresenter->ToggleColorRotation();
 
         // Keyboad events.
         if (_event.type == sf::Event::KeyPressed)
