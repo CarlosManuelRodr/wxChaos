@@ -1,1 +1,14 @@
 - Zoom recorder registers a zoom even though there is no zoom.
+- Box counting preview has bottom side cropped.
+
+Improvements to get to a release version:
+- Julia mode must have an "Iterations" display, must have a menu bar to switch the main fractal to a julia set on the
+specific current point.
+- Main frame must have tools to navigate and to get information about a point.
+- The rescaled image must be displayed even on double zooms (the first one did not finish and a new one was started).
+- Documentation must be updated.
+- Localization to Spanish, Japanese and possibly other languages.
+- "Set color" on RendererOptions must be a color picker.
+- Replace the bmp banners at fractal options and RendererOptions.
+- Restore Henon maps and other fractals of previous versions.
+- Implement a proper tutorial mode.
