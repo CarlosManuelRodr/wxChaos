@@ -566,6 +566,9 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates)
 
 void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates, const PreciseRect& targetView)
 {
+    if (_zoomAnimationActive)
+        return;
+
     ResetMovement();
     const bool wasPaused = _fractal->IsPausedForPresentation();
     const bool wasRendering = _fractal->StopRender();
@@ -606,6 +609,9 @@ void FractalPresenter::ZoomAtPixel(const int pixelX, const int pixelY)
 
 void FractalPresenter::ZoomBack()
 {
+    if (_zoomAnimationActive)
+        return;
+
     _fractal->StopRender();
     StopZoomAnimation();
     ResetMovement();
