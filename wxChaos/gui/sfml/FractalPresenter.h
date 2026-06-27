@@ -91,6 +91,12 @@ class FractalPresenter
     ///@brief Estimates the iteration count that fits the current viewport.
     unsigned int CalculateAutomaticIterations() const;
 
+    ///@brief Estimates viewport-driven iterations added on top of the user's manual baseline.
+    unsigned int CalculateAutomaticIterationExtra() const;
+
+    ///@brief Updates the automatic baseline so the current viewport uses the requested count.
+    void SetAutomaticIterationBaseForCurrentIterations(unsigned int iterations);
+
     ///@brief Applies automatic iterations when that mode is active.
     void ApplyAutomaticIterations();
 

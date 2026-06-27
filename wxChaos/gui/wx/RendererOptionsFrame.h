@@ -95,7 +95,7 @@ class RendererOptionsFrame : public wxFrame
     void OnColorCycleLength(wxSpinEvent& event);
     void OnPaletteMappingMode(wxCommandEvent& event);
     void OnPaletteMappingExponent(wxSpinDoubleEvent& event);
-    void OnColorVar(wxScrollEvent& event);
+    void OnChangeColorVariationOffset(wxScrollEvent& event);
     void OnColorRotationSpeed(wxSpinEvent& event);
 
     void ConnectEvents();

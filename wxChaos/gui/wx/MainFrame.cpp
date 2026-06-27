@@ -624,15 +624,11 @@ void MainFrame::OnReset(wxCommandEvent&)
 void MainFrame::OnMoreIt(wxCommandEvent&)
 {
     _fractalCanvas->GetFractalPresenter()->IncreaseIterations();
-    _appConfig.automaticIterations = false;
-    _automaticIterations->Check(false);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnLessIt(wxCommandEvent&)
 {
     _fractalCanvas->GetFractalPresenter()->DecreaseIterations();
-    _appConfig.automaticIterations = false;
-    _automaticIterations->Check(false);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnShowOrbit(wxCommandEvent&)
@@ -680,9 +676,6 @@ void MainFrame::OnCanvasStatusText(wxCommandEvent& event)
 }
 void MainFrame::OnSetIterations(wxCommandEvent&)
 {
-    SetAutomaticIterations(false);
-    _appConfig.automaticIterations = false;
-
     // Manual iterations.
     if (!_iterationsDialogIsActive)
     {
@@ -726,7 +719,7 @@ void MainFrame::OnUpdateSliderMode(wxUpdateUIEvent& event)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateManualIterations(wxUpdateUIEvent& event)
 {
-    event.Enable(_fractalCanvas != nullptr && !_fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
+    event.Enable(_fractalCanvas != nullptr);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnUpdateAutomaticIterations(wxUpdateUIEvent& event)
@@ -1179,11 +1172,10 @@ void MainFrame::UpdateMenu()
     _showOrbit->Check(false);
     _showOrbit->Enable(_fractalCanvas->GetFractal()->HasOrbit());
 
-    const bool automaticIterations = _fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled();
-    _setIterations->Enable(!automaticIterations);
-    _moreIterations->Enable(!automaticIterations);
-    _lessIterations->Enable(!automaticIterations);
-    _automaticIterations->Check(automaticIterations);
+    _setIterations->Enable(true);
+    _moreIterations->Enable(true);
+    _lessIterations->Enable(true);
+    _automaticIterations->Check(_fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
 
     // Closes constant dialog.
     if (_introConstActive)

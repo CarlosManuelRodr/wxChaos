@@ -281,15 +281,15 @@ void RendererOptionsFrame::ConnectEvents()
     _blueSetSld->Bind(wxEVT_SCROLL_CHANGED, &RendererOptionsFrame::OnSetBlue, this);
     _okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &RendererOptionsFrame::OnOk, this);
     _gradButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &RendererOptionsFrame::OnGrad, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_TOP, &RendererOptionsFrame::OnColorVar, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_BOTTOM, &RendererOptionsFrame::OnColorVar, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_LINEUP, &RendererOptionsFrame::OnColorVar, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_LINEDOWN, &RendererOptionsFrame::OnColorVar, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_PAGEUP, &RendererOptionsFrame::OnColorVar, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_PAGEDOWN, &RendererOptionsFrame::OnColorVar, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_THUMBTRACK, &RendererOptionsFrame::OnColorVar, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_THUMBRELEASE, &RendererOptionsFrame::OnColorVar, this);
-    _colorVarSlider->Bind(wxEVT_SCROLL_CHANGED, &RendererOptionsFrame::OnColorVar, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_TOP, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_BOTTOM, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_LINEUP, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_LINEDOWN, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_PAGEUP, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_PAGEDOWN, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_THUMBTRACK, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_THUMBRELEASE, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
+    _colorVarSlider->Bind(wxEVT_SCROLL_CHANGED, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
     _colorRotationSpeed->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptionsFrame::OnColorRotationSpeed, this);
 }
 void RendererOptionsFrame::NotifyOptionsChanged() const
@@ -723,9 +723,9 @@ void RendererOptionsFrame::OnPaletteMappingExponent(wxSpinDoubleEvent&)
     NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void RendererOptionsFrame::OnColorVar(wxScrollEvent&)
+void RendererOptionsFrame::OnChangeColorVariationOffset(wxScrollEvent&)
 {
-    _fractalPresenter->SetColorVariationOffset(_colorVarSlider->GetValue());
+    _fractalPresenter->SetColorVariationOffset(static_cast<unsigned int>(_colorVarSlider->GetValue()));
     NotifyOptionsChanged();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst

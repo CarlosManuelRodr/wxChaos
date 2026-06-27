@@ -303,23 +303,33 @@ void FractalPresenter::ApplyView(const PreciseRect& view)
 
 unsigned int FractalPresenter::CalculateAutomaticIterations() const
 {
+    constexpr unsigned int maximumAutomaticIterations = 20000000;
+    const unsigned int base = std::min(_automaticIterationBase, maximumAutomaticIterations);
+    return std::min(base + CalculateAutomaticIterationExtra(), maximumAutomaticIterations);
+}
+
+unsigned int FractalPresenter::CalculateAutomaticIterationExtra() const
+{
     const PreciseRect view = CaptureCurrentView();
     const double width = ToDouble(RealAbs(view.right - view.left));
     if (!std::isfinite(width) || width <= 0.0)
-        return _automaticIterationBase;
+        return 0;
 
     constexpr double referenceWidth = 3.5;
     constexpr double iterationsPerZoomDoubling = 18.0;
-    constexpr unsigned int maximumAutomaticIterations = 20000000;
 
     const double zoomDepth = std::max(0.0, std::log2(referenceWidth / width));
     const double wantedExtraIterations = std::ceil(zoomDepth * iterationsPerZoomDoubling);
     if (!std::isfinite(wantedExtraIterations))
-        return maximumAutomaticIterations;
+        return 20000000;
 
-    const auto maximumExtraIterations = static_cast<double>(maximumAutomaticIterations - std::min(_automaticIterationBase, maximumAutomaticIterations));
-    const auto extraIterations = static_cast<unsigned int>(std::clamp(wantedExtraIterations, 0.0, maximumExtraIterations));
-    return std::min(_automaticIterationBase + extraIterations, maximumAutomaticIterations);
+    return static_cast<unsigned int>(std::clamp(wantedExtraIterations, 0.0, 20000000.0));
+}
+
+void FractalPresenter::SetAutomaticIterationBaseForCurrentIterations(const unsigned int iterations)
+{
+    const unsigned int automaticExtra = CalculateAutomaticIterationExtra();
+    _automaticIterationBase = iterations > automaticExtra ? iterations - automaticExtra : 0;
 }
 
 void FractalPresenter::ApplyAutomaticIterations()
@@ -685,28 +695,32 @@ void FractalPresenter::SetView(const Rect& view)
 
 void FractalPresenter::IncreaseIterations()
 {
-    _automaticIterations = false;
     ClearImageCache();
     const unsigned change = _fractal->GetIterations() + 100;
+    if (_automaticIterations)
+        SetAutomaticIterationBaseForCurrentIterations(change);
     _fractal->SetIterations(change);
 }
 
 void FractalPresenter::DecreaseIterations()
 {
-    _automaticIterations = false;
     ClearImageCache();
 
     if (_fractal->GetIterations() > 100)
     {
         const unsigned int change = _fractal->GetIterations() - 100;
+        if (_automaticIterations)
+            SetAutomaticIterationBaseForCurrentIterations(change);
         _fractal->SetIterations(change);
     }
 }
 
 void FractalPresenter::ChangeIterations(const unsigned int iterations)
 {
-    _automaticIterations = false;
-    _automaticIterationBase = iterations;
+    if (_automaticIterations)
+        SetAutomaticIterationBaseForCurrentIterations(iterations);
+    else
+        _automaticIterationBase = iterations;
     ClearImageCache();
     _fractal->SetIterations(iterations);
 }
