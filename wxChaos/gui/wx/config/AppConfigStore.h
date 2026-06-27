@@ -33,8 +33,8 @@ struct AppConfig
     bool colorSet = true;
     bool firstUse = false;
     AppAppearance appearance = AppAppearance::System; ///< Application appearance preference.
-    int zoomStepPercent = 25;                         ///< Percent zoomed in by one mouse-wheel notch.
-    int zoomInertiaMilliseconds = 180;                ///< Temporary zoom preview easing duration.
+    int zoomStepPercent = 50;                         ///< Percent zoomed in by one mouse-wheel notch.
+    int zoomInertiaMilliseconds = 685;                ///< Temporary zoom preview easing duration.
 };
 
 /**
