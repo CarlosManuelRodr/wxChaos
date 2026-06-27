@@ -95,6 +95,8 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _relativeColorMin = 0.0;
     _relativeColorMax = 1.0;
     _colorCycleLength = 72.0;
+    _colorRotationSpeed = 0.0;
+    _colorRotationRemainder = 0.0;
     _paletteMappingMode = PaletteMappingMode::Linear;
     _paletteMappingExponent = 1.5;
     _orbitX = _orbitY = 0.0;
@@ -118,7 +120,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _colorCycleLength = defaultPalette.colorCycleLength;
 
     _palette.resize(_paletteSize);
-    _varGradientStep = std::max(1U, _paletteSize / 60);
+    _colorRotationSpeed = static_cast<double>(_paletteSize) / 2.0;
     this->RebuildPalette();
 }
 
@@ -823,15 +825,19 @@ bool Fractal::ConsumeGradientChangeRequest()
     return changed;
 }
 
-void Fractal::AdvanceGradientOffset()
+void Fractal::AdvanceGradientOffset(const double elapsedSeconds)
 {
-    if (_paletteSize == 0)
+    if (_paletteSize == 0 || elapsedSeconds <= 0.0 || _colorRotationSpeed <= 0.0)
         return;
 
-    if (_changeGradient < _paletteSize)
-        _changeGradient += _varGradientStep;
-    else
-        _changeGradient = 0;
+    constexpr double maxAnimationStepSeconds = 0.25;
+    const double colorMovement = _colorRotationSpeed * std::min(elapsedSeconds, maxAnimationStepSeconds) + _colorRotationRemainder;
+    const auto offset = static_cast<unsigned int>(std::floor(colorMovement));
+    _colorRotationRemainder = colorMovement - offset;
+    if (offset == 0)
+        return;
+
+    _changeGradient = (_changeGradient + offset) % _paletteSize;
 }
 
 void Fractal::RefreshAnimatedColors(sf::Image& image)
@@ -1179,6 +1185,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _maxIter = opt.maxIter;
     _panelOpt = opt.panelOpt;
     _changeGradient = opt.changeGradient;
+    _colorRotationSpeed = std::max(0.0, opt.colorRotationSpeed);
     _relativeColor = opt.relativeColor;
     _gradPaletteSize = opt.gradPaletteSize;
     _colorCycleLength = opt.colorCycleLength > 0.0 ? opt.colorCycleLength : 72.0;
@@ -1228,6 +1235,7 @@ Options Fractal::GetOptions() const
     opt.paletteSize = _paletteSize;
     opt.gradPaletteSize = _gradPaletteSize;
     opt.colorCycleLength = _colorCycleLength;
+    opt.colorRotationSpeed = _colorRotationSpeed;
     opt.paletteMappingMode = _paletteMappingMode;
     opt.paletteMappingExponent = _paletteMappingExponent;
     opt.panelOpt = _panelOpt;
@@ -1472,7 +1480,6 @@ void Fractal::SetGradient(const wxGradient& grad)
     _gradient = grad;
     _gradPaletteSize = _paletteSize = _gradient.GetMax() - _gradient.GetMin();
     _palette.resize(_paletteSize);
-    _varGradientStep = std::max(1U, _paletteSize / 60);
     this->RebuildPalette();
 }
 void Fractal::SetGradientSize(const unsigned int size)
@@ -1480,7 +1487,6 @@ void Fractal::SetGradientSize(const unsigned int size)
     _gradient.SetMax(size);
     _gradPaletteSize = _paletteSize = size;
     _palette.resize(_paletteSize);
-    _varGradientStep = std::max(1U, _paletteSize / 60);
     this->RebuildPalette();
 }
 void Fractal::SetColorCycleLength(const double cycleLength)
@@ -1494,6 +1500,18 @@ void Fractal::SetColorCycleLength(const double cycleLength)
 double Fractal::GetColorCycleLength() const
 {
     return _colorCycleLength;
+}
+void Fractal::SetColorRotationSpeed(const double speed)
+{
+    if (speed < 0.0)
+        return;
+
+    _colorRotationSpeed = speed;
+    _colorRotationRemainder = 0.0;
+}
+double Fractal::GetColorRotationSpeed() const
+{
+    return _colorRotationSpeed;
 }
 void Fractal::SetPaletteMappingMode(const PaletteMappingMode mode)
 {

@@ -555,6 +555,11 @@ void FractalPresenter::SetColorCycleLength(const double cycleLength)
     _fractal->SetColorCycleLength(cycleLength);
 }
 
+void FractalPresenter::SetColorRotationSpeed(const double speed)
+{
+    _fractal->SetColorRotationSpeed(speed);
+}
+
 void FractalPresenter::SetPaletteMappingMode(const PaletteMappingMode mode)
 {
     ClearImageCache();
@@ -705,7 +710,7 @@ void FractalPresenter::DrawGeometry(sf::RenderWindow* window) const
     }
 }
 
-void FractalPresenter::Show(sf::RenderWindow* window)
+void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSeconds)
 {
     if (_fractal->IsRendered() && IsMoving())
     {
@@ -767,7 +772,9 @@ void FractalPresenter::Show(sf::RenderWindow* window)
         const bool gradientChanged = _fractal->ConsumeGradientChangeRequest();
         if (_fractal->IsGradientAnimating() || gradientChanged)
         {
-            _fractal->AdvanceGradientOffset();
+            if (_fractal->IsGradientAnimating())
+                _fractal->AdvanceGradientOffset(elapsedSeconds);
+
             if (_fractal->IsRendered())
             {
                 _fractal->RefreshAnimatedColors(_image);

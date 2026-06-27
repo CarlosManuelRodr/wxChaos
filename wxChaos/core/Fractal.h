@@ -91,7 +91,8 @@ protected:
     ColorPaletteTypes _gradStyle;           ///< Grad color palette to be used.
     unsigned int _paletteSize;
     unsigned int _gradPaletteSize;
-    unsigned int _varGradientStep;
+    double _colorRotationSpeed;
+    double _colorRotationRemainder;
     double _maxColorMapVal;
     double _relativeColorMin;
     double _relativeColorMax;
@@ -296,7 +297,7 @@ public:
     bool IsSetColorEnabled() const;
     bool IsGradientAnimating() const;
     bool ConsumeGradientChangeRequest();
-    void AdvanceGradientOffset();
+    void AdvanceGradientOffset(double elapsedSeconds);
     void RefreshAnimatedColors(sf::Image& image);
 
     bool ShouldDrawOrbit() const;
@@ -429,6 +430,8 @@ public:
     unsigned int GetPaletteSize() const;
     void SetColorCycleLength(double cycleLength);
     double GetColorCycleLength() const;
+    void SetColorRotationSpeed(double speed);
+    double GetColorRotationSpeed() const;
     void SetPaletteMappingMode(PaletteMappingMode mode);
     PaletteMappingMode GetPaletteMappingMode() const;
     void SetPaletteMappingExponent(double exponent);

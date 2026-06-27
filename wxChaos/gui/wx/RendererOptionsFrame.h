@@ -64,6 +64,8 @@ class RendererOptionsFrame : public wxFrame
     wxSpinCtrlDouble* _paletteMappingExponent;
     wxStaticText* _colorVarText;
     wxSlider* _colorVarSlider;
+    wxStaticText* _colorRotationSpeedText;
+    wxSpinCtrl* _colorRotationSpeed;
     
     FractalPresenter* _fractalPresenter;            ///< Presenter used to mutate the displayed fractal.
     Fractal* _target;                               ///< Target fractal.
@@ -94,6 +96,7 @@ class RendererOptionsFrame : public wxFrame
     void OnPaletteMappingMode(wxCommandEvent& event);
     void OnPaletteMappingExponent(wxSpinDoubleEvent& event);
     void OnColorVar(wxScrollEvent& event);
+    void OnColorRotationSpeed(wxSpinEvent& event);
 
     void ConnectEvents();
     void NotifyOptionsChanged() const;

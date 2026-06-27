@@ -935,6 +935,7 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
         _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(colorPalette);
         _fractalCanvas->GetFractalPresenterPtr()->SetGradient(fractOpt.gradient);
         _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
+        _fractalCanvas->GetFractalPresenterPtr()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
         _fractalType = type;
         this->UpdateMenu();
         _juliaMode->Enable(enableJulia);
@@ -955,6 +956,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     _fractalCanvas->GetFractalPresenterPtr()->SetColorPalette(colorPalette);
     _fractalCanvas->GetFractalPresenterPtr()->SetGradient(fractOpt.gradient);
     _fractalCanvas->GetFractalPresenterPtr()->SetColorCycleLength(fractOpt.colorCycleLength);
+    _fractalCanvas->GetFractalPresenterPtr()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
 
     _fractalType = FractalType::ScriptFractal;
     this->UpdateMenu();

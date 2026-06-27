@@ -1,4 +1,5 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
+#include <cmath>
 #include <utility>
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
@@ -88,6 +89,14 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
 
     _colorVarSlider = new wxSlider(_mainPanel, wxID_ANY, 0, 0, 300, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
     setSizer->Add(_colorVarSlider, 0, wxALL|wxEXPAND, 5);
+
+    _colorRotationSpeedText = new wxStaticText(_mainPanel, wxID_ANY, "Color rotation speed", wxDefaultPosition, wxDefaultSize, 0);
+    _colorRotationSpeedText->Wrap(-1);
+    setSizer->Add(_colorRotationSpeedText, 0, wxALL, 5);
+
+    _colorRotationSpeed = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                         wxSP_ARROW_KEYS, 0, 20000, static_cast<int>(std::round(_target->GetColorRotationSpeed())));
+    setSizer->Add(_colorRotationSpeed, 0, wxALL | wxEXPAND, 5);
 
     auto* colorSetSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Set color"), wxVERTICAL);
 
@@ -281,6 +290,7 @@ void RendererOptionsFrame::ConnectEvents()
     _colorVarSlider->Bind(wxEVT_SCROLL_THUMBTRACK, &RendererOptionsFrame::OnColorVar, this);
     _colorVarSlider->Bind(wxEVT_SCROLL_THUMBRELEASE, &RendererOptionsFrame::OnColorVar, this);
     _colorVarSlider->Bind(wxEVT_SCROLL_CHANGED, &RendererOptionsFrame::OnColorVar, this);
+    _colorRotationSpeed->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptionsFrame::OnColorRotationSpeed, this);
 }
 void RendererOptionsFrame::NotifyOptionsChanged() const
 {
@@ -493,6 +503,7 @@ void RendererOptionsFrame::SetTarget(FractalPresenter* presenter)
     _greenSetSld->SetValue(0);
     _blueSetSld->SetValue(0);
     _colorVarSlider->SetValue(0);
+    _colorRotationSpeed->SetValue(static_cast<int>(std::round(_target->GetColorRotationSpeed())));
 
     _gradStylesChoice->SetSelection(_target->GetColorPalette());
 }
@@ -715,5 +726,10 @@ void RendererOptionsFrame::OnPaletteMappingExponent(wxSpinDoubleEvent&)
 void RendererOptionsFrame::OnColorVar(wxScrollEvent&)
 {
     _fractalPresenter->SetColorVariationOffset(_colorVarSlider->GetValue());
+    NotifyOptionsChanged();
+}
+void RendererOptionsFrame::OnColorRotationSpeed(wxSpinEvent&)
+{
+    _fractalPresenter->SetColorRotationSpeed(_colorRotationSpeed->GetValue());
     NotifyOptionsChanged();
 }

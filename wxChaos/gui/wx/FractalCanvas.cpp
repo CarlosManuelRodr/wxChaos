@@ -435,7 +435,7 @@ void FractalCanvas::OnUpdate()
 
     const double elapsedSeconds = _movementClock.restart().asSeconds();
     _fractalPresenter->Move(elapsedSeconds);
-    _fractalPresenter->Show(this);
+    _fractalPresenter->Show(this, elapsedSeconds);
     DrawIterationsOverlay(this);
 
     // Avoid drawing GUI elements if the fractal is rendering.

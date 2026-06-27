@@ -148,7 +148,8 @@ public:
 
     ///@brief Updates render state and draws the fractal presentation to the window.
     ///@param window Target window.
-    void Show(sf::RenderWindow* window);
+    ///@param elapsedSeconds Seconds elapsed since the previous presentation update.
+    void Show(sf::RenderWindow* window, double elapsedSeconds);
 
     ///@brief Zooms into the selected pixel rectangle and prepares the temporary zoom preview.
     ///@param pixelCoordinates Selection rectangle in pixel coordinates.
@@ -204,6 +205,10 @@ public:
     ///@brief Sets the renderer-value length used for one full palette cycle.
     ///@param cycleLength New cycle length.
     void SetColorCycleLength(double cycleLength);
+
+    ///@brief Sets animated color rotation speed in palette units per second.
+    ///@param speed New color rotation speed.
+    void SetColorRotationSpeed(double speed);
 
     ///@brief Sets how renderer values are mapped into the active palette.
     void SetPaletteMappingMode(PaletteMappingMode mode);

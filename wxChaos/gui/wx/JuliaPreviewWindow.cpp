@@ -124,7 +124,7 @@ void JuliaPreviewWindow::HandleEvent()
     _window->clear();
     const double elapsedSeconds = _movementClock.restart().asSeconds();
     _fractalPresenter->Move(elapsedSeconds);
-    _fractalPresenter->Show(_window);
+    _fractalPresenter->Show(_window, elapsedSeconds);
     _selection->Show(_window);
     _play->Show(_window);
     _window->display();
@@ -141,7 +141,6 @@ void JuliaPreviewWindow::Run()
     const sf::Vector2i juliaWindowPos(parentPos.x + parentSize.GetWidth() + 5, parentPos.y);
     _window->setPosition(juliaWindowPos);
 
-    _window->setFramerateLimit(30);
     if (sf::Image icon; icon.loadFromFile("Resources/iconPNG.png"))
         _window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
@@ -214,6 +213,7 @@ void JuliaPreviewWindow::ApplyRendererOptions(const Options& options) const
     _fractalPresenter->SetGradient(options.gradient);
     _fractalPresenter->SetGradientSize(options.gradPaletteSize);
     _fractalPresenter->SetColorVariationOffset(options.changeGradient);
+    _fractalPresenter->SetColorRotationSpeed(options.colorRotationSpeed);
     _fractalPresenter->SetAlgorithm(options.alg);
     _fractalPresenter->SetRenderingPrecisionMode(options.renderingPrecisionMode);
     _fractalPresenter->SetRelativeColor(options.relativeColor);
