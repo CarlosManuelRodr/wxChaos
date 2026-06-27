@@ -372,6 +372,7 @@ void MainFrame::SetUpGUI()
     SetAutomaticIterations(_appConfig.automaticIterations);
     _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(_appConfig.colorFractal);
     _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(_appConfig.colorSet);
+    _fractalCanvas->GetFractalPresenterPtr()->SetZoomOptions(_appConfig.zoomStepPercent, _appConfig.zoomInertiaMilliseconds);
     _fractalSizer->Add(_fractalCanvas, 1, wxEXPAND | wxALL, 0);
 }
 
@@ -425,6 +426,9 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     SetAutomaticIterations(config.automaticIterations);
     _fractalCanvas->GetFractalPresenterPtr()->SetExteriorColorMode(config.colorFractal);
     _fractalCanvas->GetFractalPresenterPtr()->SetFractalSetColorMode(config.colorSet);
+    _fractalCanvas->GetFractalPresenterPtr()->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
+    if (_juliaPreviewWindow != nullptr)
+        _juliaPreviewWindow->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
 }
 void MainFrame::SetAutomaticIterations(const bool mode) const
 {
@@ -1264,7 +1268,13 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
     options.kReal = real;
     options.kImaginary = imaginary;
     _juliaMode->Check(true);
-    _juliaPreviewWindow = new JuliaPreviewWindow(this, _fractalCanvas, juliaType, options);
+    _juliaPreviewWindow = new JuliaPreviewWindow(
+        this,
+        _fractalCanvas,
+        juliaType,
+        options,
+        _appConfig.zoomStepPercent,
+        _appConfig.zoomInertiaMilliseconds);
     _juliaPreviewWindow->Launch();
     _fractalCanvas->SetJuliaMode(true);
     return true;

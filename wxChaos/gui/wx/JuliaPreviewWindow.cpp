@@ -7,6 +7,7 @@ using namespace std;
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
 JuliaPreviewWindow::JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, const FractalType fractalType, const Options& juliaOpt,
+                     const int zoomStepPercent, const int zoomInertiaMilliseconds,
                      const wxSize& size) : _event(), m_thread(&JuliaPreviewWindow::Run, this), _pendingRendererOptions()
 {
     _parent = parent;
@@ -23,11 +24,15 @@ JuliaPreviewWindow::JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, con
     _pendingKReal = 0.0;
     _pendingKImaginary = 0.0;
     _constantPending = false;
+    _pendingZoomStepPercent = zoomStepPercent;
+    _pendingZoomInertiaMilliseconds = zoomInertiaMilliseconds;
+    _zoomOptionsPending = false;
     _mouseWheelPanning = false;
     _lastMouseWheelPanPosition = sf::Vector2i(0, 0);
 
     _juliaFractal.CreateFractal(_type, _size.GetWidth(), _size.GetHeight());
     _fractalPresenter = new FractalPresenter(_juliaFractal.GetFractal());
+    _fractalPresenter->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
 }
 
 JuliaPreviewWindow::~JuliaPreviewWindow()
@@ -41,7 +46,7 @@ JuliaPreviewWindow::~JuliaPreviewWindow()
 
 void JuliaPreviewWindow::ZoomAtMousePosition(const sf::Vector2i& position) const
 {
-    constexpr double zoomScale = 0.75;
+    const double zoomScale = _fractalPresenter->GetMouseWheelZoomScale();
 
     const sf::Vector2u screenSize = _juliaFractal.GetFractal()->GetScreenSize();
     const auto screenWidth = static_cast<int>(screenSize.x);
@@ -86,9 +91,6 @@ void JuliaPreviewWindow::HandleEvent()
         {
             if (_event.mouseWheelScroll.delta > 0.0F)
             {
-                if (_juliaFractal.GetFractal()->StopRender())
-                    _juliaFractal.GetFractal()->MarkRenderInterrupted();
-
                 ZoomAtMousePosition(sf::Vector2i(_event.mouseWheelScroll.x, _event.mouseWheelScroll.y));
             }
             else if (_event.mouseWheelScroll.delta < 0.0F)
@@ -223,6 +225,9 @@ void JuliaPreviewWindow::Run()
         double kReal = 0.0;
         double kImaginary = 0.0;
         bool applyConstant = false;
+        int zoomStepPercent = 0;
+        int zoomInertiaMilliseconds = 0;
+        bool applyZoomOptions = false;
         {
             const std::lock_guard lock(_rendererOptionsMutex);
             if (_rendererOptionsPending)
@@ -238,11 +243,20 @@ void JuliaPreviewWindow::Run()
                 _constantPending = false;
                 applyConstant = true;
             }
+            if (_zoomOptionsPending)
+            {
+                zoomStepPercent = _pendingZoomStepPercent;
+                zoomInertiaMilliseconds = _pendingZoomInertiaMilliseconds;
+                _zoomOptionsPending = false;
+                applyZoomOptions = true;
+            }
         }
         if (applyRendererOptions)
             ApplyRendererOptions(rendererOptions);
         if (applyConstant)
             _fractalPresenter->SetK(kReal, kImaginary);
+        if (applyZoomOptions)
+            _fractalPresenter->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
 
         if (_closeRequested.load())
         {
@@ -301,4 +315,12 @@ void JuliaPreviewWindow::SetConstant(const double real, const double imaginary)
     _pendingKReal = real;
     _pendingKImaginary = imaginary;
     _constantPending = true;
+}
+
+void JuliaPreviewWindow::SetZoomOptions(const int zoomStepPercent, const int zoomInertiaMilliseconds)
+{
+    const std::lock_guard lock(_rendererOptionsMutex);
+    _pendingZoomStepPercent = zoomStepPercent;
+    _pendingZoomInertiaMilliseconds = zoomInertiaMilliseconds;
+    _zoomOptionsPending = true;
 }

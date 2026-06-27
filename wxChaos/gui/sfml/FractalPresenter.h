@@ -56,6 +56,8 @@ class FractalPresenter
     bool _mousePanning;                         ///< True while a direct mouse pan gesture is active.
     bool _automaticIterations;                  ///< True when iterations follow the current zoom level.
     unsigned int _automaticIterationBase;        ///< Minimum iteration count used by automatic mode.
+    double _mouseWheelZoomScale;                ///< Fraction of the current view kept for each wheel zoom.
+    double _zoomAnimationDurationSeconds;        ///< Seconds used by the temporary zoom preview easing.
     bool _zoomAnimationActive;                  ///< True while the temporary zoom preview is easing into place.
     double _zoomAnimationElapsed;               ///< Seconds elapsed in the active zoom animation.
     sf::Vector2f _zoomAnimationStartPosition;   ///< Starting sprite position for the zoom preview.
@@ -130,6 +132,14 @@ public:
     ///@brief Sets whether SFML right-click events should zoom back.
     ///@param mode True to handle right-click zoom-back in SFML.
     void SetHandleRightClickZoomBack(bool mode);
+
+    ///@brief Sets mouse-wheel zoom behavior.
+    ///@param zoomStepPercent Percent zoomed in by one wheel notch.
+    ///@param inertiaMilliseconds Preview easing duration in milliseconds.
+    void SetZoomOptions(int zoomStepPercent, int inertiaMilliseconds);
+
+    ///@brief Returns the fraction of the current view kept for one wheel zoom.
+    double GetMouseWheelZoomScale() const;
 
     ///@brief Handles SFML input events that affect the fractal view.
     ///@param event SFML event to process.

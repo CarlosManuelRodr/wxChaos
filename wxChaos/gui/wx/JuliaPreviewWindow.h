@@ -48,6 +48,9 @@ class JuliaPreviewWindow
     double _pendingKReal;
     double _pendingKImaginary;
     bool _constantPending;
+    int _pendingZoomStepPercent;
+    int _pendingZoomInertiaMilliseconds;
+    bool _zoomOptionsPending;
     bool _mouseWheelPanning;
     sf::Vector2i _lastMouseWheelPanPosition;
 
@@ -71,6 +74,7 @@ public:
     ///@param juliaOpt Options to copy from the parent fractal.
     ///@param size
     JuliaPreviewWindow(wxWindow* parent, FractalCanvas* ptr, FractalType fractalType, const Options& juliaOpt,
+                       int zoomStepPercent, int zoomInertiaMilliseconds,
                        const wxSize& size = wxSize(640, 480));
     ~JuliaPreviewWindow();
 
@@ -88,4 +92,7 @@ public:
 
     ///@brief Queues a Julia constant to be applied by the Julia window thread.
     void SetConstant(double real, double imaginary);
+
+    ///@brief Queues mouse-wheel zoom settings to be applied by the Julia window thread.
+    void SetZoomOptions(int zoomStepPercent, int zoomInertiaMilliseconds);
 };

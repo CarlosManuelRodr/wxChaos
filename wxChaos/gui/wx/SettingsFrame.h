@@ -14,7 +14,7 @@ wxDECLARE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);
  * @class SettingsFrame
  * @brief Provides a graphical editor for values persisted by AppConfigStore.
  *
- * Settings are grouped into General, Presets, and Rendering pages. Applying
+ * Settings are grouped into General, Presets, Rendering, and Zoom pages. Applying
  * changes saves the configuration and notifies the owning window.
  */
 class SettingsFrame final : public wxFrame
@@ -40,6 +40,10 @@ private:
     /// @brief Creates the page containing default coloring settings.
     /// @return Newly created Rendering settings page.
     wxPanel* CreateRenderingPage();
+
+    /// @brief Creates the page containing mouse-wheel zoom settings.
+    /// @return Newly created Zoom settings page.
+    wxPanel* CreateZoomPage();
 
     /// @brief Populates every control from the supplied configuration.
     /// @param config Configuration values to display.
@@ -103,6 +107,8 @@ private:
     wxSpinCtrl* _colorCycleLength{};              ///< Selects the default palette cycle length.
     wxCheckBox* _colorFractal{};                  ///< Enables coloring outside the fractal set.
     wxCheckBox* _colorSet{};                      ///< Enables coloring inside the fractal set.
+    wxSpinCtrl* _zoomStepPercent{};               ///< Selects the percentage zoomed by each mouse-wheel notch.
+    wxSpinCtrl* _zoomInertiaMilliseconds{};       ///< Selects the preview easing duration in milliseconds.
     wxStaticBitmap* _gradientPreview{};           ///< Displays the current default gradient.
     wxGradient _gradient;                         ///< Gradient being edited by the frame.
     std::vector<FractalType> _fractalTypes;       ///< Values corresponding to the fractal choice entries.

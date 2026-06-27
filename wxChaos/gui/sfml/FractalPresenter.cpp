@@ -5,7 +5,6 @@
 constexpr double OldMovementFrameRate = 31.0;
 constexpr double MovementAcceleration = OldMovementFrameRate * OldMovementFrameRate;
 constexpr double MaximumMovementStepSeconds = 0.05;
-constexpr double ZoomAnimationDurationSeconds = 0.18;
 
 FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
 {
@@ -15,6 +14,8 @@ FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vecto
     _setHandleRightClickZoomBack = true;
     _mousePanning = false;
     _automaticIterations = false;
+    _mouseWheelZoomScale = 0.75;
+    _zoomAnimationDurationSeconds = 0.18;
     _zoomAnimationActive = false;
     _zoomAnimationElapsed = 0.0;
     _zoomAnimationStartPosition = {0.0F, 0.0F};
@@ -53,6 +54,19 @@ Fractal* FractalPresenter::GetFractal() const
 void FractalPresenter::SetHandleRightClickZoomBack(const bool mode)
 {
     _setHandleRightClickZoomBack = mode;
+}
+
+void FractalPresenter::SetZoomOptions(const int zoomStepPercent, const int inertiaMilliseconds)
+{
+    const int clampedStep = std::clamp(zoomStepPercent, 1, 95);
+    const int clampedInertia = std::clamp(inertiaMilliseconds, 0, 1000);
+    _mouseWheelZoomScale = 1.0 - static_cast<double>(clampedStep) / 100.0;
+    _zoomAnimationDurationSeconds = static_cast<double>(clampedInertia) / 1000.0;
+}
+
+double FractalPresenter::GetMouseWheelZoomScale() const
+{
+    return _mouseWheelZoomScale;
 }
 
 void FractalPresenter::ResetDisplayImages()
@@ -182,7 +196,9 @@ bool FractalPresenter::UpdateZoomAnimation(const double elapsedSeconds)
         return false;
 
     _zoomAnimationElapsed += std::clamp(elapsedSeconds, 0.0, MaximumMovementStepSeconds);
-    const double progress = std::clamp(_zoomAnimationElapsed / ZoomAnimationDurationSeconds, 0.0, 1.0);
+    const double progress = _zoomAnimationDurationSeconds <= 0.0
+        ? 1.0
+        : std::clamp(_zoomAnimationElapsed / _zoomAnimationDurationSeconds, 0.0, 1.0);
     const auto easedProgress = static_cast<float>(1.0 - std::pow(1.0 - progress, 3.0));
 
     const sf::Vector2f position = {

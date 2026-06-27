@@ -23,6 +23,7 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
     _pages->AddPage(CreateGeneralPage(), "General", true);
     _pages->AddPage(CreatePresetsPage(), "Presets");
     _pages->AddPage(CreateRenderingPage(), "Rendering");
+    _pages->AddPage(CreateZoomPage(), "Zoom");
 #ifdef __WXMSW__
     // wxMSW uses a no-header report view for left-side listbook labels.
     // Autosize its text column so page titles are not ellipsized.
@@ -196,6 +197,25 @@ wxPanel* SettingsFrame::CreateRenderingPage()
     return page;
 }
 
+wxPanel* SettingsFrame::CreateZoomPage()
+{
+    const auto page = new wxPanel(_pages);
+    const auto sizer = new wxFlexGridSizer(2, 12, 12);
+    sizer->AddGrowableCol(1, 1);
+
+    _zoomStepPercent = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+        wxSP_ARROW_KEYS, 1, 95, 25);
+    _zoomInertiaMilliseconds = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+        wxSP_ARROW_KEYS, 0, 1000, 180);
+
+    sizer->Add(new wxStaticText(page, wxID_ANY, "Wheel zoom step (%):"), 0, wxALIGN_CENTER_VERTICAL);
+    sizer->Add(_zoomStepPercent, 0);
+    sizer->Add(new wxStaticText(page, wxID_ANY, "Preview inertia (ms):"), 0, wxALIGN_CENTER_VERTICAL);
+    sizer->Add(_zoomInertiaMilliseconds, 0);
+    page->SetSizer(sizer);
+    return page;
+}
+
 void SettingsFrame::LoadControls(const AppConfig& config)
 {
     _constantWindow->SetValue(config.constantWindow);
@@ -221,6 +241,8 @@ void SettingsFrame::LoadControls(const AppConfig& config)
     _colorCycleLength->SetValue(config.colorCycleLength);
     _colorFractal->SetValue(config.colorFractal);
     _colorSet->SetValue(config.colorSet);
+    _zoomStepPercent->SetValue(config.zoomStepPercent);
+    _zoomInertiaMilliseconds->SetValue(config.zoomInertiaMilliseconds);
     _colorStyle->SetSelection(0);
     for (size_t i = 0; i < _colorStyles.size(); ++i)
     {
@@ -269,6 +291,8 @@ AppConfig SettingsFrame::ReadControls()
     config.colorFractal = _colorFractal->GetValue();
     config.colorSet = _colorSet->GetValue();
     config.firstUse = _firstUse->GetValue();
+    config.zoomStepPercent = _zoomStepPercent->GetValue();
+    config.zoomInertiaMilliseconds = _zoomInertiaMilliseconds->GetValue();
     switch (_theme->GetSelection())
     {
         case 1:

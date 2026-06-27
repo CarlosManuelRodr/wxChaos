@@ -301,7 +301,7 @@ void FractalCanvas::EmitStatusText() const
 
 void FractalCanvas::ZoomAtMousePosition(const wxPoint& position) const
 {
-    constexpr double zoomScale = 0.75;
+    const double zoomScale = _fractalPresenter->GetMouseWheelZoomScale();
 
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
     const auto screenWidth = static_cast<int>(screenSize.x);

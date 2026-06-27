@@ -295,6 +295,8 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     config.colorFractal = ReadBool(values, "COLOR_FRACTAL", config.colorFractal);
     config.colorSet = ReadBool(values, "COLOR_SET", config.colorSet);
     config.firstUse = ReadBool(values, "FIRST_USE", config.firstUse);
+    config.zoomStepPercent = std::clamp(ReadInt(values, "ZOOM_STEP_PERCENT", config.zoomStepPercent), 1, 95);
+    config.zoomInertiaMilliseconds = std::clamp(ReadInt(values, "ZOOM_INERTIA_MS", config.zoomInertiaMilliseconds), 0, 1000);
     if (values.find("APPEARANCE") != values.end())
         config.appearance = AppearanceFromString(ReadString(values, "APPEARANCE", "System"), config.appearance);
     else if (values.find("DARK_THEME") != values.end())
@@ -371,6 +373,15 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/Color/palette_window", &config.colorPaletteWindow, config.colorPaletteWindow);
     fileConfig.Read("/Color/fractal", &config.colorFractal, config.colorFractal);
     fileConfig.Read("/Color/set", &config.colorSet, config.colorSet);
+
+    intValue = config.zoomStepPercent;
+    fileConfig.Read("/Zoom/step_percent", &intValue, config.zoomStepPercent);
+    config.zoomStepPercent = std::clamp(static_cast<int>(intValue), 1, 95);
+
+    intValue = config.zoomInertiaMilliseconds;
+    fileConfig.Read("/Zoom/inertia_ms", &intValue, config.zoomInertiaMilliseconds);
+    config.zoomInertiaMilliseconds = std::clamp(static_cast<int>(intValue), 0, 1000);
+
     wxString appearance;
     if (fileConfig.Read("/General/appearance", &appearance))
         config.appearance = AppearanceFromString(appearance.ToStdString(), config.appearance);
@@ -405,6 +416,8 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Color/palette_window", config.colorPaletteWindow);
     fileConfig.Write("/Color/fractal", config.colorFractal);
     fileConfig.Write("/Color/set", config.colorSet);
+    fileConfig.Write("/Zoom/step_percent", static_cast<long>(config.zoomStepPercent));
+    fileConfig.Write("/Zoom/inertia_ms", static_cast<long>(config.zoomInertiaMilliseconds));
     fileConfig.Write("/General/appearance", ToWxString(AppearanceToString(config.appearance)));
     fileConfig.Write("/General/dark_theme", config.appearance == AppAppearance::Dark);
     fileConfig.Flush();
