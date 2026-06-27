@@ -1,2 +1,0 @@
-Improvements:
-- muParserX should be imported as a submodule to benefit from the latest bug fixes.
