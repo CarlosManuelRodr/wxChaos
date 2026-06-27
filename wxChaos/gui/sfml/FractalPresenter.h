@@ -41,8 +41,10 @@ class FractalPresenter
     std::vector<ZoomHistoryEntry> _zoomHistory; ///< World-coordinate views and optional rendered images for zoom-back.
     PreciseRect _outermostZoom;                 ///< Farthest world-coordinate view reached by zoom-back.
     bool _movement[4]{};                        ///< Active keyboard movement state.
-    int _xVel;
-    int _yVel;
+    double _xVel;
+    double _yVel;
+    double _panRemainderX;
+    double _panRemainderY;
     int _posX;
     int _posY;
     Vector2Int _committedPanOffset;             ///< Settled pan offset waiting for map reuse.
@@ -114,8 +116,9 @@ public:
     ///@param event SFML event to process.
     void HandleEvent(const sf::Event& event);
 
-    ///@brief Updates inertial panning state for one frame.
-    void Move();
+    ///@brief Updates inertial panning state for the elapsed time.
+    ///@param elapsedSeconds Seconds elapsed since the previous movement update.
+    void Move(double elapsedSeconds);
 
     ///@brief Returns true while the fractal is actively panning.
     bool IsMoving() const;

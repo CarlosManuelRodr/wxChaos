@@ -122,7 +122,8 @@ void JuliaPreviewWindow::HandleEvent()
 
     // Updates window.
     _window->clear();
-    _fractalPresenter->Move();
+    const double elapsedSeconds = _movementClock.restart().asSeconds();
+    _fractalPresenter->Move(elapsedSeconds);
     _fractalPresenter->Show(_window);
     _selection->Show(_window);
     _play->Show(_window);

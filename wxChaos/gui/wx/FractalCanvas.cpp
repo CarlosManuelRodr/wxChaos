@@ -91,8 +91,6 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _outHelp.setColor(sf::Color(255, 255, 255, 220));
 
     this->wxWindow::SetFocus();
-    this->setFramerateLimit(31);
-
     this->Bind(wxEVT_MOTION, &FractalCanvas::OnMoveMouse, this);
     this->Bind(wxEVT_LEFT_DOWN, &FractalCanvas::OnClick, this);
     this->Bind(wxEVT_RIGHT_DOWN, &FractalCanvas::OnClick, this);
@@ -435,7 +433,8 @@ void FractalCanvas::OnUpdate()
     if (_sliderMode && _pointerChange)
         _fractalPresenter->SetK(_kReal, _kImaginary);
 
-    _fractalPresenter->Move();
+    const double elapsedSeconds = _movementClock.restart().asSeconds();
+    _fractalPresenter->Move(elapsedSeconds);
     _fractalPresenter->Show(this);
     DrawIterationsOverlay(this);
 

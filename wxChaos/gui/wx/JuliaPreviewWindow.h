@@ -39,6 +39,7 @@ class JuliaPreviewWindow
     wxSize _size;
 
     sf::Event _event;
+    sf::Clock _movementClock;
     sf::Thread m_thread; // Thread for the rendering loop
     std::atomic_bool _closeRequested;
     std::mutex _rendererOptionsMutex;

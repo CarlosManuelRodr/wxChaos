@@ -1,7 +1,10 @@
 #include <algorithm>
+#include <cmath>
 #include "FractalPresenter.h"
 
-constexpr int stdSpeed = 1;
+constexpr double OldMovementFrameRate = 31.0;
+constexpr double MovementAcceleration = OldMovementFrameRate * OldMovementFrameRate;
+constexpr double MaximumMovementStepSeconds = 0.05;
 
 FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vector2Int::Zero())
 {
@@ -13,8 +16,10 @@ FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vecto
     _automaticIterations = false;
     _fractal = fractal;
     _automaticIterationBase = fractal->GetIterations();
-    _xVel = 0.0f;
-    _yVel = 0.0f;
+    _xVel = 0.0;
+    _yVel = 0.0;
+    _panRemainderX = 0.0;
+    _panRemainderY = 0.0;
     _posX = 0;
     _posY = 0;
     _hasCommittedPanOffset = false;
@@ -85,8 +90,10 @@ void FractalPresenter::ResetMovement()
         direction = false;
 
     _mousePanning = false;
-    _xVel = 0;
-    _yVel = 0;
+    _xVel = 0.0;
+    _yVel = 0.0;
+    _panRemainderX = 0.0;
+    _panRemainderY = 0.0;
     _posX = 0;
     _posY = 0;
     _committedPanOffset = {0, 0};
@@ -159,7 +166,7 @@ void FractalPresenter::ExpandCurrentView()
     _outermostZoom = CaptureCurrentView();
 }
 
-void FractalPresenter::Move()
+void FractalPresenter::Move(const double elapsedSeconds)
 {
     if (!_fractal->IsRendered())
         return;
@@ -167,28 +174,41 @@ void FractalPresenter::Move()
     if (_mousePanning)
         return;
 
+    const double frameSeconds = std::clamp(elapsedSeconds, 0.0, MaximumMovementStepSeconds);
+    const double velocityStep = MovementAcceleration * frameSeconds;
+
     if (_movement[Left])
-        _xVel += stdSpeed;
+        _xVel += velocityStep;
     if (_movement[Right])
-        _xVel -= stdSpeed;
+        _xVel -= velocityStep;
     if (_movement[Up])
-        _yVel += stdSpeed;
+        _yVel += velocityStep;
     if (_movement[Down])
-        _yVel -= stdSpeed;
+        _yVel -= velocityStep;
 
     if (!_movement[Left] && !_movement[Right] && !_movement[Up] && !_movement[Down])
     {
-        if (_xVel > 0) _xVel -= stdSpeed;
-        if (_xVel < 0) _xVel += stdSpeed;
-        if (_yVel > 0) _yVel -= stdSpeed;
-        if (_yVel < 0) _yVel += stdSpeed;
+        if (_xVel > 0) _xVel = std::max(0.0, _xVel - velocityStep);
+        if (_xVel < 0) _xVel = std::min(0.0, _xVel + velocityStep);
+        if (_yVel > 0) _yVel = std::max(0.0, _yVel - velocityStep);
+        if (_yVel < 0) _yVel = std::min(0.0, _yVel + velocityStep);
     }
 
     if (_xVel != 0 || _yVel != 0)
     {
-        _fractal->PanViewByPixels(_xVel, _yVel);
-        _posX += _xVel;
-        _posY += _yVel;
+        const double xMovement = _xVel * frameSeconds + _panRemainderX;
+        const double yMovement = _yVel * frameSeconds + _panRemainderY;
+        const auto pixelDeltaX = static_cast<int>(std::trunc(xMovement));
+        const auto pixelDeltaY = static_cast<int>(std::trunc(yMovement));
+        _panRemainderX = xMovement - pixelDeltaX;
+        _panRemainderY = yMovement - pixelDeltaY;
+
+        if (pixelDeltaX != 0 || pixelDeltaY != 0)
+        {
+            _fractal->PanViewByPixels(pixelDeltaX, pixelDeltaY);
+            _posX += pixelDeltaX;
+            _posY += pixelDeltaY;
+        }
     }
     else if (_posX != 0 || _posY != 0)
     {

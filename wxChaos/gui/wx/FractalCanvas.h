@@ -59,6 +59,7 @@ class FractalCanvas : public wxSFMLCanvas
     ScriptData _scriptData;
 
     sf::Event _event{};
+    sf::Clock _movementClock;
     wxSize _canvasSize;                     ///< Size of the fractalCanvas.
 
     bool _juliaMode;                        ///< State of the Julia mode.
