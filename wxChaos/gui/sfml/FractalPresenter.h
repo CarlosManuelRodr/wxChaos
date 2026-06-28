@@ -26,6 +26,7 @@ class FractalPresenter
         PreciseRect view;
         std::optional<sf::Image> image;
         unsigned int iterations{};
+        bool imageComplete{};
     };
 
     Fractal* _fractal;                          ///< Fractal model currently being displayed.
@@ -100,8 +101,11 @@ class FractalPresenter
     ///@brief Applies automatic iterations when that mode is active.
     void ApplyAutomaticIterations();
 
-    ///@brief Saves the current view and, when complete, its rendered image for zoom-back.
-    void SaveZoom(std::optional<sf::Image> image);
+    ///@brief Saves the current view and the best available image for zoom-back.
+    void SaveZoom(std::optional<sf::Image> image, bool imageComplete);
+
+    ///@brief Replaces the temporary preview and resets its sprite to full-canvas coordinates.
+    void SetTemporaryPreviewImage(const sf::Image& image, bool drawPreview);
 
     ///@brief Clears the zoom-back state and captures the current view as the outermost zoom.
     void ResetZoomHistory();
