@@ -113,6 +113,9 @@ public:
     ///@param size New size. Must be the size of the parent container.
     void SetWxSize(wxSize size);
 
+    ///@brief Stops active rendering and idle refresh before the owning frame closes.
+    void PrepareForClose();
+
     ///@brief Changes the Julia mode.
     ///@param mode New mode.
     void SetJuliaMode(bool mode);

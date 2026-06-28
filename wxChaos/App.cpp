@@ -86,11 +86,11 @@ public:
 #ifdef _WIN32
         EnableHighDpiSupport();
 #endif
-        const AppConfig config = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load();
-        if (SetAppearance(ToWxAppearance(config.appearance)) == AppearanceResult::Failure)
+        const AppAppearance appearance = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load().appearance;
+        if (SetAppearance(ToWxAppearance(appearance)) == AppearanceResult::Failure)
             wxLogWarning("The requested application appearance is not available.");
 
-        AppTheme::SetAppearance(config.appearance);
+        AppTheme::SetAppearance(appearance);
         AppTheme::Install();
         const auto main = new MainFrame;
         main->Show();

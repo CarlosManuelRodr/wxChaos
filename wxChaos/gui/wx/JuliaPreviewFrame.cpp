@@ -17,7 +17,8 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     _toolbar = new FractalToolbar(this);
     _toolbar->SetToolChangedHandler([this](const FractalInteractionTool tool)
     {
-        _previewCanvas->SetInteractionTool(tool);
+        if (_previewCanvas != nullptr)
+            _previewCanvas->SetInteractionTool(tool);
     });
     _toolbar->SetColorRotationHandler([this]
     {
@@ -42,6 +43,8 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     SetClientSize(wxSize(size.GetWidth() + _toolbar->GetBestSize().GetWidth(), size.GetHeight()));
     SetSizeHints(wxSize(500, 300), wxDefaultSize);
     CreateStatusBarControls();
+    Layout();
+    LayoutStatusBarControls();
 
     if (parent != nullptr)
     {
@@ -166,11 +169,14 @@ void JuliaPreviewFrame::OnClose(wxCloseEvent&)
 {
     _constantSyncTimer.Stop();
 
+    if (_renderStatusWidget != nullptr)
+        _renderStatusWidget->SetPresenter(nullptr);
+
     if (_iterationsDialogIsActive && _iterationsDialog != nullptr)
         _iterationsDialog->Destroy();
 
-    if (_previewCanvas != nullptr && _previewCanvas->GetFractal()->IsRendering())
-        _previewCanvas->GetFractal()->StopRender();
+    if (_previewCanvas != nullptr)
+        _previewCanvas->PrepareForClose();
 
     if (GetParent() != nullptr)
         wxQueueEvent(GetParent(), new wxCommandEvent(wxEVT_JULIA_MODE_CLOSED));

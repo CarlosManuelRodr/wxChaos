@@ -180,9 +180,12 @@ void FractalCanvas::EmitStatusText() const
 
 sf::Vector2u FractalCanvas::GetCurrentRenderSize() const
 {
-    const sf::Vector2u sfmlSize = this->getSize();
-    if (sfmlSize.x > 0 && sfmlSize.y > 0)
-        return sfmlSize;
+    if (IsSfmlWindowCreated())
+    {
+        const sf::Vector2u sfmlSize = this->getSize();
+        if (sfmlSize.x > 0 && sfmlSize.y > 0)
+            return sfmlSize;
+    }
 
     const int width = std::max(1, _canvasSize.GetWidth());
     const int height = std::max(1, _canvasSize.GetHeight());
@@ -191,14 +194,17 @@ sf::Vector2u FractalCanvas::GetCurrentRenderSize() const
 
 void FractalCanvas::ResizePresentation(const wxSize size)
 {
-    _canvasSize = size;
-
     const int width = size.GetWidth();
     const int height = size.GetHeight();
     if (width <= 0 || height <= 0)
         return;
 
+    _canvasSize = size;
+
     const sf::Vector2u sfmlSize(static_cast<unsigned int>(width), static_cast<unsigned int>(height));
+    if (!EnsureSfmlWindowCreated())
+        return;
+
     if (this->getSize() != sfmlSize)
         this->setSize(sfmlSize);
 
@@ -279,6 +285,10 @@ void FractalCanvas::CancelToolGestures()
 
 void FractalCanvas::OnUpdate()
 {
+    const wxSize clientSize = GetClientSize();
+    if (clientSize.GetWidth() <= 0 || clientSize.GetHeight() <= 0)
+        return;
+
     // Handles SFML events.
     while (this->pollEvent(_event))
     {
@@ -409,6 +419,14 @@ void FractalCanvas::SetWxSize(const wxSize size)
             );
     }
 }
+
+void FractalCanvas::PrepareForClose()
+{
+    StopSfmlRefresh();
+    if (_fractal != nullptr)
+        _fractal->StopRender();
+}
+
 void FractalCanvas::SetJuliaMode(const bool mode)
 {
     // If Julia mode is activated creates screen pointer.

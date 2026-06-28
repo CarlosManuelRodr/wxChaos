@@ -1,5 +1,6 @@
 // ReSharper disable CppEnumeratorNeverUsed
 #include "MainFrame.h"
+#include <algorithm>
 #include "ImageExportSizeDialog.h"
 #include "AngelscriptBindings.h"
 #include "AppPaths.h"
@@ -178,7 +179,8 @@ void MainFrame::CreateInteractionToolbar()
     _interactionToolbar = new FractalToolbar(this);
     _interactionToolbar->SetToolChangedHandler([this](const FractalInteractionTool tool)
     {
-        _fractalCanvas->SetInteractionTool(tool);
+        if (_fractalCanvas != nullptr)
+            _fractalCanvas->SetInteractionTool(tool);
     });
     _interactionToolbar->SetColorRotationHandler([this]
     {
@@ -431,7 +433,9 @@ void MainFrame::SetUpGUI()
     this->Layout();
     this->Centre(wxVERTICAL);
 
-    _size = _fractalSizer->GetSize();
+    _size = GetClientSize();
+    _size.SetWidth(std::max(1, _size.GetWidth() - _interactionToolbar->GetBestSize().GetWidth() - 220));
+    _size.SetHeight(std::max(1, _size.GetHeight() - 40));
 
     // Creates fractalCanvas.
     _fractalType = _appConfig.type;
@@ -452,6 +456,8 @@ void MainFrame::SetUpGUI()
     _fractalCanvas->GetFractalPresenter()->SetZoomOptions(_appConfig.zoomStepPercent, _appConfig.zoomInertiaMilliseconds);
     _fractalSizer->Add(_fractalCanvas, 1, wxEXPAND | wxALL, 0);
     CreateStatusBarControls();
+    this->Layout();
+    LayoutStatusBarControls();
 }
 
 void MainFrame::OnClose(wxCloseEvent&)
@@ -516,6 +522,12 @@ void MainFrame::SetAutomaticIterations(const bool mode) const
 }
 void MainFrame::CloseAll()
 {
+    if (_renderStatusWidget != nullptr)
+        _renderStatusWidget->SetPresenter(nullptr);
+
+    if (_fractalCanvas != nullptr)
+        _fractalCanvas->PrepareForClose();
+
     if (_settingsFrame != nullptr)
     {
         _settingsFrame->Destroy();
@@ -528,7 +540,7 @@ void MainFrame::CloseAll()
     }
     DestroyJuliaMode(true);
     DestroyDimensionFrame();
-    delete _fractalCanvas;
+    _fractalCanvas = nullptr;
 }
 void MainFrame::DestroyJuliaMode(const bool requestClose)
 {
@@ -542,7 +554,8 @@ void MainFrame::DestroyJuliaMode(const bool requestClose)
         frame->Close();
 
     _juliaMode->Check(false);
-    _fractalCanvas->SetJuliaMode(false);
+    if (_fractalCanvas != nullptr)
+        _fractalCanvas->SetJuliaMode(false);
 }
 void MainFrame::OnResize(wxSizeEvent&)
 {

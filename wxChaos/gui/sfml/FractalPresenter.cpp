@@ -614,9 +614,13 @@ void FractalPresenter::HandleEvent(const sf::Event& event)
 
 void FractalPresenter::Resize(const sf::RenderWindow* window)
 {
+    const sf::Vector2u windowSize = window->getSize();
+    if (windowSize.x == 0 || windowSize.y == 0)
+        return;
+
     _dontDrawTempImage = true;
     ResetMovement();
-    _fractal->Resize(window->getSize().x, window->getSize().y);
+    _fractal->Resize(windowSize.x, windowSize.y);
     _outermostZoom = CaptureCurrentView();
     ApplyAutomaticIterations();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();

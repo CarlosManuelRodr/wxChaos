@@ -31,6 +31,9 @@ public:
     /// @param clickHandler Callback invoked when the widget is clicked.
     RenderStatusWidget(wxWindow* parent, FractalPresenter* presenter, ClickHandler clickHandler);
 
+    /// @brief Stops the refresh timer before the widget is destroyed.
+    ~RenderStatusWidget() override;
+
     /// @brief Updates the presenter whose state is displayed.
     /// @param presenter Presenter supplying render state and iterations.
     void SetPresenter(FractalPresenter* presenter);

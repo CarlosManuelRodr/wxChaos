@@ -21,6 +21,12 @@ RenderStatusWidget::RenderStatusWidget(wxWindow* parent, FractalPresenter* prese
     _timer.Start(100);
 }
 
+RenderStatusWidget::~RenderStatusWidget()
+{
+    _timer.Stop();
+    _presenter = nullptr;
+}
+
 void RenderStatusWidget::SetPresenter(FractalPresenter* presenter)
 {
     _presenter = presenter;

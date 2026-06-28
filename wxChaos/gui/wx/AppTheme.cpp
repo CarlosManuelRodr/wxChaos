@@ -1,4 +1,5 @@
 #include "AppTheme.h"
+#include "wxSFMLCanvas.h"
 
 #include <wx/html/htmlwin.h>
 #include <wx/panel.h>
@@ -141,6 +142,9 @@ void AppTheme::ApplyToSingleWindow(wxWindow* window)
 void AppTheme::ApplyToWindow(wxWindow* window)
 {
     if (window == nullptr)
+        return;
+
+    if (dynamic_cast<wxSFMLCanvas*>(window) != nullptr)
         return;
 
     std::vector<wxWindow*> children;
