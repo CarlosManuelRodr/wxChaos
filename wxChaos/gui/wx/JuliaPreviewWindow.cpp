@@ -202,7 +202,7 @@ void JuliaPreviewWindow::Run()
     _juliaFractal.GetFractal()->SetJuliaMode(true);
 
     _selection = new SelectionRect();
-    _play = new ToggleButton("Resources/Play.tga", "Resources/Stop.tga", 0, 4, _window);
+    _play = new ToggleButton(AppPaths::ResourceFileStd({"Play.tga"}), AppPaths::ResourceFileStd({"Stop.tga"}), 0, 4, _window);
     _play->SetAnchor(false, true, true, false);
     _play->Resize(_window);
 
