@@ -173,15 +173,19 @@ void MainFrame::ConnectEvents()
 // ReSharper disable once CppMemberFunctionMayBeStatic
 wxBitmapBundle MainFrame::CreateInteractionToolBitmap(const FractalInteractionTool tool) const // NOLINT(*-convert-member-functions-to-static)
 {
+    const string handIcon = AppTheme::IsDark() ? "hand_dark.svg" : "hand_light.svg";
+    const string zoomIcon = AppTheme::IsDark() ? "zoom_dark.svg" : "zoom_light.svg";
+    const string cursorIcon = AppTheme::IsDark() ? "cursor_dark.svg" : "cursor_light.svg";
+
     switch (tool)
     {
         case FractalInteractionTool::Hand:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "hand.svg"}), wxSize(48, 48));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", handIcon}), wxSize(48, 48));
         case FractalInteractionTool::Zoom:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "zoom.svg"}), wxSize(48, 48));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", zoomIcon}), wxSize(48, 48));
         case FractalInteractionTool::Cursor:
         default:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "cursor.svg"}), wxSize(48, 48));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", cursorIcon}), wxSize(48, 48));
     }
 }
 
