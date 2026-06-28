@@ -3,6 +3,8 @@
 #include <SFML/Config.hpp>
 #include <angelscript.h>
 #include <mpDefines.h>
+#include <mpfr.h>
+#include <symengine/symengine_config.h>
 
 #include <wx/button.h>
 #include <wx/dcbuffer.h>
@@ -134,10 +136,25 @@ void AboutDialog::CreateControls()
                 {"SFML", wxString::Format("%d.%d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR, SFML_VERSION_PATCH)},
                 {"AngelScript", wxString::FromUTF8(ANGELSCRIPT_VERSION_STRING)},
                 {"muParserX", wxString(MUP_PARSER_VERSION)},
+                {"MPFR", wxString::FromUTF8(MPFR_VERSION_STRING)},
+                {"SymEngine", wxString::FromUTF8(SYMENGINE_VERSION)},
             }),
         1,
         wxEXPAND | wxLEFT,
         FromDIP(20));
+
+    auto* iconsRow = new wxBoxSizer(wxHORIZONTAL);
+    auto* iconsLabel = new wxStaticText(content, wxID_ANY, _("Icons by Streamline \u2014 "));
+    iconsLabel->SetForegroundColour(muted);
+    auto* iconsLink = new wxHyperlinkCtrl(
+        content,
+        wxID_ANY,
+        "https://www.streamlinehq.com/",
+        "https://www.streamlinehq.com/");
+    iconsLink->SetNormalColour(accent);
+    iconsRow->Add(iconsLabel, 0, wxALIGN_CENTER_VERTICAL);
+    iconsRow->Add(iconsLink, 0, wxALIGN_CENTER_VERTICAL);
+    contentSizer->Add(iconsRow, 0, wxTOP, FromDIP(4));
 
     auto* footer = new wxBoxSizer(wxHORIZONTAL);
     auto* license = new wxStaticText(content, wxID_ANY, _("Licensed under GPLv3"));
@@ -176,6 +193,7 @@ void AboutDialog::OnBannerPaint(wxPaintEvent&)
     dc.DrawBitmap(wxBitmap(scaled), x, y, false);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void AboutDialog::OnBannerSize(wxSizeEvent& event)
 {
     _bannerPanel->Refresh();
