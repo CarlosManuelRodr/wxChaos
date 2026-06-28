@@ -468,7 +468,7 @@ PlotWindow::PlotWindow(const vector<double> &xList, const vector<double> &yList,
                        const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                        : wxFrame(parent, id, title, pos, size, style)
 {
-    const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
@@ -498,7 +498,7 @@ PlotWindow::PlotWindow(const LineParams params, const vector<double> &xList, con
                        const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                        : wxFrame(parent, id, title, pos, size, style), _id(id)
 {
-    const wxIcon icon("Resources/icon.ico", wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
@@ -547,7 +547,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
 
     this->SetSizeHints(wxSize(960, 700), wxDefaultSize);
 
-    const wxIcon icon("Resources/icon.ico", wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
 
     const auto mainBoxSizer = new wxBoxSizer(wxVERTICAL);

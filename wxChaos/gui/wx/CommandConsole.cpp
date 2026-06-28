@@ -24,7 +24,7 @@ CommandConsole::CommandConsole(FractalCanvas* fractalCanvas, std::function<void(
       _historyIndex(0)
 {
     this->SetSizeHints(wxSize(620, 380), wxDefaultSize);
-    this->SetIcon(wxIcon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO));
+    this->SetIcon(wxIcon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG));
 
     const auto panel = new wxPanel(this);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);

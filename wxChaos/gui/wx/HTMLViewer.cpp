@@ -7,7 +7,7 @@ HTMLViewer::HTMLViewer(const wxString& htmlFile, wxWindow* parent, const wxWindo
 {
     this->SetSizeHints(wxSize(900, 620), wxDefaultSize);
 
-    const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);

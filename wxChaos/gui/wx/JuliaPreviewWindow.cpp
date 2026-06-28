@@ -2,6 +2,7 @@
 #include <cmath>
 #include "JuliaPreviewWindow.h"
 #include "ImageExportSizeDialog.h"
+#include "AppPaths.h"
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
@@ -194,7 +195,7 @@ void JuliaPreviewWindow::Run()
     const sf::Vector2i juliaWindowPos(parentPos.x + parentSize.GetWidth() + 5, parentPos.y);
     _window->setPosition(juliaWindowPos);
 
-    if (sf::Image icon; icon.loadFromFile("Resources/iconPNG.png"))
+    if (sf::Image icon; icon.loadFromFile(AppPaths::ResourceFileStd({"Icons", "icon.png"})))
         _window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     _juliaFractal.GetFractal()->SetOptions(_myJuliaOpt, true);

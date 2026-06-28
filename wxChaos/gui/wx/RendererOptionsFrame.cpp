@@ -15,7 +15,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
                                            : wxFrame(parent, id, title, pos, size, windowStyle)
 {
     // Constructs the ColorFrame. Gets color values from the target fractal so the frame parameters match the fractal parameters.
-    const wxIcon icon(AppPaths::ResourceFile({"icon.ico"}), wxBITMAP_TYPE_ICO);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
 
     _fractalPresenter = presenter;
