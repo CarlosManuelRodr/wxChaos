@@ -750,6 +750,7 @@ void FractalPresenter::ZoomBack()
     else
     {
         _fractal->MarkRenderDirty();
+        _usingRenderImage = false;
         _zoomingBack = false;
         _dontDrawTempImage = false;
     }
