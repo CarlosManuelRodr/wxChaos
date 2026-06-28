@@ -5,10 +5,12 @@ Bugs:
 - When the main fractal is panned while in Julia mode, the C constant is not updated.
 
 Improvements to get to a release version:
+- Default color palette should be chosen based on the system theme. Retro for Light and Sunset Drive for Dark.
 - Main frame must have tools to navigate and to get information about a point.
 - Julia mode must have an "Iterations" display, must have a menu bar to switch the main fractal to a julia set on the
 specific current point.
 - Replace the bmp banners at fractal options and RendererOptions.
+- Rework script editor. Validate is currently not outputting anything. There should also be a help button with quick documentation.
 - Restore Henon maps and other fractals of previous versions.
 - Status bar precision should be adjusted to the current zoom level.
 - Localization to Spanish, Japanese and possibly other languages.
