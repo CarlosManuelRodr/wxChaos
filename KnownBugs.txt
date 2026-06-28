@@ -1,4 +1,8 @@
 Bugs:
+- Icon attribution is required. Author is Streamline and website is https://www.streamlinehq.com/. Website attribution is
+  mandatory.
+- Pan tool shouldn't process clicks when a zoom is in progress.
+- Zoom tool should not process middle mouse zooms while the left mouse button is pressed.
 - Box counting preview has bottom side cropped.
 - When the main fractal is panned while in Julia mode, the C constant is not updated.
 
