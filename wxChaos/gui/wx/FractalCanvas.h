@@ -40,10 +40,6 @@ class FractalCanvas : public wxSFMLCanvas
     FractalType _fractalType;
     Fractal* _fractal;
 
-    sf::RectangleShape _iterationsOverlay;  ///< Background shape for the iteration-count overlay.
-    sf::Font _font;                         ///< Font used by SFML text overlays.
-    sf::Text _iterationsText;               ///< Iteration-count overlay text.
-    sf::Text _renderingText;                ///< Render-status overlay text.
     sf::Image _keyboardImage;               ///< Texture of the info images.
     sf::Image _mouseImage;
     sf::Image _helpImage;
@@ -73,8 +69,6 @@ class FractalCanvas : public wxSFMLCanvas
     bool _orbitMode;
     bool _sliderMode;
     bool _onUpdate;
-    bool _iterationsOverlayDirty;
-    bool _renderingOverlayDirty;
     bool _hasLastMousePosition;
     bool _mouseWheelPanning;
     bool _toolPanning;
@@ -83,21 +77,11 @@ class FractalCanvas : public wxSFMLCanvas
     wxPoint _lastMousePosition;
     wxPoint _lastMouseWheelPanPosition;
     wxPoint _zoomToolStartPosition;
-    unsigned int _displayedIterations;
-    unsigned int _spinnerFrame;
-    sf::Vector2f _spinnerCenter;
-    float _spinnerRadius;
 
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
     void CreateFractal(FractalType type);
     void CreateScriptFractal(const ScriptData& scriptData);
     void AttachFractalStatusHandler() const;
-    void EnsureFontLoaded();
-    void UpdateIterationsOverlay();
-    void UpdateRenderingOverlay();
-    void DrawRenderingOverlay(RenderWindow* window);
-    void DrawLoadingSpinner(RenderWindow* window);
-    void DrawIterationsOverlay(RenderWindow* window);
     wxString BuildStatusText() const;
     void EmitStatusText() const;
     sf::Vector2u GetCurrentRenderSize() const;

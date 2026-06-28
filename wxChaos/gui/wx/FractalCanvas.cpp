@@ -34,8 +34,6 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _orbitMode = false;
     _sliderMode = false;
     _onUpdate = false;
-    _iterationsOverlayDirty = true;
-    _renderingOverlayDirty = true;
     _hasLastMousePosition = false;
     _mouseWheelPanning = false;
     _toolPanning = false;
@@ -44,10 +42,6 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _lastMousePosition = wxPoint(0, 0);
     _lastMouseWheelPanPosition = wxPoint(0, 0);
     _zoomToolStartPosition = wxPoint(0, 0);
-    _displayedIterations = 0;
-    _spinnerFrame = 0;
-    _spinnerCenter = sf::Vector2f(0.0F, 0.0F);
-    _spinnerRadius = 0.0F;
     _interactionTool = FractalInteractionTool::Cursor;
 
     // UserFormula
@@ -62,7 +56,6 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     AttachFractalStatusHandler();
     _fractalPresenter = new FractalPresenter(_fractal);
     _fractalPresenter->SetHandleRightClickZoomBack(false);
-    EnsureFontLoaded();
 
     _fractalFactory.SetFormula(_userFormula);
 
@@ -128,120 +121,6 @@ void FractalCanvas::AttachFractalStatusHandler() const
     {
         EmitStatusText();
     });
-}
-
-void FractalCanvas::EnsureFontLoaded()
-{
-    if (!_font.getInfo().family.empty())
-        return;
-
-    _font.loadFromFile(AppPaths::ResourceFileStd({"PublicSans-Regular.otf"}));
-    _iterationsText.setFont(_font);
-    _renderingText.setFont(_font);
-}
-
-void FractalCanvas::UpdateIterationsOverlay()
-{
-    constexpr float horizontalPadding = 8.0F;
-    constexpr float verticalPadding = 4.0F;
-
-    _displayedIterations = _fractal->GetIterations();
-    _iterationsText.setCharacterSize(25);
-    _iterationsText.setString("Iterations: " + std::to_string(_displayedIterations));
-
-    const sf::FloatRect textBounds = _iterationsText.getLocalBounds();
-    const auto overlayWidth = static_cast<unsigned int>(std::ceil(textBounds.width + horizontalPadding * 2.0F));
-    const auto overlayHeight = static_cast<unsigned int>(std::ceil(textBounds.height + verticalPadding * 2.0F));
-
-    _iterationsOverlay.setFillColor(sf::Color(0, 0, 0, 100));
-    _iterationsOverlay.setSize(sf::Vector2f(static_cast<float>(overlayWidth), static_cast<float>(overlayHeight)));
-    _iterationsOverlay.setPosition(0.0F, 0.0F);
-
-    _iterationsText.setPosition(horizontalPadding - textBounds.left, verticalPadding - textBounds.top);
-    _iterationsOverlayDirty = false;
-    _renderingOverlayDirty = true;
-}
-
-void FractalCanvas::UpdateRenderingOverlay()
-{
-    constexpr float horizontalPadding = 8.0F;
-    constexpr float verticalPadding = 4.0F;
-    constexpr float spinnerDiameter = 18.0F;
-    constexpr float spinnerGap = 8.0F;
-
-    _renderingText.setCharacterSize(25);
-    _renderingText.setString("Rendering...");
-
-    const sf::FloatRect textBounds = _renderingText.getLocalBounds();
-    const float contentHeight = std::max(spinnerDiameter, textBounds.height);
-    const auto overlayWidth = static_cast<unsigned int>(
-        std::ceil(spinnerDiameter + spinnerGap + textBounds.width + horizontalPadding * 2.0F));
-    const auto overlayHeight = static_cast<unsigned int>(std::ceil(contentHeight + verticalPadding * 2.0F));
-
-    _iterationsOverlay.setFillColor(sf::Color(0, 0, 0, 100));
-    _iterationsOverlay.setSize(sf::Vector2f(static_cast<float>(overlayWidth), static_cast<float>(overlayHeight)));
-    _iterationsOverlay.setPosition(0.0F, 0.0F);
-
-    const float contentCenterY = verticalPadding + contentHeight / 2.0F;
-    _spinnerRadius = spinnerDiameter / 2.0F;
-    _spinnerCenter = sf::Vector2f(horizontalPadding + _spinnerRadius, contentCenterY);
-    _renderingText.setPosition(
-        horizontalPadding + spinnerDiameter + spinnerGap - textBounds.left,
-        contentCenterY - textBounds.height / 2.0F - textBounds.top);
-    _renderingOverlayDirty = false;
-}
-
-void FractalCanvas::DrawLoadingSpinner(sf::RenderWindow* window)
-{
-    constexpr int dotCount = 12;
-
-    for (int i = 0; i < dotCount; ++i)
-    {
-        constexpr float dotRadius = 2.2F;
-        constexpr float pi = 3.14159265358979323846F;
-        const int age = (i + static_cast<int>(_spinnerFrame)) % dotCount;
-        const auto alpha = static_cast<sf::Uint8>(55 + age * 16);
-        const float angle = 2.0F * pi * static_cast<float>(i) / static_cast<float>(dotCount);
-        sf::CircleShape dot(dotRadius);
-        dot.setOrigin(dotRadius, dotRadius);
-        dot.setFillColor(sf::Color(255, 255, 255, alpha));
-        dot.setPosition(
-            _spinnerCenter.x + std::cos(angle) * _spinnerRadius,
-            _spinnerCenter.y + std::sin(angle) * _spinnerRadius
-            );
-        window->draw(dot);
-    }
-
-    _spinnerFrame = (_spinnerFrame + 1) % dotCount;
-}
-
-void FractalCanvas::DrawRenderingOverlay(sf::RenderWindow* window)
-{
-    if (_renderingOverlayDirty)
-        UpdateRenderingOverlay();
-
-    window->draw(_iterationsOverlay);
-    DrawLoadingSpinner(window);
-    window->draw(_renderingText);
-    _iterationsOverlayDirty = true;
-}
-
-void FractalCanvas::DrawIterationsOverlay(sf::RenderWindow* window)
-{
-    if (_fractal->IsSnapshotActive())
-        return;
-
-    if (_fractal->IsRenderStarted() || _fractal->IsRendering())
-    {
-        DrawRenderingOverlay(window);
-        return;
-    }
-
-    if (_iterationsOverlayDirty || _displayedIterations != _fractal->GetIterations())
-        UpdateIterationsOverlay();
-
-    window->draw(_iterationsOverlay);
-    window->draw(_iterationsText);
 }
 
 wxString FractalCanvas::BuildStatusText() const
@@ -479,8 +358,6 @@ void FractalCanvas::OnUpdate()
     const double elapsedSeconds = _movementClock.restart().asSeconds();
     _fractalPresenter->Move(elapsedSeconds);
     _fractalPresenter->Show(this, elapsedSeconds);
-    if (_showMainCanvasOverlays)
-        DrawIterationsOverlay(this);
 
     // Avoid drawing GUI elements if the fractal is rendering.
     if (!_fractal->IsRendering())
@@ -627,7 +504,6 @@ void FractalCanvas::ChangeType(const FractalType type)
     AttachFractalStatusHandler();
     _fractalPresenter->SetFractal(_fractal);
     _fractalPresenter->SetHandleRightClickZoomBack(false);
-    _iterationsOverlayDirty = true;
     _fractalFactory.SetFormula(_userFormula);
 
     // Deletes screen pointer if active.
@@ -652,7 +528,6 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
     AttachFractalStatusHandler();
     _fractalPresenter->SetFractal(_fractal);
     _fractalPresenter->SetHandleRightClickZoomBack(false);
-    _iterationsOverlayDirty = true;
 
     // Deletes screen pointer if active.
     if (_orbitMode || _sliderMode)
@@ -714,7 +589,6 @@ void FractalCanvas::Reset()
     AttachFractalStatusHandler();
     _fractalPresenter->SetFractal(_fractal);
     _fractalPresenter->SetHandleRightClickZoomBack(false);
-    _iterationsOverlayDirty = true;
     _fractalFactory.SetFormula(_userFormula);
 
     // Deactivates screen pointer.

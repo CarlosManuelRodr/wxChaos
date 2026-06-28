@@ -4,7 +4,7 @@ Bugs:
 
 Improvements to get to a release version:
 - Default color palette should be chosen based on the system theme. Retro for Light and Sunset Drive for Dark.
-- Main frame must have tools to navigate and to get information about a point.
+- Tool bar needs a tool to get information about a point.
 - Julia mode must have an "Iterations" display, must have a menu bar to switch the main fractal to a julia set on the
 specific current point.
 - Replace the bmp banners at fractal options and RendererOptions.

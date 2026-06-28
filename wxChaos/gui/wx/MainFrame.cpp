@@ -190,6 +190,58 @@ void MainFrame::CreateInteractionToolbar()
     });
 }
 
+void MainFrame::CreateStatusBarControls()
+{
+    _statusBar = this->CreateStatusBar(2, wxST_SIZEGRIP, wxID_ANY);
+    const int widths[] = {180, -1};
+    _statusBar->SetStatusWidths(2, widths);
+    _statusBar->SetStatusText(wxEmptyString, 0);
+
+    _renderStatusWidget = new RenderStatusWidget(
+        _statusBar,
+        _fractalCanvas->GetFractalPresenter(),
+        [this] { OpenIterationsDialog(); });
+    _statusBar->Bind(wxEVT_SIZE, [this](wxSizeEvent& event)
+    {
+        LayoutStatusBarControls();
+        event.Skip();
+    });
+    LayoutStatusBarControls();
+}
+
+void MainFrame::LayoutStatusBarControls() const
+{
+    if (_statusBar == nullptr || _renderStatusWidget == nullptr)
+        return;
+
+    wxRect rect;
+    if (!_statusBar->GetFieldRect(0, rect))
+        return;
+
+    constexpr int horizontalMargin = 4;
+    constexpr int verticalMargin = 3;
+    _renderStatusWidget->SetSize(
+        rect.x + horizontalMargin,
+        rect.y + verticalMargin,
+        rect.width - horizontalMargin * 2,
+        rect.height - verticalMargin * 2);
+}
+
+void MainFrame::OpenIterationsDialog()
+{
+    if (!_iterationsDialogIsActive)
+    {
+        _iterationsDialog = new IterationsDialog(&_iterationsDialogIsActive, _fractalCanvas->GetFractalPresenter(), this);
+        _iterationsDialog->Show(true);
+        _iterationsDialogIsActive = true;
+    }
+    else
+    {
+        _iterationsDialog->Raise();
+        _iterationsDialog->SetFocus();
+    }
+}
+
 void MainFrame::SetUpGUI()
 {
     // Init menu.
@@ -378,7 +430,6 @@ void MainFrame::SetUpGUI()
     this->SetSizer(_sizer);
     this->Layout();
     this->Centre(wxVERTICAL);
-    _statusBar = this->CreateStatusBar(1, wxST_SIZEGRIP, wxID_ANY);
 
     _size = _fractalSizer->GetSize();
 
@@ -400,6 +451,7 @@ void MainFrame::SetUpGUI()
     _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(_appConfig.colorSet);
     _fractalCanvas->GetFractalPresenter()->SetZoomOptions(_appConfig.zoomStepPercent, _appConfig.zoomInertiaMilliseconds);
     _fractalSizer->Add(_fractalCanvas, 1, wxEXPAND | wxALL, 0);
+    CreateStatusBarControls();
 }
 
 void MainFrame::OnClose(wxCloseEvent&)
@@ -495,6 +547,7 @@ void MainFrame::DestroyJuliaMode(const bool requestClose)
 void MainFrame::OnResize(wxSizeEvent&)
 {
     this->Layout();
+    LayoutStatusBarControls();
 }
 void MainFrame::OnJuliaMode(wxCommandEvent&)
 {
@@ -699,23 +752,11 @@ void MainFrame::OnKeyboardGuide(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnCanvasStatusText(wxCommandEvent& event)
 {
-    _statusBar->SetStatusText(event.GetString());
+    _statusBar->SetStatusText(event.GetString(), 1);
 }
 void MainFrame::OnSetIterations(wxCommandEvent&)
 {
-    // Manual iterations.
-    if (!_iterationsDialogIsActive)
-    {
-        _iterationsDialog = new IterationsDialog(&_iterationsDialogIsActive, _fractalCanvas->GetFractalPresenter(), this);
-        _iterationsDialog->Show(true);
-        _iterationsDialogIsActive = true;
-    }
-    else
-    {
-        _iterationsDialog->Show(false);
-        _iterationsDialogIsActive = false;
-        delete _iterationsDialog;
-    }
+    OpenIterationsDialog();
 }
 void MainFrame::OnAutomaticIterations(wxCommandEvent&)
 {

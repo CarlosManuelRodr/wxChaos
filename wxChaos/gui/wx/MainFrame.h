@@ -24,6 +24,7 @@
 #include "CommandConsole.h"
 #include "SettingsFrame.h"
 #include "FractalToolbar.h"
+#include "RenderStatusWidget.h"
 
 /**
 * @enum IDS
@@ -140,6 +141,7 @@ class MainFrame : public wxFrame
     FractalToolbar* _interactionToolbar{};
     wxSize _size;
     wxStatusBar* _statusBar{};
+    RenderStatusWidget* _renderStatusWidget{};
 
     // Menu items from user scripts.
     std::vector<ScriptData> _loadedScripts;
@@ -185,6 +187,9 @@ class MainFrame : public wxFrame
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();
+    void CreateStatusBarControls();
+    void LayoutStatusBarControls() const;
+    void OpenIterationsDialog();
     void ResetColorRotationTool() const;
 
 public :

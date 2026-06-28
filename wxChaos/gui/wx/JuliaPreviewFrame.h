@@ -8,6 +8,8 @@
 #include <wx/timer.h>
 #include "FractalCanvas.h"
 #include "FractalToolbar.h"
+#include "IterationsDialog.h"
+#include "RenderStatusWidget.h"
 
 wxDECLARE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
@@ -25,9 +27,16 @@ class JuliaPreviewFrame : public wxFrame
     FractalCanvas* _target{};
     FractalCanvas* _previewCanvas{};
     FractalToolbar* _toolbar{};
+    wxStatusBar* _statusBar{};
+    RenderStatusWidget* _renderStatusWidget{};
+    IterationsDialog* _iterationsDialog{};
     wxTimer _constantSyncTimer;
+    bool _iterationsDialogIsActive{};
 
     void ApplyRendererOptions(const Options& options) const;
+    void CreateStatusBarControls();
+    void LayoutStatusBarControls() const;
+    void OpenIterationsDialog();
     void SyncConstantFromTarget() const;
     void OnConstantSyncTimer(wxTimerEvent& event);
     void OnClose(wxCloseEvent& event);

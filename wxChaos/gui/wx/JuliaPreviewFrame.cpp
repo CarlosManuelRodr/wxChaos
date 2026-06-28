@@ -41,6 +41,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     SetSizer(sizer);
     SetClientSize(wxSize(size.GetWidth() + _toolbar->GetBestSize().GetWidth(), size.GetHeight()));
     SetSizeHints(wxSize(500, 300), wxDefaultSize);
+    CreateStatusBarControls();
 
     if (parent != nullptr)
     {
@@ -52,6 +53,62 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     Bind(wxEVT_CLOSE_WINDOW, &JuliaPreviewFrame::OnClose, this);
     Bind(wxEVT_TIMER, &JuliaPreviewFrame::OnConstantSyncTimer, this);
     _constantSyncTimer.Start(16);
+}
+
+void JuliaPreviewFrame::CreateStatusBarControls()
+{
+    _statusBar = CreateStatusBar(2, wxST_SIZEGRIP, wxID_ANY);
+    const int widths[] = {180, -1};
+    _statusBar->SetStatusWidths(2, widths);
+    _statusBar->SetStatusText(wxEmptyString, 0);
+    _statusBar->SetStatusText(wxEmptyString, 1);
+
+    _renderStatusWidget = new RenderStatusWidget(
+        _statusBar,
+        _previewCanvas->GetFractalPresenter(),
+        [this] { OpenIterationsDialog(); });
+    _statusBar->Bind(wxEVT_SIZE, [this](wxSizeEvent& event)
+    {
+        LayoutStatusBarControls();
+        event.Skip();
+    });
+    LayoutStatusBarControls();
+}
+
+void JuliaPreviewFrame::LayoutStatusBarControls() const
+{
+    if (_statusBar == nullptr || _renderStatusWidget == nullptr)
+        return;
+
+    wxRect rect;
+    if (!_statusBar->GetFieldRect(0, rect))
+        return;
+
+    constexpr int horizontalMargin = 4;
+    constexpr int verticalMargin = 3;
+    _renderStatusWidget->SetSize(
+        rect.x + horizontalMargin,
+        rect.y + verticalMargin,
+        rect.width - horizontalMargin * 2,
+        rect.height - verticalMargin * 2);
+}
+
+void JuliaPreviewFrame::OpenIterationsDialog()
+{
+    if (!_iterationsDialogIsActive)
+    {
+        _iterationsDialog = new IterationsDialog(
+            &_iterationsDialogIsActive,
+            _previewCanvas->GetFractalPresenter(),
+            this);
+        _iterationsDialog->Show(true);
+        _iterationsDialogIsActive = true;
+    }
+    else
+    {
+        _iterationsDialog->Raise();
+        _iterationsDialog->SetFocus();
+    }
 }
 
 void JuliaPreviewFrame::SetRendererOptions(const Options& options) const
@@ -108,6 +165,9 @@ void JuliaPreviewFrame::OnConstantSyncTimer(wxTimerEvent&)
 void JuliaPreviewFrame::OnClose(wxCloseEvent&)
 {
     _constantSyncTimer.Stop();
+
+    if (_iterationsDialogIsActive && _iterationsDialog != nullptr)
+        _iterationsDialog->Destroy();
 
     if (_previewCanvas != nullptr && _previewCanvas->GetFractal()->IsRendering())
         _previewCanvas->GetFractal()->StopRender();

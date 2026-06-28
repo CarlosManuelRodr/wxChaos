@@ -121,7 +121,7 @@ void FractalToolbar::UpdateColorRotationTool()
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalToolbar::OnInteractionTool(wxCommandEvent& event)
 {
-    FractalInteractionTool tool = FractalInteractionTool::Cursor;
+    auto tool = FractalInteractionTool::Cursor;
     switch (event.GetId())
     {
         case ID_HAND:
