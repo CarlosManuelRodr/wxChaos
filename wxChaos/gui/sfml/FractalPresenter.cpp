@@ -204,6 +204,7 @@ sf::Image FractalPresenter::CapturePreviewImage() const
         if (hasTemporaryPreview)
             renderTexture.draw(_tempSprite);
 
+        // ReSharper disable once CppDFAConstantConditions
         if (!_zoomAnimationActive && _image.getSize().x == screenSize.x && _image.getSize().y == screenSize.y)
             renderTexture.draw(_output);
 
@@ -434,6 +435,9 @@ bool FractalPresenter::IsMoving() const
 
 void FractalPresenter::SetMovement(const Direction direction)
 {
+    if (_zoomAnimationActive)
+        return;
+
     ClearImageCache();
     ResetZoomHistory();
 
@@ -458,6 +462,9 @@ void FractalPresenter::SetMovement(const Direction direction)
 
 void FractalPresenter::ReleaseMovement(const Direction direction)
 {
+    if (_zoomAnimationActive)
+        return;
+
     switch (direction)
     {
         case Up:
