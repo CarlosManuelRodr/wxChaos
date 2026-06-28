@@ -65,6 +65,9 @@ class FractalPresenter
     sf::Vector2f _zoomAnimationTargetPosition;  ///< Final sprite position for the zoom preview.
     sf::Vector2f _zoomAnimationStartScale;      ///< Starting sprite scale for the zoom preview.
     sf::Vector2f _zoomAnimationTargetScale;     ///< Final sprite scale for the zoom preview.
+    bool _interactiveZoomActive;                ///< True while the zoom tool is resizing the temporary image.
+    int _interactiveZoomAnchorX;                ///< Pixel anchor for the active zoom tool drag.
+    int _interactiveZoomAnchorY;                ///< Pixel anchor for the active zoom tool drag.
 
     ///@brief Draws fractal maps into the SFML image and then draws the output sprite.
     ///@param window Target window.
@@ -121,6 +124,9 @@ class FractalPresenter
 
     ///@brief Calculates where one world-coordinate view appears inside another in screen pixels.
     sf::Rect<int> GetViewRectInsideView(const PreciseRect& innerView, const PreciseRect& outerView) const;
+
+    ///@brief Applies the sprite transform that previews an anchored zoom scale.
+    void ApplyZoomPreviewTransform(int pixelX, int pixelY, double scale);
 
     ///@brief Zooms into a pixel rectangle and applies the supplied world-coordinate target view.
     void SetAreaOfView(const sf::Rect<int>& pixelCoordinates, const PreciseRect& targetView);
@@ -214,6 +220,18 @@ public:
 
     ///@brief Zooms around a pixel by the supplied view scale.
     void ZoomAtPixel(int pixelX, int pixelY, double scale);
+
+    ///@brief Starts a live zoom-tool preview around a pixel.
+    bool BeginInteractiveZoomAtPixel(int pixelX, int pixelY);
+
+    ///@brief Updates the live zoom-tool preview without changing the fractal view.
+    void UpdateInteractiveZoom(double scale);
+
+    ///@brief Applies the live zoom-tool preview and starts rendering the target view.
+    void CommitInteractiveZoom(double scale);
+
+    ///@brief Cancels the live zoom-tool preview without changing the fractal view.
+    void CancelInteractiveZoom();
 
     ///@brief Restores the previous zoom level, using a cached image when possible.
     void ZoomBack();

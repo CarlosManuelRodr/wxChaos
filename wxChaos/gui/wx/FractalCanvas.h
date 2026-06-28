@@ -112,6 +112,7 @@ class FractalCanvas : public wxSFMLCanvas
     void BeginMousePanAt(wxPoint position);
     void ContinueMousePanAt(wxPoint position);
     void EndMousePanGesture();
+    double CalculateZoomToolScale(wxPoint position) const;
     void CommitZoomToolDrag(wxPoint endPosition);
     void CancelToolGestures();
     static wxString FormatStatusCoordinate(double value);

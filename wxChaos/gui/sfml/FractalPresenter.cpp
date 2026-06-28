@@ -22,6 +22,9 @@ FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vecto
     _zoomAnimationTargetPosition = {0.0F, 0.0F};
     _zoomAnimationStartScale = {1.0F, 1.0F};
     _zoomAnimationTargetScale = {1.0F, 1.0F};
+    _interactiveZoomActive = false;
+    _interactiveZoomAnchorX = 0;
+    _interactiveZoomAnchorY = 0;
     _fractal = fractal;
     _automaticIterationBase = fractal->GetIterations();
     _xVel = 0.0;
@@ -199,6 +202,20 @@ sf::Rect<int> FractalPresenter::GetViewRectInsideView(const PreciseRect& innerVi
     const int clampedWidth = std::clamp(width, 1, screenWidth - clampedLeft);
     const int clampedHeight = std::clamp(height, 1, screenHeight - clampedTop);
     return {clampedLeft, clampedTop, clampedWidth, clampedHeight};
+}
+
+void FractalPresenter::ApplyZoomPreviewTransform(const int pixelX, const int pixelY, const double scale)
+{
+    const sf::Rect<int> pixelCoordinates = GetPixelZoomRect(pixelX, pixelY, scale);
+    const sf::Vector2u screenSize = _fractal->GetScreenSize();
+    const float scaleX = static_cast<float>(screenSize.x) / static_cast<float>(pixelCoordinates.width);
+    const float scaleY = static_cast<float>(screenSize.y) / static_cast<float>(pixelCoordinates.height);
+
+    _tempSprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(screenSize.x), static_cast<int>(screenSize.y)));
+    _tempSprite.setPosition(
+        -static_cast<float>(pixelCoordinates.left) * scaleX,
+        -static_cast<float>(pixelCoordinates.top) * scaleY);
+    _tempSprite.setScale(scaleX, scaleY);
 }
 
 sf::Image FractalPresenter::CapturePreviewImage() const
@@ -686,6 +703,81 @@ void FractalPresenter::ZoomAtPixel(const int pixelX, const int pixelY, const dou
     SetAreaOfView(GetPixelZoomRect(pixelX, pixelY, scale), GetPixelZoomView(pixelX, pixelY, scale));
 }
 
+bool FractalPresenter::BeginInteractiveZoomAtPixel(const int pixelX, const int pixelY)
+{
+    if (_zoomAnimationActive || _interactiveZoomActive)
+        return false;
+
+    ResetMovement();
+    SetTemporaryPreviewImage(_fractal->IsRendered() ? _image : CapturePreviewImage(), true);
+    _interactiveZoomActive = true;
+    _interactiveZoomAnchorX = pixelX;
+    _interactiveZoomAnchorY = pixelY;
+    ApplyZoomPreviewTransform(_interactiveZoomAnchorX, _interactiveZoomAnchorY, 1.0);
+    return true;
+}
+
+void FractalPresenter::UpdateInteractiveZoom(const double scale)
+{
+    if (!_interactiveZoomActive)
+        return;
+
+    ApplyZoomPreviewTransform(_interactiveZoomAnchorX, _interactiveZoomAnchorY, scale);
+}
+
+void FractalPresenter::CommitInteractiveZoom(const double scale)
+{
+    if (!_interactiveZoomActive)
+        return;
+
+    if (std::abs(scale - 1.0) < 0.001)
+    {
+        CancelInteractiveZoom();
+        return;
+    }
+
+    _interactiveZoomActive = false;
+    ResetMovement();
+    const bool wasPaused = _fractal->IsPausedForPresentation();
+    const bool wasRendering = _fractal->StopRender();
+    std::optional<sf::Image> zoomHistoryImage;
+    bool zoomHistoryImageComplete = false;
+
+    if (wasPaused)
+    {
+        ClearImageCache();
+        _dontDrawTempImage = true;
+    }
+    else if (_fractal->IsRendered())
+    {
+        zoomHistoryImage = _image;
+        zoomHistoryImageComplete = true;
+    }
+    else
+        zoomHistoryImage = _tempImage;
+
+    SaveZoom(std::move(zoomHistoryImage), zoomHistoryImageComplete);
+
+    ApplyView(GetPixelZoomView(_interactiveZoomAnchorX, _interactiveZoomAnchorY, scale));
+    if (wasPaused || wasRendering)
+        _fractal->MarkRenderInterrupted();
+
+    _fractal->MarkOrbitDirty();
+    _dontDrawTempImage = false;
+    _usingRenderImage = false;
+    _zoomingBack = false;
+    ApplyZoomPreviewTransform(_interactiveZoomAnchorX, _interactiveZoomAnchorY, scale);
+}
+
+void FractalPresenter::CancelInteractiveZoom()
+{
+    if (!_interactiveZoomActive)
+        return;
+
+    _interactiveZoomActive = false;
+    SetTemporaryPreviewImage(_tempImage, false);
+}
+
 void FractalPresenter::ZoomBack()
 {
     if (_zoomAnimationActive)
@@ -1115,6 +1207,12 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
                 _texture.loadFromImage(_image);
             }
         }
+    }
+
+    if (_interactiveZoomActive)
+    {
+        window->draw(_tempSprite);
+        return;
     }
 
     if (_zoomAnimationActive)

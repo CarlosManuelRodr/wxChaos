@@ -379,25 +379,28 @@ void FractalCanvas::EndMousePanGesture()
         ReleaseMouse();
 }
 
+double FractalCanvas::CalculateZoomToolScale(const wxPoint position) const
+{
+    constexpr double pixelsPerZoomDoubling = 240.0;
+    constexpr double maximumDragZoomScale = 16.0;
+    const int dragY = position.y - _zoomToolStartPosition.y;
+    return std::clamp(
+        std::pow(2.0, static_cast<double>(dragY) / pixelsPerZoomDoubling),
+        1.0 / maximumDragZoomScale,
+        maximumDragZoomScale);
+}
+
 void FractalCanvas::CommitZoomToolDrag(const wxPoint endPosition)
 {
     if (!_zoomToolDragging || _fractalPresenter->IsMoving())
         return;
 
-    constexpr double pixelsPerZoomDoubling = 240.0;
-    constexpr double maximumDragZoomScale = 16.0;
-    const int dragY = endPosition.y - _zoomToolStartPosition.y;
-    const double scale = std::clamp(
-        std::pow(2.0, static_cast<double>(dragY) / pixelsPerZoomDoubling),
-        1.0 / maximumDragZoomScale,
-        maximumDragZoomScale);
-
-    if (std::abs(scale - 1.0) >= 0.01)
-        _fractalPresenter->ZoomAtPixel(_zoomToolStartPosition.x, _zoomToolStartPosition.y, scale);
+    _fractalPresenter->CommitInteractiveZoom(CalculateZoomToolScale(endPosition));
 }
 
 void FractalCanvas::CancelToolGestures()
 {
+    _fractalPresenter->CancelInteractiveZoom();
     _zoomToolDragging = false;
     EndMousePanGesture();
 }
@@ -843,10 +846,10 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     {
         if (event.ButtonDown(wxMOUSE_BTN_LEFT) && !_fractal->IsRendering() && !_fractalPresenter->IsMoving())
         {
-            _zoomToolDragging = true;
             _zoomToolStartPosition = event.GetPosition();
+            _zoomToolDragging = _fractalPresenter->BeginInteractiveZoomAtPixel(_zoomToolStartPosition.x, _zoomToolStartPosition.y);
 
-            if (!HasCapture())
+            if (_zoomToolDragging && !HasCapture())
                 CaptureMouse();
         }
         else if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_fractalPresenter->IsMoving())
@@ -961,7 +964,11 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 
     if (_zoomToolDragging)
     {
-        _lastMousePosition = event.GetPosition();
+        const wxPoint currentPosition = event.GetPosition();
+        _fractalPresenter->UpdateInteractiveZoom(CalculateZoomToolScale(currentPosition));
+        Refresh(false);
+        Update();
+        _lastMousePosition = currentPosition;
         _hasLastMousePosition = true;
         EmitStatusText();
         return;

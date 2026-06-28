@@ -10,6 +10,7 @@
 #pragma once
 
 #include <optional>
+#include <wx/bmpbndl.h>
 #include "FractalCanvas.h"
 #include "config/AppConfigStore.h"
 #include "JuliaPreviewWindow.h"
@@ -188,7 +189,7 @@ class MainFrame : public wxFrame
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();
-    wxBitmap CreateInteractionToolBitmap(FractalInteractionTool tool) const;
+    wxBitmapBundle CreateInteractionToolBitmap(FractalInteractionTool tool) const;
 
 public :
     MainFrame();
