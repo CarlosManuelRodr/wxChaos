@@ -17,15 +17,9 @@
 #include "sfml/FractalPresenter.h"
 #include "sfml/CoordinateSelector.h"
 #include "../../core/FractalFactory.h"
+#include "FractalInteractionTool.h"
 
 wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
-
-enum class FractalInteractionTool
-{
-    Cursor,
-    Hand,
-    Zoom
-};
 
 /**
 * @class FractalCanvas
@@ -85,6 +79,7 @@ class FractalCanvas : public wxSFMLCanvas
     bool _mouseWheelPanning;
     bool _toolPanning;
     bool _zoomToolDragging;
+    bool _showMainCanvasOverlays;
     wxPoint _lastMousePosition;
     wxPoint _lastMouseWheelPanPosition;
     wxPoint _zoomToolStartPosition;
@@ -207,6 +202,10 @@ public:
 
     ///@return Formula in the user-defined fractal.
     FormulaOptions GetFormula();
+
+    /// @brief Enables or disables overlays that belong only to the main window.
+    /// @param show true to show iteration/status overlays, false for embedded previews.
+    void SetMainCanvasOverlaysVisible(bool show);
 
     ///// Event processor /////
 

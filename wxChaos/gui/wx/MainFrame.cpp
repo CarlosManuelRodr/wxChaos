@@ -42,7 +42,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     AppTheme::SetAppearance(_appConfig.appearance);
     this->SetUpGUI();
 
-    _juliaPreviewWindow = nullptr;
+    _juliaPreviewFrame = nullptr;
     _dimensionCalculator = nullptr;
     _changeKeyboardGuide = false;
     _introConstActive = false;
@@ -165,95 +165,29 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnZoomRecorder, this, ID_ZOOM_RECORDER);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnDimensionCalculator, this, ID_DIMENSION_CALCULATOR);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnCommandConsole, this, ID_COMMAND_CONSOLE);
-    this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_CURSOR);
-    this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_HAND);
-    this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_ZOOM);
-    this->Bind(wxEVT_TOOL, &MainFrame::OnColorRotation, this, ID_COLOR_ROTATION);
-}
-
-// ReSharper disable once CppMemberFunctionMayBeStatic
-wxBitmapBundle MainFrame::CreateInteractionToolBitmap(const FractalInteractionTool tool) const // NOLINT(*-convert-member-functions-to-static)
-{
-    const string handIcon = AppTheme::IsDark() ? "hand_dark.svg" : "hand_light.svg";
-    const string zoomIcon = AppTheme::IsDark() ? "zoom_dark.svg" : "zoom_light.svg";
-    const string cursorIcon = AppTheme::IsDark() ? "cursor_dark.svg" : "cursor_light.svg";
-
-    switch (tool)
-    {
-        case FractalInteractionTool::Hand:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", handIcon}), wxSize(48, 48));
-        case FractalInteractionTool::Zoom:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", zoomIcon}), wxSize(48, 48));
-        case FractalInteractionTool::Cursor:
-        default:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", cursorIcon}), wxSize(48, 48));
-    }
-}
-
-wxBitmapBundle MainFrame::CreateColorRotationToolBitmap(const bool active) const // NOLINT(*-convert-member-functions-to-static)
-{
-    const string icon = active
-        ? (AppTheme::IsDark() ? "stop_dark.svg" : "stop_light.svg")
-        : (AppTheme::IsDark() ? "play_dark.svg" : "play_light.svg");
-
-    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), wxSize(48, 48));
-}
-
-void MainFrame::UpdateColorRotationTool()
-{
-    if (_interactionToolbar == nullptr)
-        return;
-
-    _interactionToolbar->ToggleTool(ID_COLOR_ROTATION, _colorRotationActive);
-    _interactionToolbar->SetToolNormalBitmap(
-        ID_COLOR_ROTATION,
-        CreateColorRotationToolBitmap(_colorRotationActive));
-    _interactionToolbar->Refresh();
 }
 
 void MainFrame::ResetColorRotationTool()
 {
-    _colorRotationActive = false;
-    UpdateColorRotationTool();
+    if (_interactionToolbar != nullptr)
+        _interactionToolbar->ResetColorRotationTool();
 }
 
 void MainFrame::CreateInteractionToolbar()
 {
-    _interactionToolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_FLAT | wxTB_NODIVIDER);
-    _interactionToolbar->SetToolBitmapSize(wxSize(48, 48));
-    _interactionToolbar->AddRadioTool(
-        ID_INTERACTION_CURSOR,
-        wxEmptyString,
-        CreateInteractionToolBitmap(FractalInteractionTool::Cursor),
-        wxNullBitmap,
-        "Cursor",
-        "Use the default fractal interactions");
-    _interactionToolbar->AddRadioTool(
-        ID_INTERACTION_HAND,
-        wxEmptyString,
-        CreateInteractionToolBitmap(FractalInteractionTool::Hand),
-        wxNullBitmap,
-        "Pan",
-        "Pan the fractal by dragging");
-    _interactionToolbar->AddRadioTool(
-        ID_INTERACTION_ZOOM,
-        wxEmptyString,
-        CreateInteractionToolBitmap(FractalInteractionTool::Zoom),
-        wxNullBitmap,
-        "Zoom",
-        "Drag upward to zoom in or downward to zoom out");
-    _interactionToolbar->AddSeparator();
-    _interactionToolbar->AddStretchableSpace();
-    _interactionToolbar->AddCheckTool(
-        ID_COLOR_ROTATION,
-        wxEmptyString,
-        CreateColorRotationToolBitmap(false),
-        wxNullBitmap,
-        "Color rotation",
-        "Animate fractal colors");
-    _interactionToolbar->Realize();
-    _interactionToolbar->ToggleTool(ID_INTERACTION_CURSOR, true);
-    ResetColorRotationTool();
+    _interactionToolbar = new FractalToolbar(this);
+    _interactionToolbar->SetToolChangedHandler([this](const FractalInteractionTool tool)
+    {
+        _fractalCanvas->SetInteractionTool(tool);
+    });
+    _interactionToolbar->SetColorRotationHandler([this]
+    {
+        if (_fractalCanvas == nullptr || _fractalCanvas->GetFractal()->IsRendering())
+            return false;
+
+        _fractalCanvas->GetFractalPresenter()->ToggleColorRotation();
+        return true;
+    });
 }
 
 void MainFrame::SetUpGUI()
@@ -519,8 +453,8 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(config.colorFractal);
     _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(config.colorSet);
     _fractalCanvas->GetFractalPresenter()->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
-    if (_juliaPreviewWindow != nullptr)
-        _juliaPreviewWindow->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
+    if (_juliaPreviewFrame != nullptr)
+        _juliaPreviewFrame->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
 }
 void MainFrame::SetAutomaticIterations(const bool mode) const
 {
@@ -546,15 +480,15 @@ void MainFrame::CloseAll()
 }
 void MainFrame::DestroyJuliaMode(const bool requestClose)
 {
-    if (_juliaPreviewWindow == nullptr)
+    if (_juliaPreviewFrame == nullptr)
         return;
 
-    if (requestClose)
-        _juliaPreviewWindow->Close();
+    JuliaPreviewFrame* frame = _juliaPreviewFrame;
+    _juliaPreviewFrame = nullptr;
 
-    _juliaPreviewWindow->Wait();
-    delete _juliaPreviewWindow;
-    _juliaPreviewWindow = nullptr;
+    if (requestClose)
+        frame->Close();
+
     _juliaMode->Check(false);
     _fractalCanvas->SetJuliaMode(false);
 }
@@ -917,37 +851,6 @@ void MainFrame::OnCommandConsole(wxCommandEvent&)
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
-void MainFrame::OnInteractionTool(wxCommandEvent& event)
-{
-    switch (event.GetId())
-    {
-        case ID_INTERACTION_HAND:
-            _fractalCanvas->SetInteractionTool(FractalInteractionTool::Hand);
-            break;
-        case ID_INTERACTION_ZOOM:
-            _fractalCanvas->SetInteractionTool(FractalInteractionTool::Zoom);
-            break;
-        case ID_INTERACTION_CURSOR:
-        default:
-            _fractalCanvas->SetInteractionTool(FractalInteractionTool::Cursor);
-            break;
-    }
-}
-
-void MainFrame::OnColorRotation(wxCommandEvent&)
-{
-    if (_fractalCanvas == nullptr || _fractalCanvas->GetFractal()->IsRendering())
-    {
-        UpdateColorRotationTool();
-        return;
-    }
-
-    _colorRotationActive = !_colorRotationActive;
-    _fractalCanvas->GetFractalPresenter()->ToggleColorRotation();
-    UpdateColorRotationTool();
-}
-
-
 // Changes the fractal type.
 void MainFrame::ChangeMandelbrot(wxCommandEvent&)
 {
@@ -1346,10 +1249,10 @@ void MainFrame::UpdateMenu()
 void MainFrame::UpdateJuliaMode()
 {
     // Destroy Julia window.
-    if (_juliaPreviewWindow != nullptr)
+    if (_juliaPreviewFrame != nullptr)
     {
         _juliaMode->Check(false);
-        _juliaPreviewWindow->Close();
+        _juliaPreviewFrame->Close();
     }
     // Creates Julia fractal with parameters from the main fractal.
     else
@@ -1372,9 +1275,9 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
         default: return false;
     }
 
-    if (_juliaPreviewWindow != nullptr)
+    if (_juliaPreviewFrame != nullptr)
     {
-        _juliaPreviewWindow->SetConstant(real, imaginary);
+        _juliaPreviewFrame->SetConstant(real, imaginary);
         return true;
     }
 
@@ -1382,14 +1285,14 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
     options.kReal = real;
     options.kImaginary = imaginary;
     _juliaMode->Check(true);
-    _juliaPreviewWindow = new JuliaPreviewWindow(
+    _juliaPreviewFrame = new JuliaPreviewFrame(
         this,
         _fractalCanvas,
         juliaType,
         options,
         _appConfig.zoomStepPercent,
         _appConfig.zoomInertiaMilliseconds);
-    _juliaPreviewWindow->Launch();
+    _juliaPreviewFrame->Show(true);
     _fractalCanvas->SetJuliaMode(true);
     return true;
 }
@@ -1403,6 +1306,6 @@ void MainFrame::ReloadScripts()
 }
 void MainFrame::UpdateJuliaRendererOptions(const Options& options) const
 {
-    if (_juliaPreviewWindow != nullptr)
-        _juliaPreviewWindow->SetRendererOptions(options);
+    if (_juliaPreviewFrame != nullptr)
+        _juliaPreviewFrame->SetRendererOptions(options);
 }

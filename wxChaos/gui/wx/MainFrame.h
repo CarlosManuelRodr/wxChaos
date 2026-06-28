@@ -10,10 +10,9 @@
 #pragma once
 
 #include <optional>
-#include <wx/bmpbndl.h>
 #include "FractalCanvas.h"
 #include "config/AppConfigStore.h"
-#include "JuliaPreviewWindow.h"
+#include "JuliaPreviewFrame.h"
 #include "About.h"
 #include "RendererOptionsFrame.h"
 #include "JuliaConstantDialog.h"
@@ -24,6 +23,7 @@
 #include "DimensionFrame.h"
 #include "CommandConsole.h"
 #include "SettingsFrame.h"
+#include "FractalToolbar.h"
 
 /**
 * @enum IDS
@@ -78,11 +78,7 @@ enum IDS
     ID_DIMENSION_CALCULATOR,
     ID_COMMAND_CONSOLE,
     ID_SETTINGS,
-    ID_AUTOMATIC_ITERATIONS,
-    ID_INTERACTION_CURSOR,
-    ID_INTERACTION_HAND,
-    ID_INTERACTION_ZOOM,
-    ID_COLOR_ROTATION
+    ID_AUTOMATIC_ITERATIONS
 };
 
 /**
@@ -98,7 +94,7 @@ class MainFrame : public wxFrame
 {
     FractalCanvas* _fractalCanvas{};
     FormulaDialog* _formulaDialog{};
-    JuliaPreviewWindow* _juliaPreviewWindow;
+    JuliaPreviewFrame* _juliaPreviewFrame;
     JuliaConstantDialog* _juliaConstantDialog;
     IterationsDialog* _iterationsDialog{};
     RendererOptionsFrame* _rendererOptions;
@@ -113,7 +109,6 @@ class MainFrame : public wxFrame
     bool _informationFrameIsActive;
     bool _formulaDialogIsActive;
     bool _showOptionsPanel{};
-    bool _colorRotationActive{};
 
     // WX
     wxMenuBar* _menubar{};
@@ -142,7 +137,7 @@ class MainFrame : public wxFrame
     wxBoxSizer* _optionSizer{};
     wxMenuItem* _abortRenderItem{};
     wxBoxSizer* _sizer{};
-    wxToolBar* _interactionToolbar{};
+    FractalToolbar* _interactionToolbar{};
     wxSize _size;
     wxStatusBar* _statusBar{};
 
@@ -190,9 +185,6 @@ class MainFrame : public wxFrame
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();
-    wxBitmapBundle CreateInteractionToolBitmap(FractalInteractionTool tool) const;
-    wxBitmapBundle CreateColorRotationToolBitmap(bool active) const;
-    void UpdateColorRotationTool();
     void ResetColorRotationTool();
 
 public :
@@ -262,8 +254,6 @@ public :
     void OnZoomRecorder(wxCommandEvent& event);
     void OnDimensionCalculator(wxCommandEvent& event);
     void OnCommandConsole(wxCommandEvent& event);
-    void OnInteractionTool(wxCommandEvent& event);
-    void OnColorRotation(wxCommandEvent& event);
 
     void ReloadScripts();  ///< Search again for script fractals.
 };

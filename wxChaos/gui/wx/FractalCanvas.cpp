@@ -40,6 +40,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _mouseWheelPanning = false;
     _toolPanning = false;
     _zoomToolDragging = false;
+    _showMainCanvasOverlays = true;
     _lastMousePosition = wxPoint(0, 0);
     _lastMouseWheelPanPosition = wxPoint(0, 0);
     _zoomToolStartPosition = wxPoint(0, 0);
@@ -289,6 +290,9 @@ wxString FractalCanvas::BuildStatusText() const
 
 void FractalCanvas::EmitStatusText() const
 {
+    if (!_showMainCanvasOverlays)
+        return;
+
     wxCommandEvent statusEvent(wxEVT_FRACTAL_CANVAS_STATUS_TEXT);
     statusEvent.SetEventObject(const_cast<FractalCanvas*>(this));
     statusEvent.SetString(BuildStatusText());
@@ -475,7 +479,8 @@ void FractalCanvas::OnUpdate()
     const double elapsedSeconds = _movementClock.restart().asSeconds();
     _fractalPresenter->Move(elapsedSeconds);
     _fractalPresenter->Show(this, elapsedSeconds);
-    DrawIterationsOverlay(this);
+    if (_showMainCanvasOverlays)
+        DrawIterationsOverlay(this);
 
     // Avoid drawing GUI elements if the fractal is rendering.
     if (!_fractal->IsRendering())
@@ -775,6 +780,11 @@ void FractalCanvas::SetUserFormula(const FormulaOptions &userFormula)
 FormulaOptions FractalCanvas::GetFormula()
 {
     return _userFormula;
+}
+
+void FractalCanvas::SetMainCanvasOverlaysVisible(const bool show)
+{
+    _showMainCanvasOverlays = show;
 }
 
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
