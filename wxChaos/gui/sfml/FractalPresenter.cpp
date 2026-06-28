@@ -186,6 +186,32 @@ PreciseRect FractalPresenter::GetMouseWheelZoomView(const int pixelX, const int 
     return targetView;
 }
 
+sf::Rect<int> FractalPresenter::GetViewRectInsideView(const PreciseRect& innerView, const PreciseRect& outerView) const
+{
+    const sf::Vector2u screenSize = _fractal->GetScreenSize();
+    const auto screenWidth = static_cast<int>(screenSize.x);
+    const auto screenHeight = static_cast<int>(screenSize.y);
+
+    if (screenWidth <= 0 || screenHeight <= 0)
+        return {0, 0, 1, 1};
+
+    const HighPrecisionReal outerWidth = outerView.right - outerView.left;
+    const HighPrecisionReal outerHeight = outerView.top - outerView.bottom;
+    if (outerWidth == 0 || outerHeight == 0)
+        return {0, 0, screenWidth, screenHeight};
+
+    const auto left = static_cast<int>(std::round(ToDouble((innerView.left - outerView.left) / outerWidth) * screenWidth));
+    const auto top = static_cast<int>(std::round(ToDouble((outerView.top - innerView.top) / outerHeight) * screenHeight));
+    const auto width = static_cast<int>(std::round(ToDouble((innerView.right - innerView.left) / outerWidth) * screenWidth));
+    const auto height = static_cast<int>(std::round(ToDouble((innerView.top - innerView.bottom) / outerHeight) * screenHeight));
+
+    const int clampedLeft = std::clamp(left, 0, screenWidth - 1);
+    const int clampedTop = std::clamp(top, 0, screenHeight - 1);
+    const int clampedWidth = std::clamp(width, 1, screenWidth - clampedLeft);
+    const int clampedHeight = std::clamp(height, 1, screenHeight - clampedTop);
+    return {clampedLeft, clampedTop, clampedWidth, clampedHeight};
+}
+
 sf::Image FractalPresenter::CapturePreviewImage() const
 {
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
@@ -244,6 +270,30 @@ void FractalPresenter::StartZoomAnimation(const sf::Rect<int>& pixelCoordinates)
     _zoomAnimationTargetPosition = {
         -static_cast<float>(pixelCoordinates.left) * scaleX,
         -static_cast<float>(pixelCoordinates.top) * scaleY
+    };
+    _zoomAnimationStartScale = {1.0F, 1.0F};
+    _zoomAnimationTargetScale = {scaleX, scaleY};
+
+    _tempSprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(screenSize.x), static_cast<int>(screenSize.y)));
+    _tempSprite.setPosition(_zoomAnimationStartPosition);
+    _tempSprite.setScale(_zoomAnimationStartScale);
+}
+
+void FractalPresenter::StartZoomBackAnimation(const sf::Rect<int>& targetCoordinates)
+{
+    const sf::Vector2u screenSize = _fractal->GetScreenSize();
+    const float scaleX = static_cast<float>(targetCoordinates.width) / static_cast<float>(screenSize.x);
+    const float scaleY = static_cast<float>(targetCoordinates.height) / static_cast<float>(screenSize.y);
+
+    _zoomAnimationActive = true;
+    _zoomAnimationElapsed = 0.0;
+    _zoomAnimationStartPosition = {
+        0.0F,
+        0.0F
+    };
+    _zoomAnimationTargetPosition = {
+        static_cast<float>(targetCoordinates.left),
+        static_cast<float>(targetCoordinates.top)
     };
     _zoomAnimationStartScale = {1.0F, 1.0F};
     _zoomAnimationTargetScale = {scaleX, scaleY};
@@ -619,25 +669,37 @@ void FractalPresenter::ZoomBack()
     if (_zoomAnimationActive)
         return;
 
-    _fractal->StopRender();
     StopZoomAnimation();
     ResetMovement();
+    const bool wasRendering = _fractal->StopRender();
+    const PreciseRect sourceView = CaptureCurrentView();
+    _tempImage = CapturePreviewImage();
     std::optional<sf::Image> cachedImage;
     unsigned int cachedImageIterations = 0;
+    PreciseRect targetView;
 
     if (!_zoomHistory.empty())
     {
         ZoomHistoryEntry entry = std::move(_zoomHistory.back());
         _zoomHistory.pop_back();
-        ApplyView(entry.view);
+        targetView = entry.view;
+        ApplyView(targetView);
         cachedImage = std::move(entry.image);
         cachedImageIterations = entry.iterations;
     }
     else
-        ExpandCurrentView();
+    {
+        targetView = _fractal->GetPreciseExpandedView();
+        ApplyView(targetView);
+        _outermostZoom = CaptureCurrentView();
+    }
 
-    _fractal->MarkRenderInterrupted();
+    if (wasRendering)
+        _fractal->MarkRenderInterrupted();
     _fractal->MarkOrbitDirty();
+    _tempTexture.loadFromImage(_tempImage);
+    _tempSprite.setTexture(_tempTexture);
+    StartZoomBackAnimation(GetViewRectInsideView(sourceView, targetView));
 
     if (cachedImage.has_value() && cachedImageIterations == _fractal->GetIterations() && !_fractal->IsGradientAnimating())
     {
@@ -651,7 +713,8 @@ void FractalPresenter::ZoomBack()
     else
     {
         _fractal->MarkRenderDirty();
-        _zoomingBack = true;
+        _zoomingBack = false;
+        _dontDrawTempImage = false;
     }
 }
 
@@ -997,7 +1060,7 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
         if (_fractal->ConsumeImageRefreshRequest() && !_zoomAnimationActive)
             DrawMaps(window);
 
-        if (zoomAnimationFinished && _fractal->IsRendered())
+        if (zoomAnimationFinished && _fractal->IsRendered() && !_usingRenderImage)
             DrawMaps(window);
 
         const bool gradientChanged = _fractal->ConsumeGradientChangeRequest();
@@ -1016,6 +1079,8 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
 
     if (_zoomAnimationActive && _fractal->IsExteriorColorEnabled())
     {
+        if (_usingRenderImage)
+            window->draw(_output);
         window->draw(_tempSprite);
         return;
     }

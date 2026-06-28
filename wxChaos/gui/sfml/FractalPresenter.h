@@ -115,6 +115,9 @@ class FractalPresenter
     ///@brief Calculates the target world view for a wheel zoom anchored at a pixel.
     PreciseRect GetMouseWheelZoomView(int pixelX, int pixelY) const;
 
+    ///@brief Calculates where one world-coordinate view appears inside another in screen pixels.
+    sf::Rect<int> GetViewRectInsideView(const PreciseRect& innerView, const PreciseRect& outerView) const;
+
     ///@brief Zooms into a pixel rectangle and applies the supplied world-coordinate target view.
     void SetAreaOfView(const sf::Rect<int>& pixelCoordinates, const PreciseRect& targetView);
 
@@ -123,6 +126,9 @@ class FractalPresenter
 
     ///@brief Starts the temporary image easing from the selected source rectangle to the full canvas.
     void StartZoomAnimation(const sf::Rect<int>& pixelCoordinates);
+
+    ///@brief Starts the temporary image easing from full canvas into a target rectangle.
+    void StartZoomBackAnimation(const sf::Rect<int>& targetCoordinates);
 
     ///@brief Advances the temporary zoom preview animation.
     ///@return True on the frame where the preview reaches the target viewport.
