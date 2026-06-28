@@ -77,7 +77,7 @@ void AboutDialog::CreateControls()
     auto* byline = new wxStaticText(
         content,
         wxID_ANY,
-        _("Created by Carlos Manuel Rodriguez y Martinez. Originally begun in 2012 and modernized with wxWidgets 3 and SFML 2."));
+        _("Created by Carlos Manuel Rodriguez Martinez."));
     byline->SetForegroundColour(muted);
     byline->Wrap(bannerSize.GetWidth() - 2 * outerMargin);
     contentSizer->Add(byline, 0, wxEXPAND | wxTOP, FromDIP(6));

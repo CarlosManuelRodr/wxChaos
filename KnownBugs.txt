@@ -1,6 +1,4 @@
 Bugs:
-- Icon attribution is required. Author is Streamline and website is https://www.streamlinehq.com/. Website attribution is
-  mandatory.
 - Pan tool shouldn't process clicks when a zoom is in progress.
 - Zoom tool should not process middle mouse zooms while the left mouse button is pressed.
 - Box counting preview has bottom side cropped.
@@ -17,4 +15,3 @@ specific current point.
 - Replace the bmp banners at fractal options and RendererOptions.
 - Restore Henon maps and other fractals of previous versions.
 - Implement a proper tutorial mode.
-- Icon must be updated.
