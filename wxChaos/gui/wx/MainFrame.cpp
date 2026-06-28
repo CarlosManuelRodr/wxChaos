@@ -195,7 +195,7 @@ void MainFrame::CreateInteractionToolbar()
 void MainFrame::CreateStatusBarControls()
 {
     _statusBar = this->CreateStatusBar(2, wxST_SIZEGRIP, wxID_ANY);
-    constexpr int widths[] = {180, -1};
+    constexpr int widths[] = {-1, 180};
     _statusBar->SetStatusWidths(2, widths);
     _statusBar->SetStatusText(wxEmptyString, 0);
 
@@ -217,7 +217,7 @@ void MainFrame::LayoutStatusBarControls() const
         return;
 
     wxRect rect;
-    if (!_statusBar->GetFieldRect(0, rect))
+    if (!_statusBar->GetFieldRect(1, rect))
         return;
 
     constexpr int horizontalMargin = 4;
@@ -765,7 +765,7 @@ void MainFrame::OnKeyboardGuide(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnCanvasStatusText(wxCommandEvent& event)
 {
-    _statusBar->SetStatusText(event.GetString(), 1);
+    _statusBar->SetStatusText(event.GetString(), 0);
 }
 void MainFrame::OnSetIterations(wxCommandEvent&)
 {

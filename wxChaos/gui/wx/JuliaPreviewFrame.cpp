@@ -63,7 +63,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
 void JuliaPreviewFrame::CreateStatusBarControls()
 {
     _statusBar = CreateStatusBar(2, wxST_SIZEGRIP, wxID_ANY);
-    constexpr int widths[] = {180, -1};
+    constexpr int widths[] = {-1, 180};
     _statusBar->SetStatusWidths(2, widths);
     _statusBar->SetStatusText(wxEmptyString, 0);
     _statusBar->SetStatusText(wxEmptyString, 1);
@@ -86,7 +86,7 @@ void JuliaPreviewFrame::LayoutStatusBarControls() const
         return;
 
     wxRect rect;
-    if (!_statusBar->GetFieldRect(0, rect))
+    if (!_statusBar->GetFieldRect(1, rect))
         return;
 
     constexpr int horizontalMargin = 4;
@@ -171,7 +171,7 @@ void JuliaPreviewFrame::OnConstantSyncTimer(wxTimerEvent&)
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 void JuliaPreviewFrame::OnCanvasStatusText(wxCommandEvent& event)
 {
-    _statusBar->SetStatusText(event.GetString(), 1);
+    _statusBar->SetStatusText(event.GetString(), 0);
 }
 
 void JuliaPreviewFrame::OnClose(wxCloseEvent&)
