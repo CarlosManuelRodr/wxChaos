@@ -502,6 +502,11 @@ bool FractalPresenter::IsMoving() const
     return _mousePanning || _xVel != 0 || _yVel != 0 || _movement[Up] || _movement[Down] || _movement[Left] || _movement[Right];
 }
 
+bool FractalPresenter::IsZoomPreviewActive() const
+{
+    return _zoomAnimationActive || _interactiveZoomActive;
+}
+
 void FractalPresenter::SetMovement(const Direction direction)
 {
     if (_zoomAnimationActive)

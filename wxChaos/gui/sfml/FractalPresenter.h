@@ -183,6 +183,9 @@ public:
     ///@brief Returns true while the fractal is actively panning.
     bool IsMoving() const;
 
+    ///@brief Returns true while a zoom preview or animation is active.
+    bool IsZoomPreviewActive() const;
+
     ///@brief Starts movement in the given direction.
     ///@param direction Direction to activate.
     void SetMovement(Direction direction);

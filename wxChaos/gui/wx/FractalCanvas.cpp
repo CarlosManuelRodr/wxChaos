@@ -338,7 +338,7 @@ void FractalCanvas::ResizePresentation(const wxSize size)
 
 void FractalCanvas::BeginMousePanAt(const wxPoint position)
 {
-    if (_fractal->IsRendering() || !_fractal->IsRendered())
+    if (_fractalPresenter->IsZoomPreviewActive() || _fractal->IsRendering() || !_fractal->IsRendered())
         return;
 
     _mouseWheelPanning = true;
@@ -826,6 +826,9 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
 
 void FractalCanvas::OnClick(wxMouseEvent& event)
 {
+    if (_zoomToolDragging)
+        return;
+
     if (event.ButtonDown(wxMOUSE_BTN_MIDDLE))
     {
         BeginMousePanAt(event.GetPosition());
@@ -925,6 +928,9 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
 {
+    if (_zoomToolDragging)
+        return;
+
     if (_fractalPresenter->IsMoving())
     {
         event.Skip();
