@@ -39,6 +39,7 @@ class JuliaPreviewFrame : public wxFrame
     void OpenIterationsDialog();
     void SyncConstantFromTarget() const;
     void OnConstantSyncTimer(wxTimerEvent& event);
+    void OnCanvasStatusText(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);
 
 public:

@@ -43,7 +43,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     SetClientSize(wxSize(size.GetWidth() + _toolbar->GetBestSize().GetWidth(), size.GetHeight()));
     SetSizeHints(wxSize(500, 300), wxDefaultSize);
     CreateStatusBarControls();
-    Layout();
+    wxTopLevelWindowBase::Layout();
     LayoutStatusBarControls();
 
     if (parent != nullptr)
@@ -55,13 +55,15 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
 
     Bind(wxEVT_CLOSE_WINDOW, &JuliaPreviewFrame::OnClose, this);
     Bind(wxEVT_TIMER, &JuliaPreviewFrame::OnConstantSyncTimer, this);
+    Bind(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, &JuliaPreviewFrame::OnCanvasStatusText, this);
+
     _constantSyncTimer.Start(16);
 }
 
 void JuliaPreviewFrame::CreateStatusBarControls()
 {
     _statusBar = CreateStatusBar(2, wxST_SIZEGRIP, wxID_ANY);
-    const int widths[] = {180, -1};
+    constexpr int widths[] = {180, -1};
     _statusBar->SetStatusWidths(2, widths);
     _statusBar->SetStatusText(wxEmptyString, 0);
     _statusBar->SetStatusText(wxEmptyString, 1);
@@ -163,6 +165,13 @@ void JuliaPreviewFrame::SyncConstantFromTarget() const
 void JuliaPreviewFrame::OnConstantSyncTimer(wxTimerEvent&)
 {
     SyncConstantFromTarget();
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
+void JuliaPreviewFrame::OnCanvasStatusText(wxCommandEvent& event)
+{
+    _statusBar->SetStatusText(event.GetString(), 1);
 }
 
 void JuliaPreviewFrame::OnClose(wxCloseEvent&)

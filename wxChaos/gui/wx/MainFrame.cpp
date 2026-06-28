@@ -195,7 +195,7 @@ void MainFrame::CreateInteractionToolbar()
 void MainFrame::CreateStatusBarControls()
 {
     _statusBar = this->CreateStatusBar(2, wxST_SIZEGRIP, wxID_ANY);
-    const int widths[] = {180, -1};
+    constexpr int widths[] = {180, -1};
     _statusBar->SetStatusWidths(2, widths);
     _statusBar->SetStatusText(wxEmptyString, 0);
 

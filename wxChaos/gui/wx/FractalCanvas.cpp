@@ -169,9 +169,6 @@ wxString FractalCanvas::BuildStatusText() const
 
 void FractalCanvas::EmitStatusText() const
 {
-    if (!_showMainCanvasOverlays)
-        return;
-
     wxCommandEvent statusEvent(wxEVT_FRACTAL_CANVAS_STATUS_TEXT);
     statusEvent.SetEventObject(const_cast<FractalCanvas*>(this));
     statusEvent.SetString(BuildStatusText());
