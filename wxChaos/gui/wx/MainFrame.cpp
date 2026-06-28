@@ -168,6 +168,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_CURSOR);
     this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_HAND);
     this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_ZOOM);
+    this->Bind(wxEVT_TOOL, &MainFrame::OnColorRotation, this, ID_COLOR_ROTATION);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeStatic
@@ -187,6 +188,33 @@ wxBitmapBundle MainFrame::CreateInteractionToolBitmap(const FractalInteractionTo
         default:
             return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", cursorIcon}), wxSize(48, 48));
     }
+}
+
+wxBitmapBundle MainFrame::CreateColorRotationToolBitmap(const bool active) const // NOLINT(*-convert-member-functions-to-static)
+{
+    const string icon = active
+        ? (AppTheme::IsDark() ? "stop_dark.svg" : "stop_light.svg")
+        : (AppTheme::IsDark() ? "play_dark.svg" : "play_light.svg");
+
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), wxSize(48, 48));
+}
+
+void MainFrame::UpdateColorRotationTool()
+{
+    if (_interactionToolbar == nullptr)
+        return;
+
+    _interactionToolbar->ToggleTool(ID_COLOR_ROTATION, _colorRotationActive);
+    _interactionToolbar->SetToolNormalBitmap(
+        ID_COLOR_ROTATION,
+        CreateColorRotationToolBitmap(_colorRotationActive));
+    _interactionToolbar->Refresh();
+}
+
+void MainFrame::ResetColorRotationTool()
+{
+    _colorRotationActive = false;
+    UpdateColorRotationTool();
 }
 
 void MainFrame::CreateInteractionToolbar()
@@ -214,8 +242,18 @@ void MainFrame::CreateInteractionToolbar()
         wxNullBitmap,
         "Zoom",
         "Drag upward to zoom in or downward to zoom out");
+    _interactionToolbar->AddSeparator();
+    _interactionToolbar->AddStretchableSpace();
+    _interactionToolbar->AddCheckTool(
+        ID_COLOR_ROTATION,
+        wxEmptyString,
+        CreateColorRotationToolBitmap(false),
+        wxNullBitmap,
+        "Color rotation",
+        "Animate fractal colors");
     _interactionToolbar->Realize();
     _interactionToolbar->ToggleTool(ID_INTERACTION_CURSOR, true);
+    ResetColorRotationTool();
 }
 
 void MainFrame::SetUpGUI()
@@ -665,6 +703,7 @@ void MainFrame::OnRedraw(wxCommandEvent&)
 void MainFrame::OnReset(wxCommandEvent&)
 {
     _fractalCanvas->Reset();
+    ResetColorRotationTool();
     wxGradient grad;
     grad.FromString(wxString(_appConfig.colorStyleGrad.c_str(), wxConvUTF8));
     grad.SetMin(0);
@@ -895,6 +934,19 @@ void MainFrame::OnInteractionTool(wxCommandEvent& event)
     }
 }
 
+void MainFrame::OnColorRotation(wxCommandEvent&)
+{
+    if (_fractalCanvas == nullptr || _fractalCanvas->GetFractal()->IsRendering())
+    {
+        UpdateColorRotationTool();
+        return;
+    }
+
+    _colorRotationActive = !_colorRotationActive;
+    _fractalCanvas->GetFractalPresenter()->ToggleColorRotation();
+    UpdateColorRotationTool();
+}
+
 
 // Changes the fractal type.
 void MainFrame::ChangeMandelbrot(wxCommandEvent&)
@@ -1007,6 +1059,7 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
         _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
         _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
         _fractalType = type;
+        ResetColorRotationTool();
         this->UpdateMenu();
         _juliaMode->Enable(enableJulia);
     }
@@ -1029,6 +1082,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
 
     _fractalType = FractalType::ScriptFractal;
+    ResetColorRotationTool();
     this->UpdateMenu();
     _juliaMode->Enable(false);
 }

@@ -68,15 +68,6 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     // Initialize GUI elements.
     _selectionRect = new SelectionRect();
 
-    _playToggleButton = new ToggleButton(
-        AppPaths::ResourceFileStd({"Play.tga"}),
-        AppPaths::ResourceFileStd({"Stop.tga"}),
-        0,
-        4,
-        this);
-    _playToggleButton->SetAnchor(false, true, true, false);
-    _playToggleButton->Resize(this);
-
     _screenPointer = new CoordinateSelector(this);
     _keyboardImage.loadFromFile(AppPaths::ResourceFileStd({"keyboard.png"}));
     _mouseImage.loadFromFile(AppPaths::ResourceFileStd({"mouse.png"}));
@@ -114,7 +105,6 @@ FractalCanvas::~FractalCanvas()
     delete _fractalPresenter;
     _fractalFactory.DeleteFractal();
     delete _selectionRect;
-    delete _playToggleButton;
     delete _screenPointer;
 }
 void FractalCanvas::CreateFractal(const FractalType type)
@@ -330,7 +320,6 @@ void FractalCanvas::ResizePresentation(const wxSize size)
         this->setSize(sfmlSize);
 
     _fractalPresenter->Resize(this);
-    _playToggleButton->Resize(this);
 
     if (_screenPointer != nullptr)
         _screenPointer->Resize(this);
@@ -432,8 +421,6 @@ void FractalCanvas::OnUpdate()
         }
 
         _fractalPresenter->HandleEvent(_event);
-        if (!_fractal->IsRendering() && _playToggleButton->HandleEvents(_event))
-            _fractalPresenter->ToggleColorRotation();
 
         // Keyboard event.
         if (_event.type == sf::Event::KeyPressed)
@@ -511,7 +498,6 @@ void FractalCanvas::OnUpdate()
         if (_juliaMode || _orbitMode || _sliderMode)
             _screenPointer->Show(this);
     }
-    _playToggleButton->Show(this);
 }
 void FractalCanvas::SetWxSize(const wxSize size)
 {
@@ -650,9 +636,6 @@ void FractalCanvas::ChangeType(const FractalType type)
             _screenPointer = nullptr;
         }
     }
-
-    _playToggleButton->Reset();
-
 }
 void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
 {
@@ -677,8 +660,6 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
             _screenPointer = nullptr;
         }
     }
-
-    _playToggleButton->Reset();
 }
 void FractalCanvas::SetKeyboardGuide(const bool mode)
 {
@@ -730,7 +711,6 @@ void FractalCanvas::Reset()
     _fractalPresenter->SetHandleRightClickZoomBack(false);
     _iterationsOverlayDirty = true;
     _fractalFactory.SetFormula(_userFormula);
-    _playToggleButton->Reset();
 
     // Deactivates screen pointer.
     _juliaMode = false;

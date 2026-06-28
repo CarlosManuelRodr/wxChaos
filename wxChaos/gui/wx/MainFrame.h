@@ -81,7 +81,8 @@ enum IDS
     ID_AUTOMATIC_ITERATIONS,
     ID_INTERACTION_CURSOR,
     ID_INTERACTION_HAND,
-    ID_INTERACTION_ZOOM
+    ID_INTERACTION_ZOOM,
+    ID_COLOR_ROTATION
 };
 
 /**
@@ -112,6 +113,7 @@ class MainFrame : public wxFrame
     bool _informationFrameIsActive;
     bool _formulaDialogIsActive;
     bool _showOptionsPanel{};
+    bool _colorRotationActive{};
 
     // WX
     wxMenuBar* _menubar{};
@@ -189,6 +191,9 @@ class MainFrame : public wxFrame
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();
     wxBitmapBundle CreateInteractionToolBitmap(FractalInteractionTool tool) const;
+    wxBitmapBundle CreateColorRotationToolBitmap(bool active) const;
+    void UpdateColorRotationTool();
+    void ResetColorRotationTool();
 
 public :
     MainFrame();
@@ -258,6 +263,7 @@ public :
     void OnDimensionCalculator(wxCommandEvent& event);
     void OnCommandConsole(wxCommandEvent& event);
     void OnInteractionTool(wxCommandEvent& event);
+    void OnColorRotation(wxCommandEvent& event);
 
     void ReloadScripts();  ///< Search again for script fractals.
 };

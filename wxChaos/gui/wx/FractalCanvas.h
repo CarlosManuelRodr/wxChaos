@@ -13,7 +13,6 @@
 #pragma once
 
 #include "wxSFMLCanvas.h"
-#include "sfml/ToggleButton.h"
 #include "sfml/SelectionRect.h"
 #include "sfml/FractalPresenter.h"
 #include "sfml/CoordinateSelector.h"
@@ -36,14 +35,13 @@ enum class FractalInteractionTool
 * the FractalPresenter attached to the current model, and coordinates the
 * canvas-level controls: selection zoom, mouse-wheel zoom, mouse panning,
 * Julia/orbit/slider coordinate selection, keyboard help overlays, render
-* status text, and the animated-gradient play button.
+* status text, and active interaction mode.
 */
 class FractalCanvas : public wxSFMLCanvas
 {
     FractalFactory _fractalFactory;
     FractalPresenter* _fractalPresenter;
     SelectionRect* _selectionRect;
-    ToggleButton* _playToggleButton;
     CoordinateSelector* _screenPointer;
     FractalType _fractalType;
     Fractal* _fractal;

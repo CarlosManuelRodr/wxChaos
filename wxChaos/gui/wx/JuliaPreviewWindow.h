@@ -13,6 +13,7 @@
 #include <SFML/System.hpp>
 #include "FractalCanvas.h"
 #include "FractalTypes.h"
+#include "sfml/ToggleButton.h"
 
 wxDECLARE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
