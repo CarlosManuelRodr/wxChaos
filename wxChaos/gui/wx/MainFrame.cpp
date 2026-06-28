@@ -169,7 +169,8 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_ZOOM);
 }
 
-wxBitmapBundle MainFrame::CreateInteractionToolBitmap(const FractalInteractionTool tool) const
+// ReSharper disable once CppMemberFunctionMayBeStatic
+wxBitmapBundle MainFrame::CreateInteractionToolBitmap(const FractalInteractionTool tool) const // NOLINT(*-convert-member-functions-to-static)
 {
     switch (tool)
     {
@@ -870,6 +871,8 @@ void MainFrame::OnCommandConsole(wxCommandEvent&)
     this->ShowCommandConsole();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void MainFrame::OnInteractionTool(wxCommandEvent& event)
 {
     switch (event.GetId())
