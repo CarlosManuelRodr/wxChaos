@@ -5,6 +5,7 @@
 #include "HTMLViewer.h"
 #include "TextUtils.h"
 #include "AppTheme.h"
+#include <wx/dcmemory.h>
 
 using namespace std;
 
@@ -164,6 +165,88 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnZoomRecorder, this, ID_ZOOM_RECORDER);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnDimensionCalculator, this, ID_DIMENSION_CALCULATOR);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnCommandConsole, this, ID_COMMAND_CONSOLE);
+    this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_CURSOR);
+    this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_HAND);
+    this->Bind(wxEVT_TOOL, &MainFrame::OnInteractionTool, this, ID_INTERACTION_ZOOM);
+}
+
+wxBitmap MainFrame::CreateInteractionToolBitmap(const FractalInteractionTool tool) const
+{
+    constexpr int size = 24;
+    wxBitmap bitmap(size, size);
+    wxMemoryDC dc(bitmap);
+    dc.SetBackground(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE)));
+    dc.Clear();
+    dc.SetPen(wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT), 2));
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+
+    switch (tool)
+    {
+        case FractalInteractionTool::Hand:
+        {
+            dc.DrawLine(7, 13, 7, 8);
+            dc.DrawLine(10, 13, 10, 5);
+            dc.DrawLine(13, 13, 13, 6);
+            dc.DrawLine(16, 14, 16, 9);
+            dc.DrawLine(7, 13, 12, 19);
+            dc.DrawLine(12, 19, 18, 17);
+            dc.DrawLine(18, 17, 16, 12);
+            break;
+        }
+        case FractalInteractionTool::Zoom:
+        {
+            dc.DrawCircle(10, 10, 6);
+            dc.DrawLine(15, 15, 21, 21);
+            dc.DrawLine(7, 10, 13, 10);
+            dc.DrawLine(10, 7, 10, 13);
+            break;
+        }
+        case FractalInteractionTool::Cursor:
+        default:
+        {
+            wxPoint points[4] = {
+                wxPoint(6, 4),
+                wxPoint(7, 19),
+                wxPoint(11, 15),
+                wxPoint(16, 20)
+            };
+            dc.SetBrush(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT)));
+            dc.DrawPolygon(4, points);
+            break;
+        }
+    }
+
+    dc.SelectObject(wxNullBitmap);
+    return bitmap;
+}
+
+void MainFrame::CreateInteractionToolbar()
+{
+    _interactionToolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_FLAT | wxTB_NODIVIDER);
+    _interactionToolbar->SetToolBitmapSize(wxSize(24, 24));
+    _interactionToolbar->AddRadioTool(
+        ID_INTERACTION_CURSOR,
+        wxEmptyString,
+        CreateInteractionToolBitmap(FractalInteractionTool::Cursor),
+        wxNullBitmap,
+        "Cursor",
+        "Use the default fractal interactions");
+    _interactionToolbar->AddRadioTool(
+        ID_INTERACTION_HAND,
+        wxEmptyString,
+        CreateInteractionToolBitmap(FractalInteractionTool::Hand),
+        wxNullBitmap,
+        "Pan",
+        "Pan the fractal by dragging");
+    _interactionToolbar->AddRadioTool(
+        ID_INTERACTION_ZOOM,
+        wxEmptyString,
+        CreateInteractionToolBitmap(FractalInteractionTool::Zoom),
+        wxNullBitmap,
+        "Zoom",
+        "Drag upward to zoom in or downward to zoom out");
+    _interactionToolbar->Realize();
+    _interactionToolbar->ToggleTool(ID_INTERACTION_CURSOR, true);
 }
 
 void MainFrame::SetUpGUI()
@@ -328,6 +411,8 @@ void MainFrame::SetUpGUI()
     this->SetMenuBar(_menubar);
 
     _sizer = new wxBoxSizer(wxHORIZONTAL);
+    CreateInteractionToolbar();
+    _sizer->Add(_interactionToolbar, 0, wxEXPAND | wxALL, 0);
     _fractalSizer = new wxBoxSizer(wxVERTICAL);
     _sizer->Add(_fractalSizer, 7, wxEXPAND, 5);
 
@@ -820,6 +905,23 @@ void MainFrame::OnDimensionCalculator(wxCommandEvent&)
 void MainFrame::OnCommandConsole(wxCommandEvent&)
 {
     this->ShowCommandConsole();
+}
+
+void MainFrame::OnInteractionTool(wxCommandEvent& event)
+{
+    switch (event.GetId())
+    {
+        case ID_INTERACTION_HAND:
+            _fractalCanvas->SetInteractionTool(FractalInteractionTool::Hand);
+            break;
+        case ID_INTERACTION_ZOOM:
+            _fractalCanvas->SetInteractionTool(FractalInteractionTool::Zoom);
+            break;
+        case ID_INTERACTION_CURSOR:
+        default:
+            _fractalCanvas->SetInteractionTool(FractalInteractionTool::Cursor);
+            break;
+    }
 }
 
 

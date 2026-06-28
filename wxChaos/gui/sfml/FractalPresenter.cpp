@@ -124,7 +124,7 @@ void FractalPresenter::ResetMovement()
     _hasCommittedPanOffset = false;
 }
 
-sf::Rect<int> FractalPresenter::GetMouseWheelZoomRect(const int pixelX, const int pixelY) const
+sf::Rect<int> FractalPresenter::GetPixelZoomRect(const int pixelX, const int pixelY, const double scale) const
 {
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
     const auto screenWidth = static_cast<int>(screenSize.x);
@@ -135,27 +135,16 @@ sf::Rect<int> FractalPresenter::GetMouseWheelZoomRect(const int pixelX, const in
 
     const int clampedX = std::clamp(pixelX, 0, screenWidth - 1);
     const int clampedY = std::clamp(pixelY, 0, screenHeight - 1);
-    const int zoomWidth = std::clamp(
-        static_cast<int>(std::round(static_cast<double>(screenWidth) * _mouseWheelZoomScale)),
-        1,
-        screenWidth);
-    const int zoomHeight = std::clamp(
-        static_cast<int>(std::round(static_cast<double>(screenHeight) * _mouseWheelZoomScale)),
-        1,
-        screenHeight);
-    const int left = std::clamp(
-        static_cast<int>(std::round(static_cast<double>(clampedX) * (1.0 - _mouseWheelZoomScale))),
-        0,
-        screenWidth - zoomWidth);
-    const int top = std::clamp(
-        static_cast<int>(std::round(static_cast<double>(clampedY) * (1.0 - _mouseWheelZoomScale))),
-        0,
-        screenHeight - zoomHeight);
+    const double clampedScale = std::clamp(scale, 0.01, 100.0);
+    const int zoomWidth = std::max(1, static_cast<int>(std::round(static_cast<double>(screenWidth) * clampedScale)));
+    const int zoomHeight = std::max(1, static_cast<int>(std::round(static_cast<double>(screenHeight) * clampedScale)));
+    const int left = static_cast<int>(std::round(static_cast<double>(clampedX) * (1.0 - clampedScale)));
+    const int top = static_cast<int>(std::round(static_cast<double>(clampedY) * (1.0 - clampedScale)));
 
     return {left, top, zoomWidth, zoomHeight};
 }
 
-PreciseRect FractalPresenter::GetMouseWheelZoomView(const int pixelX, const int pixelY) const
+PreciseRect FractalPresenter::GetPixelZoomView(const int pixelX, const int pixelY, const double scale) const
 {
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
     const auto screenWidth = static_cast<int>(screenSize.x);
@@ -169,8 +158,8 @@ PreciseRect FractalPresenter::GetMouseWheelZoomView(const int pixelX, const int 
     const int clampedY = std::clamp(pixelY, 0, screenHeight - 1);
     const HighPrecisionReal width = currentView.right - currentView.left;
     const HighPrecisionReal height = currentView.top - currentView.bottom;
-    const HighPrecisionReal targetWidth = width * HighPrecisionReal(_mouseWheelZoomScale);
-    const HighPrecisionReal targetHeight = height * HighPrecisionReal(_mouseWheelZoomScale);
+    const HighPrecisionReal targetWidth = width * HighPrecisionReal(std::clamp(scale, 0.01, 100.0));
+    const HighPrecisionReal targetHeight = height * HighPrecisionReal(std::clamp(scale, 0.01, 100.0));
     const HighPrecisionReal xDivisor = HighPrecisionReal(screenWidth > 1 ? screenWidth - 1 : 1);
     const HighPrecisionReal yDivisor = HighPrecisionReal(screenHeight > 1 ? screenHeight - 1 : 1);
     const HighPrecisionReal xRatio = HighPrecisionReal(clampedX) / xDivisor;
@@ -686,7 +675,15 @@ void FractalPresenter::SetAreaOfView(const sf::Rect<int>& pixelCoordinates, cons
 
 void FractalPresenter::ZoomAtPixel(const int pixelX, const int pixelY)
 {
-    SetAreaOfView(GetMouseWheelZoomRect(pixelX, pixelY), GetMouseWheelZoomView(pixelX, pixelY));
+    ZoomAtPixel(pixelX, pixelY, _mouseWheelZoomScale);
+}
+
+void FractalPresenter::ZoomAtPixel(const int pixelX, const int pixelY, const double scale)
+{
+    if (std::abs(scale - 1.0) < 0.001)
+        return;
+
+    SetAreaOfView(GetPixelZoomRect(pixelX, pixelY, scale), GetPixelZoomView(pixelX, pixelY, scale));
 }
 
 void FractalPresenter::ZoomBack()

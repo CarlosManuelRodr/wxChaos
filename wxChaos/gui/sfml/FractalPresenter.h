@@ -113,11 +113,11 @@ class FractalPresenter
     ///@brief Expands the current view when zoom-back has no saved view.
     void ExpandCurrentView();
 
-    ///@brief Calculates the preview source rectangle for a wheel zoom anchored at a pixel.
-    sf::Rect<int> GetMouseWheelZoomRect(int pixelX, int pixelY) const;
+    ///@brief Calculates the preview source rectangle for an anchored zoom.
+    sf::Rect<int> GetPixelZoomRect(int pixelX, int pixelY, double scale) const;
 
-    ///@brief Calculates the target world view for a wheel zoom anchored at a pixel.
-    PreciseRect GetMouseWheelZoomView(int pixelX, int pixelY) const;
+    ///@brief Calculates the target world view for an anchored zoom.
+    PreciseRect GetPixelZoomView(int pixelX, int pixelY, double scale) const;
 
     ///@brief Calculates where one world-coordinate view appears inside another in screen pixels.
     sf::Rect<int> GetViewRectInsideView(const PreciseRect& innerView, const PreciseRect& outerView) const;
@@ -211,6 +211,9 @@ public:
 
     ///@brief Zooms around a pixel, preserving the world coordinate under that pixel.
     void ZoomAtPixel(int pixelX, int pixelY);
+
+    ///@brief Zooms around a pixel by the supplied view scale.
+    void ZoomAtPixel(int pixelX, int pixelY, double scale);
 
     ///@brief Restores the previous zoom level, using a cached image when possible.
     void ZoomBack();

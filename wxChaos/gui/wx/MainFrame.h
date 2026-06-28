@@ -10,6 +10,7 @@
 #pragma once
 
 #include <optional>
+#include "FractalCanvas.h"
 #include "config/AppConfigStore.h"
 #include "JuliaPreviewWindow.h"
 #include "About.h"
@@ -77,7 +78,10 @@ enum IDS
     ID_DIMENSION_CALCULATOR,
     ID_COMMAND_CONSOLE,
     ID_SETTINGS,
-    ID_AUTOMATIC_ITERATIONS
+    ID_AUTOMATIC_ITERATIONS,
+    ID_INTERACTION_CURSOR,
+    ID_INTERACTION_HAND,
+    ID_INTERACTION_ZOOM
 };
 
 /**
@@ -136,6 +140,7 @@ class MainFrame : public wxFrame
     wxBoxSizer* _optionSizer{};
     wxMenuItem* _abortRenderItem{};
     wxBoxSizer* _sizer{};
+    wxToolBar* _interactionToolbar{};
     wxSize _size;
     wxStatusBar* _statusBar{};
 
@@ -182,6 +187,8 @@ class MainFrame : public wxFrame
     void SetAutomaticIterations(bool mode) const;
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
+    void CreateInteractionToolbar();
+    wxBitmap CreateInteractionToolBitmap(FractalInteractionTool tool) const;
 
 public :
     MainFrame();
@@ -250,6 +257,7 @@ public :
     void OnZoomRecorder(wxCommandEvent& event);
     void OnDimensionCalculator(wxCommandEvent& event);
     void OnCommandConsole(wxCommandEvent& event);
+    void OnInteractionTool(wxCommandEvent& event);
 
     void ReloadScripts();  ///< Search again for script fractals.
 };

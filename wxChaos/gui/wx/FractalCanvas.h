@@ -21,6 +21,13 @@
 
 wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 
+enum class FractalInteractionTool
+{
+    Cursor,
+    Hand,
+    Zoom
+};
+
 /**
 * @class FractalCanvas
 * @brief Interactive wxWidgets/SFML surface for exploring the active fractal.
@@ -78,8 +85,11 @@ class FractalCanvas : public wxSFMLCanvas
     bool _renderingOverlayDirty;
     bool _hasLastMousePosition;
     bool _mouseWheelPanning;
+    bool _toolPanning;
+    bool _zoomToolDragging;
     wxPoint _lastMousePosition;
     wxPoint _lastMouseWheelPanPosition;
+    wxPoint _zoomToolStartPosition;
     unsigned int _displayedIterations;
     unsigned int _spinnerFrame;
     sf::Vector2f _spinnerCenter;
@@ -99,7 +109,14 @@ class FractalCanvas : public wxSFMLCanvas
     void EmitStatusText() const;
     sf::Vector2u GetCurrentRenderSize() const;
     void ResizePresentation(wxSize size);
+    void BeginMousePanAt(wxPoint position);
+    void ContinueMousePanAt(wxPoint position);
+    void EndMousePanGesture();
+    void CommitZoomToolDrag(wxPoint endPosition);
+    void CancelToolGestures();
     static wxString FormatStatusCoordinate(double value);
+
+    FractalInteractionTool _interactionTool;
 
 public:
     ///@brief Constructor
@@ -145,6 +162,12 @@ public:
 
     ///@return A pointer to the SFML fractal presenter.
     FractalPresenter* GetFractalPresenter() const;
+
+    ///@brief Changes the active mouse interaction tool.
+    void SetInteractionTool(FractalInteractionTool tool);
+
+    ///@return The active mouse interaction tool.
+    FractalInteractionTool GetInteractionTool() const;
 
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;
