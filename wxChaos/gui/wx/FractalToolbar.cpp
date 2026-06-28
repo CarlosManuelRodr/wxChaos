@@ -9,7 +9,7 @@ using namespace std;
 FractalToolbar::FractalToolbar(wxWindow* parent)
     : wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_FLAT | wxTB_NODIVIDER)
 {
-    SetToolBitmapSize(wxSize(48, 48));
+    wxToolBarBase::SetToolBitmapSize(wxSize(48, 48));
     AddRadioTool(
         ID_CURSOR,
         wxEmptyString,
@@ -31,8 +31,8 @@ FractalToolbar::FractalToolbar(wxWindow* parent)
         wxNullBitmap,
         "Zoom",
         "Drag upward to zoom in or downward to zoom out");
-    AddSeparator();
-    AddStretchableSpace();
+    wxToolBarBase::AddSeparator();
+    wxToolBarBase::AddStretchableSpace();
     AddCheckTool(
         ID_COLOR_ROTATION,
         wxEmptyString,
@@ -40,7 +40,7 @@ FractalToolbar::FractalToolbar(wxWindow* parent)
         wxNullBitmap,
         "Color rotation",
         "Animate fractal colors");
-    Realize();
+    wxToolBar::Realize();
     SetInteractionTool(FractalInteractionTool::Cursor);
     ResetColorRotationTool();
 
@@ -83,7 +83,7 @@ void FractalToolbar::ResetColorRotationTool()
     UpdateColorRotationTool();
 }
 
-wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteractionTool tool) const
+wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteractionTool tool)
 {
     const string handIcon = AppTheme::IsDark() ? "hand_dark.svg" : "hand_light.svg";
     const string zoomIcon = AppTheme::IsDark() ? "zoom_dark.svg" : "zoom_light.svg";
@@ -101,7 +101,7 @@ wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteract
     }
 }
 
-wxBitmapBundle FractalToolbar::CreateColorRotationToolBitmap(const bool active) const
+wxBitmapBundle FractalToolbar::CreateColorRotationToolBitmap(const bool active)
 {
     const string icon = active
         ? (AppTheme::IsDark() ? "stop_dark.svg" : "stop_light.svg")
@@ -117,6 +117,8 @@ void FractalToolbar::UpdateColorRotationTool()
     Refresh();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalToolbar::OnInteractionTool(wxCommandEvent& event)
 {
     FractalInteractionTool tool = FractalInteractionTool::Cursor;

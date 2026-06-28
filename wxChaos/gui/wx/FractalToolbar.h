@@ -28,6 +28,26 @@ public:
     /// @return true when the target accepted the toggle request.
     using ColorRotationHandler = std::function<bool()>;
 
+private:
+    enum
+    {
+        ID_CURSOR = wxID_HIGHEST + 200,
+        ID_HAND,
+        ID_ZOOM,
+        ID_COLOR_ROTATION
+    };
+
+    ToolChangedHandler _toolChangedHandler;
+    ColorRotationHandler _colorRotationHandler;
+    bool _colorRotationActive{};
+
+    [[nodiscard]] static wxBitmapBundle CreateInteractionToolBitmap(FractalInteractionTool tool);
+    [[nodiscard]] static wxBitmapBundle CreateColorRotationToolBitmap(bool active);
+    void UpdateColorRotationTool();
+    void OnInteractionTool(wxCommandEvent& event);
+    void OnColorRotation(wxCommandEvent& event);
+
+public:
     /// @brief Creates the toolbar and all tool buttons.
     /// @param parent Parent wxWidgets window.
     explicit FractalToolbar(wxWindow* parent);
@@ -46,23 +66,4 @@ public:
 
     /// @brief Resets color rotation to the inactive play-icon state.
     void ResetColorRotationTool();
-
-private:
-    enum
-    {
-        ID_CURSOR = wxID_HIGHEST + 200,
-        ID_HAND,
-        ID_ZOOM,
-        ID_COLOR_ROTATION
-    };
-
-    ToolChangedHandler _toolChangedHandler;
-    ColorRotationHandler _colorRotationHandler;
-    bool _colorRotationActive{};
-
-    wxBitmapBundle CreateInteractionToolBitmap(FractalInteractionTool tool) const;
-    wxBitmapBundle CreateColorRotationToolBitmap(bool active) const;
-    void UpdateColorRotationTool();
-    void OnInteractionTool(wxCommandEvent& event);
-    void OnColorRotation(wxCommandEvent& event);
 };

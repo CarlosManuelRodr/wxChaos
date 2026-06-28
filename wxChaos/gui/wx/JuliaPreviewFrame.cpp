@@ -1,19 +1,15 @@
+// ReSharper disable CppDFAMemoryLeak
 #include "JuliaPreviewFrame.h"
 #include "AppPaths.h"
 
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
-JuliaPreviewFrame::JuliaPreviewFrame(
-    wxWindow* parent,
-    FractalCanvas* target,
-    const FractalType fractalType,
-    const Options& juliaOpt,
-    const int zoomStepPercent,
-    const int zoomInertiaMilliseconds,
-    const wxSize& size)
-    : wxFrame(parent, wxID_ANY, "Julia mode", wxDefaultPosition, wxDefaultSize),
-      _target(target),
-      _constantSyncTimer(this)
+JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, const FractalType fractalType,
+                                     const Options& juliaOpt, const int zoomStepPercent, const int zoomInertiaMilliseconds,
+                                     const wxSize& size)
+                                     : wxFrame(parent, wxID_ANY, "Julia mode", wxDefaultPosition, wxDefaultSize),
+                                       _target(target),
+                                       _constantSyncTimer(this)
 {
     const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     SetIcon(icon);
@@ -96,12 +92,14 @@ void JuliaPreviewFrame::ApplyRendererOptions(const Options& options) const
     presenter->SetK(options.kReal, options.kImaginary);
 }
 
-void JuliaPreviewFrame::SyncConstantFromTarget()
+// ReSharper disable once CppDFAUnreachableFunctionCall
+void JuliaPreviewFrame::SyncConstantFromTarget() const
 {
     if (_target != nullptr && _target->ChangeInCoordinateSelector())
         SetConstant(_target->GetKReal(), _target->GetKImaginary());
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnConstantSyncTimer(wxTimerEvent&)
 {
     SyncConstantFromTarget();

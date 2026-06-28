@@ -167,7 +167,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnCommandConsole, this, ID_COMMAND_CONSOLE);
 }
 
-void MainFrame::ResetColorRotationTool()
+void MainFrame::ResetColorRotationTool() const
 {
     if (_interactionToolbar != nullptr)
         _interactionToolbar->ResetColorRotationTool();

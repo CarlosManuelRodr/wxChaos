@@ -22,6 +22,16 @@ wxDECLARE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 */
 class JuliaPreviewFrame : public wxFrame
 {
+    FractalCanvas* _target{};
+    FractalCanvas* _previewCanvas{};
+    FractalToolbar* _toolbar{};
+    wxTimer _constantSyncTimer;
+
+    void ApplyRendererOptions(const Options& options) const;
+    void SyncConstantFromTarget() const;
+    void OnConstantSyncTimer(wxTimerEvent& event);
+    void OnClose(wxCloseEvent& event);
+
 public:
     /// @brief Creates the Julia preview frame.
     /// @param parent Parent wxWidgets window.
@@ -53,15 +63,4 @@ public:
     /// @param zoomStepPercent Mouse-wheel zoom step percentage.
     /// @param zoomInertiaMilliseconds Smooth zoom inertia duration.
     void SetZoomOptions(int zoomStepPercent, int zoomInertiaMilliseconds) const;
-
-private:
-    FractalCanvas* _target{};
-    FractalCanvas* _previewCanvas{};
-    FractalToolbar* _toolbar{};
-    wxTimer _constantSyncTimer;
-
-    void ApplyRendererOptions(const Options& options) const;
-    void SyncConstantFromTarget();
-    void OnConstantSyncTimer(wxTimerEvent& event);
-    void OnClose(wxCloseEvent& event);
 };

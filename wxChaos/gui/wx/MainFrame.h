@@ -185,7 +185,7 @@ class MainFrame : public wxFrame
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();
-    void ResetColorRotationTool();
+    void ResetColorRotationTool() const;
 
 public :
     MainFrame();
