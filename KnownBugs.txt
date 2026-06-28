@@ -7,11 +7,10 @@ Bugs:
 - When the main fractal is panned while in Julia mode, the C constant is not updated.
 
 Improvements to get to a release version:
+- Main frame must have tools to navigate and to get information about a point.
 - Status bar precision should be adjusted to the current zoom level.
 - Julia mode must have an "Iterations" display, must have a menu bar to switch the main fractal to a julia set on the
 specific current point.
-- Main frame must have tools to navigate and to get information about a point.
-- The rescaled image must be displayed even on double zooms (the first one did not finish and a new one was started).
 - Documentation must be updated.
 - Localization to Spanish, Japanese and possibly other languages.
 - "Set color" on RendererOptions must be a color picker.
