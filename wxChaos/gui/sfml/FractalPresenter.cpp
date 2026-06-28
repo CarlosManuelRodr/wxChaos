@@ -223,7 +223,6 @@ sf::Image FractalPresenter::CapturePreviewImage() const
     {
         renderTexture.clear(sf::Color::White);
         const bool hasTemporaryPreview = !_dontDrawTempImage &&
-            _fractal->IsExteriorColorEnabled() &&
             _tempImage.getSize().x == screenSize.x &&
             _tempImage.getSize().y == screenSize.y;
 
@@ -1121,7 +1120,7 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
         }
     }
 
-    if (_zoomAnimationActive && _fractal->IsExteriorColorEnabled())
+    if (_zoomAnimationActive)
     {
         if (_usingRenderImage)
             window->draw(_output);
