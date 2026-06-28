@@ -1,5 +1,6 @@
 // ReSharper disable CppEnumeratorNeverUsed
 #include "MainFrame.h"
+#include "ImageExportSizeDialog.h"
 #include "AngelscriptBindings.h"
 #include "AppPaths.h"
 #include "HTMLViewer.h"
@@ -175,19 +176,19 @@ wxBitmapBundle MainFrame::CreateInteractionToolBitmap(const FractalInteractionTo
     switch (tool)
     {
         case FractalInteractionTool::Hand:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "hand.svg"}), wxSize(32, 32));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "hand.svg"}), wxSize(48, 48));
         case FractalInteractionTool::Zoom:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "zoom.svg"}), wxSize(32, 32));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "zoom.svg"}), wxSize(48, 48));
         case FractalInteractionTool::Cursor:
         default:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "cursor.svg"}), wxSize(32, 32));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", "cursor.svg"}), wxSize(48, 48));
     }
 }
 
 void MainFrame::CreateInteractionToolbar()
 {
     _interactionToolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_FLAT | wxTB_NODIVIDER);
-    _interactionToolbar->SetToolBitmapSize(wxSize(32, 32));
+    _interactionToolbar->SetToolBitmapSize(wxSize(48, 48));
     _interactionToolbar->AddRadioTool(
         ID_INTERACTION_CURSOR,
         wxEmptyString,

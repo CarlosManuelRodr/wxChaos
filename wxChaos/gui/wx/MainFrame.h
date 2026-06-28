@@ -17,7 +17,6 @@
 #include "About.h"
 #include "RendererOptionsFrame.h"
 #include "JuliaConstantDialog.h"
-#include "ImageExportSizeDialog.h"
 #include "IterationsDialog.h"
 #include "FormulaDialog.h"
 #include "ScriptEditor.h"
