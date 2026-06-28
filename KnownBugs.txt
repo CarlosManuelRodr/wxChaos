@@ -6,12 +6,12 @@ Bugs:
 
 Improvements to get to a release version:
 - Main frame must have tools to navigate and to get information about a point.
-- Status bar precision should be adjusted to the current zoom level.
 - Julia mode must have an "Iterations" display, must have a menu bar to switch the main fractal to a julia set on the
 specific current point.
-- Documentation must be updated.
-- Localization to Spanish, Japanese and possibly other languages.
-- "Set color" on RendererOptions must be a color picker.
 - Replace the bmp banners at fractal options and RendererOptions.
 - Restore Henon maps and other fractals of previous versions.
+- Status bar precision should be adjusted to the current zoom level.
+- Localization to Spanish, Japanese and possibly other languages.
+- "Set color" on RendererOptions must be a color picker.
 - Implement a proper tutorial mode.
+- Documentation must be updated.
