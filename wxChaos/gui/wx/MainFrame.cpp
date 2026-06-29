@@ -665,6 +665,38 @@ void MainFrame::OnSave(wxCommandEvent&)
     }
     saveFileDialog->Destroy();
 }
+
+void MainFrame::OpenJuliaPreviewInMainWindow(const FractalType fractalType, const Options& options,
+                                             const ColorPaletteTypes colorPalette, const Rect& view,
+                                             const bool automaticIterations)
+{
+    if (_fractalCanvas == nullptr)
+        return;
+
+    _selectedScriptIndex.reset();
+    _juliaPreviewFrame = nullptr;
+    _fractalCanvas->SetJuliaMode(false);
+
+    if (_fractalCanvas->GetFractal()->IsRendering())
+        _fractalCanvas->GetFractal()->StopRender();
+
+    _fractalCanvas->ChangeType(fractalType);
+    _fractalType = fractalType;
+
+    Fractal* fractal = _fractalCanvas->GetFractal();
+    fractal->SetOptions(options);
+
+    FractalPresenter* presenter = _fractalCanvas->GetFractalPresenter();
+    presenter->SetColorPalette(colorPalette);
+    presenter->SetView(view);
+    SetAutomaticIterations(automaticIterations);
+
+    ResetColorRotationTool();
+    UpdateMenu();
+    _juliaMode->Check(false);
+    _juliaMode->Enable(false);
+}
+
 void MainFrame::OnPalette(wxCommandEvent&)
 {
     // Color palette frame.
@@ -815,6 +847,8 @@ void MainFrame::OnUpdateAutomaticIterations(wxUpdateUIEvent& event)
 {
     event.Check(_fractalCanvas != nullptr && _fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void MainFrame::OnToolbarVisibility(wxCommandEvent& event)
 {
     if (_interactionToolbar == nullptr)

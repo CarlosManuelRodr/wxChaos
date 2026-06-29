@@ -197,6 +197,15 @@ class MainFrame : public wxFrame
 
 public :
     MainFrame();
+    /// @brief Replaces the main canvas with the fractal currently shown by a Julia preview.
+    /// @param fractalType Fractal type to install in the main canvas.
+    /// @param options Renderer and fractal options copied from the preview.
+    /// @param colorPalette Color palette copied from the preview.
+    /// @param view World-coordinate viewport copied from the preview.
+    /// @param automaticIterations True when the preview uses automatic iterations.
+    void OpenJuliaPreviewInMainWindow(FractalType fractalType, const Options& options, ColorPaletteTypes colorPalette,
+                                      const Rect& view, bool automaticIterations);
+
     void OnSave(wxCommandEvent& event);                    ///< Saves a picture of the viewing area.
     void OnJuliaMode(wxCommandEvent& event);               ///< Opens a window with the Julia version of the selected fractal.
     void OnPalette(wxCommandEvent& event);                 ///< Opens a ColorFrame.
