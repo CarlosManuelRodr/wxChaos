@@ -6,6 +6,7 @@
 #include "AppConfigStore.h"
 #include "coloring/ColorPalette.h"
 #include "global.h"
+#include "../AppTheme.h"
 
 std::string AppConfigStore::DefaultColorStyle()
 {
@@ -17,10 +18,17 @@ std::string AppConfigStore::DefaultColorStyle()
 AppConfig::AppConfig()
 {
     ColorPalette palette;
-    palette.SetStyle(colorStyle);
+    palette.SetStyle(ResolveColorStyle(colorStyle));
     paletteSize = palette.paletteSize;
     colorCycleLength = palette.colorCycleLength;
     colorStyleGrad = palette.grad;
+}
+
+ColorPaletteTypes AppConfig::ResolveColorStyle(const ColorPaletteTypes style)
+{
+    if (style == System)
+        return AppTheme::IsDark() ? SunsetDrive : Retro;
+    return style;
 }
 
 std::string AppConfigStore::Trim(const std::string& value)
@@ -180,7 +188,8 @@ const std::map<std::string, ColorPaletteTypes>& AppConfigStore::ColorStyles()
         { "Ember", Ember },
         { "RainbowFire", RainbowFire },
         { "ClassicMandelbrot", ClassicMandelbrot },
-        { "Custom", CustomGradient }
+        { "Custom", CustomGradient },
+        { "System", System }
     };
 
     return colorStyles;
@@ -261,7 +270,7 @@ ColorPaletteTypes AppConfigStore::InferColorStyleFromGradient(const std::string&
 {
     for (const auto& item : ColorStyles())
     {
-        if (item.second == CustomGradient)
+        if (item.second == CustomGradient || item.second == System)
             continue;
 
         ColorPalette palette;
@@ -345,7 +354,7 @@ AppConfig AppConfigStore::Load() const
     if (config.colorStyle != CustomGradient)
     {
         ColorPalette palette;
-        palette.SetStyle(config.colorStyle);
+        palette.SetStyle(AppConfig::ResolveColorStyle(config.colorStyle));
         config.colorStyleGrad = palette.grad;
     }
 

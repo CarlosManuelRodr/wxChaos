@@ -28,5 +28,6 @@ enum ColorPaletteTypes
     Ember,
     RainbowFire,
     ClassicMandelbrot,
-    CustomGradient
+    CustomGradient,
+    System          ///< Resolves to Retro on light themes and SunsetDrive on dark themes.
 };

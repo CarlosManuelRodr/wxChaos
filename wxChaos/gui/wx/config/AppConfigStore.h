@@ -18,12 +18,17 @@ struct AppConfig
 {
     AppConfig();
 
+    ///@brief Resolves the System palette to a concrete palette based on the current system theme.
+    ///@param style Color style to resolve.
+    ///@return Concrete color palette (never System).
+    static ColorPaletteTypes ResolveColorStyle(ColorPaletteTypes style);
+
     FractalType type = FractalType::Mandelbrot;
     int maxIterations = 100;
     bool automaticIterations = true;
     int paletteSize = 0;
     int colorCycleLength = 0;
-    ColorPaletteTypes colorStyle = SunsetDrive; ///< Default gradient preset, or CustomGradient for user-edited gradients.
+    ColorPaletteTypes colorStyle = System; ///< Default gradient preset, or CustomGradient for user-edited gradients.
     std::string colorStyleGrad;
     bool constantWindow = false;
     bool commandConsole = false;

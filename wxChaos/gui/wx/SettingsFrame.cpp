@@ -6,6 +6,7 @@
 #include <utility>
 #include "SettingsFrame.h"
 #include "AppPaths.h"
+#include "AppTheme.h"
 #include "coloring/ColorPalette.h"
 #include "wxGradientDialog.h"
 
@@ -141,6 +142,7 @@ wxPanel* SettingsFrame::CreateRenderingPage()
     sizer->Add(cycleRow, 0, wxBOTTOM, 16);
 
     const wxString colorStyleNames[] = {
+        "System",
         "Retro",
         "Hakim",
         "Aquamarine",
@@ -157,6 +159,7 @@ wxPanel* SettingsFrame::CreateRenderingPage()
         "Custom"
     };
     _colorStyles = {
+        System,
         Retro,
         Hakim,
         Aquamarine,
@@ -331,7 +334,7 @@ void SettingsFrame::ApplyColorStyle(const ColorPaletteTypes style)
         return;
 
     ColorPalette palette;
-    palette.SetStyle(style);
+    palette.SetStyle(AppConfig::ResolveColorStyle(style));
     _paletteSize->SetValue(palette.paletteSize);
     _colorCycleLength->SetValue(palette.colorCycleLength);
     _gradient = wxGradient();
