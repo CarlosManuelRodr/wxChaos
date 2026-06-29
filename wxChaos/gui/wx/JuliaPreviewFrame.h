@@ -40,6 +40,9 @@ class JuliaPreviewFrame : public wxFrame
     void SyncConstantFromTarget() const;
     void OnConstantSyncTimer(wxTimerEvent& event);
     void OnCanvasStatusText(wxCommandEvent& event);
+    /// @brief Relayouts the frame contents and status bar controls after resizing.
+    /// @param event Size event emitted by wxWidgets.
+    void OnResize(wxSizeEvent& event);
     void OnClose(wxCloseEvent& event);
 
 public:

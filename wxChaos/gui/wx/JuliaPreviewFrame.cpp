@@ -56,12 +56,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     Bind(wxEVT_CLOSE_WINDOW, &JuliaPreviewFrame::OnClose, this);
     Bind(wxEVT_TIMER, &JuliaPreviewFrame::OnConstantSyncTimer, this);
     Bind(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, &JuliaPreviewFrame::OnCanvasStatusText, this);
-    Bind(wxEVT_SIZE, [this](wxSizeEvent& event)
-    {
-        Layout();
-        LayoutStatusBarControls();
-        event.Skip();
-    });
+    Bind(wxEVT_SIZE, &JuliaPreviewFrame::OnResize, this);
 
     _constantSyncTimer.Start(16);
 }
@@ -178,6 +173,13 @@ void JuliaPreviewFrame::OnConstantSyncTimer(wxTimerEvent&)
 void JuliaPreviewFrame::OnCanvasStatusText(wxCommandEvent& event)
 {
     _statusBar->SetStatusText(event.GetString(), 0);
+}
+
+void JuliaPreviewFrame::OnResize(wxSizeEvent& event)
+{
+    Layout();
+    LayoutStatusBarControls();
+    event.Skip();
 }
 
 void JuliaPreviewFrame::OnClose(wxCloseEvent&)
