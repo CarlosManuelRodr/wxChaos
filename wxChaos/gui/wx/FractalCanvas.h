@@ -91,6 +91,7 @@ class FractalCanvas : public wxSFMLCanvas
     void EndMousePanGesture();
     double CalculateZoomToolScale(wxPoint position) const;
     void CommitZoomToolDrag(wxPoint endPosition);
+    wxString InspectPointAt(wxPoint position) const;
     void CancelToolGestures();
     static wxString FormatStatusCoordinate(double value);
 
@@ -198,6 +199,9 @@ public:
 
     ///@brief Updates the status bar of the MainFrame when the mouse is moved over the fractal canvas.
     void OnMoveMouse(wxMouseEvent& event);
+
+    ///@brief Clears transient hover state when the mouse leaves the fractal canvas.
+    void OnLeaveMouse(wxMouseEvent& event);
 
     void OnClick(wxMouseEvent& event);
     void OnReleaseClick(wxMouseEvent& event);

@@ -11,7 +11,8 @@
 */
 enum class FractalInteractionTool
 {
-    Cursor,  ///< Default canvas interactions.
-    Hand,    ///< Pan the fractal by dragging.
-    Zoom     ///< Drag vertically to zoom around the clicked point.
+    Cursor,      ///< Default canvas interactions.
+    Hand,        ///< Pan the fractal by dragging.
+    Zoom,        ///< Drag vertically to zoom around the clicked point.
+    PointPicker  ///< Pick a plane point and inspect the fractal result there.
 };

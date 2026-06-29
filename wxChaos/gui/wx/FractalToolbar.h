@@ -37,6 +37,7 @@ private:
         ID_CURSOR = wxID_HIGHEST + 200,
         ID_HAND,
         ID_ZOOM,
+        ID_POINT_PICKER,
         ID_INFORMATION,
         ID_COLOR_ROTATION
     };

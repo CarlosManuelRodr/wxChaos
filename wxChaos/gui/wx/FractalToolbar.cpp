@@ -31,6 +31,13 @@ FractalToolbar::FractalToolbar(wxWindow* parent)
         wxNullBitmap,
         "Zoom",
         "Drag upward to zoom in or downward to zoom out");
+    AddRadioTool(
+        ID_POINT_PICKER,
+        wxEmptyString,
+        CreateInteractionToolBitmap(FractalInteractionTool::PointPicker),
+        wxNullBitmap,
+        "Point picker",
+        "Click a point to inspect the fractal result there");
     wxToolBarBase::AddSeparator();
     wxToolBarBase::AddStretchableSpace();
     AddTool(
@@ -55,6 +62,7 @@ FractalToolbar::FractalToolbar(wxWindow* parent)
     Bind(wxEVT_TOOL, &FractalToolbar::OnInteractionTool, this, ID_CURSOR);
     Bind(wxEVT_TOOL, &FractalToolbar::OnInteractionTool, this, ID_HAND);
     Bind(wxEVT_TOOL, &FractalToolbar::OnInteractionTool, this, ID_ZOOM);
+    Bind(wxEVT_TOOL, &FractalToolbar::OnInteractionTool, this, ID_POINT_PICKER);
     Bind(wxEVT_TOOL, &FractalToolbar::OnInformation, this, ID_INFORMATION);
     Bind(wxEVT_TOOL, &FractalToolbar::OnColorRotation, this, ID_COLOR_ROTATION);
 }
@@ -89,6 +97,9 @@ void FractalToolbar::SetInteractionTool(const FractalInteractionTool tool)
         case FractalInteractionTool::Zoom:
             ToggleTool(ID_ZOOM, true);
             break;
+        case FractalInteractionTool::PointPicker:
+            ToggleTool(ID_POINT_PICKER, true);
+            break;
         case FractalInteractionTool::Cursor:
         default:
             ToggleTool(ID_CURSOR, true);
@@ -106,6 +117,7 @@ wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteract
 {
     const string handIcon = AppTheme::IsDark() ? "hand_dark.svg" : "hand_light.svg";
     const string zoomIcon = AppTheme::IsDark() ? "zoom_dark.svg" : "zoom_light.svg";
+    const string pickerIcon = AppTheme::IsDark() ? "picker_dark.svg" : "picker_light.svg";
     const string cursorIcon = AppTheme::IsDark() ? "cursor_dark.svg" : "cursor_light.svg";
 
     switch (tool)
@@ -114,6 +126,8 @@ wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteract
             return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", handIcon}), wxSize(48, 48));
         case FractalInteractionTool::Zoom:
             return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", zoomIcon}), wxSize(48, 48));
+        case FractalInteractionTool::PointPicker:
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", pickerIcon}), wxSize(48, 48));
         case FractalInteractionTool::Cursor:
         default:
             return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", cursorIcon}), wxSize(48, 48));
@@ -154,6 +168,9 @@ void FractalToolbar::OnInteractionTool(wxCommandEvent& event)
             break;
         case ID_ZOOM:
             tool = FractalInteractionTool::Zoom;
+            break;
+        case ID_POINT_PICKER:
+            tool = FractalInteractionTool::PointPicker;
             break;
         case ID_CURSOR:
         default:

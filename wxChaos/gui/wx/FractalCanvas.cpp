@@ -81,6 +81,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
 
     this->wxWindow::SetFocus();
     this->Bind(wxEVT_MOTION, &FractalCanvas::OnMoveMouse, this);
+    this->Bind(wxEVT_LEAVE_WINDOW, &FractalCanvas::OnLeaveMouse, this);
     this->Bind(wxEVT_LEFT_DOWN, &FractalCanvas::OnClick, this);
     this->Bind(wxEVT_RIGHT_DOWN, &FractalCanvas::OnClick, this);
     this->Bind(wxEVT_MIDDLE_DOWN, &FractalCanvas::OnClick, this);
@@ -271,6 +272,14 @@ void FractalCanvas::CommitZoomToolDrag(const wxPoint endPosition)
         return;
 
     _fractalPresenter->CommitInteractiveZoom(CalculateZoomToolScale(endPosition));
+}
+
+wxString FractalCanvas::InspectPointAt(const wxPoint position) const
+{
+    if (_fractal == nullptr)
+        return "No fractal loaded.";
+
+    return _fractal->InspectPoint(_fractal->GetX(position.x), _fractal->GetY(position.y));
 }
 
 void FractalCanvas::CancelToolGestures()
@@ -474,6 +483,9 @@ FractalPresenter* FractalCanvas::GetFractalPresenter() const
 void FractalCanvas::SetInteractionTool(const FractalInteractionTool tool)
 {
     CancelToolGestures();
+    if (_interactionTool == FractalInteractionTool::PointPicker && tool != FractalInteractionTool::PointPicker)
+        UnsetToolTip();
+
     _interactionTool = tool;
 
     switch (_interactionTool)
@@ -483,6 +495,9 @@ void FractalCanvas::SetInteractionTool(const FractalInteractionTool tool)
             break;
         case FractalInteractionTool::Zoom:
             SetCursor(wxCursor(wxCURSOR_CROSS));
+            break;
+        case FractalInteractionTool::PointPicker:
+            SetCursor(wxCursor(wxCURSOR_QUESTION_ARROW));
             break;
         case FractalInteractionTool::Cursor:
         default:
@@ -739,6 +754,9 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         return;
     }
 
+    if (_interactionTool == FractalInteractionTool::PointPicker)
+        return;
+
     // Pointer event.
     if (_juliaMode || _orbitMode || _sliderMode)
     {
@@ -859,6 +877,16 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
         return;
     }
 
+    if (_interactionTool == FractalInteractionTool::PointPicker)
+    {
+        const wxPoint currentPosition = event.GetPosition();
+        SetToolTip(InspectPointAt(currentPosition));
+        _lastMousePosition = currentPosition;
+        _hasLastMousePosition = true;
+        EmitStatusText();
+        return;
+    }
+
     // Selection event.
     if (_juliaMode || _orbitMode || _sliderMode)
     {
@@ -896,6 +924,15 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     _hasLastMousePosition = true;
     EmitStatusText();
 }
+
+void FractalCanvas::OnLeaveMouse(wxMouseEvent& event)
+{
+    if (_interactionTool == FractalInteractionTool::PointPicker)
+        UnsetToolTip();
+
+    event.Skip();
+}
+
 // ReSharper disable once CppMemberFunctionMayBeConst
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnKeyDown(wxKeyEvent& event)
