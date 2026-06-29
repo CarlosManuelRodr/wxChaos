@@ -6,6 +6,7 @@
 #include "AppPaths.h"
 #include "RendererOptionsFrame.h"
 #include "TextUtils.h"
+#include "config/AppConfigStore.h"
 
 wxDEFINE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 
@@ -157,7 +158,8 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
         "Ember",
         "Rainbow Fire",
         "Classic Mandelbrot",
-        "Custom"
+        "Custom",
+        "System"
     };
     constexpr int gradStyleChoiceNChoices = sizeof(gradStyleChoiceChoices) / sizeof(wxString);
     _gradStylesChoice = new wxChoice(_gradientPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, gradStyleChoiceNChoices, gradStyleChoiceChoices, 0);
@@ -514,13 +516,14 @@ void RendererOptionsFrame::OnOk(wxCommandEvent&)
 void RendererOptionsFrame::GradientColorChangeSelection(wxCommandEvent&)
 {
     // Changes the gradStyle.
-    _gradFractalColor.SetStyle(static_cast<ColorPaletteTypes>(_gradStylesChoice->GetCurrentSelection()));
+    const auto selected = static_cast<ColorPaletteTypes>(_gradStylesChoice->GetCurrentSelection());
+    _gradFractalColor.SetStyle(AppConfig::ResolveColorStyle(selected));
     wxGradient myGrad;
     myGrad.SetMin(0);
     const int paletteSize = _gradFractalColor.paletteSize;
     myGrad.SetMax(paletteSize);
     myGrad.FromString(wxString::FromUTF8(_gradFractalColor.grad.c_str()));
-    _fractalPresenter->SetColorPalette(static_cast<ColorPaletteTypes>(_gradStylesChoice->GetCurrentSelection()));
+    _fractalPresenter->SetColorPalette(selected);
     _fractalPresenter->SetGradient(myGrad);
     _fractalPresenter->SetColorCycleLength(_gradFractalColor.colorCycleLength);
     _gradPalSize->SetValue(paletteSize);
