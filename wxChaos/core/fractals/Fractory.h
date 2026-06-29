@@ -16,9 +16,9 @@ private:
     FractoryRenderer *myRender;
 public:
     Fractory(unsigned int width, unsigned int height);
-    ~Fractory();
+    ~Fractory() override;
     wxString GetName() const override { return "Fractory"; }
 
-    void Render();
-    void DrawOrbit();
+    void Render() override;
+    void DrawOrbit() override;
 };
