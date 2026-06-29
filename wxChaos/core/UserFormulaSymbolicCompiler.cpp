@@ -29,6 +29,38 @@ bool UserFormulaSymbolicCompiler::ContainsUnsupportedTypeName(const std::string&
     });
 }
 
+std::string UserFormulaSymbolicCompiler::GetUnsupportedFunctionName(const std::string& typeName)
+{
+    static const std::pair<std::string, std::string> unsupportedFunctions[] = {
+        {"ABS", "abs"},
+        {"CONJUGATE", "conjugate"},
+        {"FLOOR", "floor"},
+        {"CEILING", "ceiling"},
+        {"TRUNCATE", "truncate"},
+        {"SIGN", "sign"},
+        {"LAMBERT", "lambert"},
+        {"ZETA", "zeta"},
+        {"DIRICHLET", "dirichlet"},
+        {"ATAN2", "atan2"},
+        {"GAMMA", "gamma"},
+        {"ERF", "erf"}
+    };
+
+    std::string upper = typeName;
+    std::transform(upper.begin(), upper.end(), upper.begin(), [](const unsigned char c)
+    {
+        return static_cast<char>(std::toupper(c));
+    });
+
+    const auto found = std::find_if(std::begin(unsupportedFunctions), std::end(unsupportedFunctions),
+                                    [&upper](const auto& function)
+    {
+        return upper.find(function.first) != std::string::npos;
+    });
+
+    return found == std::end(unsupportedFunctions) ? std::string() : found->second;
+}
+
 bool UserFormulaSymbolicCompiler::ValidateExpressionTree(const SymEngine::RCP<const SymEngine::Basic>& expression, std::string& error)
 {
     if (SymEngine::is_a<SymEngine::Symbol>(*expression))
@@ -51,7 +83,10 @@ bool UserFormulaSymbolicCompiler::ValidateExpressionTree(const SymEngine::RCP<co
     const std::string typeName = SymEngine::type_code_name(expression->get_type_code());
     if (ContainsUnsupportedTypeName(typeName))
     {
-        error = "Unsupported symbolic construct: " + typeName;
+        const std::string functionName = GetUnsupportedFunctionName(typeName);
+        error = functionName.empty()
+            ? "Unsupported symbolic construct: " + typeName
+            : "Unsupported function: " + functionName;
         return false;
     }
 

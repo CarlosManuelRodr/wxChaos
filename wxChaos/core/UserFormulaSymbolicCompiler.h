@@ -37,6 +37,13 @@ class UserFormulaSymbolicCompiler
     static bool ContainsUnsupportedTypeName(const std::string& typeName);
 
     /**
+     * @brief Gets the user-facing function name for an unsupported SymEngine function node.
+     * @param typeName SymEngine type-code name.
+     * @return Lowercase function name, or an empty string when the type is not a known function.
+     */
+    static std::string GetUnsupportedFunctionName(const std::string& typeName);
+
+    /**
      * @brief Validate symbols and symbolic constructs in a parsed expression tree.
      * @param expression SymEngine expression tree to inspect.
      * @param error Receives a user-facing validation error on failure.
