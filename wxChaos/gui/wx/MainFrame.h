@@ -79,7 +79,8 @@ enum IDS
     ID_DIMENSION_CALCULATOR,
     ID_COMMAND_CONSOLE,
     ID_SETTINGS,
-    ID_AUTOMATIC_ITERATIONS
+    ID_AUTOMATIC_ITERATIONS,
+    ID_VIEW_TOOLBAR
 };
 
 /**
@@ -118,6 +119,7 @@ class MainFrame : public wxFrame
     wxMenu* _iterationsMenu{};
     wxMenu* _toolMenu{};
     wxMenu* _rendererMenu{};
+    wxMenu* _viewMenu{};
     wxMenu* _helpMenu{};
     wxMenu* _formula{};
     wxMenuItem* _juliaMode{};
@@ -130,6 +132,7 @@ class MainFrame : public wxFrame
     wxMenuItem* _lessIterations{};
     wxMenuItem* _automaticIterations{};
     wxMenuItem* _fractalOptionsItem{};
+    wxMenuItem* _toolbarItem{};
     wxMenu* _introConstant{};
     wxMenu *_typeComplex{}, *_typeNumericalMethod{}, *_typePhysics{}, *_typeOther{};
     wxScrolledWindow* _optionPanel{};
@@ -252,6 +255,7 @@ public :
     void OnSetIterations(wxCommandEvent& event);
     void OnAutomaticIterations(wxCommandEvent& event);
     void OnFormulaDialog(wxCommandEvent& event);
+    void OnToolbarVisibility(wxCommandEvent& event);        ///< Shows or hides the interaction toolbar.
     void OnFractalOptions(wxCommandEvent& event);
     void OnApplyPanelOpt(wxCommandEvent& event);
     void OnUserManual(wxCommandEvent& event);

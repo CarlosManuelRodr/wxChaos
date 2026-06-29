@@ -160,6 +160,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAutomaticIterations, this, ID_AUTOMATIC_ITERATIONS);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateAutomaticIterations, this, ID_AUTOMATIC_ITERATIONS);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFormulaDialog, this, ID_FORMULA_DIALOG);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnToolbarVisibility, this, ID_VIEW_TOOLBAR);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFractalOptions, this, ID_OPTION_PANEL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnUserManual, this, ID_USER_MANUAL);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnScriptEditor, this, ID_SCRIPT_EDITOR);
@@ -249,6 +250,7 @@ void MainFrame::SetUpGUI()
     // Init menu.
     _menubar = new wxMenuBar();
     _fileMenu = new wxMenu();
+    _viewMenu = new wxMenu();
     _fractalMenu = new wxMenu();
     _iterationsMenu = new wxMenu();
     _toolMenu = new wxMenu();
@@ -359,6 +361,13 @@ void MainFrame::SetUpGUI()
     _fileMenu->AppendSeparator();
     _fileMenu->Append(wxID_EXIT, "Quit");
 
+    // View menu.
+    _toolbarItem = new wxMenuItem(_viewMenu, ID_VIEW_TOOLBAR, wxString("Toolbar"), wxEmptyString, wxITEM_CHECK);
+    _fractalOptionsItem = new wxMenuItem(_viewMenu, ID_OPTION_PANEL, wxString("Fractal options"), wxEmptyString, wxITEM_CHECK);
+    _viewMenu->Append(_toolbarItem);
+    _viewMenu->Append(_fractalOptionsItem);
+    _toolbarItem->Check(true);
+
     // Tools menu.
     _toolMenu->Append(ID_SCRIPT_EDITOR, "Script editor", "Create new fractals with an scripting language.");
     _toolMenu->Append(ID_COMMAND_CONSOLE, "Command console", "Control and inspect the current fractal with commands.");
@@ -378,8 +387,6 @@ void MainFrame::SetUpGUI()
     _iterationsMenu->Append(_automaticIterations);
 
     // Fractal menu.
-    _fractalOptionsItem = new wxMenuItem(_fractalMenu, ID_OPTION_PANEL, wxString("Fractal options"), wxEmptyString, wxITEM_CHECK);    // Txt: "Fractal options"
-    _fractalMenu->Append(_fractalOptionsItem);
     _fractalMenu->Append(ID_FORMULA_DIALOG, "Enter user formula"); // Txt: "Enter user formula"
     _fractalMenu->AppendSeparator();
 
@@ -398,6 +405,7 @@ void MainFrame::SetUpGUI()
 
 
     _menubar->Append(_fileMenu, "File");
+    _menubar->Append(_viewMenu, "View");
     _menubar->Append(_fractalMenu, "Fractal");
     _menubar->Append(_iterationsMenu, "Iterations");
     _menubar->Append(_rendererMenu, "Renderer");
@@ -806,6 +814,19 @@ void MainFrame::OnUpdateManualIterations(wxUpdateUIEvent& event)
 void MainFrame::OnUpdateAutomaticIterations(wxUpdateUIEvent& event)
 {
     event.Check(_fractalCanvas != nullptr && _fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
+}
+void MainFrame::OnToolbarVisibility(wxCommandEvent& event)
+{
+    if (_interactionToolbar == nullptr)
+        return;
+
+    const bool showToolbar = event.IsChecked();
+    _interactionToolbar->Show(showToolbar);
+    if (_toolbarItem != nullptr)
+        _toolbarItem->Check(showToolbar);
+
+    this->GetSizer()->Layout();
+    LayoutStatusBarControls();
 }
 void MainFrame::OnFractalOptions(wxCommandEvent&)
 {
