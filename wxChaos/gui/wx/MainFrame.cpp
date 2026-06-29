@@ -28,10 +28,7 @@ void GetDesktopResolution(int& width, int& height)
 // Fractal Frame
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition, wxSize(1180, 820))
 {
-    // Init handlers.
     wxImage::AddHandler(new wxPNGHandler);
-
-    // WX.
     this->SetSizeHints(wxSize(900, 650), wxDefaultSize);
 
     const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
