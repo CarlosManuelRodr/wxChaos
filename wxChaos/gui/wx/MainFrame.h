@@ -187,6 +187,7 @@ class MainFrame : public wxFrame
     /// @param config Newly saved application configuration.
     void ApplyAppConfig(const AppConfig& config);
     void SetAutomaticIterations(bool mode) const;
+    void ResetIterationsToDefault() const;
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();

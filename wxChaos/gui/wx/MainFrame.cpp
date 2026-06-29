@@ -543,6 +543,11 @@ void MainFrame::SetAutomaticIterations(const bool mode) const
     if (_automaticIterations != nullptr)
         _automaticIterations->Check(mode);
 }
+void MainFrame::ResetIterationsToDefault() const
+{
+    _fractalCanvas->GetFractalPresenter()->ChangeIterations(static_cast<unsigned int>(_appConfig.maxIterations));
+    SetAutomaticIterations(_appConfig.automaticIterations);
+}
 void MainFrame::CloseAll()
 {
     if (_renderStatusWidget != nullptr)
@@ -1085,6 +1090,7 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
         _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
         _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
         _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
+        ResetIterationsToDefault();
         _fractalType = type;
         ResetColorRotationTool();
         this->UpdateMenu();
@@ -1107,6 +1113,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
     _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
+    ResetIterationsToDefault();
 
     _fractalType = FractalType::ScriptFractal;
     ResetColorRotationTool();
