@@ -68,8 +68,21 @@ Renderer support and the fractal definition in `wxChaos/core/fractals/` must be 
 - Set `_hasSmoothRender = true` when smooth escape-time coloring is supported.
 - Add every supported `RenderingAlgorithmType` to `_availableAlg` in the desired UI order.
 - Add the matching case to the renderer's `Render()` switch. A menu entry without a dispatch case produces an empty render.
+- When adding a new fractal or changing an existing fractal in a way that changes its formula, options, renderer support, capabilities, history, or user-visible behavior, create or update the matching HTML documentation in `app_resources/Resources/Documents/`.
 
 The refactored escape-time family generally supports `EscapeTime`, `GaussianInt`, `EscapeAngle`, and `TriangleInequality`. For triangle inequality, pass the formula's transformed pre-constant term to the observer rather than placeholder zeroes.
+
+## GUI And Interaction Notes
+
+- `FractalToolbar` is shared by `MainFrame` and `JuliaPreviewFrame`. New interaction tools, toolbar icons, information controls, and color-rotation behavior should usually be added there once instead of separately wiring each frame.
+- Keep `FractalCanvas` as the owner of fractal mouse behavior. Toolbar callbacks should select a `FractalInteractionTool`; the canvas should decide how mouse move, click, wheel, capture, and leave events behave for that tool.
+- When adding or changing a `FractalInteractionTool`, update the enum, toolbar IDs, icon selection, radio-tool selection handling, cursor selection, and canvas event behavior together.
+- Every interaction feature added to the main fractal canvas should also be considered for `JuliaPreviewFrame`, because it embeds a `FractalCanvas` and is expected to feel like the main view unless there is a deliberate reason not to.
+- Use theme-specific SVG icons from `app_resources/Resources/Icons/` with `wxBitmapBundle::FromSVGFile(...)`. Pick the light or dark asset with `AppTheme::IsDark()`.
+- Avoid runtime-generated toolbar icons when resource icons exist. Keep toolbar hit targets large enough for comfortable clicking; the current fractal toolbar uses 48x48 tool bitmaps.
+- For hover inspectors that update rapidly, avoid repeatedly replacing native tooltip text because it can flicker. Use a persistent lightweight popup or another stable widget and update its contents in place.
+- `DocumentViewer` uses `wxWebView` and MathJax-capable HTML. Use viewer-side navigation state when immediate Back/Forward button responsiveness matters, because `wxWebView::CanGoBack()` and `CanGoForward()` may lag until the backend commits navigation.
+- Documentation pages should share `app_resources/Resources/Documents/fractal_info.css`; the viewer injects the current theme so pages can adapt to light and dark mode. Legacy tutorials under `app_resources/Resources/Tutorials/` can also reuse that stylesheet without changing their content.
 
 ## Build Environment
 
