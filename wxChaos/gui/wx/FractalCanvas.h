@@ -19,6 +19,9 @@
 #include "../../core/FractalFactory.h"
 #include "FractalInteractionTool.h"
 
+class wxPopupWindow;
+class wxStaticText;
+
 wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 
 /**
@@ -77,6 +80,9 @@ class FractalCanvas : public wxSFMLCanvas
     wxPoint _lastMousePosition;
     wxPoint _lastMouseWheelPanPosition;
     wxPoint _zoomToolStartPosition;
+    wxPopupWindow* _pointInfoPopup{};
+    wxStaticText* _pointInfoText{};
+    wxString _lastPointInfoText;
 
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
     void CreateFractal(FractalType type);
@@ -92,6 +98,8 @@ class FractalCanvas : public wxSFMLCanvas
     double CalculateZoomToolScale(wxPoint position) const;
     void CommitZoomToolDrag(wxPoint endPosition);
     wxString InspectPointAt(wxPoint position) const;
+    void ShowPointInfo(wxPoint position, const wxString& text);
+    void HidePointInfo();
     void CancelToolGestures();
     static wxString FormatStatusCoordinate(double value);
 

@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
+#include <wx/popupwin.h>
+#include <wx/settings.h>
+#include <wx/stattext.h>
 #include "AppPaths.h"
 #include "FractalCanvas.h"
 #include "ImageExportSizeDialog.h"
@@ -101,6 +104,7 @@ FractalCanvas::~FractalCanvas()
     _fractalFactory.DeleteFractal();
     delete _selectionRect;
     delete _screenPointer;
+    HidePointInfo();
 }
 void FractalCanvas::CreateFractal(const FractalType type)
 {
@@ -280,6 +284,50 @@ wxString FractalCanvas::InspectPointAt(const wxPoint position) const
         return "No fractal loaded.";
 
     return _fractal->InspectPoint(_fractal->GetX(position.x), _fractal->GetY(position.y));
+}
+
+void FractalCanvas::ShowPointInfo(const wxPoint position, const wxString& text)
+{
+    constexpr int popupMaxWidth = 520;
+    const wxPoint screenPosition = ClientToScreen(position + wxPoint(20, 18));
+
+    if (_pointInfoPopup == nullptr)
+    {
+        _pointInfoPopup = new wxPopupWindow(this, wxBORDER_SIMPLE);
+        _pointInfoPopup->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_INFOBK));
+
+        _pointInfoText = new wxStaticText(_pointInfoPopup, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
+        _pointInfoText->SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_INFOTEXT));
+        _pointInfoText->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_INFOBK));
+
+        const auto sizer = new wxBoxSizer(wxVERTICAL);
+        sizer->Add(_pointInfoText, 0, wxALL, 8);
+        _pointInfoPopup->SetSizer(sizer);
+    }
+
+    if (_lastPointInfoText != text)
+    {
+        _lastPointInfoText = text;
+        _pointInfoText->SetLabel(text);
+        _pointInfoText->Wrap(popupMaxWidth);
+        _pointInfoPopup->Fit();
+    }
+
+    _pointInfoPopup->Move(screenPosition);
+    if (!_pointInfoPopup->IsShown())
+        _pointInfoPopup->Show();
+}
+
+void FractalCanvas::HidePointInfo()
+{
+    _lastPointInfoText.clear();
+    _pointInfoText = nullptr;
+
+    if (_pointInfoPopup == nullptr)
+        return;
+
+    _pointInfoPopup->Destroy();
+    _pointInfoPopup = nullptr;
 }
 
 void FractalCanvas::CancelToolGestures()
@@ -484,7 +532,7 @@ void FractalCanvas::SetInteractionTool(const FractalInteractionTool tool)
 {
     CancelToolGestures();
     if (_interactionTool == FractalInteractionTool::PointPicker && tool != FractalInteractionTool::PointPicker)
-        UnsetToolTip();
+        HidePointInfo();
 
     _interactionTool = tool;
 
@@ -880,7 +928,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     if (_interactionTool == FractalInteractionTool::PointPicker)
     {
         const wxPoint currentPosition = event.GetPosition();
-        SetToolTip(InspectPointAt(currentPosition));
+        ShowPointInfo(currentPosition, InspectPointAt(currentPosition));
         _lastMousePosition = currentPosition;
         _hasLastMousePosition = true;
         EmitStatusText();
@@ -928,7 +976,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 void FractalCanvas::OnLeaveMouse(wxMouseEvent& event)
 {
     if (_interactionTool == FractalInteractionTool::PointPicker)
-        UnsetToolTip();
+        HidePointInfo();
 
     event.Skip();
 }
