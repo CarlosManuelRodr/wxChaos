@@ -12,7 +12,7 @@
  */
 class Fractory : public Fractal
 {
-    FractoryRenderer *myRender;
+    FractoryRenderer* myRender;
 public:
     Fractory(unsigned int width, unsigned int height);
     ~Fractory() override;
