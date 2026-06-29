@@ -12,7 +12,6 @@
  */
 class Fractory : public Fractal
 {
-private:
     FractoryRenderer *myRender;
 public:
     Fractory(unsigned int width, unsigned int height);
