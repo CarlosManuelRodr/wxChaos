@@ -161,7 +161,7 @@ class MainFrame : public wxFrame
     std::vector<wxCheckBox*> _checkBoxes;
 
     // Configuration.
-    FractalType _fractalType;
+    FractalType _fractalType{};
     AppConfig _appConfig;
 
     void SetUpGUI();                      ///< Create the main window.

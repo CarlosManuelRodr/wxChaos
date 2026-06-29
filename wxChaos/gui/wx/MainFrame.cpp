@@ -28,8 +28,6 @@ void GetDesktopResolution(int& width, int& height)
 // Fractal Frame
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition, wxSize(1180, 820))
 {
-    _fractalType = FractalType::Mandelbrot;
-
     // Init handlers.
     wxImage::AddHandler(new wxPNGHandler);
     wxImage::AddHandler(new wxICOHandler);
