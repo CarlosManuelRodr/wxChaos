@@ -8,6 +8,10 @@
 #include "FractalDocumentation.h"
 #include "TextUtils.h"
 #include "AppTheme.h"
+#include <wx/bmpbndl.h>
+#include <wx/panel.h>
+#include <wx/statbmp.h>
+#include <wx/stattext.h>
 
 using namespace std;
 
@@ -224,6 +228,33 @@ void MainFrame::LayoutStatusBarControls() const
         rect.y + verticalMargin,
         rect.width - horizontalMargin * 2,
         rect.height - verticalMargin * 2);
+}
+
+wxPanel* MainFrame::CreateFractalOptionsHeader()
+{
+    const auto header = new wxPanel(_optionPanel, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const string icon = AppTheme::IsDark() ? "cog_dark.svg" : "cog_light.svg";
+    const wxSize iconSize(24, 24);
+    const wxBitmapBundle iconBundle = wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), iconSize);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, iconBundle.GetBitmap(iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 12);
+
+    const auto title = new wxStaticText(header, wxID_ANY, "Fractal options");
+    wxFont titleFont = title->GetFont();
+    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+    titleFont.SetPointSize(titleFont.GetPointSize() + 1);
+    title->SetFont(titleFont);
+    title->SetBackgroundColour(AppTheme::ControlBackground());
+    title->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 52));
+    return header;
 }
 
 void MainFrame::OpenIterationsDialog()
@@ -443,8 +474,8 @@ void MainFrame::SetUpGUI()
     _showOptionsPanel = false;
     _optionSizer = new wxBoxSizer(wxVERTICAL);
 
-    _fractalOptionsBitmap = new wxStaticBitmap(_optionPanel, wxID_ANY, wxBitmap(AppPaths::ResourceFile({"prop.png"}), wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, 0);
-    _optionSizer->Add(_fractalOptionsBitmap, 0, wxALL, 0);
+    _fractalOptionsHeader = CreateFractalOptionsHeader();
+    _optionSizer->Add(_fractalOptionsHeader, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _optionPanel->SetSizer(_optionSizer);
     _optionPanel->Layout();

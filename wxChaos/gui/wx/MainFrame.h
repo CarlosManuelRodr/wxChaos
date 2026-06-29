@@ -136,7 +136,7 @@ class MainFrame : public wxFrame
     wxMenu* _introConstant{};
     wxMenu *_typeComplex{}, *_typeNumericalMethod{}, *_typePhysics{}, *_typeOther{};
     wxScrolledWindow* _optionPanel{};
-    wxStaticBitmap* _fractalOptionsBitmap{};
+    wxPanel* _fractalOptionsHeader{};
     wxBoxSizer* _fractalSizer{};
     wxBoxSizer* _optionSizer{};
     wxMenuItem* _abortRenderItem{};
@@ -197,6 +197,7 @@ class MainFrame : public wxFrame
     void OpenFractalInformation();
     void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
+    wxPanel* CreateFractalOptionsHeader();
 
 public :
     MainFrame();
