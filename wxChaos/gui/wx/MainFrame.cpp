@@ -30,7 +30,6 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
 {
     // Init handlers.
     wxImage::AddHandler(new wxPNGHandler);
-    wxImage::AddHandler(new wxICOHandler);
 
     // WX.
     this->SetSizeHints(wxSize(900, 650), wxDefaultSize);
