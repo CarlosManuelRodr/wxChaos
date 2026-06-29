@@ -11,9 +11,7 @@ RenderWorker::RenderWorker()
     _x = _y = 0;
     _threadProgress = 0;
     _widthOrigin = _heightOrigin = _widthFinal = _heightFinal = _oldHeightOrigin = 0;
-
     _stopped = false;
-    _threadRunning = false;
 
     _type = FractalType::Undefined;
     _xFactor = 0.0;
@@ -79,12 +77,9 @@ void RenderWorker::SetOldHeightOrigin(const int oldHeightOrigin)
 void RenderWorker::run()
 {
     _y = _heightOrigin;
-    _threadRunning = true;
     _stopped = false;
 
     this->Render();
-
-    _threadRunning = false;
 }
 void RenderWorker::Stop()
 {
@@ -260,10 +255,6 @@ Vector2Int RenderWorker::GetEndPoints() const
 {
     const Vector2Int pos{_widthFinal, _heightFinal};
     return pos;
-}
-bool RenderWorker::IsRunning() const
-{
-    return _threadRunning;
 }
 Options RenderWorker::GetOptions()
 {

@@ -67,8 +67,6 @@ protected:
     int _widthFinal;       ///< The ending X-coordinate (right) of the rendering region.
     int _heightFinal;      ///< The ending Y-coordinate (bottom) of the rendering region.
     int _oldHeightOrigin;  ///< Stores the initial Y-coordinate of the region before any rendering started. This is primarily used in AskProgress() to calculate the percentage of completion relative to the original task size, even if _ho has moved.
-
-    bool _threadRunning;
     bool _stopped;
     Options _myOpt;
 
@@ -145,7 +143,6 @@ public:
     [[nodiscard]] Vector2Int GetCoords() const;
     [[nodiscard]] Vector2Int GetStartPoints() const;
     [[nodiscard]] Vector2Int GetEndPoints() const;
-    [[nodiscard]] bool IsRunning() const;
     virtual unsigned int GetProgress();
 };
 

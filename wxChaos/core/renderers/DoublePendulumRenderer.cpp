@@ -123,7 +123,7 @@ void DoublePendulumRenderer::EscapeTimeRender()
         double movEq2;
         double movEq1;
         double cosTh1MinTh2, sinTh1MinTh2;
-        for (_y=_heightOrigin; _y<_heightFinal && _threadRunning; _y++)
+        for (_y=_heightOrigin; _y<_heightFinal; _y++)
         {
             for (_x=_widthOrigin; _x<_widthFinal; _x++)
             {
@@ -167,9 +167,6 @@ void DoublePendulumRenderer::EscapeTimeRender()
                         }
                     }
                 }
-
-                if (!_threadRunning)
-                    break;
 
                 if (insideSet)
                     _setMap[_x][_y] = true;
