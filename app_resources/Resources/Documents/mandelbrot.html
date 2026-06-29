@@ -11,9 +11,11 @@
 <main>
     <h1>Mandelbrot Set</h1>
     <p class="subtitle">The classical connectedness map for quadratic complex dynamics.</p>
-    <section><h2>Formula</h2><div class="formula">\(z_{0}=0,\quad z_{n+1}=z_n^2+c\). A point \(c\) is drawn inside when the orbit remains bounded.</div></section>
-    <section><h2>Background</h2><p>The set is named after Benoit Mandelbrot, whose computer visualizations helped make it one of the icons of fractal geometry. It is closely related to earlier work by Gaston Julia and Pierre Fatou on iterating complex functions.</p></section>
-    <section><h2>wxChaos capabilities</h2><ul><li>High precision and fast perturbation rendering.</li><li>Orbit display, smooth coloring, orbit traps, and Buddhabrot.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality, Buddhabrot.</li></ul></section>
+    <section><h2>Formula</h2><div class="formula">\(z_{0}=0,\quad z_{n+1}=z_n^2+c\). Each screen point is a complex parameter \(c\). wxChaos colors \(c\) by the first iteration where \(|z_n|>2\), or marks it inside when the orbit stays bounded for the chosen iteration limit.</div></section>
+    <section><h2>Relationship with Julia sets</h2><p>The Mandelbrot set is a map of the quadratic Julia family. For each parameter \(c\), the map \(f_c(z)=z^2+c\) has its own Julia set in the \(z\)-plane. The point \(c\) belongs to the Mandelbrot set exactly when that Julia set is connected. In practice, the main window lets you browse parameter space while Julia mode shows the dynamical plane for the selected parameter.</p></section>
+    <section><h2>Background</h2><p>Gaston Julia and Pierre Fatou studied iteration of rational functions in the early twentieth century, mostly without the benefit of computer graphics. Their work asked how repeated application of a complex function divides the plane into stable and chaotic behavior. Benoit Mandelbrot later used computer visualization to study the connectedness locus of the quadratic family, giving a visible shape to that older theory and helping establish fractal geometry as a language for rough natural forms.</p></section>
+    <section><h2>wxChaos capabilities</h2><ul><li>High precision and fast perturbation rendering for deep zooms.</li><li>Orbit display, smooth coloring, orbit traps, and Buddhabrot rendering.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality, Buddhabrot.</li></ul></section>
+    <section><h2>Learn more</h2><ul><li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot set</a></li><li><a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a></li><li><a href="https://en.wikipedia.org/wiki/Complex_dynamics">Complex dynamics</a></li></ul></section>
 </main>
 </body>
 </html>

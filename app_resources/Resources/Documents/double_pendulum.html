@@ -1,4 +1,21 @@
 <!doctype html>
 <html>
-<head><meta charset="utf-8"><title>Double Pendulum</title><link rel="stylesheet" href="fractal_info.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
-<body><main><h1>Double Pendulum</h1><p class="subtitle">A dynamical-system fractal based on chaotic pendulum motion.</p><section><h2>Formula</h2><div class="formula">Each pixel supplies initial angles. The renderer integrates the double-pendulum equations and tests bailout conditions.</div></section><section><h2>Background</h2><p>The double pendulum is a classic example of deterministic chaos: tiny changes in starting angles can produce very different trajectories.</p></section><section><h2>wxChaos capabilities</h2><ul><li>Configurable masses, length, gravity, timestep, bailout conditions, and Runge-Kutta mode.</li><li>Orbit drawing for the simulated angular trajectory.</li><li>Algorithms: escape time and escape angle.</li></ul></section></main></body></html>
+<head>
+    <meta charset="utf-8">
+    <title>Double Pendulum</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main>
+    <h1>Double Pendulum</h1>
+    <p class="subtitle">A parameter-space image of a chaotic mechanical system.</p>
+    <section><h2>Formula</h2><div class="formula">Each pixel supplies initial angles \((\theta_1,\theta_2)\). wxChaos starts with zero angular velocity, integrates the coupled double-pendulum equations, and colors the point by how long the simulated motion avoids the selected bailout tests.</div></section>
+    <section><h2>Options</h2><dl><dt>\(\theta_1\) Bailout</dt><dd>Enables a stop condition for the first pendulum angle.</dd><dt>\(\theta_2\) Bailout</dt><dd>Enables a stop condition for the second pendulum angle.</dd><dt>Value</dt><dd>The angle threshold, in radians. The default \(\pi\) means the angle has crossed a half-turn boundary.</dd><dt>DeltaT</dt><dd>The simulation time step. Smaller values are slower but reduce numerical drift.</dd><dt>m1, m2</dt><dd>The masses of the upper and lower pendulum bobs. Changing them changes how energy moves between the two arms.</dd><dt>Longitude</dt><dd>The pendulum arm length used by the equations.</dd><dt>Gravity</dt><dd>The gravitational acceleration parameter.</dd><dt>Relative angles</dt><dd>When enabled, bailout tests compare \(\theta_1\) and \(\theta_2\) against their initial pixel angles. When disabled, they compare against absolute zero-centered angles.</dd><dt>Runge-Kutta</dt><dd>Uses a fourth-order Runge-Kutta style integration step instead of the simpler Euler step. It is usually more stable for the same DeltaT, but more expensive.</dd></dl></section>
+    <section><h2>Background</h2><p>A double pendulum is deterministic, but it is highly sensitive to initial conditions. Two nearby angle pairs can remain close for a while and then diverge dramatically. Rendering the initial-angle plane as an escape map turns that sensitivity into a fractal boundary.</p></section>
+    <section><h2>wxChaos capabilities</h2><ul><li>Configurable masses, length, gravity, timestep, bailout conditions, relative-angle mode, and Runge-Kutta mode.</li><li>Orbit drawing for the simulated angular trajectory.</li><li>Algorithms: escape time and escape angle.</li></ul></section>
+    <section><h2>Learn more</h2><ul><li><a href="https://www.famaf.unc.edu.ar/~vmarconi/fiscomp/Double.pdf">Double pendulum notes and equations</a></li><li><a href="https://observablehq.com/@rreusser/the-double-pendulum-fractal">The double pendulum fractal animation</a></li><li><a href="https://en.wikipedia.org/wiki/Double_pendulum">Double pendulum</a></li><li><a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta methods</a></li></ul></section>
+</main>
+</body>
+</html>

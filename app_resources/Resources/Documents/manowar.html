@@ -10,10 +10,11 @@
 <body>
 <main>
     <h1>Manowar</h1>
-    <p class="subtitle">An escape-time fractal with one-step orbit memory.</p>
-    <section><h2>Formula</h2><div class="formula">A Mandelbrot-like recurrence where the next value depends on both \(z_n\) and a remembered previous value.</div></section>
-    <section><h2>Background</h2><p>The Manowar family is a less canonical experimental escape-time family. Memory terms change the local feedback of the orbit and can produce heavy, bulbous structures.</p></section>
-    <section><h2>wxChaos capabilities</h2><ul><li>High precision rendering.</li><li>Smooth coloring and orbit traps.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li></ul></section>
+    <p class="subtitle">A Mandelbrot-like escape-time fractal with one-step orbit memory.</p>
+    <section><h2>Formula</h2><div class="formula">For each pixel \(c\), wxChaos starts \(z_0=c\) and \(m_0=z_0\). Then \(z_{n+1}=z_n^2+m_n+c\), \(m_{n+1}=z_n\). The point escapes when \(|z_n|>2\).</div></section>
+    <section><h2>Background</h2><p>The Manowar family is an experimental escape-time family. Adding a memory term changes the feedback loop from a simple quadratic iteration into a second-order recurrence. That extra state can thicken bulbs, stretch filaments, and make the parameter plane feel less symmetric than the Mandelbrot set.</p></section>
+    <section><h2>wxChaos capabilities</h2><ul><li>High precision rendering and orbit display.</li><li>Smooth coloring and orbit traps.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li></ul></section>
+    <section><h2>Learn more</h2><ul><li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot set</a></li><li><a href="https://en.wikipedia.org/wiki/Recurrence_relation">Recurrence relation</a></li></ul></section>
 </main>
 </body>
 </html>

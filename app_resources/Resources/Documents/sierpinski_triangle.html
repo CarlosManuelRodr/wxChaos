@@ -10,10 +10,12 @@
 <body>
 <main>
     <h1>Sierpinski Triangle</h1>
-    <p class="subtitle">A self-similar triangular fractal.</p>
-    <section><h2>Formula</h2><div class="formula">Repeatedly remove the central triangle, or generate points by an iterated function system.</div></section>
-    <section><h2>Background</h2><p>The triangle is named after Waclaw Sierpinski, who described it in the early twentieth century. Similar recursive triangular patterns appeared earlier in mathematical art and combinatorics.</p></section>
-    <section><h2>wxChaos capabilities</h2><ul><li>High precision rendering.</li><li>Custom non-escape-time renderer.</li></ul></section>
+    <p class="subtitle">A self-similar triangle rendered as a complex-plane membership test.</p>
+    <section><h2>Formula</h2><div class="formula">The classical set can be made by repeatedly removing the middle triangle. wxChaos instead uses an inverse-map trick on the complex plane: starting from \(z=(x,y)\), it doubles the point and subtracts one unit from the coordinate that lies in the upper or right half-cell. Points whose iterates avoid escape remain in the triangle.</div></section>
+    <section><h2>wxChaos renderer trick</h2><p>The renderer divides the unit square into three affine branches: top, right, and lower-left. Each branch maps a small copy of the triangle back onto the full triangle. Iterating this reverse map is similar in spirit to an escape-time fractal: points in removed gaps eventually fly away, while points in the invariant gasket keep landing on valid copies.</p></section>
+    <section><h2>Background</h2><p>Waclaw Sierpinski described this gasket in the early twentieth century, but the pattern also appears in Pascal's triangle modulo 2, cellular automata, and the chaos game. Its charm is that a simple rule creates detail at every scale.</p></section>
+    <section><h2>wxChaos capabilities</h2><ul><li>High precision rendering.</li><li>Custom non-escape-time renderer based on affine inverse branches.</li></ul></section>
+    <section><h2>Learn more</h2><ul><li><a href="https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle">Sierpinski triangle</a></li><li><a href="https://en.wikipedia.org/wiki/Chaos_game">Chaos game</a></li><li><a href="https://en.wikipedia.org/wiki/Iterated_function_system">Iterated function system</a></li></ul></section>
 </main>
 </body>
 </html>

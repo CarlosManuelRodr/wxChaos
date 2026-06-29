@@ -10,10 +10,11 @@
 <body>
 <main>
     <h1>Manowar Julia</h1>
-    <p class="subtitle">A fixed-parameter Julia view of the Manowar recurrence.</p>
-    <section><h2>Formula</h2><div class="formula">A Manowar-style recurrence with a fixed complex parameter \(k\).</div></section>
-    <section><h2>Background</h2><p>As with quadratic Julia sets, fixing the parameter turns the parameter-plane family into a dynamical-plane view.</p></section>
-    <section><h2>wxChaos capabilities</h2><ul><li>High precision rendering.</li><li>Smooth coloring and orbit traps.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li></ul></section>
+    <p class="subtitle">The fixed-parameter dynamical plane for the Manowar recurrence.</p>
+    <section><h2>Formula</h2><div class="formula">Each pixel supplies \(z_0\), the constant \(k\) is fixed, and \(m_0=z_0\). wxChaos iterates \(z_{n+1}=z_n^2+m_n+k\), \(m_{n+1}=z_n\), with escape at \(|z_n|>2\).</div></section>
+    <section><h2>Background</h2><p>This is to Manowar what a Julia set is to Mandelbrot: instead of asking which parameters \(c\) produce bounded behavior, it fixes one parameter \(k\) and studies the starting-value plane.</p></section>
+    <section><h2>wxChaos capabilities</h2><ul><li>High precision rendering, Julia constant editing, and orbit display.</li><li>Smooth coloring and orbit traps.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li></ul></section>
+    <section><h2>Learn more</h2><ul><li><a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a></li><li><a href="https://en.wikipedia.org/wiki/Recurrence_relation">Recurrence relation</a></li></ul></section>
 </main>
 </body>
 </html>

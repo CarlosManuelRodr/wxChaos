@@ -1,4 +1,21 @@
 <!doctype html>
 <html>
-<head><meta charset="utf-8"><title>Cell</title><link rel="stylesheet" href="fractal_info.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
-<body><main><h1>Cell</h1><p class="subtitle">An escape-time formula with cellular-looking regions.</p><section><h2>Formula</h2><div class="formula">A custom complex recurrence implemented by the Cell renderer.</div></section><section><h2>Background</h2><p>This app-specific formula is named for the compartment-like regions it can produce. It is useful as a reminder that visual taxonomy often follows the picture first and the formal family second.</p></section><section><h2>wxChaos capabilities</h2><ul><li>High precision rendering.</li><li>Smooth coloring and orbit traps.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li></ul></section></main></body></html>
+<head>
+    <meta charset="utf-8">
+    <title>Cell</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main>
+    <h1>Cell</h1>
+    <p class="subtitle">A coupled rational escape-time formula with compartment-like regions.</p>
+    <section><h2>Formula</h2><div class="formula">For each pixel \(c\), wxChaos starts \(z_0=c\), \(b_0=c-\sin(c)\). Then \(b_{n+1}=\frac{b_n}{c}\), \(z_{n+1}=z_n c+\frac{b_{n+1}}{z_n}\). The bailout option controls the escape radius.</div></section>
+    <section><h2>Options</h2><dl><dt>Bailout</dt><dd>The escape radius. Larger values allow more orbit growth before the point is marked outside.</dd></dl></section>
+    <section><h2>Background</h2><p>Cell is another wxChaos-specific formula. Its name comes from the compartment-like shapes that appear when the rational terms partition the plane into repeated pockets.</p></section>
+    <section><h2>wxChaos capabilities</h2><ul><li>High precision rendering and orbit display.</li><li>Smooth coloring and orbit traps.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li></ul></section>
+    <section><h2>Learn more</h2><ul><li><a href="https://en.wikipedia.org/wiki/Complex_dynamics">Complex dynamics</a></li><li><a href="https://en.wikipedia.org/wiki/Rational_function">Rational functions</a></li></ul></section>
+</main>
+</body>
+</html>

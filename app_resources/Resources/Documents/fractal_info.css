@@ -52,6 +52,21 @@ li {
     margin: 6px 0;
 }
 
+dl {
+    display: grid;
+    grid-template-columns: minmax(120px, 190px) 1fr;
+    gap: 8px 18px;
+}
+
+dt {
+    color: #f1f5f9;
+    font-weight: 600;
+}
+
+dd {
+    margin: 0;
+}
+
 a {
     color: #8cc7ff;
 }

@@ -10,10 +10,12 @@
 <body>
 <main>
     <h1>Julia Set</h1>
-    <p class="subtitle">A fixed-parameter view of the same quadratic family that produces the Mandelbrot set.</p>
-    <section><h2>Formula</h2><div class="formula">\(z_{n+1}=z_n^2+k\). Each pixel supplies \(z_0\); the constant \(k\) is fixed for the whole image.</div></section>
-    <section><h2>Background</h2><p>Julia sets are named after Gaston Julia, who studied iteration of rational functions in the early twentieth century. The Mandelbrot set can be read as a map of which quadratic Julia sets are connected.</p></section>
+    <p class="subtitle">The dynamical-plane companion to a single Mandelbrot parameter.</p>
+    <section><h2>Formula</h2><div class="formula">\(z_{n+1}=z_n^2+k\). Each pixel supplies \(z_0\); the constant \(k\) is fixed for the whole image. A point is inside when its orbit remains bounded.</div></section>
+    <section><h2>Relationship with Mandelbrot</h2><p>The Mandelbrot set is the atlas for this family. Each point \(k\) in the Mandelbrot set corresponds to a connected quadratic Julia set; parameters outside it produce disconnected Julia dust. In wxChaos, the main Mandelbrot view chooses the parameter and Julia mode opens the matching dynamical plane.</p></section>
+    <section><h2>Background</h2><p>Gaston Julia and Pierre Fatou studied what happens when complex functions are repeatedly applied. Their work was motivated by the classification of stable and unstable behavior in rational maps, decades before computers made the boundaries visible. Julia sets are those boundaries: the places where nearby starting points can have very different futures.</p></section>
     <section><h2>wxChaos capabilities</h2><ul><li>High precision and fast perturbation rendering.</li><li>Orbit display, smooth coloring, orbit traps, and Julia constant editing from the main view.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li></ul></section>
+    <section><h2>Learn more</h2><ul><li><a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a></li><li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot set</a></li><li><a href="https://en.wikipedia.org/wiki/Complex_dynamics">Complex dynamics</a></li></ul></section>
 </main>
 </body>
 </html>
