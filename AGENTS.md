@@ -8,6 +8,13 @@ The author of this project created it circa 2012 as a learning exercise and to e
 - For helper logic that exists only to support a class, use a private member function so the class declaration shows what the class does. Do not add anonymous-namespace free functions for class-local behavior.
 - Avoid adding namespace-scope helper functions unless the behavior is genuinely shared outside a single class.
 - If touching an existing anonymous namespace, keep its contents indented, but do not add new anonymous-namespace functions for class helper behavior.
+- When a C++ function declaration or definition parameter list must wrap, keep the first parameter on the same line as the function name when it fits, then align continuation lines with the first parameter. Prefer balanced horizontal and vertical space usage over one-parameter-per-line formatting. For example:
+
+  ```cpp
+  void MainFrame::OpenJuliaPreviewInMainWindow(const FractalType fractalType, const Options& options,
+                                               const ColorPaletteTypes colorPalette, const Rect& view,
+                                               const bool automaticIterations)
+  ```
 
 ## Escape-Time Renderer Architecture
 
