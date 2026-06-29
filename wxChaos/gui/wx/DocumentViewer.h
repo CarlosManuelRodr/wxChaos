@@ -18,8 +18,34 @@
 class DocumentViewer : public wxDialog
 {
     wxWebView* _webView{};
+    wxButton* _backButton{};
+    wxButton* _forwardButton{};
     wxButton* _closeButton{};
 
+    /// @brief Applies the current wxChaos light or dark theme to the loaded page.
+    void ApplyDocumentTheme() const;
+
+    /// @brief Enables navigation buttons according to the web view history.
+    void UpdateNavigationButtons() const;
+
+    /// @brief Navigates to the previous document history entry.
+    /// @param event Button click event.
+    void OnBack(wxCommandEvent& event);
+
+    /// @brief Navigates to the next document history entry.
+    /// @param event Button click event.
+    void OnForward(wxCommandEvent& event);
+
+    /// @brief Updates document chrome after navigation completes.
+    /// @param event Web view navigation event.
+    void OnNavigated(wxWebViewEvent& event);
+
+    /// @brief Applies theme and navigation state after a page finishes loading.
+    /// @param event Web view loaded event.
+    void OnLoaded(wxWebViewEvent& event);
+
+    /// @brief Closes the document viewer.
+    /// @param event Button click event.
     void OnClose(wxCommandEvent& event);
 
 public:

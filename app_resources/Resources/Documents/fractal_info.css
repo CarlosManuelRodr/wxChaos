@@ -1,6 +1,32 @@
+:root {
+    color-scheme: dark;
+    --page-background: #171a1f;
+    --text-color: #d8dee9;
+    --muted-text-color: #9fb0c3;
+    --heading-color: #f1f5f9;
+    --accent-color: #8cc7ff;
+    --section-border-color: #343b46;
+    --panel-background: #101318;
+    --panel-border-color: #343b46;
+    --image-border-color: #3f4652;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+    --page-background: #f6f8fb;
+    --text-color: #202936;
+    --muted-text-color: #56677d;
+    --heading-color: #101827;
+    --accent-color: #0f65a6;
+    --section-border-color: #d7dde6;
+    --panel-background: #ffffff;
+    --panel-border-color: #cad3df;
+    --image-border-color: #c5cedb;
+}
+
 body {
-    color: #d8dee9;
-    background: #171a1f;
+    color: var(--text-color);
+    background: var(--page-background);
     font-family: "Segoe UI", Arial, sans-serif;
     line-height: 1.55;
     margin: 0;
@@ -19,26 +45,26 @@ h1 {
 }
 
 .subtitle {
-    color: #9fb0c3;
+    color: var(--muted-text-color);
     font-size: 1.05rem;
     margin: 0 0 28px;
 }
 
 section {
-    border-top: 1px solid #343b46;
+    border-top: 1px solid var(--section-border-color);
     padding-top: 20px;
     margin-top: 24px;
 }
 
 h2 {
-    color: #f1f5f9;
+    color: var(--heading-color);
     font-size: 1.1rem;
     margin: 0 0 12px;
 }
 
 .formula {
-    background: #101318;
-    border: 1px solid #343b46;
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
     border-radius: 8px;
     padding: 16px 20px;
     overflow-x: auto;
@@ -59,7 +85,7 @@ dl {
 }
 
 dt {
-    color: #f1f5f9;
+    color: var(--heading-color);
     font-weight: 600;
 }
 
@@ -68,9 +94,44 @@ dd {
 }
 
 a {
-    color: #8cc7ff;
+    color: var(--accent-color);
 }
 
 .note {
-    color: #aab6c5;
+    color: var(--muted-text-color);
+}
+
+.wxchaos-document {
+    color: var(--text-color);
+    background: var(--page-background);
+}
+
+.wxchaos-document font,
+.wxchaos-document span,
+.wxchaos-document p {
+    color: inherit !important;
+}
+
+.wxchaos-document b {
+    color: var(--heading-color);
+}
+
+.wxchaos-document img {
+    border: 1px solid var(--image-border-color);
+    border-radius: 6px;
+    padding: 4px;
+    background: var(--panel-background);
+    max-width: 100%;
+    height: auto;
+}
+
+.tutorial-document {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 40px 48px;
+}
+
+.tutorial-document p:first-of-type + p,
+.tutorial-document p:first-of-type {
+    color: var(--heading-color);
 }
