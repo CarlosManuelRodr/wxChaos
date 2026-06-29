@@ -33,6 +33,14 @@ FractalToolbar::FractalToolbar(wxWindow* parent)
         "Drag upward to zoom in or downward to zoom out");
     wxToolBarBase::AddSeparator();
     wxToolBarBase::AddStretchableSpace();
+    AddTool(
+        ID_INFORMATION,
+        wxEmptyString,
+        CreateInformationToolBitmap(),
+        wxNullBitmap,
+        wxITEM_NORMAL,
+        "Information",
+        "Show information about this fractal");
     AddCheckTool(
         ID_COLOR_ROTATION,
         wxEmptyString,
@@ -47,6 +55,7 @@ FractalToolbar::FractalToolbar(wxWindow* parent)
     Bind(wxEVT_TOOL, &FractalToolbar::OnInteractionTool, this, ID_CURSOR);
     Bind(wxEVT_TOOL, &FractalToolbar::OnInteractionTool, this, ID_HAND);
     Bind(wxEVT_TOOL, &FractalToolbar::OnInteractionTool, this, ID_ZOOM);
+    Bind(wxEVT_TOOL, &FractalToolbar::OnInformation, this, ID_INFORMATION);
     Bind(wxEVT_TOOL, &FractalToolbar::OnColorRotation, this, ID_COLOR_ROTATION);
 }
 
@@ -58,6 +67,16 @@ void FractalToolbar::SetToolChangedHandler(ToolChangedHandler handler)
 void FractalToolbar::SetColorRotationHandler(ColorRotationHandler handler)
 {
     _colorRotationHandler = std::move(handler);
+}
+
+void FractalToolbar::SetInformationHandler(InformationHandler handler)
+{
+    _informationHandler = std::move(handler);
+}
+
+void FractalToolbar::SetInformationEnabled(const bool enabled)
+{
+    EnableTool(ID_INFORMATION, enabled);
 }
 
 void FractalToolbar::SetInteractionTool(const FractalInteractionTool tool)
@@ -101,6 +120,12 @@ wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteract
     }
 }
 
+wxBitmapBundle FractalToolbar::CreateInformationToolBitmap()
+{
+    const string icon = AppTheme::IsDark() ? "help_dark.svg" : "help_light.svg";
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), wxSize(48, 48));
+}
+
 wxBitmapBundle FractalToolbar::CreateColorRotationToolBitmap(const bool active)
 {
     const string icon = active
@@ -138,6 +163,12 @@ void FractalToolbar::OnInteractionTool(wxCommandEvent& event)
 
     if (_toolChangedHandler)
         _toolChangedHandler(tool);
+}
+
+void FractalToolbar::OnInformation(wxCommandEvent&)
+{
+    if (_informationHandler)
+        _informationHandler();
 }
 
 void FractalToolbar::OnColorRotation(wxCommandEvent&)

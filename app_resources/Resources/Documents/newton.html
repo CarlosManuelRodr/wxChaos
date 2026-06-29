@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Newton</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main>
+    <h1>Newton Fractal</h1>
+    <p class="subtitle">Basins of attraction for Newton-Raphson root finding.</p>
+    <section><h2>Formula</h2><div class="formula">\(z_{n+1}=z_n-\frac{f(z_n)}{f'(z_n)}\), with \(f(z)=z^3-1\).</div></section>
+    <section><h2>Background</h2><p>Newton's method is a numerical method for finding roots. Coloring each starting point by the root it reaches reveals the fractal boundaries between basins of attraction.</p></section>
+    <section><h2>wxChaos capabilities</h2><ul><li>High precision rendering.</li><li>Orbit trap mode for convergence rendering.</li><li>Algorithm: convergence test.</li></ul></section>
+</main>
+</body>
+</html>

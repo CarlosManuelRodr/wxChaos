@@ -4,7 +4,8 @@
 #include "ImageExportSizeDialog.h"
 #include "AngelscriptBindings.h"
 #include "AppPaths.h"
-#include "HTMLViewer.h"
+#include "DocumentViewer.h"
+#include "FractalDocumentation.h"
 #include "TextUtils.h"
 #include "AppTheme.h"
 
@@ -81,7 +82,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
 }
 void MainFrame::ShowFirstUseDialog()
 {
-    const auto firstUseDialog = new HTMLViewer(
+    const auto firstUseDialog = new DocumentViewer(
         AppPaths::ResourceFile({"Tutorials", "mainTut.html"}),
         this,
         wxID_ANY,
@@ -185,6 +186,7 @@ void MainFrame::CreateInteractionToolbar()
         _fractalCanvas->GetFractalPresenter()->ToggleColorRotation();
         return true;
     });
+    _interactionToolbar->SetInformationHandler([this] { OpenFractalInformation(); });
 }
 
 void MainFrame::CreateStatusBarControls()
@@ -237,6 +239,25 @@ void MainFrame::OpenIterationsDialog()
         _iterationsDialog->Raise();
         _iterationsDialog->SetFocus();
     }
+}
+
+void MainFrame::OpenFractalInformation()
+{
+    if (_fractalCanvas == nullptr)
+        return;
+
+    const wxString documentFile = FractalDocumentation::GetDocumentFile(_fractalCanvas->GetFractalType());
+    if (documentFile.empty())
+        return;
+
+    DocumentViewer viewer(documentFile, this, wxID_ANY, _fractalCanvas->GetFractal()->GetName());
+    viewer.ShowModal();
+}
+
+void MainFrame::UpdateInformationTool() const
+{
+    if (_interactionToolbar != nullptr && _fractalCanvas != nullptr)
+        _interactionToolbar->SetInformationEnabled(FractalDocumentation::HasDocumentation(_fractalCanvas->GetFractalType()));
 }
 
 void MainFrame::SetUpGUI()
@@ -1348,6 +1369,7 @@ void MainFrame::UpdateMenu()
     // If Julia mode is opened, closes it.
     DestroyJuliaMode(true);
     this->UpdateOptionsPanel();
+    UpdateInformationTool();
 }
 void MainFrame::UpdateJuliaMode()
 {

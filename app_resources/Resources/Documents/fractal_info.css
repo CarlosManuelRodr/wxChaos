@@ -1,0 +1,61 @@
+body {
+    color: #d8dee9;
+    background: #171a1f;
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.55;
+    margin: 0;
+}
+
+main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 40px 48px;
+}
+
+h1 {
+    font-size: 2.2rem;
+    font-weight: 650;
+    margin: 0 0 8px;
+}
+
+.subtitle {
+    color: #9fb0c3;
+    font-size: 1.05rem;
+    margin: 0 0 28px;
+}
+
+section {
+    border-top: 1px solid #343b46;
+    padding-top: 20px;
+    margin-top: 24px;
+}
+
+h2 {
+    color: #f1f5f9;
+    font-size: 1.1rem;
+    margin: 0 0 12px;
+}
+
+.formula {
+    background: #101318;
+    border: 1px solid #343b46;
+    border-radius: 8px;
+    padding: 16px 20px;
+    overflow-x: auto;
+}
+
+ul {
+    padding-left: 22px;
+}
+
+li {
+    margin: 6px 0;
+}
+
+a {
+    color: #8cc7ff;
+}
+
+.note {
+    color: #aab6c5;
+}

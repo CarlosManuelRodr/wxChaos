@@ -7,7 +7,7 @@
 #include "ImageExportSizeDialog.h"
 #include "BmpImageWriter.h"
 #include "AngelscriptBindings.h"
-#include "HTMLViewer.h"
+#include "DocumentViewer.h"
 #include "SystemUtilities.h"
 using namespace std;
 
@@ -1542,8 +1542,8 @@ void DimensionFrame::GetScriptFractals()
 }
 void DimensionFrame::OnHelp(wxCommandEvent&)
 {
-    const auto diag = new HTMLViewer(AppPaths::ResourceFile({"Tutorials", "dimTut.html"}),
-                                this, wxID_ANY, wxString("Calculate dimension help"));
+    const auto diag = new DocumentViewer(AppPaths::ResourceFile({"Tutorials", "dimTut.html"}),
+                                         this, wxID_ANY, wxString("Calculate dimension help"));
     diag->ShowModal();
     diag->Destroy();
 }

@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Julia</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main>
+    <h1>Julia Set</h1>
+    <p class="subtitle">A fixed-parameter view of the same quadratic family that produces the Mandelbrot set.</p>
+    <section><h2>Formula</h2><div class="formula">\(z_{n+1}=z_n^2+k\). Each pixel supplies \(z_0\); the constant \(k\) is fixed for the whole image.</div></section>
+    <section><h2>Background</h2><p>Julia sets are named after Gaston Julia, who studied iteration of rational functions in the early twentieth century. The Mandelbrot set can be read as a map of which quadratic Julia sets are connected.</p></section>
+    <section><h2>wxChaos capabilities</h2><ul><li>High precision and fast perturbation rendering.</li><li>Orbit display, smooth coloring, orbit traps, and Julia constant editing from the main view.</li><li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li></ul></section>
+</main>
+</body>
+</html>

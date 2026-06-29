@@ -13,7 +13,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 # -----------
 # wxWidgets -
 # -----------
-find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base adv html stc richtext xml)
+find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base adv html stc richtext webview xml)
 set(WXCHAOS_WX_LIBRARIES
         wx::core
         wx::base
@@ -21,6 +21,7 @@ set(WXCHAOS_WX_LIBRARIES
         wx::html
         wx::stc
         wx::richtext
+        wx::webview
         wx::xml
 )
 

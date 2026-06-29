@@ -1,6 +1,8 @@
 // ReSharper disable CppDFAMemoryLeak
 #include "JuliaPreviewFrame.h"
 #include "AppPaths.h"
+#include "DocumentViewer.h"
+#include "FractalDocumentation.h"
 #include "MainFrame.h"
 
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
@@ -30,6 +32,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
         _previewCanvas->GetFractalPresenter()->ToggleColorRotation();
         return true;
     });
+    _toolbar->SetInformationHandler([this] { OpenFractalInformation(); });
 
     _previewCanvas = new FractalCanvas(fractalType, this, wxID_ANY, wxDefaultPosition, size);
     _previewCanvas->SetMainCanvasOverlaysVisible(false);
@@ -47,6 +50,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     SetSizeHints(wxSize(500, 300), wxDefaultSize);
     Layout();
     LayoutStatusBarControls();
+    UpdateInformationTool();
 
     if (parent != nullptr)
     {
@@ -169,6 +173,25 @@ void JuliaPreviewFrame::OpenIterationsDialog()
         _iterationsDialog->Raise();
         _iterationsDialog->SetFocus();
     }
+}
+
+void JuliaPreviewFrame::OpenFractalInformation()
+{
+    if (_previewCanvas == nullptr)
+        return;
+
+    const wxString documentFile = FractalDocumentation::GetDocumentFile(_previewCanvas->GetFractalType());
+    if (documentFile.empty())
+        return;
+
+    DocumentViewer viewer(documentFile, this, wxID_ANY, _previewCanvas->GetFractal()->GetName());
+    viewer.ShowModal();
+}
+
+void JuliaPreviewFrame::UpdateInformationTool() const
+{
+    if (_toolbar != nullptr && _previewCanvas != nullptr)
+        _toolbar->SetInformationEnabled(FractalDocumentation::HasDocumentation(_previewCanvas->GetFractalType()));
 }
 
 void JuliaPreviewFrame::ResetColorRotationTool() const

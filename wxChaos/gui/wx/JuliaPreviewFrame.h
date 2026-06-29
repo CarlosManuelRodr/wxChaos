@@ -63,6 +63,8 @@ class JuliaPreviewFrame : public wxFrame
     void CreateStatusBarControls();
     void LayoutStatusBarControls() const;
     void OpenIterationsDialog();
+    void OpenFractalInformation();
+    void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
     void SyncConstantFromTarget() const;
     void OnConstantSyncTimer(wxTimerEvent& event);
