@@ -28,7 +28,7 @@ void GetDesktopResolution(int& width, int& height)
 // Fractal Frame
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition, wxSize(1180, 820))
 {
-    _fractalType = FractalType::Mandelbrot; // This will clash with config.ini options. I need to find a better way to handle this.
+    _fractalType = FractalType::Mandelbrot;
 
     // Init handlers.
     wxImage::AddHandler(new wxPNGHandler);
