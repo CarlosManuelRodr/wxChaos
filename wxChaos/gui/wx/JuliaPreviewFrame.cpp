@@ -40,10 +40,10 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     sizer->Add(_toolbar, 0, wxEXPAND);
     sizer->Add(_previewCanvas, 1, wxEXPAND);
     SetSizer(sizer);
+    CreateStatusBarControls();
     SetClientSize(wxSize(size.GetWidth() + _toolbar->GetBestSize().GetWidth(), size.GetHeight()));
     SetSizeHints(wxSize(500, 300), wxDefaultSize);
-    CreateStatusBarControls();
-    wxTopLevelWindowBase::Layout();
+    Layout();
     LayoutStatusBarControls();
 
     if (parent != nullptr)
@@ -56,6 +56,12 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     Bind(wxEVT_CLOSE_WINDOW, &JuliaPreviewFrame::OnClose, this);
     Bind(wxEVT_TIMER, &JuliaPreviewFrame::OnConstantSyncTimer, this);
     Bind(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, &JuliaPreviewFrame::OnCanvasStatusText, this);
+    Bind(wxEVT_SIZE, [this](wxSizeEvent& event)
+    {
+        Layout();
+        LayoutStatusBarControls();
+        event.Skip();
+    });
 
     _constantSyncTimer.Start(16);
 }
