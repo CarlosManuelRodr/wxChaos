@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <vector>
+#include <wx/bmpbndl.h>
 #include <wx/webview.h>
 #include <wx/wx.h>
 
@@ -21,6 +23,19 @@ class DocumentViewer : public wxDialog
     wxButton* _backButton{};
     wxButton* _forwardButton{};
     wxButton* _closeButton{};
+    std::vector<wxString> _navigationHistory;
+    int _navigationHistoryIndex{-1};
+    bool _hasLoadedInitialDocument{};
+    bool _isNavigatingHistory{};
+
+    /// @brief Creates the themed bitmap used by a navigation button.
+    /// @param back True for the back button icon, false for the forward button icon.
+    /// @return The themed navigation button bitmap.
+    wxBitmapBundle CreateNavigationButtonBitmap(bool back) const;
+
+    /// @brief Adds a normal link navigation to the local document history.
+    /// @param url URL that navigation is moving to.
+    void AddNavigationHistoryEntry(const wxString& url);
 
     /// @brief Applies the current wxChaos light or dark theme to the loaded page.
     void ApplyDocumentTheme() const;
@@ -35,6 +50,10 @@ class DocumentViewer : public wxDialog
     /// @brief Navigates to the next document history entry.
     /// @param event Button click event.
     void OnForward(wxCommandEvent& event);
+
+    /// @brief Updates document chrome when navigation begins.
+    /// @param event Web view navigation event.
+    void OnNavigating(wxWebViewEvent& event);
 
     /// @brief Updates document chrome after navigation completes.
     /// @param event Web view navigation event.
