@@ -44,7 +44,7 @@ private:
     wxTimer _timer;
     unsigned int _spinnerFrame{};
 
-    void OnPaint(wxPaintEvent& event);
+    void OnPaintEvent(wxPaintEvent& event);
     void OnTimer(wxTimerEvent& event);
     void OnLeftUp(wxMouseEvent& event);
 };

@@ -1,20 +1,19 @@
 #include "RenderStatusWidget.h"
-#include <cmath>
 #include <utility>
 #include <wx/dcbuffer.h>
 #include "AppTheme.h"
 
 RenderStatusWidget::RenderStatusWidget(wxWindow* parent, FractalPresenter* presenter, ClickHandler clickHandler)
-    : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(170, 24), wxBORDER_NONE),
-      _presenter(presenter),
-      _clickHandler(std::move(clickHandler)),
-      _timer(this)
+                                       : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(170, 24), wxBORDER_NONE),
+                                         _presenter(presenter),
+                                         _clickHandler(std::move(clickHandler)),
+                                         _timer(this)
 {
-    SetMinSize(wxSize(170, 24));
-    SetBackgroundStyle(wxBG_STYLE_PAINT);
-    SetCursor(wxCursor(wxCURSOR_HAND));
+    wxWindowBase::SetMinSize(wxSize(170, 24));
+    wxWindowBase::SetBackgroundStyle(wxBG_STYLE_PAINT);
+    wxWindowBase::SetCursor(wxCursor(wxCURSOR_HAND));
 
-    Bind(wxEVT_PAINT, &RenderStatusWidget::OnPaint, this);
+    Bind(wxEVT_PAINT, &RenderStatusWidget::OnPaintEvent, this);
     Bind(wxEVT_TIMER, &RenderStatusWidget::OnTimer, this);
     Bind(wxEVT_LEFT_UP, &RenderStatusWidget::OnLeftUp, this);
 
@@ -33,7 +32,7 @@ void RenderStatusWidget::SetPresenter(FractalPresenter* presenter)
     Refresh();
 }
 
-void RenderStatusWidget::OnPaint(wxPaintEvent&)
+void RenderStatusWidget::OnPaintEvent(wxPaintEvent&)
 {
     wxAutoBufferedPaintDC dc(this);
     dc.SetBackground(wxBrush(GetParent() != nullptr ? GetParent()->GetBackgroundColour() : AppTheme::Background()));
@@ -65,7 +64,7 @@ void RenderStatusWidget::OnPaint(wxPaintEvent&)
         for (int i = 0; i < dotCount; ++i)
         {
             const int age = (i + static_cast<int>(_spinnerFrame)) % dotCount;
-            const unsigned char channel = static_cast<unsigned char>(90 + age * 18);
+            const auto channel = static_cast<unsigned char>(90 + age * 18);
             const double angle = 2.0 * pi * static_cast<double>(i) / static_cast<double>(dotCount);
             const int x = center.x + static_cast<int>(std::cos(angle) * 6.0);
             const int y = center.y + static_cast<int>(std::sin(angle) * 6.0);
@@ -87,6 +86,7 @@ void RenderStatusWidget::OnTimer(wxTimerEvent&)
     Refresh(false);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void RenderStatusWidget::OnLeftUp(wxMouseEvent&)
 {
     if (_clickHandler)
