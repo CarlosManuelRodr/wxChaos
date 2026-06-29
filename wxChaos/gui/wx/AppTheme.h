@@ -10,7 +10,7 @@ class wxWindow;
  * @class AppTheme
  * @brief Applies the selected light or dark appearance to wxChaos windows.
  *
- * The global event filter themes newly shown windows, while ApplyToAllWindows
+ * The global event filters themes newly shown windows, while ApplyToAllWindows
  * updates every window that is already open when the setting changes.
  */
 class AppTheme final : public wxEventFilter

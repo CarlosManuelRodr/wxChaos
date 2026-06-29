@@ -63,7 +63,7 @@ class CommandConsole : public wxFrame
     void WriteWelcome() const;
     void WriteText(const wxString& text, const wxColour& color) const;
     void RunCommand();
-    wxString Execute(const ParsedCommand& command) const;
+    [[nodiscard]] wxString Execute(const ParsedCommand& command) const;
     static std::optional<ParsedCommand> Parse(const wxString& text, wxString& error);
     static std::optional<wxString> FindArgument(const ParsedCommand& command,
                                                 std::initializer_list<const char*> names,
