@@ -217,7 +217,7 @@ class DimensionFrame : public wxFrame
     wxTextCtrl* _sizeCtrl;
     wxButton* _fractalOptionsButton;
     wxStaticText* _nDivTxt;
-    wxSpinCtrl* _nDivSpin;
+    wxSpinCtrl* _numberOfDivisionsSpinCtrl;
     wxButton* _previewButton;
     wxStaticText* _divTxt;
     wxNotebook* _divNotebook;

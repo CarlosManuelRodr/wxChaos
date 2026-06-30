@@ -659,8 +659,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _nDivTxt->Wrap(-1);
     previewBoxSizer->Add(_nDivTxt, 0, wxALL, 5);
 
-    _nDivSpin = new wxSpinCtrl(_mainPanel, wxID_ANY, "20", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 200, 0);
-    previewBoxSizer->Add(_nDivSpin, 0, wxALL | wxEXPAND, 5);
+    _numberOfDivisionsSpinCtrl = new wxSpinCtrl(_mainPanel, wxID_ANY, "20", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 200, 0);
+    previewBoxSizer->Add(_numberOfDivisionsSpinCtrl, 0, wxALL | wxEXPAND, 5);
 
     const auto renderPreBoxSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -1196,7 +1196,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
             else
             {
                 // Set output image.
-                _previewImage->SetMap(_target->GetSetMap(), _nDivSpin->GetValue());
+                _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
                 _previewImage->Refresh();
                 _progressBar->SetValue(0);
                 _progressTxt->SetLabel(wxString("Progress: Done"));
@@ -1419,7 +1419,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
             // Allocate.
             bool** setMap, ** tempSetMap, ** colorMap;
             setMap = _target->GetSetMap();
-            int nDiv = _nDivSpin->GetValue();
+            int nDiv = _numberOfDivisionsSpinCtrl->GetValue();
 
             tempSetMap = new bool* [_size];
             colorMap = new bool* [_size];
