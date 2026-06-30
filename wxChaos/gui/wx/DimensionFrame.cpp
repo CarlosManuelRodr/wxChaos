@@ -1,5 +1,4 @@
 #include <limits>
-#include <fstream>
 #include <mpParser.h>
 #include <wx/bmpbndl.h>
 #include "AppTheme.h"
@@ -678,7 +677,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     fOptBoxSizer->Add(previewBoxSizer, 1, wxEXPAND, 5);
     fractalBoxSizer->Add(fOptBoxSizer, 1, wxEXPAND, 5);
     fractalSectionSizer->Add(fractalBoxSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
-    paramBoxSizer->Add(fractalSectionSizer, 1, wxEXPAND, 5);
+    paramBoxSizer->Add(fractalSectionSizer, 0, wxEXPAND, 5);
 
     const auto dimBoxSizer = new wxBoxSizer(wxVERTICAL);
     dimBoxSizer->Add(CreateSectionHeader(_mainPanel, "Box-counting parameters",
@@ -754,17 +753,6 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     divBoxSizer->Add(_divNotebook, 0, wxEXPAND | wxALL, 5);
     dimBoxSizer->Add(divBoxSizer, 0, wxEXPAND, 5);
 
-    const auto dumpBoxSizer = new wxBoxSizer(wxVERTICAL);
-
-    _dumpCheck = new wxCheckBox(_mainPanel, wxID_ANY, "Dump results to file", wxDefaultPosition, wxDefaultSize, 0);
-    dumpBoxSizer->Add(_dumpCheck, 0, wxALL, 5);
-
-    _filePathCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, AppPaths::DumpFile(), wxDefaultPosition, wxDefaultSize, 0);
-    _filePathCtrl->Enable(false);
-
-    dumpBoxSizer->Add(_filePathCtrl, 0, wxALL | wxEXPAND, 5);
-    dimBoxSizer->Add(dumpBoxSizer, 0, wxEXPAND, 5);
-
     dimBoxSizer->Add(CreateSectionHeader(_mainPanel, "Plotting", "plot_light.svg", "plot_dark.svg"),
                      0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
     const auto plotBoxSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -779,28 +767,34 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     const auto buttonBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _calcButton = new wxButton(_mainPanel, wxID_ANY, "Calculate", wxDefaultPosition, wxDefaultSize, 0);
-    buttonBoxSizer->Add(_calcButton, 1, wxALL | wxALIGN_BOTTOM, 5);
+    buttonBoxSizer->Add(_calcButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
     _closeButton = new wxButton(_mainPanel, wxID_ANY, "Close", wxDefaultPosition, wxDefaultSize, 0);
-    buttonBoxSizer->Add(_closeButton, 1, wxALL | wxALIGN_BOTTOM, 5);
+    buttonBoxSizer->Add(_closeButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
+    const wxSize actionButtonSize(_calcButton->GetBestSize().GetHeight(), _calcButton->GetBestSize().GetHeight());
     _helpButton = new wxBitmapButton(_mainPanel, wxID_ANY,
-                                     CreateIconBundle("help_light.svg", "help_dark.svg", wxSize(24, 24)),
-                                     wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
-    buttonBoxSizer->Add(_helpButton, 0, wxALIGN_BOTTOM | wxALL, 5);
+                                     CreateIconBundle("help_light.svg", "help_dark.svg", wxSize(18, 18)),
+                                     wxDefaultPosition, actionButtonSize, wxBU_AUTODRAW);
+    _helpButton->SetMinSize(actionButtonSize);
+    buttonBoxSizer->Add(_helpButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    dimBoxSizer->Add(buttonBoxSizer, 1, wxEXPAND, 5);
-    paramBoxSizer->Add(dimBoxSizer, 1, wxEXPAND, 5);
+    dimBoxSizer->Add(buttonBoxSizer, 0, wxEXPAND, 5);
+    paramBoxSizer->Add(dimBoxSizer, 0, wxEXPAND, 5);
     subMainBoxSizer->Add(paramBoxSizer, 1, wxEXPAND, 5);
 
     const auto outputBoxSizer = new wxBoxSizer(wxVERTICAL);
     outputBoxSizer->Add(CreateSectionHeader(_mainPanel, "Box count preview", "box_light.svg", "box_dark.svg"),
                         0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
     _previewImage = new ImagePanel(_mainPanel, wxID_ANY, _previewSize);
-    outputBoxSizer->Add(_previewImage, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+    _previewImage->SetMinSize(wxSize(_previewSize, _previewSize));
+    outputBoxSizer->Add(_previewImage, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 8);
 
     _outLine = new wxStaticLine(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
-    outputBoxSizer->Add(_outLine, 0, wxEXPAND | wxALL, 5);
+    outputBoxSizer->Add(_outLine, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+
+    outputBoxSizer->Add(CreateSectionHeader(_mainPanel, "Dimension count log", "log_light.svg", "log_dark.svg"),
+                        0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _logCtrl = new wxRichTextCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
         wxTE_READONLY | wxVSCROLL | wxHSCROLL | wxNO_BORDER | wxWANTS_CHARS);
@@ -845,7 +839,6 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     this->Bind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &DimensionFrame::OnClose, this, wxID_EXIT);
     _fractalChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
-    _dumpCheck->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DimensionFrame::OnChangeDump, this);
     _fractalOptionsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
     _previewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnRenderPreview, this);
     _calcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
@@ -860,7 +853,6 @@ DimensionFrame::~DimensionFrame()
     this->Unbind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
     this->Unbind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
     _fractalChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
-    _dumpCheck->Unbind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DimensionFrame::OnChangeDump, this);
     _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
     _previewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnRenderPreview, this);
     _calcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
@@ -1069,14 +1061,6 @@ void DimensionFrame::OnManualMaxY(wxCommandEvent&)
         _maxYCtrl->Enable(true);
     else
         _maxYCtrl->Enable(false);
-}
-// ReSharper disable once CppMemberFunctionMayBeConst
-void DimensionFrame::OnChangeDump(wxCommandEvent&)
-{
-    if (_dumpCheck->GetValue())
-        _filePathCtrl->Enable(true);
-    else
-        _filePathCtrl->Enable(false);
 }
 void DimensionFrame::OnClose(wxCommandEvent&)
 {
@@ -1296,15 +1280,6 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                     }
                     else
                     {
-                        if (_dumpCheck->GetValue())
-                        {
-                            // Dump results to file.
-                            ofstream file;
-                            file.open(string(_filePathCtrl->GetValue().mb_str()).c_str(), ios::out);
-                            for (unsigned int i = 0; i < _epsilon.size(); i++)
-                                file << _epsilon[i] << ", " << _boxCount[i] << endl;
-                        }
-
                         // Calculate dimension.
                         vector<double> logEpsilon, logCount;
                         for (unsigned int i = 0; i < _epsilon.size(); i++)

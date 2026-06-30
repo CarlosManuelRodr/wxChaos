@@ -232,8 +232,6 @@ class DimensionFrame : public wxFrame
     wxSpinCtrl* _xMaxSpin;
     wxPanel* _byListPanel;
     wxTextCtrl* _listCtrl;
-    wxCheckBox* _dumpCheck;
-    wxTextCtrl* _filePathCtrl;
     wxButton* _calcButton;
     wxButton* _closeButton;
     wxStaticLine* _outLine;
@@ -273,7 +271,6 @@ class DimensionFrame : public wxFrame
     void OnRenderPreview(wxCommandEvent&);
     void OnCalculate(wxCommandEvent&);
     void OnUpdateUI(wxUpdateUIEvent&);
-    void OnChangeDump(wxCommandEvent&);
     void OnManualMaxY(wxCommandEvent&);
     void OnClose(wxCommandEvent&);
     void OnDestroy(wxCloseEvent&);
