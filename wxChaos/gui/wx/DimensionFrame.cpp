@@ -124,7 +124,8 @@ ImagePanel::ImagePanel(wxWindow* parent, const int id, const int size)
             _map[i][j] = false;
     }
 
-    this->SetSize(_size, _size);
+    this->SetMinSize(wxSize(_size, _size));
+    this->SetInitialSize(wxSize(_size, _size));
     this->Bind(wxEVT_PAINT, &ImagePanel::OnPaintEvent, this);
 }
 ImagePanel::~ImagePanel()
@@ -212,26 +213,21 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
             }
         }
 
-        // Draw text.
-        // Calculate the numbers of digits in the number.
-        int number = boxes;
-        int digits = 1;
-        while (number >= 10)
-        {
-            number /= 10;
-            digits++;
-        }
-        int extra = 0;
-        digits -= 3;
-        if (digits > 0)
-            extra += 10 * digits;
+        wxString outText = "N = ";
+        outText += TextUtils::ToWxString(boxes);
+        int textWidth;
+        int textHeight;
+        dc.GetTextExtent(outText, &textWidth, &textHeight);
+
+        constexpr int textPadding = 5;
+        constexpr int bottomMargin = 2;
+        const int labelHeight = textHeight + textPadding * 2;
+        const int labelTop = _size - labelHeight - bottomMargin;
 
         dc.SetBrush(wxBrush(wxColour(0, 0, 0, 100)));
         dc.SetTextForeground(wxColour(255, 255, 255));
-        dc.DrawRectangle(0, 383, 60 + extra, 17);
-        wxString outText = "N = ";
-        outText += TextUtils::ToWxString(boxes);
-        dc.DrawText(outText, 5, 383);
+        dc.DrawRectangle(0, labelTop, textWidth + textPadding * 2, labelHeight);
+        dc.DrawText(outText, textPadding, labelTop + textPadding);
     }
 }
 void ImagePanel::SetMap(bool** map, const int div)
@@ -779,8 +775,9 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _helpButton->SetMinSize(actionButtonSize);
     buttonBoxSizer->Add(_helpButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    dimBoxSizer->Add(buttonBoxSizer, 0, wxEXPAND, 5);
     paramBoxSizer->Add(dimBoxSizer, 0, wxEXPAND, 5);
+    paramBoxSizer->AddStretchSpacer(1);
+    paramBoxSizer->Add(buttonBoxSizer, 0, wxEXPAND, 5);
     subMainBoxSizer->Add(paramBoxSizer, 1, wxEXPAND, 5);
 
     const auto outputBoxSizer = new wxBoxSizer(wxVERTICAL);

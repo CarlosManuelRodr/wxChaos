@@ -243,20 +243,20 @@ class DimensionFrame : public wxFrame
     wxCheckBox* _dataFitCheck;
     wxBitmapButton* _helpButton;
 
-    ConfigFractalOptionsDialog* _confFractOptDialog; ///< Fractal options dialog.
-    Fractal* _target;                                ///< The fractal target.
-    FractalFactory _fractalFactory;                  ///< The fractal factory.
-    ImagePanel* _previewImage;                       ///< Panel to show a preview of the dimension calculator.
-    Options _myOpt;                                  ///< Fractal options.
-    int _threadNumber;                               ///< Number of dimension worker threads.
-    std::vector<BoxCountWorker> _dimensionCalculator; ///< Dimension workers, one per thread.
+    ConfigFractalOptionsDialog* _confFractOptDialog;        ///< Fractal options dialog.
+    Fractal* _target;                                       ///< The fractal target.
+    FractalFactory _fractalFactory;                         ///< The fractal factory.
+    ImagePanel* _previewImage;                              ///< Panel to show a preview of the dimension calculator.
+    Options _myOpt;                                         ///< Fractal options.
+    int _threadNumber;                                      ///< Number of dimension worker threads.
+    std::vector<BoxCountWorker> _dimensionCalculator;       ///< Dimension workers, one per thread.
     std::vector<std::unique_ptr<sf::Thread>> _dimThreads;   ///< Owned dimension worker threads.
-    std::vector<int> _div;                           ///< Vector to hold the number of divisions.
-    std::vector<double> _epsilon;                    ///< Vector to hold the epsilon values.
-    std::vector<int> _boxCount;                      ///< Vector to hold the box counting.
-    std::vector<ScriptData> _loadedScripts;          ///< Parameters and location of user scripts.
-    std::vector<unsigned int> _scriptList;           ///< List of script fractals.
-    int _divIndex{};                                 ///< Division index.
+    std::vector<int> _div;                                  ///< Vector to hold the number of divisions.
+    std::vector<double> _epsilon;                           ///< Vector to hold the epsilon values.
+    std::vector<int> _boxCount;                             ///< Vector to hold the box counting.
+    std::vector<ScriptData> _loadedScripts;                 ///< Parameters and location of user scripts.
+    std::vector<unsigned int> _scriptList;                  ///< List of script fractals.
+    int _divIndex{};                                        ///< Division index.
     bool _scriptSelected;
     bool _firstRender;
 
