@@ -652,25 +652,6 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _fractalOptionsButton = new wxButton(_mainPanel, wxID_ANY, "Configure fractal options", wxDefaultPosition, wxDefaultSize, 0);
     fOptBoxSizer->Add(_fractalOptionsButton, 0, wxALL | wxEXPAND, 5);
 
-    const auto previewBoxSizer = new wxBoxSizer(wxVERTICAL);
-    previewBoxSizer->Add(new wxStaticLine(_mainPanel, wxID_ANY), 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
-
-    _nDivTxt = new wxStaticText(_mainPanel, wxID_ANY, "Number of divisions", wxDefaultPosition, wxDefaultSize, 0);
-    _nDivTxt->Wrap(-1);
-    previewBoxSizer->Add(_nDivTxt, 0, wxALL, 5);
-
-    _numberOfDivisionsSpinCtrl = new wxSpinCtrl(_mainPanel, wxID_ANY, "20", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 200, 0);
-    previewBoxSizer->Add(_numberOfDivisionsSpinCtrl, 0, wxALL | wxEXPAND, 5);
-
-    const auto renderPreBoxSizer = new wxBoxSizer(wxVERTICAL);
-
-    _previewButton = new wxButton(_mainPanel, wxID_ANY, "Render preview", wxDefaultPosition, wxDefaultSize, 0);
-    renderPreBoxSizer->Add(_previewButton, 0, wxALL | wxEXPAND, 5);
-
-    _savePreviewButton = new wxButton(_mainPanel, wxID_ANY, "Save preview", wxDefaultPosition, wxDefaultSize, 0);
-    renderPreBoxSizer->Add(_savePreviewButton, 0, wxALL | wxEXPAND, 5);
-    previewBoxSizer->Add(renderPreBoxSizer, 1, wxEXPAND, 5);
-    fOptBoxSizer->Add(previewBoxSizer, 1, wxEXPAND, 5);
     fractalBoxSizer->Add(fOptBoxSizer, 1, wxEXPAND, 5);
     fractalSectionSizer->Add(fractalBoxSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
     paramBoxSizer->Add(fractalSectionSizer, 0, wxEXPAND, 5);
@@ -686,50 +667,41 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
 
     const auto divBoxSizer = new wxBoxSizer(wxVERTICAL);
 
-    _divNotebook = new wxNotebook(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+    _divNotebook = new wxNotebook(_mainPanel, wxID_ANY, wxDefaultPosition, wxSize(-1, 150), 0);
     _byFunctionPanel = new wxPanel(_divNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    const auto byFunctionBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    const auto fSide1BoxSizer = new wxBoxSizer(wxVERTICAL);
+    const auto byFunctionBoxSizer = new wxBoxSizer(wxVERTICAL);
+    const auto functionRowSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _funcTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, "Function:", wxDefaultPosition, wxDefaultSize, 0);
     _funcTxt->Wrap(-1);
-    fSide1BoxSizer->Add(_funcTxt, 0, wxALL, 5);
-
-    const auto fCtrlBoxSizer = new wxBoxSizer(wxHORIZONTAL);
+    functionRowSizer->Add(_funcTxt, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
     _fDeclTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, "f(x) = ", wxDefaultPosition, wxDefaultSize, 0);
     _fDeclTxt->Wrap(-1);
-    fCtrlBoxSizer->Add(_fDeclTxt, 0, wxALL, 5);
+    functionRowSizer->Add(_fDeclTxt, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
     _funcCtrl = new wxTextCtrl(_byFunctionPanel, wxID_ANY, "2*x", wxDefaultPosition, wxDefaultSize, 0);
-    fCtrlBoxSizer->Add(_funcCtrl, 1, wxALL, 5);
-    fSide1BoxSizer->Add(fCtrlBoxSizer, 1, wxEXPAND, 5);
-    byFunctionBoxSizer->Add(fSide1BoxSizer, 1, wxEXPAND, 5);
+    functionRowSizer->Add(_funcCtrl, 1, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+    byFunctionBoxSizer->Add(functionRowSizer, 0, wxEXPAND);
 
-    _funcLine = new wxStaticLine(_byFunctionPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
-    byFunctionBoxSizer->Add(_funcLine, 0, wxEXPAND | wxALL, 5);
-
-    const auto fSide2BoxSizer = new wxBoxSizer(wxVERTICAL);
-    const auto goesFromBoxSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto rangeSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _goesFromTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, "x goes from", wxDefaultPosition, wxDefaultSize, 0);
     _goesFromTxt->Wrap(-1);
-    goesFromBoxSizer->Add(_goesFromTxt, 0, wxALL, 5);
+    rangeSizer->Add(_goesFromTxt, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    _xMinSpin = new wxSpinCtrl(_byFunctionPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 1);
-    goesFromBoxSizer->Add(_xMinSpin, 1, wxALL, 5);
-    fSide2BoxSizer->Add(goesFromBoxSizer, 1, wxEXPAND, 5);
-
-    const auto goesToBoxSizer = new wxBoxSizer(wxHORIZONTAL);
+    _xMinSpin = new wxSpinCtrl(_byFunctionPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(110, -1),
+                               wxSP_ARROW_KEYS, 1, 1000000, 1);
+    rangeSizer->Add(_xMinSpin, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
     _goesToTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, "to", wxDefaultPosition, wxDefaultSize, 0);
     _goesToTxt->Wrap(-1);
-    goesToBoxSizer->Add(_goesToTxt, 0, wxALL, 5);
+    rangeSizer->Add(_goesToTxt, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    _xMaxSpin = new wxSpinCtrl(_byFunctionPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 50);
-    goesToBoxSizer->Add(_xMaxSpin, 0, wxALL, 5);
-    fSide2BoxSizer->Add(goesToBoxSizer, 1, wxEXPAND, 5);
-    byFunctionBoxSizer->Add(fSide2BoxSizer, 1, wxEXPAND, 5);
+    _xMaxSpin = new wxSpinCtrl(_byFunctionPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(110, -1),
+                               wxSP_ARROW_KEYS, 1, 1000000, 50);
+    rangeSizer->Add(_xMaxSpin, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+    byFunctionBoxSizer->Add(rangeSizer, 0, wxEXPAND);
 
     _byFunctionPanel->SetSizer(byFunctionBoxSizer);
     _byFunctionPanel->Layout();
@@ -738,7 +710,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _byListPanel = new wxPanel(_divNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto byListBoxSizer = new wxBoxSizer(wxVERTICAL);
 
-    _listCtrl = new wxTextCtrl(_byListPanel, wxID_ANY, "2,4,5,6,9,100,200", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+    _listCtrl = new wxTextCtrl(_byListPanel, wxID_ANY, "2,4,5,6,9,100,200", wxDefaultPosition, wxSize(-1, 80), wxTE_MULTILINE);
     byListBoxSizer->Add(_listCtrl, 1, wxALL | wxEXPAND, 5);
 
     _byListPanel->SetSizer(byListBoxSizer);
@@ -783,9 +755,30 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     const auto outputBoxSizer = new wxBoxSizer(wxVERTICAL);
     outputBoxSizer->Add(CreateSectionHeader(_mainPanel, "Box count preview", "box_light.svg", "box_dark.svg"),
                         0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+
     _previewImage = new ImagePanel(_mainPanel, wxID_ANY, _previewSize);
     _previewImage->SetMinSize(wxSize(_previewSize, _previewSize));
     outputBoxSizer->Add(_previewImage, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 8);
+
+    const auto previewOptionsSizer = new wxBoxSizer(wxVERTICAL);
+    const auto numberOfDivisionsSizer = new wxBoxSizer(wxHORIZONTAL);
+    _nDivTxt = new wxStaticText(_mainPanel, wxID_ANY, "Number of divisions", wxDefaultPosition, wxDefaultSize, 0);
+    _nDivTxt->Wrap(-1);
+    numberOfDivisionsSizer->Add(_nDivTxt, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+
+    _numberOfDivisionsSpinCtrl = new wxSpinCtrl(_mainPanel, wxID_ANY, "20", wxDefaultPosition, wxSize(110, -1),
+                                                wxSP_ARROW_KEYS, 1, 200, 0);
+    numberOfDivisionsSizer->Add(_numberOfDivisionsSpinCtrl, 0, wxALIGN_CENTER_VERTICAL);
+    previewOptionsSizer->Add(numberOfDivisionsSizer, 0, wxALL, 5);
+
+    const auto renderPreBoxSizer = new wxBoxSizer(wxHORIZONTAL);
+    _previewButton = new wxButton(_mainPanel, wxID_ANY, "Render preview", wxDefaultPosition, wxDefaultSize, 0);
+    renderPreBoxSizer->Add(_previewButton, 1, wxALL | wxEXPAND, 5);
+
+    _savePreviewButton = new wxButton(_mainPanel, wxID_ANY, "Save preview", wxDefaultPosition, wxDefaultSize, 0);
+    renderPreBoxSizer->Add(_savePreviewButton, 1, wxALL | wxEXPAND, 5);
+    previewOptionsSizer->Add(renderPreBoxSizer, 0, wxEXPAND);
+    outputBoxSizer->Add(previewOptionsSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
 
     _outLine = new wxStaticLine(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
     outputBoxSizer->Add(_outLine, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);

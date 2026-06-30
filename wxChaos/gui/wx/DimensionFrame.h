@@ -225,7 +225,6 @@ class DimensionFrame : public wxFrame
     wxStaticText* _funcTxt;
     wxStaticText* _fDeclTxt;
     wxTextCtrl* _funcCtrl;
-    wxStaticLine* _funcLine;
     wxStaticText* _goesFromTxt;
     wxSpinCtrl* _xMinSpin;
     wxStaticText* _goesToTxt;
