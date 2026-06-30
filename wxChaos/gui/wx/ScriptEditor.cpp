@@ -220,8 +220,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     _debugPanel = new wxPanel(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto debugSizer = new wxBoxSizer(wxVERTICAL);
-    debugSizer->Add(CreateSectionHeader(_debugPanel, "Debugger",
-                                        "debugger_light.svg", "debugger_dark.svg"),
+    debugSizer->Add(CreateSectionHeader(_debugPanel, "Debugger","debugger_light.svg", "debugger_dark.svg"),
                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     const auto debugElementsSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -243,7 +242,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     consoleSizer->SetMinSize(wxSize(300, -1));
 
     _console = new wxRichTextCtrl(consoleSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 
-                                 wxTE_READONLY | wxVSCROLL | wxHSCROLL | wxNO_BORDER | wxWANTS_CHARS);
+                                  wxTE_READONLY | wxVSCROLL | wxHSCROLL | wxNO_BORDER | wxWANTS_CHARS);
     _console->SetMinSize(wxSize(300, -1));
     _console->SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Consolas"));
     _console->SetBackgroundColour(wxColour(37, 52, 80));
