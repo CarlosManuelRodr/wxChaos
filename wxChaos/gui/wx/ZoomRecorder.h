@@ -8,6 +8,7 @@
 #include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/frame.h>
+#include <wx/bmpbndl.h>
 #include "FractalCanvas.h"
 
 /**
@@ -55,6 +56,11 @@ class ZoomRecorder : public wxDialog
     void RenderPreview();
     void UpdateTotalFrames();
     [[nodiscard]] int GetTotalFrames() const;
+    [[nodiscard]] wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                               const wxString& darkIcon) const;
+    [[nodiscard]] wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                                  const wxSize& size) const;
+    void SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const;
     static void CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
     static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
 public:

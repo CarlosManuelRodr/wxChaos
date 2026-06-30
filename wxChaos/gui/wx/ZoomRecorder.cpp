@@ -1,18 +1,56 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
 #include <wx/progdlg.h>
 #include <wx/bitmap.h>
-#include <wx/artprov.h>
 #include <wx/icon.h>
 #include <wx/slider.h>
-#include <wx/statbox.h>
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include "SFML/System.hpp"
 #include "AppPaths.h"
+#include "AppTheme.h"
 #include "ZoomRecorder.h"
 #include "ZoomRenderer.h"
 
 // ZoomRecorder implementation.
+wxPanel* ZoomRecorder::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                           const wxString& darkIcon) const
+{
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 12);
+
+    const auto headerText = new wxStaticText(header, wxID_ANY, text);
+    wxFont headerFont = headerText->GetFont();
+    headerFont.SetPointSize(headerFont.GetPointSize() + 1);
+    headerFont.SetWeight(wxFONTWEIGHT_BOLD);
+    headerText->SetFont(headerFont);
+    headerText->SetBackgroundColour(AppTheme::ControlBackground());
+    headerText->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(headerText, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 52));
+    return header;
+}
+
+wxBitmapBundle ZoomRecorder::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                              const wxSize& size) const
+{
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
+}
+
+void ZoomRecorder::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const
+{
+    button->SetBitmap(CreateIconBundle(lightIcon, darkIcon, wxSize(20, 20)));
+    button->SetBitmapMargins(FromDIP(6), 0);
+}
+
 ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const wxWindowID id, const wxString& title,
                            const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
@@ -32,86 +70,96 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
     const auto previewAndButtonsSizer = new wxBoxSizer(wxVERTICAL);
-    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, "Preview"), wxVERTICAL);
+    const auto previewSizer = new wxBoxSizer(wxVERTICAL);
+    previewSizer->Add(CreateSectionHeader(_panel, "Preview", "preview_light.svg", "preview_dark.svg"),
+                      0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    _previewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY,
+    _previewBitmap = new wxStaticBitmap(_panel, wxID_ANY,
         _fractalFactory.GetFractal()->GetRenderedWxBitmap(),
         wxDefaultPosition, wxDefaultSize, 0);
-    previewSizer->Add(_previewBitmap, 0, wxALL | wxEXPAND, 5);
+    previewSizer->Add(_previewBitmap, 0, wxALL | wxEXPAND, 10);
 
-    _previewFrameText = new wxStaticText(previewSizer->GetStaticBox(), wxID_ANY, "Frame:", wxDefaultPosition, wxDefaultSize, 0);
+    _previewFrameText = new wxStaticText(_panel, wxID_ANY, "Frame:", wxDefaultPosition, wxDefaultSize, 0);
     _previewFrameText->Wrap(-1);
-    previewSizer->Add(_previewFrameText, 0, wxALL, 5);
+    previewSizer->Add(_previewFrameText, 0, wxLEFT | wxRIGHT | wxBOTTOM, 10);
 
-    _previewSlider = new wxSlider(previewSizer->GetStaticBox(), wxID_ANY, 0, 0, 1799, wxDefaultPosition, wxDefaultSize,
+    _previewSlider = new wxSlider(_panel, wxID_ANY, 0, 0, 1799, wxDefaultPosition, wxDefaultSize,
         wxSL_AUTOTICKS | wxSL_BOTTOM | wxSL_HORIZONTAL | wxSL_LABELS);
-    previewSizer->Add(_previewSlider, 0, wxALL | wxEXPAND, 5);
+    previewSizer->Add(_previewSlider, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 10);
     previewAndButtonsSizer->Add(previewSizer, 1, wxEXPAND, 5);
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _saveButton = new wxButton(_panel, wxID_ANY, "Save video", wxDefaultPosition, wxDefaultSize, 0);
-    _saveButton->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR));
+    SetButtonIcon(_saveButton, "save_light.svg", "save_dark.svg");
+    buttonSizer->AddStretchSpacer();
     buttonSizer->Add(_saveButton, 0, wxALL, 5);
 
     _cancelButton = new wxButton(_panel, wxID_ANY, "Cancel", wxDefaultPosition, wxDefaultSize, 0);
-    _cancelButton->SetBitmap(wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR));
+    SetButtonIcon(_cancelButton, "close_light.svg", "close_dark.svg");
     buttonSizer->Add(_cancelButton, 0, wxALL, 5);
 
-    previewAndButtonsSizer->Add(buttonSizer, 0, 0, 5);
+    previewAndButtonsSizer->Add(buttonSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
     panelSizer->Add(previewAndButtonsSizer, 0, wxEXPAND, 5);
 
-    auto* optionsSizer = new wxStaticBoxSizer(new wxStaticBox(_panel, wxID_ANY, "Options"), wxVERTICAL);
+    auto* optionsSizer = new wxBoxSizer(wxVERTICAL);
+    optionsSizer->Add(CreateSectionHeader(_panel, "Zoom options", "camcorder_light.svg", "camcorder_dark.svg"),
+                      0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    _videoDurationText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Video duration:", wxDefaultPosition, wxDefaultSize, 0);
+    const auto optionGridSizer = new wxFlexGridSizer(2, 10, 12);
+    optionGridSizer->AddGrowableCol(1, 1);
+
+    _videoDurationText = new wxStaticText(_panel, wxID_ANY, "Video duration:", wxDefaultPosition, wxDefaultSize, 0);
     _videoDurationText->Wrap(-1);
-    optionsSizer->Add(_videoDurationText, 0, wxALL, 5);
+    optionGridSizer->Add(_videoDurationText, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
 
     const auto videoDurationSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _minutesSpinCtrl = new wxSpinCtrl(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 60, 1);
+    _minutesSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 60, 1);
     _minutesSpinCtrl->SetMaxSize(wxSize(70, -1));
+    videoDurationSizer->Add(_minutesSpinCtrl, 0, wxRIGHT, 5);
 
-    videoDurationSizer->Add(_minutesSpinCtrl, 0, wxTOP | wxBOTTOM, 5);
-
-    _minutesText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Minutes", wxDefaultPosition, wxDefaultSize, 0);
+    _minutesText = new wxStaticText(_panel, wxID_ANY, "Minutes", wxDefaultPosition, wxDefaultSize, 0);
     _minutesText->Wrap(-1);
-    videoDurationSizer->Add(_minutesText, 0, wxALL, 5);
+    videoDurationSizer->Add(_minutesText, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
 
-    _secondsSpinCtrl = new wxSpinCtrl(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 60, 0);
+    _secondsSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 60, 0);
     _secondsSpinCtrl->SetMaxSize(wxSize(70, -1));
+    videoDurationSizer->Add(_secondsSpinCtrl, 0, wxRIGHT, 5);
 
-    videoDurationSizer->Add(_secondsSpinCtrl, 0, wxTOP | wxBOTTOM | wxRIGHT, 5);
-
-    _secondsText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Seconds", wxDefaultPosition, wxDefaultSize, 0);
+    _secondsText = new wxStaticText(_panel, wxID_ANY, "Seconds", wxDefaultPosition, wxDefaultSize, 0);
     _secondsText->Wrap(-1);
-    videoDurationSizer->Add(_secondsText, 0, wxALL, 5);
-    optionsSizer->Add(videoDurationSizer, 0, wxLEFT, 5);
+    videoDurationSizer->Add(_secondsText, 0, wxALIGN_CENTER_VERTICAL);
+    optionGridSizer->Add(videoDurationSizer, 1, wxEXPAND);
 
-    _framerateText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Framerate:", wxDefaultPosition, wxDefaultSize, 0);
+    _framerateText = new wxStaticText(_panel, wxID_ANY, "Framerate:", wxDefaultPosition, wxDefaultSize, 0);
     _framerateText->Wrap(-1);
-    optionsSizer->Add(_framerateText, 0, wxALL, 5);
+    optionGridSizer->Add(_framerateText, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
 
     const auto framerateSize = new wxBoxSizer(wxHORIZONTAL);
 
-    _framerateSpinCtrl = new wxSpinCtrl(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 120, 30);
-    framerateSize->Add(_framerateSpinCtrl, 0, wxALL, 5);
+    _framerateSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 120, 30);
+    framerateSize->Add(_framerateSpinCtrl, 0, wxRIGHT, 5);
 
-    _framesPerSecondText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Frames Per Second", wxDefaultPosition, wxDefaultSize, 0);
+    _framesPerSecondText = new wxStaticText(_panel, wxID_ANY, "Frames Per Second", wxDefaultPosition, wxDefaultSize, 0);
     _framesPerSecondText->Wrap(-1);
-    framerateSize->Add(_framesPerSecondText, 0, wxALL, 5);
-    optionsSizer->Add(framerateSize, 0, wxEXPAND, 5);
+    framerateSize->Add(_framesPerSecondText, 0, wxALIGN_CENTER_VERTICAL);
+    optionGridSizer->Add(framerateSize, 1, wxEXPAND);
 
-    _rotateCheckbox = new wxCheckBox(optionsSizer->GetStaticBox(), wxID_ANY, "Rotate colors", wxDefaultPosition, wxDefaultSize, 0);
-    optionsSizer->Add(_rotateCheckbox, 0, wxALL, 5);
+    _rotateCheckbox = new wxCheckBox(_panel, wxID_ANY, "Rotate colors", wxDefaultPosition, wxDefaultSize, 0);
+    optionGridSizer->AddSpacer(1);
+    optionGridSizer->Add(_rotateCheckbox, 0, wxEXPAND);
 
-    _colorRotateSpeedText = new wxStaticText(optionsSizer->GetStaticBox(), wxID_ANY, "Color rotation speed:", wxDefaultPosition, wxDefaultSize, 0);
+    _colorRotateSpeedText = new wxStaticText(_panel, wxID_ANY, "Color rotation speed:", wxDefaultPosition, wxDefaultSize, 0);
     _colorRotateSpeedText->Wrap(-1);
-    optionsSizer->Add(_colorRotateSpeedText, 0, wxALL, 5);
+    optionGridSizer->Add(_colorRotateSpeedText, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
 
-    _colorSpeedCtrl = new wxSpinCtrlDouble(optionsSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 5, 0.1, 0.1);
+    _colorSpeedCtrl = new wxSpinCtrlDouble(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 5, 0.1, 0.1);
     _colorSpeedCtrl->SetDigits(2);
-    optionsSizer->Add(_colorSpeedCtrl, 0, wxALL, 5);
+    optionGridSizer->Add(_colorSpeedCtrl, 0, wxEXPAND);
+
+    optionsSizer->Add(optionGridSizer, 0, wxEXPAND | wxALL, 12);
+    optionsSizer->AddStretchSpacer();
 
     panelSizer->Add(optionsSizer, 1, wxEXPAND, 5);
 
