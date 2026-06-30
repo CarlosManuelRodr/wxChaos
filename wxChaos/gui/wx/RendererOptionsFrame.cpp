@@ -30,11 +30,11 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _mainPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL);
     _mainPanel->SetScrollRate(5, 5);
     const auto mainSizer = new wxBoxSizer(wxHORIZONTAL);
-    auto* setSizer = new wxBoxSizer(wxVERTICAL);
+    auto* algorithmSizer = new wxBoxSizer(wxVERTICAL);
 
     _algorithmText = new wxStaticText(_mainPanel, wxID_ANY, "Color algorithm", wxDefaultPosition, wxDefaultSize, 0);    // Txt: "Color algorithm"
     _algorithmText->Wrap(-1);
-    setSizer->Add(_algorithmText, 0, wxALL, 5);
+    algorithmSizer->Add(_algorithmText, 0, wxALL, 5);
 
     // AlgorithmChoice.
     _escapeTimeIndex = -1;
@@ -47,57 +47,57 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _convergenceTestIndex = -1;
     _algorithmChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize);
 
-    setSizer->Add(_algorithmChoice, 0, wxALL|wxEXPAND, 5);
+    algorithmSizer->Add(_algorithmChoice, 0, wxALL|wxEXPAND, 5);
 
     _renderingPrecisionText = new wxStaticText(_mainPanel, wxID_ANY, "Rendering precision", wxDefaultPosition, wxDefaultSize, 0);
     _renderingPrecisionText->Wrap(-1);
-    setSizer->Add(_renderingPrecisionText, 0, wxALL, 5);
+    algorithmSizer->Add(_renderingPrecisionText, 0, wxALL, 5);
 
     _renderingPrecisionChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize);
-    setSizer->Add(_renderingPrecisionChoice, 0, wxALL | wxEXPAND, 5);
+    algorithmSizer->Add(_renderingPrecisionChoice, 0, wxALL | wxEXPAND, 5);
     SyncRenderingPrecisionControl();
 
     _optionsText = new wxStaticText(_mainPanel, wxID_ANY, "Options", wxDefaultPosition, wxDefaultSize, 0);
     _optionsText->Wrap(-1);
-    setSizer->Add(_optionsText, 0, wxALL, 5);
+    algorithmSizer->Add(_optionsText, 0, wxALL, 5);
 
     _relativeCheck = new wxCheckBox(_mainPanel, wxID_ANY, " Relative colors", wxDefaultPosition, wxDefaultSize, 0);
     _relativeCheck->SetValue(_target->GetRelativeColorMode());
-    setSizer->Add(_relativeCheck, 0, wxALL, 5);
+    algorithmSizer->Add(_relativeCheck, 0, wxALL, 5);
 
     _colorFractal = new wxCheckBox(_mainPanel, wxID_ANY, " Fractal color (external color)", wxDefaultPosition, wxDefaultSize, 0);
     _colorFractal->SetValue(_target->GetExteriorColorMode());
-    setSizer->Add(_colorFractal, 0, wxALL, 5);
+    algorithmSizer->Add(_colorFractal, 0, wxALL, 5);
 
     _colorSet = new wxCheckBox(_mainPanel, wxID_ANY, " Set color (internal color)", wxDefaultPosition, wxDefaultSize, 0);
     _colorSet->SetValue(_target->GetInteriorColorMode());
-    setSizer->Add(_colorSet, 0, wxALL, 5);
+    algorithmSizer->Add(_colorSet, 0, wxALL, 5);
 
     _orbitTrap = new wxCheckBox(_mainPanel, wxID_ANY, " Orbit traps", wxDefaultPosition, wxDefaultSize, 0);
     _orbitTrap->Enable(_target->HasOrbitTrapMode());
     _orbitTrap->SetValue(_target->OrbitTrapActivated());
-    setSizer->Add(_orbitTrap, 0, wxALL, 5);
+    algorithmSizer->Add(_orbitTrap, 0, wxALL, 5);
 
     _smoothRender = new wxCheckBox(_mainPanel, wxID_ANY, " Smooth render", wxDefaultPosition, wxDefaultSize, 0);
     _smoothRender->Enable(_target->HasSmoothRenderMode());
     _smoothRender->SetValue(_target->SmoothRenderActivated());
 
-    setSizer->Add(_smoothRender, 0, wxALL, 5);
+    algorithmSizer->Add(_smoothRender, 0, wxALL, 5);
 
     _colorVarText = new wxStaticText(_mainPanel, wxID_ANY, "Color variation", wxDefaultPosition, wxDefaultSize, 0);
     _colorVarText->Wrap(-1);
-    setSizer->Add(_colorVarText, 0, wxALL, 5);
+    algorithmSizer->Add(_colorVarText, 0, wxALL, 5);
 
     _colorVarSlider = new wxSlider(_mainPanel, wxID_ANY, 0, 0, 300, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-    setSizer->Add(_colorVarSlider, 0, wxALL|wxEXPAND, 5);
+    algorithmSizer->Add(_colorVarSlider, 0, wxALL|wxEXPAND, 5);
 
     _colorRotationSpeedText = new wxStaticText(_mainPanel, wxID_ANY, "Color rotation speed", wxDefaultPosition, wxDefaultSize, 0);
     _colorRotationSpeedText->Wrap(-1);
-    setSizer->Add(_colorRotationSpeedText, 0, wxALL, 5);
+    algorithmSizer->Add(_colorRotationSpeedText, 0, wxALL, 5);
 
     _colorRotationSpeed = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
                                          wxSP_ARROW_KEYS, 0, 20000, static_cast<int>(std::round(_target->GetColorRotationSpeed())));
-    setSizer->Add(_colorRotationSpeed, 0, wxALL | wxEXPAND, 5);
+    algorithmSizer->Add(_colorRotationSpeed, 0, wxALL | wxEXPAND, 5);
 
     auto* colorSetSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Set color"), wxVERTICAL);
 
@@ -129,12 +129,12 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _blueSetSld = new wxSlider(_mainPanel, wxID_ANY, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
     colorSetSizer->Add(_blueSetSld, 0, wxALL|wxEXPAND, 5);
 
-    setSizer->Add(colorSetSizer, 1, wxEXPAND, 5);
+    algorithmSizer->Add(colorSetSizer, 1, wxEXPAND, 5);
 
     _okButton = new wxButton(_mainPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
-    setSizer->Add(_okButton, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    algorithmSizer->Add(_okButton, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-    mainSizer->Add(setSizer, 1, wxEXPAND, 5);
+    mainSizer->Add(algorithmSizer, 1, wxEXPAND, 5);
 
     _typeNotebook = new wxNotebook(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
     _gradientPanel = new wxPanel(_typeNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
