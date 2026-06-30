@@ -39,6 +39,13 @@ wxPanel* ScriptEditor::CreateSectionHeader(wxWindow* parent, const wxString& tex
     return header;
 }
 
+void ScriptEditor::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const
+{
+    const wxSize iconSize(20, 20);
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    button->SetBitmap(wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), iconSize));
+}
+
 const string newScriptTemplate = R""""(void Configure()
 {
     SetFractalName("New script");
@@ -147,24 +154,24 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     _saveChangesButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Save Changes", wxDefaultPosition, wxDefaultSize, 0);
 
-    _saveChangesButton->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR));
+    SetButtonIcon(_saveChangesButton, "save_light.svg", "save_dark.svg");
     _saveChangesButton->Enable(false);
 
     scriptListSizer->Add(_saveChangesButton, 0, wxALL | wxEXPAND, 5);
 
     _newButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "New script", wxDefaultPosition, wxDefaultSize, 0);
 
-    _newButton->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR));
+    SetButtonIcon(_newButton, "new_light.svg", "new_dark.svg");
     scriptListSizer->Add(_newButton, 0, wxALL | wxEXPAND, 5);
 
     _removeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Delete script", wxDefaultPosition, wxDefaultSize, 0);
 
-    _removeButton->SetBitmap(wxArtProvider::GetBitmap(wxART_DELETE, wxART_TOOLBAR));
+    SetButtonIcon(_removeButton, "delete_light.svg", "delete_dark.svg");
     scriptListSizer->Add(_removeButton, 0, wxALL | wxEXPAND, 5);
 
     _closeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Close and reload", wxDefaultPosition, wxDefaultSize, 0);
 
-    _closeButton->SetBitmap(wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR));
+    SetButtonIcon(_closeButton, "close_light.svg", "close_dark.svg");
     scriptListSizer->Add(_closeButton, 0, wxALL | wxEXPAND, 5);
     panelSizer->Add(scriptListSizer, 0, wxEXPAND, 5);
 
@@ -220,7 +227,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     _debugPanel = new wxPanel(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto debugSizer = new wxBoxSizer(wxVERTICAL);
-    debugSizer->Add(CreateSectionHeader(_debugPanel, "Debugger","debugger_light.svg", "debugger_dark.svg"),
+    debugSizer->Add(CreateSectionHeader(_debugPanel, "Debugger", "debugger_light.svg", "debugger_dark.svg"),
                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     const auto debugElementsSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -229,12 +236,12 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     _validateButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, "Validate", wxDefaultPosition, wxDefaultSize, 0);
 
-    _validateButton->SetBitmap(wxArtProvider::GetBitmap(wxART_WARNING, wxART_TOOLBAR));
+    SetButtonIcon(_validateButton, "validate_light.svg", "validate_dark.svg");
     debugButtonsSizer->Add(_validateButton, 0, wxALL | wxEXPAND, 5);
 
     _runButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, "Run", wxDefaultPosition, wxDefaultSize, 0);
 
-    _runButton->SetBitmap(wxBitmap(AppPaths::ResourceFile({"play.png"}), wxBITMAP_TYPE_ANY));
+    SetButtonIcon(_runButton, "run_light.svg", "run_dark.svg");
     debugButtonsSizer->Add(_runButton, 0, wxALL | wxEXPAND, 5);
     debugElementsSizer->Add(debugButtonsSizer, 0, wxEXPAND, 5);
 

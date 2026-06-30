@@ -74,6 +74,7 @@ class ScriptEditor : public wxFrame
     [[nodiscard]] int GetScriptIndex(const wxString& scriptName) const;
     wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
                                  const wxString& darkIcon) const;
+    void SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const;
 
     void OnSelectScript(wxCommandEvent& event);
     void OnSaveChanges(wxCommandEvent& event);
