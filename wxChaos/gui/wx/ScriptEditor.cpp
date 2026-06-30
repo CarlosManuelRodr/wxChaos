@@ -122,7 +122,6 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
                            const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style)
 {
     _currentScriptIndex = -1;
-    _debugCollapsiblePaneBestHeight = 0;
 
     this->SetSizeHints(wxSize(1200, 760), wxDefaultSize);
 
@@ -219,17 +218,12 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     panelSizer->Fit(_scriptPanel);
     mainPanelSizer->Add(_scriptPanel, 1, wxEXPAND | wxALL, 5);
 
-    _debugCollapsiblePane = new wxGenericCollapsiblePane(_mainPanel, wxID_ANY, "Debug tools", wxDefaultPosition, wxDefaultSize,
-                                                   wxCP_DEFAULT_STYLE | wxCP_NO_TLW_RESIZE);
-    _debugCollapsiblePane->Collapse(true);
-    _debugCollapsiblePane->SetMinSize(wxSize(750, -1));
-
+    _debugPanel = new wxPanel(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto debugSizer = new wxBoxSizer(wxVERTICAL);
-    debugSizer->Add(CreateSectionHeader(_debugCollapsiblePane->GetPane(), "Debugger",
+    debugSizer->Add(CreateSectionHeader(_debugPanel, "Debugger",
                                         "debugger_light.svg", "debugger_dark.svg"),
                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    _debugPanel = new wxPanel(_debugCollapsiblePane->GetPane(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto debugElementsSizer = new wxBoxSizer(wxHORIZONTAL);
 
     const auto debugButtonsSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, "Actions"), wxVERTICAL);
@@ -266,17 +260,11 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     previewSizer->Add(_renderPreviewBitmap, 0, wxALL, 5);
     debugElementsSizer->Add(previewSizer, 0, wxEXPAND, 5);
 
-    _debugPanel->SetSizer(debugElementsSizer);
+    debugSizer->Add(debugElementsSizer, 1, wxEXPAND | wxALL, 5);
+    _debugPanel->SetSizer(debugSizer);
     _debugPanel->Layout();
-    debugElementsSizer->Fit(_debugPanel);
-    debugSizer->Add(_debugPanel, 1, wxEXPAND | wxALL, 5);
-
-
-    _debugCollapsiblePane->GetPane()->SetSizer(debugSizer);
-    _debugCollapsiblePane->GetPane()->Layout();
-    debugSizer->Fit(_debugCollapsiblePane->GetPane());
-    _debugCollapsiblePaneBestHeight = _debugCollapsiblePane->GetBestSize().GetHeight();
-    mainPanelSizer->Add(_debugCollapsiblePane, 0, wxALL | wxEXPAND, 5);
+    debugSizer->Fit(_debugPanel);
+    mainPanelSizer->Add(_debugPanel, 0, wxALL | wxEXPAND, 5);
 
 
     _mainPanel->SetSizer(mainPanelSizer);
@@ -301,7 +289,6 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     _codeEditor->Bind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
     _runButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
-    _debugCollapsiblePane->Bind(wxEVT_COLLAPSIBLEPANE_CHANGED, &ScriptEditor::OnDebugPanel, this);
 }
 
 ScriptEditor::~ScriptEditor()
@@ -315,7 +302,6 @@ ScriptEditor::~ScriptEditor()
     _codeEditor->Unbind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
     _runButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
-    _debugCollapsiblePane->Unbind(wxEVT_COLLAPSIBLEPANE_CHANGED, &ScriptEditor::OnDebugPanel, this);
 }
 
 void ScriptEditor::SetUpLexer() const
@@ -477,23 +463,6 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
     else
         this->ConsoleSetText(wxString("Time elapsed: ") << elapsed.count() << " milliseconds");
 }
-void ScriptEditor::OnDebugPanel(wxCollapsiblePaneEvent&)
-{
-    const int newDebugPaneBestHeight = _debugCollapsiblePane->GetBestSize().GetHeight();
-    const int heightDelta = newDebugPaneBestHeight - _debugCollapsiblePaneBestHeight;
-    _debugCollapsiblePaneBestHeight = newDebugPaneBestHeight;
-
-    if (heightDelta != 0)
-    {
-        wxSize clientSize = this->GetClientSize();
-        clientSize.IncBy(0, heightDelta);
-        this->SetClientSize(clientSize);
-    }
-
-    this->Layout();
-    this->Update();
-}
-
 void ScriptEditor::ConsoleSetText(const wxString& text) const
 {
     _console->MoveEnd();

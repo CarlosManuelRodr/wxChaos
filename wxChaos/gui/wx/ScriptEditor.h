@@ -7,7 +7,6 @@
 #include <wx/stc/stc.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/statbmp.h>
-#include <wx/collpane.h>
 #include <wx/frame.h>
 #include <wx/dialog.h>
 #include <wx/textctrl.h>
@@ -55,7 +54,6 @@ class ScriptEditor : public wxFrame
     wxButton* _removeButton;
     wxButton* _closeButton;
     wxStyledTextCtrl* _codeEditor;
-    wxGenericCollapsiblePane* _debugCollapsiblePane;
     wxPanel* _debugPanel;
     wxButton* _validateButton;
     wxButton* _runButton;
@@ -64,7 +62,6 @@ class ScriptEditor : public wxFrame
 
     std::vector<ScriptData> _loadedScripts;
     int _currentScriptIndex;
-    int _debugCollapsiblePaneBestHeight;
 
     void SetUpLexer() const;
     void FetchUserScripts();
@@ -87,7 +84,6 @@ class ScriptEditor : public wxFrame
     void OnCodeChange(wxKeyEvent& event);
     void OnValidateScript(wxCommandEvent& event);
     void OnRunScript(wxCommandEvent& event);
-    void OnDebugPanel(wxCollapsiblePaneEvent& event);
 public:
     explicit ScriptEditor(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Script editor",
                           const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 900),
