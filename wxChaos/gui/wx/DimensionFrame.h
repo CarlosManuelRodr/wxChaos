@@ -18,6 +18,7 @@
 #include <wx/notebook.h>
 #include <wx/spinctrl.h>
 #include <wx/bmpbuttn.h>
+#include <wx/bmpbndl.h>
 
 #include <mathplot.h>
 #include "FractalFactory.h"
@@ -280,6 +281,9 @@ class DimensionFrame : public wxFrame
     void OnSavePreview(wxCommandEvent& );
     void OnHelp(wxCommandEvent&);
 
+    wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                 const wxString& darkIcon) const;
+    [[nodiscard]] wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon, const wxSize& size) const;
     void CreateFractal(int size);
     /**
      * @brief Waits for all dimension worker threads and releases their resources.

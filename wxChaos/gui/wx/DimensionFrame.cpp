@@ -1,6 +1,8 @@
 #include <limits>
 #include <fstream>
 #include <mpParser.h>
+#include <wx/bmpbndl.h>
+#include "AppTheme.h"
 #include "AppPaths.h"
 #include "DimensionFrame.h"
 #include "TextUtils.h"
@@ -529,6 +531,38 @@ PlotWindow::PlotWindow(const LineParams params, const vector<double> &xList, con
 PlotWindow::~PlotWindow() = default;
 
 // DimensionFrame
+wxPanel* DimensionFrame::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                             const wxString& darkIcon) const
+{
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 10);
+
+    const auto title = new wxStaticText(header, wxID_ANY, text);
+    wxFont titleFont = title->GetFont();
+    titleFont.SetPointSize(titleFont.GetPointSize() + 2);
+    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+    title->SetFont(titleFont);
+    title->SetBackgroundColour(AppTheme::ControlBackground());
+    title->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    return header;
+}
+
+wxBitmapBundle DimensionFrame::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                                const wxSize& size) const
+{
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
+}
+
 DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
                                const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style)
 {
@@ -556,7 +590,11 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
 
     const auto subMainBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     const auto paramBoxSizer = new wxBoxSizer(wxVERTICAL);
-    const auto fractalBoxSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Fractal"), wxHORIZONTAL);
+    const auto fractalSectionSizer = new wxBoxSizer(wxVERTICAL);
+    fractalSectionSizer->Add(CreateSectionHeader(_mainPanel, "Fractal parameters",
+                                                 "fractal_light.svg", "fractal_dark.svg"),
+                             0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+    const auto fractalBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     const auto borderBoxSizer = new wxBoxSizer(wxVERTICAL);
 
     const wxString fractalChoiceChoices[] = { "Mandelbrot", "MandelbrotZN", "Mandelbrot (Julia)", "MandelbrotZN (Julia)", "Sine (Julia)", "Jellyfish",
@@ -619,7 +657,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _fractalOptionsButton = new wxButton(_mainPanel, wxID_ANY, "Configure fractal options", wxDefaultPosition, wxDefaultSize, 0);
     fOptBoxSizer->Add(_fractalOptionsButton, 0, wxALL | wxEXPAND, 5);
 
-    const auto previewBoxSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Quick preview"), wxVERTICAL);
+    const auto previewBoxSizer = new wxBoxSizer(wxVERTICAL);
+    previewBoxSizer->Add(new wxStaticLine(_mainPanel, wxID_ANY), 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _nDivTxt = new wxStaticText(_mainPanel, wxID_ANY, "Number of divisions", wxDefaultPosition, wxDefaultSize, 0);
     _nDivTxt->Wrap(-1);
@@ -638,9 +677,13 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     previewBoxSizer->Add(renderPreBoxSizer, 1, wxEXPAND, 5);
     fOptBoxSizer->Add(previewBoxSizer, 1, wxEXPAND, 5);
     fractalBoxSizer->Add(fOptBoxSizer, 1, wxEXPAND, 5);
-    paramBoxSizer->Add(fractalBoxSizer, 1, wxEXPAND, 5);
+    fractalSectionSizer->Add(fractalBoxSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
+    paramBoxSizer->Add(fractalSectionSizer, 1, wxEXPAND, 5);
 
-    const auto dimBoxSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Box-counting parameters"), wxVERTICAL);
+    const auto dimBoxSizer = new wxBoxSizer(wxVERTICAL);
+    dimBoxSizer->Add(CreateSectionHeader(_mainPanel, "Box-counting parameters",
+                                         "box_count_light.svg", "box_count_dark.svg"),
+                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _divTxt = new wxStaticText(_mainPanel, wxID_ANY, "Divisions", wxDefaultPosition, wxDefaultSize, 0);
     _divTxt->Wrap(-1);
@@ -722,6 +765,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     dumpBoxSizer->Add(_filePathCtrl, 0, wxALL | wxEXPAND, 5);
     dimBoxSizer->Add(dumpBoxSizer, 0, wxEXPAND, 5);
 
+    dimBoxSizer->Add(CreateSectionHeader(_mainPanel, "Plotting", "plot_light.svg", "plot_dark.svg"),
+                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
     const auto plotBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _dataCheck = new wxCheckBox(_mainPanel, wxID_ANY, "Plot data", wxDefaultPosition, wxDefaultSize, 0);
@@ -739,8 +784,9 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _closeButton = new wxButton(_mainPanel, wxID_ANY, "Close", wxDefaultPosition, wxDefaultSize, 0);
     buttonBoxSizer->Add(_closeButton, 1, wxALL | wxALIGN_BOTTOM, 5);
 
-    _helpButton = new wxBitmapButton(_mainPanel, wxID_ANY, wxBitmap(AppPaths::ResourceFile({"help.png"}),
-                                    wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
+    _helpButton = new wxBitmapButton(_mainPanel, wxID_ANY,
+                                     CreateIconBundle("help_light.svg", "help_dark.svg", wxSize(24, 24)),
+                                     wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
     buttonBoxSizer->Add(_helpButton, 0, wxALIGN_BOTTOM | wxALL, 5);
 
     dimBoxSizer->Add(buttonBoxSizer, 1, wxEXPAND, 5);
@@ -748,9 +794,10 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     subMainBoxSizer->Add(paramBoxSizer, 1, wxEXPAND, 5);
 
     const auto outputBoxSizer = new wxBoxSizer(wxVERTICAL);
-    //
+    outputBoxSizer->Add(CreateSectionHeader(_mainPanel, "Box count preview", "box_light.svg", "box_dark.svg"),
+                        0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
     _previewImage = new ImagePanel(_mainPanel, wxID_ANY, _previewSize);
-    outputBoxSizer->Add(_previewImage, 0, wxEXPAND | wxALL, 5);
+    outputBoxSizer->Add(_previewImage, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
     _outLine = new wxStaticLine(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
     outputBoxSizer->Add(_outLine, 0, wxEXPAND | wxALL, 5);
