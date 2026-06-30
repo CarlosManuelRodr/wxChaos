@@ -32,7 +32,7 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
     mainSizer->Add(buttonSizer, 0, wxEXPAND, 5);
 
     SetSizer(mainSizer);
-    Layout();
+    wxTopLevelWindowBase::Layout();
     Centre(wxBOTH);
 
     _backButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnBack, this);
@@ -55,17 +55,19 @@ DocumentViewer::~DocumentViewer()
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnClose, this);
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 void DocumentViewer::ApplyDocumentTheme() const
 {
     const wxString theme = AppTheme::IsDark() ? "dark" : "light";
     const wxString script = wxString::Format(
         "document.documentElement.setAttribute('data-theme', '%s');"
         "if (document.body) { document.body.classList.add('wxchaos-document'); }",
-        theme.c_str());
+        theme.c_str()
+        );
     _webView->RunScript(script);
 }
 
-wxBitmapBundle DocumentViewer::CreateNavigationButtonBitmap(const bool back) const
+wxBitmapBundle DocumentViewer::CreateNavigationButtonBitmap(const bool back)
 {
     const wxString icon = back
         ? (AppTheme::IsDark() ? "arrow_left_dark.svg" : "arrow_left_light.svg")
@@ -74,6 +76,7 @@ wxBitmapBundle DocumentViewer::CreateNavigationButtonBitmap(const bool back) con
     return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), wxSize(20, 20));
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 void DocumentViewer::AddNavigationHistoryEntry(const wxString& url)
 {
     if (url.IsEmpty())
@@ -126,6 +129,7 @@ void DocumentViewer::OnNavigating(wxWebViewEvent& event)
     event.Skip();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void DocumentViewer::OnNavigated(wxWebViewEvent&)
 {
     UpdateNavigationButtons();

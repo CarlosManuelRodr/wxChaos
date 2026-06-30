@@ -31,7 +31,7 @@ class DocumentViewer : public wxDialog
     /// @brief Creates the themed bitmap used by a navigation button.
     /// @param back True for the back button icon, false for the forward button icon.
     /// @return The themed navigation button bitmap.
-    wxBitmapBundle CreateNavigationButtonBitmap(bool back) const;
+    static wxBitmapBundle CreateNavigationButtonBitmap(bool back);
 
     /// @brief Adds a normal link navigation to the local document history.
     /// @param url URL that navigation is moving to.
