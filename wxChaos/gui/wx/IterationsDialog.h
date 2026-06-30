@@ -10,6 +10,8 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
+#include <wx/statline.h>
 #include "Fractal.h"
 #include "sfml/FractalPresenter.h"
 
@@ -20,27 +22,32 @@
 class IterationsDialog : public wxFrame
 {
     wxPanel* _panel;
-    wxTextCtrl* _textCtrl;
-    wxButton* _plusButton;
-    wxButton* _minusButton;
+    wxSpinCtrl* _iterationsSpinCtrl;
+    wxSlider* _iterationsSlider;
+    wxPanel* _scalePanel;
     wxButton* _acceptButton;
     wxButton* _applyButton;
 
     unsigned int _number;
     FractalPresenter* _fractalPresenter;
     Fractal* _target;
-    wxString _text;
     bool* _active;
+
+    [[nodiscard]] static int IterationsToSliderValue(unsigned int iterations);
+    [[nodiscard]] static unsigned int SliderValueToIterations(int sliderValue);
+    void SetIterationControls(unsigned int iterations);
+    bool ReadIterationValue(unsigned int& iterations) const;
+    void OnScalePaint(wxPaintEvent& event);
     
 public:
     IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
-                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 180),
+                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 340),
                      long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
 
     ~IterationsDialog() override;
 
-    void OnPlus(wxCommandEvent& event);
-    void OnMinus(wxCommandEvent& event);
+    void OnSlider(wxCommandEvent& event);
+    void OnSpin(wxCommandEvent& event);
     void OnOk(wxCommandEvent& event);
     void OnApply(wxCommandEvent& event);
     void SetTarget(FractalPresenter* presenter);
