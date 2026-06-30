@@ -10,8 +10,8 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/clrpicker.h>
 #include <wx/spinctrl.h>
-#include <wx/notebook.h>
 #include <SFML/Graphics/Color.hpp>
 #include <functional>
 #include <vector>
@@ -20,7 +20,7 @@
 #include "wxGradientDialog.h"
 #include "Fractal.h"
 
-#define RendererOptionsFrameSize wxSize(1000, 870)
+#define RendererOptionsFrameSize wxSize(1000, 1020)
 
 wxDECLARE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 
@@ -41,15 +41,10 @@ class RendererOptionsFrame : public wxFrame
     wxCheckBox* _colorSet;
     wxCheckBox* _orbitTrap;
     wxCheckBox* _smoothRender;
-    wxStaticText* _redSetText;
-    wxSlider* _redSetSld;
-    wxStaticText* _greenSetText;
-    wxSlider* _greenSetSld;
-    wxStaticText* _blueSetText;
-    wxSlider* _blueSetSld;
+    wxStaticText* _setColorText;
+    wxColourPickerCtrl* _setColorPicker;
     wxButton* _okButton;
-    wxNotebook* _typeNotebook;
-    wxPanel* _gradientPanel;
+    wxPanel* _colorPanel;
     wxStaticText* _gradStylesLabel;
     wxChoice* _gradStylesChoice;
     wxButton* _gradButton;
@@ -85,9 +80,7 @@ class RendererOptionsFrame : public wxFrame
     void OnColorSet(wxCommandEvent& event);
     void OnOrbitTrap(wxCommandEvent& event);
     void OnSmoothRender(wxCommandEvent& event);
-    void OnSetRed(wxScrollEvent& event);
-    void OnSetGreen(wxScrollEvent& event);
-    void OnSetBlue(wxScrollEvent& event);
+    void OnSetColor(wxColourPickerEvent& event);
     void OnOk(wxCommandEvent& event);
     void OnGrad(wxCommandEvent& event);
     void GradientColorChangeSelection(wxCommandEvent& event);
@@ -105,6 +98,8 @@ class RendererOptionsFrame : public wxFrame
     void SyncPaletteMappingControls() const;
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
     [[nodiscard]] wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
+    wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                 const wxString& darkIcon) const;
 
 public:
     ///@brief Constructor.
