@@ -75,6 +75,8 @@ class ScriptEditor : public wxFrame
     void ConsolePrepareOutput() const;
     void SetBlackPreview() const;
     [[nodiscard]] int GetScriptIndex(const wxString& scriptName) const;
+    wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                 const wxString& darkIcon) const;
 
     void OnSelectScript(wxCommandEvent& event);
     void OnSaveChanges(wxCommandEvent& event);

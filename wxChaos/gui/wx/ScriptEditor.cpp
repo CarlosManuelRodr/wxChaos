@@ -1,5 +1,7 @@
 #include <chrono>
 #include <fstream>
+#include <wx/bmpbndl.h>
+#include "AppTheme.h"
 #include "AppPaths.h"
 #include "ScriptEditor.h"
 #include "FractalTypes.h"
@@ -8,6 +10,34 @@
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_SCRIPT_EDITOR_CLOSED, wxCommandEvent);
+
+wxPanel* ScriptEditor::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                           const wxString& darkIcon) const
+{
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    const wxBitmapBundle iconBundle = wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), iconSize);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, iconBundle.GetBitmap(iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 12);
+
+    const auto title = new wxStaticText(header, wxID_ANY, text);
+    wxFont titleFont = title->GetFont();
+    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+    titleFont.SetPointSize(titleFont.GetPointSize() + 1);
+    title->SetFont(titleFont);
+    title->SetBackgroundColour(AppTheme::ControlBackground());
+    title->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 52));
+    return header;
+}
 
 const string newScriptTemplate = R""""(void Configure()
 {
@@ -103,6 +133,9 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto mainPanelSizer = new wxBoxSizer(wxVERTICAL);
+    mainPanelSizer->Add(CreateSectionHeader(_mainPanel, "User script editor",
+                                            "code_editor_light.svg", "code_editor_dark.svg"),
+                        0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _scriptPanel = new wxPanel(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -136,7 +169,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     scriptListSizer->Add(_closeButton, 0, wxALL | wxEXPAND, 5);
     panelSizer->Add(scriptListSizer, 0, wxEXPAND, 5);
 
-    const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, "Code editor"), wxVERTICAL);
+    const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, "Source"), wxVERTICAL);
 
     _codeEditor = new wxStyledTextCtrl(codeSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString);
     _codeEditor->SetUseTabs(false);
@@ -186,12 +219,15 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     panelSizer->Fit(_scriptPanel);
     mainPanelSizer->Add(_scriptPanel, 1, wxEXPAND | wxALL, 5);
 
-    _debugCollapsiblePane = new wxGenericCollapsiblePane(_mainPanel, wxID_ANY, "Debugger", wxDefaultPosition, wxDefaultSize,
+    _debugCollapsiblePane = new wxGenericCollapsiblePane(_mainPanel, wxID_ANY, "Debug tools", wxDefaultPosition, wxDefaultSize,
                                                    wxCP_DEFAULT_STYLE | wxCP_NO_TLW_RESIZE);
     _debugCollapsiblePane->Collapse(true);
     _debugCollapsiblePane->SetMinSize(wxSize(750, -1));
 
-    const auto debugSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto debugSizer = new wxBoxSizer(wxVERTICAL);
+    debugSizer->Add(CreateSectionHeader(_debugCollapsiblePane->GetPane(), "Debugger",
+                                        "debugger_light.svg", "debugger_dark.svg"),
+                    0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _debugPanel = new wxPanel(_debugCollapsiblePane->GetPane(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto debugElementsSizer = new wxBoxSizer(wxHORIZONTAL);
