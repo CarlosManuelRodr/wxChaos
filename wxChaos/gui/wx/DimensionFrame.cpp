@@ -124,7 +124,7 @@ ImagePanel::ImagePanel(wxWindow* parent, const int id, const int size)
             _map[i][j] = false;
     }
 
-    this->SetMinSize(wxSize(_size, _size));
+    this->wxWindowBase::SetMinSize(wxSize(_size, _size));
     this->SetInitialSize(wxSize(_size, _size));
     this->Bind(wxEVT_PAINT, &ImagePanel::OnPaintEvent, this);
 }
@@ -527,7 +527,7 @@ PlotWindow::~PlotWindow() = default;
 
 // DimensionFrame
 wxPanel* DimensionFrame::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                             const wxString& darkIcon) const
+                                             const wxString& darkIcon)
 {
     const auto header = new wxPanel(parent, wxID_ANY);
     header->SetBackgroundColour(AppTheme::ControlBackground());
@@ -552,7 +552,7 @@ wxPanel* DimensionFrame::CreateSectionHeader(wxWindow* parent, const wxString& t
 }
 
 wxBitmapBundle DimensionFrame::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
-                                                const wxSize& size) const
+                                                const wxSize& size)
 {
     const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
     return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
@@ -1279,9 +1279,9 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         }
 
                         // Do least squares fitting for m.
-                        double n, sumXY, sumX, sumY, sumXSquared;
-                        sumXY = sumX = sumY = sumXSquared = 0;
-                        n = static_cast<double>(_epsilon.size());
+                        double sumX, sumY, sumXSquared;
+                        double sumXY = sumX = sumY = sumXSquared = 0;
+                        const double n = static_cast<double>(_epsilon.size());
                         for (int i = 0; i < n; i++)
                         {
                             sumXY += logEpsilon[i] * logCount[i];
@@ -1289,7 +1289,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                             sumY += logCount[i];
                             sumXSquared += pow(logEpsilon[i], 2);
                         }
-                        double dimensionFit = (n * sumXY - sumX * sumY) / (n * sumXSquared - pow(sumX, 2));
+                        const double dimensionFit = (n * sumXY - sumX * sumY) / (n * sumXSquared - pow(sumX, 2));
                         this->WriteText("Dimension = ");
                         this->WriteText(TextUtils::ToWxString(dimensionFit));
                         this->WriteText("\n");

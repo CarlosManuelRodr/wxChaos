@@ -110,7 +110,7 @@ public:
 * @class ConfigFractalOptionsDialog
 * @brief Edits fractal-specific options for the dimension calculator target.
 *
-* The dialog mirrors the main frame's dynamic option panel so a dimension
+* The dialog mirrors the main frame's dynamic option panel, so a dimension
 * preview can use fractal-specific parameters without changing the active canvas.
 */
 class ConfigFractalOptionsDialog : public wxDialog
@@ -277,9 +277,9 @@ class DimensionFrame : public wxFrame
     void OnSavePreview(wxCommandEvent& );
     void OnHelp(wxCommandEvent&);
 
-    wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                 const wxString& darkIcon) const;
-    [[nodiscard]] wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon, const wxSize& size) const;
+    static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                        const wxString& darkIcon);
+    [[nodiscard]] static wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon, const wxSize& size);
     void CreateFractal(int size);
     /**
      * @brief Waits for all dimension worker threads and releases their resources.
