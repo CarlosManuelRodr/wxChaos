@@ -380,24 +380,9 @@ void FractalCanvas::OnUpdate()
                     this->SetOrbitMode(!_orbitMode);
                 if (_event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
-                    const auto openFileDialog = new wxFileDialog(
-                        this,
-                        "Select file name",
-                        "",
-                        "fractal.png",
-                        "PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp",
-                        wxFD_SAVE
-                        );
-                    if (openFileDialog->ShowModal() == wxID_OK)
-                    {
-                        wxString fileName;
-                        fileName = openFileDialog->GetPath();
-                        const int ext = openFileDialog->GetFilterIndex();
-                        auto path = string(fileName.mb_str());
-                        const auto diag = new ImageExportSizeDialog(this, path, ext, _fractalType, _fractal, this);
-                        diag->Show(true);
-                    }
-                    openFileDialog->Destroy();
+                    const auto diag = new ImageExportSizeDialog(this, _fractalType, _fractal, this);
+                    diag->ShowModal();
+                    diag->Destroy();
                 }
             }
             if (_event.key.code == sf::Keyboard::F5)  // Redraw canvas.

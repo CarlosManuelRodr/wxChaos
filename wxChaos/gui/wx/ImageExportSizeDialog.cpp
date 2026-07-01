@@ -1,4 +1,6 @@
 #include <wx/spinctrl.h>
+#include "AppPaths.h"
+#include "AppTheme.h"
 #include "ImageExportSizeDialog.h"
 #include "TextUtils.h"
 using namespace std;
@@ -98,72 +100,109 @@ bool ImageExportProgressDialog::IsFinished() const
 }
 
 // ImageExportSizeDialog
-ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const string& filePath, const int ext, const FractalType type,
-                               const Fractal* target, wxWindow* parent, const string& scriptPath, const wxWindowID id,
-                               const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
+wxPanel* ImageExportSizeDialog::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                                    const wxString& darkIcon) const
+{
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 10);
+
+    const auto headerText = new wxStaticText(header, wxID_ANY, text);
+    wxFont headerFont = headerText->GetFont();
+    headerFont.SetPointSize(headerFont.GetPointSize() + 1);
+    headerFont.SetWeight(wxFONTWEIGHT_BOLD);
+    headerText->SetFont(headerFont);
+    headerText->SetBackgroundColour(AppTheme::ControlBackground());
+    headerText->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(headerText, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 48));
+    return header;
+}
+
+wxBitmapBundle ImageExportSizeDialog::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                                       const wxSize& size)
+{
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
+}
+
+void ImageExportSizeDialog::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const
+{
+    button->SetBitmap(CreateIconBundle(lightIcon, darkIcon, wxSize(20, 20)));
+    button->SetBitmapMargins(FromDIP(6), 0);
+}
+
+ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const FractalType type, const Fractal* target,
+                               wxWindow* parent, const string& scriptPath, const wxWindowID id, const wxString& title,
+                               const wxPoint& pos, const wxSize& size, const long style)
                                : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
-    _extension = ext;
+    _extension = 0;
     _fractalCanvas = fractalCanvas;
     _options = target->GetOptions();
-    _path = filePath;
+    _path.clear();
     _myScriptPath = scriptPath;
     _screenRatio = static_cast<double>(_options.screenWidth) / static_cast<double>(_options.screenHeight);
     _fractalType = type;
 
-    this->SetSizeHints(wxSize(420, 300), wxSize(420, 300));
+    this->SetSizeHints(wxSize(480, 280), wxDefaultSize);
 
     const auto sizer = new wxBoxSizer(wxVERTICAL);
 
     _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
-    const auto sizeSizer = new wxBoxSizer(wxHORIZONTAL);
-    const auto bSizer6 = new wxBoxSizer(wxVERTICAL);
+    panelSizer->Add(CreateSectionHeader(_mainPanel, "Image export", "picture_light.svg", "picture_dark.svg"),
+                    0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    _selectText = new wxStaticText(_mainPanel, wxID_ANY, "Select image size", wxDefaultPosition, wxDefaultSize, 0);
-    _selectText->Wrap(-1);
-    bSizer6->Add(_selectText, 0, wxALL, 5);
+    const auto exportSizer = new wxFlexGridSizer(3, 2, 12, 12);
+    exportSizer->AddGrowableCol(1, 1);
 
     _widthText = new wxStaticText(_mainPanel, wxID_ANY, "Width", wxDefaultPosition, wxDefaultSize, 0);
     _widthText->Wrap(-1);
-    bSizer6->Add(_widthText, 0, wxALL, 5);
+    exportSizer->Add(_widthText, 0, wxALIGN_CENTER_VERTICAL);
 
     _widthSpin = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
-    bSizer6->Add(_widthSpin, 0, wxALL, 5);
+    exportSizer->Add(_widthSpin, 1, wxEXPAND);
     _widthSpin->SetValue(static_cast<int>(_options.screenWidth));
-    sizeSizer->Add(bSizer6, 1, wxEXPAND, 5);
-
-    const auto bSizer8 = new wxBoxSizer(wxVERTICAL);
-
-    _dumbText = new wxStaticText(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
-    _dumbText->Wrap(-1);
-    bSizer8->Add(_dumbText, 0, wxALL, 5);
 
     _heightText = new wxStaticText(_mainPanel, wxID_ANY, "Height", wxDefaultPosition, wxDefaultSize, 0);
     _heightText->Wrap(-1);
-    bSizer8->Add(_heightText, 0, wxALL, 5);
+    exportSizer->Add(_heightText, 0, wxALIGN_CENTER_VERTICAL);
 
     _heightSpin = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
-    bSizer8->Add(_heightSpin, 0, wxALL, 5);
+    exportSizer->Add(_heightSpin, 1, wxEXPAND);
     _heightSpin->SetValue(static_cast<int>(_options.screenHeight));
-
-    sizeSizer->Add(bSizer8, 1, wxEXPAND, 5);
-    panelSizer->Add(sizeSizer, 1, wxEXPAND, 5);
-
-    const auto okSizer = new wxBoxSizer(wxVERTICAL);
 
     _iterationsText = new wxStaticText(_mainPanel, wxID_ANY, "Iterations", wxDefaultPosition, wxDefaultSize, 0);
     _iterationsText->Wrap(-1);
-    okSizer->Add(_iterationsText, 0, wxALL, 5);
+    exportSizer->Add(_iterationsText, 0, wxALIGN_CENTER_VERTICAL);
 
     _iterationsSpin = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000000, 1);
-    okSizer->Add(_iterationsSpin, 0, wxALL, 5);
+    exportSizer->Add(_iterationsSpin, 1, wxEXPAND);
     _iterationsSpin->SetValue(static_cast<int>(_options.maxIter));
 
-    _okButton = new wxButton(_mainPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
-    okSizer->Add(_okButton, 0, wxALL, 5);
-    panelSizer->Add(okSizer, 1, wxEXPAND, 5);
+    panelSizer->Add(exportSizer, 0, wxEXPAND | wxALL, 16);
+
+    const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    buttonSizer->AddStretchSpacer();
+
+    _saveButton = new wxButton(_mainPanel, wxID_ANY, "Save", wxDefaultPosition, wxDefaultSize, 0);
+    SetButtonIcon(_saveButton, "save_light.svg", "save_dark.svg");
+    buttonSizer->Add(_saveButton, 0, wxALL, 5);
+
+    _cancelButton = new wxButton(_mainPanel, wxID_ANY, "Cancel", wxDefaultPosition, wxDefaultSize, 0);
+    SetButtonIcon(_cancelButton, "close_light.svg", "close_dark.svg");
+    buttonSizer->Add(_cancelButton, 0, wxALL, 5);
+
+    panelSizer->Add(buttonSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
 
     _mainPanel->SetSizer(panelSizer);
     _mainPanel->Layout();
@@ -171,19 +210,23 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
     sizer->Add(_mainPanel, 1, wxEXPAND | wxALL, 0);
 
     this->SetSizer(sizer);
-    this->wxTopLevelWindowBase::Layout();
+    sizer->Fit(this);
+    this->SetMinSize(this->GetSize());
+    this->Layout();
     this->Centre(wxBOTH);
 
     _widthSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
     _heightSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeHeight, this);
-    _okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnOk, this);
+    _saveButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnSave, this);
+    _cancelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnCancel, this);
 }
 
 ImageExportSizeDialog::~ImageExportSizeDialog()
 {
     _widthSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
     _heightSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeHeight, this);
-    _okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnOk, this);
+    _saveButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnSave, this);
+    _cancelButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnCancel, this);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -200,8 +243,27 @@ void ImageExportSizeDialog::ChangeHeight(wxSpinEvent&)
     value *= _screenRatio;
     _widthSpin->SetValue(static_cast<int>(value));
 }
-void ImageExportSizeDialog::OnOk(wxCommandEvent&)
+void ImageExportSizeDialog::OnSave(wxCommandEvent&)
 {
+    const auto saveFileDialog = new wxFileDialog(
+        this,
+        "Select file name",
+        "",
+        "fractal.png",
+        "PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp",
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    if (saveFileDialog->ShowModal() != wxID_OK)
+    {
+        saveFileDialog->Destroy();
+        return;
+    }
+
+    const wxString fileName = saveFileDialog->GetPath();
+    _extension = saveFileDialog->GetFilterIndex();
+    _path = string(fileName.mb_str());
+    saveFileDialog->Destroy();
+
     // Creates fractal.
     if (_fractalType == FractalType::ScriptFractal)
         _fractalFactory.CreateScriptFractal(_widthSpin->GetValue(), _heightSpin->GetValue(), _myScriptPath);
@@ -238,5 +300,10 @@ void ImageExportSizeDialog::OnOk(wxCommandEvent&)
     // Cleanup and close dialog.
     diag->Destroy();
     _fractalFactory.DeleteFractal();
-    this->Close(true);
+    this->EndModal(wxID_OK);
+}
+
+void ImageExportSizeDialog::OnCancel(wxCommandEvent&)
+{
+    this->EndModal(wxID_CANCEL);
 }

@@ -690,31 +690,16 @@ void MainFrame::OnAbout(wxCommandEvent&)
 }
 void MainFrame::OnSave(wxCommandEvent&)
 {
-    // Saves the fractal image.
-    const auto saveFileDialog = new wxFileDialog(
-        this,
-        "Select file name",
-        "",
-        "fractal.png",
-        "PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp",
-        wxFD_SAVE
-        );
+    ImageExportSizeDialog* sizeDialogSave;
 
-    if (saveFileDialog->ShowModal() == wxID_OK)
-    {
-        const wxString fileName = saveFileDialog->GetPath();
-        const int ext = saveFileDialog->GetFilterIndex();
-        const auto path = string(fileName.mb_str());
-        ImageExportSizeDialog* sizeDialogSave;
+    if (_fractalType == FractalType::ScriptFractal && _selectedScriptIndex.has_value())
+        sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, _fractalType, _fractalCanvas->GetFractal(),
+                                                   this, _loadedScripts[*_selectedScriptIndex].file);
+    else
+        sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, _fractalType, _fractalCanvas->GetFractal(), this);
 
-        if (_fractalType == FractalType::ScriptFractal && _selectedScriptIndex.has_value())
-            sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractal(), this, _loadedScripts[*_selectedScriptIndex].file);
-        else
-            sizeDialogSave = new ImageExportSizeDialog(_fractalCanvas, path, ext, _fractalType, _fractalCanvas->GetFractal(), this);
-
-        sizeDialogSave->Show(true);
-    }
-    saveFileDialog->Destroy();
+    sizeDialogSave->ShowModal();
+    sizeDialogSave->Destroy();
 }
 
 void MainFrame::OpenJuliaPreviewInMainWindow(const FractalType fractalType, const Options& options,
