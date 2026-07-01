@@ -13,7 +13,7 @@
 wxDEFINE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 
 wxPanel* RendererOptionsFrame::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                                   const wxString& darkIcon) const
+                                                   const wxString& darkIcon)
 {
     const auto header = new wxPanel(parent, wxID_ANY);
     header->SetBackgroundColour(AppTheme::ControlBackground());
@@ -121,21 +121,19 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     renderFeatureSizer->Add(_smoothRender, 0, wxALL, 5);
     algorithmSizer->Add(renderFeatureSizer, 0, wxEXPAND | wxALL, 5);
 
-    _okButton = new wxButton(algorithmPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
+    _closeButton = new wxButton(algorithmPanel, wxID_ANY, "Close", wxDefaultPosition, wxDefaultSize, 0);
     algorithmSizer->AddStretchSpacer();
-    algorithmSizer->Add(_okButton, 0, wxALIGN_RIGHT | wxALL, 10);
+    algorithmSizer->Add(_closeButton, 0, wxALIGN_CENTER | wxALL, 10);
     algorithmPanel->SetSizer(algorithmSizer);
     mainSizer->Add(algorithmPanel, 1, wxEXPAND | wxALL, 5);
 
     _colorPanel = new wxPanel(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     auto* gradSizer = new wxBoxSizer(wxVERTICAL);
-    gradSizer->Add(CreateSectionHeader(_colorPanel, "Color options",
-                                       "color_palette_light.svg", "color_palette_dark.svg"),
+    gradSizer->Add(CreateSectionHeader(_colorPanel, "Color options", "color_palette_light.svg",
+                                   "color_palette_dark.svg"),
                    0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    auto* gradientOptionsSizer = new wxStaticBoxSizer(
-        new wxStaticBox(_colorPanel, wxID_ANY, "Gradient"),
-        wxVERTICAL);
+    auto* gradientOptionsSizer = new wxStaticBoxSizer(new wxStaticBox(_colorPanel, wxID_ANY, "Gradient"),wxVERTICAL);
     wxWindow* gradientOptions = gradientOptionsSizer->GetStaticBox();
 
     _gradStylesLabel = new wxStaticText(gradientOptions, wxID_ANY, "Color styles:", wxDefaultPosition, wxDefaultSize, 0);
@@ -297,7 +295,7 @@ void RendererOptionsFrame::ConnectEvents()
     _orbitTrap->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptionsFrame::OnOrbitTrap, this);
     _smoothRender->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptionsFrame::OnSmoothRender, this);
     _setColorPicker->Bind(wxEVT_COLOURPICKER_CHANGED, &RendererOptionsFrame::OnSetColor, this);
-    _okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &RendererOptionsFrame::OnOk, this);
+    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &RendererOptionsFrame::OnOk, this);
     _gradButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &RendererOptionsFrame::OnGrad, this);
     _colorVarSlider->Bind(wxEVT_SCROLL_TOP, &RendererOptionsFrame::OnChangeColorVariationOffset, this);
     _colorVarSlider->Bind(wxEVT_SCROLL_BOTTOM, &RendererOptionsFrame::OnChangeColorVariationOffset, this);

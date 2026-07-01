@@ -43,7 +43,7 @@ class RendererOptionsFrame : public wxFrame
     wxCheckBox* _smoothRender;
     wxStaticText* _setColorText;
     wxColourPickerCtrl* _setColorPicker;
-    wxButton* _okButton;
+    wxButton* _closeButton;
     wxPanel* _colorPanel;
     wxStaticText* _gradStylesLabel;
     wxChoice* _gradStylesChoice;
@@ -98,8 +98,8 @@ class RendererOptionsFrame : public wxFrame
     void SyncPaletteMappingControls() const;
     void SetAlgorithmChoices();        ///< Search for the algorithms available in the target fractal and constructs choice widget.
     [[nodiscard]] wxBitmap PaintGradient() const;    ///< Paints the gradient widget.
-    wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                 const wxString& darkIcon) const;
+    static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                        const wxString& darkIcon);
 
 public:
     ///@brief Constructor.
