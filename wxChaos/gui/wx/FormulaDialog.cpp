@@ -1,7 +1,6 @@
 #include "FormulaDialog.h"
 #include "TextUtils.h"
 
-// FuncDialog
 FunctionsHelpDialog::FunctionsHelpDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
                                          const wxSize& size, const long style)
                                          : wxDialog(parent, id, title, pos, size, style)
@@ -48,7 +47,6 @@ void FunctionsHelpDialog::OnClose(wxCommandEvent&)
     this->Close(true);
 }
 
-// FormulaDialog
 FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId, const int newtonUserDefinedId, wxMenuItem* juliaSlider,
                              wxMenuItem* juliaManual, bool* active, FractalCanvas* fCanvas, wxWindow* parent,
                              const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
