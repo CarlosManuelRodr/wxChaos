@@ -2,8 +2,10 @@
 
 #include <functional>
 #include <vector>
+#include <wx/bmpbndl.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
+#include <wx/statbmp.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
 #include "Fractal.h"
@@ -29,6 +31,7 @@ class FractalOptionsPanel : public wxPanel
     std::vector<wxCheckBox*> _checkBoxes;
     std::function<void()> _applyHandler;
 
+    wxPanel* CreateFractalOptionsHeader();
     void Build();
     void ClearDynamicControls();
     void OnApply(wxCommandEvent& event);

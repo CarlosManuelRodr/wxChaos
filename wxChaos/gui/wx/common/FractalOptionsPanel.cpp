@@ -1,10 +1,14 @@
-#include "TextUtils.h"
 #include "common/FractalOptionsPanel.h"
+
+#include "common/AppTheme.h"
+#include "AppPaths.h"
+#include "TextUtils.h"
 
 FractalOptionsPanel::FractalOptionsPanel(wxWindow* parent, const bool showJuliaConstants)
                                          : wxPanel(parent, wxID_ANY), _showJuliaConstants(showJuliaConstants)
 {
     _sizer = new wxBoxSizer(wxVERTICAL);
+    _sizer->Add(CreateFractalOptionsHeader(), 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
     SetSizer(_sizer);
 }
 
@@ -35,6 +39,33 @@ void FractalOptionsPanel::SetApplyHandler(std::function<void()> handler)
 bool FractalOptionsPanel::HasVisibleOptions() const
 {
     return _target != nullptr && (_showJuliaConstants || _target->GetOptPanel()->GetElementsSize() > 0);
+}
+
+wxPanel* FractalOptionsPanel::CreateFractalOptionsHeader()
+{
+    const auto header = new wxPanel(this, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxString icon = AppTheme::IsDark() ? "cog_dark.svg" : "cog_light.svg";
+    const wxSize iconSize(24, 24);
+    const wxBitmapBundle iconBundle = wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), iconSize);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, iconBundle.GetBitmap(iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 12);
+
+    const auto title = new wxStaticText(header, wxID_ANY, "Fractal options");
+    wxFont titleFont = title->GetFont();
+    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+    titleFont.SetPointSize(titleFont.GetPointSize() + 1);
+    title->SetFont(titleFont);
+    title->SetBackgroundColour(AppTheme::ControlBackground());
+    title->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 52));
+    return header;
 }
 
 void FractalOptionsPanel::Build()
