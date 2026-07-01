@@ -19,6 +19,9 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
 {
     wxTopLevelWindowBase::SetMinSize(wxSize(620, 440));
 
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
+    this->SetIcon(icon);
+
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
     _pages = new wxListbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLB_LEFT);
     _pages->AddPage(CreateGeneralPage(), "General", true);

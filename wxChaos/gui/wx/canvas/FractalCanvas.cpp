@@ -1,3 +1,4 @@
+// ReSharper disable CppDFAUnreachableCode
 #include <algorithm>
 #include <cmath>
 #include <string>
@@ -308,7 +309,7 @@ double FractalCanvas::CalculateZoomToolScale(const wxPoint position) const
         maximumDragZoomScale);
 }
 
-void FractalCanvas::CommitZoomToolDrag(const wxPoint endPosition)
+void FractalCanvas::CommitZoomToolDrag(const wxPoint endPosition) const
 {
     if (!_zoomToolDragging || _fractalPresenter->IsMoving())
         return;
@@ -326,7 +327,6 @@ wxString FractalCanvas::InspectPointAt(const wxPoint position) const
 
 void FractalCanvas::ShowPointInfo(const wxPoint position, const wxString& text)
 {
-    constexpr int popupMaxWidth = 520;
     const wxPoint screenPosition = ClientToScreen(position + wxPoint(20, 18));
 
     if (_pointInfoPopup == nullptr)
@@ -345,6 +345,7 @@ void FractalCanvas::ShowPointInfo(const wxPoint position, const wxString& text)
 
     if (_lastPointInfoText != text)
     {
+        constexpr int popupMaxWidth = 520;
         _lastPointInfoText = text;
         _pointInfoText->SetLabel(text);
         _pointInfoText->Wrap(popupMaxWidth);
@@ -377,8 +378,7 @@ void FractalCanvas::CancelToolGestures()
 
 void FractalCanvas::OnUpdate()
 {
-    const wxSize clientSize = GetClientSize();
-    if (clientSize.GetWidth() <= 0 || clientSize.GetHeight() <= 0)
+    if (const wxSize clientSize = GetClientSize(); clientSize.GetWidth() <= 0 || clientSize.GetHeight() <= 0)
         return;
 
     // Handles SFML events.
@@ -1028,37 +1028,40 @@ void FractalCanvas::OnKeyDown(wxKeyEvent& event)
     switch (event.GetKeyCode())
     {
         case WXK_UP:
-        {
             _fractalPresenter->SetMovement(Up);
             break;
-        }
         case WXK_DOWN:
-        {
             _fractalPresenter->SetMovement(Down);
             break;
-        }
         case WXK_LEFT:
-        {
             _fractalPresenter->SetMovement(Left);
             break;
-        }
         case WXK_RIGHT:
-        {
             _fractalPresenter->SetMovement(Right);
             break;
-        }
         default: break;
     }
 
-    const wxChar key = event.GetUnicodeKey();
-    if (key == 'W' || key == 'w')
-        _fractalPresenter->SetMovement(Up);
-    else if (key == 'S' || key == 's')
-        _fractalPresenter->SetMovement(Down);
-    else if (key == 'A' || key == 'a')
-        _fractalPresenter->SetMovement(Left);
-    else if (key == 'D' || key == 'd')
-        _fractalPresenter->SetMovement(Right);
+    switch (event.GetUnicodeKey())
+    {
+        case 'W':
+        case 'w':
+            _fractalPresenter->SetMovement(Up);
+            break;
+        case 'S':
+        case 's':
+            _fractalPresenter->SetMovement(Down);
+            break;
+        case 'A':
+        case 'a':
+            _fractalPresenter->SetMovement(Left);
+            break;
+        case 'D':
+        case 'd':
+            _fractalPresenter->SetMovement(Right);
+            break;
+        default: break;
+    }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
@@ -1067,35 +1070,38 @@ void FractalCanvas::OnKeyUp(wxKeyEvent& event)
     switch (event.GetKeyCode())
     {
         case WXK_UP:
-        {
             _fractalPresenter->ReleaseMovement(Up);
             break;
-        }
         case WXK_DOWN:
-        {
             _fractalPresenter->ReleaseMovement(Down);
             break;
-        }
         case WXK_LEFT:
-        {
             _fractalPresenter->ReleaseMovement(Left);
             break;
-        }
         case WXK_RIGHT:
-        {
             _fractalPresenter->ReleaseMovement(Right);
             break;
-        }
         default: break;
     }
 
-    const wxChar key = event.GetUnicodeKey();
-    if (key == 'W' || key == 'w')
-        _fractalPresenter->ReleaseMovement(Up);
-    else if (key == 'S' || key == 's')
-        _fractalPresenter->ReleaseMovement(Down);
-    else if (key == 'A' || key == 'a')
-        _fractalPresenter->ReleaseMovement(Left);
-    else if (key == 'D' || key == 'd')
-        _fractalPresenter->ReleaseMovement(Right);
+    switch (event.GetUnicodeKey())
+    {
+        case 'W':
+        case 'w':
+            _fractalPresenter->ReleaseMovement(Up);
+            break;
+        case 'S':
+        case 's':
+            _fractalPresenter->ReleaseMovement(Down);
+            break;
+        case 'A':
+        case 'a':
+            _fractalPresenter->ReleaseMovement(Left);
+            break;
+        case 'D':
+        case 'd':
+            _fractalPresenter->ReleaseMovement(Right);
+            break;
+        default: break;
+    }
 }

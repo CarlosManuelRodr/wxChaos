@@ -149,11 +149,11 @@ class DimensionFrame : public wxFrame
     wxSpinCtrlDouble* CreateCoordinateSpin(const wxString& value) const;
     void CreateFractal(int size);
     [[nodiscard]] Options ReadDimensionOptions();
-    void UpdateDerivedMaxY();
+    void UpdateDerivedMaxY() const;
     void SetControlsFromOptions(const Options& options);
     void SchedulePreviewRender();
     void StartPreviewRender();
-    void StopPreviewRender();
+    void StopPreviewRender() const;
     void RefreshPreviewOverlayOnly();
     /**
      * @brief Waits for all dimension worker threads and releases their resources.

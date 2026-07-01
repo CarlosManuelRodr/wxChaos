@@ -36,153 +36,9 @@ double GetMinElement(const vector<double> &in)
     return min;
 }
 
-// DimensionFrame
-wxPanel* DimensionFrame::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                             const wxString& darkIcon)
-{
-    const auto header = new wxPanel(parent, wxID_ANY);
-    header->SetBackgroundColour(AppTheme::ControlBackground());
-
-    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
-    const wxSize iconSize(24, 24);
-    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
-    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
-    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 10);
-
-    const auto title = new wxStaticText(header, wxID_ANY, text);
-    wxFont titleFont = title->GetFont();
-    titleFont.SetPointSize(titleFont.GetPointSize() + 2);
-    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
-    title->SetFont(titleFont);
-    title->SetBackgroundColour(AppTheme::ControlBackground());
-    title->SetForegroundColour(AppTheme::Foreground());
-    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
-
-    header->SetSizer(headerSizer);
-    return header;
-}
-
-wxBitmapBundle DimensionFrame::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
-                                                const wxSize& size)
-{
-    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
-    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
-}
-
-wxSizer* DimensionFrame::CreateFractalParameterRow(const wxString& label, wxWindow* control) const
-{
-    const auto rowSizer = new wxBoxSizer(wxVERTICAL);
-    const auto labelText = new wxStaticText(_mainPanel, wxID_ANY, label, wxDefaultPosition, wxDefaultSize, 0);
-    labelText->Wrap(-1);
-    rowSizer->Add(labelText, 0, wxLEFT | wxRIGHT | wxBOTTOM, 2);
-    rowSizer->Add(control, 0, wxEXPAND);
-    return rowSizer;
-}
-
-wxSpinCtrlDouble* DimensionFrame::CreateCoordinateSpin(const wxString& value) const
-{
-    const auto spin = new wxSpinCtrlDouble(_mainPanel, wxID_ANY, value, wxDefaultPosition, wxDefaultSize,
-                                           wxSP_ARROW_KEYS, -100000000.0, 100000000.0, TextUtils::ToDouble(value), 0.01);
-    spin->SetDigits(8);
-    return spin;
-}
-
-Options DimensionFrame::ReadDimensionOptions()
-{
-    Options options = _target->GetOptions();
-    options.minX = _minXCtrl->GetValue();
-    options.maxX = _maxXCtrl->GetValue();
-    options.minY = _minYCtrl->GetValue();
-    options.maxY = options.minY + (options.maxX - options.minX);
-    options.maxIter = _iterCtrl->GetValue();
-    _size = _sizeCtrl->GetValue();
-    _maxYCtrl->SetValue(options.maxY);
-    return options;
-}
-
-void DimensionFrame::UpdateDerivedMaxY()
-{
-    const double maxY = _minYCtrl->GetValue() + (_maxXCtrl->GetValue() - _minXCtrl->GetValue());
-    _maxYCtrl->SetValue(maxY);
-}
-
-void DimensionFrame::SetControlsFromOptions(const Options& options)
-{
-    _suppressPreviewUpdate = true;
-    _minXCtrl->SetValue(options.minX);
-    _maxXCtrl->SetValue(options.maxX);
-    _minYCtrl->SetValue(options.minY);
-    _iterCtrl->SetValue(static_cast<int>(options.maxIter));
-    UpdateDerivedMaxY();
-    _suppressPreviewUpdate = false;
-}
-
-void DimensionFrame::SchedulePreviewRender()
-{
-    if (_suppressPreviewUpdate || _calculatingDimension)
-        return;
-
-    UpdateDerivedMaxY();
-    if (_renderingPreview)
-    {
-        _previewRenderQueued = true;
-        StopPreviewRender();
-        return;
-    }
-
-    _previewTimer.StartOnce(450);
-}
-
-void DimensionFrame::StartPreviewRender()
-{
-    if (_calculatingDimension || _target == nullptr)
-        return;
-
-    _previewTimer.Stop();
-    _target->Resize(_previewSize, _previewSize);
-    _myOpt = ReadDimensionOptions();
-    _target->SetOptions(_myOpt);
-    _target->PrepareRender();
-    _target->Render();
-
-    _calcButton->Enable(false);
-    _savePreviewButton->Enable(false);
-
-    if (_scriptSelected)
-        _progressBar->Enable(false);
-
-    _renderingPreview = true;
-}
-
-void DimensionFrame::StopPreviewRender()
-{
-    if (_target != nullptr)
-        _target->StopRender();
-
-    _progressBar->SetValue(0);
-    _progressTxt->SetLabel(wxString("Progress: Stopped"));
-    _calcButton->Enable(true);
-    _savePreviewButton->Enable(true);
-
-    if (_scriptSelected)
-        _progressBar->Enable(true);
-}
-
-void DimensionFrame::RefreshPreviewOverlayOnly()
-{
-    if (!_hasPreviewMap || _target == nullptr)
-    {
-        SchedulePreviewRender();
-        return;
-    }
-
-    _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
-    _previewImage->Refresh();
-}
-
 DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
-                               const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style),
-                                                                        _previewTimer(this)
+                               const wxSize& size, const long style)
+                               : wxFrame(parent, id, title, pos, size, style), _previewTimer(this)
 {
     _threadNumber = Get_Cores();
     _dimensionCalculator.resize(_threadNumber);
@@ -470,6 +326,149 @@ DimensionFrame::~DimensionFrame()
     delete _fractalOptionsDialog;
 }
 
+wxPanel* DimensionFrame::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                             const wxString& darkIcon)
+{
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 10);
+
+    const auto title = new wxStaticText(header, wxID_ANY, text);
+    wxFont titleFont = title->GetFont();
+    titleFont.SetPointSize(titleFont.GetPointSize() + 2);
+    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+    title->SetFont(titleFont);
+    title->SetBackgroundColour(AppTheme::ControlBackground());
+    title->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    return header;
+}
+
+wxBitmapBundle DimensionFrame::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                                const wxSize& size)
+{
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
+}
+
+wxSizer* DimensionFrame::CreateFractalParameterRow(const wxString& label, wxWindow* control) const
+{
+    const auto rowSizer = new wxBoxSizer(wxVERTICAL);
+    const auto labelText = new wxStaticText(_mainPanel, wxID_ANY, label, wxDefaultPosition, wxDefaultSize, 0);
+    labelText->Wrap(-1);
+    rowSizer->Add(labelText, 0, wxLEFT | wxRIGHT | wxBOTTOM, 2);
+    rowSizer->Add(control, 0, wxEXPAND);
+    return rowSizer;
+}
+
+wxSpinCtrlDouble* DimensionFrame::CreateCoordinateSpin(const wxString& value) const
+{
+    const auto spin = new wxSpinCtrlDouble(_mainPanel, wxID_ANY, value, wxDefaultPosition, wxDefaultSize,
+                                           wxSP_ARROW_KEYS, -100000000.0, 100000000.0, TextUtils::ToDouble(value), 0.01);
+    spin->SetDigits(8);
+    return spin;
+}
+
+Options DimensionFrame::ReadDimensionOptions()
+{
+    Options options = _target->GetOptions();
+    options.minX = _minXCtrl->GetValue();
+    options.maxX = _maxXCtrl->GetValue();
+    options.minY = _minYCtrl->GetValue();
+    options.maxY = options.minY + (options.maxX - options.minX);
+    options.maxIter = _iterCtrl->GetValue();
+    _size = _sizeCtrl->GetValue();
+    _maxYCtrl->SetValue(options.maxY);
+    return options;
+}
+
+void DimensionFrame::UpdateDerivedMaxY() const
+{
+    const double maxY = _minYCtrl->GetValue() + (_maxXCtrl->GetValue() - _minXCtrl->GetValue());
+    _maxYCtrl->SetValue(maxY);
+}
+
+void DimensionFrame::SetControlsFromOptions(const Options& options)
+{
+    _suppressPreviewUpdate = true;
+    _minXCtrl->SetValue(options.minX);
+    _maxXCtrl->SetValue(options.maxX);
+    _minYCtrl->SetValue(options.minY);
+    _iterCtrl->SetValue(static_cast<int>(options.maxIter));
+    UpdateDerivedMaxY();
+    _suppressPreviewUpdate = false;
+}
+
+void DimensionFrame::SchedulePreviewRender()
+{
+    if (_suppressPreviewUpdate || _calculatingDimension)
+        return;
+
+    UpdateDerivedMaxY();
+    if (_renderingPreview)
+    {
+        _previewRenderQueued = true;
+        StopPreviewRender();
+        return;
+    }
+
+    _previewTimer.StartOnce(450);
+}
+
+void DimensionFrame::StartPreviewRender()
+{
+    if (_calculatingDimension || _target == nullptr)
+        return;
+
+    _previewTimer.Stop();
+    _target->Resize(_previewSize, _previewSize);
+    _myOpt = ReadDimensionOptions();
+    _target->SetOptions(_myOpt);
+    _target->PrepareRender();
+    _target->Render();
+
+    _calcButton->Enable(false);
+    _savePreviewButton->Enable(false);
+
+    if (_scriptSelected)
+        _progressBar->Enable(false);
+
+    _renderingPreview = true;
+}
+
+void DimensionFrame::StopPreviewRender() const
+{
+    if (_target != nullptr)
+        _target->StopRender();
+
+    _progressBar->SetValue(0);
+    _progressTxt->SetLabel(wxString("Progress: Stopped"));
+    _calcButton->Enable(true);
+    _savePreviewButton->Enable(true);
+
+    if (_scriptSelected)
+        _progressBar->Enable(true);
+}
+
+void DimensionFrame::RefreshPreviewOverlayOnly()
+{
+    if (!_hasPreviewMap || _target == nullptr)
+    {
+        SchedulePreviewRender();
+        return;
+    }
+
+    _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
+    _previewImage->Refresh();
+}
+
 void DimensionFrame::JoinDimensionThreads()
 {
     for (auto& thread : _dimThreads)
@@ -680,6 +679,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
             _myOpt = ReadDimensionOptions();
 
             // Compare with previous options.
+            // ReSharper disable once CppTooWideScopeInitStatement
             const Options tempOpt = _target->GetOptions();
 
             if (tempOpt.minX != _myOpt.minX || tempOpt.maxX != _myOpt.maxX || tempOpt.minY != _myOpt.minY ||
