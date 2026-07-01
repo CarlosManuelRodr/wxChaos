@@ -1,5 +1,4 @@
 Bugs:
-- Each fractal must be able to set the default number of iterations.
 - User formula Escape Time needs a Julia mode.
 - Buddhabrot image saving is not working?
 

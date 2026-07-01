@@ -42,6 +42,7 @@ FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vecto
 void FractalPresenter::SetFractal(Fractal* fractal)
 {
     _fractal = fractal;
+    _automaticIterationBase = fractal->GetIterations();
     _dontDrawTempImage = true;
     ResetMovement();
     ResetZoomHistory();
