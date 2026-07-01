@@ -1,7 +1,6 @@
-#include "analysis/PlotWindow.h"
-
 #include <wx/sizer.h>
 #include "AppPaths.h"
+#include "analysis/PlotWindow.h"
 
 using namespace std;
 

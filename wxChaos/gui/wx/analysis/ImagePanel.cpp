@@ -1,8 +1,7 @@
-#include "analysis/ImagePanel.h"
-
 #include <cmath>
 #include <wx/dcclient.h>
 #include "TextUtils.h"
+#include "analysis/ImagePanel.h"
 
 ImagePanel::ImagePanel(wxWindow* parent, const int id, const int size)
                        : wxPanel(parent, id, wxDefaultPosition, wxSize(size, size))

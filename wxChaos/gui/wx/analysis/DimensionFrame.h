@@ -16,7 +16,6 @@
 #include <wx/statline.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/notebook.h>
-#include <wx/spinctrl.h>
 #include <wx/bmpbuttn.h>
 #include <wx/bmpbndl.h>
 

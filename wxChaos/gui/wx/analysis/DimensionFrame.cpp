@@ -1,6 +1,7 @@
 #include <limits>
 #include <mpParser.h>
 #include <wx/bmpbndl.h>
+#include <wx/spinctrl.h>
 #include "common/AppTheme.h"
 #include "AppPaths.h"
 #include "analysis/DimensionFrame.h"

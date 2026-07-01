@@ -184,6 +184,7 @@ void ConfigFractalOptionsDialog::OnOk(wxCommandEvent&)
     this->Show(false);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void ConfigFractalOptionsDialog::OnApply(wxCommandEvent&)
 {
     const PanelOptions* pOptions = _target->GetOptPanel();
