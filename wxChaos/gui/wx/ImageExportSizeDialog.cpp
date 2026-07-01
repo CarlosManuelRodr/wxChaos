@@ -101,16 +101,16 @@ bool ImageExportProgressDialog::IsFinished() const
 
 // ImageExportSizeDialog
 wxPanel* ImageExportSizeDialog::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                                    const wxString& darkIcon) const
+                                                    const wxString& darkIcon)
 {
     const auto header = new wxPanel(parent, wxID_ANY);
     header->SetBackgroundColour(AppTheme::ControlBackground());
 
     const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
-    const wxSize iconSize(24, 24);
+    const wxSize iconSize(28, 28);
     const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
     iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
-    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 10);
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 14);
 
     const auto headerText = new wxStaticText(header, wxID_ANY, text);
     wxFont headerFont = headerText->GetFont();
@@ -122,7 +122,7 @@ wxPanel* ImageExportSizeDialog::CreateSectionHeader(wxWindow* parent, const wxSt
     headerSizer->Add(headerText, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
 
     header->SetSizer(headerSizer);
-    header->SetMinSize(wxSize(-1, 48));
+    header->SetMinSize(wxSize(-1, 56));
     return header;
 }
 
@@ -191,6 +191,13 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
 
     panelSizer->Add(exportSizer, 0, wxEXPAND | wxALL, 16);
 
+    _largeImageWarningText = new wxStaticText(_mainPanel, wxID_ANY,
+        "For very large images, the BMP format is recommended because the exporter is optimized for very large sizes.");
+    _largeImageWarningText->Wrap(420);
+    _largeImageWarningText->SetForegroundColour(AppTheme::IsDark() ? wxColour(242, 190, 95) : wxColour(128, 82, 0));
+    _largeImageWarningText->Hide();
+    panelSizer->Add(_largeImageWarningText, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 16);
+
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
     buttonSizer->AddStretchSpacer();
 
@@ -210,9 +217,10 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
     sizer->Add(_mainPanel, 1, wxEXPAND | wxALL, 0);
 
     this->SetSizer(sizer);
+    UpdateLargeImageWarning();
     sizer->Fit(this);
-    this->SetMinSize(this->GetSize());
-    this->Layout();
+    this->wxTopLevelWindowBase::SetMinSize(this->GetSize());
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
     _widthSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
@@ -235,6 +243,7 @@ void ImageExportSizeDialog::ChangeWidth(wxSpinEvent&)
     double value = _widthSpin->GetValue();
     value /= _screenRatio;
     _heightSpin->SetValue(static_cast<int>(value));
+    UpdateLargeImageWarning();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void ImageExportSizeDialog::ChangeHeight(wxSpinEvent&)
@@ -242,6 +251,22 @@ void ImageExportSizeDialog::ChangeHeight(wxSpinEvent&)
     double value = _heightSpin->GetValue();
     value *= _screenRatio;
     _widthSpin->SetValue(static_cast<int>(value));
+    UpdateLargeImageWarning();
+}
+
+void ImageExportSizeDialog::UpdateLargeImageWarning()
+{
+    constexpr int largeImageThreshold = 50000;
+    const bool shouldShow = _widthSpin->GetValue() >= largeImageThreshold &&
+                            _heightSpin->GetValue() >= largeImageThreshold;
+    if (_largeImageWarningText->IsShown() == shouldShow)
+        return;
+
+    _largeImageWarningText->Show(shouldShow);
+    _mainPanel->GetSizer()->Layout();
+    this->SetMinSize(wxSize(480, 280));
+    this->GetSizer()->Fit(this);
+    this->SetMinSize(this->GetSize());
 }
 void ImageExportSizeDialog::OnSave(wxCommandEvent&)
 {

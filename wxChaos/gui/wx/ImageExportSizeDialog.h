@@ -64,6 +64,7 @@ class ImageExportSizeDialog : public wxDialog
     wxSpinCtrl* _heightSpin;
     wxStaticText* _iterationsText;
     wxSpinCtrl* _iterationsSpin;
+    wxStaticText* _largeImageWarningText;
     wxButton* _saveButton;
     wxButton* _cancelButton;
 
@@ -78,10 +79,11 @@ class ImageExportSizeDialog : public wxDialog
 
     void ChangeWidth(wxSpinEvent& event);         ///< Calculates new height and change value.
     void ChangeHeight(wxSpinEvent& event);        ///< Calculates new width and change value.
+    void UpdateLargeImageWarning();
     void OnSave(wxCommandEvent& event);           ///< Selects the target path and saves image.
     void OnCancel(wxCommandEvent& event);         ///< Closes the dialog without saving.
-    [[nodiscard]] wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                               const wxString& darkIcon) const;
+    [[nodiscard]] static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                                      const wxString& darkIcon);
     [[nodiscard]] static wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
                                                          const wxSize& size);
     void SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const;
