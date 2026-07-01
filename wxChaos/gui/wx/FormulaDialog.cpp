@@ -3,7 +3,8 @@
 
 // FuncDialog
 FunctionsHelpDialog::FunctionsHelpDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
-                                         const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
+                                         const wxSize& size, const long style)
+                                         : wxDialog(parent, id, title, pos, size, style)
 {
     this->SetSizeHints(wxSize(460, 250), wxDefaultSize);
 
