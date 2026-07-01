@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="fractal_info.css">
+    <title>Henon Map</title>
+</head>
+<body>
+<h1>Henon Map</h1>
+<p>
+    The Henon map is a two-dimensional chaotic map. wxChaos plots the orbit
+    generated from an initial point and marks every visited pixel in the
+    current view.
+</p>
+<p>
+    Each iteration uses
+</p>
+<p class="formula">
+    x<sub>n+1</sub> = y<sub>n</sub> + 1 - &alpha;x<sub>n</sub><sup>2</sup><br>
+    y<sub>n+1</sub> = &beta;x<sub>n</sub>
+</p>
+<p>
+    The default parameters are &alpha; = 1.4, &beta; = 0.3,
+    x<sub>0</sub> = 0.5, and y<sub>0</sub> = 0.2. Because this renderer plots
+    a single orbit rather than testing every pixel independently, it uses one
+    render thread and redraws the whole image when the view or options change.
+</p>
+</body>
+</html>

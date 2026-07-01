@@ -907,7 +907,7 @@ void FractalPresenter::SetView(const Rect& view)
 void FractalPresenter::IncreaseIterations()
 {
     ClearImageCache();
-    const unsigned change = _fractal->GetIterations() + 100;
+    const unsigned change = _fractal->GetIterations() + _fractal->GetIterationStep();
     if (_automaticIterations)
         SetAutomaticIterationBaseForCurrentIterations(change);
     _fractal->SetIterations(change);
@@ -917,9 +917,10 @@ void FractalPresenter::DecreaseIterations()
 {
     ClearImageCache();
 
-    if (_fractal->GetIterations() > 100)
+    const unsigned int iterationStep = _fractal->GetIterationStep();
+    if (_fractal->GetIterations() > iterationStep)
     {
-        const unsigned int change = _fractal->GetIterations() - 100;
+        const unsigned int change = _fractal->GetIterations() - iterationStep;
         if (_automaticIterations)
             SetAutomaticIterationBaseForCurrentIterations(change);
         _fractal->SetIterations(change);

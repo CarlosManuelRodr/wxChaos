@@ -24,7 +24,6 @@ struct AppConfig
     static ColorPaletteTypes ResolveColorStyle(ColorPaletteTypes style);
 
     FractalType type = FractalType::Mandelbrot;
-    int maxIterations = 100;
     bool automaticIterations = true;
     int paletteSize = 0;
     int colorCycleLength = 0;

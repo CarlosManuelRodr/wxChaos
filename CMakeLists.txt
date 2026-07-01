@@ -141,22 +141,30 @@ if(BUILD_TESTING)
             tests/core/RenderingAlgorithmTests.cpp
             tests/core/geometry/GeometryTests.cpp
             tests/core/rendering/RenderingTests.cpp
+            tests/core/rendering/HenonMapRendererTests.cpp
             tests/core/UserFormulaSymbolicCompilerTests.cpp
             tests/core/NewtonRootRegistryTests.cpp
             wxChaos/core/UserFormulaSymbolicCompiler.cpp
             wxChaos/core/renderers/utils/NewtonRootRegistry.cpp
+            wxChaos/core/renderers/HenonMapRenderer.cpp
+            wxChaos/core/RenderWorker.cpp
             wxChaos/core/coloring/PaletteMapping.cpp
             wxChaos/core/coloring/RenderingAlgorithm.cpp
             wxChaos/core/geometry/Rect.cpp
             wxChaos/core/geometry/Vector2Double.cpp
             wxChaos/core/rendering/RenderJob.cpp
             wxChaos/core/rendering/RenderRegion.cpp
+            wxChaos/gui/wx/common/PanelOptions.cpp
+            wxChaos/gui/wx/common/wxGradient.cpp
             wxChaos/utils/TextUtils.cpp
     )
 
     target_include_directories(wxChaosCoreTests PRIVATE
             ${SYMENGINE_INCLUDE_DIRS}
+            ${SFML_INCLUDE_DIRS}
             wxChaos/core
+            wxChaos/gui
+            wxChaos/gui/wx
             wxChaos/utils
     )
 
@@ -164,6 +172,9 @@ if(BUILD_TESTING)
             doctest::doctest
             ${WXCHAOS_WX_LIBRARIES}
             ${SYMENGINE_LIBRARIES}
+            sfml-graphics
+            sfml-window
+            sfml-system
     )
 
     if(MSVC)

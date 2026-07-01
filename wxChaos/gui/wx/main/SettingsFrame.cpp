@@ -98,7 +98,7 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         "Sine", "Magnet", "Jellyfish", "Manowar", "Manowar Julia",
         "Sierpinski Triangle", "Fixed Point: sin(z)", "Fixed Point: cos(z)",
         "Fixed Point: tan(z)", "Fixed Point: z^2", "Tricorn", "Burning Ship",
-        "Burning Ship Julia", "Fractory", "Cell", "Double Pendulum",
+        "Burning Ship Julia", "Fractory", "Cell", "Henon Map", "Double Pendulum",
         "User Defined", "User Defined Fixed Point", "User Defined Newton-Raphson"
     };
     _fractalTypes = {
@@ -107,18 +107,14 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskiTriangle, FractalType::FixedPoint1,
         FractalType::FixedPoint2, FractalType::FixedPoint3, FractalType::FixedPoint4, FractalType::Tricorn,
         FractalType::BurningShip, FractalType::BurningShipJulia, FractalType::Fractory, FractalType::Cell,
-        FractalType::DoublePendulum, FractalType::UserDefinedEscapeTime, FractalType::UserDefinedFixedPoint,
-        FractalType::UserDefinedNewtonRaphson
+        FractalType::HenonMap, FractalType::DoublePendulum, FractalType::UserDefinedEscapeTime,
+        FractalType::UserDefinedFixedPoint, FractalType::UserDefinedNewtonRaphson
     };
 
     _fractalType = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(names), names);
-    _maxIterations = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-        wxSP_ARROW_KEYS, 1, 20000000, 100);
     _automaticIterations = new wxCheckBox(page, wxID_ANY, "Automatic iterations");
     sizer->Add(new wxStaticText(page, wxID_ANY, "Default fractal:"), 0, wxALIGN_CENTER_VERTICAL);
     sizer->Add(_fractalType, 1, wxEXPAND);
-    sizer->Add(new wxStaticText(page, wxID_ANY, "Default iterations:"), 0, wxALIGN_CENTER_VERTICAL);
-    sizer->Add(_maxIterations, 1, wxEXPAND);
     sizer->AddSpacer(0);
     sizer->Add(_automaticIterations, 0, wxEXPAND);
     page->SetSizer(sizer);
@@ -241,7 +237,6 @@ void SettingsFrame::LoadControls(const AppConfig& config)
             _theme->SetSelection(0);
             break;
     }
-    _maxIterations->SetValue(config.maxIterations);
     _automaticIterations->SetValue(config.automaticIterations);
     _paletteSize->SetValue(config.paletteSize);
     _colorCycleLength->SetValue(config.colorCycleLength);
@@ -282,7 +277,6 @@ AppConfig SettingsFrame::ReadControls()
     const int selection = _fractalType->GetSelection();
     if (selection != wxNOT_FOUND)
         config.type = _fractalTypes[selection];
-    config.maxIterations = _maxIterations->GetValue();
     config.automaticIterations = _automaticIterations->GetValue();
     config.paletteSize = _paletteSize->GetValue();
     config.colorCycleLength = _colorCycleLength->GetValue();

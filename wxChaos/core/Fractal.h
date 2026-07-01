@@ -64,6 +64,8 @@ protected:
     mutable HighPrecisionReal _preciseYFactor;
     mutable bool _preciseViewInitialized;
     unsigned _maxIter;               ///< Maximum number of iterations.
+    unsigned _defaultIter;           ///< Default number of iterations for this fractal.
+    unsigned _iterationStep;         ///< Iteration change used by menu and keyboard shortcuts.
     FormulaOptions _userFormula;         ///< Formula specified by the user.
 
     // System.
@@ -173,6 +175,7 @@ protected:
     [[nodiscard]] bool ShouldUseHighPrecision() const;
     [[nodiscard]] unsigned int EstimateRequiredPrecisionBits() const;
     [[nodiscard]] static bool OptionsPreciseViewMatchesDoubleView(const Options& opt) ;
+    void ConfigureIterationDefaults(unsigned int defaultIterations, unsigned int iterationStep);
 
     ///@brief Selects the pixel regions that need rendering for the current movement state.
     std::vector<RenderRegion> BuildRenderRegions() const;
@@ -476,6 +479,8 @@ public:
     // Menu operations.
     void SetIterations(unsigned int iterations);
     unsigned int GetIterations() const;
+    unsigned int GetDefaultIterations() const;
+    unsigned int GetIterationStep() const;
 
     // Option panel.
     bool HasOptPanel() const;

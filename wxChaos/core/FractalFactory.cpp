@@ -24,6 +24,7 @@ FractalFactory::FractalFactory()
     _burningShipJulia = nullptr;
     _fractory = nullptr;
     _cell = nullptr;
+    _henonMap = nullptr;
     _doublePendulum = nullptr;
     _userDefined = nullptr;
     _fpUserDefined = nullptr;
@@ -140,6 +141,11 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
         case FractalType::Cell:
             {
                 _fractal = _cell = new Cell(width, height);
+                break;
+            }
+        case FractalType::HenonMap:
+            {
+                _fractal = _henonMap = new HenonMap(width, height);
                 break;
             }
         case FractalType::DoublePendulum:
@@ -305,6 +311,11 @@ void FractalFactory::DeleteFractal()
     {
         delete _cell;
         _cell = nullptr;
+    }
+    if (_henonMap != nullptr)
+    {
+        delete _henonMap;
+        _henonMap = nullptr;
     }
     if (_doublePendulum != nullptr)
     {

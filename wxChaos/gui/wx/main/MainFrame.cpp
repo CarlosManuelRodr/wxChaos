@@ -135,6 +135,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeBurningShipJulia, this, ID_BURNING_SHIP_JULIA);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFractory, this, ID_FRACTORY);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeCell, this, ID_CELL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeHenonMap, this, ID_HENON_MAP);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskiTriangle, this, ID_SIERPINSKI_TRIANGLE);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefined, this, ID_USER_DEFINED);
@@ -281,7 +282,7 @@ void MainFrame::SetUpGUI()
     wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinusoidal, *magnet;
     wxMenuItem* jellyfish, *manowar, *manowarJulia, *sierpinskiTriangle, *fixedPoint1, *fixedPoint2;
     wxMenuItem* fixedPoint3, *fixedPoint4, *userDefined, *fpUserDefined, *newtonUserDefined;
-    wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *dPendulum;
+    wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *henonMap, *dPendulum;
 
 #ifdef _WIN32
 #define menuSeparator '\t'
@@ -309,6 +310,7 @@ void MainFrame::SetUpGUI()
     burningShipJulia = new wxMenuItem(_formula, ID_BURNING_SHIP_JULIA, wxString("Burning Ship (Julia)"), wxEmptyString, wxITEM_NORMAL);
     fractory = new wxMenuItem(_formula, ID_FRACTORY, wxString("Fractory"), wxEmptyString, wxITEM_NORMAL);
     cell = new wxMenuItem(_formula, ID_CELL, wxString("Cell"), wxEmptyString, wxITEM_NORMAL);
+    henonMap = new wxMenuItem(_formula, ID_HENON_MAP, wxString("Henon map"), wxEmptyString, wxITEM_NORMAL);
     dPendulum = new wxMenuItem(_formula, ID_DOUBLE_PENDULUM, wxString("Double pendulum"), wxEmptyString, wxITEM_NORMAL);
     userDefined = new wxMenuItem(_formula, ID_USER_DEFINED, wxString("User Formula (Complex)"), wxEmptyString, wxITEM_NORMAL);
     fpUserDefined = new wxMenuItem(_formula, ID_FIXED_POINT_USER_DEFINED, wxString("User Formula (Fixed Point)"), wxEmptyString, wxITEM_NORMAL);
@@ -339,6 +341,7 @@ void MainFrame::SetUpGUI()
     _typeNumericalMethod->Append(fixedPoint4);
     _typePhysics->Append(magnet);
     _typePhysics->Append(dPendulum);
+    _typeOther->Append(henonMap);
     _typeOther->Append(sierpinskiTriangle);
 
     _formula->Append(-1, "Complex", _typeComplex);
@@ -480,7 +483,6 @@ void MainFrame::SetUpGUI()
     _fractalCanvas->GetFractalPresenter()->SetGradient(grad);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(_appConfig.colorCycleLength);
 
-    _fractalCanvas->GetFractalPresenter()->ChangeIterations(_appConfig.maxIterations);
     SetAutomaticIterations(_appConfig.automaticIterations);
     _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(_appConfig.colorFractal);
     _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(_appConfig.colorSet);
@@ -537,7 +539,6 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     _fractalCanvas->GetFractalPresenter()->SetColorPalette(config.colorStyle);
     _fractalCanvas->GetFractalPresenter()->SetGradient(gradient);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(config.colorCycleLength);
-    _fractalCanvas->GetFractalPresenter()->ChangeIterations(config.maxIterations);
     SetAutomaticIterations(config.automaticIterations);
     _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(config.colorFractal);
     _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(config.colorSet);
@@ -551,9 +552,8 @@ void MainFrame::SetAutomaticIterations(const bool mode) const
     if (_automaticIterations != nullptr)
         _automaticIterations->Check(mode);
 }
-void MainFrame::ResetIterationsToDefault() const
+void MainFrame::ApplyAutomaticIterationsSetting() const
 {
-    _fractalCanvas->GetFractalPresenter()->ChangeIterations(static_cast<unsigned int>(_appConfig.maxIterations));
     SetAutomaticIterations(_appConfig.automaticIterations);
 }
 void MainFrame::CloseAll()
@@ -1040,6 +1040,10 @@ void MainFrame::ChangeCell(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Cell, false);
 }
+void MainFrame::ChangeHenonMap(wxCommandEvent&)
+{
+    this->ChangeFractal(FractalType::HenonMap, false);
+}
 void MainFrame::ChangeDPendulum(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::DoublePendulum, false);
@@ -1069,7 +1073,7 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
         _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
         _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
         _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
-        ResetIterationsToDefault();
+        ApplyAutomaticIterationsSetting();
         _fractalType = type;
         ResetColorRotationTool();
         this->UpdateMenu();
@@ -1092,7 +1096,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
     _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
-    ResetIterationsToDefault();
+    ApplyAutomaticIterationsSetting();
 
     _fractalType = FractalType::ScriptFractal;
     ResetColorRotationTool();

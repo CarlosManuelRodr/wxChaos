@@ -163,6 +163,8 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
         { "Burning_Ship_Julia", FractalType::BurningShipJulia },
         { "Fractory", FractalType::Fractory },
         { "Cell", FractalType::Cell },
+        { "Henon_Map", FractalType::HenonMap },
+        { "HenonMap", FractalType::HenonMap },
         { "Double_Pendulum", FractalType::DoublePendulum },
         { "User_Defined_Escape_Time", FractalType::UserDefinedEscapeTime },
         { "User_Defined_Fixed_Point", FractalType::UserDefinedFixedPoint },
@@ -221,6 +223,8 @@ std::string AppConfigStore::FractalTypeToString(FractalType type)
         return "Jellyfish";
     if (type == FractalType::SierpinskiTriangle)
         return "Sierpinski_Triangle";
+    if (type == FractalType::HenonMap)
+        return "Henon_Map";
 
     for (const auto& item : FractalTypes())
     {
@@ -288,7 +292,6 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     const std::map<std::string, std::string> values = ReadLegacyConfig(filename);
 
     config.type = FractalTypeFromString(ReadString(values, "FRACTAL_TYPE", "Mandelbrot"), config.type);
-    config.maxIterations = ReadInt(values, "DEFAULT_ITERATION", config.maxIterations);
     config.automaticIterations = ReadBool(values, "AUTOMATIC_ITERATIONS", config.automaticIterations);
     config.paletteSize = ReadInt(values, "PALETTE_SIZE", config.paletteSize);
     config.colorCycleLength = ReadInt(values, "COLOR_CYCLE_LENGTH", config.colorCycleLength);
@@ -362,12 +365,9 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/Fractal/fractal_type", &fractalType, "Mandelbrot");
     config.type = FractalTypeFromString(fractalType.ToStdString(), config.type);
 
-    long intValue = config.maxIterations;
-    fileConfig.Read("/Fractal/default_iteration", &intValue, config.maxIterations);
-    config.maxIterations = static_cast<int>(intValue);
+    long intValue = config.paletteSize;
     fileConfig.Read("/Fractal/automatic_iterations", &config.automaticIterations, config.automaticIterations);
 
-    intValue = config.paletteSize;
     fileConfig.Read("/Fractal/palette_size", &intValue, config.paletteSize);
     config.paletteSize = static_cast<int>(intValue);
 
@@ -416,7 +416,6 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Fractal/color_style_preset", ToWxString(ColorStyleToString(config.colorStyle)));
     fileConfig.Write("/Fractal/color_style", ToWxString(config.colorStyleGrad));
     fileConfig.Write("/Fractal/fractal_type", ToWxString(FractalTypeToString(config.type)));
-    fileConfig.Write("/Fractal/default_iteration", static_cast<long>(config.maxIterations));
     fileConfig.Write("/Fractal/automatic_iterations", config.automaticIterations);
     fileConfig.Write("/Fractal/constant_window", config.constantWindow);
     fileConfig.Write("/Fractal/julia_mode", config.juliaMode);

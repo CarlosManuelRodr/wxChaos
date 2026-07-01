@@ -11,7 +11,7 @@ DoublePendulum::DoublePendulum(const unsigned int width, const unsigned int heig
 
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
-    _maxIter = 4000;
+    ConfigureIterationDefaults(4000, 100);
 
     // Creates panel.
     _panelOpt.SetForceShow(true);

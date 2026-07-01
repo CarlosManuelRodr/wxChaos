@@ -55,6 +55,7 @@ enum IDS
     ID_BURNING_SHIP_JULIA,
     ID_FRACTORY,
     ID_CELL,
+    ID_HENON_MAP,
     ID_DOUBLE_PENDULUM,
     ID_USER_DEFINED,
     ID_FIXED_POINT_USER_DEFINED,
@@ -181,7 +182,7 @@ class MainFrame : public wxFrame
     /// @param config Newly saved application configuration.
     void ApplyAppConfig(const AppConfig& config);
     void SetAutomaticIterations(bool mode) const;
-    void ResetIterationsToDefault() const;
+    void ApplyAutomaticIterationsSetting() const;
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();
@@ -238,6 +239,7 @@ public :
     void ChangeBurningShipJulia(wxCommandEvent& event);
     void ChangeFractory(wxCommandEvent& event);
     void ChangeCell(wxCommandEvent& event);
+    void ChangeHenonMap(wxCommandEvent& event);
     void ChangeDPendulum(wxCommandEvent& event);
     void ChangeUserDefined(wxCommandEvent& event);
     void ChangeFPUserDefined(wxCommandEvent& event);

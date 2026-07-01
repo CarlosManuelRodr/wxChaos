@@ -101,7 +101,6 @@ private:
     wxChoice* _theme{};                                   ///< Selects the system, light, or dark application appearance.
     wxChoice* _fractalType{};                             ///< Selects the default fractal type.
     wxChoice* _colorStyle{};                              ///< Selects the default gradient color style.
-    wxSpinCtrl* _maxIterations{};                         ///< Selects the default iteration limit.
     wxCheckBox* _automaticIterations{};                   ///< Enables viewport-driven iteration counts.
     wxSpinCtrl* _paletteSize{};                           ///< Selects the default gradient palette size.
     wxSpinCtrl* _colorCycleLength{};                      ///< Selects the default palette cycle length.

@@ -89,6 +89,8 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _paused = false;
     _pausing = false;
     _maxIter = 100;
+    _defaultIter = 100;
+    _iterationStep = 100;
     _varGradChange = false;
     _refreshImage = false;
     _maxColorMapVal = 0.0;
@@ -360,6 +362,12 @@ bool Fractal::OptionsPreciseViewMatchesDoubleView(const Options& opt)
         ToDouble(opt.preciseView.right) == opt.maxX &&
         ToDouble(opt.preciseView.bottom) == opt.minY &&
         ToDouble(opt.preciseView.top) == opt.maxY;
+}
+void Fractal::ConfigureIterationDefaults(const unsigned int defaultIterations, const unsigned int iterationStep)
+{
+    _defaultIter = std::max(1U, defaultIterations);
+    _iterationStep = std::max(1U, iterationStep);
+    _maxIter = _defaultIter;
 }
 std::vector<RenderRegion> Fractal::BuildRenderRegions() const
 {
@@ -1694,6 +1702,14 @@ void Fractal::SetIterations(const unsigned int iterations)
 unsigned int Fractal::GetIterations() const
 {
     return _maxIter;
+}
+unsigned int Fractal::GetDefaultIterations() const
+{
+    return _defaultIter;
+}
+unsigned int Fractal::GetIterationStep() const
+{
+    return _iterationStep;
 }
 // Option panel.
 bool Fractal::HasOptPanel() const
