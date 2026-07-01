@@ -1,5 +1,6 @@
 #include <doctest/doctest.h>
 #include "coloring/PaletteMapping.h"
+#include "numeric/HighPrecision.h"
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
 
@@ -90,4 +91,15 @@ TEST_CASE("PaletteMapping exponential relative mode spans the palette once")
                                              PaletteMappingMode::Exponential, 2.0, true);
 
     CHECK(mapped == doctest::Approx(25.0));
+}
+
+TEST_CASE("HighPrecisionReal formats compact and extended coordinate strings")
+{
+    CHECK(HighPrecisionReal(0.2).ToString(15) == "0.2");
+
+    HighPrecisionReal::PrecisionScope precision(128);
+    const HighPrecisionReal third = HighPrecisionReal(1) / HighPrecisionReal(3);
+    const std::string formatted = third.ToString(30);
+
+    CHECK(formatted.rfind("0.333333333333333333333333333333", 0) == 0);
 }

@@ -12,9 +12,21 @@ using namespace std;
 
 wxDEFINE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 
-wxString FractalCanvas::FormatStatusCoordinate(const double value)
+unsigned int FractalCanvas::GetStatusCoordinateSignificantDigits() const
 {
-    return wxString::Format("%.15g", value);
+    constexpr unsigned int defaultSignificantDigits = 15;
+    constexpr unsigned int maximumSignificantDigits = 80;
+    if (_fractal == nullptr || !_fractal->IsHighPrecisionRenderActive())
+        return defaultSignificantDigits;
+
+    const auto decimalDigits = static_cast<unsigned int>(std::ceil(
+        static_cast<double>(_fractal->GetHighPrecisionRenderBits()) * std::log10(2.0))) + 2;
+    return std::clamp(decimalDigits, defaultSignificantDigits, maximumSignificantDigits);
+}
+
+wxString FractalCanvas::FormatStatusCoordinate(const HighPrecisionReal& value) const
+{
+    return wxString::FromUTF8(value.ToString(GetStatusCoordinateSignificantDigits()));
 }
 
 // Fractal Canvas
@@ -141,23 +153,23 @@ wxString FractalCanvas::BuildStatusText() const
         if (_fractalType == FractalType::DoublePendulum)
         {
             text = "θ2: ";
-            text += FormatStatusCoordinate(_fractal->GetX(_lastMousePosition.x));
+            text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
             text += "   θ1: ";
-            text += FormatStatusCoordinate(_fractal->GetY(_lastMousePosition.y));
+            text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
         }
         else if (_fractalType == FractalType::SierpinskiTriangle || _fractalType == FractalType::ScriptFractal)
         {
             text = "x: ";
-            text += FormatStatusCoordinate(_fractal->GetX(_lastMousePosition.x));
+            text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
             text += "   y: ";
-            text += FormatStatusCoordinate(_fractal->GetY(_lastMousePosition.y));
+            text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
         }
         else
         {
             text = "Real: ";
-            text += FormatStatusCoordinate(_fractal->GetX(_lastMousePosition.x));
+            text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
             text += "   Imaginary: ";
-            text += FormatStatusCoordinate(_fractal->GetY(_lastMousePosition.y));
+            text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
         }
     }
 

@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
+#include <string>
 #include <type_traits>
 #include <mpfr.h>
 
@@ -114,6 +116,18 @@ public:
     [[nodiscard]] mpfr_prec_t GetPrecision() const
     {
         return mpfr_get_prec(_value);
+    }
+
+    [[nodiscard]] std::string ToString(const unsigned int significantDigits) const
+    {
+        char* buffer = nullptr;
+        const int digits = static_cast<int>(std::max(1U, significantDigits));
+        if (mpfr_asprintf(&buffer, "%.*Rg", digits, _value) < 0 || buffer == nullptr)
+            return {};
+
+        std::string output(buffer);
+        mpfr_free_str(buffer);
+        return output;
     }
 
     [[nodiscard]] static HighPrecisionReal WithCurrentPrecision(const HighPrecisionReal& value)

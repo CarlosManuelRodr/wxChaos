@@ -364,11 +364,13 @@ public:
     ///@param pixelX Pixel to inspect.
     ///@return Numerical value corresponding to the pixel position.
     double GetX(int pixelX) const;
+    HighPrecisionReal GetPreciseX(int pixelX) const;
 
     ///@brief Get value of Y number in the plane at the selected pixel.
     ///@param pixelY Pixel to inspect.
     ///@return Numerical value corresponding to the pixel position.
     double GetY(int pixelY) const;
+    HighPrecisionReal GetPreciseY(int pixelY) const;
 
     ///@brief Gets pixel corresponding to the specified numerical position.
     ///@param xNum Numerical position.

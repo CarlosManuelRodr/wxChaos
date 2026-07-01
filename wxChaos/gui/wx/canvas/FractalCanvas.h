@@ -18,6 +18,7 @@
 #include "sfml/CoordinateSelector.h"
 #include "FractalFactory.h"
 #include "canvas/FractalInteractionTool.h"
+#include "numeric/HighPrecision.h"
 
 class wxPopupWindow;
 class wxStaticText;
@@ -103,7 +104,8 @@ class FractalCanvas : public wxSFMLCanvas
     void ShowPointInfo(wxPoint position, const wxString& text);
     void HidePointInfo();
     void CancelToolGestures();
-    static wxString FormatStatusCoordinate(double value);
+    unsigned int GetStatusCoordinateSignificantDigits() const;
+    wxString FormatStatusCoordinate(const HighPrecisionReal& value) const;
 
     FractalInteractionTool _interactionTool;
 

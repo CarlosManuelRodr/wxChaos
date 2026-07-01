@@ -1,6 +1,5 @@
 Bugs:
 - User formula Escape Time needs a Julia mode.
-- Status bar precision should be adjusted to the current zoom level.
 
 Improvements to get to a release version:
 - Instead of embedding ffmpeg, use a library to create the zoom videos.

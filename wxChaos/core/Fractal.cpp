@@ -1151,13 +1151,21 @@ void Fractal::CopyOptFromPanel() {}
 // Communication methods.
 double Fractal::GetX(const int pixelX) const
 {
+    return ToDouble(GetPreciseX(pixelX));
+}
+HighPrecisionReal Fractal::GetPreciseX(const int pixelX) const
+{
     EnsurePreciseViewInitialized();
-    return ToDouble(_preciseView.left + HighPrecisionReal(pixelX) * _preciseXFactor);
+    return _preciseView.left + HighPrecisionReal(pixelX) * _preciseXFactor;
 }
 double Fractal::GetY(const int pixelY) const
 {
+    return ToDouble(GetPreciseY(pixelY));
+}
+HighPrecisionReal Fractal::GetPreciseY(const int pixelY) const
+{
     EnsurePreciseViewInitialized();
-    return ToDouble(_preciseView.top - HighPrecisionReal(pixelY) * _preciseYFactor);
+    return _preciseView.top - HighPrecisionReal(pixelY) * _preciseYFactor;
 }
 int Fractal::GetPixelX(const double xNum) const
 {
