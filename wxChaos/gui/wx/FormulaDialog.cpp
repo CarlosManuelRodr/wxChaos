@@ -3,9 +3,8 @@
 
 // FuncDialog
 FunctionsHelpDialog::FunctionsHelpDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
-                       const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
+                                         const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
-    // WX Dialog.
     this->SetSizeHints(wxSize(460, 250), wxDefaultSize);
 
     auto* mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -54,7 +53,6 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
                              const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
                              const long style) : wxDialog(parent, id, title, pos, size, style)
 {
-    // WX Dialog.
     _userDefinedId = userDefinedId;
     _fpUserDefinedId = fPUserDefinedId;
     _newtonUserDefinedId = newtonUserDefinedId;
