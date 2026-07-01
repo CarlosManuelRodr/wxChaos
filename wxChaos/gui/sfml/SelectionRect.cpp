@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include "SelectionRect.h"
 
 SelectionRect::SelectionRect()
@@ -9,10 +10,40 @@ SelectionRect::SelectionRect()
     _ySelect = -1;
     _inSelection = false;
     _pos = sf::IntRect(0,0,0,0);
+    _aspectRatio = 0.0;
     _color = sf::Color(0,0,255,100);
     _output.setFillColor(_color);
     _output.setOutlineColor(sf::Color(0,0,128));
     _output.setOutlineThickness(1.f);
+}
+
+void SelectionRect::SetAspectRatio(const double aspectRatio)
+{
+    _aspectRatio = aspectRatio > 0.0 ? aspectRatio : 0.0;
+}
+
+void SelectionRect::UpdatePosition(const int x, const int y)
+{
+    _x = x;
+    _y = y;
+
+    int width = std::abs(_x - _xSelect);
+    int height = std::abs(_y - _ySelect);
+
+    if (_aspectRatio > 0.0 && width > 0 && height > 0)
+    {
+        if (static_cast<double>(width) / _aspectRatio >= height)
+            width = std::max(1, static_cast<int>(std::round(static_cast<double>(height) * _aspectRatio)));
+        else
+            height = std::max(1, static_cast<int>(std::round(static_cast<double>(width) / _aspectRatio)));
+    }
+
+    const int signedWidth = _x >= _xSelect ? width : -width;
+    const int signedHeight = _y >= _ySelect ? height : -height;
+    _pos.left = std::min(_xSelect, _xSelect + signedWidth);
+    _pos.top = std::min(_ySelect, _ySelect + signedHeight);
+    _pos.width = width;
+    _pos.height = height;
 }
 
 void SelectionRect::Show(sf::RenderWindow* window)
@@ -46,13 +77,7 @@ bool SelectionRect::HandleEvents(const sf::Event& event)
 
     if (event.type == sf::Event::MouseMoved && _inSelection)
     {
-        _x = event.mouseMove.x;
-        _y = event.mouseMove.y;
-
-        _pos.left = std::min(_x, _xSelect);
-        _pos.top  = std::min(_y, _ySelect);
-        _pos.width  = std::abs(_x - _xSelect);
-        _pos.height = std::abs(_y - _ySelect);
+        UpdatePosition(event.mouseMove.x, event.mouseMove.y);
     }
 
     if (event.type == sf::Event::MouseButtonReleased)
@@ -105,14 +130,8 @@ bool SelectionRect::MoveEvent(wxMouseEvent& event)
     if (!_inSelection)
         return false;
 
-    _x = event.GetPosition().x;
-    _y = event.GetPosition().y;
-
     const sf::IntRect previousPosition = _pos;
-    _pos.left = std::min(_x, _xSelect);
-    _pos.top  = std::min(_y, _ySelect);
-    _pos.width  = std::abs(_x - _xSelect);
-    _pos.height = std::abs(_y - _ySelect);
+    UpdatePosition(event.GetPosition().x, event.GetPosition().y);
 
     return _pos != previousPosition;
 }

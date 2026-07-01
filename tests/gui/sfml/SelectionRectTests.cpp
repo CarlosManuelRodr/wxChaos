@@ -64,6 +64,38 @@ TEST_CASE("SelectionRect handles drags toward the upper-left")
     CHECK(result.height == 70);
 }
 
+TEST_CASE("SelectionRect can constrain selections to an aspect ratio")
+{
+    SelectionRect selection;
+    selection.SetAspectRatio(2.0);
+
+    selection.HandleEvents(LeftMousePress(0, 0));
+    selection.HandleEvents(MouseMove(100, 100));
+    CHECK(selection.HandleEvents(LeftMouseRelease(100, 100)));
+
+    const sf::IntRect result = selection.GetSelection();
+    CHECK(result.left == 0);
+    CHECK(result.top == 0);
+    CHECK(result.width == 100);
+    CHECK(result.height == 50);
+}
+
+TEST_CASE("SelectionRect preserves aspect ratio while dragging toward the upper-left")
+{
+    SelectionRect selection;
+    selection.SetAspectRatio(2.0);
+
+    selection.HandleEvents(LeftMousePress(100, 100));
+    selection.HandleEvents(MouseMove(0, 0));
+    CHECK(selection.HandleEvents(LeftMouseRelease(0, 0)));
+
+    const sf::IntRect result = selection.GetSelection();
+    CHECK(result.left == 0);
+    CHECK(result.top == 50);
+    CHECK(result.width == 100);
+    CHECK(result.height == 50);
+}
+
 TEST_CASE("SelectionRect ignores zero-area selections")
 {
     SelectionRect selection;

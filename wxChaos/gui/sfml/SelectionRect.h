@@ -14,9 +14,13 @@ class SelectionRect {
     sf::IntRect _select;
     sf::RectangleShape _output;
     sf::Color _color;
+    double _aspectRatio;
+
+    void UpdatePosition(int x, int y);
 
 public:
     explicit SelectionRect();
+    void SetAspectRatio(double aspectRatio);
     void Show(sf::RenderWindow* window);
     bool HandleEvents(const sf::Event& event);
     void ClickEvent(wxMouseEvent& event);

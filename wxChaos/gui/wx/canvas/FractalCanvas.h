@@ -92,6 +92,8 @@ class FractalCanvas : public wxSFMLCanvas
     void EmitStatusText() const;
     sf::Vector2u GetCurrentRenderSize() const;
     void ResizePresentation(wxSize size);
+    void UpdateSelectionAspectRatio() const;
+    void UpdateCoordinateSelectorValue();
     void BeginMousePanAt(wxPoint position);
     void ContinueMousePanAt(wxPoint position);
     void EndMousePanGesture();

@@ -64,6 +64,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
 
     // Initialize GUI elements.
     _selectionRect = new SelectionRect();
+    UpdateSelectionAspectRatio();
 
     _coordinateSelector = new CoordinateSelector(this);
     _keyboardImage.loadFromFile(AppPaths::ResourceFileStd({"keyboard.png"}));
@@ -211,9 +212,45 @@ void FractalCanvas::ResizePresentation(const wxSize size)
         this->setSize(sfmlSize);
 
     _fractalPresenter->Resize(this);
+    UpdateSelectionAspectRatio();
 
     if (_coordinateSelector != nullptr)
         _coordinateSelector->Resize(this);
+}
+
+void FractalCanvas::UpdateSelectionAspectRatio() const
+{
+    if (_selectionRect == nullptr || _fractal == nullptr)
+        return;
+
+    const sf::Vector2u renderSize = _fractal->GetScreenSize();
+    if (renderSize.x == 0 || renderSize.y == 0)
+        return;
+
+    _selectionRect->SetAspectRatio(static_cast<double>(renderSize.x) / static_cast<double>(renderSize.y));
+}
+
+void FractalCanvas::UpdateCoordinateSelectorValue()
+{
+    if (_coordinateSelector == nullptr || !(_juliaMode || _orbitMode || _sliderMode))
+        return;
+
+    const double nextKReal = _coordinateSelector->GetX(_fractal);
+    const double nextKImaginary = _coordinateSelector->GetY(_fractal);
+    if (_kReal == nextKReal && _kImaginary == nextKImaginary)
+        return;
+
+    _prevKReal = _kReal;
+    _prevKImag = _kImaginary;
+    _onUpdate = true;
+    _kReal = nextKReal;
+    _kImaginary = nextKImaginary;
+    _coordinateSelectorChange = true;
+
+    if (_orbitMode)
+        _fractal->SetOrbitChange();
+
+    _onUpdate = false;
 }
 
 void FractalCanvas::BeginMousePanAt(const wxPoint position)
@@ -237,6 +274,7 @@ void FractalCanvas::ContinueMousePanAt(const wxPoint position)
     if (const wxPoint delta = position - _lastMouseWheelPanPosition; delta.x != 0 || delta.y != 0)
     {
         _fractalPresenter->PanByMousePixels(delta.x, delta.y);
+        UpdateCoordinateSelectorValue();
         _lastMouseWheelPanPosition = position;
         Refresh(false);
         Update();
@@ -399,13 +437,17 @@ void FractalCanvas::OnUpdate()
     // Clears the screen and draw GUI elements and fractal.
     this->clear();
 
+    const double elapsedSeconds = _movementClock.restart().asSeconds();
+    const bool wasMoving = _fractalPresenter->IsMoving();
+    _fractalPresenter->Move(elapsedSeconds);
+    if (wasMoving || _fractalPresenter->IsMoving())
+        UpdateCoordinateSelectorValue();
+
     if (_orbitMode)
         _fractal->SetOrbitPoint(_kReal, _kImaginary);
     if (_sliderMode && _coordinateSelectorChange)
         _fractalPresenter->SetK(_kReal, _kImaginary);
 
-    const double elapsedSeconds = _movementClock.restart().asSeconds();
-    _fractalPresenter->Move(elapsedSeconds);
     _fractalPresenter->Show(this, elapsedSeconds);
 
     // Avoid drawing GUI elements if the fractal is rendering.
@@ -568,6 +610,7 @@ void FractalCanvas::ChangeType(const FractalType type)
     _fractalPresenter->SetFractal(_fractal);
     _fractalPresenter->SetHandleRightClickZoomBack(false);
     _fractalFactory.SetFormula(_userFormula);
+    UpdateSelectionAspectRatio();
 
     // Deletes screen pointer if active.
     if (_orbitMode || _sliderMode)
@@ -591,6 +634,7 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
     AttachFractalStatusHandler();
     _fractalPresenter->SetFractal(_fractal);
     _fractalPresenter->SetHandleRightClickZoomBack(false);
+    UpdateSelectionAspectRatio();
 
     // Deletes screen pointer if active.
     if (_orbitMode || _sliderMode)
@@ -653,6 +697,7 @@ void FractalCanvas::Reset()
     _fractalPresenter->SetFractal(_fractal);
     _fractalPresenter->SetHandleRightClickZoomBack(false);
     _fractalFactory.SetFormula(_userFormula);
+    UpdateSelectionAspectRatio();
 
     // Deactivates screen pointer.
     _juliaMode = false;
@@ -871,9 +916,13 @@ void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
     {
         const wxPoint position = event.GetPosition();
         _fractalPresenter->ZoomAtPixel(position.x, position.y);
+        UpdateCoordinateSelectorValue();
     }
     else if (rotation < 0)
+    {
         _fractalPresenter->ZoomBack();
+        UpdateCoordinateSelectorValue();
+    }
 }
 
 void FractalCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)

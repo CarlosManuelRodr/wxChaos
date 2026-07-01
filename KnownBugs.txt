@@ -1,7 +1,6 @@
 Bugs:
 - Each fractal must be able to set the default number of iterations.
 - User formula Escape Time needs a Julia mode.
-- When the main fractal is panned while in Julia mode, the C constant is not updated.
 
 Improvements to get to a release version:
 - Rework script editor. Validate is currently not outputting anything. There should also be a help button with quick documentation.
