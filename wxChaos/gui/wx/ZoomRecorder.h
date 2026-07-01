@@ -65,7 +65,7 @@ class ZoomRecorder : public wxDialog
     static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
 public:
     ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Zoom recorder",
-                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(960, 720),
+                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(900, 420),
                  long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ZoomRecorder() override;
 

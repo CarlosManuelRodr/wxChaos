@@ -22,7 +22,7 @@ wxPanel* ZoomRecorder::CreateSectionHeader(wxWindow* parent, const wxString& tex
     const wxSize iconSize(24, 24);
     const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
     iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
-    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 12);
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 8);
 
     const auto headerText = new wxStaticText(header, wxID_ANY, text);
     wxFont headerFont = headerText->GetFont();
@@ -34,7 +34,7 @@ wxPanel* ZoomRecorder::CreateSectionHeader(wxWindow* parent, const wxString& tex
     headerSizer->Add(headerText, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
 
     header->SetSizer(headerSizer);
-    header->SetMinSize(wxSize(-1, 52));
+    header->SetMinSize(wxSize(-1, 44));
     return header;
 }
 
@@ -60,7 +60,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _fractalFactory.GetFractal()->SetPreciseView(_outermostZoom);
 
     // UI initialization
-    this->SetSizeHints(wxSize(900, 680), wxSize(1400, 900));
+    this->SetSizeHints(wxSize(820, 360), wxSize(1400, 900));
 
     const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
@@ -86,7 +86,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _previewSlider = new wxSlider(_panel, wxID_ANY, 0, 0, 1799, wxDefaultPosition, wxDefaultSize,
         wxSL_AUTOTICKS | wxSL_BOTTOM | wxSL_HORIZONTAL | wxSL_LABELS);
     previewSizer->Add(_previewSlider, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 10);
-    previewAndButtonsSizer->Add(previewSizer, 1, wxEXPAND, 5);
+    previewAndButtonsSizer->Add(previewSizer, 0, wxEXPAND, 5);
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -159,17 +159,19 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     optionGridSizer->Add(_colorSpeedCtrl, 0, wxEXPAND);
 
     optionsSizer->Add(optionGridSizer, 0, wxEXPAND | wxALL, 12);
-    optionsSizer->AddStretchSpacer();
-
     panelSizer->Add(optionsSizer, 1, wxEXPAND, 5);
 
     _panel->SetSizer(panelSizer);
     _panel->Layout();
     panelSizer->Fit(_panel);
-    mainSizer->Add(_panel, 1, wxEXPAND | wxALL, 1);
+    mainSizer->Add(_panel, 0, wxEXPAND | wxALL, 1);
 
     this->SetSizer(mainSizer);
-    this->wxTopLevelWindowBase::Layout();
+    mainSizer->Fit(this);
+    const int fittedHeight = this->GetSize().GetHeight();
+    this->SetMinSize(wxSize(820, fittedHeight));
+    this->SetSize(wxSize(900, fittedHeight));
+    this->Layout();
     this->Centre(wxBOTH);
 
     // Connect Events
