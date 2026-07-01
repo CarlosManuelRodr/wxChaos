@@ -303,6 +303,7 @@ void ImageExportSizeDialog::OnSave(wxCommandEvent&)
 
     // Saves image according to extension.
     const auto diag = new ImageExportProgressDialog(_fractalFactory.GetFractal(), this);
+    _fractalFactory.GetFractal()->PrepareRender();
     _fractalFactory.GetFractal()->Render();
     diag->ShowModal();
     if (diag->IsFinished())

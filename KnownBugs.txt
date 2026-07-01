@@ -1,12 +1,10 @@
 Bugs:
 - User formula Escape Time needs a Julia mode.
-- Buddhabrot image saving is not working?
+- Status bar precision should be adjusted to the current zoom level.
 
 Improvements to get to a release version:
 - Instead of embedding ffmpeg, use a library to create the zoom videos.
 - Rework script editor. Validate is currently not outputting anything. There should also be a help button with quick documentation.
-- Restore Henon maps and other fractals of previous versions.
-- Status bar precision should be adjusted to the current zoom level.
 - Localization to Spanish, Japanese and possibly other languages.
 - Implement a proper tutorial mode.
 - Documentation must be updated.
