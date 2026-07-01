@@ -4,11 +4,11 @@
 using namespace std;
 
 // ImageExportProgressDialog
-ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable, const wxWindowID id,
-                                   const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
-                                   : wxDialog(parent, id, title, pos, size, style)
+ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable,
+                                                     const wxWindowID id, const wxString& title, const wxPoint& pos,
+                                                     const wxSize& size, const long style)
+                                                     : wxDialog(parent, id, title, pos, size, style)
 {
-    // WX Dialog.
     _myFractal = targetFractal;
     _saveProgressAvailable = saveProgressAvailable;
     _finished = false;
@@ -98,147 +98,145 @@ bool ImageExportProgressDialog::IsFinished() const
 }
 
 // ImageExportSizeDialog
-ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* mFCanvas, const string& filePath, const int ext, const FractalType type,
+ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const string& filePath, const int ext, const FractalType type,
                                const Fractal* target, wxWindow* parent, const string& scriptPath, const wxWindowID id,
                                const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                                : wxDialog(parent, id, title, pos, size, style)
 {
     // WX Dialog.
-    extension = ext;
-    fCanvas = mFCanvas;
-    opt = target->GetOptions();
-    path = filePath;
-    myScriptPath = scriptPath;
-    screenRatio = static_cast<double>(opt.screenWidth) / static_cast<double>(opt.screenHeight);
-    fractalType = type;
+    _extension = ext;
+    _fractalCanvas = fractalCanvas;
+    _options = target->GetOptions();
+    _path = filePath;
+    _myScriptPath = scriptPath;
+    _screenRatio = static_cast<double>(_options.screenWidth) / static_cast<double>(_options.screenHeight);
+    _fractalType = type;
 
     this->SetSizeHints(wxSize(420, 300), wxSize(420, 300));
 
     const auto sizer = new wxBoxSizer(wxVERTICAL);
 
-    mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
     const auto sizeSizer = new wxBoxSizer(wxHORIZONTAL);
     const auto bSizer6 = new wxBoxSizer(wxVERTICAL);
 
-    selectText = new wxStaticText(mainPanel, wxID_ANY, "Select image size", wxDefaultPosition, wxDefaultSize, 0);
-    selectText->Wrap(-1);
-    bSizer6->Add(selectText, 0, wxALL, 5);
+    _selectText = new wxStaticText(_mainPanel, wxID_ANY, "Select image size", wxDefaultPosition, wxDefaultSize, 0);
+    _selectText->Wrap(-1);
+    bSizer6->Add(_selectText, 0, wxALL, 5);
 
-    widthText = new wxStaticText(mainPanel, wxID_ANY, "Width", wxDefaultPosition, wxDefaultSize, 0);
-    widthText->Wrap(-1);
-    bSizer6->Add(widthText, 0, wxALL, 5);
+    _widthText = new wxStaticText(_mainPanel, wxID_ANY, "Width", wxDefaultPosition, wxDefaultSize, 0);
+    _widthText->Wrap(-1);
+    bSizer6->Add(_widthText, 0, wxALL, 5);
 
-    widthSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
-    bSizer6->Add(widthSpin, 0, wxALL, 5);
-    widthSpin->SetValue(static_cast<int>(opt.screenWidth));
+    _widthSpin = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
+    bSizer6->Add(_widthSpin, 0, wxALL, 5);
+    _widthSpin->SetValue(static_cast<int>(_options.screenWidth));
     sizeSizer->Add(bSizer6, 1, wxEXPAND, 5);
 
     const auto bSizer8 = new wxBoxSizer(wxVERTICAL);
 
-    dumbText = new wxStaticText(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
-    dumbText->Wrap(-1);
-    bSizer8->Add(dumbText, 0, wxALL, 5);
+    _dumbText = new wxStaticText(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    _dumbText->Wrap(-1);
+    bSizer8->Add(_dumbText, 0, wxALL, 5);
 
-    heightText = new wxStaticText(mainPanel, wxID_ANY, "Height", wxDefaultPosition, wxDefaultSize, 0);
-    heightText->Wrap(-1);
-    bSizer8->Add(heightText, 0, wxALL, 5);
+    _heightText = new wxStaticText(_mainPanel, wxID_ANY, "Height", wxDefaultPosition, wxDefaultSize, 0);
+    _heightText->Wrap(-1);
+    bSizer8->Add(_heightText, 0, wxALL, 5);
 
-    heightSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
-    bSizer8->Add(heightSpin, 0, wxALL, 5);
-    heightSpin->SetValue(static_cast<int>(opt.screenHeight));
+    _heightSpin = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2000000, 1);
+    bSizer8->Add(_heightSpin, 0, wxALL, 5);
+    _heightSpin->SetValue(static_cast<int>(_options.screenHeight));
 
     sizeSizer->Add(bSizer8, 1, wxEXPAND, 5);
     panelSizer->Add(sizeSizer, 1, wxEXPAND, 5);
 
     const auto okSizer = new wxBoxSizer(wxVERTICAL);
 
-    iterationsText = new wxStaticText(mainPanel, wxID_ANY, "Iterations", wxDefaultPosition, wxDefaultSize, 0);
-    iterationsText->Wrap(-1);
-    okSizer->Add(iterationsText, 0, wxALL, 5);
+    _iterationsText = new wxStaticText(_mainPanel, wxID_ANY, "Iterations", wxDefaultPosition, wxDefaultSize, 0);
+    _iterationsText->Wrap(-1);
+    okSizer->Add(_iterationsText, 0, wxALL, 5);
 
-    iterationsSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000000, 1);
-    okSizer->Add(iterationsSpin, 0, wxALL, 5);
-    iterationsSpin->SetValue(static_cast<int>(opt.maxIter));
+    _iterationsSpin = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000000, 1);
+    okSizer->Add(_iterationsSpin, 0, wxALL, 5);
+    _iterationsSpin->SetValue(static_cast<int>(_options.maxIter));
 
-    okButton = new wxButton(mainPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
-    okSizer->Add(okButton, 0, wxALL, 5);
+    _okButton = new wxButton(_mainPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
+    okSizer->Add(_okButton, 0, wxALL, 5);
     panelSizer->Add(okSizer, 1, wxEXPAND, 5);
 
-    mainPanel->SetSizer(panelSizer);
-    mainPanel->Layout();
-    panelSizer->Fit(mainPanel);
-    sizer->Add(mainPanel, 1, wxEXPAND | wxALL, 0);
+    _mainPanel->SetSizer(panelSizer);
+    _mainPanel->Layout();
+    panelSizer->Fit(_mainPanel);
+    sizer->Add(_mainPanel, 1, wxEXPAND | wxALL, 0);
 
     this->SetSizer(sizer);
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
-    widthSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
-    heightSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeHeight, this);
-    okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnOk, this);
+    _widthSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
+    _heightSpin->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeHeight, this);
+    _okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnOk, this);
 }
 
 ImageExportSizeDialog::~ImageExportSizeDialog()
 {
-    widthSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
-    heightSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeHeight, this);
-    okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnOk, this);
+    _widthSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeWidth, this);
+    _heightSpin->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ImageExportSizeDialog::ChangeHeight, this);
+    _okButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ImageExportSizeDialog::OnOk, this);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void ImageExportSizeDialog::ChangeWidth(wxSpinEvent&)
 {
-    double value = widthSpin->GetValue();
-    value /= screenRatio;
-    heightSpin->SetValue(static_cast<int>(value));
+    double value = _widthSpin->GetValue();
+    value /= _screenRatio;
+    _heightSpin->SetValue(static_cast<int>(value));
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void ImageExportSizeDialog::ChangeHeight(wxSpinEvent&)
 {
-    double value = heightSpin->GetValue();
-    value *= screenRatio;
-    widthSpin->SetValue(static_cast<int>(value));
+    double value = _heightSpin->GetValue();
+    value *= _screenRatio;
+    _widthSpin->SetValue(static_cast<int>(value));
 }
 void ImageExportSizeDialog::OnOk(wxCommandEvent&)
 {
     // Creates fractal.
-    if (fractalType == FractalType::ScriptFractal)
-        fractalFactory.CreateScriptFractal(widthSpin->GetValue(), heightSpin->GetValue(), myScriptPath);
+    if (_fractalType == FractalType::ScriptFractal)
+        _fractalFactory.CreateScriptFractal(_widthSpin->GetValue(), _heightSpin->GetValue(), _myScriptPath);
     else
-        fractalFactory.CreateFractal(fractalType, widthSpin->GetValue(), heightSpin->GetValue());
+        _fractalFactory.CreateFractal(_fractalType, _widthSpin->GetValue(), _heightSpin->GetValue());
 
-    fractalFactory.SetFormula(fCanvas->GetFormula());
+    _fractalFactory.SetFormula(_fractalCanvas->GetFormula());
 
     // Copy parameters.
-    opt.maxIter = iterationsSpin->GetValue();
-    fractalFactory.GetFractal()->SetOptions(opt);
+    _options.maxIter = _iterationsSpin->GetValue();
+    _fractalFactory.GetFractal()->SetOptions(_options);
 
     // Saves image according to extension.
-    const auto diag = new ImageExportProgressDialog(fractalFactory.GetFractal(), this);
-    fractalFactory.GetFractal()->Render();
+    const auto diag = new ImageExportProgressDialog(_fractalFactory.GetFractal(), this);
+    _fractalFactory.GetFractal()->Render();
     diag->ShowModal();
     if (diag->IsFinished())
     {
-        if (extension == 0 || extension == 1)  // PNG or JPG
+        if (_extension == 0 || _extension == 1)  // PNG or JPG
         {
-            fractalFactory.GetFractal()->SetRendered(true);
-            const sf::Image out = fractalFactory.GetFractal()->GetRenderedImage();
-            const bool result = out.saveToFile(path);
-            if (!result)
-                wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
+            _fractalFactory.GetFractal()->SetRendered(true);
+            const sf::Image out = _fractalFactory.GetFractal()->GetRenderedImage();
+            if (const bool result = out.saveToFile(_path); !result)
+                wxMessageBox("Failed to save image to file: " + _path, "Error", wxOK | wxICON_ERROR);
         }
         else  // BMP
         {
-            fractalFactory.GetFractal()->SetRendered(true);
-            const bool result = fractalFactory.GetFractal()->SaveBmp(path);
-            if (!result)
-                wxMessageBox("Failed to save image to file: " + path, "Error", wxOK | wxICON_ERROR);
+            _fractalFactory.GetFractal()->SetRendered(true);
+            if (const bool result = _fractalFactory.GetFractal()->SaveBmp(_path); !result)
+                wxMessageBox("Failed to save image to file: " + _path, "Error", wxOK | wxICON_ERROR);
         }
     }
 
     // Cleanup and close dialog.
     diag->Destroy();
-    fractalFactory.DeleteFractal();
+    _fractalFactory.DeleteFractal();
     this->Close(true);
 }

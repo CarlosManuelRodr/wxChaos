@@ -56,33 +56,34 @@ public:
 */
 class ImageExportSizeDialog : public wxDialog
 {
-    wxPanel* mainPanel;
-    wxStaticText* selectText;
-    wxStaticText* widthText;
-    wxSpinCtrl* widthSpin;
-    wxStaticText* dumbText;
-    wxStaticText* heightText;
-    wxSpinCtrl* heightSpin;
-    wxStaticText* iterationsText;
-    wxSpinCtrl* iterationsSpin;
-    wxButton* okButton;
+    wxPanel* _mainPanel;
+    wxStaticText* _selectText;
+    wxStaticText* _widthText;
+    wxSpinCtrl* _widthSpin;
+    wxStaticText* _dumbText;
+    wxStaticText* _heightText;
+    wxSpinCtrl* _heightSpin;
+    wxStaticText* _iterationsText;
+    wxSpinCtrl* _iterationsSpin;
+    wxButton* _okButton;
 
-    FractalFactory fractalFactory;
-    FractalCanvas* fCanvas;
-    Options opt;
-    FractalType fractalType;
-    std::string path;
-    std::string myScriptPath;
-    double screenRatio;
-    int extension;
+    FractalFactory _fractalFactory;
+    FractalCanvas* _fractalCanvas;
+    Options _options;
+    FractalType _fractalType;
+    std::string _path;
+    std::string _myScriptPath;
+    double _screenRatio;
+    int _extension;
 
     void ChangeWidth(wxSpinEvent& event);         ///< Calculates new height and change value.
     void ChangeHeight(wxSpinEvent& event);        ///< Calculates new width and change value.
     void OnOk(wxCommandEvent& event);             ///< Creates fractal with the parameters from the dialog and saves image.
 
 public:
-    ImageExportSizeDialog(FractalCanvas* mFCanvas, const std::string& filePath, int ext, FractalType type, const Fractal* target, wxWindow* parent,
-                          const std::string& scriptPath = "", wxWindowID id = wxID_ANY, const wxString& title = "Select size",
+    ImageExportSizeDialog(FractalCanvas* fractalCanvas, const std::string& filePath, int ext, FractalType type,
+                          const Fractal* target, wxWindow* parent, const std::string& scriptPath = "",
+                          wxWindowID id = wxID_ANY, const wxString& title = "Select size",
                           const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 300),
                           long style = wxDEFAULT_DIALOG_STYLE);
     ~ImageExportSizeDialog() override;
