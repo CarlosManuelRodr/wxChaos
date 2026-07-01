@@ -65,7 +65,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     // Initialize GUI elements.
     _selectionRect = new SelectionRect();
 
-    _screenPointer = new CoordinateSelector(this);
+    _coordinateSelector = new CoordinateSelector(this);
     _keyboardImage.loadFromFile(AppPaths::ResourceFileStd({"keyboard.png"}));
     _mouseImage.loadFromFile(AppPaths::ResourceFileStd({"mouse.png"}));
     _helpImage.loadFromFile(AppPaths::ResourceFileStd({"HelpImage.png"}));
@@ -103,7 +103,7 @@ FractalCanvas::~FractalCanvas()
     delete _fractalPresenter;
     _fractalFactory.DeleteFractal();
     delete _selectionRect;
-    delete _screenPointer;
+    delete _coordinateSelector;
     HidePointInfo();
 }
 void FractalCanvas::CreateFractal(const FractalType type)
@@ -212,8 +212,8 @@ void FractalCanvas::ResizePresentation(const wxSize size)
 
     _fractalPresenter->Resize(this);
 
-    if (_screenPointer != nullptr)
-        _screenPointer->Resize(this);
+    if (_coordinateSelector != nullptr)
+        _coordinateSelector->Resize(this);
 }
 
 void FractalCanvas::BeginMousePanAt(const wxPoint position)
@@ -427,7 +427,7 @@ void FractalCanvas::OnUpdate()
         }
 
         if (_juliaMode || _orbitMode || _sliderMode)
-            _screenPointer->Show(this);
+            _coordinateSelector->Show(this);
     }
 }
 void FractalCanvas::SetWxSize(const wxSize size)
@@ -472,17 +472,17 @@ void FractalCanvas::SetJuliaMode(const bool mode)
     if (mode)
     {
         _juliaMode = true;
-        if (_screenPointer == nullptr)
-            _screenPointer = new CoordinateSelector(this);
+        if (_coordinateSelector == nullptr)
+            _coordinateSelector = new CoordinateSelector(this);
     }
     // If deactivated, deletes it.
     else
     {
         _juliaMode = false;
-        if (_screenPointer != nullptr && !_orbitMode && !_sliderMode)
+        if (_coordinateSelector != nullptr && !_orbitMode && !_sliderMode)
         {
-            delete _screenPointer;
-            _screenPointer = nullptr;
+            delete _coordinateSelector;
+            _coordinateSelector = nullptr;
         }
     }
 }
@@ -576,8 +576,8 @@ void FractalCanvas::ChangeType(const FractalType type)
         _sliderMode = false;
         if (!_juliaMode)
         {
-            delete _screenPointer;
-            _screenPointer = nullptr;
+            delete _coordinateSelector;
+            _coordinateSelector = nullptr;
         }
     }
 }
@@ -599,8 +599,8 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
         _sliderMode = false;
         if (!_juliaMode)
         {
-            delete _screenPointer;
-            _screenPointer = nullptr;
+            delete _coordinateSelector;
+            _coordinateSelector = nullptr;
         }
     }
 }
@@ -658,10 +658,10 @@ void FractalCanvas::Reset()
     _juliaMode = false;
     _orbitMode = false;
     _sliderMode = false;
-    if (_screenPointer != nullptr)
+    if (_coordinateSelector != nullptr)
     {
-        delete _screenPointer;
-        _screenPointer = nullptr;
+        delete _coordinateSelector;
+        _coordinateSelector = nullptr;
     }
 }
 void FractalCanvas::SetOrbitMode(const bool mode)
@@ -670,16 +670,16 @@ void FractalCanvas::SetOrbitMode(const bool mode)
     if (_orbitMode)
     {
         _fractal->SetOrbitMode(true);
-        if (_screenPointer == nullptr)
-            _screenPointer = new CoordinateSelector(this);
+        if (_coordinateSelector == nullptr)
+            _coordinateSelector = new CoordinateSelector(this);
     }
     else
     {
         _fractal->SetOrbitMode(false);
-        if (_screenPointer != nullptr && !_juliaMode && !_sliderMode)
+        if (_coordinateSelector != nullptr && !_juliaMode && !_sliderMode)
         {
-            delete _screenPointer;
-            _screenPointer = nullptr;
+            delete _coordinateSelector;
+            _coordinateSelector = nullptr;
         }
     }
 }
@@ -692,16 +692,16 @@ void FractalCanvas::SetSliderMode(const bool mode)
     _sliderMode = mode;
     if (_sliderMode)
     {
-        if (_screenPointer == nullptr)
-            _screenPointer = new CoordinateSelector(this);
+        if (_coordinateSelector == nullptr)
+            _coordinateSelector = new CoordinateSelector(this);
         _fractal->SetJuliaMode(true);
     }
     else
     {
-        if (_screenPointer != nullptr && !_juliaMode && !_orbitMode)
+        if (_coordinateSelector != nullptr && !_juliaMode && !_orbitMode)
         {
-            delete _screenPointer;
-            _screenPointer = nullptr;
+            delete _coordinateSelector;
+            _coordinateSelector = nullptr;
         }
         _fractal->SetJuliaMode(false);
     }
@@ -793,14 +793,14 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     // Pointer event.
     if (_juliaMode || _orbitMode || _sliderMode)
     {
-        if (_screenPointer->ClickEvent(event))
+        if (_coordinateSelector->ClickEvent(event))
         {
             _prevKReal = _kReal;
             _prevKImag = _kImaginary;
 
             _onUpdate = true;
-            _kReal = _screenPointer->GetX(_fractal);
-            _kImaginary = _screenPointer->GetY(_fractal);
+            _kReal = _coordinateSelector->GetX(_fractal);
+            _kImaginary = _coordinateSelector->GetY(_fractal);
             _coordinateSelectorChange = true;
 
             if (_orbitMode)
@@ -844,7 +844,7 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 
     // Selection event.
     if (_juliaMode || _orbitMode || _sliderMode)
-        _screenPointer->ReleaseClickEvent(event);
+        _coordinateSelector->ReleaseClickEvent(event);
     else
     {
         if (!_fractal->IsRendering() && !_fractalPresenter->IsMoving())
@@ -923,14 +923,14 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     // Selection event.
     if (_juliaMode || _orbitMode || _sliderMode)
     {
-        if (_screenPointer->MoveEvent(event))
+        if (_coordinateSelector->MoveEvent(event))
         {
             _prevKReal = _kReal;
             _prevKImag = _kImaginary;
 
             _onUpdate = true;
-            _kReal = _screenPointer->GetX(_fractal);
-            _kImaginary = _screenPointer->GetY(_fractal);
+            _kReal = _coordinateSelector->GetX(_fractal);
+            _kImaginary = _coordinateSelector->GetY(_fractal);
             _coordinateSelectorChange = true;
 
             if (_orbitMode)

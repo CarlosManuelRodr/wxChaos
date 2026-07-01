@@ -39,7 +39,7 @@ class FractalCanvas : public wxSFMLCanvas
     FractalFactory _fractalFactory;
     FractalPresenter* _fractalPresenter;
     SelectionRect* _selectionRect;
-    CoordinateSelector* _screenPointer;
+    CoordinateSelector* _coordinateSelector;
     FractalType _fractalType;
     Fractal* _fractal;
 
