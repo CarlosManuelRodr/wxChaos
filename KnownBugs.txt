@@ -6,3 +6,6 @@ Improvements to get to a release version:
 - Localization to Spanish, Japanese and possibly other languages.
 - Implement a proper tutorial mode.
 - Documentation must be updated.
+
+Future improvements:
+- WebASM port.
