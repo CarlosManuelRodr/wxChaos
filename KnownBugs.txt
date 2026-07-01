@@ -1,6 +1,7 @@
 Bugs:
 - Each fractal must be able to set the default number of iterations.
 - User formula Escape Time needs a Julia mode.
+- Buddhabrot image saving is not working?
 
 Improvements to get to a release version:
 - Rework script editor. Validate is currently not outputting anything. There should also be a help button with quick documentation.
