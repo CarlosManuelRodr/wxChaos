@@ -5,8 +5,9 @@
 #include <iterator>
 #include <wx/dcclient.h>
 
-IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, const wxWindowID id,
-                                   const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
+IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, wxWindow* focusAfterClose,
+                                   const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
+                                   const long style)
                                    : wxFrame(parent, id, title, pos, size, style)
 {
     // WX Frame.
@@ -16,6 +17,7 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
     _active = Active;
     _fractalPresenter = presenter;
     _target = _fractalPresenter->GetFractal();
+    _focusAfterClose = focusAfterClose;
     this->SetSizeHints(wxSize(420, 340), wxDefaultSize);
 
     const auto sizer = new wxBoxSizer(wxVERTICAL);
@@ -83,6 +85,7 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
     _iterationsSpinCtrl->Bind(wxEVT_TEXT, &IterationsDialog::OnSpin, this);
     _acceptButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnOk, this);
     _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnApply, this);
+    Bind(wxEVT_CLOSE_WINDOW, &IterationsDialog::OnClose, this);
 }
 
 IterationsDialog::~IterationsDialog()
@@ -94,6 +97,7 @@ IterationsDialog::~IterationsDialog()
     _scalePanel->Unbind(wxEVT_PAINT, &IterationsDialog::OnScalePaint, this);
     _acceptButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnOk, this);
     _applyButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &IterationsDialog::OnApply, this);
+    Unbind(wxEVT_CLOSE_WINDOW, &IterationsDialog::OnClose, this);
 }
 
 int IterationsDialog::IterationsToSliderValue(const unsigned int iterations)
@@ -136,6 +140,20 @@ bool IterationsDialog::ReadIterationValue(unsigned int& iterations) const
 
     iterations = static_cast<unsigned int>(value);
     return true;
+}
+
+void IterationsDialog::RestoreFocusAfterClose() const
+{
+    wxWindow* focusAfterClose = _focusAfterClose;
+    wxWindow* parent = GetParent();
+    if (focusAfterClose == nullptr || parent == nullptr || parent->IsBeingDeleted())
+        return;
+
+    parent->CallAfter([focusAfterClose]
+    {
+        if (!focusAfterClose->IsBeingDeleted())
+            focusAfterClose->SetFocus();
+    });
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -186,7 +204,6 @@ void IterationsDialog::OnOk(wxCommandEvent&)
 
     // Closes dialog.
     this->Close(true);
-    this->Destroy();
 }
 void IterationsDialog::OnApply(wxCommandEvent&)
 {
@@ -196,6 +213,12 @@ void IterationsDialog::OnApply(wxCommandEvent&)
 
     _number = iterations;
     _fractalPresenter->ChangeIterations(_number);
+}
+
+void IterationsDialog::OnClose(wxCloseEvent&)
+{
+    RestoreFocusAfterClose();
+    Destroy();
 }
 
 void IterationsDialog::SetTarget(FractalPresenter* presenter)

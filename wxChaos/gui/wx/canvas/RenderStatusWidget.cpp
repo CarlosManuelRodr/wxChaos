@@ -32,6 +32,16 @@ void RenderStatusWidget::SetPresenter(FractalPresenter* presenter)
     Refresh();
 }
 
+bool RenderStatusWidget::AcceptsFocus() const
+{
+    return false;
+}
+
+bool RenderStatusWidget::AcceptsFocusFromKeyboard() const
+{
+    return false;
+}
+
 void RenderStatusWidget::OnPaintEvent(wxPaintEvent&)
 {
     wxAutoBufferedPaintDC dc(this);

@@ -32,15 +32,18 @@ class IterationsDialog : public wxFrame
     FractalPresenter* _fractalPresenter;
     Fractal* _target;
     bool* _active;
+    wxWindow* _focusAfterClose;
 
     [[nodiscard]] static int IterationsToSliderValue(unsigned int iterations);
     [[nodiscard]] static unsigned int SliderValueToIterations(int sliderValue);
     void SetIterationControls(unsigned int iterations);
     bool ReadIterationValue(unsigned int& iterations) const;
     void OnScalePaint(wxPaintEvent& event);
+    void RestoreFocusAfterClose() const;
     
 public:
-    IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
+    IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, wxWindow* focusAfterClose = nullptr,
+                     wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
                      const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 340),
                      long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
 
@@ -50,5 +53,6 @@ public:
     void OnSpin(wxCommandEvent& event);
     void OnOk(wxCommandEvent& event);
     void OnApply(wxCommandEvent& event);
+    void OnClose(wxCloseEvent& event);
     void SetTarget(FractalPresenter* presenter);
 };

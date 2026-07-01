@@ -164,7 +164,8 @@ void JuliaPreviewFrame::OpenIterationsDialog()
         _iterationsDialog = new IterationsDialog(
             &_iterationsDialogIsActive,
             _previewCanvas->GetFractalPresenter(),
-            this);
+            this,
+            _previewCanvas);
         _iterationsDialog->Show(true);
         _iterationsDialogIsActive = true;
     }

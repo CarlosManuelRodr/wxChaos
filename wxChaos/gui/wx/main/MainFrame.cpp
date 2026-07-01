@@ -234,7 +234,11 @@ void MainFrame::OpenIterationsDialog()
 {
     if (!_iterationsDialogIsActive)
     {
-        _iterationsDialog = new IterationsDialog(&_iterationsDialogIsActive, _fractalCanvas->GetFractalPresenter(), this);
+        _iterationsDialog = new IterationsDialog(
+            &_iterationsDialogIsActive,
+            _fractalCanvas->GetFractalPresenter(),
+            this,
+            _fractalCanvas);
         _iterationsDialog->Show(true);
         _iterationsDialogIsActive = true;
     }

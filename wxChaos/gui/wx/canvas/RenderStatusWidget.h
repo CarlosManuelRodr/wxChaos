@@ -38,6 +38,12 @@ public:
     /// @param presenter Presenter supplying render state and iterations.
     void SetPresenter(FractalPresenter* presenter);
 
+    /// @brief Keeps keyboard navigation owned by the fractal canvas.
+    [[nodiscard]] bool AcceptsFocus() const override;
+
+    /// @brief Keeps tab traversal from parking focus on the status widget.
+    [[nodiscard]] bool AcceptsFocusFromKeyboard() const override;
+
 private:
     FractalPresenter* _presenter{};
     ClickHandler _clickHandler;
