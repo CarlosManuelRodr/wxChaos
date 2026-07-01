@@ -1,6 +1,6 @@
 /**
 * @file FormulaDialog.h
-* @brief This header file contains the user formula-related dialogs.
+* @brief This header file contains the user formula dialog.
 *
 * @copyright GNU Public License.
 * @author Carlos Manuel Rodriguez y Martinez
@@ -10,26 +10,8 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/bmpbndl.h>
 #include "FractalCanvas.h"
-
-/**
-* @class FunctionsHelpDialog
-* @brief Dialog that shows the available functions.
-*/
-class FunctionsHelpDialog : public wxDialog
-{
-    wxPanel* _mainPanel;
-    wxTextCtrl* _text;
-    wxButton* _closeButton;
-
-    void OnClose(wxCommandEvent& event);
-
-public:
-    explicit FunctionsHelpDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
-                                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(460, 250),
-                                 long style = wxDEFAULT_DIALOG_STYLE);
-    ~FunctionsHelpDialog() override;
-};
 
 #define FormulaDialogSize wxSize(520, 320)
 
@@ -62,6 +44,10 @@ class FormulaDialog : public wxDialog
     void OnClose(wxCloseEvent& event);
     void OnFunc(wxCommandEvent& event);
     void OnChoice(wxCommandEvent& event);
+    [[nodiscard]] static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                                      const wxString& darkIcon);
+    [[nodiscard]] static wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                                         const wxSize& size);
 
 public:
     FormulaDialog(int userDefinedId, int fPUserDefinedId, int newtonUserDefinedId, wxMenuItem* juliaSlider,

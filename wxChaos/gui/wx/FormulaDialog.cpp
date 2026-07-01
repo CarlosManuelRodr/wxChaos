@@ -1,50 +1,41 @@
 #include "FormulaDialog.h"
+
+#include "AppPaths.h"
+#include "AppTheme.h"
+#include "FunctionsHelpDialog.h"
 #include "TextUtils.h"
 
-FunctionsHelpDialog::FunctionsHelpDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
-                                         const wxSize& size, const long style)
-                                         : wxDialog(parent, id, title, pos, size, style)
+wxPanel* FormulaDialog::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                            const wxString& darkIcon)
 {
-    this->SetSizeHints(wxSize(460, 250), wxDefaultSize);
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
 
-    auto* mainSizer = new wxBoxSizer(wxVERTICAL);
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 10);
 
-    _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    const auto panelSizer = new wxBoxSizer(wxVERTICAL);
-    const auto textSizer = new wxBoxSizer(wxVERTICAL);
+    const auto title = new wxStaticText(header, wxID_ANY, text);
+    wxFont titleFont = title->GetFont();
+    titleFont.SetPointSize(titleFont.GetPointSize() + 1);
+    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+    title->SetFont(titleFont);
+    title->SetBackgroundColour(AppTheme::ControlBackground());
+    title->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
 
-    _text = new wxTextCtrl(_mainPanel, wxID_ANY, wxString("Available functions:\n") + "abs(), sin(), cos(), tan(), sinh(), cosh(),\ntanh(), ln(), log(), log10(), exp(), sqrt().",
-                            wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_READONLY);
-    _text->SetFont(wxFont(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString));
-
-    textSizer->Add(_text, 1, wxALL|wxEXPAND, 5);
-    panelSizer->Add(textSizer, 4, wxEXPAND, 5);
-
-    const auto buttonSizer = new wxBoxSizer(wxVERTICAL);
-
-    _closeButton = new wxButton(_mainPanel, wxID_ANY, "Close", wxDefaultPosition, wxDefaultSize, 0);
-    buttonSizer->Add(_closeButton, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
-    panelSizer->Add(buttonSizer, 1, wxEXPAND, 5);
-
-    _mainPanel->SetSizer(panelSizer);
-    _mainPanel->Layout();
-    panelSizer->Fit(_mainPanel);
-    mainSizer->Add(_mainPanel, 1, wxEXPAND | wxALL, 1);
-
-    this->SetSizer(mainSizer);
-    this->wxTopLevelWindowBase::Layout();
-
-    this->Centre(wxBOTH);
-
-    _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FunctionsHelpDialog::OnClose, this);
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 48));
+    return header;
 }
-FunctionsHelpDialog::~FunctionsHelpDialog()
+
+wxBitmapBundle FormulaDialog::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                               const wxSize& size)
 {
-    _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FunctionsHelpDialog::OnClose, this);
-}
-void FunctionsHelpDialog::OnClose(wxCommandEvent&)
-{
-    this->Close(true);
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
 }
 
 FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId, const int newtonUserDefinedId, wxMenuItem* juliaSlider,
@@ -68,11 +59,13 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
 
     _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
-    const auto formulaSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Formula"), wxVERTICAL);
+    const auto formulaSizer = new wxBoxSizer(wxVERTICAL);
+    formulaSizer->Add(CreateSectionHeader(_mainPanel, "Formula", "formula_light.svg", "formula_dark.svg"),
+                      0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _formulaCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, wxString(_fCanvas->GetFormula().userFormula), wxDefaultPosition, wxDefaultSize, 0);
-    formulaSizer->Add(_formulaCtrl, 2, wxALL | wxEXPAND, 5);
-    panelSizer->Add(formulaSizer, 3, wxEXPAND, 5);
+    formulaSizer->Add(_formulaCtrl, 0, wxALL | wxEXPAND, 10);
+    panelSizer->Add(formulaSizer, 0, wxEXPAND, 5);
 
     const auto optionSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Options"), wxHORIZONTAL);
     const auto bailoutSizer = new wxBoxSizer(wxVERTICAL);
@@ -91,7 +84,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     _typeText->Wrap(-1);
     typeSizer->Add(_typeText, 0, wxALL, 5);
 
-    const wxString typeChoiceChoices[] = { "Complex", "Fixed point", "Newton-Raphson" };
+    const wxString typeChoiceChoices[] = { "Escape time", "Fixed point", "Newton-Raphson" };
     constexpr int typeChoiceNChoices = sizeof(typeChoiceChoices) / sizeof(wxString);
     _typeChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, typeChoiceNChoices, typeChoiceChoices, 0);
 
@@ -103,7 +96,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     _juliaCheck->SetValue(_fCanvas->GetFormula().julia);
 
     optionSizer->Add(typeSizer, 1, wxEXPAND, 5);
-    panelSizer->Add(optionSizer, 3, wxEXPAND, 5);
+    panelSizer->Add(optionSizer, 0, wxEXPAND, 5);
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
     _acceptButton = new wxButton(_mainPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
@@ -114,7 +107,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
 
     _funcButton = new wxButton( _mainPanel, wxID_ANY, "Available functions", wxDefaultPosition, wxDefaultSize, 0 );
     buttonSizer->Add( _funcButton, 0, wxALL, 5 );
-    panelSizer->Add(buttonSizer, 1, wxEXPAND, 5);
+    panelSizer->Add(buttonSizer, 0, wxEXPAND, 5);
 
     _mainPanel->SetSizer(panelSizer);
     _mainPanel->Layout();
@@ -122,6 +115,8 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     sizer->Add(_mainPanel, 1, wxEXPAND | wxALL, 0);
 
     this->SetSizer(sizer);
+    sizer->Fit(this);
+    this->wxTopLevelWindowBase::SetMinSize(this->GetSize());
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
