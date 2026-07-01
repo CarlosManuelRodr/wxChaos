@@ -230,7 +230,7 @@ void MainFrame::LayoutStatusBarControls() const
         rect.height - verticalMargin * 2);
 }
 
-wxPanel* MainFrame::CreateFractalOptionsHeader()
+wxPanel* MainFrame::CreateFractalOptionsHeader() const
 {
     const auto header = new wxPanel(_optionPanel, wxID_ANY);
     header->SetBackgroundColour(AppTheme::ControlBackground());
@@ -476,6 +476,13 @@ void MainFrame::SetUpGUI()
 
     _fractalOptionsHeader = CreateFractalOptionsHeader();
     _optionSizer->Add(_fractalOptionsHeader, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+    _fractalOptionsPanel = new FractalOptionsPanel(_optionPanel);
+    _fractalOptionsPanel->SetApplyHandler([this]()
+    {
+        _fractalCanvas->SetFocus();
+        _fractalCanvas->GetFractalPresenter()->Redraw();
+    });
+    _optionSizer->Add(_fractalOptionsPanel, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
 
     _optionPanel->SetSizer(_optionSizer);
     _optionPanel->Layout();
@@ -926,21 +933,7 @@ void MainFrame::OnFractalOptions(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
 {
-    // Pass parameters to the fractal and redraws it.
-    const PanelOptions* pOptions = _fractalCanvas->GetFractal()->GetOptPanel();
-    for (unsigned int i=0; i<_foundTextControls.size(); i++)
-        *pOptions->GetDoubleElement(i) = TextUtils::ToDouble(_textControls[i]->GetValue());
-
-    for (unsigned int i=0; i<_foundSpinControls.size(); i++)
-        *pOptions->GetIntElement(i) = _spinControls[i]->GetValue();
-
-    for (unsigned int i=0; i<_foundCheckBoxes.size(); i++)
-    {
-        if (_checkBoxes[i]->GetValue())
-            *pOptions->GetBoolElement(i) = true;
-        else
-            *pOptions->GetBoolElement(i) = false;
-    }
+    _fractalOptionsPanel->Apply();
     _fractalCanvas->SetFocus();
     _fractalCanvas->GetFractalPresenter()->Redraw();
 }
@@ -1146,92 +1139,28 @@ void MainFrame::GetParserOpt()
 }
 void MainFrame::UpdateOptionsPanel()
 {
-    // If there are elements in pOptions creates panel.
     if (PanelOptions* panelOptions = _fractalCanvas->GetFractal()->GetOptPanel(); panelOptions->GetElementsSize() > 0)
     {
-        unsigned int labelIndex;
-        unsigned int index;
         _fractalOptionsItem->Enable(true);
-        if (!_labels.empty() || !_textControls.empty() || !_spinControls.empty() || !_checkBoxes.empty())
-        {
-            // If there are elements from a previous panel, deletes them.
-            this->DeleteOptPanel();
-        }
+        _fractalOptionsPanel->SetTarget(_fractalCanvas->GetFractal());
 
         if (panelOptions->GetForceShow())
         {
             _fractalOptionsItem->Check(true);
-            _optionPanel->Show();
-            const wxSize windowSize = this->GetSize();
-            if (!this->IsMaximized())
-                this->SetSize(windowSize.GetWidth()+175, windowSize.GetHeight());
+            if (!_showOptionsPanel)
+            {
+                _optionPanel->Show();
+                const wxSize windowSize = this->GetSize();
+                if (!this->IsMaximized())
+                    this->SetSize(windowSize.GetWidth() + 175, windowSize.GetHeight());
 
-            this->GetSizer()->Layout();
-            _showOptionsPanel = true;
+                this->GetSizer()->Layout();
+                _showOptionsPanel = true;
+            }
         }
         else
             _fractalOptionsItem->Check(false);
 
-        // Creates elements from each kind.
-        for (int i=0; i<panelOptions->GetElementsSize(); i++)
-        {
-            switch(panelOptions->GetPanelOptType(i))
-            {
-                case PanelOptionType::Label:
-                    {
-                        _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                        labelIndex = _labels.size()-1;
-                        _labels[labelIndex]->Wrap(-1);
-                        _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
-                        _foundLabels.push_back(i);
-                    }
-                    break;
-                case PanelOptionType::TextCtrl:
-                    {
-                        _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                        labelIndex = _labels.size()-1;
-                        _labels[labelIndex]->Wrap(-1);
-                        _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
-
-                        _textControls.push_back(new wxTextCtrl(_optionPanel, wxID_ANY, wxString(panelOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                        index = _textControls.size()-1;
-                        _optionSizer->Add(_textControls[index], 0, wxALL|wxEXPAND, 5);
-                        _foundTextControls.push_back(i);
-                    }
-                    break;
-                case PanelOptionType::Spin:
-                    {
-                        _labels.push_back(new wxStaticText(_optionPanel, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                        labelIndex = _labels.size()-1;
-                        _labels[labelIndex]->Wrap(-1);
-                        _optionSizer->Add(_labels[labelIndex], 0, wxALL, 5);
-
-                        _spinControls.push_back(new wxSpinCtrl(_optionPanel, wxID_ANY, wxString(panelOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 ));
-                        index = _spinControls.size()-1;
-                        _optionSizer->Add(_spinControls[index], 0, wxALL|wxEXPAND, 5);
-                        _foundSpinControls.push_back(i);
-                    }
-                    break;
-                case PanelOptionType::CheckBox:
-                    {
-                        _checkBoxes.push_back(new wxCheckBox(_optionPanel, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0 ));
-                        index = _checkBoxes.size()-1;
-                        if (panelOptions->GetDefault(i) == "true")
-                            _checkBoxes[index]->SetValue(true);
-                        else
-                            _checkBoxes[index]->SetValue(false);
-
-                        _optionSizer->Add(_checkBoxes[index], 0, wxALL|wxEXPAND, 5);
-                        _foundCheckBoxes.push_back(i);
-                    }
-                    break;
-            };
-        }
-
-        // Creates button to apply options.
-        _panelButton = new wxButton(_optionPanel, wxID_ANY, "Apply", wxDefaultPosition, wxDefaultSize, 0);
-        _optionSizer->Add(_panelButton, 0, wxALL, 5);
-        _panelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MainFrame::OnApplyPanelOpt, this);
         _optionSizer->Layout();
         _optionPanel->SetScrollbars(20, 20, 0, 50);
     }
@@ -1245,31 +1174,7 @@ void MainFrame::UpdateOptionsPanel()
 }
 void MainFrame::DeleteOptPanel()
 {
-    // Deletes panel elements.
-    for (auto & label : _labels)
-        label->Destroy();
-
-    _labels.clear();
-    _foundLabels.clear();
-    for (auto & textControl : _textControls)
-        textControl->Destroy();
-
-    _textControls.clear();
-    _foundTextControls.clear();
-    for (const auto & spinControl : _spinControls)
-        spinControl->Destroy();
-
-    _spinControls.clear();
-    _foundSpinControls.clear();
-    for (const auto & checkBox : _checkBoxes)
-        checkBox->Destroy();
-
-    _checkBoxes.clear();
-    _foundCheckBoxes.clear();
-
-    // Erase button, disconnect event and hide panel.
-    _panelButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &MainFrame::OnApplyPanelOpt, this);
-    delete _panelButton;
+    _fractalOptionsPanel->ClearTarget();
 
     if (_showOptionsPanel)
     {

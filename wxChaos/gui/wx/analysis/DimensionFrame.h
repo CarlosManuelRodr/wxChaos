@@ -18,15 +18,19 @@
 #include <wx/notebook.h>
 #include <wx/bmpbuttn.h>
 #include <wx/bmpbndl.h>
+#include <wx/spinctrl.h>
+#include <wx/timer.h>
 
 #include "analysis/BoxCountWorker.h"
-#include "analysis/ConfigFractalOptionsDialog.h"
 #include "analysis/ImagePanel.h"
 #include "analysis/PlotWindow.h"
+#include "common/FractalOptionsPanel.h"
 #include "FractalFactory.h"
 
 wxDECLARE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
 void GetDesktopResolution(int& width, int& height);
+
+#define DimensionFrameSize wxSize(1200, 1260)
 
 /**
 * @enum FractalList
@@ -64,23 +68,15 @@ class DimensionFrame : public wxFrame
 {
     wxScrolledWindow* _mainPanel;
     wxChoice* _fractalChoice;
-    wxStaticText* _minXTxt;
-    wxTextCtrl* _minXCtrl;
-    wxStaticText* _maxXTxt;
-    wxTextCtrl* _maxXCtrl;
-    wxStaticText* _minYTxt;
-    wxTextCtrl* _minYCtrl;
-    wxCheckBox* _manualMaxYChk;
-    wxStaticText* _maxYTxt;
-    wxTextCtrl* _maxYCtrl;
-    wxStaticText* _iterTxt;
-    wxTextCtrl* _iterCtrl;
-    wxStaticText* _sizeTxt;
-    wxTextCtrl* _sizeCtrl;
+    wxSpinCtrlDouble* _minXCtrl;
+    wxSpinCtrlDouble* _maxXCtrl;
+    wxSpinCtrlDouble* _minYCtrl;
+    wxSpinCtrlDouble* _maxYCtrl;
+    wxSpinCtrl* _iterCtrl;
+    wxSpinCtrl* _sizeCtrl;
     wxButton* _fractalOptionsButton;
     wxStaticText* _nDivTxt;
     wxSpinCtrl* _numberOfDivisionsSpinCtrl;
-    wxButton* _previewButton;
     wxStaticText* _divTxt;
     wxNotebook* _divNotebook;
     wxPanel* _byFunctionPanel;
@@ -104,7 +100,8 @@ class DimensionFrame : public wxFrame
     wxCheckBox* _dataFitCheck;
     wxBitmapButton* _helpButton;
 
-    ConfigFractalOptionsDialog* _confFractOptDialog;        ///< Fractal options dialog.
+    wxDialog* _fractalOptionsDialog{};                      ///< Fractal options dialog.
+    FractalOptionsPanel* _fractalOptionsPanel{};            ///< Reusable fractal options panel.
     Fractal* _target;                                       ///< The fractal target.
     FractalFactory _fractalFactory;                         ///< The fractal factory.
     ImagePanel* _previewImage;                              ///< Panel to show a preview of the dimension calculator.
@@ -125,14 +122,20 @@ class DimensionFrame : public wxFrame
     int _size{};
 
     bool _renderingPreview, _calculatingDimension;
+    bool _suppressPreviewUpdate{};
+    bool _previewRenderQueued{};
+    bool _hasPreviewMap{};
     int _progress{};
     sf::Clock _clock;
+    wxTimer _previewTimer;
 
     void OnChangeFractal(wxCommandEvent&);
-    void OnRenderPreview(wxCommandEvent&);
     void OnCalculate(wxCommandEvent&);
     void OnUpdateUI(wxUpdateUIEvent&);
-    void OnManualMaxY(wxCommandEvent&);
+    void OnPreviewTimer(wxTimerEvent&);
+    void OnPreviewParameterChanged(wxCommandEvent&);
+    void OnPreviewDoubleParameterChanged(wxSpinDoubleEvent&);
+    void OnPreviewGridChanged(wxCommandEvent&);
     void OnClose(wxCommandEvent&);
     void OnDestroy(wxCloseEvent&);
     void OnFractalOpt(wxCommandEvent&);
@@ -142,7 +145,16 @@ class DimensionFrame : public wxFrame
     static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
                                         const wxString& darkIcon);
     [[nodiscard]] static wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon, const wxSize& size);
+    wxSizer* CreateFractalParameterRow(const wxString& label, wxWindow* control) const;
+    wxSpinCtrlDouble* CreateCoordinateSpin(const wxString& value) const;
     void CreateFractal(int size);
+    [[nodiscard]] Options ReadDimensionOptions();
+    void UpdateDerivedMaxY();
+    void SetControlsFromOptions(const Options& options);
+    void SchedulePreviewRender();
+    void StartPreviewRender();
+    void StopPreviewRender();
+    void RefreshPreviewOverlayOnly();
     /**
      * @brief Waits for all dimension worker threads and releases their resources.
      */

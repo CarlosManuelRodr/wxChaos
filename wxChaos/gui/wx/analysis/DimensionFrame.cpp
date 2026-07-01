@@ -69,8 +69,120 @@ wxBitmapBundle DimensionFrame::CreateIconBundle(const wxString& lightIcon, const
     return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
 }
 
+wxSizer* DimensionFrame::CreateFractalParameterRow(const wxString& label, wxWindow* control) const
+{
+    const auto rowSizer = new wxBoxSizer(wxVERTICAL);
+    const auto labelText = new wxStaticText(_mainPanel, wxID_ANY, label, wxDefaultPosition, wxDefaultSize, 0);
+    labelText->Wrap(-1);
+    rowSizer->Add(labelText, 0, wxLEFT | wxRIGHT | wxBOTTOM, 2);
+    rowSizer->Add(control, 0, wxEXPAND);
+    return rowSizer;
+}
+
+wxSpinCtrlDouble* DimensionFrame::CreateCoordinateSpin(const wxString& value) const
+{
+    const auto spin = new wxSpinCtrlDouble(_mainPanel, wxID_ANY, value, wxDefaultPosition, wxDefaultSize,
+                                           wxSP_ARROW_KEYS, -100000000.0, 100000000.0, TextUtils::ToDouble(value), 0.01);
+    spin->SetDigits(8);
+    return spin;
+}
+
+Options DimensionFrame::ReadDimensionOptions()
+{
+    Options options = _target->GetOptions();
+    options.minX = _minXCtrl->GetValue();
+    options.maxX = _maxXCtrl->GetValue();
+    options.minY = _minYCtrl->GetValue();
+    options.maxY = options.minY + (options.maxX - options.minX);
+    options.maxIter = _iterCtrl->GetValue();
+    _size = _sizeCtrl->GetValue();
+    _maxYCtrl->SetValue(options.maxY);
+    return options;
+}
+
+void DimensionFrame::UpdateDerivedMaxY()
+{
+    const double maxY = _minYCtrl->GetValue() + (_maxXCtrl->GetValue() - _minXCtrl->GetValue());
+    _maxYCtrl->SetValue(maxY);
+}
+
+void DimensionFrame::SetControlsFromOptions(const Options& options)
+{
+    _suppressPreviewUpdate = true;
+    _minXCtrl->SetValue(options.minX);
+    _maxXCtrl->SetValue(options.maxX);
+    _minYCtrl->SetValue(options.minY);
+    _iterCtrl->SetValue(static_cast<int>(options.maxIter));
+    UpdateDerivedMaxY();
+    _suppressPreviewUpdate = false;
+}
+
+void DimensionFrame::SchedulePreviewRender()
+{
+    if (_suppressPreviewUpdate || _calculatingDimension)
+        return;
+
+    UpdateDerivedMaxY();
+    if (_renderingPreview)
+    {
+        _previewRenderQueued = true;
+        StopPreviewRender();
+        return;
+    }
+
+    _previewTimer.StartOnce(450);
+}
+
+void DimensionFrame::StartPreviewRender()
+{
+    if (_calculatingDimension || _target == nullptr)
+        return;
+
+    _previewTimer.Stop();
+    _target->Resize(_previewSize, _previewSize);
+    _myOpt = ReadDimensionOptions();
+    _target->SetOptions(_myOpt);
+    _target->PrepareRender();
+    _target->Render();
+
+    _calcButton->Enable(false);
+    _savePreviewButton->Enable(false);
+
+    if (_scriptSelected)
+        _progressBar->Enable(false);
+
+    _renderingPreview = true;
+}
+
+void DimensionFrame::StopPreviewRender()
+{
+    if (_target != nullptr)
+        _target->StopRender();
+
+    _progressBar->SetValue(0);
+    _progressTxt->SetLabel(wxString("Progress: Stopped"));
+    _calcButton->Enable(true);
+    _savePreviewButton->Enable(true);
+
+    if (_scriptSelected)
+        _progressBar->Enable(true);
+}
+
+void DimensionFrame::RefreshPreviewOverlayOnly()
+{
+    if (!_hasPreviewMap || _target == nullptr)
+    {
+        SchedulePreviewRender();
+        return;
+    }
+
+    _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
+    _previewImage->Refresh();
+}
+
 DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
-                               const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style)
+                               const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style),
+                                                                        _previewTimer(this)
 {
     _threadNumber = Get_Cores();
     _dimensionCalculator.resize(_threadNumber);
@@ -78,9 +190,13 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
 
     _previewSize = 400;
     _target = nullptr;
-    _confFractOptDialog = nullptr;
+    _fractalOptionsDialog = nullptr;
+    _fractalOptionsPanel = nullptr;
     _renderingPreview = false;
     _calculatingDimension = false;
+    _suppressPreviewUpdate = true;
+    _previewRenderQueued = false;
+    _hasPreviewMap = false;
     _scriptSelected = false;
     _firstRender = true;
     _clock.restart();
@@ -100,70 +216,43 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     fractalSectionSizer->Add(CreateSectionHeader(_mainPanel, "Fractal parameters",
                                                  "fractal_light.svg", "fractal_dark.svg"),
                              0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
-    const auto fractalBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    const auto borderBoxSizer = new wxBoxSizer(wxVERTICAL);
+    const auto fractalBoxSizer = new wxBoxSizer(wxVERTICAL);
 
     const wxString fractalChoiceChoices[] = { "Mandelbrot", "MandelbrotZN", "Mandelbrot (Julia)", "MandelbrotZN (Julia)", "Sine (Julia)", "Jellyfish",
                                               "Manowar", "Manowar (Julia)", "Tricorn", "Burning Ship", "Burning Ship (Julia)",
                                               "Fractory", "Cell", "Magnet", "Double pendulum" };
     constexpr int fractalChoiceNChoices = sizeof(fractalChoiceChoices) / sizeof(wxString);
     _fractalChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, fractalChoiceNChoices, fractalChoiceChoices, 0);
-    borderBoxSizer->Add(_fractalChoice, 0, wxALL | wxEXPAND, 5);
+    fractalBoxSizer->Add(CreateFractalParameterRow("Fractal", _fractalChoice), 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    _minXTxt = new wxStaticText(_mainPanel, wxID_ANY, "MinX", wxDefaultPosition, wxDefaultSize, 0);
-    _minXTxt->Wrap(-1);
-    borderBoxSizer->Add(_minXTxt, 0, wxALL, 5);
+    const auto parameterGridSizer = new wxFlexGridSizer(0, 2, 0, 8);
+    parameterGridSizer->AddGrowableCol(0, 1);
+    parameterGridSizer->AddGrowableCol(1, 1);
 
-    _minXCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, "-1.5", wxDefaultPosition, wxDefaultSize, 0);
-    borderBoxSizer->Add(_minXCtrl, 0, wxALL | wxEXPAND, 5);
+    _minXCtrl = CreateCoordinateSpin("-1.5");
+    parameterGridSizer->Add(CreateFractalParameterRow("Min X", _minXCtrl), 1, wxEXPAND | wxALL, 5);
 
-    _maxXTxt = new wxStaticText(_mainPanel, wxID_ANY, "MaxX", wxDefaultPosition, wxDefaultSize, 0);
-    _maxXTxt->Wrap(-1);
-    borderBoxSizer->Add(_maxXTxt, 0, wxALL, 5);
+    _maxXCtrl = CreateCoordinateSpin("1.5");
+    parameterGridSizer->Add(CreateFractalParameterRow("Max X", _maxXCtrl), 1, wxEXPAND | wxALL, 5);
 
-    _maxXCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, "1.5", wxDefaultPosition, wxDefaultSize, 0);
-    borderBoxSizer->Add(_maxXCtrl, 0, wxALL | wxEXPAND, 5);
+    _minYCtrl = CreateCoordinateSpin("-0.4");
+    parameterGridSizer->Add(CreateFractalParameterRow("Min Y", _minYCtrl), 1, wxEXPAND | wxALL, 5);
 
-    _minYTxt = new wxStaticText(_mainPanel, wxID_ANY, "MinY", wxDefaultPosition, wxDefaultSize, 0);
-    _minYTxt->Wrap(-1);
-    borderBoxSizer->Add(_minYTxt, 0, wxALL, 5);
+    _maxYCtrl = CreateCoordinateSpin("0.4");
+    _maxYCtrl->Enable(false);
+    parameterGridSizer->Add(CreateFractalParameterRow("Max Y", _maxYCtrl), 1, wxEXPAND | wxALL, 5);
 
-    _minYCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, "-0.4", wxDefaultPosition, wxDefaultSize, 0);
-    borderBoxSizer->Add(_minYCtrl, 0, wxALL | wxEXPAND, 5);
+    _iterCtrl = new wxSpinCtrl(_mainPanel, wxID_ANY, "20000", wxDefaultPosition, wxDefaultSize,
+                               wxSP_ARROW_KEYS, 1, 100000000, 20000);
+    parameterGridSizer->Add(CreateFractalParameterRow("Iterations", _iterCtrl), 1, wxEXPAND | wxALL, 5);
 
-    _manualMaxYChk = new wxCheckBox(_mainPanel, wxID_ANY, "Manual MaxY", wxDefaultPosition, wxDefaultSize, 0);
-    borderBoxSizer->Add(_manualMaxYChk, 0, wxALL, 5);
-    _manualMaxYChk->SetValue(true);
-
-    _maxYTxt = new wxStaticText(_mainPanel, wxID_ANY, "MaxY", wxDefaultPosition, wxDefaultSize, 0);
-    _maxYTxt->Wrap(-1);
-    borderBoxSizer->Add(_maxYTxt, 0, wxALL, 5);
-
-    _maxYCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, "0.4", wxDefaultPosition, wxDefaultSize, 0);
-
-    borderBoxSizer->Add(_maxYCtrl, 0, wxALL | wxEXPAND, 5);
-    fractalBoxSizer->Add(borderBoxSizer, 1, wxEXPAND, 5);
-
-    const auto fOptBoxSizer = new wxBoxSizer(wxVERTICAL);
-
-    _iterTxt = new wxStaticText(_mainPanel, wxID_ANY, "Iterations", wxDefaultPosition, wxDefaultSize, 0);
-    _iterTxt->Wrap(-1);
-    fOptBoxSizer->Add(_iterTxt, 0, wxALL, 5);
-
-    _iterCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, "20000", wxDefaultPosition, wxDefaultSize, 0);
-    fOptBoxSizer->Add(_iterCtrl, 0, wxALL | wxEXPAND, 5);
-
-    _sizeTxt = new wxStaticText(_mainPanel, wxID_ANY, "Image size (pixels)", wxDefaultPosition, wxDefaultSize, 0);
-    _sizeTxt->Wrap(-1);
-    fOptBoxSizer->Add(_sizeTxt, 0, wxALL, 5);
-
-    _sizeCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, "3000", wxDefaultPosition, wxDefaultSize, 0);
-    fOptBoxSizer->Add(_sizeCtrl, 0, wxALL | wxEXPAND, 5);
+    _sizeCtrl = new wxSpinCtrl(_mainPanel, wxID_ANY, "3000", wxDefaultPosition, wxDefaultSize,
+                               wxSP_ARROW_KEYS, 32, 100000, 3000);
+    parameterGridSizer->Add(CreateFractalParameterRow("Square image size (pixels)", _sizeCtrl), 1, wxEXPAND | wxALL, 5);
+    fractalBoxSizer->Add(parameterGridSizer, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 
     _fractalOptionsButton = new wxButton(_mainPanel, wxID_ANY, "Configure fractal options", wxDefaultPosition, wxDefaultSize, 0);
-    fOptBoxSizer->Add(_fractalOptionsButton, 0, wxALL | wxEXPAND, 5);
-
-    fractalBoxSizer->Add(fOptBoxSizer, 1, wxEXPAND, 5);
+    fractalBoxSizer->Add(_fractalOptionsButton, 0, wxALL | wxEXPAND, 10);
     fractalSectionSizer->Add(fractalBoxSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
     paramBoxSizer->Add(fractalSectionSizer, 0, wxEXPAND, 5);
 
@@ -282,13 +371,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     numberOfDivisionsSizer->Add(_numberOfDivisionsSpinCtrl, 0, wxALIGN_CENTER_VERTICAL);
     previewOptionsSizer->Add(numberOfDivisionsSizer, 0, wxALL, 5);
 
-    const auto renderPreBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    _previewButton = new wxButton(_mainPanel, wxID_ANY, "Render preview", wxDefaultPosition, wxDefaultSize, 0);
-    renderPreBoxSizer->Add(_previewButton, 1, wxALL | wxEXPAND, 5);
-
     _savePreviewButton = new wxButton(_mainPanel, wxID_ANY, "Save preview", wxDefaultPosition, wxDefaultSize, 0);
-    renderPreBoxSizer->Add(_savePreviewButton, 1, wxALL | wxEXPAND, 5);
-    previewOptionsSizer->Add(renderPreBoxSizer, 0, wxEXPAND);
+    previewOptionsSizer->Add(_savePreviewButton, 0, wxALL | wxEXPAND, 5);
     outputBoxSizer->Add(previewOptionsSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
 
     _outLine = new wxStaticLine(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
@@ -329,38 +413,46 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _fractalChoice->SetSelection(0);
     this->CreateFractal(_previewSize);
     _myOpt = _target->GetOptions();
-    _minXCtrl->SetValue(TextUtils::ToWxString(_myOpt.minX));
-    _maxXCtrl->SetValue(TextUtils::ToWxString(_myOpt.maxX));
-    _minYCtrl->SetValue(TextUtils::ToWxString(_myOpt.minY));
-    _maxYCtrl->SetValue(TextUtils::ToWxString(_myOpt.maxY));
-    _iterCtrl->SetValue(TextUtils::ToWxString(static_cast<int>(_myOpt.maxIter)));
+    SetControlsFromOptions(_myOpt);
 
     // Connect Events.
     this->Bind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
     this->Bind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
+    this->Bind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &DimensionFrame::OnClose, this, wxID_EXIT);
     _fractalChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
     _fractalOptionsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
-    _previewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnRenderPreview, this);
     _calcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
-    _manualMaxYChk->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DimensionFrame::OnManualMaxY, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
     _savePreviewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnSavePreview, this);
     _helpButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnHelp, this);
+    _minXCtrl->Bind(wxEVT_SPINCTRLDOUBLE, &DimensionFrame::OnPreviewDoubleParameterChanged, this);
+    _maxXCtrl->Bind(wxEVT_SPINCTRLDOUBLE, &DimensionFrame::OnPreviewDoubleParameterChanged, this);
+    _minYCtrl->Bind(wxEVT_SPINCTRLDOUBLE, &DimensionFrame::OnPreviewDoubleParameterChanged, this);
+    _iterCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
+    _sizeCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
+    _numberOfDivisionsSpinCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewGridChanged, this);
+    _suppressPreviewUpdate = false;
+    SchedulePreviewRender();
 }
 DimensionFrame::~DimensionFrame()
 {
     // Disconnect Events.
     this->Unbind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
     this->Unbind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
+    this->Unbind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
     _fractalChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
     _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
-    _previewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnRenderPreview, this);
     _calcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
-    _manualMaxYChk->Unbind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DimensionFrame::OnManualMaxY, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
     _savePreviewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnSavePreview, this);
     _helpButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnHelp, this);
+    _minXCtrl->Unbind(wxEVT_SPINCTRLDOUBLE, &DimensionFrame::OnPreviewDoubleParameterChanged, this);
+    _maxXCtrl->Unbind(wxEVT_SPINCTRLDOUBLE, &DimensionFrame::OnPreviewDoubleParameterChanged, this);
+    _minYCtrl->Unbind(wxEVT_SPINCTRLDOUBLE, &DimensionFrame::OnPreviewDoubleParameterChanged, this);
+    _iterCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
+    _sizeCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
+    _numberOfDivisionsSpinCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewGridChanged, this);
 
     if (_calculatingDimension)
     {
@@ -375,7 +467,7 @@ DimensionFrame::~DimensionFrame()
         _target->StopRender();
 
     _fractalFactory.DeleteFractal();
-    delete _confFractOptDialog;
+    delete _fractalOptionsDialog;
 }
 
 void DimensionFrame::JoinDimensionThreads()
@@ -493,75 +585,40 @@ void DimensionFrame::CreateFractal(int size)
         _scriptSelected = false;
 
     _target = _fractalFactory.GetFractal();
-    if (_confFractOptDialog != nullptr)
-        _confFractOptDialog->SetNewTarget(_target);
-}
-void DimensionFrame::OnRenderPreview(wxCommandEvent&)
-{
-    if (!_renderingPreview)
-    {
-        _target->Resize(_previewSize, _previewSize);
-        _myOpt = _target->GetOptions();
-
-        _myOpt.minX = TextUtils::ToDouble(_minXCtrl->GetValue());
-        _myOpt.maxX = TextUtils::ToDouble(_maxXCtrl->GetValue());
-        _myOpt.minY = TextUtils::ToDouble(_minYCtrl->GetValue());
-
-        if (_manualMaxYChk->GetValue())
-            _myOpt.maxY = TextUtils::ToDouble(_maxYCtrl->GetValue());
-        else
-            _myOpt.maxY = _myOpt.minY + (_myOpt.maxX - _myOpt.minX);
-
-        _myOpt.maxIter = TextUtils::ToInt(_iterCtrl->GetValue());
-
-        _target->SetOptions(_myOpt);
-        _target->PrepareRender();
-        _target->Render();
-
-        this->WriteText("Starting to render preview\n");
-        _previewButton->SetLabel("Stop");
-        _calcButton->Enable(false);
-        _savePreviewButton->Enable(false);
-
-        if (_scriptSelected)
-            _progressBar->Enable(false);
-
-        _renderingPreview = true;
-    }
-    else
-    {
-        _target->StopRender();
-        _logCtrl->WriteText("Preview render stopped\n");
-        _previewButton->SetLabel("Render preview");
-        _progressBar->SetValue(0);
-        _progressTxt->SetLabel(wxString("Progress: Stopped"));
-        _calcButton->Enable(true);
-        _savePreviewButton->Enable(true);
-
-        if (_scriptSelected)
-            _progressBar->Enable(true);
-
-        _renderingPreview = false;
-    }
+    if (_fractalOptionsPanel != nullptr)
+        _fractalOptionsPanel->SetTarget(_target);
 }
 void DimensionFrame::OnChangeFractal(wxCommandEvent&)
 {
-    // Set default parameters.
+    _suppressPreviewUpdate = true;
     this->CreateFractal(_previewSize);
     _myOpt = _target->GetOptions();
-    _minXCtrl->SetValue(TextUtils::ToWxString(_myOpt.minX));
-    _maxXCtrl->SetValue(TextUtils::ToWxString(_myOpt.maxX));
-    _minYCtrl->SetValue(TextUtils::ToWxString(_myOpt.minY));
-    _maxYCtrl->SetValue(TextUtils::ToWxString(_myOpt.maxY));
-    _iterCtrl->SetValue(TextUtils::ToWxString(static_cast<int>(_myOpt.maxIter)));
+    SetControlsFromOptions(_myOpt);
+    if (_fractalOptionsPanel != nullptr)
+        _fractalOptionsPanel->SetTarget(_target);
+    _hasPreviewMap = false;
+    _suppressPreviewUpdate = false;
+    SchedulePreviewRender();
 }
-// ReSharper disable once CppMemberFunctionMayBeConst
-void DimensionFrame::OnManualMaxY(wxCommandEvent&)
+
+void DimensionFrame::OnPreviewTimer(wxTimerEvent&)
 {
-    if (_manualMaxYChk->GetValue())
-        _maxYCtrl->Enable(true);
-    else
-        _maxYCtrl->Enable(false);
+    StartPreviewRender();
+}
+
+void DimensionFrame::OnPreviewParameterChanged(wxCommandEvent&)
+{
+    SchedulePreviewRender();
+}
+
+void DimensionFrame::OnPreviewDoubleParameterChanged(wxSpinDoubleEvent&)
+{
+    SchedulePreviewRender();
+}
+
+void DimensionFrame::OnPreviewGridChanged(wxCommandEvent&)
+{
+    RefreshPreviewOverlayOnly();
 }
 void DimensionFrame::OnClose(wxCommandEvent&)
 {
@@ -571,6 +628,14 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
 {
     if (!_calculatingDimension)
     {
+        _previewTimer.Stop();
+        if (_renderingPreview)
+        {
+            StopPreviewRender();
+            _renderingPreview = false;
+            _previewRenderQueued = false;
+        }
+
         // Create divisions vector.
         _div.clear();
         mup::ParserX parser;
@@ -612,19 +677,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
 
         if (!errorStatus)
         {
-            // Create fractal.
-            _size = TextUtils::ToInt(wxString(_sizeCtrl->GetValue()));
-            _myOpt = _target->GetOptions();
-            _myOpt.minX = TextUtils::ToDouble(_minXCtrl->GetValue());
-            _myOpt.maxX = TextUtils::ToDouble(_maxXCtrl->GetValue());
-            _myOpt.minY = TextUtils::ToDouble(_minYCtrl->GetValue());
-
-            if (_manualMaxYChk->GetValue())
-                _myOpt.maxY = TextUtils::ToDouble(_maxYCtrl->GetValue());
-            else
-                _myOpt.maxY = _myOpt.minY + (_myOpt.maxX - _myOpt.minX);
-
-            _myOpt.maxIter = TextUtils::ToInt(_iterCtrl->GetValue());
+            _myOpt = ReadDimensionOptions();
 
             // Compare with previous options.
             const Options tempOpt = _target->GetOptions();
@@ -655,7 +708,6 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
             {
                 _divIndex = -1;
                 _calcButton->SetLabel("Stop");
-                _previewButton->Enable(false);
                 _savePreviewButton->Enable(false);
                 if (_scriptSelected) _progressBar->Enable(false);
                 _calculatingDimension = true;
@@ -669,7 +721,6 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
 
         StopDimensionThreads();
         _calcButton->SetLabel("Calculate");
-        _previewButton->Enable(true);
         _savePreviewButton->Enable(true);
         if (_scriptSelected) _progressBar->Enable(true);
         _logCtrl->WriteText("Calculation stopped\n");
@@ -699,13 +750,21 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
             }
             else
             {
+                if (_previewRenderQueued)
+                {
+                    _previewRenderQueued = false;
+                    _renderingPreview = false;
+                    SchedulePreviewRender();
+                    _clock.restart();
+                    return;
+                }
+
                 // Set output image.
                 _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
                 _previewImage->Refresh();
+                _hasPreviewMap = true;
                 _progressBar->SetValue(0);
                 _progressTxt->SetLabel(wxString("Progress: Done"));
-                this->WriteText("Done\n");
-                _previewButton->SetLabel("Render preview");
                 _calcButton->Enable(true);
                 _savePreviewButton->Enable(true);
 
@@ -836,7 +895,6 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         this->WriteText("Done\n");
 
                         _calcButton->SetLabel("Calculate");
-                        _previewButton->Enable(true);
                         _savePreviewButton->Enable(true);
                         if (_scriptSelected) _progressBar->Enable(true);
                         _calculatingDimension = false;
@@ -873,19 +931,36 @@ void DimensionFrame::WriteText(const wxString &txt) const
 }
 void DimensionFrame::OnFractalOpt(wxCommandEvent&)
 {
-    if (_confFractOptDialog == nullptr)
-        _confFractOptDialog = new ConfigFractalOptionsDialog(_target, this);
+    if (_fractalOptionsDialog == nullptr)
+    {
+        _fractalOptionsDialog = new wxDialog(this, wxID_ANY, "Fractal options", wxDefaultPosition, wxSize(420, 560), wxCAPTION | wxCLOSE_BOX);
+        const auto dialogSizer = new wxBoxSizer(wxVERTICAL);
+        const auto scroll = new wxScrolledWindow(_fractalOptionsDialog, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+        scroll->SetScrollRate(5, 5);
+        const auto scrollSizer = new wxBoxSizer(wxVERTICAL);
+        _fractalOptionsPanel = new FractalOptionsPanel(scroll, true);
+        _fractalOptionsPanel->SetApplyHandler([this]()
+        {
+            SchedulePreviewRender();
+        });
+        scrollSizer->Add(_fractalOptionsPanel, 1, wxEXPAND | wxALL, 5);
+        scroll->SetSizer(scrollSizer);
+        dialogSizer->Add(scroll, 1, wxEXPAND | wxALL, 1);
+        _fractalOptionsDialog->SetSizer(dialogSizer);
+    }
 
-    if (_confFractOptDialog->IsVisible())
-        _confFractOptDialog->SetFocus();
+    _fractalOptionsPanel->SetTarget(_target);
+
+    if (_fractalOptionsDialog->IsVisible())
+        _fractalOptionsDialog->SetFocus();
     else
-        _confFractOptDialog->Show(true);
+        _fractalOptionsDialog->Show(true);
 
     // Adjust position.
     int h, w;
     GetDesktopResolution(h, w);
     if (this->GetPosition().x + this->GetSize().GetWidth() + 5 < w && this->GetPosition().y < h)
-        _confFractOptDialog->Move(this->GetPosition().x + this->GetSize().GetWidth() + 5, this->GetPosition().y);
+        _fractalOptionsDialog->Move(this->GetPosition().x + this->GetSize().GetWidth() + 5, this->GetPosition().y);
 }
 void DimensionFrame::OnSavePreview(wxCommandEvent&)
 {
@@ -897,20 +972,8 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         wxString fileName = wxFileName.c_str();
 
         // Render the fractal.
-        _size = TextUtils::ToInt(wxString(_sizeCtrl->GetValue().c_str()));
+        _myOpt = ReadDimensionOptions();
         _target->Resize(_size, _size);
-        _myOpt = _target->GetOptions();
-        _myOpt.minX = TextUtils::ToDouble(_minXCtrl->GetValue());
-        _myOpt.maxX = TextUtils::ToDouble(_maxXCtrl->GetValue());
-        _myOpt.minY = TextUtils::ToDouble(_minYCtrl->GetValue());
-
-        if (_manualMaxYChk->GetValue())
-            _myOpt.maxY = TextUtils::ToDouble(_maxYCtrl->GetValue());
-        else
-            _myOpt.maxY = _myOpt.minY + (_myOpt.maxX - _myOpt.minX);
-
-        _myOpt.maxIter = TextUtils::ToInt(_iterCtrl->GetValue());
-
         _target->SetOptions(_myOpt);
         _target->PrepareRender();
         _target->Render();

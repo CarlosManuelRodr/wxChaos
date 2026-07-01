@@ -25,6 +25,7 @@
 #include "main/SettingsFrame.h"
 #include "canvas/FractalToolbar.h"
 #include "canvas/RenderStatusWidget.h"
+#include "common/FractalOptionsPanel.h"
 
 /**
 * @enum IDS
@@ -152,13 +153,7 @@ class MainFrame : public wxFrame
     std::optional<unsigned int> _selectedScriptIndex;
 
     // Elements of the option panel.
-    wxButton* _panelButton{};
-    std::vector<int> _foundLabels, _foundTextControls;
-    std::vector<int> _foundSpinControls, _foundCheckBoxes;
-    std::vector<wxStaticText*> _labels;
-    std::vector<wxTextCtrl*> _textControls;
-    std::vector<wxSpinCtrl*> _spinControls;
-    std::vector<wxCheckBox*> _checkBoxes;
+    FractalOptionsPanel* _fractalOptionsPanel{};
 
     // Configuration.
     FractalType _fractalType{};
@@ -197,7 +192,7 @@ class MainFrame : public wxFrame
     void OpenFractalInformation();
     void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
-    wxPanel* CreateFractalOptionsHeader();
+    wxPanel* CreateFractalOptionsHeader() const;
 
 public :
     MainFrame();
