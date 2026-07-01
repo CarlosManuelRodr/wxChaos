@@ -57,6 +57,7 @@ class ScriptEditor : public wxFrame
     wxPanel* _debugPanel;
     wxButton* _validateButton;
     wxButton* _runButton;
+    wxButton* _clearConsoleButton;
     wxRichTextCtrl* _console;
     wxStaticBitmap* _renderPreviewBitmap;
 
@@ -66,10 +67,17 @@ class ScriptEditor : public wxFrame
     void SetUpLexer() const;
     void FetchUserScripts();
     void LoadScript(unsigned index);
-    void ConsoleSetText(const wxString& text) const;
+    void ConsoleWriteText(const wxString& text, const wxColour& color) const;
     void ConsoleSetWelcomeText() const;
-    void ConsolePrepareInput(const wxString& command) const;
-    void ConsolePrepareOutput() const;
+    void ConsoleClear() const;
+    void ConsoleAppendEntry(const wxString& action, const wxString& message, bool success) const;
+    [[nodiscard]] wxString ConsoleTimestamp() const;
+    [[nodiscard]] wxString FormatConsoleMessage(wxString message) const;
+    [[nodiscard]] wxColour ConsoleTextColor() const;
+    [[nodiscard]] wxColour ConsoleMutedColor() const;
+    [[nodiscard]] wxColour ConsoleActionColor() const;
+    [[nodiscard]] wxColour ConsoleSuccessColor() const;
+    [[nodiscard]] wxColour ConsoleErrorColor() const;
     void SetBlackPreview() const;
     [[nodiscard]] int GetScriptIndex(const wxString& scriptName) const;
     wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
@@ -85,6 +93,7 @@ class ScriptEditor : public wxFrame
     void OnCodeChange(wxKeyEvent& event);
     void OnValidateScript(wxCommandEvent& event);
     void OnRunScript(wxCommandEvent& event);
+    void OnClearConsole(wxCommandEvent& event);
 public:
     explicit ScriptEditor(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Script editor",
                           const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 900),

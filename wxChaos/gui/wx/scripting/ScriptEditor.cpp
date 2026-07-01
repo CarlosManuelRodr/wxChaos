@@ -1,6 +1,7 @@
 #include <chrono>
 #include <fstream>
 #include <wx/bmpbndl.h>
+#include <wx/datetime.h>
 #include "common/AppTheme.h"
 #include "AppPaths.h"
 #include "scripting/ScriptEditor.h"
@@ -243,6 +244,10 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     SetButtonIcon(_runButton, "run_light.svg", "run_dark.svg");
     debugButtonsSizer->Add(_runButton, 0, wxALL | wxEXPAND, 5);
+
+    _clearConsoleButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, "Clear", wxDefaultPosition, wxDefaultSize, 0);
+    SetButtonIcon(_clearConsoleButton, "erase_light.svg", "erase_dark.svg");
+    debugButtonsSizer->Add(_clearConsoleButton, 0, wxALL | wxEXPAND, 5);
     debugElementsSizer->Add(debugButtonsSizer, 0, wxEXPAND, 5);
 
     const auto consoleSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, "Console"), wxVERTICAL);
@@ -252,7 +257,8 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
                                   wxTE_READONLY | wxVSCROLL | wxHSCROLL | wxNO_BORDER | wxWANTS_CHARS);
     _console->SetMinSize(wxSize(300, -1));
     _console->SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Consolas"));
-    _console->SetBackgroundColour(wxColour(37, 52, 80));
+    _console->SetBackgroundColour(AppTheme::IsDark() ? wxColour(17, 24, 39) : wxColour(248, 250, 252));
+    _console->SetForegroundColour(ConsoleTextColor());
     this->ConsoleSetWelcomeText();
 
     consoleSizer->Add(_console, 1, wxEXPAND | wxALL, 5);
@@ -295,6 +301,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     _codeEditor->Bind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
     _runButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
+    _clearConsoleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClearConsole, this);
 }
 
 ScriptEditor::~ScriptEditor()
@@ -308,6 +315,7 @@ ScriptEditor::~ScriptEditor()
     _codeEditor->Unbind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
     _runButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
+    _clearConsoleButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClearConsole, this);
 }
 
 void ScriptEditor::SetUpLexer() const
@@ -430,23 +438,35 @@ void ScriptEditor::OnCodeChange(wxKeyEvent& event)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnValidateScript(wxCommandEvent&)
 {
-    this->ConsolePrepareInput("Validate script");
-    this->ConsolePrepareOutput();
+    if (_currentScriptIndex < 0 || _currentScriptIndex >= static_cast<int>(_loadedScripts.size()))
+    {
+        this->ConsoleAppendEntry("Validate", "No script selected.", false);
+        return;
+    }
 
     AngelscriptConfigurationEngine configEngine;
     if (!configEngine.CompileFromPath(_loadedScripts[_currentScriptIndex].file))
-        this->ConsoleSetText(wxString("Compile error: ") << configEngine.GetErrorInfo());
+    {
+        this->ConsoleAppendEntry("Validate", wxString("Compile error: ") << configEngine.GetErrorInfo(), false);
+        return;
+    }
 
     if (!configEngine.Execute())
-        this->ConsoleSetText(wxString("Execution error: ") << configEngine.GetErrorInfo());
+    {
+        this->ConsoleAppendEntry("Validate", wxString("Execution error: ") << configEngine.GetErrorInfo(), false);
+        return;
+    }
 
-    if (configEngine.GetStatus() == EngineStatus::Ok)
-        this->ConsoleSetText(wxString("No errors found."));
+    this->ConsoleAppendEntry("Validate", "No errors found.", configEngine.GetStatus() == EngineStatus::Ok);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnRunScript(wxCommandEvent&)
 {
-    this->ConsolePrepareInput("Run script");
+    if (_currentScriptIndex < 0 || _currentScriptIndex >= static_cast<int>(_loadedScripts.size()))
+    {
+        this->ConsoleAppendEntry("Run", "No script selected.", false);
+        return;
+    }
 
     // Start timer
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -460,40 +480,86 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
 
     _renderPreviewBitmap->SetBitmap(fractalBitmap);
 
-    this->ConsolePrepareOutput();
     if (scriptFractal.IsThereError())
     {
-        this->ConsoleSetText(scriptFractal.GetErrorInfo());
+        this->ConsoleAppendEntry("Run", scriptFractal.GetErrorInfo(), false);
         scriptFractal.ClearErrorInfo();
     }
     else
-        this->ConsoleSetText(wxString("Time elapsed: ") << elapsed.count() << " milliseconds");
+        this->ConsoleAppendEntry("Run", wxString("Rendered preview in ") << elapsed.count() << " ms.", true);
 }
-void ScriptEditor::ConsoleSetText(const wxString& text) const
+
+void ScriptEditor::OnClearConsole(wxCommandEvent&)
+{
+    ConsoleClear();
+}
+
+void ScriptEditor::ConsoleWriteText(const wxString& text, const wxColour& color) const
 {
     _console->MoveEnd();
-    _console->BeginTextColour(wxColour(255, 255, 255));
+    _console->BeginTextColour(color);
     _console->WriteText(text);
     _console->ShowPosition(_console->GetCaretPosition());
     _console->EndTextColour();
 }
+
 void ScriptEditor::ConsoleSetWelcomeText() const
 {
-    _console->BeginTextColour(wxColour(255, 255, 255));
-    _console->WriteText("wxChaos ");
-    _console->WriteText(wxString::FromUTF8(APP_VERSION));
-    _console->WriteText(" Console\n=====================\n");
-    _console->EndTextColour();
+    ConsoleWriteText("wxChaos " + wxString::FromUTF8(APP_VERSION) + " script console\n", ConsoleActionColor());
+    ConsoleWriteText("Validate or run a script to inspect results.\n", ConsoleMutedColor());
+    ConsoleWriteText("Ready.\n", ConsoleTextColor());
 }
-void ScriptEditor::ConsolePrepareInput(const wxString& command) const
+
+void ScriptEditor::ConsoleClear() const
 {
-    _console->BeginTextColour(wxColour(15, 181, 57));
-    _console->WriteText(wxString("\nInput << ") << command << "\n");
-    _console->EndTextColour();
+    _console->Clear();
+    ConsoleSetWelcomeText();
 }
-void ScriptEditor::ConsolePrepareOutput() const
+
+void ScriptEditor::ConsoleAppendEntry(const wxString& action, const wxString& message, const bool success) const
 {
-    _console->BeginTextColour(wxColour(172, 181, 15));
-    _console->WriteText("Output >> \n");
-    _console->EndTextColour();
+    ConsoleWriteText("\n[" + ConsoleTimestamp() + "] ", ConsoleMutedColor());
+    ConsoleWriteText(action + "\n", ConsoleActionColor());
+    ConsoleWriteText(success ? "  OK     " : "  ERROR  ", success ? ConsoleSuccessColor() : ConsoleErrorColor());
+    ConsoleWriteText(FormatConsoleMessage(message) + "\n", ConsoleTextColor());
+    _console->ShowPosition(_console->GetLastPosition());
+}
+
+wxString ScriptEditor::ConsoleTimestamp() const
+{
+    return wxDateTime::Now().Format("%H:%M:%S");
+}
+
+wxString ScriptEditor::FormatConsoleMessage(wxString message) const
+{
+    message.Replace("\r\n", "\n");
+    message.Trim(true);
+    message.Trim(false);
+    message.Replace("\n", "\n         ");
+    return message;
+}
+
+wxColour ScriptEditor::ConsoleTextColor() const
+{
+    return AppTheme::IsDark() ? wxColour(226, 232, 240) : wxColour(31, 41, 55);
+}
+
+wxColour ScriptEditor::ConsoleMutedColor() const
+{
+    return AppTheme::IsDark() ? wxColour(148, 163, 184) : wxColour(100, 116, 139);
+}
+
+wxColour ScriptEditor::ConsoleActionColor() const
+{
+    return AppTheme::IsDark() ? wxColour(96, 165, 250) : wxColour(29, 78, 216);
+}
+
+wxColour ScriptEditor::ConsoleSuccessColor() const
+{
+    return AppTheme::IsDark() ? wxColour(52, 211, 153) : wxColour(4, 120, 87);
+}
+
+wxColour ScriptEditor::ConsoleErrorColor() const
+{
+    return AppTheme::IsDark() ? wxColour(248, 113, 113) : wxColour(185, 28, 28);
 }
