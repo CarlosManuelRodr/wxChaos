@@ -6,7 +6,6 @@
 #include "AppPaths.h"
 #include "docs/DocumentViewer.h"
 #include "docs/FractalDocumentation.h"
-#include "TextUtils.h"
 #include "common/AppTheme.h"
 #include <wx/bmpbndl.h>
 #include <wx/panel.h>

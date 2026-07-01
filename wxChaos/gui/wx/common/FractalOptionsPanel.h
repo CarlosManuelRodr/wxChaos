@@ -39,7 +39,7 @@ public:
 
     void SetTarget(Fractal* target);
     void ClearTarget();
-    void Apply();
+    void Apply() const;
     void SetApplyHandler(std::function<void()> handler);
     [[nodiscard]] bool HasVisibleOptions() const;
 };

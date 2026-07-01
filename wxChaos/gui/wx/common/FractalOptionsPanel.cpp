@@ -1,9 +1,8 @@
+#include "TextUtils.h"
 #include "common/FractalOptionsPanel.h"
 
-#include "TextUtils.h"
-
 FractalOptionsPanel::FractalOptionsPanel(wxWindow* parent, const bool showJuliaConstants)
-    : wxPanel(parent, wxID_ANY), _showJuliaConstants(showJuliaConstants)
+                                         : wxPanel(parent, wxID_ANY), _showJuliaConstants(showJuliaConstants)
 {
     _sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(_sizer);
@@ -167,7 +166,7 @@ void FractalOptionsPanel::ClearDynamicControls()
     _applyButton = nullptr;
 }
 
-void FractalOptionsPanel::Apply()
+void FractalOptionsPanel::Apply() const
 {
     if (_target == nullptr)
         return;
