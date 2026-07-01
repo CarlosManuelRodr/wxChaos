@@ -1,5 +1,5 @@
 #include <doctest/doctest.h>
-#include "wx/wxGradient.h"
+#include "wx/common/wxGradient.h"
 
 namespace
 {

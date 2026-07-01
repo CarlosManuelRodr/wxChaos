@@ -73,6 +73,7 @@ target_include_directories(wxChaos PRIVATE
         ${SFML_INCLUDE_DIRS}
         wxChaos/core
         wxChaos/gui
+        wxChaos/gui/wx
         wxChaos/utils
         wxChaos/scripting
         wxChaos/scripting/angelscript
@@ -181,8 +182,8 @@ if(BUILD_TESTING)
             tests/gui/wx/PanelOptionsTests.cpp
             tests/gui/wx/WxGradientTests.cpp
             wxChaos/gui/sfml/SelectionRect.cpp
-            wxChaos/gui/wx/PanelOptions.cpp
-            wxChaos/gui/wx/wxGradient.cpp
+            wxChaos/gui/wx/common/PanelOptions.cpp
+            wxChaos/gui/wx/common/wxGradient.cpp
     )
 
     target_include_directories(wxChaosGuiTests PRIVATE

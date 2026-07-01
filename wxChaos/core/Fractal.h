@@ -7,7 +7,7 @@
 #include <wx/bitmap.h>
 #include <wx/colour.h>
 #include <SFML/Graphics.hpp>
-#include "wx/wxGradient.h"
+#include "wx/common/wxGradient.h"
 #include "types/FractalType.h"
 #include "types/RenderingAlgorithmType.h"
 #include "geometry/LineData.h"
@@ -22,7 +22,7 @@
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
 #include "rendering/RenderThreadPool.h"
-#include "../gui/wx/PanelOptions.h"
+#include "wx/common/PanelOptions.h"
 
 /**
 * @class Fractal

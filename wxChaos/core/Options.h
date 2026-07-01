@@ -1,7 +1,7 @@
 #pragma once
-#include "wx/wxGradient.h"
+#include "wx/common/wxGradient.h"
 #include "SFML/Graphics.hpp"
-#include "wx/PanelOptions.h"
+#include "wx/common/PanelOptions.h"
 #include "coloring/PaletteMapping.h"
 #include "types/RenderingAlgorithmType.h"
 #include "types/RenderingPrecisionMode.h"

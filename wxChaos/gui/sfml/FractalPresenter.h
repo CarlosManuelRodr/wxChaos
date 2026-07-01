@@ -8,7 +8,7 @@
 #include "geometry/Vector2Int.h"
 #include "types/Direction.h"
 #include "types/RenderingAlgorithmType.h"
-#include "wx/wxGradient.h"
+#include "wx/common/wxGradient.h"
 #include "Fractal.h"
 
 /**

@@ -1,5 +1,5 @@
-#include "gui/wx/MainFrame.h"
-#include "gui/wx/AppTheme.h"
+#include "gui/wx/main/MainFrame.h"
+#include "gui/wx/common/AppTheme.h"
 #include "gui/wx/config/AppConfigStore.h"
 #include "utils/AppPaths.h"
 

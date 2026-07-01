@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 
-#include "wx/PanelOptions.h"
+#include "wx/common/PanelOptions.h"
 
 TEST_CASE("PanelOptions starts empty and not forced visible")
 {
