@@ -1,5 +1,4 @@
 Bugs:
-- Box counting preview has the bottom side cropped.
 - When the main fractal is panned while in Julia mode, the C constant is not updated.
 
 Improvements to get to a release version:
@@ -7,6 +6,5 @@ Improvements to get to a release version:
 - Restore Henon maps and other fractals of previous versions.
 - Status bar precision should be adjusted to the current zoom level.
 - Localization to Spanish, Japanese and possibly other languages.
-- "Set color" on RendererOptions must be a color picker.
 - Implement a proper tutorial mode.
 - Documentation must be updated.
