@@ -1,4 +1,38 @@
 <!doctype html>
 <html>
-<head><meta charset="utf-8"><title>User Defined Newton</title><link rel="stylesheet" href="fractal_info.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
-<body><main><h1>User Defined Newton-Raphson</h1><p class="subtitle">A Newton fractal generated from a user-supplied function.</p><section><h2>Formula</h2><div class="formula">\(z_{n+1}=z_n-\frac{f(z_n)}{f'(z_n)}\), where \(f\) is supplied by the user and wxChaos symbolically compiles \(f'\).</div></section><section><h2>Background</h2><p>The symbolic compiler derives the derivative, making this mode useful for exploring root basins of custom functions. It generalizes the built-in \(z^3-1\) Newton fractal to arbitrary supported formulas.</p></section><section><h2>wxChaos capabilities</h2><ul><li>Symbolic derivative generation through SymEngine.</li><li>Formula evaluation through muParserX.</li><li>Configurable convergence, residual, derivative, root-tolerance, and escape thresholds.</li><li>Algorithm: convergence test.</li></ul></section><section><h2>Learn more</h2><ul><li><a href="https://en.wikipedia.org/wiki/Newton_fractal">Newton fractal</a></li><li><a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton's method</a></li><li><a href="https://en.wikipedia.org/wiki/Symbolic_computation">Symbolic computation</a></li></ul></section></main></body></html>
+<head>
+    <meta charset="utf-8">
+    <title>User Defined Newton</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main>
+    <h1>User Defined Newton-Raphson</h1>
+    <p class="subtitle">A Newton fractal generated from a user-supplied function.</p>
+    <section>
+        <h2>Formula</h2>
+        <div class="formula">\(z_{n+1}=z_n-\frac{f(z_n)}{f'(z_n)}\), where \(f\) is supplied by the user and wxChaos symbolically compiles \(f'\).</div>
+    </section>
+    <section>
+        <h2>Background</h2>
+        <p>The symbolic compiler derives the derivative, making this mode useful for exploring root basins of custom functions. It generalizes the built-in \(z^3-1\) Newton fractal to arbitrary supported formulas.</p>
+    </section>
+    <section>
+        <h2>wxChaos capabilities</h2>
+        <ul>
+            <li>Configurable convergence, residual, derivative, root-tolerance, and escape thresholds.</li>
+            <li>Algorithm: convergence test.</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Learn more</h2>
+        <ul>
+            <li><a href="https://en.wikipedia.org/wiki/Newton_fractal">Newton fractal</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton's method</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Symbolic_computation">Symbolic computation</a></li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>
