@@ -295,6 +295,30 @@ void MainFrame::UpdateInformationTool() const
         _interactionToolbar->SetInformationEnabled(FractalDocumentation::HasDocumentation(_fractalCanvas->GetFractalType()));
 }
 
+void MainFrame::FocusDocumentationMainWindow()
+{
+    if (IsIconized())
+        Iconize(false);
+
+    Raise();
+    if (_fractalCanvas != nullptr)
+        _fractalCanvas->SetFocus();
+    else
+        SetFocus();
+}
+
+void MainFrame::FocusDocumentationJuliaWindow()
+{
+    if (_juliaPreviewFrame == nullptr)
+        return;
+
+    if (_juliaPreviewFrame->IsIconized())
+        _juliaPreviewFrame->Iconize(false);
+
+    _juliaPreviewFrame->Raise();
+    _juliaPreviewFrame->SetFocus();
+}
+
 bool MainFrame::HandleDocumentationLink(const wxString& url)
 {
     const bool handled = ExecuteDocumentationAction(DocumentationLinkAction::Parse(url));
@@ -321,8 +345,8 @@ bool MainFrame::ExecuteDocumentationAction(const DocumentationLinkAction& action
             return OpenDocumentationJuliaMode(action);
         case DocumentationLinkAction::Type::OpenLocation:
             return OpenDocumentationLocation(action.GetLocation());
-        case DocumentationLinkAction::Type::EnableTool:
-            return EnableDocumentationTool(action.GetTarget());
+        case DocumentationLinkAction::Type::ToggleTool:
+            return ToggleDocumentationTool(action.GetTarget());
         case DocumentationLinkAction::Type::SetRendering:
             return SetDocumentationRendering(action.GetRenderingMethod());
         case DocumentationLinkAction::Type::Unknown:
@@ -342,7 +366,7 @@ bool MainFrame::OpenDocumentationFractal(const DocumentationLinkAction& action)
     if (action.GetTargetFractalType() != FractalType::Undefined)
     {
         ChangeFractal(action.GetTargetFractalType(), action.TargetFractalEnablesJulia());
-        Raise();
+        FocusDocumentationMainWindow();
         return true;
     }
 
@@ -355,12 +379,20 @@ bool MainFrame::OpenDocumentationJuliaMode(const DocumentationLinkAction& action
         _fractalCanvas == nullptr)
         return false;
 
+    if (_juliaPreviewFrame != nullptr)
+    {
+        DestroyJuliaMode(true);
+        FocusDocumentationMainWindow();
+        return true;
+    }
+
     ChangeFractal(action.GetTargetFractalType(), action.TargetFractalEnablesJulia());
     const Options options = _fractalCanvas->GetFractal()->GetOptions();
     if (!OpenJuliaModeAt(options.kReal, options.kImaginary))
         return false;
 
-    Raise();
+    FocusDocumentationMainWindow();
+    FocusDocumentationJuliaWindow();
     return true;
 }
 
@@ -373,7 +405,7 @@ bool MainFrame::OpenDocumentationLocation(const DocumentationLinkAction::Locatio
     Fractal* fractal = _fractalCanvas->GetFractal();
     _fractalCanvas->GetFractalPresenter()->SetView(
         fractal->GetCenteredView(location.centerX, location.centerY, location.radius));
-    Raise();
+    FocusDocumentationMainWindow();
     return true;
 }
 
@@ -399,20 +431,21 @@ bool MainFrame::SetDocumentationRendering(const DocumentationLinkAction::Renderi
     if (_rendererOptions != nullptr)
         _rendererOptions->SetTarget(presenter);
 
-    Raise();
+    FocusDocumentationMainWindow();
     return true;
 }
 
-bool MainFrame::EnableDocumentationTool(const wxString& tool)
+bool MainFrame::ToggleDocumentationTool(const wxString& tool)
 {
     if (tool != "orbit" || _fractalCanvas == nullptr || !_fractalCanvas->GetFractal()->HasOrbit())
         return false;
 
-    _fractalCanvas->SetOrbitMode(true);
+    const bool orbitMode = !_fractalCanvas->IsOrbitMode();
+    _fractalCanvas->SetOrbitMode(orbitMode);
     if (_showOrbit != nullptr)
-        _showOrbit->Check(true);
+        _showOrbit->Check(orbitMode);
 
-    Raise();
+    FocusDocumentationMainWindow();
     return true;
 }
 
@@ -423,11 +456,9 @@ void MainFrame::OpenScriptEditorFromDocumentation()
         _scriptEditor = new ScriptEditor(this);
         _scriptEditor->Show(true);
     }
-    else
-    {
-        _scriptEditor->Raise();
-        _scriptEditor->SetFocus();
-    }
+
+    _scriptEditor->Raise();
+    _scriptEditor->SetFocus();
 }
 
 void MainFrame::SetUpGUI()

@@ -27,7 +27,7 @@ public:
         OpenFractal,
         OpenJuliaMode,
         OpenLocation,
-        EnableTool,
+        ToggleTool,
         SetRendering
     };
 

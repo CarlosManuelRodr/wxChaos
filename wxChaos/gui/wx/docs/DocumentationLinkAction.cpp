@@ -137,7 +137,7 @@ DocumentationLinkAction DocumentationLinkAction::Parse(const wxString& url)
         const wxString tool = remainder.BeforeFirst('/');
         if (tool == "orbit")
         {
-            action._type = Type::EnableTool;
+            action._type = Type::ToggleTool;
             action._target = tool;
         }
         return action;

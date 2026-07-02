@@ -196,13 +196,15 @@ class MainFrame : public wxFrame
     void OpenFractalInformation();
     void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
+    void FocusDocumentationMainWindow();
+    void FocusDocumentationJuliaWindow();
     bool HandleDocumentationLink(const wxString& url);
     bool ExecuteDocumentationAction(const DocumentationLinkAction& action);
     bool OpenDocumentationFractal(const DocumentationLinkAction& action);
     bool OpenDocumentationJuliaMode(const DocumentationLinkAction& action);
     bool OpenDocumentationLocation(const DocumentationLinkAction::Location& location);
     bool SetDocumentationRendering(const DocumentationLinkAction::RenderingMethod& method);
-    bool EnableDocumentationTool(const wxString& tool);
+    bool ToggleDocumentationTool(const wxString& tool);
     void OpenScriptEditorFromDocumentation();
 
 public :

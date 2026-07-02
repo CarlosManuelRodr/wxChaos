@@ -48,7 +48,7 @@ TEST_CASE("DocumentationLinkAction parses known tool actions")
 {
     const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://tool/orbit");
 
-    CHECK(action.GetType() == DocumentationLinkAction::Type::EnableTool);
+    CHECK(action.GetType() == DocumentationLinkAction::Type::ToggleTool);
     CHECK(action.GetTarget() == "orbit");
 }
 
