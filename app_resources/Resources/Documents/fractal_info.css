@@ -255,6 +255,10 @@ figcaption {
     color: var(--accent-color);
 }
 
+:root[data-theme="dark"] .action-link.secondary {
+    color: var(--accent-color);
+}
+
 .key-idea {
     background: var(--panel-background);
     border: 1px solid var(--panel-border-color);
@@ -272,6 +276,12 @@ figcaption {
     display: grid;
     gap: 30px;
     grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.85fr);
+}
+
+.julia-relationship-figure img {
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
 }
 
 .observation-panel {

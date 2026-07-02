@@ -272,7 +272,7 @@ void MainFrame::OpenFractalInformation()
         wxID_ANY,
         _fractalCanvas->GetFractal()->GetName(),
         wxDefaultPosition,
-        wxSize(1100, 760),
+        wxSize(1500, 960),
         wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
         [this](const wxString& url) { return HandleDocumentationLink(url); });
     _informationFrameIsActive = true;
