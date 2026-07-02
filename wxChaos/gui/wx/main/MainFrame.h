@@ -198,8 +198,9 @@ class MainFrame : public wxFrame
     void ResetColorRotationTool() const;
     bool HandleDocumentationLink(const wxString& url);
     bool ExecuteDocumentationAction(const DocumentationLinkAction& action);
-    bool OpenDocumentationFractal(const wxString& target);
+    bool OpenDocumentationFractal(const DocumentationLinkAction& action);
     bool OpenDocumentationLocation(const DocumentationLinkAction::Location& location);
+    bool SetDocumentationRendering(const DocumentationLinkAction::RenderingMethod& method);
     bool EnableDocumentationTool(const wxString& tool);
     void OpenScriptEditorFromDocumentation();
 

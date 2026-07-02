@@ -316,29 +316,31 @@ bool MainFrame::ExecuteDocumentationAction(const DocumentationLinkAction& action
     switch (action.GetType())
     {
         case DocumentationLinkAction::Type::OpenFractal:
-            return OpenDocumentationFractal(action.GetTarget());
+            return OpenDocumentationFractal(action);
         case DocumentationLinkAction::Type::OpenLocation:
             return OpenDocumentationLocation(action.GetLocation());
         case DocumentationLinkAction::Type::EnableTool:
             return EnableDocumentationTool(action.GetTarget());
+        case DocumentationLinkAction::Type::SetRendering:
+            return SetDocumentationRendering(action.GetRenderingMethod());
         case DocumentationLinkAction::Type::Unknown:
         default:
             return false;
     }
 }
 
-bool MainFrame::OpenDocumentationFractal(const wxString& target)
+bool MainFrame::OpenDocumentationFractal(const DocumentationLinkAction& action)
 {
-    if (target == "mandelbrot")
+    if (action.GetTarget() == "script-editor")
     {
-        ChangeFractal(FractalType::Mandelbrot, true);
-        Raise();
+        OpenScriptEditorFromDocumentation();
         return true;
     }
 
-    if (target == "script-editor")
+    if (action.GetTargetFractalType() != FractalType::Undefined)
     {
-        OpenScriptEditorFromDocumentation();
+        ChangeFractal(action.GetTargetFractalType(), action.TargetFractalEnablesJulia());
+        Raise();
         return true;
     }
 
@@ -347,13 +349,39 @@ bool MainFrame::OpenDocumentationFractal(const wxString& target)
 
 bool MainFrame::OpenDocumentationLocation(const DocumentationLinkAction::Location& location)
 {
-    if (location.fractal != "mandelbrot" || _fractalCanvas == nullptr)
+    if (location.fractalType == FractalType::Undefined || _fractalCanvas == nullptr)
         return false;
 
-    ChangeFractal(FractalType::Mandelbrot, true);
-    Fractal* mandelbrot = _fractalCanvas->GetFractal();
+    ChangeFractal(location.fractalType, location.enableJulia);
+    Fractal* fractal = _fractalCanvas->GetFractal();
     _fractalCanvas->GetFractalPresenter()->SetView(
-        mandelbrot->GetCenteredView(location.centerX, location.centerY, location.radius));
+        fractal->GetCenteredView(location.centerX, location.centerY, location.radius));
+    Raise();
+    return true;
+}
+
+bool MainFrame::SetDocumentationRendering(const DocumentationLinkAction::RenderingMethod& method)
+{
+    if (method.fractalType == FractalType::Undefined || _fractalCanvas == nullptr)
+        return false;
+
+    ChangeFractal(method.fractalType, method.enableJulia);
+    Fractal* fractal = _fractalCanvas->GetFractal();
+    const std::vector<RenderingAlgorithmType> availableAlgorithms = fractal->GetAvailableAlg();
+    if (std::find(availableAlgorithms.begin(), availableAlgorithms.end(), method.algorithm) == availableAlgorithms.end())
+        return false;
+    if (method.smoothRender && !fractal->HasSmoothRenderMode())
+        return false;
+    if (method.orbitTrap && !fractal->HasOrbitTrapMode())
+        return false;
+
+    FractalPresenter* presenter = _fractalCanvas->GetFractalPresenter();
+    presenter->SetAlgorithm(method.algorithm);
+    presenter->SetSmoothRender(method.smoothRender);
+    presenter->SetOrbitTrapMode(method.orbitTrap);
+    if (_rendererOptions != nullptr)
+        _rendererOptions->SetTarget(presenter);
+
     Raise();
     return true;
 }

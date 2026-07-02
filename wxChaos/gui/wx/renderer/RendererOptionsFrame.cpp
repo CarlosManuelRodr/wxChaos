@@ -499,6 +499,9 @@ void RendererOptionsFrame::SetTarget(FractalPresenter* presenter)
         case RenderingAlgorithmType::Buddhabrot:
             _algorithmChoice->SetSelection(_buddhabrotIndex);
             break;
+        case RenderingAlgorithmType::TriangleInequality:
+            _algorithmChoice->SetSelection(_triangleIneqIndex);
+            break;
         default:
             _algorithmChoice->SetSelection(0);
             break;
