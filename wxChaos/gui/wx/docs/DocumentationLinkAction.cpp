@@ -1,7 +1,7 @@
 #include "docs/DocumentationLinkAction.h"
 
-std::optional<DocumentationLinkAction::Location> DocumentationLinkAction::FindLocation(
-    const wxString& fractal, const wxString& location)
+std::optional<DocumentationLinkAction::Location> DocumentationLinkAction::FindLocation(const wxString& fractal,
+                                                                                       const wxString& location)
 {
     static const Location mandelbrotLocations[] = {
         {"mandelbrot", "seahorse-valley", -0.7453, 0.1127, 0.04},

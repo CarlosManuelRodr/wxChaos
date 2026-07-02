@@ -84,6 +84,7 @@ public:
     /// @param pos Initial dialog position.
     /// @param size Initial dialog size.
     /// @param style Dialog style.
+    /// @param wxChaosLinkHandler
     DocumentViewer(const wxString& htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY,
                    const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
