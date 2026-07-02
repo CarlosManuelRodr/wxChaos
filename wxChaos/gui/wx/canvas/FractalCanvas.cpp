@@ -266,6 +266,24 @@ void FractalCanvas::UpdateCoordinateSelectorValue()
     _onUpdate = false;
 }
 
+void FractalCanvas::SeedCoordinateSelectorValue(const bool markOrbitChange)
+{
+    if (_coordinateSelector == nullptr)
+        return;
+
+    _prevKReal = _kReal;
+    _prevKImag = _kImaginary;
+    _onUpdate = true;
+    _kReal = _coordinateSelector->GetX(_fractal);
+    _kImaginary = _coordinateSelector->GetY(_fractal);
+    _coordinateSelectorChange = true;
+
+    if (markOrbitChange)
+        _fractal->SetOrbitChange();
+
+    _onUpdate = false;
+}
+
 void FractalCanvas::BeginMousePanAt(const wxPoint position)
 {
     if (_fractalPresenter->IsZoomPreviewActive() || _fractal->IsRendering() || !_fractal->IsRendered())
@@ -729,6 +747,9 @@ void FractalCanvas::SetOrbitMode(const bool mode)
         _fractal->SetOrbitMode(true);
         if (_coordinateSelector == nullptr)
             _coordinateSelector = new CoordinateSelector(this);
+        SeedCoordinateSelectorValue(true);
+        _fractal->SetOrbitPoint(_kReal, _kImaginary);
+        Refresh(false);
     }
     else
     {

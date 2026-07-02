@@ -295,30 +295,6 @@ void MainFrame::UpdateInformationTool() const
         _interactionToolbar->SetInformationEnabled(FractalDocumentation::HasDocumentation(_fractalCanvas->GetFractalType()));
 }
 
-void MainFrame::FocusDocumentationMainWindow()
-{
-    if (IsIconized())
-        Iconize(false);
-
-    Raise();
-    if (_fractalCanvas != nullptr)
-        _fractalCanvas->SetFocus();
-    else
-        SetFocus();
-}
-
-void MainFrame::FocusDocumentationJuliaWindow()
-{
-    if (_juliaPreviewFrame == nullptr)
-        return;
-
-    if (_juliaPreviewFrame->IsIconized())
-        _juliaPreviewFrame->Iconize(false);
-
-    _juliaPreviewFrame->Raise();
-    _juliaPreviewFrame->SetFocus();
-}
-
 bool MainFrame::HandleDocumentationLink(const wxString& url)
 {
     const bool handled = ExecuteDocumentationAction(DocumentationLinkAction::Parse(url));
@@ -366,7 +342,7 @@ bool MainFrame::OpenDocumentationFractal(const DocumentationLinkAction& action)
     if (action.GetTargetFractalType() != FractalType::Undefined)
     {
         ChangeFractal(action.GetTargetFractalType(), action.TargetFractalEnablesJulia());
-        FocusDocumentationMainWindow();
+        Raise();
         return true;
     }
 
@@ -382,7 +358,7 @@ bool MainFrame::OpenDocumentationJuliaMode(const DocumentationLinkAction& action
     if (_juliaPreviewFrame != nullptr)
     {
         DestroyJuliaMode(true);
-        FocusDocumentationMainWindow();
+        Raise();
         return true;
     }
 
@@ -391,8 +367,7 @@ bool MainFrame::OpenDocumentationJuliaMode(const DocumentationLinkAction& action
     if (!OpenJuliaModeAt(options.kReal, options.kImaginary))
         return false;
 
-    FocusDocumentationMainWindow();
-    FocusDocumentationJuliaWindow();
+    Raise();
     return true;
 }
 
@@ -405,7 +380,7 @@ bool MainFrame::OpenDocumentationLocation(const DocumentationLinkAction::Locatio
     Fractal* fractal = _fractalCanvas->GetFractal();
     _fractalCanvas->GetFractalPresenter()->SetView(
         fractal->GetCenteredView(location.centerX, location.centerY, location.radius));
-    FocusDocumentationMainWindow();
+    Raise();
     return true;
 }
 
@@ -431,7 +406,7 @@ bool MainFrame::SetDocumentationRendering(const DocumentationLinkAction::Renderi
     if (_rendererOptions != nullptr)
         _rendererOptions->SetTarget(presenter);
 
-    FocusDocumentationMainWindow();
+    Raise();
     return true;
 }
 
@@ -445,7 +420,7 @@ bool MainFrame::ToggleDocumentationTool(const wxString& tool)
     if (_showOrbit != nullptr)
         _showOrbit->Check(orbitMode);
 
-    FocusDocumentationMainWindow();
+    Raise();
     return true;
 }
 

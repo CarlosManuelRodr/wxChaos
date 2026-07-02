@@ -196,8 +196,6 @@ class MainFrame : public wxFrame
     void OpenFractalInformation();
     void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
-    void FocusDocumentationMainWindow();
-    void FocusDocumentationJuliaWindow();
     bool HandleDocumentationLink(const wxString& url);
     bool ExecuteDocumentationAction(const DocumentationLinkAction& action);
     bool OpenDocumentationFractal(const DocumentationLinkAction& action);

@@ -1647,6 +1647,7 @@ void Fractal::SetOrbitMode(const bool mode)
     if (_hasOrbit)
     {
         _orbitMode = mode;
+        _orbitDrawn = false;
         _orbitX = 0;
         _orbitY = 0;
         _orbitLines.clear();

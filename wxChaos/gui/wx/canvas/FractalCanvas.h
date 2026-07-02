@@ -95,6 +95,7 @@ class FractalCanvas : public wxSFMLCanvas
     void ResizePresentation(wxSize size);
     void UpdateSelectionAspectRatio() const;
     void UpdateCoordinateSelectorValue();
+    void SeedCoordinateSelectorValue(bool markOrbitChange);
     void BeginMousePanAt(wxPoint position);
     void ContinueMousePanAt(wxPoint position);
     void EndMousePanGesture();
