@@ -317,6 +317,8 @@ bool MainFrame::ExecuteDocumentationAction(const DocumentationLinkAction& action
     {
         case DocumentationLinkAction::Type::OpenFractal:
             return OpenDocumentationFractal(action);
+        case DocumentationLinkAction::Type::OpenJuliaMode:
+            return OpenDocumentationJuliaMode(action);
         case DocumentationLinkAction::Type::OpenLocation:
             return OpenDocumentationLocation(action.GetLocation());
         case DocumentationLinkAction::Type::EnableTool:
@@ -345,6 +347,21 @@ bool MainFrame::OpenDocumentationFractal(const DocumentationLinkAction& action)
     }
 
     return false;
+}
+
+bool MainFrame::OpenDocumentationJuliaMode(const DocumentationLinkAction& action)
+{
+    if (!action.TargetFractalEnablesJulia() || action.GetTargetFractalType() == FractalType::Undefined ||
+        _fractalCanvas == nullptr)
+        return false;
+
+    ChangeFractal(action.GetTargetFractalType(), action.TargetFractalEnablesJulia());
+    const Options options = _fractalCanvas->GetFractal()->GetOptions();
+    if (!OpenJuliaModeAt(options.kReal, options.kImaginary))
+        return false;
+
+    Raise();
+    return true;
 }
 
 bool MainFrame::OpenDocumentationLocation(const DocumentationLinkAction::Location& location)

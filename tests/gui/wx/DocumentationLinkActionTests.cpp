@@ -12,6 +12,23 @@ TEST_CASE("DocumentationLinkAction parses known fractal actions")
     CHECK(action.TargetFractalEnablesJulia());
 }
 
+TEST_CASE("DocumentationLinkAction parses Julia mode actions for compatible fractals")
+{
+    const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://julia/mandelbrot");
+
+    CHECK(action.GetType() == DocumentationLinkAction::Type::OpenJuliaMode);
+    CHECK(action.GetTarget() == "mandelbrot");
+    CHECK(action.GetTargetFractalType() == FractalType::Mandelbrot);
+    CHECK(action.TargetFractalEnablesJulia());
+}
+
+TEST_CASE("DocumentationLinkAction rejects Julia mode actions for incompatible fractals")
+{
+    const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://julia/tricorn");
+
+    CHECK(action.GetType() == DocumentationLinkAction::Type::Unknown);
+}
+
 TEST_CASE("DocumentationLinkAction parses Mandelbrot landmarks")
 {
     const DocumentationLinkAction action =

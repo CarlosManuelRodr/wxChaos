@@ -199,6 +199,7 @@ class MainFrame : public wxFrame
     bool HandleDocumentationLink(const wxString& url);
     bool ExecuteDocumentationAction(const DocumentationLinkAction& action);
     bool OpenDocumentationFractal(const DocumentationLinkAction& action);
+    bool OpenDocumentationJuliaMode(const DocumentationLinkAction& action);
     bool OpenDocumentationLocation(const DocumentationLinkAction::Location& location);
     bool SetDocumentationRendering(const DocumentationLinkAction::RenderingMethod& method);
     bool EnableDocumentationTool(const wxString& tool);

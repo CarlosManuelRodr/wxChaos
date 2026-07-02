@@ -118,6 +118,20 @@ DocumentationLinkAction DocumentationLinkAction::Parse(const wxString& url)
         return action;
     }
 
+    if (kind == "julia")
+    {
+        const wxString fractalSlug = remainder.BeforeFirst('/');
+        const std::optional<FractalReference> fractal = FindFractal(fractalSlug);
+        if (fractal.has_value() && fractal->enableJulia)
+        {
+            action._type = Type::OpenJuliaMode;
+            action._target = fractal->slug;
+            action._targetFractalType = fractal->type;
+            action._targetFractalEnablesJulia = fractal->enableJulia;
+        }
+        return action;
+    }
+
     if (kind == "tool")
     {
         const wxString tool = remainder.BeforeFirst('/');

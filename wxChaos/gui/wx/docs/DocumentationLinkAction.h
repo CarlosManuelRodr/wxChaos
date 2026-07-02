@@ -25,6 +25,7 @@ public:
     {
         Unknown,
         OpenFractal,
+        OpenJuliaMode,
         OpenLocation,
         EnableTool,
         SetRendering
