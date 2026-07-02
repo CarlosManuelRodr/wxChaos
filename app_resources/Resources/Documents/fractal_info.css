@@ -135,3 +135,449 @@ a {
 .tutorial-document p:first-of-type {
     color: var(--heading-color);
 }
+
+/* Museum page components. */
+.museum-page {
+    max-width: 1080px;
+}
+
+.museum-page h2 {
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+}
+
+.museum-page h3 {
+    color: var(--heading-color);
+    font-size: 1.05rem;
+    margin: 0 0 8px;
+}
+
+.eyebrow {
+    color: var(--accent-color);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+}
+
+.hero {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.hero-header {
+    max-width: 760px;
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    font-size: clamp(2.35rem, 5vw, 4rem);
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    margin-bottom: 14px;
+}
+
+.hero .subtitle {
+    color: var(--heading-color);
+    font-size: clamp(1.15rem, 2vw, 1.42rem);
+    line-height: 1.45;
+    margin-bottom: 14px;
+}
+
+.hero-introduction {
+    color: var(--muted-text-color);
+    font-size: 1.02rem;
+    margin: 0;
+    max-width: 720px;
+}
+
+figure {
+    margin: 0;
+}
+
+.hero-figure {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.hero-figure img {
+    background: #090b10;
+    border: 0;
+    border-radius: 0;
+    box-sizing: border-box;
+    display: block;
+    min-height: 360px;
+    object-fit: cover;
+    padding: 0;
+    width: 100%;
+}
+
+figcaption {
+    color: var(--muted-text-color);
+    font-size: 0.91rem;
+    line-height: 1.5;
+    padding: 14px 18px 16px;
+}
+
+.figure-title {
+    color: var(--heading-color);
+    font-weight: 650;
+}
+
+.action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.action-link {
+    background: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 7px;
+    color: #ffffff;
+    display: inline-block;
+    font-weight: 600;
+    padding: 9px 14px;
+    text-decoration: none;
+}
+
+:root[data-theme="dark"] .action-link {
+    color: #101318;
+}
+
+.action-link.secondary {
+    background: transparent;
+    color: var(--accent-color);
+}
+
+.key-idea {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-left: 4px solid var(--accent-color);
+    border-radius: 8px;
+    font-size: 1.05rem;
+    padding: 18px 20px;
+}
+
+.key-idea p {
+    margin: 0;
+}
+
+.two-column {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.85fr);
+}
+
+.observation-panel {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.observation-panel h3 {
+    margin-bottom: 10px;
+}
+
+.observation-panel ul {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.experiment {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 10px;
+    counter-reset: experiment-step;
+    display: grid;
+    gap: 0;
+    overflow: hidden;
+}
+
+.experiment-step {
+    counter-increment: experiment-step;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: 34px 1fr;
+    padding: 17px 20px;
+}
+
+.experiment-step + .experiment-step {
+    border-top: 1px solid var(--section-border-color);
+}
+
+.experiment-step::before {
+    align-items: center;
+    background: var(--accent-color);
+    border-radius: 50%;
+    color: #ffffff;
+    content: counter(experiment-step);
+    display: flex;
+    font-size: 0.85rem;
+    font-weight: 700;
+    height: 28px;
+    justify-content: center;
+    margin-top: 1px;
+    width: 28px;
+}
+
+:root[data-theme="dark"] .experiment-step::before {
+    color: #101318;
+}
+
+.experiment-step p {
+    margin: 0;
+}
+
+.example-orbits {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 18px;
+}
+
+.orbit-card,
+.view-card,
+.landmark-card {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 9px;
+    padding: 16px;
+}
+
+.orbit-card p,
+.view-card p,
+.landmark-card p {
+    margin-bottom: 0;
+}
+
+.orbit-sequence {
+    color: var(--muted-text-color);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+
+.status {
+    border-radius: 999px;
+    display: inline-block;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-top: 10px;
+    padding: 4px 9px;
+    text-transform: uppercase;
+}
+
+.status.bounded {
+    background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+    color: var(--accent-color);
+}
+
+.status.escaping {
+    background: color-mix(in srgb, #b45309 15%, transparent);
+    color: #a34806;
+}
+
+:root[data-theme="dark"] .status.escaping {
+    color: #f7b267;
+}
+
+.view-grid,
+.landmark-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.view-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.view-card img,
+.landmark-card img {
+    background: #090b10;
+    border: 0;
+    border-radius: 0;
+    box-sizing: border-box;
+    display: block;
+    height: 170px;
+    object-fit: cover;
+    padding: 0;
+    width: 100%;
+}
+
+.view-card-content {
+    padding: 15px 16px 17px;
+}
+
+.view-card .note {
+    display: block;
+    font-size: 0.86rem;
+    margin-top: 8px;
+}
+
+.landmark-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.landmark-content {
+    padding: 15px 16px 17px;
+}
+
+.landmark-meta {
+    color: var(--muted-text-color);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.78rem;
+    margin-top: 10px;
+    overflow-wrap: anywhere;
+}
+
+.inline-link {
+    display: inline-block;
+    font-weight: 600;
+    margin-top: 12px;
+}
+
+.timeline {
+    border-left: 2px solid var(--section-border-color);
+    margin-left: 8px;
+    padding-left: 24px;
+}
+
+.timeline-entry {
+    position: relative;
+}
+
+.timeline-entry + .timeline-entry {
+    margin-top: 22px;
+}
+
+.timeline-entry::before {
+    background: var(--accent-color);
+    border: 3px solid var(--page-background);
+    border-radius: 50%;
+    content: "";
+    height: 10px;
+    left: -30px;
+    position: absolute;
+    top: 5px;
+    width: 10px;
+}
+
+.timeline-entry time {
+    color: var(--accent-color);
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.timeline-entry p {
+    margin: 0;
+}
+
+.related-links {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    list-style: none;
+    padding: 0;
+}
+
+.related-links li {
+    margin: 0;
+}
+
+.related-links a {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 8px;
+    display: block;
+    font-weight: 600;
+    height: 100%;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.related-links span {
+    color: var(--muted-text-color);
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 400;
+    margin-top: 4px;
+}
+
+@media (max-width: 800px) {
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .example-orbits,
+    .view-grid,
+    .landmark-grid,
+    .related-links {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-figure img {
+        min-height: 260px;
+    }
+}
+
+@media (max-width: 560px) {
+    main.museum-page {
+        padding: 24px 20px 38px;
+    }
+
+    .hero h1 {
+        font-size: 2.4rem;
+    }
+}
+
+/* Expandable explanations for optional mathematical background. */
+.concept-details {
+    background: var(--page-background);
+    border: 1px solid var(--section-border-color);
+    border-radius: 8px;
+    margin-top: 12px;
+    overflow: hidden;
+}
+
+.concept-details summary {
+    color: var(--accent-color);
+    cursor: pointer;
+    font-weight: 600;
+    padding: 11px 14px;
+    user-select: none;
+}
+
+.concept-details summary:hover {
+    background: color-mix(in srgb, var(--accent-color) 7%, transparent);
+}
+
+.concept-details summary:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: -2px;
+}
+
+.concept-details[open] summary {
+    border-bottom: 1px solid var(--section-border-color);
+}
+
+.concept-details-content {
+    color: var(--muted-text-color);
+    padding: 12px 14px 14px;
+}
+
+.concept-details-content p {
+    margin: 0;
+}

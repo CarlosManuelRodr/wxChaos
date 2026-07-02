@@ -1,44 +1,733 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Mandelbrot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mandelbrot Set — wxChaos Fractal Museum</title>
+
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)'], ['$', '$']]
+            }
+        };
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
+
 <body>
-<main>
-    <h1>Mandelbrot Set</h1>
-    <p class="subtitle">The classical connectedness map for quadratic complex dynamics.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{0}=0,\quad z_{n+1}=z_n^2+c\). Each screen point is a complex parameter \(c\). wxChaos colors \(c\) by the first iteration where \(|z_n|>2\), or marks it inside when the orbit stays bounded for the chosen iteration limit.</div>
+<main class="museum-page">
+
+    <section class="hero" aria-labelledby="page-title">
+        <div class="hero-header">
+            <p class="eyebrow">wxChaos documentation</p>
+            <h1 id="page-title">Mandelbrot Set</h1>
+            <p class="subtitle">
+                A map of order and chaos hidden inside one of mathematics’
+                simplest iterative rules.
+            </p>
+            <p class="hero-introduction">
+                A single formula creates an apparently endless landscape of
+                bulbs, spirals, filaments, and miniature worlds. Every point in
+                the image represents a different mathematical experiment.
+            </p>
+        </div>
+
+        <figure class="hero-figure">
+            <img
+                src="mandelbrot/overview.png"
+                alt="An overview of the Mandelbrot set showing its central cardioid, attached bulbs, and colored exterior bands">
+            <figcaption>
+                <span class="figure-title">The complete Mandelbrot set.</span>
+                The large heart-shaped region and its attached circular bulb
+                form only the most visible part of the set. Most of its
+                complexity is concentrated along the infinitely intricate
+                boundary.
+            </figcaption>
+        </figure>
+
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/mandelbrot">
+                Open in wxChaos
+            </a>
+            <a class="action-link secondary" href="#guided-exploration">
+                Begin guided exploration
+            </a>
+        </div>
     </section>
-    <section>
-        <h2>Relationship with Julia sets</h2>
-        <p>The Mandelbrot set is a map of the quadratic Julia family. For each parameter \(c\), the map \(f_c(z)=z^2+c\) has its own Julia set in the \(z\)-plane. The point \(c\) belongs to the Mandelbrot set exactly when that Julia set is connected. In practice, the main window lets you browse parameter space while Julia mode shows the dynamical plane for the selected parameter.</p>
+
+    <section aria-labelledby="key-idea-title">
+        <h2 id="key-idea-title">The key idea</h2>
+        <div class="key-idea">
+            <p>
+                The Mandelbrot set is not one dynamical system. It is a map of
+                an entire family of systems. Each point \(c\) tells us whether
+                repeatedly applying \(z \mapsto z^2+c\), with \(z\) starting at zero,
+                remains bounded or eventually escapes toward infinity.
+            </p>
+        </div>
     </section>
-    <section>
-        <h2>Background</h2>
-        <p>Gaston Julia and Pierre Fatou studied iteration of rational functions in the early twentieth century, mostly without the benefit of computer graphics. Their work asked how repeated application of a complex function divides the plane into stable and chaotic behavior. Benoit Mandelbrot later used computer visualization to study the connectedness locus of the quadratic family, giving a visible shape to that older theory and helping establish fractal geometry as a language for rough natural forms.</p>
+
+    <section aria-labelledby="looking-title">
+        <div class="two-column">
+            <div>
+                <h2 id="looking-title">What are you looking at?</h2>
+                <p>
+                    From a distance, the Mandelbrot set has a recognizable
+                    silhouette: a large cardioid with circular bulbs attached
+                    to it. Up close, that clean outline dissolves into branching
+                    structures, narrow tendrils, spirals, and smaller echoes of
+                    the whole set.
+                </p>
+                <p>
+                    The dark region represents \(c\) parameters whose orbit does not
+                    escape during the calculation. The colors outside it show
+                    how quickly escaping orbits grow beyond the chosen bailout
+                    radius.
+                </p>
+            </div>
+
+            <aside class="observation-panel" aria-labelledby="notice-title">
+                <h3 id="notice-title">What to notice</h3>
+                <ul>
+                    <li>The central heart-shaped region is the main cardioid.</li>
+                    <li>The large bulb on its left corresponds to period-two behavior.</li>
+                    <li>Smaller bulbs represent other periodic cycles.</li>
+                    <li>The boundary is where stable and chaotic behavior meet.</li>
+                    <li>Miniature copies appear at many scales, joined by delicate filaments.</li>
+                </ul>
+            </aside>
+        </div>
     </section>
-    <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision and fast perturbation rendering for deep zooms.</li>
-            <li>Orbit display, smooth coloring, orbit traps, and Buddhabrot rendering.</li>
-            <li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality, Buddhabrot.</li>
+
+    <section aria-labelledby="works-title">
+        <h2 id="works-title">How it works</h2>
+
+        <div class="formula">
+            \[
+                z_0 = 0,
+                \qquad
+                z_{n+1}=z_n^2+c
+            \]
+        </div>
+
+        <div class="experiment" aria-label="Mandelbrot calculation steps">
+            <div class="experiment-step">
+                <div>
+                    <p>
+                        <strong>Choose a point.</strong>
+                        Each pixel in the image represents a complex number \(c\).
+                    </p>
+
+                    <details class="concept-details">
+                        <summary>What is a complex number?</summary>
+                        <div class="concept-details-content">
+                            <p>
+                                Complex numbers have a real and imaginary part,
+                                \(x + iy\). \(x\) is the real part and corresponds
+                                to the horizontal axis, while \(y\) is the imaginary
+                                part and corresponds to the vertical axis.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <p>
+                        <strong>Iterate the formula.</strong>
+                        Begin with \(z_0=0\), square the current value, and add
+                        \(c\) repeatedly.
+                    </p>
+
+                    <details class="concept-details">
+                        <summary>How does it work?</summary>
+                        <div class="concept-details-content">
+                            <p> 
+                                This is a recurrence relation. We start with \(z_0 = 0\).
+                                To obtain \(z_1\) we apply the recurrence:
+                                \[
+                                    z_1 = z_0^2 + c = c
+                                \]
+                                Once we have this result we can calculate \(z_2\) by applying the same rule again:
+                                \[
+                                    z_2 = z_1^2 + c = c^2 + c
+                                \]
+                                Every subsequent value is obtained in exactly the same way:
+                                \[
+                                \begin{aligned}
+                                    z_3 &= z_2^2 + c = (c^2 + c)^2 + c \\
+                                    z_4 &= z_3^2 + c = \bigl((c^2 + c)^2 + c\bigr)^2 + c \\
+                                    z_5 &= z_4^2 + c = \bigl(\bigl((c^2 + c)^2 + c\bigr)^2 + c\bigr)^2 + c \\
+                                    &\vdots
+                                \end{aligned}
+                                \]
+                            </p>
+                        </div>
+                    </details>
+                    <details class="concept-details">
+                        <summary>How can I do the math?</summary>
+                        <div class="concept-details-content">
+                            <p>
+                                Expressions involving complex numbers can be expanded using
+                                ordinary algebra, together with the defining property
+                                \(i^2=-1\).
+                            </p>
+
+                            <p>
+                                Write the current value and the selected parameter as:
+                            </p>
+
+                            \[
+                                z=z_x+iz_y,
+                                \qquad
+                                c=c_x+ic_y
+                            \]
+
+                            <p>
+                                We can then expand \(z^2+c\):
+                            </p>
+
+                            \[
+                            \begin{aligned}
+                                z^2+c
+                                    &= (z_x+iz_y)^2+(c_x+ic_y) \\
+                                    &= z_x^2+2iz_xz_y+i^2z_y^2+c_x+ic_y
+                            \end{aligned}
+                            \]
+
+                            <p>
+                                Because \(i^2=-1\), this becomes:
+                            </p>
+
+                            \[
+                                z^2+c
+                                =
+                                (z_x^2-z_y^2+c_x)
+                                +
+                                i(2z_xz_y+c_y)
+                            \]
+
+                            <p>
+                                Therefore, each iteration can be computed using two real-valued
+                                equations:
+                            </p>
+
+                            \[
+                            \begin{aligned}
+                                z_{x,n+1} &= z_{x,n}^2-z_{y,n}^2+c_x \\
+                                z_{y,n+1} &= 2z_{x,n}z_{y,n}+c_y
+                            \end{aligned}
+                            \]
+
+                            <p>
+                                For example, because \(z_0=0\):
+                            </p>
+
+                            \[
+                            \begin{aligned}
+                                z_1
+                                    &= c_x+ic_y \\
+                                z_2
+                                    &= (c_x+ic_y)^2+c_x+ic_y \\
+                                    &= (c_x^2-c_y^2+c_x)
+                                    +i(2c_xc_y+c_y) \\
+                                &\vdots
+                            \end{aligned}
+                            \]
+                        </div>
+                    </details>
+                    <details class="concept-details">
+                        <summary>How can I code it?</summary>
+
+                        <div class="concept-details-content">
+                            <p>
+                                To render the Mandelbrot set, evaluate the recurrence for every
+                                pixel in the image. Each pixel is converted into a complex parameter
+                                \(c=c_x+i c_y\), while the orbit starts at \(z_0=0\).
+                            </p>
+
+                            <p>
+                                Instead of using complex-number objects, the calculation can be
+                                written using the real and imaginary components directly:
+                            </p>
+
+                            \[
+                            \begin{aligned}
+                                z_{x,n+1} &= z_{x,n}^2-z_{y,n}^2+c_x \\
+                                z_{y,n+1} &= 2z_{x,n}z_{y,n}+c_y
+                            \end{aligned}
+                            \]
+
+                            <pre>
+<code>
+for each pixel (px, py):
+    cx = map px to the horizontal fractal range
+    cy = map py to the vertical fractal range
+
+    zx = 0
+    zy = 0
+    iteration = 0
+
+    while zx*zx + zy*zy &lt;= 4
+        and iteration &lt; maxIterations:
+
+        nextZx = zx*zx - zy*zy + cx
+        nextZy = 2*zx*zy + cy
+
+        zx = nextZx
+        zy = nextZy
+        iteration++
+
+    if iteration == maxIterations:
+        color the pixel as inside the set
+    else:
+        color the pixel using iteration
+</code>
+                            </pre>
+
+                            <p>
+                                The test \(z_x^2+z_y^2&gt;4\) is equivalent (and faster) to checking
+                                \(|z|&gt;2\). Once this happens, the orbit is guaranteed to escape,
+                                so no further iterations are necessary.
+                            </p>
+                            <p>
+                                If you are brave you can try this in wxChaos using the <a href="wxchaos://fractal/script-editor">Script editor</a>!.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <p>
+                        <strong>Watch the orbit.</strong>
+                        If a point in the orbit moves more than two units away from the center,
+                        it is guaranteed to keep escaping outward. If that never happens before
+                        the iteration limit is reached, wxChaos treats the point as belonging to
+                        the set.
+                    </p>
+
+                    <details class="concept-details">
+                        <summary>How is that distance calculated?</summary>
+
+                        <div class="concept-details-content">
+                            <p>
+                                A complex number \(z=x+iy\) can be viewed as a point with horizontal
+                                coordinate \(x\) and vertical coordinate \(y\).
+                            </p>
+
+                            <p>
+                                Its distance from the center is:
+                            </p>
+
+                            \[
+                                |z|=\sqrt{x^2+y^2}
+                            \]
+
+                            <p>
+                                To avoid calculating a square root on every iteration, programs
+                                usually compare the squared distance instead:
+                            </p>
+
+                            \[
+                                x^2+y^2>4
+                            \]
+
+                            <p>
+                                This is equivalent to checking whether the distance is greater
+                                than two.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-orbits">
+            <article class="orbit-card">
+                <h3>\(c=0\)</h3>
+                <p class="orbit-sequence">0, 0, 0, 0, …</p>
+                <p>The orbit remains fixed at the origin.</p>
+                <span class="status bounded">Bounded</span>
+            </article>
+
+            <article class="orbit-card">
+                <h3>\(c=-1\)</h3>
+                <p class="orbit-sequence">0, −1, 0, −1, …</p>
+                <p>The orbit repeats in a stable period-two cycle.</p>
+                <span class="status bounded">Bounded</span>
+            </article>
+
+            <article class="orbit-card">
+                <h3>\(c=1\)</h3>
+                <p class="orbit-sequence">0, 1, 2, 5, 26, …</p>
+                <p>The values quickly grow without bound.</p>
+                <span class="status escaping">Escaping</span>
+            </article>
+        </div>
+    </section>
+
+    <section id="guided-exploration" aria-labelledby="explore-title">
+        <h2 id="explore-title">Try it in wxChaos</h2>
+
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Start with the complete set and identify the main cardioid
+                    and the large period-two bulb attached to its left.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Zoom into the narrow boundary where those two regions meet.
+                    The smooth silhouette will give way to branching structures
+                    and curled forms traditionally associated with
+                    <strong>Seahorse Valley</strong>.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Select a point near the boundary and display its orbit.
+                    Move the point slightly and observe how dramatically the
+                    orbit can change.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Open the corresponding Julia set. Move the selected
+                    parameter across the Mandelbrot boundary and compare the
+                    connected and disconnected Julia sets on either side.
+                </p>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://location/mandelbrot/seahorse-valley">
+                Explore Seahorse Valley
+            </a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">
+                Enable orbit display
+            </a>
+        </div>
+    </section>
+
+    <section aria-labelledby="julia-title">
+        <div class="two-column">
+            <div>
+                <h2 id="julia-title">A map of Julia sets</h2>
+                <p>
+                    For every parameter \(c\), the function
+                    \(f_c(z)=z^2+c\) has its own Julia set in the
+                    \(z\)-plane. The Mandelbrot set records how those Julia
+                    sets behave.
+                </p>
+                <p>
+                    When \(c\) belongs to the Mandelbrot set, the corresponding
+                    Julia set is connected. When \(c\) lies outside it, the
+                    Julia set is disconnected and breaks into separate pieces.
+                </p>
+                <p>
+                    This is why moving through Mandelbrot parameter space can be
+                    understood as browsing an atlas of the entire quadratic
+                    Julia family.
+                </p>
+            </div>
+
+            <figure class="hero-figure">
+                <!-- Replace with a paired Mandelbrot/Julia illustration. -->
+                <img
+                    src="mandelbrot/julia-relationship.gif"
+                    alt="A selected point in the Mandelbrot set shown beside its corresponding Julia set">
+                <figcaption>
+                    <span class="figure-title">Parameter space and dynamical space.</span>
+                    A point selected in the Mandelbrot set determines the shape
+                    of its corresponding Julia set.
+                </figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section aria-labelledby="views-title">
+        <h2 id="views-title">Different ways to see the same fractal</h2>
+        <p>
+            Coloring methods do not change the Mandelbrot set itself. They
+            reveal different properties of the orbits surrounding it.
+        </p>
+
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                    src="mandelbrot/escape-time.png"
+                    alt="Mandelbrot set rendered with escape-time coloring">
+                <div class="view-card-content">
+                    <h3>Escape time</h3>
+                    <p>
+                        Colors each point according to the iteration at which
+                        its orbit escapes.
+                    </p>
+                    <span class="note">Best for understanding the basic algorithm.</span>
+                </div>
+            </article>
+
+            <article class="view-card">
+                <img
+                    src="mandelbrot/smooth-coloring.png"
+                    alt="Mandelbrot set rendered with smooth continuous coloring">
+                <div class="view-card-content">
+                    <h3>Smooth coloring</h3>
+                    <p>
+                        Removes hard iteration bands and reveals continuous
+                        gradients in escape speed.
+                    </p>
+                    <span class="note">Best for polished exterior renders.</span>
+                </div>
+            </article>
+
+            <article class="view-card">
+                <img
+                    src="mandelbrot/escape-angle.png"
+                    alt="Mandelbrot set rendered using escape-angle coloring">
+                <div class="view-card-content">
+                    <h3>Escape angle</h3>
+                    <p>
+                        Uses the direction of the escaping orbit to emphasize
+                        rays and directional structure.
+                    </p>
+                    <span class="note">Best for revealing exterior geometry.</span>
+                </div>
+            </article>
+
+            <article class="view-card">
+                <img
+                    src="mandelbrot/triangle-inequality.png"
+                    alt="Mandelbrot set rendered using triangle-inequality average coloring">
+                <div class="view-card-content">
+                    <h3>Triangle inequality</h3>
+                    <p>
+                        Converts relationships between successive orbit values
+                        into flowing textures.
+                    </p>
+                    <span class="note">Best for richly detailed coloring.</span>
+                </div>
+            </article>
+
+            <article class="view-card">
+                <img
+                    src="mandelbrot/orbit-trap.png"
+                    alt="Mandelbrot set rendered with an orbit trap">
+                <div class="view-card-content">
+                    <h3>Orbit traps</h3>
+                    <p>
+                        Measures how closely each orbit approaches a chosen
+                        geometric shape.
+                    </p>
+                    <span class="note">Best for experimental and decorative images.</span>
+                </div>
+            </article>
+
+            <article class="view-card">
+                <img
+                    src="mandelbrot/buddhabrot.png"
+                    alt="A Buddhabrot rendering based on escaping Mandelbrot orbits">
+                <div class="view-card-content">
+                    <h3>Buddhabrot</h3>
+                    <p>
+                        Draws where escaping orbits travel instead of coloring
+                        only the parameter that produced them.
+                    </p>
+                    <span class="note">Best for seeing the paths behind the image.</span>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="landmarks-title">
+        <h2 id="landmarks-title">Landmarks to explore</h2>
+        <p>
+            The Mandelbrot set has an informal geography created by generations
+            of explorers. These named regions are useful starting points for
+            learning how its structures repeat and transform.
+        </p>
+
+        <div class="landmark-grid">
+            <article class="landmark-card">
+                <img
+                    src="mandelbrot/seahorse-valley.png"
+                    alt="A deep view of curled spiral structures in Seahorse Valley">
+                <div class="landmark-content">
+                    <h3>Seahorse Valley</h3>
+                    <p>
+                        A narrow region filled with curled spirals and repeating
+                        forms resembling seahorse tails.
+                    </p>
+                    <p class="landmark-meta">
+                        Replace with center coordinates and viewport width
+                    </p>
+                    <a class="inline-link" href="wxchaos://location/mandelbrot/seahorse-valley">
+                        Open location
+                    </a>
+                </div>
+            </article>
+
+            <article class="landmark-card">
+                <img
+                    src="mandelbrot/elephant-valley.png"
+                    alt="Branching forms resembling elephant trunks in Elephant Valley">
+                <div class="landmark-content">
+                    <h3>Elephant Valley</h3>
+                    <p>
+                        A region where broad branching shapes split into
+                        trunk-like structures at smaller scales.
+                    </p>
+                    <p class="landmark-meta">
+                        Replace with center coordinates and viewport width
+                    </p>
+                    <a class="inline-link" href="wxchaos://location/mandelbrot/elephant-valley">
+                        Open location
+                    </a>
+                </div>
+            </article>
+
+            <article class="landmark-card">
+                <img
+                    src="mandelbrot/mini-mandelbrot.png"
+                    alt="A miniature Mandelbrot-like copy connected by thin filaments">
+                <div class="landmark-content">
+                    <h3>A miniature copy</h3>
+                    <p>
+                        A smaller echo of the complete set, surrounded by local
+                        decorations that make every copy distinct.
+                    </p>
+                    <p class="landmark-meta">
+                        Replace with center coordinates and viewport width
+                    </p>
+                    <a class="inline-link" href="wxchaos://location/mandelbrot/miniature">
+                        Open location
+                    </a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="precision-title">
+        <h2 id="precision-title">Going deeper</h2>
+        <div class="two-column">
+            <div>
+                <p>
+                    Ordinary floating-point numbers eventually lose the ability
+                    to distinguish neighboring pixels during an extreme zoom.
+                    wxChaos can switch to high-precision arithmetic and use
+                    perturbation techniques to continue exploring structures
+                    far below the scale available to standard double precision.
+                </p>
+                <p>
+                    Increasing the iteration limit reveals points whose orbits
+                    take longer to escape. Increasing numerical precision
+                    preserves the coordinates needed to distinguish tiny
+                    features. Deep zooming requires both.
+                </p>
+            </div>
+
+            <aside class="observation-panel">
+                <h3>Useful controls</h3>
+                <dl>
+                    <dt>Iterations</dt>
+                    <dd>How long each orbit is tested.</dd>
+
+                    <dt>Rendedring precision</dt>
+                    <dd>How accurately tiny coordinates are represented.</dd>
+
+                    <dt>Orbit display</dt>
+                    <dd>Shows the path generated by the selected parameter.</dd>
+                </dl>
+            </aside>
+        </div>
+    </section>
+
+    <section aria-labelledby="history-title">
+        <h2 id="history-title">From abstract theory to visible landscape</h2>
+
+        <div class="timeline">
+            <article class="timeline-entry">
+                <time>Early 20th century</time>
+                <p>
+                    Pierre Fatou and Gaston Julia establish the foundations of
+                    complex dynamics by studying repeated rational functions,
+                    decades before high-resolution computer visualization.
+                </p>
+            </article>
+
+            <article class="timeline-entry">
+                <time>Late 20th century</time>
+                <p>
+                    Digital computation makes it practical to inspect parameter
+                    spaces visually and to experiment with enormous numbers of
+                    iterated points.
+                </p>
+            </article>
+
+            <article class="timeline-entry">
+                <time>1980s</time>
+                <p>
+                    Images associated with Benoit Mandelbrot help make the set a
+                    defining symbol of fractal geometry and computer-generated
+                    mathematical art.
+                </p>
+            </article>
+
+            <article class="timeline-entry">
+                <time>Today</time>
+                <p>
+                    Arbitrary precision and perturbation rendering allow
+                    explorers to visit structures at depths that early
+                    visualizations could not approach.
+                </p>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="matters-title">
+        <h2 id="matters-title">Why it matters</h2>
+        <p>
+            The Mandelbrot set brings together iteration, stability,
+            periodicity, geometry, and chaos in a single image. Its boundary
+            demonstrates how an extremely simple deterministic rule can produce
+            structures of extraordinary complexity.
+        </p>
+        <p>
+            It is also a gateway: learning to read the Mandelbrot set makes it
+            easier to understand Julia sets, orbit behavior, bifurcation, and
+            the broader subject of complex dynamics.
+        </p>
+    </section>
+
+    <section aria-labelledby="related-title">
+        <h2 id="related-title">Continue exploring</h2>
+        <ul class="related-links">
+            <li>
+                <a href="julia.html">
+                    Julia sets
+                    <span>Explore the dynamical plane associated with a fixed parameter.</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://en.wikipedia.org/wiki/Complex_dynamics">
+                    Complex dynamics
+                    <span>Learn about the mathematical field behind iteration in the complex plane.</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://en.wikipedia.org/wiki/Mandelbrot_set">
+                    Mandelbrot set reference
+                    <span>Read a broader mathematical and historical overview.</span>
+                </a>
+            </li>
         </ul>
     </section>
-    <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Complex_dynamics">Complex dynamics</a></li>
-        </ul>
-    </section>
+
 </main>
 </body>
 </html>
