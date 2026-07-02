@@ -185,8 +185,8 @@ void JuliaPreviewFrame::OpenFractalInformation()
     if (documentFile.empty())
         return;
 
-    DocumentViewer viewer(documentFile, this, wxID_ANY, _previewCanvas->GetFractal()->GetName());
-    viewer.ShowModal();
+    const auto viewer = new DocumentViewer(documentFile, this, wxID_ANY, _previewCanvas->GetFractal()->GetName());
+    viewer->Show(true);
 }
 
 void JuliaPreviewFrame::UpdateInformationTool() const

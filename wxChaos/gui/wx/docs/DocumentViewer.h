@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <functional>
 #include <vector>
 #include <wx/bmpbndl.h>
 #include <wx/webview.h>
@@ -19,11 +20,18 @@
 */
 class DocumentViewer : public wxDialog
 {
+public:
+    /// @brief Callback invoked when a wxchaos:// link is clicked.
+    /// @return true when the link was handled by the parent window.
+    using WxChaosLinkHandler = std::function<bool(const wxString&)>;
+
+private:
     wxWebView* _webView{};
     wxButton* _backButton{};
     wxButton* _forwardButton{};
     wxButton* _closeButton{};
     std::vector<wxString> _navigationHistory;
+    WxChaosLinkHandler _wxChaosLinkHandler;
     int _navigationHistoryIndex{-1};
     bool _hasLoadedInitialDocument{};
     bool _isNavigatingHistory{};
@@ -78,6 +86,7 @@ public:
     /// @param style Dialog style.
     DocumentViewer(const wxString& htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY,
                    const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
-                   const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                   const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+                   WxChaosLinkHandler wxChaosLinkHandler = nullptr);
     ~DocumentViewer() override;
 };

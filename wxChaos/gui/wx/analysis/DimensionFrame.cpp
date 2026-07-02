@@ -1130,6 +1130,5 @@ void DimensionFrame::OnHelp(wxCommandEvent&)
 {
     const auto diag = new DocumentViewer(AppPaths::ResourceFile({"Tutorials", "dimTut.html"}),
                                          this, wxID_ANY, wxString("Calculate dimension help"));
-    diag->ShowModal();
-    diag->Destroy();
+    diag->Show(true);
 }

@@ -91,7 +91,9 @@ void MainFrame::ShowFirstUseDialog()
         wxID_ANY,
         wxString("Welcome to wxChaos"),
         wxDefaultPosition,
-        wxSize(960, 700)
+        wxSize(960, 700),
+        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+        [this](const wxString& url) { return HandleDocumentationLink(url); }
         );
 
     firstUseDialog->Show(true);
@@ -258,14 +260,129 @@ void MainFrame::OpenFractalInformation()
     if (documentFile.empty())
         return;
 
-    DocumentViewer viewer(documentFile, this, wxID_ANY, _fractalCanvas->GetFractal()->GetName());
-    viewer.ShowModal();
+    if (_informationViewer != nullptr)
+    {
+        _informationViewer->Destroy();
+        _informationViewer = nullptr;
+    }
+
+    _informationViewer = new DocumentViewer(
+        documentFile,
+        this,
+        wxID_ANY,
+        _fractalCanvas->GetFractal()->GetName(),
+        wxDefaultPosition,
+        wxSize(1100, 760),
+        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+        [this](const wxString& url) { return HandleDocumentationLink(url); });
+    _informationFrameIsActive = true;
+    DocumentViewer* viewer = _informationViewer;
+    _informationViewer->Bind(wxEVT_CLOSE_WINDOW, [this, viewer](wxCloseEvent& event)
+    {
+        if (_informationViewer == viewer)
+        {
+            _informationViewer = nullptr;
+            _informationFrameIsActive = false;
+        }
+        event.Skip();
+    });
+    _informationViewer->Show(true);
 }
 
 void MainFrame::UpdateInformationTool() const
 {
     if (_interactionToolbar != nullptr && _fractalCanvas != nullptr)
         _interactionToolbar->SetInformationEnabled(FractalDocumentation::HasDocumentation(_fractalCanvas->GetFractalType()));
+}
+
+bool MainFrame::HandleDocumentationLink(const wxString& url)
+{
+    const bool handled = ExecuteDocumentationAction(DocumentationLinkAction::Parse(url));
+
+    if (!handled)
+    {
+        wxMessageBox(
+            "wxChaos does not know how to handle this documentation action:\n" + url,
+            "Documentation action",
+            wxOK | wxICON_INFORMATION,
+            this);
+    }
+
+    return handled;
+}
+
+bool MainFrame::ExecuteDocumentationAction(const DocumentationLinkAction& action)
+{
+    switch (action.GetType())
+    {
+        case DocumentationLinkAction::Type::OpenFractal:
+            return OpenDocumentationFractal(action.GetTarget());
+        case DocumentationLinkAction::Type::OpenLocation:
+            return OpenDocumentationLocation(action.GetLocation());
+        case DocumentationLinkAction::Type::EnableTool:
+            return EnableDocumentationTool(action.GetTarget());
+        case DocumentationLinkAction::Type::Unknown:
+        default:
+            return false;
+    }
+}
+
+bool MainFrame::OpenDocumentationFractal(const wxString& target)
+{
+    if (target == "mandelbrot")
+    {
+        ChangeFractal(FractalType::Mandelbrot, true);
+        Raise();
+        return true;
+    }
+
+    if (target == "script-editor")
+    {
+        OpenScriptEditorFromDocumentation();
+        return true;
+    }
+
+    return false;
+}
+
+bool MainFrame::OpenDocumentationLocation(const DocumentationLinkAction::Location& location)
+{
+    if (location.fractal != "mandelbrot" || _fractalCanvas == nullptr)
+        return false;
+
+    ChangeFractal(FractalType::Mandelbrot, true);
+    Fractal* mandelbrot = _fractalCanvas->GetFractal();
+    _fractalCanvas->GetFractalPresenter()->SetView(
+        mandelbrot->GetCenteredView(location.centerX, location.centerY, location.radius));
+    Raise();
+    return true;
+}
+
+bool MainFrame::EnableDocumentationTool(const wxString& tool)
+{
+    if (tool != "orbit" || _fractalCanvas == nullptr || !_fractalCanvas->GetFractal()->HasOrbit())
+        return false;
+
+    _fractalCanvas->SetOrbitMode(true);
+    if (_showOrbit != nullptr)
+        _showOrbit->Check(true);
+
+    Raise();
+    return true;
+}
+
+void MainFrame::OpenScriptEditorFromDocumentation()
+{
+    if (_scriptEditor == nullptr)
+    {
+        _scriptEditor = new ScriptEditor(this);
+        _scriptEditor->Show(true);
+    }
+    else
+    {
+        _scriptEditor->Raise();
+        _scriptEditor->SetFocus();
+    }
 }
 
 void MainFrame::SetUpGUI()
@@ -577,6 +694,12 @@ void MainFrame::CloseAll()
     {
         _commandConsole->Destroy();
         _commandConsole = nullptr;
+    }
+    if (_informationViewer != nullptr)
+    {
+        _informationViewer->Destroy();
+        _informationViewer = nullptr;
+        _informationFrameIsActive = false;
     }
     DestroyJuliaMode(true);
     DestroyDimensionFrame();

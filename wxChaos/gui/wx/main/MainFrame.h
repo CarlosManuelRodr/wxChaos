@@ -26,6 +26,9 @@
 #include "canvas/FractalToolbar.h"
 #include "canvas/RenderStatusWidget.h"
 #include "common/FractalOptionsPanel.h"
+#include "docs/DocumentationLinkAction.h"
+
+class DocumentViewer;
 
 /**
 * @enum IDS
@@ -106,6 +109,7 @@ class MainFrame : public wxFrame
     DimensionFrame* _dimensionCalculator;
     CommandConsole* _commandConsole{};
     SettingsFrame* _settingsFrame{};              ///< Active application settings frame.
+    DocumentViewer* _informationViewer{};         ///< Active modeless fractal documentation viewer.
     
     bool _changeKeyboardGuide;
     bool _introConstActive;
@@ -192,6 +196,12 @@ class MainFrame : public wxFrame
     void OpenFractalInformation();
     void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
+    bool HandleDocumentationLink(const wxString& url);
+    bool ExecuteDocumentationAction(const DocumentationLinkAction& action);
+    bool OpenDocumentationFractal(const wxString& target);
+    bool OpenDocumentationLocation(const DocumentationLinkAction::Location& location);
+    bool EnableDocumentationTool(const wxString& tool);
+    void OpenScriptEditorFromDocumentation();
 
 public :
     MainFrame();

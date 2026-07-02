@@ -190,9 +190,11 @@ if(BUILD_TESTING)
     add_executable(wxChaosGuiTests
             tests/gui/GuiTestsMain.cpp
             tests/gui/sfml/SelectionRectTests.cpp
+            tests/gui/wx/DocumentationLinkActionTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
             tests/gui/wx/WxGradientTests.cpp
             wxChaos/gui/sfml/SelectionRect.cpp
+            wxChaos/gui/wx/docs/DocumentationLinkAction.cpp
             wxChaos/gui/wx/common/PanelOptions.cpp
             wxChaos/gui/wx/common/wxGradient.cpp
     )

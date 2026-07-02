@@ -1,12 +1,15 @@
 #include "docs/DocumentViewer.h"
+#include <utility>
 #include <wx/filename.h>
 #include <wx/filesys.h>
 #include "AppPaths.h"
 #include "common/AppTheme.h"
 
 DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const wxWindowID id,
-                               const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
-                               : wxDialog(parent, id, title, pos, size, style)
+                               const wxString& title, const wxPoint& pos, const wxSize& size, const long style,
+                               WxChaosLinkHandler wxChaosLinkHandler)
+                               : wxDialog(parent, id, title, pos, size, style),
+                                 _wxChaosLinkHandler(std::move(wxChaosLinkHandler))
 {
     SetSizeHints(wxSize(900, 620), wxDefaultSize);
 
@@ -122,6 +125,14 @@ void DocumentViewer::OnForward(wxCommandEvent&)
 
 void DocumentViewer::OnNavigating(wxWebViewEvent& event)
 {
+    if (event.GetURL().Lower().StartsWith("wxchaos://"))
+    {
+        event.Veto();
+        if (_wxChaosLinkHandler)
+            _wxChaosLinkHandler(event.GetURL());
+        return;
+    }
+
     if (_hasLoadedInitialDocument && !_isNavigatingHistory)
         AddNavigationHistoryEntry(event.GetURL());
 
