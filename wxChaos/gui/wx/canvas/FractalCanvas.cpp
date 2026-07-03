@@ -106,7 +106,7 @@ unsigned int FractalCanvas::GetStatusCoordinateSignificantDigits() const
 {
     constexpr unsigned int defaultSignificantDigits = 15;
     constexpr unsigned int maximumSignificantDigits = 80;
-    if (_fractal == nullptr || !_fractal->IsHighPrecisionRenderActive())
+    if (!_fractal->IsHighPrecisionRenderActive())
         return defaultSignificantDigits;
 
     const auto decimalDigits = static_cast<unsigned int>(std::ceil(
@@ -266,7 +266,7 @@ void FractalCanvas::UpdateCoordinateSelectorValue()
     _onUpdate = false;
 }
 
-void FractalCanvas::SeedCoordinateSelectorValue(const bool markOrbitChange)
+void FractalCanvas::SeedCoordinateSelectorValue()
 {
     if (_coordinateSelector == nullptr)
         return;
@@ -277,10 +277,7 @@ void FractalCanvas::SeedCoordinateSelectorValue(const bool markOrbitChange)
     _kReal = _coordinateSelector->GetX(_fractal);
     _kImaginary = _coordinateSelector->GetY(_fractal);
     _coordinateSelectorChange = true;
-
-    if (markOrbitChange)
-        _fractal->SetOrbitChange();
-
+    _fractal->SetOrbitChange();
     _onUpdate = false;
 }
 
@@ -746,7 +743,7 @@ void FractalCanvas::SetOrbitMode(const bool mode)
         _fractal->SetOrbitMode(true);
         if (_coordinateSelector == nullptr)
             _coordinateSelector = new CoordinateSelector(this);
-        SeedCoordinateSelectorValue(true);
+        SeedCoordinateSelectorValue();
         _fractal->SetOrbitPoint(_kReal, _kImaginary);
         Refresh(false);
     }

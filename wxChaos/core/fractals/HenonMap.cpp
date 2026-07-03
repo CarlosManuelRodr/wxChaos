@@ -12,7 +12,7 @@ HenonMap::HenonMap(const unsigned int width, const unsigned int height) : Fracta
 
     _minX = -1.5;
     _maxX = 1.5;
-    _minY = -0.4;
+    _minY = -1.0;
     _maxY = 0.4;
     _xFactor = (_maxX - _minX) / (_screenWidth - 1);
     _yFactor = (_maxY - _minY) / (_screenHeight - 1);
