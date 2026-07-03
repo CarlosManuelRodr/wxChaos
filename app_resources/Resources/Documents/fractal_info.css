@@ -216,6 +216,20 @@ figure {
     width: 100%;
 }
 
+.image-placeholder {
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 12%, transparent), transparent 38%),
+        var(--panel-background);
+    border: 0;
+    box-sizing: border-box;
+    min-height: 300px;
+    width: 100%;
+}
+
+.hero-figure .image-placeholder {
+    min-height: 360px;
+}
+
 figcaption {
     color: var(--muted-text-color);
     font-size: 0.91rem;
@@ -412,13 +426,16 @@ figcaption {
 }
 
 .view-card img,
-.landmark-card img {
+.landmark-card img,
+.view-card .image-placeholder,
+.landmark-card .image-placeholder {
     background: #090b10;
     border: 0;
     border-radius: 0;
     box-sizing: border-box;
     display: block;
     height: 170px;
+    min-height: 170px;
     object-fit: cover;
     padding: 0;
     width: 100%;
@@ -539,6 +556,10 @@ figcaption {
     }
 
     .hero-figure img {
+        min-height: 260px;
+    }
+
+    .hero-figure .image-placeholder {
         min-height: 260px;
     }
 }

@@ -1,38 +1,47 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tricorn</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tricorn - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Tricorn</h1>
-    <p class="subtitle">The Mandelbar set, made by conjugating the orbit before squaring.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{0}=0,\quad z_{n+1}=\overline{z_n}^{\,2}+c\). Complex conjugation makes this an antiholomorphic cousin of the Mandelbrot set.</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Parameter space</p>
+            <h1>Tricorn</h1>
+            <p class="subtitle">A three-cornered mirror version of the Mandelbrot set.</p>
+            <p class="hero-introduction">The Tricorn, also called the Mandelbar set, conjugates \(z\) before squaring it. That reflection changes the familiar cardioid world into a shape with three stubborn corners and mirrored branching.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Tricorn image"></div><figcaption><span class="figure-title">The Mandelbar silhouette.</span> Add a full Tricorn overview here.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/tricorn">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>The tricorn is the best-known member of the Mandelbar family. It keeps the parameter-plane spirit of Mandelbrot, but conjugation reverses orientation on each step, producing three-cornered symmetry and different boundary behavior.</p>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Compare the complete shape with the Mandelbrot set. It feels related, but every lobe seems to have been turned through a mirror.</p></div>
+            <div class="experiment-step"><p>Zoom near a corner. The Tricorn is famous for parameter-space structures that do not behave like the analytic Mandelbrot family.</p></div>
+            <div class="experiment-step"><p>Try escape angle coloring to emphasize the reflected exterior flow.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering and orbit display.</li>
-            <li>Smooth coloring and orbit traps.</li>
-            <li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li>
-        </ul>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>The conjugate square</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=\overline{z_n}^2+c\), starting at \(z_0=0\). Complex conjugation changes \(x+iy\) into \(x-iy\). This reflection makes the map anti-holomorphic rather than holomorphic, which is why it belongs to the Mandelbar family rather than the ordinary Mandelbrot family.</p></div></details>
     </section>
+
     <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Tricorn_(mathematics)">Tricorn</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot set</a></li>
-        </ul>
+        <h2>Coloring lenses</h2>
+        <div class="view-grid">
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Escape-time placeholder"></div><div class="view-card-content"><h3>Escape time</h3><p>Use it first to read the three-cornered body.</p><a class="inline-link" href="wxchaos://rendering/tricorn/escape-time">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Escape-angle placeholder"></div><div class="view-card-content"><h3>Escape angle</h3><p>Highlights the mirrored directions of escape.</p><a class="inline-link" href="wxchaos://rendering/tricorn/escape-angle">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Triangle placeholder"></div><div class="view-card-content"><h3>Triangle inequality</h3><p>Produces richly folded exterior textures.</p><a class="inline-link" href="wxchaos://rendering/tricorn/triangle-inequality">Apply in wxChaos</a></div></article>
+        </div>
     </section>
 </main>
 </body>

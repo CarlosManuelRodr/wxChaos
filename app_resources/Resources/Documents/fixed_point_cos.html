@@ -1,38 +1,29 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Fixed Point cos(z)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fixed Point Cosine - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Fixed Point: cos(z)</h1>
-    <p class="subtitle">A convergence map for repeated cosine iteration.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{n+1}=\cos(z_n)\). A point is considered converged when successive iterates differ by less than the configured minimum step.</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Convergence gallery</p>
+            <h1>Fixed Point Cosine</h1>
+            <p class="subtitle">A familiar wave function turned into a basin map.</p>
+            <p class="hero-introduction">Repeated cosine can pull many starting points toward stable behavior. In the complex plane, the borders around those destinations become the interesting part of the exhibit.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for Fixed Point Cosine"></div><figcaption><span class="figure-title">The pull of a fixed point.</span> Add a render showing cosine convergence regions.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-cos">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-    <section>
-        <h2>Background</h2>
-        <p>Complex trigonometric fixed-point iteration reveals basins and boundaries that are hidden in the real one-dimensional picture.</p>
-    </section>
-    <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering.</li>
-            <li>Option: minimum convergence step.</li>
-            <li>Algorithm: convergence test.</li>
-        </ul>
-    </section>
-    <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Fixed-point_iteration">Fixed-point iteration</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Complex_sine_and_cosine">Complex sine and cosine</a></li>
-        </ul>
-    </section>
+
+    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Use orbit display in a broad region and watch the sequence settle.</p></div><div class="experiment-step"><p>Move toward a boundary where the color changes quickly. Convergence often slows near these borders.</p></div><div class="experiment-step"><p>Compare this page with Fixed Point Sine. The functions are simple siblings, but their complex basins have different personalities.</p></div></div></section>
+
+    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>What convergence means here</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=\cos(z_n)\). A fixed point satisfies \(z=\cos(z)\). The renderer stops treating the orbit as active once successive values are closer than the configured minimum step, so color becomes a map of how quickly the iteration settles.</p></div></details></section>
 </main>
 </body>
 </html>

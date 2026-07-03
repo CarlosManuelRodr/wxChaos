@@ -1,43 +1,58 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Julia Sets - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Julia Set</h1>
-    <p class="subtitle">The dynamical-plane companion to a single Mandelbrot parameter.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{n+1}=z_n^2+k\). Each pixel supplies \(z_0\); the constant \(k\) is fixed for the whole image. A point is inside when its orbit remains bounded.</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Dynamical plane</p>
+            <h1>Julia Sets</h1>
+            <p class="subtitle">The Mandelbrot set is the atlas; a Julia set is one country seen up close.</p>
+            <p class="hero-introduction">A Julia set fixes \(k\) and asks what happens to every possible starting point \(z_0\). Some choices make connected lace. Others scatter into islands.</p>
+        </div>
+        <figure class="hero-figure">
+            <div class="image-placeholder" role="img" aria-label="Placeholder for a Julia set image"></div>
+            <figcaption><span class="figure-title">One parameter, an entire world.</span> Add a representative quadratic Julia set here.</figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/julia">Open in wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a>
+        </div>
     </section>
+
     <section>
-        <h2>Relationship with Mandelbrot</h2>
-        <p>The Mandelbrot set is the atlas for this family. Each point \(k\) in the Mandelbrot set corresponds to a connected quadratic Julia set; parameters outside it produce disconnected Julia dust. In wxChaos, the main Mandelbrot view chooses the parameter and Julia mode opens the matching dynamical plane.</p>
+        <h2>A good first visit</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Start with the default parameter. Look for the boundary between dark stable regions and the colored escaping exterior.</p></div>
+            <div class="experiment-step"><p>Open the Mandelbrot page and toggle Julia mode from there. Move the Mandelbrot selector and watch the Julia set respond like a live specimen.</p></div>
+            <div class="experiment-step"><p>Try orbit display near a boundary point. The orbit is the hidden choreography behind the visible lace.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>Gaston Julia and Pierre Fatou studied what happens when complex functions are repeatedly applied. Their work was motivated by the classification of stable and unstable behavior in rational maps, decades before computers made the boundaries visible. Julia sets are those boundaries: the places where nearby starting points can have very different futures.</p>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>Why the Mandelbrot set predicts Julia shapes</summary>
+            <div class="concept-details-content">
+                <p>For \(f_k(z)=z^2+k\), the filled Julia set contains starting values whose orbits remain bounded. The Mandelbrot set records the parameters \(k\) for which the critical orbit starting at \(0\) remains bounded. For quadratic maps, that critical orbit determines whether the Julia set is connected.</p>
+            </div>
+        </details>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision and fast perturbation rendering.</li>
-            <li>Orbit display, smooth coloring, orbit traps, and Julia constant editing from the main view.</li>
-            <li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li>
-        </ul>
-    </section>
-    <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Complex_dynamics">Complex dynamics</a></li>
-        </ul>
+        <h2>Coloring lenses</h2>
+        <div class="view-grid">
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Smooth Julia placeholder"></div><div class="view-card-content"><h3>Smooth coloring</h3><p>Useful when the exterior bands distract from the form.</p><a class="inline-link" href="wxchaos://rendering/julia/smooth-coloring">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Escape-angle Julia placeholder"></div><div class="view-card-content"><h3>Escape angle</h3><p>Reveals directional flow around the set.</p><a class="inline-link" href="wxchaos://rendering/julia/escape-angle">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Orbit trap Julia placeholder"></div><div class="view-card-content"><h3>Orbit traps</h3><p>Turns the orbit path into a drawing instrument.</p><a class="inline-link" href="wxchaos://rendering/julia/orbit-traps">Apply in wxChaos</a></div></article>
+        </div>
     </section>
 </main>
 </body>

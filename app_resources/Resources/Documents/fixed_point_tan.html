@@ -1,38 +1,29 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Fixed Point tan(z)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fixed Point Tangent - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Fixed Point: tan(z)</h1>
-    <p class="subtitle">A convergence map for repeated tangent iteration.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{n+1}=\tan(z_n)\). A point is considered converged when successive iterates differ by less than the configured minimum step.</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Convergence gallery</p>
+            <h1>Fixed Point Tangent</h1>
+            <p class="subtitle">A convergence map with poles, jumps, and sharp borders.</p>
+            <p class="hero-introduction">Tangent has built-in singularities. When you iterate it in the complex plane, those near-infinite jumps make the convergence landscape sharper and less forgiving than sine or cosine.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for Fixed Point Tangent"></div><figcaption><span class="figure-title">Convergence near singularities.</span> Add a tangent fixed-point render here.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-tan">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-    <section>
-        <h2>Background</h2>
-        <p>The poles of the tangent function make this fixed-point map especially sharp and discontinuous compared with sine or cosine.</p>
-    </section>
-    <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering.</li>
-            <li>Option: minimum convergence step.</li>
-            <li>Algorithm: convergence test.</li>
-        </ul>
-    </section>
-    <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Fixed-point_iteration">Fixed-point iteration</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Trigonometric_functions#In_the_complex_plane">Trigonometric functions in the complex plane</a></li>
-        </ul>
-    </section>
+
+    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Look for abrupt color transitions. Tangent's poles can fling nearby orbits far away.</p></div><div class="experiment-step"><p>Enable orbit display near a boundary and compare it with a point deep inside a basin.</p></div><div class="experiment-step"><p>Then visit Fixed Point Sine or Cosine to feel how much calmer those maps are.</p></div></div></section>
+
+    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>Why tangent is sharper</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=\tan(z_n)\). Since \(\tan(z)=\sin(z)/\cos(z)\), the function has poles wherever \(\cos(z)=0\). Points near those poles can move dramatically in one iteration, creating sharp convergence boundaries.</p></div></details></section>
 </main>
 </body>
 </html>

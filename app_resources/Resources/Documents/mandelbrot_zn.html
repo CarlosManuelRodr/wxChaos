@@ -1,48 +1,47 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Mandelbrot ZN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mandelbrot Zn - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Mandelbrot ZN</h1>
-    <p class="subtitle">A power-family generalization of the Mandelbrot set.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{0}=0,\quad z_{n+1}=z_n^p+c\). wxChaos calls the exponent option \(n\), with default \(n=3\), and tests escape against the configurable bailout radius.</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Parameter space</p>
+            <h1>Mandelbrot Zn</h1>
+            <p class="subtitle">The Mandelbrot idea with the exponent unlocked.</p>
+            <p class="hero-introduction">This room asks what happens when the classic square becomes \(z^p\). The answer is a family of maps with more lobes, new symmetries, and familiar boundary drama.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Mandelbrot Zn image"></div><figcaption><span class="figure-title">A family portrait.</span> Add a render for a higher exponent, such as \(p=3\) or \(p=4\).</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/mandelbrot-zn">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://julia/mandelbrot-zn">Toggle Julia mode</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
+
     <section>
-        <h2>Options</h2>
-        <dl>
-            <dt>n</dt>
-            <dd>The polynomial degree. Higher values add rotational symmetry and change the number of large lobes.</dd>
-            <dt>Bailout</dt>
-            <dd>The escape radius used by the renderer.</dd>
-        </dl>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Change the exponent and zoom out enough to read the whole silhouette. Count the major arms before zooming in.</p></div>
+            <div class="experiment-step"><p>Toggle Julia mode and move the selected parameter across the boundary. The Julia view is the quickest way to feel what the parameter map means.</p></div>
+            <div class="experiment-step"><p>Compare escape time with smooth coloring. Higher powers can create strong bands that smooth coloring turns into gradients.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>Changing the exponent keeps the Mandelbrot idea but changes the symmetry and number of major bulbs. These multibrot sets are a common way to study how polynomial degree shapes complex dynamics.</p>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>From \(z^2+c\) to \(z^p+c\)</summary><div class="concept-details-content"><p>The classic Mandelbrot set uses \(z_{n+1}=z_n^2+c\) with \(z_0=0\). Mandelbrot Zn changes the exponent: \(z_{n+1}=z_n^p+c\). For integer \(p&gt;2\), the map has stronger rotational symmetry and a different escape speed, but the same bounded-versus-escaping test defines the set.</p></div></details>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering.</li>
-            <li>Orbit display, smooth coloring, and orbit traps.</li>
-            <li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li>
-        </ul>
-    </section>
-    <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Multibrot_set">Multibrot set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Mandelbrot set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Complex_dynamics">Complex dynamics</a></li>
-        </ul>
+        <h2>Coloring lenses</h2>
+        <div class="view-grid">
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Smooth placeholder"></div><div class="view-card-content"><h3>Smooth coloring</h3><p>Use it to read broad gradients without hard iteration bands.</p><a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/smooth-coloring">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Escape angle placeholder"></div><div class="view-card-content"><h3>Escape angle</h3><p>Shows directional structure around the arms.</p><a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/escape-angle">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Orbit traps placeholder"></div><div class="view-card-content"><h3>Orbit traps</h3><p>Turns symmetry into decorative geometry.</p><a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/orbit-traps">Apply in wxChaos</a></div></article>
+        </div>
     </section>
 </main>
 </body>

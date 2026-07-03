@@ -1,29 +1,40 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Henon Map - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <title>Henon Map</title>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<h1>Henon Map</h1>
-<p>
-    The Henon map is a two-dimensional chaotic map. wxChaos plots the orbit
-    generated from an initial point and marks every visited pixel in the
-    current view.
-</p>
-<p>
-    Each iteration uses
-</p>
-<p class="formula">
-    x<sub>n+1</sub> = y<sub>n</sub> + 1 - &alpha;x<sub>n</sub><sup>2</sup><br>
-    y<sub>n+1</sub> = &beta;x<sub>n</sub>
-</p>
-<p>
-    The default parameters are &alpha; = 1.4, &beta; = 0.3,
-    x<sub>0</sub> = 0.5, and y<sub>0</sub> = 0.2. Because this renderer plots
-    a single orbit rather than testing every pixel independently, it uses one
-    render thread and redraws the whole image when the view or options change.
-</p>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Chaotic attractors</p>
+            <h1>Henon Map</h1>
+            <p class="subtitle">A point repeatedly folded and stretched until it draws an attractor.</p>
+            <p class="hero-introduction">Unlike escape-time fractals, the Henon map is drawn by following one moving point for many steps. The path does not fill a smooth region. It settles into a thin, strange set that is part curve, part dust.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Henon map image"></div><figcaption><span class="figure-title">A strange attractor.</span> Add a render showing the classic folded Henon shape.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/henon-map">Open in wxChaos</a></div>
+    </section>
+
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Increase the iteration count and watch the attractor become denser. This fractal is accumulated, not colored pixel by pixel.</p></div>
+            <div class="experiment-step"><p>Change \(\alpha\) or \(\beta\) gently. Small parameter changes can stretch the attractor, break it, or send the orbit away.</p></div>
+            <div class="experiment-step"><p>Look for the folded ribbon shape. That fold is the signature gesture of the map.</p></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>The map wxChaos iterates</summary><div class="concept-details-content"><p>wxChaos uses \(x_{n+1}=y_n+1-\alpha x_n^2\) and \(y_{n+1}=\beta x_n\). The parameter \(\alpha\) controls the nonlinear fold, while \(\beta\) controls how much the previous horizontal position returns as the new vertical position.</p></div></details>
+        <details class="concept-details"><summary>What makes an attractor strange?</summary><div class="concept-details-content"><p>An attractor gathers nearby orbits toward it. A strange attractor has fractal structure and sensitive dependence on initial conditions. The classic Henon attractor is often described as smooth in one direction and Cantor-like across the other.</p></div></details>
+    </section>
+</main>
 </body>
 </html>

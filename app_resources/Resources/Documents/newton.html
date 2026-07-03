@@ -1,37 +1,46 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Newton</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Newton Fractal - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Newton Fractal</h1>
-    <p class="subtitle">Basins of attraction for Newton-Raphson root finding.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{n+1}=z_n-\frac{f(z_n)}{f'(z_n)}\), with \(f(z)=z^3-1\).</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Root-finding gallery</p>
+            <h1>Newton Fractal</h1>
+            <p class="subtitle">A map showing which guesses find which root.</p>
+            <p class="hero-introduction">Newton's method is usually taught as a numerical tool. In the complex plane it becomes a territorial map: every starting point is colored by the solution it eventually finds, and the borders between territories are fractal.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Newton fractal image"></div><figcaption><span class="figure-title">Basins of attraction.</span> Add a Newton render where several root basins meet at intricate boundaries.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/newton">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>Newton's method is a numerical method for finding roots. Coloring each starting point by the root it reaches reveals the fractal boundaries between basins of attraction. The roots themselves are simple, but the boundary between “which root wins” can be infinitely complicated.</p>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Find a place where three colors meet. Those borders are the most sensitive regions: a tiny move can send the iteration to another root.</p></div>
+            <div class="experiment-step"><p>Enable orbit display near a boundary and compare it with a point deep inside a single colored basin.</p></div>
+            <div class="experiment-step"><p>After this page, open User Defined Newton and try your own polynomial.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering.</li>
-            <li>Orbit trap mode for convergence rendering.</li>
-            <li>Algorithm: convergence test.</li>
-        </ul>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>Newton's method as a dynamical system</summary><div class="concept-details-content"><p>For a function \(f\), Newton's method repeatedly applies \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). A root becomes an attracting destination, and each pixel belongs to the basin of the root reached from that starting point. wxChaos' built-in Newton fractal uses a historical cubic-style Newton iteration and colors convergence behavior.</p></div></details>
     </section>
+
     <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Newton_fractal">Newton fractal</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton's method</a></li>
+        <h2>Continue exploring</h2>
+        <ul class="related-links">
+            <li><a href="user_defined_newton.html">User Defined Newton<span>Choose the function whose roots you want to map.</span></a></li>
+            <li><a href="fixed_point_z2.html">Fixed point maps<span>Another way to see convergence as geography.</span></a></li>
+            <li><a href="julia.html">Julia sets<span>Iteration without explicit root-finding.</span></a></li>
         </ul>
     </section>
 </main>

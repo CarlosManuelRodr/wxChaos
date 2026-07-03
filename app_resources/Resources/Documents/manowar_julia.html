@@ -1,38 +1,38 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Manowar Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manowar Julia - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Manowar Julia</h1>
-    <p class="subtitle">The fixed-parameter dynamical plane for the Manowar recurrence.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">Each pixel supplies \(z_0\), the constant \(k\) is fixed, and \(m_0=z_0\). wxChaos iterates \(z_{n+1}=z_n^2+m_n+k\), \(m_{n+1}=z_n\), with escape at \(|z_n|>2\).</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Dynamical plane</p>
+            <h1>Manowar Julia</h1>
+            <p class="subtitle">A Julia set with a short-term memory.</p>
+            <p class="hero-introduction">Here the parameter is fixed and each pixel chooses the starting value. Because the Manowar rule remembers the previous step, the orbit can feel less like a point jumping and more like a point dragging a thread.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Manowar Julia image"></div><figcaption><span class="figure-title">A remembered orbit.</span> Add a Manowar Julia render with fine connected detail.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/manowar-julia">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>This is to Manowar what a Julia set is to Mandelbrot: instead of asking which parameters \(c\) produce bounded behavior, it fixes one parameter \(k\) and studies the starting-value plane.</p>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Pick a boundary point and enable orbit display. Notice that the next step depends on both the current point and its predecessor.</p></div>
+            <div class="experiment-step"><p>Change the fixed parameter from the control panel. Look for transitions between connected masses and scattered fragments.</p></div>
+            <div class="experiment-step"><p>Use triangle inequality coloring when you want the exterior to show motion instead of bands.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering, Julia constant editing, and orbit display.</li>
-            <li>Smooth coloring and orbit traps.</li>
-            <li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li>
-        </ul>
-    </section>
-    <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Recurrence_relation">Recurrence relation</a></li>
-        </ul>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>Fixed parameter, remembered past</summary><div class="concept-details-content"><p>The Manowar Julia rule fixes \(k\) and iterates \(z_{n+1}=z_n^2+m_n+k\). The memory value \(m_n\) is updated from the previous \(z\). Unlike a standard Julia set, the visible fate of a point depends on a two-value state.</p></div></details>
     </section>
 </main>
 </body>

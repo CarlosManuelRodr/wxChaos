@@ -1,63 +1,48 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Double Pendulum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Double Pendulum - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Double Pendulum</h1>
-    <p class="subtitle">A parameter-space image of a chaotic mechanical system.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">Each pixel supplies initial angles \((\theta_1,\theta_2)\). wxChaos starts with zero angular velocity, integrates the coupled double-pendulum equations, and colors the point by how long the simulated motion avoids the selected bailout tests.</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Physical chaos</p>
+            <h1>Double Pendulum</h1>
+            <p class="subtitle">A mechanical system whose initial angles become a fractal map.</p>
+            <p class="hero-introduction">A double pendulum is only two arms and two masses, but its motion can become wildly sensitive. wxChaos turns each pixel into a pair of starting angles and colors how long that simulated pendulum stays within the chosen bounds.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Double Pendulum fractal image"></div><figcaption><span class="figure-title">Initial conditions as geography.</span> Add a render showing angle regions with different escape times.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/double-pendulum">Open in wxChaos</a></div>
     </section>
+
     <section>
-        <h2>Options</h2>
-        <dl>
-            <dt>\(\theta_1\) Bailout</dt>
-            <dd>Enables a stop condition for the first pendulum angle.</dd>
-            <dt>\(\theta_2\) Bailout</dt>
-            <dd>Enables a stop condition for the second pendulum angle.</dd>
-            <dt>Value</dt>
-            <dd>The angle threshold, in radians. The default \(\pi\) means the angle has crossed a half-turn boundary.</dd>
-            <dt>DeltaT</dt>
-            <dd>The simulation time step. Smaller values are slower but reduce numerical drift.</dd>
-            <dt>m1, m2</dt>
-            <dd>The masses of the upper and lower pendulum bobs. Changing them changes how energy moves between the two arms.</dd>
-            <dt>Longitude</dt>
-            <dd>The pendulum arm length used by the equations.</dd>
-            <dt>Gravity</dt>
-            <dd>The gravitational acceleration parameter.</dd>
-            <dt>Relative angles</dt>
-            <dd>When enabled, bailout tests compare \(\theta_1\) and \(\theta_2\) against their initial pixel angles. When disabled, they compare against absolute zero-centered angles.</dd>
-            <dt>Runge-Kutta</dt>
-            <dd>Uses a fourth-order Runge-Kutta style integration step instead of the simpler Euler step. It is usually more stable for the same DeltaT, but more expensive.</dd>
-        </dl>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Read the horizontal and vertical axes as initial angles \(\theta_1\) and \(\theta_2\). Neighboring pixels are nearly identical starting pendulums.</p></div>
+            <div class="experiment-step"><p>Choose a point near a boundary and zoom gently. Neighboring starting angles can separate into very different outcomes.</p></div>
+            <div class="experiment-step"><p>Toggle Runge-Kutta in the options and compare it with Euler integration. The picture changes because the numerical method changes how the physical motion is approximated.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>A double pendulum is deterministic, but it is highly sensitive to initial conditions. Two nearby angle pairs can remain close for a while and then diverge dramatically. Rendering the initial-angle plane as an escape map turns that sensitivity into a fractal boundary.</p>
+        <h2>What the controls mean</h2>
+        <div class="two-column">
+            <div><p>The bailout check decides when a simulated pendulum has moved too far. Masses, length, gravity, and time step change the physical model. Relative angles compare movement against the starting pose instead of absolute angle limits.</p></div>
+            <aside class="observation-panel"><h3>Good experiments</h3><ul><li>Lower DeltaT for more stable integration.</li><li>Increase iterations to see long-lived starts.</li><li>Change one mass at a time so the effect remains readable.</li></ul></aside>
+        </div>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>Configurable masses, length, gravity, timestep, bailout conditions, relative-angle mode, and Runge-Kutta mode.</li>
-            <li>Orbit drawing for the simulated angular trajectory.</li>
-            <li>Algorithms: escape time and escape angle.</li>
-        </ul>
-    </section>
-    <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://www.famaf.unc.edu.ar/~vmarconi/fiscomp/Double.pdf">Double pendulum notes and equations</a></li>
-            <li><a href="https://observablehq.com/@rreusser/the-double-pendulum-fractal">The double pendulum fractal animation</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Double_pendulum">Double pendulum</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta methods</a></li>
-        </ul>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>Euler integration</summary><div class="concept-details-content"><p>Euler's method estimates the next state using the current acceleration. In simplified form, \(v_{n+1}=v_n+\Delta t\,a(\theta_n,v_n)\), then \(\theta_{n+1}=\theta_n+\Delta t\,v_{n+1}\). It is fast and easy to understand, but with chaotic systems its errors can grow quickly.</p></div></details>
+        <details class="concept-details"><summary>Runge-Kutta integration</summary><div class="concept-details-content"><p>Runge-Kutta methods improve on Euler by sampling several slopes inside the same time step and blending them. The common fourth-order pattern uses weights \(1/6,1/3,1/3,1/6\). wxChaos uses a four-slope Runge-Kutta style option for the pendulum accelerations, which usually gives a more stable approximation than one Euler slope per step.</p></div></details>
+        <details class="concept-details"><summary>Why this becomes a fractal image</summary><div class="concept-details-content"><p>The double pendulum is governed by coupled nonlinear differential equations. Nearby initial angles can remain close for a while and then diverge. When each pixel represents a starting pair \((\theta_1,\theta_2)\), the boundary between long-lived and quickly escaping starts can become extremely intricate.</p></div></details>
     </section>
 </main>
 </body>

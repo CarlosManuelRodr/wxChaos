@@ -1,38 +1,47 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Jellyfish</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jellyfish - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Jellyfish</h1>
-    <p class="subtitle">A Julia-style escape-time fractal using a fractional power.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{n+1}=z_n^{3/2}+k\), with default \(k=-0.2+0i\). Each pixel supplies \(z_0\), and escape is detected when \(|z_n|>2\).</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Fractional powers</p>
+            <h1>Jellyfish</h1>
+            <p class="subtitle">A Julia-like map with soft arms from the power \(1.5\).</p>
+            <p class="hero-introduction">Jellyfish sits between familiar integer-power worlds. Raising \(z\) to \(1.5\) introduces branch behavior and a different kind of symmetry, giving the image a drifting, tentacled character.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Jellyfish fractal image"></div><figcaption><span class="figure-title">A fractional-power bloom.</span> Add a render that shows the soft radial arms.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/jellyfish">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>This is an exploratory Julia-family variant rather than a classical named set. The fractional power makes the map multi-valued in the complex plane; the implementation uses the principal branch supplied by the complex power function. The result often grows soft radial arms and tendrils, which explains the Jellyfish name.</p>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Use orbit display near a tendril. Watch for the way the orbit bends through the chosen fractional power.</p></div>
+            <div class="experiment-step"><p>Try smooth coloring to soften the exterior, then switch to triangle inequality for more visible texture.</p></div>
+            <div class="experiment-step"><p>Change the constant \(k\) in small steps if the control panel exposes it. This family responds quickly.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering.</li>
-            <li>Julia constant editing, orbit display, smooth coloring, and orbit traps.</li>
-            <li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li>
-        </ul>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>Why fractional powers feel different</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=z_n^{1.5}+k\). Integer powers rotate and stretch the plane in whole-number symmetries. A fractional power requires choosing a complex branch, so the visual structure can open into cuts, fans, and asymmetric arms.</p></div></details>
     </section>
+
     <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Exponentiation#Complex_exponents">Complex exponentiation</a></li>
-        </ul>
+        <h2>Coloring lenses</h2>
+        <div class="view-grid">
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Smooth placeholder"></div><div class="view-card-content"><h3>Smooth coloring</h3><p>Best for a soft, floating look.</p><a class="inline-link" href="wxchaos://rendering/jellyfish/smooth-coloring">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Escape-angle placeholder"></div><div class="view-card-content"><h3>Escape angle</h3><p>Shows the direction in which arms unwind.</p><a class="inline-link" href="wxchaos://rendering/jellyfish/escape-angle">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Orbit-trap placeholder"></div><div class="view-card-content"><h3>Orbit traps</h3><p>Gives the tendrils a graphic, drawn quality.</p><a class="inline-link" href="wxchaos://rendering/jellyfish/orbit-traps">Apply in wxChaos</a></div></article>
+        </div>
     </section>
 </main>
 </body>

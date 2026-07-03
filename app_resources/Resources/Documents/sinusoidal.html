@@ -1,39 +1,47 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Sine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sinusoidal - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Sine Map</h1>
-    <p class="subtitle">A transcendental Julia-style escape-time fractal.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">\(z_{n+1}=k\sin(z_n)\), with default \(k=1+0.25i\). Each pixel supplies \(z_0\).</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Transcendental maps</p>
+            <h1>Sinusoidal</h1>
+            <p class="subtitle">A sine wave extended into the complex plane until it becomes a landscape.</p>
+            <p class="hero-introduction">The sine function is familiar from circles and waves. In complex iteration it stops being merely periodic and starts building repeated corridors, folds, and escape channels.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Sinusoidal fractal image"></div><figcaption><span class="figure-title">Periodic motion, complex escape.</span> Add a render showing repeated sine-like structure.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/sinusoidal">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>Replacing a polynomial with a transcendental function creates repeated structures caused by the periodic nature of sine. These maps are useful for seeing how complex trigonometric functions fold the plane.</p>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Look for repeated bands. Sine keeps a memory of periodicity even after being promoted to complex iteration.</p></div>
+            <div class="experiment-step"><p>Move the orbit selector across a band boundary and watch the path switch from contained motion to escape.</p></div>
+            <div class="experiment-step"><p>Try escape angle coloring to see the directional channels more clearly.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering.</li>
-            <li>Julia constant editing, orbit display, smooth coloring, and orbit traps.</li>
-            <li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li>
-        </ul>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>Complex sine iteration</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=k\sin(z_n)\). For complex \(z=x+iy\), \(\sin(z)=\sin(x)\cosh(y)+i\cos(x)\sinh(y)\). The hyperbolic terms can grow rapidly in the imaginary direction, which is why escape channels appear even though ordinary real sine stays bounded.</p></div></details>
     </section>
+
     <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Complex_sine_and_cosine">Complex sine and cosine</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Transcendental_entire_function">Transcendental entire function</a></li>
-        </ul>
+        <h2>Coloring lenses</h2>
+        <div class="view-grid">
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Escape-time placeholder"></div><div class="view-card-content"><h3>Escape time</h3><p>Best for reading the periodic bands.</p><a class="inline-link" href="wxchaos://rendering/sinusoidal/escape-time">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Escape-angle placeholder"></div><div class="view-card-content"><h3>Escape angle</h3><p>Best for seeing exit direction.</p><a class="inline-link" href="wxchaos://rendering/sinusoidal/escape-angle">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Orbit trap placeholder"></div><div class="view-card-content"><h3>Orbit traps</h3><p>Best for graphic wave patterns.</p><a class="inline-link" href="wxchaos://rendering/sinusoidal/orbit-traps">Apply in wxChaos</a></div></article>
+        </div>
     </section>
 </main>
 </body>

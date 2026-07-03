@@ -1,38 +1,47 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Fractory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fractory - wxChaos Fractal Museum</title>
     <link rel="stylesheet" href="fractal_info.css">
-    <script>window.MathJax = {tex: {inlineMath: [['\\(', '\\)'], ['$', '$']]}};</script>
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Fractory</h1>
-    <p class="subtitle">An application-specific escape-time recurrence with two coupled complex states.</p>
-    <section>
-        <h2>Formula</h2>
-        <div class="formula">For each pixel \(c\), wxChaos starts \(z_0=c\), \(b_0=c-\sin(c)\). Then \(b_{n+1}=c+\frac{b_n}{c}-z_n\), \(z_{n+1}=z_n c+\frac{b_{n+1}}{z_n}\). Escape is detected when \(|z_n|>2\).</div>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Experimental formulas</p>
+            <h1>Fractory</h1>
+            <p class="subtitle">A wxChaos original with a changing auxiliary term.</p>
+            <p class="hero-introduction">Fractory is less of a standard landmark and more of a workshop artifact. It mixes multiplication, division, and a sine-derived offset so the orbit carries an internal variable that keeps being reshaped.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for a Fractory image"></div><figcaption><span class="figure-title">A formula workshop.</span> Add a render that captures Fractory's experimental texture.</figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/fractory">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
+
     <section>
-        <h2>Background</h2>
-        <p>Fractory is a wxChaos-grown formula: a small algebraic machine preserved because the image has a distinctive structure. The coupled \(z\) and \(b\) states make it feel related to second-order or memory-based escape-time systems, but with rational terms that can fold the plane sharply near zeros.</p>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Start by treating the image as terrain: find ridges, basins, and borders rather than searching for a famous silhouette.</p></div>
+            <div class="experiment-step"><p>Turn on orbit display. App-specific formulas become much clearer when you can see the orbit path that produces the color.</p></div>
+            <div class="experiment-step"><p>Use orbit traps or triangle inequality coloring to make the internal motion visible.</p></div>
+        </div>
     </section>
+
     <section>
-        <h2>wxChaos capabilities</h2>
-        <ul>
-            <li>High-precision rendering and orbit display.</li>
-            <li>Smooth coloring and orbit traps.</li>
-            <li>Algorithms: escape time, Gaussian integer, escape angle, triangle inequality.</li>
-        </ul>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details"><summary>The auxiliary value \(b\)</summary><div class="concept-details-content"><p>wxChaos initializes \(z=c\) and \(b=c-\sin(c)\). Each step updates the auxiliary value with \(b_{n+1}=c+b_n/c-z_n\), then updates \(z\) with \(z_{n+1}=z_n c+b_{n+1}/z_n\). The changing \(b\) acts like a small internal memory that makes the iteration less predictable than a one-line quadratic map.</p></div></details>
     </section>
+
     <section>
-        <h2>Learn more</h2>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Complex_dynamics">Complex dynamics</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Rational_function">Rational functions</a></li>
-        </ul>
+        <h2>Coloring lenses</h2>
+        <div class="view-grid">
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Escape-time placeholder"></div><div class="view-card-content"><h3>Escape time</h3><p>The best first orientation.</p><a class="inline-link" href="wxchaos://rendering/fractory/escape-time">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Triangle placeholder"></div><div class="view-card-content"><h3>Triangle inequality</h3><p>Good for seeing flow through the terrain.</p><a class="inline-link" href="wxchaos://rendering/fractory/triangle-inequality">Apply in wxChaos</a></div></article>
+            <article class="view-card"><div class="image-placeholder" role="img" aria-label="Orbit-trap placeholder"></div><div class="view-card-content"><h3>Orbit traps</h3><p>Useful for turning the experimental path into visible marks.</p><a class="inline-link" href="wxchaos://rendering/fractory/orbit-traps">Apply in wxChaos</a></div></article>
+        </div>
     </section>
 </main>
 </body>
