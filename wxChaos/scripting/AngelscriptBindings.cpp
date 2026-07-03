@@ -31,12 +31,12 @@ string consoleText;
 std::vector<ScriptData> GetValidUserScripts()
 {
     vector<ScriptData> output;
-    vector<string> scriptFiles = AppPaths::UserScriptFilenames();
+    vector<string> scriptFiles = AppPaths::ScriptFilenames();
 
     for (auto & scriptFile : scriptFiles)
     {
         AngelscriptConfigurationEngine configEngine;
-        const string filePath = AppPaths::UserScriptFileStd(wxString::FromUTF8(scriptFile.c_str()));
+        const string filePath = AppPaths::ScriptFileStd(wxString::FromUTF8(scriptFile.c_str()));
 
         if (!configEngine.CompileFromPath(filePath))
             continue;
@@ -53,12 +53,12 @@ std::vector<ScriptData> GetValidUserScripts()
 std::vector<ScriptData> GetAllUserScripts()
 {
     vector<ScriptData> output;
-    vector<string> scriptFiles = AppPaths::UserScriptFilenames();
+    vector<string> scriptFiles = AppPaths::ScriptFilenames();
 
     for (auto & scriptFile : scriptFiles)
     {
         AngelscriptConfigurationEngine configEngine;
-        const string filePath = AppPaths::UserScriptFileStd(wxString::FromUTF8(scriptFile.c_str()));
+        const string filePath = AppPaths::ScriptFileStd(wxString::FromUTF8(scriptFile.c_str()));
 
         if (!configEngine.CompileFromPath(filePath))
         {

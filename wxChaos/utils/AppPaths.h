@@ -18,11 +18,11 @@ namespace AppPaths
     std::string DocFileStd(const wxString& filename);
     wxString ConfigFile();
 
-    wxString UserScriptsDir();
-    std::string UserScriptsDirStd();
-    wxString UserScriptFile(const wxString& filename);
-    std::string UserScriptFileStd(const wxString& filename);
-    std::vector<std::string> UserScriptFilenames();
+    wxString ScriptsDir();
+    std::string ScriptsDirStd();
+    wxString ScriptFile(const wxString& filename);
+    std::string ScriptFileStd(const wxString& filename);
+    std::vector<std::string> ScriptFilenames();
 
     wxString FfmpegFile();
     std::string FfmpegFileStd();

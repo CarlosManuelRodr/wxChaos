@@ -395,8 +395,8 @@ void ScriptEditor::OnNewScript(wxCommandEvent&)
     if (nameDialog.ShowModal())
     {
         const string scriptFileName = nameDialog.GetScriptName().ToStdString() + ".as";
-        AppPaths::EnsureDirectory(AppPaths::UserScriptsDir());
-        const string newFilePath = AppPaths::UserScriptFileStd(wxString::FromUTF8(scriptFileName.c_str()));
+        AppPaths::EnsureDirectory(AppPaths::ScriptsDir());
+        const string newFilePath = AppPaths::ScriptFileStd(wxString::FromUTF8(scriptFileName.c_str()));
         ofstream ofs(newFilePath, std::ofstream::out);
         ofs << newScriptTemplate;
         ofs.close();

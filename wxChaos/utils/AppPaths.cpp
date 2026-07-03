@@ -35,7 +35,7 @@ namespace AppPaths
 
     wxString ExecutableDir()
     {
-        wxFileName executable(wxStandardPaths::Get().GetExecutablePath());
+        const wxFileName executable(wxStandardPaths::Get().GetExecutablePath());
         return executable.GetPath();
     }
 
@@ -86,30 +86,30 @@ namespace AppPaths
         return AppFile({"config.ini"});
     }
 
-    wxString UserScriptsDir()
+    wxString ScriptsDir()
     {
-        return AppDirectory({"UserScripts"});
+        return AppDirectory({"Scripts"});
     }
 
-    std::string UserScriptsDirStd()
+    std::string ScriptsDirStd()
     {
-        return ToStdPath(UserScriptsDir());
+        return ToStdPath(ScriptsDir());
     }
 
-    wxString UserScriptFile(const wxString& filename)
+    wxString ScriptFile(const wxString& filename)
     {
-        return AppFile({"UserScripts", filename});
+        return AppFile({"Scripts", filename});
     }
 
-    std::string UserScriptFileStd(const wxString& filename)
+    std::string ScriptFileStd(const wxString& filename)
     {
-        return ToStdPath(UserScriptFile(filename));
+        return ToStdPath(ScriptFile(filename));
     }
 
-    std::vector<std::string> UserScriptFilenames()
+    std::vector<std::string> ScriptFilenames()
     {
         std::vector<std::string> scriptFiles;
-        const wxDir directory(UserScriptsDir());
+        const wxDir directory(ScriptsDir());
 
         if (!directory.IsOpened())
             return scriptFiles;
