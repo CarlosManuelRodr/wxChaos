@@ -17,7 +17,7 @@
             <p class="subtitle">A Julia-like map with soft arms from the power \(1.5\).</p>
             <p class="hero-introduction">Jellyfish sits between familiar integer-power worlds. Raising \(z\) to \(1.5\) introduces branch behavior and a different kind of symmetry, giving the image a drifting, tentacled character.</p>
         </div>
-        <figure class="hero-figure"><img src="" alt="Placeholder for a Jellyfish fractal image"><figcaption><span class="figure-title">A fractional-power bloom.</span> Add a render that shows the soft radial arms.</figcaption></figure>
+        <figure class="hero-figure"><img src="jellyfish/overview.png" alt="An overview of Jellyfish fractal"><figcaption><span class="figure-title">A fractional-power bloom.</span> Add a render that shows the soft radial arms.</figcaption></figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/jellyfish">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
 
@@ -34,13 +34,70 @@
         <h2>Mathematical notes</h2>
         <details class="concept-details"><summary>Why fractional powers feel different</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=z_n^{1.5}+k\). Integer powers rotate and stretch the plane in whole-number symmetries. A fractional power requires choosing a complex branch, so the visual structure can open into cuts, fans, and asymmetric arms.</p></div></details>
     </section>
-
     <section>
         <h2>Coloring lenses</h2>
+        <p>The set stays the same, but each rendering method asks a different question about the orbit.</p>
         <div class="view-grid">
-            <article class="view-card"><img src="" alt="Smooth placeholder"><div class="view-card-content"><h3>Smooth coloring</h3><p>Best for a soft, floating look.</p><a class="inline-link" href="wxchaos://rendering/jellyfish/smooth-coloring">Apply in wxChaos</a></div></article>
-            <article class="view-card"><img src="" alt="Escape-angle placeholder"><div class="view-card-content"><h3>Escape angle</h3><p>Shows the direction in which arms unwind.</p><a class="inline-link" href="wxchaos://rendering/jellyfish/escape-angle">Apply in wxChaos</a></div></article>
-            <article class="view-card"><img src="" alt="Orbit-trap placeholder"><div class="view-card-content"><h3>Orbit traps</h3><p>Gives the tendrils a graphic, drawn quality.</p><a class="inline-link" href="wxchaos://rendering/jellyfish/orbit-traps">Apply in wxChaos</a></div></article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/escape-time.png"
+                    alt="Jellyfish rendered with Escape time">
+                <div class="view-card-content">
+                    <h3>Escape time</h3>
+                    <p>The baseline map: color follows how long each orbit takes to escape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/escape-time">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/smooth-coloring.png"
+                    alt="Jellyfish rendered with Smooth coloring">
+                <div class="view-card-content">
+                    <h3>Smooth coloring</h3>
+                    <p>Softens iteration bands into continuous gradients.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/smooth-coloring">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/gaussian-integer.png"
+                    alt="Jellyfish rendered with Gaussian integer">
+                <div class="view-card-content">
+                    <h3>Gaussian integer</h3>
+                    <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/gaussian-integer">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/escape-angle.png"
+                    alt="Jellyfish rendered with Escape angle">
+                <div class="view-card-content">
+                    <h3>Escape angle</h3>
+                    <p>Uses the direction of escape to reveal flow through the exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/escape-angle">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/triangle-inequality.png"
+                    alt="Jellyfish rendered with Triangle inequality">
+                <div class="view-card-content">
+                    <h3>Triangle inequality</h3>
+                    <p>Turns relationships inside the orbit into layered, topographic texture.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/triangle-inequality">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/orbit-trap.png"
+                    alt="Jellyfish rendered with Orbit traps">
+                <div class="view-card-content">
+                    <h3>Orbit traps</h3>
+                    <p>Colors points by how closely their orbits pass near a chosen trap shape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/orbit-traps">Apply in wxChaos</a>
+                </div>
+            </article>
         </div>
     </section>
 </main>

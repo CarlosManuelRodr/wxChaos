@@ -17,7 +17,7 @@
             <p class="subtitle">A fractal where attraction and escape compete through a fraction.</p>
             <p class="hero-introduction">The Magnet formula does not merely square and add. It divides one polynomial expression by another before squaring the result. That denominator creates singular tension: places where the map can stretch the plane violently.</p>
         </div>
-        <figure class="hero-figure"><img src="" alt="Placeholder for a Magnet fractal image"><figcaption><span class="figure-title">A rational landscape.</span> Add a Magnet render showing its bulb-like body and fine exterior.</figcaption></figure>
+        <figure class="hero-figure"><img src="magnet/overview.png" alt="An overview of Magnet fractal"><figcaption><span class="figure-title">A rational landscape.</span> Add a Magnet render showing its bulb-like body and fine exterior.</figcaption></figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/magnet">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
 
@@ -34,13 +34,70 @@
         <h2>Mathematical notes</h2>
         <details class="concept-details"><summary>The wxChaos Magnet formula</summary><div class="concept-details-content"><p>wxChaos starts at \(z_0=0\) and iterates \(z_{n+1}=\left(\frac{z_n^2+c-1}{2z_n+c-2}\right)^2\). Because this is a rational function, the denominator can strongly magnify nearby points. That stretching is part of what gives the Magnet set its distinctive geometry.</p></div></details>
     </section>
-
     <section>
         <h2>Coloring lenses</h2>
+        <p>The set stays the same, but each rendering method asks a different question about the orbit.</p>
         <div class="view-grid">
-            <article class="view-card"><img src="" alt="Escape-time placeholder"><div class="view-card-content"><h3>Escape time</h3><p>The clearest first map of the basins and exterior.</p><a class="inline-link" href="wxchaos://rendering/magnet/escape-time">Apply in wxChaos</a></div></article>
-            <article class="view-card"><img src="" alt="Gaussian placeholder"><div class="view-card-content"><h3>Gaussian integer</h3><p>Shows how orbits pass near the complex integer lattice.</p><a class="inline-link" href="wxchaos://rendering/magnet/gaussian-integer">Apply in wxChaos</a></div></article>
-            <article class="view-card"><img src="" alt="Triangle placeholder"><div class="view-card-content"><h3>Triangle inequality</h3><p>Good for textured, almost topographic surfaces.</p><a class="inline-link" href="wxchaos://rendering/magnet/triangle-inequality">Apply in wxChaos</a></div></article>
+            <article class="view-card">
+                <img
+                    src="magnet/escape-time.png"
+                    alt="Magnet rendered with Escape time">
+                <div class="view-card-content">
+                    <h3>Escape time</h3>
+                    <p>The baseline map: color follows how long each orbit takes to escape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/escape-time">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/smooth-coloring.png"
+                    alt="Magnet rendered with Smooth coloring">
+                <div class="view-card-content">
+                    <h3>Smooth coloring</h3>
+                    <p>Softens iteration bands into continuous gradients.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/smooth-coloring">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/gaussian-integer.png"
+                    alt="Magnet rendered with Gaussian integer">
+                <div class="view-card-content">
+                    <h3>Gaussian integer</h3>
+                    <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/gaussian-integer">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/escape-angle.png"
+                    alt="Magnet rendered with Escape angle">
+                <div class="view-card-content">
+                    <h3>Escape angle</h3>
+                    <p>Uses the direction of escape to reveal flow through the exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/escape-angle">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/triangle-inequality.png"
+                    alt="Magnet rendered with Triangle inequality">
+                <div class="view-card-content">
+                    <h3>Triangle inequality</h3>
+                    <p>Turns relationships inside the orbit into layered, topographic texture.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/triangle-inequality">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/orbit-trap.png"
+                    alt="Magnet rendered with Orbit traps">
+                <div class="view-card-content">
+                    <h3>Orbit traps</h3>
+                    <p>Colors points by how closely their orbits pass near a chosen trap shape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/orbit-traps">Apply in wxChaos</a>
+                </div>
+            </article>
         </div>
     </section>
 </main>

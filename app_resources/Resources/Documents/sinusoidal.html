@@ -17,7 +17,7 @@
             <p class="subtitle">A sine wave extended into the complex plane until it becomes a landscape.</p>
             <p class="hero-introduction">The sine function is familiar from circles and waves. In complex iteration it stops being merely periodic and starts building repeated corridors, folds, and escape channels.</p>
         </div>
-        <figure class="hero-figure"><img src="" alt="Placeholder for a Sinusoidal fractal image"><figcaption><span class="figure-title">Periodic motion, complex escape.</span> Add a render showing repeated sine-like structure.</figcaption></figure>
+        <figure class="hero-figure"><img src="sinusoidal/overview.png" alt="An overview of Sinusoidal fractal"><figcaption><span class="figure-title">Periodic motion, complex escape.</span> Add a render showing repeated sine-like structure.</figcaption></figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/sinusoidal">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
 
@@ -34,13 +34,70 @@
         <h2>Mathematical notes</h2>
         <details class="concept-details"><summary>Complex sine iteration</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=k\sin(z_n)\). For complex \(z=x+iy\), \(\sin(z)=\sin(x)\cosh(y)+i\cos(x)\sinh(y)\). The hyperbolic terms can grow rapidly in the imaginary direction, which is why escape channels appear even though ordinary real sine stays bounded.</p></div></details>
     </section>
-
     <section>
         <h2>Coloring lenses</h2>
+        <p>The set stays the same, but each rendering method asks a different question about the orbit.</p>
         <div class="view-grid">
-            <article class="view-card"><img src="" alt="Escape-time placeholder"><div class="view-card-content"><h3>Escape time</h3><p>Best for reading the periodic bands.</p><a class="inline-link" href="wxchaos://rendering/sinusoidal/escape-time">Apply in wxChaos</a></div></article>
-            <article class="view-card"><img src="" alt="Escape-angle placeholder"><div class="view-card-content"><h3>Escape angle</h3><p>Best for seeing exit direction.</p><a class="inline-link" href="wxchaos://rendering/sinusoidal/escape-angle">Apply in wxChaos</a></div></article>
-            <article class="view-card"><img src="" alt="Orbit trap placeholder"><div class="view-card-content"><h3>Orbit traps</h3><p>Best for graphic wave patterns.</p><a class="inline-link" href="wxchaos://rendering/sinusoidal/orbit-traps">Apply in wxChaos</a></div></article>
+            <article class="view-card">
+                <img
+                    src="sinusoidal/escape-time.png"
+                    alt="Sinusoidal rendered with Escape time">
+                <div class="view-card-content">
+                    <h3>Escape time</h3>
+                    <p>The baseline map: color follows how long each orbit takes to escape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/sinusoidal/escape-time">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="sinusoidal/smooth-coloring.png"
+                    alt="Sinusoidal rendered with Smooth coloring">
+                <div class="view-card-content">
+                    <h3>Smooth coloring</h3>
+                    <p>Softens iteration bands into continuous gradients.</p>
+                    <a class="inline-link" href="wxchaos://rendering/sinusoidal/smooth-coloring">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="sinusoidal/gaussian-integer.png"
+                    alt="Sinusoidal rendered with Gaussian integer">
+                <div class="view-card-content">
+                    <h3>Gaussian integer</h3>
+                    <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
+                    <a class="inline-link" href="wxchaos://rendering/sinusoidal/gaussian-integer">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="sinusoidal/escape-angle.png"
+                    alt="Sinusoidal rendered with Escape angle">
+                <div class="view-card-content">
+                    <h3>Escape angle</h3>
+                    <p>Uses the direction of escape to reveal flow through the exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/sinusoidal/escape-angle">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="sinusoidal/triangle-inequality.png"
+                    alt="Sinusoidal rendered with Triangle inequality">
+                <div class="view-card-content">
+                    <h3>Triangle inequality</h3>
+                    <p>Turns relationships inside the orbit into layered, topographic texture.</p>
+                    <a class="inline-link" href="wxchaos://rendering/sinusoidal/triangle-inequality">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="sinusoidal/orbit-trap.png"
+                    alt="Sinusoidal rendered with Orbit traps">
+                <div class="view-card-content">
+                    <h3>Orbit traps</h3>
+                    <p>Colors points by how closely their orbits pass near a chosen trap shape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/sinusoidal/orbit-traps">Apply in wxChaos</a>
+                </div>
+            </article>
         </div>
     </section>
 </main>

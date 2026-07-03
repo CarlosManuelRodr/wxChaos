@@ -17,7 +17,7 @@
             <p class="subtitle">A Julia set with a short-term memory.</p>
             <p class="hero-introduction">Here the parameter is fixed and each pixel chooses the starting value. Because the Manowar rule remembers the previous step, the orbit can feel less like a point jumping and more like a point dragging a thread.</p>
         </div>
-        <figure class="hero-figure"><img src="" alt="Placeholder for a Manowar Julia image"><figcaption><span class="figure-title">A remembered orbit.</span> Add a Manowar Julia render with fine connected detail.</figcaption></figure>
+        <figure class="hero-figure"><img src="manowar_julia/overview.png" alt="An overview of Manowar Julia"><figcaption><span class="figure-title">A remembered orbit.</span> Add a Manowar Julia render with fine connected detail.</figcaption></figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/manowar-julia">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
 
@@ -33,6 +33,72 @@
     <section>
         <h2>Mathematical notes</h2>
         <details class="concept-details"><summary>Fixed parameter, remembered past</summary><div class="concept-details-content"><p>The Manowar Julia rule fixes \(k\) and iterates \(z_{n+1}=z_n^2+m_n+k\). The memory value \(m_n\) is updated from the previous \(z\). Unlike a standard Julia set, the visible fate of a point depends on a two-value state.</p></div></details>
+    </section>
+    <section>
+        <h2>Coloring lenses</h2>
+        <p>The set stays the same, but each rendering method asks a different question about the orbit.</p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                    src="manowar_julia/escape-time.png"
+                    alt="Manowar Julia rendered with Escape time">
+                <div class="view-card-content">
+                    <h3>Escape time</h3>
+                    <p>The baseline map: color follows how long each orbit takes to escape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/escape-time">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/smooth-coloring.png"
+                    alt="Manowar Julia rendered with Smooth coloring">
+                <div class="view-card-content">
+                    <h3>Smooth coloring</h3>
+                    <p>Softens iteration bands into continuous gradients.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/smooth-coloring">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/gaussian-integer.png"
+                    alt="Manowar Julia rendered with Gaussian integer">
+                <div class="view-card-content">
+                    <h3>Gaussian integer</h3>
+                    <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/gaussian-integer">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/escape-angle.png"
+                    alt="Manowar Julia rendered with Escape angle">
+                <div class="view-card-content">
+                    <h3>Escape angle</h3>
+                    <p>Uses the direction of escape to reveal flow through the exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/escape-angle">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/triangle-inequality.png"
+                    alt="Manowar Julia rendered with Triangle inequality">
+                <div class="view-card-content">
+                    <h3>Triangle inequality</h3>
+                    <p>Turns relationships inside the orbit into layered, topographic texture.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/triangle-inequality">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/orbit-trap.png"
+                    alt="Manowar Julia rendered with Orbit traps">
+                <div class="view-card-content">
+                    <h3>Orbit traps</h3>
+                    <p>Colors points by how closely their orbits pass near a chosen trap shape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/orbit-traps">Apply in wxChaos</a>
+                </div>
+            </article>
+        </div>
     </section>
 </main>
 </body>

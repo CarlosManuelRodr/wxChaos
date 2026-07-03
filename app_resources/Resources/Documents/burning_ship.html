@@ -22,7 +22,7 @@
             </p>
         </div>
         <figure class="hero-figure">
-            <img src="burning_ship/overview.png" alt="Placeholder for a Burning Ship overview image">
+            <img src="burning_ship/overview.png" alt="An overview of Burning Ship">
             <figcaption><span class="figure-title">A folded parameter sea.</span> Add an overview render here showing the ship-like body and the dense coastline around it.</figcaption>
         </figure>
         <div class="action-row">
@@ -40,14 +40,70 @@
             <div class="experiment-step"><p><strong>Turn on orbit display.</strong> Move the selector near a sharp edge and watch how the reflected orbit bounces between mirrored halves.</p></div>
         </div>
     </section>
-
     <section>
-        <h2>Different lenses</h2>
-        <p>The set stays the same, but each coloring method asks a different question about escaping orbits.</p>
+        <h2>Coloring lenses</h2>
+        <p>The set stays the same, but each rendering method asks a different question about the orbit.</p>
         <div class="view-grid">
-            <article class="view-card"><img src="burning_ship/escape-time.png" alt="Escape-time placeholder"><div class="view-card-content"><h3>Escape time</h3><p>Good for reading the coastline and finding zoom targets.</p><a class="inline-link" href="wxchaos://rendering/burning-ship/escape-time">Apply in wxChaos</a></div></article>
-            <article class="view-card"><img src="burning_ship/smooth-coloring.png" alt="Smooth-coloring placeholder"><div class="view-card-content"><h3>Smooth coloring</h3><p>Softens bands so the smoke-like gradients become visible.</p><a class="inline-link" href="wxchaos://rendering/burning-ship/smooth-coloring">Apply in wxChaos</a></div></article>
-            <article class="view-card"><img src="burning_ship/triangle-inequality.png" alt="Triangle-inequality placeholder"><div class="view-card-content"><h3>Triangle inequality</h3><p>Turns the folded motion into flowing metal and flame textures.</p><a class="inline-link" href="wxchaos://rendering/burning-ship/triangle-inequality">Apply in wxChaos</a></div></article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/escape-time.png"
+                    alt="Burning Ship rendered with Escape time">
+                <div class="view-card-content">
+                    <h3>Escape time</h3>
+                    <p>The baseline map: color follows how long each orbit takes to escape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/escape-time">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/smooth-coloring.png"
+                    alt="Burning Ship rendered with Smooth coloring">
+                <div class="view-card-content">
+                    <h3>Smooth coloring</h3>
+                    <p>Softens iteration bands into continuous gradients.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/smooth-coloring">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/gaussian-integer.png"
+                    alt="Burning Ship rendered with Gaussian integer">
+                <div class="view-card-content">
+                    <h3>Gaussian integer</h3>
+                    <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/gaussian-integer">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/escape-angle.png"
+                    alt="Burning Ship rendered with Escape angle">
+                <div class="view-card-content">
+                    <h3>Escape angle</h3>
+                    <p>Uses the direction of escape to reveal flow through the exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/escape-angle">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/triangle-inequality.png"
+                    alt="Burning Ship rendered with Triangle inequality">
+                <div class="view-card-content">
+                    <h3>Triangle inequality</h3>
+                    <p>Turns relationships inside the orbit into layered, topographic texture.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/triangle-inequality">Apply in wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/orbit-trap.png"
+                    alt="Burning Ship rendered with Orbit traps">
+                <div class="view-card-content">
+                    <h3>Orbit traps</h3>
+                    <p>Colors points by how closely their orbits pass near a chosen trap shape.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/orbit-traps">Apply in wxChaos</a>
+                </div>
+            </article>
         </div>
     </section>
 
