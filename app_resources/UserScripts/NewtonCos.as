@@ -1,6 +1,3 @@
-/* Categorias de script: Complex, NumMet, Physic, Other.
-*/
-
 void Configure()
 {
     SetFractalName("Newton cos(z) - z = 0");

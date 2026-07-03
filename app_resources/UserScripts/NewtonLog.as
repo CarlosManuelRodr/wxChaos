@@ -1,6 +1,3 @@
-/* Categorias de script: Complex, NumMet, Physic, Other.
-*/
-
 void Configure()
 {
     SetFractalName("Newton log(z) - z = 0");

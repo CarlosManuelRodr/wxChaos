@@ -1,6 +1,3 @@
-/* Categorias de script: Complex, NumMet, Physic, Other.
-*/
-
 void Configure()
 {
     SetFractalName("Secant method z^3 - 1 = 0");

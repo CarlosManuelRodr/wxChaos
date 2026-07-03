@@ -1,6 +1,9 @@
 // Cut-Billiard map.
 // Author: José Ramón Palacios Barreda.
 // Email: palacios_barreda@hotmail.com
+// For more information and context check the paper:
+// Suhan Ree, L. E. Reichl, Fractal analysis of chaotic classical scattering in a cut-circle billiard with two openings Phys. Rev. E 65, 055205(R), (2002).
+// DOI: 10.1103/PhysRevE.65.055205
 
 void Configure()
 {
@@ -12,27 +15,27 @@ void Configure()
     SetDefaultIter(50000);
 }
 
-// Otros
+// Miscellaneous
 double pi = 3.14159265358979323846;
 double radians(double x){return x*pi/180.0;}
 double degrees(double x){return x*180.0/pi;}
 
 
-// Parámetros
-int prec = 13;               // Precisión decimal
-int max_iter;                // Máximo número de iteraciones
-double R = 1.0;              // Radio de la frontera
-double W,w;                  // Corte de la frontera
-double v0 = R;               // Módulo de la velocidad
-double phi = 0.0;            // Ángulo de inyección
-double vx, vy, vxp, vyp;     // Dirección de la velocidad
-double omega = 3.0*pi/4.0;   // Posición de la entrada respecto al corte
-double gammax = 3.0*pi/2.0;  // Posición de la salida
-double delta = radians(10);  // Tamaño angular de las aperturas
-double xPart,yPart;          // Coordenadas de la partícula
-double b;                    // Ordenada al origen del corte
-double alpha;                // Ángulo entre la normal de la frontera y el eje x
-int a;                       // Apertura de salida
+// Parameters
+int prec = 13;               // Decimal precision
+int max_iter;                // Maximum number of iterations
+double R = 1.0;              // Boundary radius
+double W,w;                  // Boundary cut
+double v0 = R;               // Velocity magnitude
+double phi = 0.0;            // Injection angle
+double vx, vy, vxp, vyp;     // Velocity direction
+double omega = 3.0*pi/4.0;   // Entrance position relative to the cut
+double gammax = 3.0*pi/2.0;  // Exit position
+double delta = radians(10);  // Angular size of the openings
+double xPart,yPart;          // Particle coordinates
+double b;                    // Y-intercept of the cut
+double alpha;                // Angle between the boundary normal and the x-axis
+int a;                       // Exit opening
 
 class simres
 {
@@ -50,13 +53,13 @@ simres simular()
 
     res.colisiones = 0;
     double _large = pow_r(10,99);
-    double clx = -b/2.0 - sqrt_r(2.0*R*R - b*b)/2.0; // Limites del corte recto
+    double clx = -b/2.0 - sqrt_r(2.0*R*R - b*b)/2.0; // Straight cut limits
     double cly = b/2.0 - sqrt_r(2.0*R*R - b*b)/2.0;
     double cux = -b/2.0 + sqrt_r(2.0*R*R - b*b)/2.0;
     double cuy = b/2.0 + sqrt_r(2.0*R*R - b*b)/2.0;
-    double eps = 1.0/pow_r(10.0, prec-2); // Precisión
+    double eps = 1.0/pow_r(10.0, prec-2); // Precision
 
-    // Coordenadas de Birkhoff
+    // Birkhoff coordinates
     double psi1,psi2;
     double s = 0, p, theta = 0;
     if(cux > 0){
@@ -77,14 +80,14 @@ simres simular()
     {
         if(abs_r(vx) < eps) vx = 0.0;
         if(abs_r(vy) < eps) vy = 0.0;
-        // Adelantar hasta la colisión más próxima
+        // Advance to the nearest collision
         double m;
         if(vx == 0.0) m = _large;
         else m = vy/vx;
         double prx = 0.0, pry = 0.0, dr = 0.0;
         double pc1x, pc1y,pc2x,pc2y,dc1,dc2;
         bool col_corte = false;
-        // Colisión con corte recto
+        // Collision with the straight cut
         if (m != _large){
             prx = (yPart - m*xPart - b)/(1.0-m);
             pry = prx + b;
@@ -98,7 +101,7 @@ simres simular()
         }
         else
         {
-            // Trayectoria con pendiente infinita
+            // Vertical trajectory
             int z = 0;
             if(vy < 0) z++;
             prx = xPart;
@@ -112,93 +115,93 @@ simres simular()
             dc2 = sqrt_r((pc2x-xPart)*(pc2x-xPart)+(pc2y-yPart)*(pc2y-yPart));
         }
 
-        // Casos de colisión
-        // Puerta de salida
+        // Collision cases
+        // Exit opening
         if(res.colisiones==0) dc1 = _large;
-        // Puntos detrás del corte (en la circ)
+        // Points behind the cut (on the circle)
         if((pc1x <= (pc1y - b))&&(pc1y >= (pc1x + b))){ dc1 = _large; }
         if((pc2x <= (pc2y - b))&&(pc2y >= (pc2x + b))){ dc2 = _large; }
-        // Paralelo a corte
+        // Parallel to the cut
         if(m==1.0) dr = _large;
-        // Intersección entre circunferencia y corte recto
+        // Intersection between the circle and the straight cut
         if(dr==dc1) dr = _large;
         if(dr==dc2) dr = _large;
-        // Punto de colisión
+        // Collision point
         if(dr < eps) dr = _large;
         if(dc1 < eps) dc1 = _large;
         if(dc2 < eps) dc2 = _large;
-        // Puntos en el corte, fuera de la circ.
+        // Points on the cut but outside the circle
         if((prx > cux)||(prx < clx)) { dr = _large; }
-        // Escoger colisión "ganadora"
+        // Select the winning collision
         if((dr < dc1)&&(dr < dc2)){xPart = prx; yPart = pry; col_corte=true;}
         else if((dc1 < dc2)&&(dc1 < dr)){xPart = pc1x; yPart = pc1y;}
         else if((dc2 < dc1)&&(dc2 < dr)){xPart = pc2x; yPart = pc2y;}
         else
         {
             if(!silent)
-                PrintString("Error en detección de colisión. simular()");
+                PrintString("Collision detection error. simular()");
         }
 
-        // Actualizar velocidades
-        if(col_corte) // Colisión con corte recto
+        // Update velocities
+        if(col_corte) // Collision with the straight cut
         {
-            // Coordenadas de Birkhoff
+            // Birkhoff coordinates
             s = l1 + sqrt_r((xPart-cux)*(xPart-cux)+(yPart-cuy)*(yPart-cuy));
-            s /= l; // Normalizar
-            // Pasar al marco de referencia rotado
+            s /= l; // Normalize
+            // Transform to the rotated reference frame
             vxp = vx*cos_r(omega) + vy*sin_r(omega);
             vyp = -vx*sin_r(omega) + vy*cos_r(omega);
-            // Ángulo de colisión
+            // Collision angle
             if(vyp > 0) theta = acos_r(vyp/sqrt_r(vxp*vxp+vyp*vyp));
             else theta = acos_r(-vyp/sqrt_r(vxp*vxp+vyp*vyp));
             p = cos_r(theta);
-            // Invertir velocidad normal a la frontera
+            // Reverse the velocity component normal to the boundary
             vxp *= -1.0;
-            // Regresar al marco original
+            // Transform back to the original reference frame
             vx = vxp*cos_r(omega) - vyp*sin_r(omega);
             vy = vxp*sin_r(omega) + vyp*cos_r(omega);
 
             res.colisiones += 1;
         }
-        else // Colisión con arco circular
+        else // Collision with the circular arc
         {
-            if ((xPart >= 0)&&(yPart >= 0)){// Cuad I
+            if ((xPart >= 0)&&(yPart >= 0)){// Quadrant I
                 alpha = acos_r(xPart/R);
             }
-            else if ((xPart <= 0)&&(yPart >= 0)){// Cuad II
+            else if ((xPart <= 0)&&(yPart >= 0)){// Quadrant II
                 alpha = pi/2.0 + acos_r(yPart/R);
             }
-            else if ((xPart <= 0)&&(yPart <= 0)){// Cuad III
+            else if ((xPart <= 0)&&(yPart <= 0)){// Quadrant III
                 alpha = pi + acos_r(abs_r(xPart)/R);
             }
-            else if ((xPart >= 0)&&(yPart <= 0)){// Cuad IV
+            else if ((xPart >= 0)&&(yPart <= 0)){// Quadrant IV
                 alpha = 2.0*pi - acos_r(xPart/R);
             }
 
-            //Coordenadas de Birkhoff
+            // Birkhoff coordinates
             if((0 <= alpha )&&(alpha <= psi1)) s = R*alpha;
             else if ((psi2 <= alpha)&&(alpha <= 2*pi)) s=l1+l2+R*(alpha-psi2);
             else{
                 if(!silent){
-                    PrintString("Error en detección de colisión. simular()");
+                    PrintString("Collision detection error. simular()");
                 }
             }
-            s /= l; // Normalizar
+            s /= l; // Normalize
 
-            // Pasar al marco de referencia rotado
+            // Transform to the rotated reference frame
             vxp = vx*cos_r(alpha) + vy*sin_r(alpha);
             vyp = -vx*sin_r(alpha) + vy*cos_r(alpha);
-            // Invertir velocidad normal a la frontera
+            // Reverse the velocity component normal to the boundary
             vxp *= -1;
-            // Ángulo de colisión
+            // Collision angle
             if(vyp > 0) theta = acos_r(vyp/sqrt_r(vxp*vxp+vyp*vyp));
             else theta = acos_r(-vyp/sqrt_r(vxp*vxp+vyp*vyp));
             p = cos_r(theta);
-            // Regresar al marco original
+            // Transform back to the original reference frame
             vx = vxp*cos_r(alpha) - vyp*sin_r(alpha);
             vy = vxp*sin_r(alpha) + vyp*cos_r(alpha);
 
-            // Colisión con aperturas
+            // Collision with the openings
             if(isClosed==false){
                 if ((alpha < (gammax + delta/2.0))&&(alpha > (gammax - delta/2.0))) a=2.0;
                 else if ((alpha <= delta/2.0)||((2.0*pi - delta/2.0) <= alpha)) a=1;
@@ -225,7 +228,7 @@ void Render()
     {
         W = maxY - y*yFactor;
         if(W > 2) continue;
-        
+
         // Phi
         for(int x=wo; x<wf; x++)
         {
@@ -236,7 +239,7 @@ void Render()
             vx = -v0*cos_r(phi);
             vy = v0*sin_r(phi);
             b = (W-R)/cos_r(omega - pi/2);
-            
+
             result = simular();
             if(a == 1)
                 SetPoint(x, y, false, result.colisiones);
