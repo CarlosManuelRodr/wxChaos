@@ -109,7 +109,7 @@ namespace AppPaths
     std::vector<std::string> UserScriptFilenames()
     {
         std::vector<std::string> scriptFiles;
-        wxDir directory(UserScriptsDir());
+        const wxDir directory(UserScriptsDir());
 
         if (!directory.IsOpened())
             return scriptFiles;

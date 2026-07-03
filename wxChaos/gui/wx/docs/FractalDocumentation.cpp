@@ -1,5 +1,40 @@
 #include "docs/FractalDocumentation.h"
 #include "AppPaths.h"
+#include <wx/filename.h>
+
+wxString FractalDocumentation::ResolveScriptDocumentFile(const std::string& documentationPath)
+{
+    if (documentationPath.empty())
+        return wxEmptyString;
+
+    wxString path = wxString::FromUTF8(documentationPath.c_str());
+    path.Replace("\\", "/");
+
+    wxFileName fileName(path);
+    if (fileName.IsAbsolute())
+        return fileName.GetFullPath();
+
+    if (path.StartsWith("Resources/Documents/"))
+        path = path.Mid(wxString("Resources/Documents/").length());
+    else if (path.StartsWith("Documents/"))
+        path = path.Mid(wxString("Documents/").length());
+
+    wxFileName documentFile;
+    documentFile.AssignDir(AppPaths::AppDirectory({"Resources", "Documents"}));
+
+    wxString remaining = path;
+    while (remaining.Contains("/"))
+    {
+        const wxString directory = remaining.BeforeFirst('/');
+        if (!directory.empty() && directory != ".")
+            documentFile.AppendDir(directory);
+        remaining = remaining.AfterFirst('/');
+    }
+
+    documentFile.SetFullName(remaining);
+    documentFile.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE);
+    return documentFile.GetFullPath();
+}
 
 wxString FractalDocumentation::GetDocumentFilename(const FractalType type)
 {
@@ -43,4 +78,14 @@ wxString FractalDocumentation::GetDocumentFile(const FractalType type)
 {
     const wxString filename = GetDocumentFilename(type);
     return filename.empty() ? wxEmptyString : AppPaths::ResourceFile({"Documents", filename});
+}
+
+bool FractalDocumentation::HasDocumentation(const ScriptData& scriptData)
+{
+    return !scriptData.documentationPath.empty();
+}
+
+wxString FractalDocumentation::GetDocumentFile(const ScriptData& scriptData)
+{
+    return ResolveScriptDocumentFile(scriptData.documentationPath);
 }

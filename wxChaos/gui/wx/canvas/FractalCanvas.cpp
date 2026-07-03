@@ -7,6 +7,7 @@
 #include <wx/stattext.h>
 #include "AppPaths.h"
 #include "canvas/FractalCanvas.h"
+#include "docs/FractalDocumentation.h"
 #include "export/ImageExportSizeDialog.h"
 using namespace std;
 
@@ -617,6 +618,18 @@ FractalInteractionTool FractalCanvas::GetInteractionTool() const
 FractalType FractalCanvas::GetFractalType() const
 {
     return _fractalType;
+}
+bool FractalCanvas::HasFractalInformation() const
+{
+    return _fractalType == FractalType::ScriptFractal
+        ? FractalDocumentation::HasDocumentation(_scriptData)
+        : FractalDocumentation::HasDocumentation(_fractalType);
+}
+wxString FractalCanvas::GetFractalInformationFile() const
+{
+    return _fractalType == FractalType::ScriptFractal
+        ? FractalDocumentation::GetDocumentFile(_scriptData)
+        : FractalDocumentation::GetDocumentFile(_fractalType);
 }
 bool FractalCanvas::CanAbortRender() const
 {

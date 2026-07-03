@@ -1,0 +1,50 @@
+#include <doctest/doctest.h>
+#include <wx/filename.h>
+
+#include "docs/FractalDocumentation.h"
+
+TEST_CASE("script documentation is absent by default")
+{
+    const ScriptData scriptData;
+
+    CHECK_FALSE(FractalDocumentation::HasDocumentation(scriptData));
+    CHECK(FractalDocumentation::GetDocumentFile(scriptData).empty());
+}
+
+TEST_CASE("script documentation path resolves under bundled documents")
+{
+    ScriptData scriptData;
+    scriptData.documentationPath = "script_gallery/duffing.html";
+
+    const wxString documentFile = FractalDocumentation::GetDocumentFile(scriptData);
+
+    CHECK(FractalDocumentation::HasDocumentation(scriptData));
+    CHECK(documentFile.Contains("Resources"));
+    CHECK(documentFile.Contains("Documents"));
+    CHECK(documentFile.Contains("script_gallery"));
+    CHECK(documentFile.EndsWith("duffing.html"));
+}
+
+TEST_CASE("script documentation path accepts bundled documents prefix")
+{
+    ScriptData scriptData;
+    scriptData.documentationPath = "Documents/duffing.html";
+
+    const wxString documentFile = FractalDocumentation::GetDocumentFile(scriptData);
+
+    CHECK(documentFile.Contains("Resources"));
+    CHECK(documentFile.Contains("Documents"));
+    CHECK(documentFile.EndsWith("duffing.html"));
+}
+
+TEST_CASE("script documentation path preserves absolute paths")
+{
+    wxFileName absolutePath;
+    absolutePath.AssignDir(wxFileName::GetHomeDir());
+    absolutePath.SetFullName("script_documentation.html");
+
+    ScriptData scriptData;
+    scriptData.documentationPath = std::string(absolutePath.GetFullPath().utf8_string());
+
+    CHECK(FractalDocumentation::GetDocumentFile(scriptData) == absolutePath.GetFullPath());
+}

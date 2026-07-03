@@ -15,6 +15,7 @@ bool** asSetMap;
 double** asColorMap;
 static constexpr double InvalidColor = std::numeric_limits<double>::max();
 static string name;
+static string documentationPath;
 static ScriptCategory scriptCategory;
 static double minX, maxX, minY;
 static int defaultIter;
@@ -119,6 +120,11 @@ static void asSetFractalName(string& str)
     name = str;
 }
 
+static void asSetDocumentationPath(string& str)
+{
+    documentationPath = str;
+}
+
 static void asSetCategory(string& str)
 {
     if (str == "Complex")
@@ -216,6 +222,7 @@ ScriptData FetchScriptData(const string& fileName)
     dat.scriptCategory = scriptCategory;
     dat.file = fileName;
     dat.name = name;
+    dat.documentationPath = documentationPath;
     dat.minX = minXSet ? minX : -2;
     dat.maxX = maxXSet ? maxX : 2;
     dat.minY = minYSet ? minY : -2;
@@ -227,6 +234,7 @@ ScriptData FetchScriptData(const string& fileName)
 
     minXSet = maxXSet = minYSet = false;
     defaultIterSet = false;
+    documentationPath.clear();
     juliaVarietySet = false;
     asRedrawAlways = false;
     noSetMap = false;
@@ -351,6 +359,7 @@ void RegisterWxChaosInterface(asIScriptEngine* engine)
     // ReSharper disable once CppJoinDeclarationAndAssignment
     int r;
     r = engine->RegisterGlobalFunction("void SetFractalName(string &in)", asFUNCTION(asSetFractalName), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void SetDocumentationPath(string &in)", asFUNCTION(asSetDocumentationPath), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetCategory(string &in)", asFUNCTION(asSetCategory), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetPoint(int, int, bool, int)", asFUNCTION(asSetPoint), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetMinX(double)", asFUNCTION(asSetMinX), asCALL_CDECL); assert(r >= 0);

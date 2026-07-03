@@ -181,7 +181,7 @@ void JuliaPreviewFrame::OpenFractalInformation()
     if (_previewCanvas == nullptr)
         return;
 
-    const wxString documentFile = FractalDocumentation::GetDocumentFile(_previewCanvas->GetFractalType());
+    const wxString documentFile = _previewCanvas->GetFractalInformationFile();
     if (documentFile.empty())
         return;
 
@@ -192,7 +192,7 @@ void JuliaPreviewFrame::OpenFractalInformation()
 void JuliaPreviewFrame::UpdateInformationTool() const
 {
     if (_toolbar != nullptr && _previewCanvas != nullptr)
-        _toolbar->SetInformationEnabled(FractalDocumentation::HasDocumentation(_previewCanvas->GetFractalType()));
+        _toolbar->SetInformationEnabled(_previewCanvas->HasFractalInformation());
 }
 
 void JuliaPreviewFrame::ResetColorRotationTool() const

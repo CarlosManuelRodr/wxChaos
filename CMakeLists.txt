@@ -191,12 +191,16 @@ if(BUILD_TESTING)
             tests/gui/GuiTestsMain.cpp
             tests/gui/sfml/SelectionRectTests.cpp
             tests/gui/wx/DocumentationLinkActionTests.cpp
+            tests/gui/wx/FractalDocumentationTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
             tests/gui/wx/WxGradientTests.cpp
             wxChaos/gui/sfml/SelectionRect.cpp
             wxChaos/gui/wx/docs/DocumentationLinkAction.cpp
+            wxChaos/gui/wx/docs/FractalDocumentation.cpp
             wxChaos/gui/wx/common/PanelOptions.cpp
             wxChaos/gui/wx/common/wxGradient.cpp
+            wxChaos/scripting/ScriptData.cpp
+            wxChaos/utils/AppPaths.cpp
     )
 
     target_include_directories(wxChaosGuiTests PRIVATE
@@ -204,6 +208,8 @@ if(BUILD_TESTING)
             wxChaos/core
             wxChaos/gui
             wxChaos/gui/wx
+            wxChaos/scripting
+            wxChaos/utils
     )
 
     target_link_libraries(wxChaosGuiTests PRIVATE
