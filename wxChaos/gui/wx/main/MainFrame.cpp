@@ -256,7 +256,7 @@ void MainFrame::OpenFractalInformation()
     if (_fractalCanvas == nullptr)
         return;
 
-    const wxString documentFile = _fractalCanvas->GetFractalInformationFile();
+    const wxString documentFile = _fractalCanvas->GetFractal()->GetFractalInformationFile();
     if (documentFile.empty())
         return;
 
@@ -292,7 +292,7 @@ void MainFrame::OpenFractalInformation()
 void MainFrame::UpdateInformationTool() const
 {
     if (_interactionToolbar != nullptr && _fractalCanvas != nullptr)
-        _interactionToolbar->SetInformationEnabled(_fractalCanvas->HasFractalInformation());
+        _interactionToolbar->SetInformationEnabled(_fractalCanvas->GetFractal()->HasFractalInformation());
 }
 
 bool MainFrame::HandleDocumentationLink(const wxString& url)

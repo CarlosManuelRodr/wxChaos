@@ -30,4 +30,6 @@ public:
     void ClearErrorInfo() const;
     std::string GetPath();
     const ScriptData& GetScriptData() const;
+    bool HasFractalInformation() const override;
+    wxString GetFractalInformationFile() const override;
 };

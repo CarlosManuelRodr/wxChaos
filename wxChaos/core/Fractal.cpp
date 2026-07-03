@@ -11,6 +11,7 @@
 #include "coloring/ColorPalette.h"
 #include "coloring/PaletteMapping.h"
 #include "coloring/RenderingAlgorithm.h"
+#include "docs/FractalDocumentation.h"
 #include "SystemUtilities.h"
 using namespace std;
 
@@ -1306,6 +1307,14 @@ void Fractal::SetRendered(const bool mode)
 FractalType Fractal::GetType() const
 {
     return _type;
+}
+bool Fractal::HasFractalInformation() const
+{
+    return FractalDocumentation::HasDocumentation(_type);
+}
+wxString Fractal::GetFractalInformationFile() const
+{
+    return FractalDocumentation::GetDocumentFile(_type);
 }
 bool** Fractal::GetSetMap() const
 {

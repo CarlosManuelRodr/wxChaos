@@ -406,6 +406,14 @@ public:
     ///@brief Gets the type of the fractal.
     FractalType GetType() const;
 
+    /// @brief Checks whether this fractal has an information page.
+    /// @return true when documentation is available for this fractal.
+    virtual bool HasFractalInformation() const;
+
+    /// @brief Gets the information page for this fractal.
+    /// @return Full local documentation path, or an empty string when unavailable.
+    virtual wxString GetFractalInformationFile() const;
+
     ///@brief Returns a pointer to the set map.
     bool** GetSetMap() const;
 

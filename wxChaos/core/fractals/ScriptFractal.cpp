@@ -1,5 +1,6 @@
 #include "ScriptFractal.h"
 #include "TextUtils.h"
+#include "docs/FractalDocumentation.h"
 #include "../../scripting/AngelscriptConfigurationEngine.h"
 #include "../../scripting/AngelscriptBindings.h"
 using namespace std;
@@ -125,4 +126,12 @@ void ScriptFractal::ClearErrorInfo() const
 string ScriptFractal::GetPath()
 {
     return _path;
+}
+bool ScriptFractal::HasFractalInformation() const
+{
+    return FractalDocumentation::HasDocumentation(_myScriptData);
+}
+wxString ScriptFractal::GetFractalInformationFile() const
+{
+    return FractalDocumentation::GetDocumentFile(_myScriptData);
 }

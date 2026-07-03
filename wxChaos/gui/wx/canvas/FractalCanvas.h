@@ -41,7 +41,6 @@ class FractalCanvas : public wxSFMLCanvas
     FractalPresenter* _fractalPresenter;
     SelectionRect* _selectionRect;
     CoordinateSelector* _coordinateSelector;
-    FractalType _fractalType;
     Fractal* _fractal;
 
     sf::Image _keyboardImage;               ///< Texture of the info images.
@@ -166,14 +165,6 @@ public:
 
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;
-
-    /// @brief Checks whether the current fractal has an information page.
-    /// @return true when the current built-in or script fractal declares documentation.
-    bool HasFractalInformation() const;
-
-    /// @brief Gets the information page for the current fractal.
-    /// @return Full local documentation path, or an empty string when unavailable.
-    wxString GetFractalInformationFile() const;
 
     ///@return true if the current render can be aborted.
     bool CanAbortRender() const;

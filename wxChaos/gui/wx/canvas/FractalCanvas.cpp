@@ -7,7 +7,6 @@
 #include <wx/stattext.h>
 #include "AppPaths.h"
 #include "canvas/FractalCanvas.h"
-#include "docs/FractalDocumentation.h"
 #include "export/ImageExportSizeDialog.h"
 using namespace std;
 
@@ -35,8 +34,6 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
                              const wxPoint& position, const wxSize& size, const long style)
                              : wxSFMLCanvas(parent, id, position, size, style)
 {
-    _fractalType = fractalType;
-
     // Status variables.
     _canvasSize = size;
     _juliaMode = false;
@@ -151,14 +148,15 @@ wxString FractalCanvas::BuildStatusText() const
 
     if (_hasLastMousePosition)
     {
-        if (_fractalType == FractalType::DoublePendulum)
+        const FractalType fractalType = GetFractalType();
+        if (fractalType == FractalType::DoublePendulum)
         {
             text = "θ2: ";
             text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
             text += "   θ1: ";
             text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
         }
-        else if (_fractalType == FractalType::SierpinskiTriangle || _fractalType == FractalType::ScriptFractal)
+        else if (fractalType == FractalType::SierpinskiTriangle || fractalType == FractalType::ScriptFractal)
         {
             text = "x: ";
             text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
@@ -449,7 +447,7 @@ void FractalCanvas::OnUpdate()
                     this->SetOrbitMode(!_orbitMode);
                 if (_event.key.code == sf::Keyboard::F4)  // Saves image.
                 {
-                    const auto diag = new ImageExportSizeDialog(this, _fractalType, _fractal, this);
+                    const auto diag = new ImageExportSizeDialog(this, GetFractalType(), _fractal, this);
                     diag->ShowModal();
                     diag->Destroy();
                 }
@@ -617,23 +615,11 @@ FractalInteractionTool FractalCanvas::GetInteractionTool() const
 }
 FractalType FractalCanvas::GetFractalType() const
 {
-    return _fractalType;
-}
-bool FractalCanvas::HasFractalInformation() const
-{
-    return _fractalType == FractalType::ScriptFractal
-        ? FractalDocumentation::HasDocumentation(_scriptData)
-        : FractalDocumentation::HasDocumentation(_fractalType);
-}
-wxString FractalCanvas::GetFractalInformationFile() const
-{
-    return _fractalType == FractalType::ScriptFractal
-        ? FractalDocumentation::GetDocumentFile(_scriptData)
-        : FractalDocumentation::GetDocumentFile(_fractalType);
+    return _fractal != nullptr ? _fractal->GetType() : FractalType::Undefined;
 }
 bool FractalCanvas::CanAbortRender() const
 {
-    return _fractal != nullptr && _fractal->IsRendering() && _fractalType != FractalType::SierpinskiTriangle;
+    return _fractal != nullptr && _fractal->IsRendering() && GetFractalType() != FractalType::SierpinskiTriangle;
 }
 void FractalCanvas::AbortRender() const
 {
@@ -647,7 +633,6 @@ void FractalCanvas::ChangeType(const FractalType type)
 {
     // Deletes old fractal and creates a new one.
     this->CreateFractal(type);
-    _fractalType = type;
     _fractal = _fractalFactory.GetFractal();
     AttachFractalStatusHandler();
     _fractalPresenter->SetFractal(_fractal);
@@ -670,7 +655,6 @@ void FractalCanvas::ChangeType(const FractalType type)
 void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
 {
     // Deletes old fractal and creates a new one.
-    _fractalType = FractalType::ScriptFractal;
     _scriptData = scriptData;
     this->CreateScriptFractal(_scriptData);
     _fractal = _fractalFactory.GetFractal();
@@ -730,10 +714,11 @@ void FractalCanvas::Reset()
     if (_fractal->IsRendering())
         _fractal->StopRender();
 
-    if (_fractalType == FractalType::ScriptFractal)
+    const FractalType fractalType = GetFractalType();
+    if (fractalType == FractalType::ScriptFractal)
         this->CreateScriptFractal(_scriptData);
     else
-        this->CreateFractal(_fractalType);
+        this->CreateFractal(fractalType);
 
     _fractal = _fractalFactory.GetFractal();
     AttachFractalStatusHandler();
