@@ -487,52 +487,10 @@ figcaption {
     position: relative;
 }
 
-.iteration-lab-stage svg {
+.iteration-lab-stage canvas {
     display: block;
     height: auto;
     width: 100%;
-}
-
-.iteration-axis {
-    stroke: rgba(255, 255, 255, 0.28);
-    stroke-width: 0.01;
-}
-
-.iteration-grid-line {
-    stroke: rgba(255, 255, 255, 0.08);
-    stroke-width: 0.006;
-}
-
-.iteration-safe-circle {
-    fill: none;
-    opacity: 0.28;
-    stroke: #8cc7ff;
-    stroke-dasharray: 0.04 0.04;
-    stroke-width: 0.01;
-}
-
-.iteration-trace {
-    opacity: 0;
-    stroke: #f7b267;
-    stroke-linecap: round;
-    stroke-width: 0.012;
-    transition: opacity 160ms ease;
-}
-
-.iteration-trace.visible {
-    opacity: 0.42;
-}
-
-.iteration-point {
-    fill: #8cc7ff;
-    opacity: 0.88;
-    stroke: rgba(255, 255, 255, 0.5);
-    stroke-width: 0.004;
-}
-
-.iteration-point.escaped {
-    fill: #f7b267;
-    opacity: 0.72;
 }
 
 .iteration-lab-controls {

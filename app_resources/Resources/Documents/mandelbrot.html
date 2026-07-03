@@ -380,29 +380,13 @@ for each pixel (px, py):
 
         <div class="iteration-lab" data-mandelbrot-iteration-lab>
             <div class="iteration-lab-stage">
-                <svg viewBox="-2.25 -1.35 3.5 2.7" role="img" aria-labelledby="iteration-lab-svg-title iteration-lab-svg-desc">
-                    <title id="iteration-lab-svg-title">Animated Mandelbrot iteration grid</title>
-                    <desc id="iteration-lab-svg-desc">A grid of complex parameters whose dots move as the Mandelbrot recurrence is iterated.</desc>
-                    <g class="iteration-grid" aria-hidden="true">
-                        <line class="iteration-grid-line" x1="-2" y1="-1.35" x2="-2" y2="1.35"></line>
-                        <line class="iteration-grid-line" x1="-1.5" y1="-1.35" x2="-1.5" y2="1.35"></line>
-                        <line class="iteration-grid-line" x1="-1" y1="-1.35" x2="-1" y2="1.35"></line>
-                        <line class="iteration-grid-line" x1="-0.5" y1="-1.35" x2="-0.5" y2="1.35"></line>
-                        <line class="iteration-grid-line" x1="0" y1="-1.35" x2="0" y2="1.35"></line>
-                        <line class="iteration-grid-line" x1="0.5" y1="-1.35" x2="0.5" y2="1.35"></line>
-                        <line class="iteration-grid-line" x1="1" y1="-1.35" x2="1" y2="1.35"></line>
-                        <line class="iteration-grid-line" x1="-2.25" y1="-1" x2="1.25" y2="-1"></line>
-                        <line class="iteration-grid-line" x1="-2.25" y1="-0.5" x2="1.25" y2="-0.5"></line>
-                        <line class="iteration-grid-line" x1="-2.25" y1="0" x2="1.25" y2="0"></line>
-                        <line class="iteration-grid-line" x1="-2.25" y1="0.5" x2="1.25" y2="0.5"></line>
-                        <line class="iteration-grid-line" x1="-2.25" y1="1" x2="1.25" y2="1"></line>
-                        <line class="iteration-axis" x1="-2.25" y1="0" x2="1.25" y2="0"></line>
-                        <line class="iteration-axis" x1="0" y1="-1.35" x2="0" y2="1.35"></line>
-                        <circle class="iteration-safe-circle" cx="0" cy="0" r="2"></circle>
-                    </g>
-                    <g data-trace-layer></g>
-                    <g data-point-layer></g>
-                </svg>
+                <canvas
+                    data-iteration-canvas
+                    width="980"
+                    height="756"
+                    role="img"
+                    aria-label="Animated grid of complex parameters moving under repeated Mandelbrot iteration">
+                </canvas>
             </div>
             <div class="iteration-lab-controls">
                 <div class="iteration-lab-buttons">
@@ -826,12 +810,11 @@ for each pixel (px, py):
         return;
     }
 
-    const pointLayer = lab.querySelector("[data-point-layer]");
-    const traceLayer = lab.querySelector("[data-trace-layer]");
+    const canvas = lab.querySelector("[data-iteration-canvas]");
+    const context = canvas.getContext("2d");
     const lessButton = lab.querySelector("[data-less-iterations]");
     const moreButton = lab.querySelector("[data-more-iterations]");
     const readout = lab.querySelector("[data-iteration-readout]");
-    const svgNamespace = "http://www.w3.org/2000/svg";
     const bounds = {
         minX: -2.25,
         maxX: 1.25,
@@ -840,13 +823,14 @@ for each pixel (px, py):
     };
     const pointCountX = 27;
     const pointCountY = 17;
-    const maxVisibleIteration = 8;
+    const maxVisibleIteration = 100;
     const animationDurationMs = 720;
     const points = [];
+    let activeMovements = [];
+    let traceOpacity = 0;
     let currentIteration = 1;
     let animationFrame = null;
 
-    const createSvgElement = (name) => document.createElementNS(svgNamespace, name);
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const easeInOut = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
     const squaredMagnitude = (point) => point.x * point.x + point.y * point.y;
@@ -857,22 +841,95 @@ for each pixel (px, py):
         escaped: squaredMagnitude(point) > 4
     });
 
+    const canvasPoint = (display) => ({
+        x: ((display.x - bounds.minX) / (bounds.maxX - bounds.minX)) * canvas.width,
+        y: ((display.y + bounds.maxY) / (bounds.maxY - bounds.minY)) * canvas.height,
+        escaped: display.escaped
+    });
+
     const nextPoint = (z, c) => ({
         x: z.x * z.x - z.y * z.y + c.x,
         y: 2 * z.x * z.y + c.y
     });
 
-    const setPointPosition = (pointData, display) => {
-        pointData.circle.setAttribute("cx", display.x.toFixed(4));
-        pointData.circle.setAttribute("cy", display.y.toFixed(4));
-        pointData.circle.classList.toggle("escaped", display.escaped);
+    const drawLine = (from, to, color, width) => {
+        context.beginPath();
+        context.moveTo(from.x, from.y);
+        context.lineTo(to.x, to.y);
+        context.strokeStyle = color;
+        context.lineWidth = width;
+        context.stroke();
     };
 
-    const setTracePosition = (pointData, from, to) => {
-        pointData.trace.setAttribute("x1", from.x.toFixed(4));
-        pointData.trace.setAttribute("y1", from.y.toFixed(4));
-        pointData.trace.setAttribute("x2", to.x.toFixed(4));
-        pointData.trace.setAttribute("y2", to.y.toFixed(4));
+    const drawGrid = () => {
+        context.fillStyle = "#090b10";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        const verticalLines = [-2, -1.5, -1, -0.5, 0, 0.5, 1];
+        const horizontalLines = [-1, -0.5, 0, 0.5, 1];
+
+        for (const x of verticalLines) {
+            const from = canvasPoint({x, y: bounds.minY, escaped: false});
+            const to = canvasPoint({x, y: bounds.maxY, escaped: false});
+            drawLine(from, to, "rgba(255, 255, 255, 0.08)", 1);
+        }
+
+        for (const y of horizontalLines) {
+            const from = canvasPoint({x: bounds.minX, y, escaped: false});
+            const to = canvasPoint({x: bounds.maxX, y, escaped: false});
+            drawLine(from, to, "rgba(255, 255, 255, 0.08)", 1);
+        }
+
+        const horizontalAxisFrom = canvasPoint({x: bounds.minX, y: 0, escaped: false});
+        const horizontalAxisTo = canvasPoint({x: bounds.maxX, y: 0, escaped: false});
+        const verticalAxisFrom = canvasPoint({x: 0, y: bounds.minY, escaped: false});
+        const verticalAxisTo = canvasPoint({x: 0, y: bounds.maxY, escaped: false});
+        drawLine(horizontalAxisFrom, horizontalAxisTo, "rgba(255, 255, 255, 0.28)", 1.4);
+        drawLine(verticalAxisFrom, verticalAxisTo, "rgba(255, 255, 255, 0.28)", 1.4);
+
+        const center = canvasPoint({x: 0, y: 0, escaped: false});
+        const radius = (2 / (bounds.maxX - bounds.minX)) * canvas.width;
+        context.beginPath();
+        context.arc(center.x, center.y, radius, 0, Math.PI * 2);
+        context.setLineDash([8, 8]);
+        context.strokeStyle = "rgba(140, 199, 255, 0.28)";
+        context.lineWidth = 2;
+        context.stroke();
+        context.setLineDash([]);
+    };
+
+    const drawPoint = (display) => {
+        const point = canvasPoint(display);
+        context.beginPath();
+        context.arc(point.x, point.y, 4, 0, Math.PI * 2);
+        context.fillStyle = point.escaped ? "rgba(247, 178, 103, 0.72)" : "rgba(140, 199, 255, 0.88)";
+        context.fill();
+        context.strokeStyle = "rgba(255, 255, 255, 0.5)";
+        context.lineWidth = 1;
+        context.stroke();
+    };
+
+    const drawScene = () => {
+        drawGrid();
+
+        if (traceOpacity > 0 && activeMovements.length > 0) {
+            context.lineCap = "round";
+            context.strokeStyle = `rgba(247, 178, 103, ${0.42 * traceOpacity})`;
+            context.lineWidth = 2.4;
+
+            for (const movement of activeMovements) {
+                const from = canvasPoint(movement.from);
+                const to = canvasPoint(movement.to);
+                context.beginPath();
+                context.moveTo(from.x, from.y);
+                context.lineTo(to.x, to.y);
+                context.stroke();
+            }
+        }
+
+        for (const pointData of points) {
+            drawPoint(pointData.displayPosition);
+        }
     };
 
     const updateButtons = () => {
@@ -894,11 +951,11 @@ for each pixel (px, py):
 
             const from = displayPoint(pointData.history[currentIteration - 1]);
             const to = displayPoint(pointData.history[targetIteration - 1]);
-            setTracePosition(pointData, from, to);
-            pointData.trace.classList.add("visible");
             return {pointData, from, to};
         });
 
+        activeMovements = movingPoints;
+        traceOpacity = 1;
         const startedAt = performance.now();
 
         const animate = (now) => {
@@ -906,11 +963,14 @@ for each pixel (px, py):
             const progress = easeInOut(Math.min(1, elapsed / animationDurationMs));
 
             for (const movement of movingPoints) {
-                const x = movement.from.x + (movement.to.x - movement.from.x) * progress;
-                const y = movement.from.y + (movement.to.y - movement.from.y) * progress;
-                const escaped = progress > 0.55 ? movement.to.escaped : movement.from.escaped;
-                setPointPosition(movement.pointData, {x, y, escaped});
+                movement.pointData.displayPosition = {
+                    x: movement.from.x + (movement.to.x - movement.from.x) * progress,
+                    y: movement.from.y + (movement.to.y - movement.from.y) * progress,
+                    escaped: progress > 0.55 ? movement.to.escaped : movement.from.escaped
+                };
             }
+
+            drawScene();
 
             if (progress < 1) {
                 animationFrame = requestAnimationFrame(animate);
@@ -921,13 +981,16 @@ for each pixel (px, py):
             animationFrame = null;
 
             for (const movement of movingPoints) {
-                setPointPosition(movement.pointData, movement.to);
+                movement.pointData.displayPosition = displayPoint(movement.pointData.history[currentIteration - 1]);
             }
 
+            traceOpacity = 0.42;
+            drawScene();
+
             window.setTimeout(() => {
-                for (const movement of movingPoints) {
-                    movement.pointData.trace.classList.remove("visible");
-                }
+                traceOpacity = 0;
+                activeMovements = [];
+                drawScene();
             }, 180);
 
             updateButtons();
@@ -944,30 +1007,19 @@ for each pixel (px, py):
         for (let xIndex = 0; xIndex < pointCountX; xIndex++) {
             const x = -2 + (3 * xIndex) / (pointCountX - 1);
             const c = {x, y};
-            const circle = createSvgElement("circle");
-            const trace = createSvgElement("line");
             const pointData = {
                 c,
-                circle,
-                trace,
+                displayPosition: displayPoint(c),
                 history: [c]
             };
-            const display = displayPoint(c);
 
-            trace.classList.add("iteration-trace");
-            circle.classList.add("iteration-point");
-            circle.setAttribute("r", "0.018");
-            setPointPosition(pointData, display);
-            setTracePosition(pointData, display, display);
-
-            traceLayer.appendChild(trace);
-            pointLayer.appendChild(circle);
             points.push(pointData);
         }
     }
 
     lessButton.addEventListener("click", () => moveToIteration(currentIteration - 1));
     moreButton.addEventListener("click", () => moveToIteration(currentIteration + 1));
+    drawScene();
     updateButtons();
 })();
 </script>
