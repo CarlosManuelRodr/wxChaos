@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Newton log(z) - z = 0</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Script gallery</p>
+            <h1>Newton \(\log(z)-z=0\)</h1>
+            <p class="subtitle">Root-finding on a function with a branch cut and a temper.</p>
+            <p class="hero-introduction">The complex logarithm is multivalued in theory and branch-dependent in computation. This script lets Newton's method wander through that terrain and records where guesses appear to settle.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for Newton logarithm script fractal"></div><figcaption><span class="figure-title">Logarithmic basins.</span> Add a render showing the broad repeated structure and branch-sensitive regions.</figcaption></figure>
+    </section>
+    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Look for abrupt changes in texture. Logarithms can introduce sharp transitions where the chosen branch changes behavior.</p></div><div class="experiment-step"><p>Zoom into a repeated lobe and compare it with its neighbors.</p></div><div class="experiment-step"><p>Use this as a bridge between polynomial Newton fractals and transcendental ones.</p></div></div></section>
+    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>The logarithmic Newton step</summary><div class="concept-details-content"><p>The script iterates a Newton-style correction for \(f(z)=\log(z)-z\). The complex logarithm has branch behavior, so the numerical landscape is shaped both by the equation and by the principal logarithm used by the scripting math library.</p></div></details></section>
+</main>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Newton tan(z) - z = 0</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Script gallery</p>
+            <h1>Newton \(\tan(z)-z=0\)</h1>
+            <p class="subtitle">A root-finding map near the poles of tangent.</p>
+            <p class="hero-introduction">Tangent is a wave with cliffs. Its poles make Newton's method jump through the complex plane, giving this script sharper partitions than the sine and cosine variants.</p>
+        </div>
+        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for Newton tangent script fractal"></div><figcaption><span class="figure-title">Root basins near poles.</span> Add a render showing the vertical structure and abrupt regions.</figcaption></figure>
+    </section>
+    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Look for sharp vertical changes. Those often reflect tangent's pole structure.</p></div><div class="experiment-step"><p>Zoom near a color boundary and compare it with the smoother center of a basin.</p></div><div class="experiment-step"><p>Visit the fixed-point tangent page afterward to see tangent used in a different numerical story.</p></div></div></section>
+    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>The tangent Newton step</summary><div class="concept-details-content"><p>The script solves \(f(z)=\tan(z)-z\). Since the derivative of \(\tan(z)\) is \(\sec^2(z)\), the Newton correction uses \(f'(z)=\sec^2(z)-1\) in the usual formula. Tangent's poles strongly influence the basin geometry.</p></div></details></section>
+</main>
+</body>
+</html>
