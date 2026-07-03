@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Newton z^4 - 1 = 0");
+    SetDocumentationPath("script_newton_z4.html");
     SetCategory("NumMet");
     SetMinX(-2);
     SetMaxX(2);

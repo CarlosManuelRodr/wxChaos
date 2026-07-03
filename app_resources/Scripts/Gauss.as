@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Gauss map");
+    SetDocumentationPath("script_gauss_map.html");
     SetCategory("Other");
     SetMinX(-1.5);
     SetMaxX(1.5);

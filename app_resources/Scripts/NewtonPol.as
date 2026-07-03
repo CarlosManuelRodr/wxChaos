@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Newton z^8+15z^4-16 = 0");
+    SetDocumentationPath("script_newton_polynomial.html");
     SetCategory("NumMet");
     SetMinX(-5);
     SetMaxX(5);

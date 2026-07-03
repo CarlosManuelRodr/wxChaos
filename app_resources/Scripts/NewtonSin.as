@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Newton sin(z) - z = 0");
+    SetDocumentationPath("script_newton_sin.html");
     SetCategory("NumMet");
     SetMinX(-19.3366);
     SetMaxX(18.5496);

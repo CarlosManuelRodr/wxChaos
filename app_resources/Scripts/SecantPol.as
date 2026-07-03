@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Secant method z^3 - 1 = 0");
+    SetDocumentationPath("script_secant_polynomial.html");
     SetCategory("NumMet");
     SetMinX(-5.09166);
     SetMaxX(4.72931);

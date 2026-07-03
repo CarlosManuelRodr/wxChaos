@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Pawn");
+    SetDocumentationPath("script_pawn.html");
     SetCategory("Complex");
     SetMinX(-1.22);
     SetMaxX(-0.86033);

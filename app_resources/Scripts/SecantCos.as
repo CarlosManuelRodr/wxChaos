@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Secant method cos(z) - 1 = 0");
+    SetDocumentationPath("script_secant_cos.html");
     SetCategory("NumMet");
     SetMinX(-25.2866);
     SetMaxX(11.6554);

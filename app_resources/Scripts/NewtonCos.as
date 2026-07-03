@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Newton cos(z) - z = 0");
+    SetDocumentationPath("script_newton_cos.html");
     SetCategory("NumMet");
     SetMinX(-11.1389);
     SetMaxX(-4.3754);

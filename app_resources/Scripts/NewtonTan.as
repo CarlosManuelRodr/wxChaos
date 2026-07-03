@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Newton tan(z) - z = 0");
+    SetDocumentationPath("script_newton_tan.html");
     SetCategory("NumMet");
     SetMinX(-4.22205);
     SetMaxX(4.27001);

@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Newton log(z) - z = 0");
+    SetDocumentationPath("script_newton_log.html");
     SetCategory("NumMet");
     SetMinX(-13.7346);
     SetMaxX(11.6189);

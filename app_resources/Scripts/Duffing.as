@@ -1,6 +1,7 @@
 void Configure()
 {
     SetFractalName("Duffing map");
+    SetDocumentationPath("script_duffing_map.html");
     SetCategory("Other");
     SetMinX(-2.86192);
     SetMaxX(2.82077);
