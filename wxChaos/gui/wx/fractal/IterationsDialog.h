@@ -10,8 +10,6 @@
 #pragma once
 
 #include <wx/wx.h>
-#include <wx/spinctrl.h>
-#include <wx/statline.h>
 #include "Fractal.h"
 #include "sfml/FractalPresenter.h"
 
@@ -44,7 +42,7 @@ class IterationsDialog : public wxFrame
 public:
     IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, wxWindow* focusAfterClose = nullptr,
                      wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
-                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(420, 340),
+                     const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(560, 340),
                      long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
 
     ~IterationsDialog() override;

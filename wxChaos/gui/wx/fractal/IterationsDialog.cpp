@@ -1,9 +1,11 @@
-#include "AppPaths.h"
-#include "fractal/IterationsDialog.h"
-
 #include <algorithm>
 #include <iterator>
+#include <limits>
 #include <wx/dcclient.h>
+#include <wx/spinctrl.h>
+#include <wx/statline.h>
+#include "AppPaths.h"
+#include "fractal/IterationsDialog.h"
 
 IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wxWindow* parent, wxWindow* focusAfterClose,
                                    const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
@@ -18,7 +20,7 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
     _fractalPresenter = presenter;
     _target = _fractalPresenter->GetFractal();
     _focusAfterClose = focusAfterClose;
-    this->SetSizeHints(wxSize(420, 340), wxDefaultSize);
+    this->SetSizeHints(wxSize(560, 340), wxDefaultSize);
 
     const auto sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -39,8 +41,11 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
     const auto label = new wxStaticText(_panel, wxID_ANY, "Max iter:");
     inputSizer->Add(label, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 10);
 
+    const auto spinValue = static_cast<int>(std::min(
+        _number,
+        static_cast<unsigned int>(std::numeric_limits<int>::max())));
     _iterationsSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                                         wxSP_ARROW_KEYS, 1, 1000000, static_cast<int>(_number));
+                                         wxSP_ARROW_KEYS, 1, std::numeric_limits<int>::max(), spinValue);
     inputSizer->Add(_iterationsSpinCtrl, 1, wxALIGN_CENTER_VERTICAL);
     subSizer->Add(inputSizer, 0, wxEXPAND | wxLEFT | wxRIGHT, 20);
 
@@ -103,10 +108,10 @@ IterationsDialog::~IterationsDialog()
 int IterationsDialog::IterationsToSliderValue(const unsigned int iterations)
 {
     constexpr double minLog = 1.0;
-    constexpr double maxLog = 5.0;
+    constexpr double maxLog = 8.0;
     constexpr int sliderMax = 400;
 
-    const double clamped = std::clamp(static_cast<double>(iterations), 10.0, 100000.0);
+    const double clamped = std::clamp(static_cast<double>(iterations), 10.0, 100000000.0);
     const double normalized = (std::log10(clamped) - minLog) / (maxLog - minLog);
     return static_cast<int>(std::round(std::clamp(normalized, 0.0, 1.0) * sliderMax));
 }
@@ -114,7 +119,7 @@ int IterationsDialog::IterationsToSliderValue(const unsigned int iterations)
 unsigned int IterationsDialog::SliderValueToIterations(const int sliderValue)
 {
     constexpr double minLog = 1.0;
-    constexpr double maxLog = 5.0;
+    constexpr double maxLog = 8.0;
     constexpr int sliderMax = 400;
 
     const double normalized = std::clamp(static_cast<double>(sliderValue) / sliderMax, 0.0, 1.0);
@@ -125,7 +130,9 @@ unsigned int IterationsDialog::SliderValueToIterations(const int sliderValue)
 void IterationsDialog::SetIterationControls(const unsigned int iterations)
 {
     _number = iterations;
-    _iterationsSpinCtrl->SetValue(static_cast<int>(_number));
+    _iterationsSpinCtrl->SetValue(static_cast<int>(std::min(
+        _number,
+        static_cast<unsigned int>(std::numeric_limits<int>::max()))));
     _iterationsSlider->SetValue(IterationsToSliderValue(_number));
 }
 
@@ -161,7 +168,7 @@ void IterationsDialog::OnScalePaint(wxPaintEvent&)
 {
     wxPaintDC dc(_scalePanel);
 
-    const wxString scaleLabels[] = { "10", "100", "1K", "10K", "100K" };
+    const wxString scaleLabels[] = { "10", "100", "1K", "10K", "100K", "1M", "10M", "100M" };
     const int trackInset = FromDIP(7);
     const int width = std::max(0, _scalePanel->GetClientSize().GetWidth() - 2 * trackInset);
 
@@ -169,10 +176,10 @@ void IterationsDialog::OnScalePaint(wxPaintEvent&)
 
     for (std::size_t index = 0; index < std::size(scaleLabels); ++index)
     {
-        constexpr double scalePositions[] = { 0.0, 0.25, 0.5, 0.75, 1.0 };
         const wxSize textSize = dc.GetTextExtent(scaleLabels[index]);
         const int maxTextX = std::max(0, _scalePanel->GetClientSize().GetWidth() - textSize.GetWidth());
-        const int x = trackInset + static_cast<int>(std::round(width * scalePositions[index])) - textSize.GetWidth() / 2;
+        const double scalePosition = static_cast<double>(index) / static_cast<double>(std::size(scaleLabels) - 1);
+        const int x = trackInset + static_cast<int>(std::round(width * scalePosition)) - textSize.GetWidth() / 2;
         dc.DrawText(scaleLabels[index], std::clamp(x, 0, maxTextX), 0);
     }
 }
