@@ -396,12 +396,30 @@ for each pixel (px, py):
                     <button class="iteration-lab-button" type="button" data-more-iterations>
                         More iterations
                     </button>
+                    <button class="iteration-lab-button secondary" type="button" data-reset-iterations>
+                        Reset
+                    </button>
                 </div>
+                <label class="iteration-lab-field">
+                    <span>Initial points</span>
+                    <input
+                        type="number"
+                        min="25"
+                        max="1200"
+                        step="25"
+                        value="459"
+                        data-point-count>
+                </label>
                 <div class="iteration-lab-readout" data-iteration-readout>
                     Showing z1 = c
                 </div>
             </div>
         </div>
+
+        <p>
+            Can you see a familiar shape emerging from the iteration pattern after several iterations? It is the Mandelbrot set!
+        </p>
+
     </section>
 
     <section id="guided-exploration" aria-labelledby="explore-title">
@@ -814,6 +832,8 @@ for each pixel (px, py):
     const context = canvas.getContext("2d");
     const lessButton = lab.querySelector("[data-less-iterations]");
     const moreButton = lab.querySelector("[data-more-iterations]");
+    const resetButton = lab.querySelector("[data-reset-iterations]");
+    const pointCountInput = lab.querySelector("[data-point-count]");
     const readout = lab.querySelector("[data-iteration-readout]");
     const bounds = {
         minX: -2.25,
@@ -821,15 +841,17 @@ for each pixel (px, py):
         minY: -1.35,
         maxY: 1.35
     };
-    const pointCountX = 27;
-    const pointCountY = 17;
+    const defaultPointCount = 450;
+    const minPointCount = 25;
+    const maxPointCount = 1200;
     const maxVisibleIteration = 100;
     const animationDurationMs = 720;
-    const points = [];
+    let points = [];
     let activeMovements = [];
     let traceOpacity = 0;
     let currentIteration = 1;
     let animationFrame = null;
+    let clearTraceTimeout = null;
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const easeInOut = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -932,9 +954,66 @@ for each pixel (px, py):
         }
     };
 
+    const clearTrace = () => {
+        if (clearTraceTimeout !== null) {
+            window.clearTimeout(clearTraceTimeout);
+            clearTraceTimeout = null;
+        }
+
+        traceOpacity = 0;
+        activeMovements = [];
+    };
+
+    const normalizePointCount = (value) => clamp(Math.round(value || defaultPointCount), minPointCount, maxPointCount);
+
+    const buildPoints = (pointCount) => {
+        const targetCount = normalizePointCount(pointCount);
+        const aspect = (bounds.maxX - bounds.minX) / (bounds.maxY - bounds.minY);
+        const columns = Math.max(2, Math.ceil(Math.sqrt(targetCount * aspect)));
+        const rows = Math.max(2, Math.ceil(targetCount / columns));
+        const nextPoints = [];
+
+        for (let yIndex = 0; yIndex < rows && nextPoints.length < targetCount; yIndex++) {
+            const y = -1.2 + (2.4 * yIndex) / Math.max(1, rows - 1);
+
+            for (let xIndex = 0; xIndex < columns && nextPoints.length < targetCount; xIndex++) {
+                const x = -2 + (3 * xIndex) / Math.max(1, columns - 1);
+                const c = {x, y};
+                nextPoints.push({
+                    c,
+                    displayPosition: displayPoint(c),
+                    history: [c]
+                });
+            }
+        }
+
+        points = nextPoints;
+        pointCountInput.value = String(targetCount);
+    };
+
+    const resetIterationLab = () => {
+        if (animationFrame !== null) {
+            cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+        }
+
+        clearTrace();
+        currentIteration = 1;
+
+        for (const pointData of points) {
+            pointData.displayPosition = displayPoint(pointData.c);
+            pointData.history = [pointData.c];
+        }
+
+        drawScene();
+        updateButtons();
+    };
+
     const updateButtons = () => {
         lessButton.disabled = currentIteration <= 1;
         moreButton.disabled = currentIteration >= maxVisibleIteration;
+        resetButton.disabled = currentIteration <= 1;
+        pointCountInput.disabled = false;
         readout.textContent = `Showing z${currentIteration}${currentIteration === 1 ? " = c" : ""}`;
     };
 
@@ -942,6 +1021,8 @@ for each pixel (px, py):
         if (animationFrame !== null || targetIteration < 1 || targetIteration > maxVisibleIteration) {
             return;
         }
+
+        clearTrace();
 
         const movingPoints = points.map((pointData) => {
             while (pointData.history.length <= targetIteration) {
@@ -987,9 +1068,8 @@ for each pixel (px, py):
             traceOpacity = 0.42;
             drawScene();
 
-            window.setTimeout(() => {
-                traceOpacity = 0;
-                activeMovements = [];
+            clearTraceTimeout = window.setTimeout(() => {
+                clearTrace();
                 drawScene();
             }, 180);
 
@@ -999,28 +1079,20 @@ for each pixel (px, py):
         animationFrame = requestAnimationFrame(animate);
         lessButton.disabled = true;
         moreButton.disabled = true;
+        resetButton.disabled = true;
+        pointCountInput.disabled = true;
     };
-
-    for (let yIndex = 0; yIndex < pointCountY; yIndex++) {
-        const y = -1.2 + (2.4 * yIndex) / (pointCountY - 1);
-
-        for (let xIndex = 0; xIndex < pointCountX; xIndex++) {
-            const x = -2 + (3 * xIndex) / (pointCountX - 1);
-            const c = {x, y};
-            const pointData = {
-                c,
-                displayPosition: displayPoint(c),
-                history: [c]
-            };
-
-            points.push(pointData);
-        }
-    }
 
     lessButton.addEventListener("click", () => moveToIteration(currentIteration - 1));
     moreButton.addEventListener("click", () => moveToIteration(currentIteration + 1));
-    drawScene();
-    updateButtons();
+    resetButton.addEventListener("click", resetIterationLab);
+    pointCountInput.addEventListener("change", () => {
+        buildPoints(pointCountInput.valueAsNumber);
+        resetIterationLab();
+    });
+
+    buildPoints(defaultPointCount);
+    resetIterationLab();
 })();
 </script>
 </body>

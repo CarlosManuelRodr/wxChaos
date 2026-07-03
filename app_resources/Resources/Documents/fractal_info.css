@@ -533,6 +533,30 @@ figcaption {
     opacity: 0.45;
 }
 
+.iteration-lab-field {
+    align-items: center;
+    color: var(--muted-text-color);
+    display: flex;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.iteration-lab-field input {
+    background: var(--page-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    font: inherit;
+    padding: 7px 8px;
+    width: 82px;
+}
+
+.iteration-lab-field input:focus {
+    border-color: var(--accent-color);
+    outline: 2px solid color-mix(in srgb, var(--accent-color) 24%, transparent);
+    outline-offset: 1px;
+}
+
 .iteration-lab-readout {
     color: var(--muted-text-color);
     font-family: Consolas, "Courier New", monospace;
