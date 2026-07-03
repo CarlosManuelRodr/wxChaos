@@ -189,6 +189,8 @@ const std::map<std::string, ColorPaletteTypes>& AppConfigStore::ColorStyles()
         { "DeepOcean", DeepOcean },
         { "Ember", Ember },
         { "RainbowFire", RainbowFire },
+        { "CoolBlue", CoolBlue },
+        { "StarryNight", StarryNight },
         { "ClassicMandelbrot", ClassicMandelbrot },
         { "Custom", CustomGradient },
         { "System", System }

@@ -148,6 +148,7 @@ if(BUILD_TESTING)
             wxChaos/core/renderers/utils/NewtonRootRegistry.cpp
             wxChaos/core/renderers/HenonMapRenderer.cpp
             wxChaos/core/RenderWorker.cpp
+            wxChaos/core/coloring/ColorPalette.cpp
             wxChaos/core/coloring/PaletteMapping.cpp
             wxChaos/core/coloring/RenderingAlgorithm.cpp
             wxChaos/core/geometry/Rect.cpp

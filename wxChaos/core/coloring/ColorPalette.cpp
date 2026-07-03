@@ -94,6 +94,20 @@ void ColorPalette::SetStyle(const ColorPaletteTypes palette)
                 colorCycleLength = 72;
             }
             break;
+        case CoolBlue:
+            {
+                grad = "rgb(2,29,61);rgb(2,53,112);rgb(8,72,149);rgb(16,93,184);rgb(36,123,225);rgb(79,163,249);rgb(176,198,217);rgb(231,197,164);rgb(233,173,116);rgb(205,135,65);rgb(133,90,41);rgb(28,33,30);rgb(2,29,61);";
+                paletteSize = 720;
+                colorCycleLength = 72;
+            }
+            break;
+        case StarryNight:
+            {
+                grad = "rgb(1,0,1);rgb(1,1,12);rgb(0,0,40);rgb(16,16,88);rgb(40,48,144);rgb(1,0,1);rgb(41,21,13);rgb(95,60,35);rgb(148,108,65);rgb(192,156,99);rgb(236,214,147);rgb(249,243,186);rgb(220,189,125);rgb(116,86,63);rgb(10,5,15);rgb(1,0,1);";
+                paletteSize = 720;
+                colorCycleLength = 72;
+            }
+            break;
         case ClassicMandelbrot:
             {
                 grad = "rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);";

@@ -1,4 +1,5 @@
 #include <doctest/doctest.h>
+#include "coloring/ColorPalette.h"
 #include "coloring/PaletteMapping.h"
 #include "numeric/HighPrecision.h"
 #include "rendering/RenderJob.h"
@@ -91,6 +92,25 @@ TEST_CASE("PaletteMapping exponential relative mode spans the palette once")
                                              PaletteMappingMode::Exponential, 2.0, true);
 
     CHECK(mapped == doctest::Approx(25.0));
+}
+
+TEST_CASE("Recovered image-inspired palettes expose full cyclic gradients")
+{
+    ColorPalette coolBlue;
+    coolBlue.SetStyle(CoolBlue);
+
+    CHECK(coolBlue.paletteSize == 720);
+    CHECK(coolBlue.colorCycleLength == 72);
+    CHECK(coolBlue.grad.find("rgb(36,123,225)") != std::string::npos);
+    CHECK(coolBlue.grad.find("rgb(233,173,116)") != std::string::npos);
+
+    ColorPalette starryNight;
+    starryNight.SetStyle(StarryNight);
+
+    CHECK(starryNight.paletteSize == 720);
+    CHECK(starryNight.colorCycleLength == 72);
+    CHECK(starryNight.grad.find("rgb(40,48,144)") != std::string::npos);
+    CHECK(starryNight.grad.find("rgb(249,243,186)") != std::string::npos);
 }
 
 TEST_CASE("HighPrecisionReal formats compact and extended coordinate strings")

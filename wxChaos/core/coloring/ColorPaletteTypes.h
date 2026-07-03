@@ -27,6 +27,8 @@ enum ColorPaletteTypes
     DeepOcean,
     Ember,
     RainbowFire,
+    CoolBlue,
+    StarryNight,
     ClassicMandelbrot,
     CustomGradient,
     System          ///< Resolves to Retro on light themes and SunsetDrive on dark themes.

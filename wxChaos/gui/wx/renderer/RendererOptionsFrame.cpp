@@ -153,6 +153,8 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
         "Deep Ocean",
         "Ember",
         "Rainbow Fire",
+        "Cool Blue",
+        "Starry Night",
         "Classic Mandelbrot",
         "Custom",
         "System"

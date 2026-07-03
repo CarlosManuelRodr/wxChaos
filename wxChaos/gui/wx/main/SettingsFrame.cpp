@@ -154,6 +154,8 @@ wxPanel* SettingsFrame::CreateRenderingPage()
         "Deep Ocean",
         "Ember",
         "Rainbow Fire",
+        "Cool Blue",
+        "Starry Night",
         "Classic Mandelbrot",
         "Custom"
     };
@@ -171,6 +173,8 @@ wxPanel* SettingsFrame::CreateRenderingPage()
         DeepOcean,
         Ember,
         RainbowFire,
+        CoolBlue,
+        StarryNight,
         ClassicMandelbrot,
         CustomGradient
     };
