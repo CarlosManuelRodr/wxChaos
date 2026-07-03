@@ -474,6 +474,113 @@ figcaption {
     margin-top: 12px;
 }
 
+.iteration-lab {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.iteration-lab-stage {
+    background: #090b10;
+    border-bottom: 1px solid var(--panel-border-color);
+    position: relative;
+}
+
+.iteration-lab-stage svg {
+    display: block;
+    height: auto;
+    width: 100%;
+}
+
+.iteration-axis {
+    stroke: rgba(255, 255, 255, 0.28);
+    stroke-width: 0.01;
+}
+
+.iteration-grid-line {
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 0.006;
+}
+
+.iteration-safe-circle {
+    fill: none;
+    opacity: 0.28;
+    stroke: #8cc7ff;
+    stroke-dasharray: 0.04 0.04;
+    stroke-width: 0.01;
+}
+
+.iteration-trace {
+    opacity: 0;
+    stroke: #f7b267;
+    stroke-linecap: round;
+    stroke-width: 0.012;
+    transition: opacity 160ms ease;
+}
+
+.iteration-trace.visible {
+    opacity: 0.42;
+}
+
+.iteration-point {
+    fill: #8cc7ff;
+    opacity: 0.88;
+    stroke: rgba(255, 255, 255, 0.5);
+    stroke-width: 0.004;
+}
+
+.iteration-point.escaped {
+    fill: #f7b267;
+    opacity: 0.72;
+}
+
+.iteration-lab-controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    padding: 14px 16px;
+}
+
+.iteration-lab-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.iteration-lab-button {
+    background: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 7px;
+    color: #ffffff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 650;
+    padding: 8px 13px;
+}
+
+:root[data-theme="dark"] .iteration-lab-button {
+    color: #101318;
+}
+
+.iteration-lab-button.secondary {
+    background: transparent;
+    color: var(--accent-color);
+}
+
+.iteration-lab-button:disabled {
+    cursor: default;
+    opacity: 0.45;
+}
+
+.iteration-lab-readout {
+    color: var(--muted-text-color);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.9rem;
+}
+
 .timeline {
     border-left: 2px solid var(--section-border-color);
     margin-left: 8px;

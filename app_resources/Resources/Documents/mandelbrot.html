@@ -370,6 +370,56 @@ for each pixel (px, py):
         </div>
     </section>
 
+    <section aria-labelledby="iteration-lab-title">
+        <h2 id="iteration-lab-title">Iteration is the whole trick</h2>
+        <p>
+            Each dot below is one selected value of \(c\). The grid begins at the
+            first visible step, \(z_1=c\). Press <strong>More iterations</strong>
+            to apply \(z_{n+1}=z_n^2+c\) again and watch where every orbit moves.
+        </p>
+
+        <div class="iteration-lab" data-mandelbrot-iteration-lab>
+            <div class="iteration-lab-stage">
+                <svg viewBox="-2.25 -1.35 3.5 2.7" role="img" aria-labelledby="iteration-lab-svg-title iteration-lab-svg-desc">
+                    <title id="iteration-lab-svg-title">Animated Mandelbrot iteration grid</title>
+                    <desc id="iteration-lab-svg-desc">A grid of complex parameters whose dots move as the Mandelbrot recurrence is iterated.</desc>
+                    <g class="iteration-grid" aria-hidden="true">
+                        <line class="iteration-grid-line" x1="-2" y1="-1.35" x2="-2" y2="1.35"></line>
+                        <line class="iteration-grid-line" x1="-1.5" y1="-1.35" x2="-1.5" y2="1.35"></line>
+                        <line class="iteration-grid-line" x1="-1" y1="-1.35" x2="-1" y2="1.35"></line>
+                        <line class="iteration-grid-line" x1="-0.5" y1="-1.35" x2="-0.5" y2="1.35"></line>
+                        <line class="iteration-grid-line" x1="0" y1="-1.35" x2="0" y2="1.35"></line>
+                        <line class="iteration-grid-line" x1="0.5" y1="-1.35" x2="0.5" y2="1.35"></line>
+                        <line class="iteration-grid-line" x1="1" y1="-1.35" x2="1" y2="1.35"></line>
+                        <line class="iteration-grid-line" x1="-2.25" y1="-1" x2="1.25" y2="-1"></line>
+                        <line class="iteration-grid-line" x1="-2.25" y1="-0.5" x2="1.25" y2="-0.5"></line>
+                        <line class="iteration-grid-line" x1="-2.25" y1="0" x2="1.25" y2="0"></line>
+                        <line class="iteration-grid-line" x1="-2.25" y1="0.5" x2="1.25" y2="0.5"></line>
+                        <line class="iteration-grid-line" x1="-2.25" y1="1" x2="1.25" y2="1"></line>
+                        <line class="iteration-axis" x1="-2.25" y1="0" x2="1.25" y2="0"></line>
+                        <line class="iteration-axis" x1="0" y1="-1.35" x2="0" y2="1.35"></line>
+                        <circle class="iteration-safe-circle" cx="0" cy="0" r="2"></circle>
+                    </g>
+                    <g data-trace-layer></g>
+                    <g data-point-layer></g>
+                </svg>
+            </div>
+            <div class="iteration-lab-controls">
+                <div class="iteration-lab-buttons">
+                    <button class="iteration-lab-button secondary" type="button" data-less-iterations>
+                        Less iterations
+                    </button>
+                    <button class="iteration-lab-button" type="button" data-more-iterations>
+                        More iterations
+                    </button>
+                </div>
+                <div class="iteration-lab-readout" data-iteration-readout>
+                    Showing z1 = c
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="guided-exploration" aria-labelledby="explore-title">
         <h2 id="explore-title">Try it in wxChaos</h2>
 
@@ -769,5 +819,157 @@ for each pixel (px, py):
     </section>
 
 </main>
+<script>
+(() => {
+    const lab = document.querySelector("[data-mandelbrot-iteration-lab]");
+    if (!lab) {
+        return;
+    }
+
+    const pointLayer = lab.querySelector("[data-point-layer]");
+    const traceLayer = lab.querySelector("[data-trace-layer]");
+    const lessButton = lab.querySelector("[data-less-iterations]");
+    const moreButton = lab.querySelector("[data-more-iterations]");
+    const readout = lab.querySelector("[data-iteration-readout]");
+    const svgNamespace = "http://www.w3.org/2000/svg";
+    const bounds = {
+        minX: -2.25,
+        maxX: 1.25,
+        minY: -1.35,
+        maxY: 1.35
+    };
+    const pointCountX = 27;
+    const pointCountY = 17;
+    const maxVisibleIteration = 8;
+    const animationDurationMs = 720;
+    const points = [];
+    let currentIteration = 1;
+    let animationFrame = null;
+
+    const createSvgElement = (name) => document.createElementNS(svgNamespace, name);
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const easeInOut = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    const squaredMagnitude = (point) => point.x * point.x + point.y * point.y;
+
+    const displayPoint = (point) => ({
+        x: clamp(point.x, bounds.minX, bounds.maxX),
+        y: -clamp(point.y, bounds.minY, bounds.maxY),
+        escaped: squaredMagnitude(point) > 4
+    });
+
+    const nextPoint = (z, c) => ({
+        x: z.x * z.x - z.y * z.y + c.x,
+        y: 2 * z.x * z.y + c.y
+    });
+
+    const setPointPosition = (pointData, display) => {
+        pointData.circle.setAttribute("cx", display.x.toFixed(4));
+        pointData.circle.setAttribute("cy", display.y.toFixed(4));
+        pointData.circle.classList.toggle("escaped", display.escaped);
+    };
+
+    const setTracePosition = (pointData, from, to) => {
+        pointData.trace.setAttribute("x1", from.x.toFixed(4));
+        pointData.trace.setAttribute("y1", from.y.toFixed(4));
+        pointData.trace.setAttribute("x2", to.x.toFixed(4));
+        pointData.trace.setAttribute("y2", to.y.toFixed(4));
+    };
+
+    const updateButtons = () => {
+        lessButton.disabled = currentIteration <= 1;
+        moreButton.disabled = currentIteration >= maxVisibleIteration;
+        readout.textContent = `Showing z${currentIteration}${currentIteration === 1 ? " = c" : ""}`;
+    };
+
+    const moveToIteration = (targetIteration) => {
+        if (animationFrame !== null || targetIteration < 1 || targetIteration > maxVisibleIteration) {
+            return;
+        }
+
+        const movingPoints = points.map((pointData) => {
+            while (pointData.history.length <= targetIteration) {
+                const previous = pointData.history[pointData.history.length - 1];
+                pointData.history.push(nextPoint(previous, pointData.c));
+            }
+
+            const from = displayPoint(pointData.history[currentIteration - 1]);
+            const to = displayPoint(pointData.history[targetIteration - 1]);
+            setTracePosition(pointData, from, to);
+            pointData.trace.classList.add("visible");
+            return {pointData, from, to};
+        });
+
+        const startedAt = performance.now();
+
+        const animate = (now) => {
+            const elapsed = now - startedAt;
+            const progress = easeInOut(Math.min(1, elapsed / animationDurationMs));
+
+            for (const movement of movingPoints) {
+                const x = movement.from.x + (movement.to.x - movement.from.x) * progress;
+                const y = movement.from.y + (movement.to.y - movement.from.y) * progress;
+                const escaped = progress > 0.55 ? movement.to.escaped : movement.from.escaped;
+                setPointPosition(movement.pointData, {x, y, escaped});
+            }
+
+            if (progress < 1) {
+                animationFrame = requestAnimationFrame(animate);
+                return;
+            }
+
+            currentIteration = targetIteration;
+            animationFrame = null;
+
+            for (const movement of movingPoints) {
+                setPointPosition(movement.pointData, movement.to);
+            }
+
+            window.setTimeout(() => {
+                for (const movement of movingPoints) {
+                    movement.pointData.trace.classList.remove("visible");
+                }
+            }, 180);
+
+            updateButtons();
+        };
+
+        animationFrame = requestAnimationFrame(animate);
+        lessButton.disabled = true;
+        moreButton.disabled = true;
+    };
+
+    for (let yIndex = 0; yIndex < pointCountY; yIndex++) {
+        const y = -1.2 + (2.4 * yIndex) / (pointCountY - 1);
+
+        for (let xIndex = 0; xIndex < pointCountX; xIndex++) {
+            const x = -2 + (3 * xIndex) / (pointCountX - 1);
+            const c = {x, y};
+            const circle = createSvgElement("circle");
+            const trace = createSvgElement("line");
+            const pointData = {
+                c,
+                circle,
+                trace,
+                history: [c]
+            };
+            const display = displayPoint(c);
+
+            trace.classList.add("iteration-trace");
+            circle.classList.add("iteration-point");
+            circle.setAttribute("r", "0.018");
+            setPointPosition(pointData, display);
+            setTracePosition(pointData, display, display);
+
+            traceLayer.appendChild(trace);
+            pointLayer.appendChild(circle);
+            points.push(pointData);
+        }
+    }
+
+    lessButton.addEventListener("click", () => moveToIteration(currentIteration - 1));
+    moreButton.addEventListener("click", () => moveToIteration(currentIteration + 1));
+    updateButtons();
+})();
+</script>
 </body>
 </html>
