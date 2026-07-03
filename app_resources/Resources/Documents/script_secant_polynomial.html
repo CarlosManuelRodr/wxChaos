@@ -17,7 +17,12 @@
             <p class="subtitle">A three-root basin map driven by a two-point method.</p>
             <p class="hero-introduction">This script revisits the classic cubic roots of unity, but uses the secant method instead of Newton's method. The result is a familiar destination map with a different path-finding personality.</p>
         </div>
-        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for secant polynomial script fractal"></div><figcaption><span class="figure-title">Cubic roots by secant steps.</span> Add a render showing the three-way basin structure.</figcaption></figure>
+        <figure class="hero-figure">
+            <img
+                src=""
+                alt="A secant polynomial script fractal render">
+            <figcaption><span class="figure-title">Cubic roots by secant steps.</span> Add a render showing the three-way basin structure.</figcaption>
+        </figure>
     </section>
     <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Find the three major basin families, then inspect where they interlace.</p></div><div class="experiment-step"><p>Compare it with a Newton cubic or the built-in Newton page. Same roots, different numerical route.</p></div><div class="experiment-step"><p>Increase iterations and watch slow boundary points reveal more detail.</p></div></div></section>
     <section><h2>Mathematical notes</h2><details class="concept-details"><summary>Why secant maps differ from Newton maps</summary><div class="concept-details-content"><p>Newton's method uses a derivative at the current point. The secant method estimates that derivative from the current and previous values. Because the iteration state remembers two points, its basin boundaries can differ noticeably even for the same equation.</p></div></details></section>

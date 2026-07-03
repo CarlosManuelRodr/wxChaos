@@ -17,7 +17,12 @@
             <p class="subtitle">A one-dimensional orbit painted across parameter space.</p>
             <p class="hero-introduction">This script follows the recurrence \(x_{n+1}=e^{-a x_n^2}+b\). It sweeps through values of \(b\), plotting where the orbit lands after many iterations.</p>
         </div>
-        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for Gauss map script fractal"></div><figcaption><span class="figure-title">A bifurcation-style portrait.</span> Add a render showing the plotted orbit bands.</figcaption></figure>
+        <figure class="hero-figure">
+            <img
+                src=""
+                alt="A Gauss map script fractal render">
+            <figcaption><span class="figure-title">A bifurcation-style portrait.</span> Add a render showing the plotted orbit bands.</figcaption>
+        </figure>
     </section>
     <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Read the horizontal axis as the parameter \(b\), and the vertical direction as the values visited by the orbit.</p></div><div class="experiment-step"><p>Increase iterations to make the attractor denser.</p></div><div class="experiment-step"><p>Compare with the Duffing map: both draw accumulated orbit points rather than coloring every pixel independently.</p></div></div></section>
     <section><h2>Mathematical notes</h2><details class="concept-details"><summary>The recurrence</summary><div class="concept-details-content"><p>The script fixes \(a=4.90\), starts with \(x=0.25\), and iterates \(x_{n+1}=e^{-a x_n^2}+b\). For each horizontal pixel, \(b\) changes, and the visited \(x\) values are plotted onto the image.</p></div></details></section>

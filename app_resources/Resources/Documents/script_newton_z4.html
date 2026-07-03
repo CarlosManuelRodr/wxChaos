@@ -17,7 +17,12 @@
             <p class="subtitle">Four roots, four destinations, and a fractal border between them.</p>
             <p class="hero-introduction">This script turns Newton's method into a compass rose. Each pixel is a starting guess for \(z^4=1\); the color records how quickly the guess settles and which region of the complex plane it approaches.</p>
         </div>
-        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for Newton z4 script fractal"></div><figcaption><span class="figure-title">A four-root basin map.</span> Add a render showing the cross-like symmetry around the fourth roots of unity.</figcaption></figure>
+        <figure class="hero-figure">
+            <img
+                src=""
+                alt="A Newton z4 script fractal render">
+            <figcaption><span class="figure-title">A four-root basin map.</span> Add a render showing the cross-like symmetry around the fourth roots of unity.</figcaption>
+        </figure>
     </section>
     <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Look for the places where four colored basins nearly touch. Those are the sensitive points where a tiny change in the starting guess can choose another root.</p></div><div class="experiment-step"><p>Increase the iteration count and watch boundary regions sharpen rather than simply fill in.</p></div><div class="experiment-step"><p>Compare it with the built-in Newton fractal and the user-defined Newton room.</p></div></div></section>
     <section><h2>Mathematical notes</h2><details class="concept-details"><summary>The Newton step</summary><div class="concept-details-content"><p>For \(f(z)=z^4-1\), Newton's method uses \(z_{n+1}=z_n-(z_n^4-1)/(4z_n^3)\). The roots are \(1\), \(-1\), \(i\), and \(-i\). The script stops when consecutive iterates are within a small tolerance.</p></div></details></section>

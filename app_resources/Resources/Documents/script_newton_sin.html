@@ -17,7 +17,12 @@
             <p class="subtitle">A deceptively simple equation with a broad complex basin landscape.</p>
             <p class="hero-introduction">The equation \(\sin(z)=z\) sounds calm, but Newton iteration in the complex plane turns it into a wide field of repeated structures and sensitive borders.</p>
         </div>
-        <figure class="hero-figure"><div class="image-placeholder" role="img" aria-label="Placeholder for Newton sine script fractal"></div><figcaption><span class="figure-title">Sine under iteration.</span> Add a render showing the large-scale repetitive structure.</figcaption></figure>
+        <figure class="hero-figure">
+            <img
+                src=""
+                alt="A Newton sine script fractal render">
+            <figcaption><span class="figure-title">Sine under iteration.</span> Add a render showing the large-scale repetitive structure.</figcaption>
+        </figure>
     </section>
     <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Look for repeated bands and islands. The sine function's periodic nature remains visible after Newton correction.</p></div><div class="experiment-step"><p>Zoom into a boundary where the color changes quickly. That is where nearby guesses have different numerical stories.</p></div><div class="experiment-step"><p>Compare with the cosine and tangent Newton scripts to see how related functions produce different basins.</p></div></div></section>
     <section><h2>Mathematical notes</h2><details class="concept-details"><summary>The sine Newton step</summary><div class="concept-details-content"><p>For \(f(z)=\sin(z)-z\), \(f'(z)=\cos(z)-1\). The script applies \(z_{n+1}=z_n-(\sin(z_n)-z_n)/(\cos(z_n)-1)\) and stops when the step becomes smaller than its tolerance.</p></div></details></section>
