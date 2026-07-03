@@ -1200,7 +1200,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     }
 
     _maxIter = opt.maxIter;
-    _panelOpt = opt.panelOpt;
+    _panelOpt.CopyValuesFrom(opt.panelOpt);
     _changeGradient = opt.colorVariationOffset;
     _colorRotationSpeed = std::max(0.0, opt.colorRotationSpeed);
     _relativeColor = opt.relativeColor;

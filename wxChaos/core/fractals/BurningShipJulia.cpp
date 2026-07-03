@@ -18,7 +18,7 @@ BurningShipJulia::BurningShipJulia(const unsigned int width, const unsigned int 
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     _algorithm = RenderingAlgorithmType::EscapeTime;
-    _type = FractalType::BurningShip;
+    _type = FractalType::BurningShipJulia;
     _hasHighPrecisionRender = true;
     myRender = new BurningShipJuliaRenderer[_threadNumber];
 

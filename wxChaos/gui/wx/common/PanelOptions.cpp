@@ -34,5 +34,38 @@ double* PanelOptions::GetDoubleElement(const unsigned int index) const { return 
 bool* PanelOptions::GetBoolElement(const unsigned int index) const { return _boolTarget.at(index); }
 wxString PanelOptions::GetDefault(const unsigned int index) { return _defaults.at(index); }
 PanelOptionType PanelOptions::GetPanelOptType(const unsigned int index) const { return _type.at(index); }
+void PanelOptions::CopyValuesFrom(const PanelOptions& source)
+{
+    if (_linkTo.size() != source._linkTo.size())
+        return;
+
+    for (size_t i = 0; i < _linkTo.size(); ++i)
+    {
+        if (_linkTo[i] != source._linkTo[i])
+            return;
+    }
+
+    size_t intIndex = 0;
+    size_t doubleIndex = 0;
+    size_t boolIndex = 0;
+    for (size_t i = 0; i < _linkTo.size(); ++i)
+    {
+        switch (_linkTo[i])
+        {
+            case LinkTo::ToInt:
+                *_intTarget.at(intIndex) = *source._intTarget.at(intIndex);
+                ++intIndex;
+                break;
+            case LinkTo::ToDouble:
+                *_dblTarget.at(doubleIndex) = *source._dblTarget.at(doubleIndex);
+                ++doubleIndex;
+                break;
+            case LinkTo::ToBool:
+                *_boolTarget.at(boolIndex) = *source._boolTarget.at(boolIndex);
+                ++boolIndex;
+                break;
+        }
+    }
+}
 void PanelOptions::SetForceShow(const bool mode) { _forceShow = mode; }
 bool PanelOptions::GetForceShow() const { return _forceShow; }

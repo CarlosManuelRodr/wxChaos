@@ -29,6 +29,7 @@ public:
     [[nodiscard]] bool* GetBoolElement(unsigned int index) const;
     wxString GetDefault(unsigned int index);
     [[nodiscard]] PanelOptionType GetPanelOptType(unsigned int index) const;
+    void CopyValuesFrom(const PanelOptions& source);
     void SetForceShow(bool mode);
     [[nodiscard]] bool GetForceShow() const;
 };

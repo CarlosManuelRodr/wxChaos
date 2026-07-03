@@ -65,3 +65,31 @@ TEST_CASE("PanelOptions force-show flag can be toggled")
     options.SetForceShow(false);
     CHECK_FALSE(options.GetForceShow());
 }
+
+TEST_CASE("PanelOptions copies values without replacing target links")
+{
+    int sourcePower = 3;
+    double sourceBailout = 8.0;
+    bool sourceEnabled = true;
+    PanelOptions source;
+    source.LinkInt(PanelOptionType::Spin, "Power", &sourcePower, "2");
+    source.LinkDbl(PanelOptionType::TextCtrl, "Bailout", &sourceBailout, "2");
+    source.LinkBool(PanelOptionType::CheckBox, "Enabled", &sourceEnabled, "false");
+
+    int targetPower = 2;
+    double targetBailout = 2.0;
+    bool targetEnabled = false;
+    PanelOptions target;
+    target.LinkInt(PanelOptionType::Spin, "Power", &targetPower, "2");
+    target.LinkDbl(PanelOptionType::TextCtrl, "Bailout", &targetBailout, "2");
+    target.LinkBool(PanelOptionType::CheckBox, "Enabled", &targetEnabled, "false");
+
+    target.CopyValuesFrom(source);
+
+    CHECK(targetPower == 3);
+    CHECK(targetBailout == doctest::Approx(8.0));
+    CHECK(targetEnabled);
+    CHECK(target.GetIntElement(0) == &targetPower);
+    CHECK(target.GetDoubleElement(0) == &targetBailout);
+    CHECK(target.GetBoolElement(0) == &targetEnabled);
+}
