@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <cmath>
 #include "SelectionRect.h"
 
 SelectionRect::SelectionRect()
