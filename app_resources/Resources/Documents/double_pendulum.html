@@ -15,6 +15,15 @@
             <p class="eyebrow">Physical chaos</p>
             <h1>Double Pendulum</h1>
             <p class="subtitle">A mechanical system whose initial angles become a fractal map.</p>
+            <div class="formula hero-formula">
+                \[
+                    \tfrac{1}{3}\ell\ddot{\theta}_2
+                    +\tfrac{1}{2}\ell\ddot{\theta}_1\cos(\theta_1-\theta_2)
+                    -\tfrac{1}{2}\ell\dot{\theta}_1^2\sin(\theta_1-\theta_2)
+                    +\tfrac{1}{2}g\sin\theta_2=0
+                \]
+                Solved numerically with Euler or Runge-Kutta integration.
+            </div>
             <p class="hero-introduction">A double pendulum is only two arms and two masses, but its motion can become wildly sensitive. wxChaos turns each pixel into a pair of starting angles and colors how long that simulated pendulum stays within the chosen bounds.</p>
         </div>
         <figure class="hero-figure"><img src="double_pendulum/overview.png" alt="An overview of Double Pendulum fractal"><figcaption><span class="figure-title">Initial conditions as geography.</span> Add a render showing angle regions with different escape times.</figcaption></figure>
