@@ -39,6 +39,23 @@ std::optional<DocumentationLinkAction::FractalReference> DocumentationLinkAction
     return std::nullopt;
 }
 
+std::optional<DocumentationLinkAction::FormulaReference> DocumentationLinkAction::FindFormula(const wxString& formula)
+{
+    static const FormulaReference formulas[] = {
+        {"user-defined-escape-time", FractalType::UserDefinedEscapeTime, FormulaType::Complex},
+        {"user-defined-fixed-point", FractalType::UserDefinedFixedPoint, FormulaType::FixedPoint},
+        {"user-defined-newton", FractalType::UserDefinedNewtonRaphson, FormulaType::NewtonRaphson}
+    };
+
+    for (const FormulaReference& candidate : formulas)
+    {
+        if (candidate.slug == formula)
+            return candidate;
+    }
+
+    return std::nullopt;
+}
+
 std::optional<DocumentationLinkAction::Location> DocumentationLinkAction::FindLocation(const wxString& fractal,
                                                                                        const wxString& location)
 {
@@ -118,6 +135,19 @@ DocumentationLinkAction DocumentationLinkAction::Parse(const wxString& url)
         return action;
     }
 
+    if (kind == "formula")
+    {
+        const std::optional<FormulaReference> formula = FindFormula(remainder);
+        if (formula.has_value())
+        {
+            action._type = Type::OpenFormulaDialog;
+            action._target = formula->slug;
+            action._targetFractalType = formula->fractalType;
+            action._targetFormulaType = formula->formulaType;
+        }
+        return action;
+    }
+
     if (kind == "julia")
     {
         const wxString fractalSlug = remainder.BeforeFirst('/');
@@ -187,6 +217,11 @@ const wxString& DocumentationLinkAction::GetTarget() const
 FractalType DocumentationLinkAction::GetTargetFractalType() const
 {
     return _targetFractalType;
+}
+
+FormulaType DocumentationLinkAction::GetTargetFormulaType() const
+{
+    return _targetFormulaType;
 }
 
 bool DocumentationLinkAction::TargetFractalEnablesJulia() const

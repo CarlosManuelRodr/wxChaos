@@ -11,6 +11,7 @@
 
 #include <wx/wx.h>
 #include <wx/bmpbndl.h>
+#include "types/FormulaType.h"
 #include "canvas/FractalCanvas.h"
 
 #define FormulaDialogSize wxSize(520, 320)
@@ -44,6 +45,7 @@ class FormulaDialog : public wxDialog
     void OnClose(wxCloseEvent& event);
     void OnFunc(wxCommandEvent& event);
     void OnChoice(wxCommandEvent& event);
+    void SetFormulaTypeSelection(FormulaType type, bool updateFormulaText) const;
     [[nodiscard]] static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
                                                       const wxString& darkIcon);
     [[nodiscard]] static wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
@@ -55,4 +57,5 @@ public:
                   wxWindowID id = wxID_ANY, const wxString& title = "User formula", const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
     ~FormulaDialog() override;
+    void SelectFormulaType(FormulaType type) const;
 };

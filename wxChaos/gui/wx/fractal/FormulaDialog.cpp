@@ -120,24 +120,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
-    if (_fCanvas->GetFormula().type == FormulaType::Complex)
-    {
-        _typeChoice->SetSelection( 0 );
-        _juliaCheck->Enable(true);
-        _bailCtrl->Enable(true);
-    }
-    else if (_fCanvas->GetFormula().type == FormulaType::FixedPoint)
-    {
-        _typeChoice->SetSelection( 1 );
-        _juliaCheck->Enable(false);
-        _bailCtrl->Enable(false);
-    }
-    else
-    {
-        _typeChoice->SetSelection( 2 );
-        _juliaCheck->Enable(false);
-        _bailCtrl->Enable(false);
-    }
+    SetFormulaTypeSelection(_fCanvas->GetFormula().type, false);
 
     this->Bind(wxEVT_CLOSE_WINDOW, &FormulaDialog::OnClose, this);
     _typeChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &FormulaDialog::OnChoice, this);
@@ -203,24 +186,48 @@ void FormulaDialog::OnClose(wxCloseEvent&)
     *_active = false;
     this->Destroy();
 }
+void FormulaDialog::SetFormulaTypeSelection(const FormulaType type, const bool updateFormulaText) const
+{
+    if (type == FormulaType::Complex)
+    {
+        _typeChoice->SetSelection(0);
+        _juliaCheck->Enable(true);
+        _bailCtrl->Enable(true);
+        if (updateFormulaText)
+            _formulaCtrl->SetValue("z = z^2 + c");
+    }
+
+    else if (type == FormulaType::FixedPoint)
+    {
+        _typeChoice->SetSelection(1);
+        _juliaCheck->Enable(false);
+        _bailCtrl->Enable(false);
+        if (updateFormulaText)
+            _formulaCtrl->SetValue("z = sin(z)");
+    }
+
+    else
+    {
+        _typeChoice->SetSelection(2);
+        _juliaCheck->Enable(false);
+        _bailCtrl->Enable(false);
+        if (updateFormulaText)
+            _formulaCtrl->SetValue("z^3 - 1");
+    }
+}
+void FormulaDialog::SelectFormulaType(const FormulaType type) const
+{
+    SetFormulaTypeSelection(type, false);
+}
 // ReSharper disable once CppMemberFunctionMayBeConst
 void FormulaDialog::OnChoice(wxCommandEvent&)
 {
     if (_typeChoice->GetCurrentSelection() == 0)
-    {
-        _juliaCheck->Enable(true);
-        _bailCtrl->Enable(true);
-        _formulaCtrl->SetValue("z = z^2 + c");
-    }
+        SetFormulaTypeSelection(FormulaType::Complex, true);
+    else if (_typeChoice->GetCurrentSelection() == 1)
+        SetFormulaTypeSelection(FormulaType::FixedPoint, true);
     else
-    {
-        _juliaCheck->Enable(false);
-        _bailCtrl->Enable(false);
-        if (_typeChoice->GetCurrentSelection() == 1)
-            _formulaCtrl->SetValue("z = sin(z)");
-        else
-            _formulaCtrl->SetValue("z^3 - 1");
-    }
+        SetFormulaTypeSelection(FormulaType::NewtonRaphson, true);
 }
 void FormulaDialog::OnFunc(wxCommandEvent&)
 {

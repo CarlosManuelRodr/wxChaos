@@ -325,6 +325,8 @@ bool MainFrame::ExecuteDocumentationAction(const DocumentationLinkAction& action
             return ToggleDocumentationTool(action.GetTarget());
         case DocumentationLinkAction::Type::SetRendering:
             return SetDocumentationRendering(action.GetRenderingMethod());
+        case DocumentationLinkAction::Type::OpenFormulaDialog:
+            return OpenDocumentationFormulaDialog(action);
         case DocumentationLinkAction::Type::Unknown:
         default:
             return false;
@@ -407,6 +409,28 @@ bool MainFrame::SetDocumentationRendering(const DocumentationLinkAction::Renderi
         _rendererOptions->SetTarget(presenter);
 
     Raise();
+    return true;
+}
+
+bool MainFrame::OpenDocumentationFormulaDialog(const DocumentationLinkAction& action)
+{
+    if (action.GetTargetFractalType() == FractalType::Undefined || _fractalCanvas == nullptr)
+        return false;
+
+    if (!_formulaDialogIsActive)
+    {
+        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_FORMULA_DIALOG);
+        OnFormulaDialog(event);
+    }
+
+    ChangeFractal(action.GetTargetFractalType(), false);
+
+    if (_formulaDialog == nullptr)
+        return false;
+
+    _formulaDialog->SelectFormulaType(action.GetTargetFormulaType());
+    _formulaDialog->Raise();
+    _formulaDialog->SetFocus();
     return true;
 }
 

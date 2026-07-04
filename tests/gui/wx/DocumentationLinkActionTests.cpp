@@ -52,6 +52,28 @@ TEST_CASE("DocumentationLinkAction parses known tool actions")
     CHECK(action.GetTarget() == "orbit");
 }
 
+TEST_CASE("DocumentationLinkAction parses formula dialog actions")
+{
+    const DocumentationLinkAction escapeTime =
+        DocumentationLinkAction::Parse("wxchaos://formula/user-defined-escape-time");
+    const DocumentationLinkAction fixedPoint =
+        DocumentationLinkAction::Parse("wxchaos://formula/user-defined-fixed-point");
+    const DocumentationLinkAction newton =
+        DocumentationLinkAction::Parse("wxchaos://formula/user-defined-newton");
+
+    CHECK(escapeTime.GetType() == DocumentationLinkAction::Type::OpenFormulaDialog);
+    CHECK(escapeTime.GetTargetFractalType() == FractalType::UserDefinedEscapeTime);
+    CHECK(escapeTime.GetTargetFormulaType() == FormulaType::Complex);
+
+    CHECK(fixedPoint.GetType() == DocumentationLinkAction::Type::OpenFormulaDialog);
+    CHECK(fixedPoint.GetTargetFractalType() == FractalType::UserDefinedFixedPoint);
+    CHECK(fixedPoint.GetTargetFormulaType() == FormulaType::FixedPoint);
+
+    CHECK(newton.GetType() == DocumentationLinkAction::Type::OpenFormulaDialog);
+    CHECK(newton.GetTargetFractalType() == FractalType::UserDefinedNewtonRaphson);
+    CHECK(newton.GetTargetFormulaType() == FormulaType::NewtonRaphson);
+}
+
 TEST_CASE("DocumentationLinkAction parses Mandelbrot rendering methods")
 {
     const DocumentationLinkAction action =

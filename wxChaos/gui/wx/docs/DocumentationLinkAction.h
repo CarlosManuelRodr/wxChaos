@@ -7,6 +7,7 @@
 
 #include <optional>
 #include "types/FractalType.h"
+#include "types/FormulaType.h"
 #include "types/RenderingAlgorithmType.h"
 #include <wx/string.h>
 
@@ -28,7 +29,8 @@ public:
         OpenJuliaMode,
         OpenLocation,
         ToggleTool,
-        SetRendering
+        SetRendering,
+        OpenFormulaDialog
     };
 
     struct Location
@@ -53,6 +55,13 @@ public:
         bool orbitTrap{};
     };
 
+    struct FormulaReference
+    {
+        wxString slug;
+        FractalType fractalType{FractalType::Undefined};
+        FormulaType formulaType{FormulaType::Complex};
+    };
+
 private:
     struct FractalReference
     {
@@ -64,11 +73,13 @@ private:
     Type _type{Type::Unknown};
     wxString _target;
     FractalType _targetFractalType{FractalType::Undefined};
+    FormulaType _targetFormulaType{FormulaType::Complex};
     bool _targetFractalEnablesJulia{};
     Location _location;
     RenderingMethod _renderingMethod;
 
     static std::optional<FractalReference> FindFractal(const wxString& fractal);
+    static std::optional<FormulaReference> FindFormula(const wxString& formula);
     static std::optional<Location> FindLocation(const wxString& fractal, const wxString& location);
     static std::optional<RenderingMethod> FindRenderingMethod(const wxString& method);
 
@@ -84,6 +95,9 @@ public:
 
     /// @return Fractal type requested by OpenFractal actions.
     [[nodiscard]] FractalType GetTargetFractalType() const;
+
+    /// @return Formula type requested by OpenFormulaDialog actions.
+    [[nodiscard]] FormulaType GetTargetFormulaType() const;
 
     /// @return True when the target fractal can open a Julia preview from the main view.
     [[nodiscard]] bool TargetFractalEnablesJulia() const;

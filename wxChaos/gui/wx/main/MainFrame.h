@@ -202,6 +202,7 @@ class MainFrame : public wxFrame
     bool OpenDocumentationJuliaMode(const DocumentationLinkAction& action);
     bool OpenDocumentationLocation(const DocumentationLinkAction::Location& location);
     bool SetDocumentationRendering(const DocumentationLinkAction::RenderingMethod& method);
+    bool OpenDocumentationFormulaDialog(const DocumentationLinkAction& action);
     bool ToggleDocumentationTool(const wxString& tool);
     void OpenScriptEditorFromDocumentation();
 
