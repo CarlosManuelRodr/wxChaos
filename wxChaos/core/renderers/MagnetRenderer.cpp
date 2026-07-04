@@ -40,12 +40,14 @@ RenderWorker::Point MagnetRenderer::TracePoint(const Real& pixelRe, const Real& 
 
         z = ComplexPow((ComplexPow(z, 2) + c - PrecisionComplex<Real>(Real(1), Real(0))) /
                        (Real(2) * z + c - PrecisionComplex<Real>(Real(2), Real(0))), 2);
+        const PrecisionComplex<Real> triangleTerm = z - c;
 
         point.zRe = ToDouble(z.re);
         point.zIm = ToDouble(z.im);
         point.zNorm = ToDouble(ComplexNorm(z));
         const bool wasInside = !escaped;
-        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
+                ToDouble(triangleTerm.re), ToDouble(triangleTerm.im), wasInside);
 
         if (!escaped)
             point.iterations = n + 1;
