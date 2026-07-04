@@ -234,6 +234,19 @@ figure {
     min-height: 360px;
 }
 
+.user-defined-question-mark {
+    align-items: center;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 12%, transparent), transparent 44%),
+        var(--panel-background);
+    color: var(--accent-color);
+    display: flex;
+    font-size: 8rem;
+    font-weight: 700;
+    justify-content: center;
+    min-height: 360px;
+}
+
 figcaption {
     color: var(--muted-text-color);
     font-size: 0.91rem;
@@ -675,6 +688,10 @@ figcaption {
     }
 
     .hero-figure .image-placeholder {
+        min-height: 260px;
+    }
+
+    .user-defined-question-mark {
         min-height: 260px;
     }
 }
