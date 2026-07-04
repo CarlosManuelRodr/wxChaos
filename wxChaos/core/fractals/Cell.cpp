@@ -13,7 +13,6 @@ Cell::Cell(const unsigned int width, const unsigned int height) : Fractal(width,
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     // Creates panel.
-    _panelOpt.SetForceShow(true);
     _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &bailout, "2");
     bailout = 2;
 
@@ -44,10 +43,9 @@ void Cell::Render()
 }
 void Cell::DrawOrbit()
 {
-    complex<double> c(_orbitX, _orbitY);
-    complex<double> b, z;
-    z = c;
-    b = c - sin(c);
+    const complex<double> c(_orbitX, _orbitY);
+    complex<double> z = c;
+    complex<double> b = c - sin(c);
 
     vector< complex<double> > zVector;
     bool outOfSet = false;
