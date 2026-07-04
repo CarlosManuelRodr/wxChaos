@@ -328,6 +328,13 @@ public:
     ///@param algorithm New rendering algorithm.
     void SetAlgorithm(RenderingAlgorithmType algorithm);
 
+    /// @brief Applies a rendering algorithm and related coloring flags when supported.
+    /// @param algorithm Rendering algorithm to select.
+    /// @param smoothRender Enables smooth escape-time coloring.
+    /// @param orbitTrap Enables orbit-trap coloring.
+    /// @return true when the current fractal supports the requested rendering options.
+    bool SetRenderingOptions(RenderingAlgorithmType algorithm, bool smoothRender, bool orbitTrap);
+
     ///@brief Sets the rendering precision strategy and invalidates cached images.
     ///@param mode New rendering precision mode.
     void SetRenderingPrecisionMode(RenderingPrecisionMode mode);

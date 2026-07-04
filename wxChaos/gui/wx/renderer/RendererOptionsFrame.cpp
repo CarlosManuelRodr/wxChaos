@@ -533,7 +533,7 @@ void RendererOptionsFrame::SetTarget(FractalPresenter* presenter)
 bool RendererOptionsFrame::SetRenderingOptions(const RenderingAlgorithmType algorithm, const bool smoothRender,
                                                const bool orbitTrap)
 {
-    if (!ApplyRenderingOptions(_fractalPresenter, algorithm, smoothRender, orbitTrap))
+    if (_fractalPresenter == nullptr || !_fractalPresenter->SetRenderingOptions(algorithm, smoothRender, orbitTrap))
         return false;
 
     SetTarget(_fractalPresenter);
@@ -546,30 +546,6 @@ bool RendererOptionsFrame::SetRenderingOptions(const RenderingAlgorithmType algo
     _smoothRender->SetValue(smoothRender);
     _orbitTrap->SetValue(orbitTrap);
     NotifyOptionsChanged();
-    return true;
-}
-
-bool RendererOptionsFrame::ApplyRenderingOptions(FractalPresenter* presenter, const RenderingAlgorithmType algorithm,
-                                                 const bool smoothRender, const bool orbitTrap)
-{
-    if (presenter == nullptr)
-        return false;
-
-    Fractal* target = presenter->GetFractal();
-    if (target == nullptr)
-        return false;
-
-    const std::vector<RenderingAlgorithmType>& availableAlgorithms = target->GetAvailableAlg();
-    if (std::find(availableAlgorithms.begin(), availableAlgorithms.end(), algorithm) == availableAlgorithms.end())
-        return false;
-    if (smoothRender && !target->HasSmoothRenderMode())
-        return false;
-    if (orbitTrap && !target->HasOrbitTrapMode())
-        return false;
-
-    presenter->SetAlgorithm(algorithm);
-    presenter->SetSmoothRender(smoothRender);
-    presenter->SetOrbitTrapMode(orbitTrap);
     return true;
 }
 

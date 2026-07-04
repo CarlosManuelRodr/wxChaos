@@ -419,7 +419,7 @@ bool MainFrame::ApplyDocumentationRenderingToCurrentFractal(const DocumentationL
         return _rendererOptions->SetRenderingOptions(method.algorithm, method.smoothRender, method.orbitTrap);
     }
 
-    if (!RendererOptionsFrame::ApplyRenderingOptions(presenter, method.algorithm, method.smoothRender, method.orbitTrap))
+    if (presenter == nullptr || !presenter->SetRenderingOptions(method.algorithm, method.smoothRender, method.orbitTrap))
         return false;
 
     UpdateJuliaRendererOptions(_fractalCanvas->GetFractal()->GetOptions());

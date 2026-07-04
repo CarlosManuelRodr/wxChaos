@@ -1044,6 +1044,26 @@ void FractalPresenter::SetAlgorithm(const RenderingAlgorithmType algorithm)
     _fractal->SetAlgorithm(algorithm);
 }
 
+bool FractalPresenter::SetRenderingOptions(const RenderingAlgorithmType algorithm, const bool smoothRender,
+                                           const bool orbitTrap)
+{
+    if (_fractal == nullptr)
+        return false;
+
+    const std::vector<RenderingAlgorithmType>& availableAlgorithms = _fractal->GetAvailableAlg();
+    if (std::find(availableAlgorithms.begin(), availableAlgorithms.end(), algorithm) == availableAlgorithms.end())
+        return false;
+    if (smoothRender && !_fractal->HasSmoothRenderMode())
+        return false;
+    if (orbitTrap && !_fractal->HasOrbitTrapMode())
+        return false;
+
+    SetAlgorithm(algorithm);
+    SetSmoothRender(smoothRender);
+    SetOrbitTrapMode(orbitTrap);
+    return true;
+}
+
 void FractalPresenter::SetRenderingPrecisionMode(const RenderingPrecisionMode mode)
 {
     ClearImageCache();
