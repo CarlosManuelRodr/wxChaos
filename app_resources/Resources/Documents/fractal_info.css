@@ -530,6 +530,8 @@ figcaption {
 }
 
 .iteration-lab-button {
+    -webkit-appearance: none;
+    appearance: none;
     background: var(--accent-color);
     border: 1px solid var(--accent-color);
     border-radius: 7px;
@@ -539,15 +541,35 @@ figcaption {
     font-weight: 650;
     min-width: 88px;
     padding: 6px 10px;
+    -webkit-text-fill-color: #ffffff;
 }
 
 :root[data-theme="dark"] .iteration-lab-button {
     color: #101318;
+    -webkit-text-fill-color: #101318;
 }
 
 .iteration-lab-button.secondary {
     background: color-mix(in srgb, var(--accent-color) 8%, transparent);
     color: var(--accent-color);
+    -webkit-text-fill-color: var(--accent-color);
+}
+
+:root[data-theme="dark"] .iteration-lab-button.secondary {
+    background: #111821;
+    border-color: #8cc7ff;
+    color: #cfe6ff;
+    -webkit-text-fill-color: #cfe6ff;
+}
+
+.iteration-lab-button:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent-color) 44%, transparent);
+    outline-offset: 2px;
+}
+
+.iteration-lab-button:active,
+.iteration-lab-button.secondary:active {
+    filter: brightness(0.95);
 }
 
 .iteration-lab-button:disabled {
@@ -556,6 +578,7 @@ figcaption {
     color: var(--heading-color);
     cursor: default;
     opacity: 1;
+    -webkit-text-fill-color: var(--heading-color);
 }
 
 .iteration-lab-button.secondary:disabled {
@@ -563,6 +586,14 @@ figcaption {
     border-color: color-mix(in srgb, var(--accent-color) 58%, var(--panel-border-color));
     color: color-mix(in srgb, var(--accent-color) 72%, var(--text-color));
     opacity: 1;
+    -webkit-text-fill-color: color-mix(in srgb, var(--accent-color) 72%, var(--text-color));
+}
+
+:root[data-theme="dark"] .iteration-lab-button.secondary:disabled {
+    background: #0f141b;
+    border-color: #5f7f9f;
+    color: #9fc9ef;
+    -webkit-text-fill-color: #9fc9ef;
 }
 
 .iteration-lab-field {
