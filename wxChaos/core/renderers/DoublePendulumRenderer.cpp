@@ -18,7 +18,6 @@ DoublePendulumRenderer::DoublePendulumRenderer()
 
 void DoublePendulumRenderer::EscapeTimeRender()
 {
-    //Crea fractal
     double th1, th2, vth1, vth2;
     bool insideSet;
     unsigned n;
