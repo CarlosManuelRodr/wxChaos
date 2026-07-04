@@ -65,6 +65,7 @@ void DoublePendulum::CopyOptionFromPanel()
     l = *_panelOpt.GetDoubleElement(5);
     g = *_panelOpt.GetDoubleElement(6);
     referenced = *_panelOpt.GetBoolElement(2);
+    rungeKutta = *_panelOpt.GetBoolElement(3);
 }
 void DoublePendulum::DrawOrbit()
 {

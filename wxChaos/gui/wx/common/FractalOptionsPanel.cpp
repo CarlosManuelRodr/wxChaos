@@ -105,6 +105,9 @@ void FractalOptionsPanel::Build()
     {
         size_t labelIndex;
         size_t index;
+        int textControlTargetIndex = 0;
+        int spinControlTargetIndex = 0;
+        int checkBoxTargetIndex = 0;
 
         for (int i = 0; i < panelOptions->GetElementsSize(); i++)
         {
@@ -132,7 +135,8 @@ void FractalOptionsPanel::Build()
                     index = _textControls.size() - 1;
                     _dynamicControls.push_back(_textControls[index]);
                     _sizer->Add(_textControls[index], 0, wxALL | wxEXPAND, 5);
-                    _foundTextControls.push_back(i);
+                    _foundTextControls.push_back(textControlTargetIndex);
+                    ++textControlTargetIndex;
                     break;
                 }
                 case PanelOptionType::Spin:
@@ -148,7 +152,8 @@ void FractalOptionsPanel::Build()
                     index = _spinControls.size() - 1;
                     _dynamicControls.push_back(_spinControls[index]);
                     _sizer->Add(_spinControls[index], 0, wxALL | wxEXPAND, 5);
-                    _foundSpinControls.push_back(i);
+                    _foundSpinControls.push_back(spinControlTargetIndex);
+                    ++spinControlTargetIndex;
                     break;
                 }
                 case PanelOptionType::CheckBox:
@@ -158,7 +163,8 @@ void FractalOptionsPanel::Build()
                     _checkBoxes[index]->SetValue(panelOptions->GetDefault(i) == "true");
                     _dynamicControls.push_back(_checkBoxes[index]);
                     _sizer->Add(_checkBoxes[index], 0, wxALL | wxEXPAND, 5);
-                    _foundCheckBoxes.push_back(i);
+                    _foundCheckBoxes.push_back(checkBoxTargetIndex);
+                    ++checkBoxTargetIndex;
                     break;
                 }
             }
