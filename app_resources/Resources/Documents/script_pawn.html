@@ -18,17 +18,41 @@
             <div class="formula hero-formula">
                 \(z_{n+1}=z_n^n+c\)
             </div>
-            <p class="hero-introduction">Pawn is a small scripted oddity: each pixel starts as both \(z\) and \(c\), then the iteration raises \(z\) to the current iteration number before adding \(c\).</p>
+            <p class="hero-introduction">
+                Pawn is a small scripted oddity: each pixel starts as both \(z\) and \(c\), then the iteration
+                raises \(z\) to the current iteration number before adding \(c\). The author of this script is unknown.
+            </p>
         </div>
         <figure class="hero-figure">
             <img
-                src="script_pawn/overview.png"
-                alt="A Pawn script fractal render">
+                    src="script_pawn/overview.png"
+                    alt="A Pawn script fractal render">
             <figcaption><span class="figure-title">A moving exponent.</span></figcaption>
         </figure>
     </section>
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Start at the default view. It is already a zoomed-in region, chosen to show the script's structure.</p></div><div class="experiment-step"><p>Increase iterations and watch whether the boundary stabilizes or grows new texture.</p></div><div class="experiment-step"><p>Use this as inspiration for the script editor: changing the exponent schedule can create very different behavior.</p></div></div></section>
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>The moving-power recurrence</summary><div class="concept-details-content"><p>The script sets \(z_0=c\) and then applies \(z_{n+1}=z_n^n+c\). The exponent is not fixed, so the rule becomes more aggressive as \(n\) increases. A bailout radius of \(2\) separates points treated as inside from escaping points.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Start at the default view. It is already a zoomed-in region, chosen to show the script's structure.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Increase iterations and watch whether the boundary stabilizes or grows new texture.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Use this as inspiration for the script editor: changing the exponent schedule can create very different behavior.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>The moving-power recurrence</summary>
+            <div class="concept-details-content">
+                <p>The script sets \(z_0=c\) and then applies \(z_{n+1}=z_n^n+c\). The exponent is not fixed, so the rule becomes more aggressive as \(n\) increases. A bailout radius of \(2\) separates points treated as inside from escaping points.</p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>
