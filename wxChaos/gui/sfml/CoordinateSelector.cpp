@@ -19,11 +19,7 @@ CoordinateSelector::CoordinateSelector(const sf::RenderWindow* window)
     _screenWidth = window->getSize().x;
     _screenHeight = window->getSize().y;
     this->SetPosition(static_cast<int>(window->getSize().x / 2), static_cast<int>(window->getSize().y / 2));
-
-    _color = sf::Color(0, 0, 0);
-    _textureImage.create(_screenWidth, _screenHeight, sf::Color(255, 255, 255, 0));
-    _texture.loadFromImage(_textureImage);
-    _output.setTexture(_texture);
+    _lines = sf::VertexArray(sf::Lines, 12);
 
     this->Render();
     _rendered = true;
@@ -34,19 +30,38 @@ void CoordinateSelector::Show(sf::RenderWindow* window)
 {
     if (!_rendered)
         this->Render();
-    window->draw(_output);
+    window->draw(_lines);
 }
 
 void CoordinateSelector::Render()
 {
-    _textureImage.create(_screenWidth, _screenHeight, sf::Color(255, 255, 255, 0));
     this->SetPosition(_x, _y);
-    for (unsigned int i = 0; i < _screenWidth; i++)
-        _textureImage.setPixel(i, _y, _color);
-    for (unsigned int j = 0; j < _screenHeight; j++)
-        _textureImage.setPixel(_x, j, _color);
-    _texture.loadFromImage(_textureImage);
+
+    const float x = static_cast<float>(_x);
+    const float y = static_cast<float>(_y);
+    const float width = static_cast<float>(_screenWidth);
+    const float height = static_cast<float>(_screenHeight);
+    const sf::Color outlineColor(0, 0, 0);
+    const sf::Color centerColor(255, 255, 255);
+
+    this->SetLine(0, x - 1.f, 0.f, x - 1.f, height, outlineColor);
+    this->SetLine(1, x + 1.f, 0.f, x + 1.f, height, outlineColor);
+    this->SetLine(2, 0.f, y - 1.f, width, y - 1.f, outlineColor);
+    this->SetLine(3, 0.f, y + 1.f, width, y + 1.f, outlineColor);
+    this->SetLine(4, x, 0.f, x, height, centerColor);
+    this->SetLine(5, 0.f, y, width, y, centerColor);
+
     _rendered = true;
+}
+
+void CoordinateSelector::SetLine(const unsigned int lineIndex, const float startX, const float startY,
+                                 const float endX, const float endY, const sf::Color& color)
+{
+    const unsigned int vertexIndex = lineIndex * 2;
+    _lines[vertexIndex].position = sf::Vector2f(startX, startY);
+    _lines[vertexIndex].color = color;
+    _lines[vertexIndex + 1].position = sf::Vector2f(endX, endY);
+    _lines[vertexIndex + 1].color = color;
 }
 
 void CoordinateSelector::SetPosition(const int newX, const int newY)
@@ -127,11 +142,6 @@ void CoordinateSelector::Resize(const sf::RenderWindow* window)
     this->SetPosition(static_cast<int>(_screenWidth / 2), static_cast<int>(_screenHeight / 2));
     this->Render();
     _inSelection = false;
-
-    sf::IntRect size;
-    size.width = static_cast<int>(_screenWidth);
-    size.height = static_cast<int>(_screenHeight);
-    _output.setTextureRect(size);
 }
 
 double CoordinateSelector::GetX(const Fractal* target) const

@@ -13,14 +13,13 @@ class CoordinateSelector
     int _x, _y;
     unsigned int _screenWidth;
     unsigned int _screenHeight;
-    sf::Image _textureImage;
-    sf::Texture _texture;
-    sf::Sprite _output;
-    sf::Color _color;
+    sf::VertexArray _lines;
     bool _rendered;
     bool _inSelection;
 
     void Render();
+    void SetLine(unsigned int lineIndex, float startX, float startY, float endX, float endY,
+                 const sf::Color& color);
     void SetPosition(int newX, int newY);
     static int ClampCoordinate(int value, unsigned int size);
 
