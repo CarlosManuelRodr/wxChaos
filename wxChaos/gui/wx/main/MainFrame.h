@@ -118,7 +118,6 @@ class MainFrame : public wxFrame
     bool _formulaDialogIsActive;
     bool _showOptionsPanel{};
 
-    // WX
     wxMenuBar* _menubar{};
     wxMenu* _fileMenu{};
     wxMenu* _fractalMenu{};

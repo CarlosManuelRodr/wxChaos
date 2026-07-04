@@ -45,10 +45,10 @@ public:
     };
 
 protected:
-    bool** _setMap;                             ///< Stores the points that belong to the fractal set.
-    double** _colorMap;                         ///< Store continuous color values.
-    unsigned int** _auxMap;                     ///< An additional map to perform some auxiliary operations.
-    RenderThreadPool _renderPool;               ///< Reusable pool for render jobs.
+    bool** _setMap;                  ///< Stores the points that belong to the fractal set.
+    double** _colorMap;              ///< Store continuous color values.
+    unsigned int** _auxMap;          ///< An additional map to perform some auxiliary operations.
+    RenderThreadPool _renderPool;    ///< Reusable pool for render jobs.
 
     // Fractal properties.
     PanelOptions _panelOpt;          ///< List of GUI elements to put into the option panel.
@@ -66,7 +66,7 @@ protected:
     unsigned _maxIter;               ///< Maximum number of iterations.
     unsigned _defaultIter;           ///< Default number of iterations for this fractal.
     unsigned _iterationStep;         ///< Iteration change used by menu and keyboard shortcuts.
-    FormulaOptions _userFormula;         ///< Formula specified by the user.
+    FormulaOptions _userFormula;     ///< Formula specified by the user.
 
     // System.
     unsigned int _threadNumber;      ///< Number of threads. By default, it is the same as the number of cores in the system.

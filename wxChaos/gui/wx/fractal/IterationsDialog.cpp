@@ -12,7 +12,6 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
                                    const long style)
                                    : wxFrame(parent, id, title, pos, size, style)
 {
-    // WX Frame.
     const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
 

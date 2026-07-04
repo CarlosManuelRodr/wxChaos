@@ -144,7 +144,6 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
                                const wxPoint& pos, const wxSize& size, const long style)
                                : wxDialog(parent, id, title, pos, size, style)
 {
-    // WX Dialog.
     _extension = 0;
     _fractalCanvas = fractalCanvas;
     _options = target->GetOptions();
