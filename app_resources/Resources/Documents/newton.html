@@ -39,12 +39,80 @@
                </div>
             </div>
          </section>
+
+         <section aria-labelledby="newton-lab-title">
+            <h2 id="newton-lab-title">Guesses falling toward solutions</h2>
+            <p>
+               Each dot below is an initial guess \(z_0\) for the equation
+               \(z^3-1=0\). Press <strong>More iterations</strong> to apply one
+               Newton-Raphson step. The three colored destinations are the three
+               solutions of the equation.
+            </p>
+
+            <div class="iteration-lab" data-newton-iteration-lab>
+               <div class="iteration-lab-stage">
+                  <canvas
+                     data-iteration-canvas
+                     width="980"
+                     height="756"
+                     role="img"
+                     aria-label="Animated grid of guesses moving toward roots under Newton-Raphson iteration">
+                  </canvas>
+               </div>
+               <div class="iteration-lab-controls">
+                  <div class="iteration-lab-buttons">
+                     <button class="iteration-lab-button secondary" type="button" data-less-iterations>
+                        Less iterations
+                     </button>
+                     <button class="iteration-lab-button" type="button" data-more-iterations>
+                        More iterations
+                     </button>
+                     <button class="iteration-lab-button secondary" type="button" data-reset-iterations>
+                        Reset
+                     </button>
+                  </div>
+                  <label class="iteration-lab-field">
+                     <span>Initial guesses</span>
+                     <input
+                        type="number"
+                        min="25"
+                        max="1200"
+                        step="25"
+                        value="459"
+                        data-point-count>
+                  </label>
+                  <div class="iteration-lab-readout" data-iteration-readout>
+                     Showing z0 guesses
+                  </div>
+               </div>
+               <div class="iteration-lab-legend">
+                  <span style="--legend-color: #8cc7ff;">Root \(1\)</span>
+                  <span style="--legend-color: #f7b267;">Root \(-0.5+0.866i\)</span>
+                  <span style="--legend-color: #d6a3ff;">Root \(-0.5-0.866i\)</span>
+               </div>
+            </div>
+         </section>
+
          <section>
             <h2>Mathematical notes</h2>
             <details class="concept-details">
                <summary>Newton's method as a dynamical system</summary>
                <div class="concept-details-content">
-                  <p>For a function \(f\), Newton's method repeatedly applies \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). A root becomes an attracting destination, and each pixel belongs to the basin of the root reached from that starting point. wxChaos' built-in Newton fractal uses a historical cubic-style Newton iteration and colors convergence behavior.</p>
+                  <p>For a function \(f\), Newton's method repeatedly applies \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). A root becomes an attracting destination, and each pixel belongs to the basin of the root reached from that starting point. wxChaos' built-in Newton fractal maps convergence behavior for a cubic root-finding problem.</p>
+               </div>
+            </details>
+            <details class="concept-details">
+               <summary>What is the Newton-Raphson method?</summary>
+               <div class="concept-details-content">
+                  <p>Newton-Raphson is a way to solve \(f(z)=0\) by improving a guess. At the current guess \(z_n\), it uses the derivative \(f'(z_n)\) as a local linear approximation, predicts where that approximation reaches zero, and uses that crossing as the next guess.</p>
+                  <p>The update rule is \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). For \(f(z)=z^3-1\), the roots are \(1\), \(-\frac{1}{2}+\frac{\sqrt{3}}{2}i\), and \(-\frac{1}{2}-\frac{\sqrt{3}}{2}i\). Newton iteration sends most starting guesses toward one of those three destinations.</p>
+               </div>
+            </details>
+            <details class="concept-details">
+               <summary>Why does root finding produce a fractal?</summary>
+               <div class="concept-details-content">
+                  <p>If a starting point is already close to one root, Newton's method usually falls into that root quickly. Farther away, the tangent step can jump across the plane. Near the boundary between basins, two nearly identical guesses can be pulled toward different roots after several steps.</p>
+                  <p>Those boundary regions fold and repeat under the Newton map. Coloring every starting guess by the root it reaches turns numerical sensitivity into visible geometry: smooth basins surrounded by intricate fractal borders.</p>
                </div>
             </details>
          </section>
@@ -57,5 +125,326 @@
             </ul>
          </section>
       </main>
+      <script>
+      (() => {
+         const lab = document.querySelector("[data-newton-iteration-lab]");
+         if (!lab) {
+            return;
+         }
+
+         const canvas = lab.querySelector("[data-iteration-canvas]");
+         const context = canvas.getContext("2d");
+         const lessButton = lab.querySelector("[data-less-iterations]");
+         const moreButton = lab.querySelector("[data-more-iterations]");
+         const resetButton = lab.querySelector("[data-reset-iterations]");
+         const pointCountInput = lab.querySelector("[data-point-count]");
+         const readout = lab.querySelector("[data-iteration-readout]");
+         const bounds = {
+            minX: -1.6,
+            maxX: 1.4,
+            minY: -1.2,
+            maxY: 1.2
+         };
+         const roots = [
+            {x: 1, y: 0, color: "rgba(140, 199, 255, 0.9)"},
+            {x: -0.5, y: Math.sqrt(3) / 2, color: "rgba(247, 178, 103, 0.9)"},
+            {x: -0.5, y: -Math.sqrt(3) / 2, color: "rgba(214, 163, 255, 0.9)"}
+         ];
+         const defaultPointCount = 459;
+         const minPointCount = 25;
+         const maxPointCount = 1200;
+         const maxVisibleIteration = 30;
+         const animationDurationMs = 720;
+         let points = [];
+         let activeMovements = [];
+         let traceOpacity = 0;
+         let currentIteration = 0;
+         let animationFrame = null;
+         let clearTraceTimeout = null;
+
+         const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+         const easeInOut = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+         const squaredDistance = (a, b) => {
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            return dx * dx + dy * dy;
+         };
+
+         const nearestRoot = (point) => {
+            let bestIndex = 0;
+            let bestDistance = Number.POSITIVE_INFINITY;
+
+            roots.forEach((root, index) => {
+               const distance = squaredDistance(point, root);
+               if (distance < bestDistance) {
+                  bestDistance = distance;
+                  bestIndex = index;
+               }
+            });
+
+            return roots[bestIndex];
+         };
+
+         const displayPoint = (point) => ({
+            x: clamp(point.x, bounds.minX, bounds.maxX),
+            y: -clamp(point.y, bounds.minY, bounds.maxY),
+            root: nearestRoot(point)
+         });
+
+         const canvasPoint = (display) => ({
+            x: ((display.x - bounds.minX) / (bounds.maxX - bounds.minX)) * canvas.width,
+            y: ((display.y + bounds.maxY) / (bounds.maxY - bounds.minY)) * canvas.height,
+            root: display.root
+         });
+
+         const nextPoint = (z) => {
+            const re2 = z.x * z.x;
+            const im2 = z.y * z.y;
+            const denominator = 3 * ((re2 - im2) * (re2 - im2) + 4 * re2 * im2);
+
+            if (denominator < 0.000001) {
+               return {x: z.x, y: z.y};
+            }
+
+            return {
+               x: (2 / 3) * z.x + (re2 - im2) / denominator,
+               y: (2 / 3) * z.y - (2 * z.x * z.y) / denominator
+            };
+         };
+
+         const drawLine = (from, to, color, width) => {
+            context.beginPath();
+            context.moveTo(from.x, from.y);
+            context.lineTo(to.x, to.y);
+            context.strokeStyle = color;
+            context.lineWidth = width;
+            context.stroke();
+         };
+
+         const drawGrid = () => {
+            context.fillStyle = "#090b10";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            const verticalLines = [-1.5, -1, -0.5, 0, 0.5, 1];
+            const horizontalLines = [-1, -0.5, 0, 0.5, 1];
+
+            for (const x of verticalLines) {
+               drawLine(
+                  canvasPoint({x, y: bounds.minY, root: roots[0]}),
+                  canvasPoint({x, y: bounds.maxY, root: roots[0]}),
+                  "rgba(255, 255, 255, 0.08)",
+                  1
+               );
+            }
+
+            for (const y of horizontalLines) {
+               drawLine(
+                  canvasPoint({x: bounds.minX, y, root: roots[0]}),
+                  canvasPoint({x: bounds.maxX, y, root: roots[0]}),
+                  "rgba(255, 255, 255, 0.08)",
+                  1
+               );
+            }
+
+            drawLine(
+               canvasPoint({x: bounds.minX, y: 0, root: roots[0]}),
+               canvasPoint({x: bounds.maxX, y: 0, root: roots[0]}),
+               "rgba(255, 255, 255, 0.28)",
+               1.4
+            );
+            drawLine(
+               canvasPoint({x: 0, y: bounds.minY, root: roots[0]}),
+               canvasPoint({x: 0, y: bounds.maxY, root: roots[0]}),
+               "rgba(255, 255, 255, 0.28)",
+               1.4
+            );
+
+            for (const root of roots) {
+               const point = canvasPoint({x: root.x, y: -root.y, root});
+               context.beginPath();
+               context.arc(point.x, point.y, 8, 0, Math.PI * 2);
+               context.fillStyle = root.color;
+               context.fill();
+               context.strokeStyle = "rgba(255, 255, 255, 0.82)";
+               context.lineWidth = 2;
+               context.stroke();
+            }
+         };
+
+         const drawPoint = (display) => {
+            const point = canvasPoint(display);
+            context.beginPath();
+            context.arc(point.x, point.y, 4, 0, Math.PI * 2);
+            context.fillStyle = point.root.color;
+            context.fill();
+            context.strokeStyle = "rgba(255, 255, 255, 0.48)";
+            context.lineWidth = 1;
+            context.stroke();
+         };
+
+         const drawScene = () => {
+            drawGrid();
+
+            if (traceOpacity > 0 && activeMovements.length > 0) {
+               context.lineCap = "round";
+               context.strokeStyle = `rgba(255, 255, 255, ${0.36 * traceOpacity})`;
+               context.lineWidth = 2.2;
+
+               for (const movement of activeMovements) {
+                  const from = canvasPoint(movement.from);
+                  const to = canvasPoint(movement.to);
+                  context.beginPath();
+                  context.moveTo(from.x, from.y);
+                  context.lineTo(to.x, to.y);
+                  context.stroke();
+               }
+            }
+
+            for (const pointData of points) {
+               drawPoint(pointData.displayPosition);
+            }
+         };
+
+         const clearTrace = () => {
+            if (clearTraceTimeout !== null) {
+               window.clearTimeout(clearTraceTimeout);
+               clearTraceTimeout = null;
+            }
+
+            traceOpacity = 0;
+            activeMovements = [];
+         };
+
+         const normalizePointCount = (value) => clamp(Math.round(value || defaultPointCount), minPointCount, maxPointCount);
+
+         const buildPoints = (pointCount) => {
+            const targetCount = normalizePointCount(pointCount);
+            const aspect = (bounds.maxX - bounds.minX) / (bounds.maxY - bounds.minY);
+            const columns = Math.max(2, Math.ceil(Math.sqrt(targetCount * aspect)));
+            const rows = Math.max(2, Math.ceil(targetCount / columns));
+            const nextPoints = [];
+
+            for (let yIndex = 0; yIndex < rows && nextPoints.length < targetCount; yIndex++) {
+               const y = -1.05 + (2.1 * yIndex) / Math.max(1, rows - 1);
+
+               for (let xIndex = 0; xIndex < columns && nextPoints.length < targetCount; xIndex++) {
+                  const x = -1.45 + (2.7 * xIndex) / Math.max(1, columns - 1);
+                  const z = {x, y};
+                  nextPoints.push({
+                     displayPosition: displayPoint(z),
+                     history: [z]
+                  });
+               }
+            }
+
+            points = nextPoints;
+            pointCountInput.value = String(targetCount);
+         };
+
+         const updateButtons = () => {
+            lessButton.disabled = currentIteration <= 0;
+            moreButton.disabled = currentIteration >= maxVisibleIteration;
+            resetButton.disabled = currentIteration <= 0;
+            pointCountInput.disabled = false;
+            readout.textContent = currentIteration === 0
+               ? "Showing z0 guesses"
+               : `Showing z${currentIteration}`;
+         };
+
+         const resetIterationLab = () => {
+            if (animationFrame !== null) {
+               cancelAnimationFrame(animationFrame);
+               animationFrame = null;
+            }
+
+            clearTrace();
+            currentIteration = 0;
+
+            for (const pointData of points) {
+               pointData.displayPosition = displayPoint(pointData.history[0]);
+               pointData.history = [pointData.history[0]];
+            }
+
+            drawScene();
+            updateButtons();
+         };
+
+         const moveToIteration = (targetIteration) => {
+            if (animationFrame !== null || targetIteration < 0 || targetIteration > maxVisibleIteration) {
+               return;
+            }
+
+            clearTrace();
+
+            const movingPoints = points.map((pointData) => {
+               while (pointData.history.length <= targetIteration) {
+                  pointData.history.push(nextPoint(pointData.history[pointData.history.length - 1]));
+               }
+
+               const from = displayPoint(pointData.history[currentIteration]);
+               const to = displayPoint(pointData.history[targetIteration]);
+               return {pointData, from, to};
+            });
+
+            activeMovements = movingPoints;
+            traceOpacity = 1;
+            const startedAt = performance.now();
+
+            const animate = (now) => {
+               const elapsed = now - startedAt;
+               const progress = easeInOut(Math.min(1, elapsed / animationDurationMs));
+
+               for (const movement of movingPoints) {
+                  movement.pointData.displayPosition = {
+                     x: movement.from.x + (movement.to.x - movement.from.x) * progress,
+                     y: movement.from.y + (movement.to.y - movement.from.y) * progress,
+                     root: progress > 0.55 ? movement.to.root : movement.from.root
+                  };
+               }
+
+               drawScene();
+
+               if (progress < 1) {
+                  animationFrame = requestAnimationFrame(animate);
+                  return;
+               }
+
+               currentIteration = targetIteration;
+               animationFrame = null;
+
+               for (const movement of movingPoints) {
+                  movement.pointData.displayPosition = displayPoint(movement.pointData.history[currentIteration]);
+               }
+
+               traceOpacity = 0.42;
+               drawScene();
+
+               clearTraceTimeout = window.setTimeout(() => {
+                  clearTrace();
+                  drawScene();
+               }, 180);
+
+               updateButtons();
+            };
+
+            animationFrame = requestAnimationFrame(animate);
+            lessButton.disabled = true;
+            moreButton.disabled = true;
+            resetButton.disabled = true;
+            pointCountInput.disabled = true;
+         };
+
+         lessButton.addEventListener("click", () => moveToIteration(currentIteration - 1));
+         moreButton.addEventListener("click", () => moveToIteration(currentIteration + 1));
+         resetButton.addEventListener("click", resetIterationLab);
+         pointCountInput.addEventListener("change", () => {
+            buildPoints(pointCountInput.valueAsNumber);
+            resetIterationLab();
+         });
+
+         buildPoints(defaultPointCount);
+         resetIterationLab();
+      })();
+      </script>
    </body>
 </html>
