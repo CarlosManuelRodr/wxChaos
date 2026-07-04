@@ -43,12 +43,14 @@ RenderWorker::Point CellRenderer::TracePoint(const Real& pixelRe, const Real& pi
 
         b /= c;
         z = z * c + b / z;
+        const PrecisionComplex<Real> triangleTerm = z - c;
         const bool wasInside = !escaped;
 
         point.zRe = ToDouble(z.re);
         point.zIm = ToDouble(z.im);
         point.zNorm = ToDouble(ComplexNorm(z));
-        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm, 0.0, 0.0, wasInside);
+        measure(point, PointTraceEvent::Iterated, n, point.zRe, point.zIm, point.zNorm,
+                ToDouble(triangleTerm.re), ToDouble(triangleTerm.im), wasInside);
 
         if (!escaped)
             point.iterations = n + 1;
