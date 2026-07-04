@@ -495,6 +495,9 @@ figcaption {
     background: var(--panel-background);
     border: 1px solid var(--panel-border-color);
     border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 640px;
     overflow: hidden;
 }
 
@@ -505,6 +508,7 @@ figcaption {
 }
 
 .iteration-lab-stage canvas {
+    aspect-ratio: 980 / 756;
     display: block;
     height: auto;
     width: 100%;
@@ -514,15 +518,15 @@ figcaption {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
     justify-content: space-between;
-    padding: 14px 16px;
+    padding: 10px 12px;
 }
 
 .iteration-lab-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
 }
 
 .iteration-lab-button {
@@ -531,9 +535,10 @@ figcaption {
     border-radius: 7px;
     color: #ffffff;
     cursor: pointer;
-    font: inherit;
+    font: 0.92rem "Segoe UI", Arial, sans-serif;
     font-weight: 650;
-    padding: 8px 13px;
+    min-width: 88px;
+    padding: 6px 10px;
 }
 
 :root[data-theme="dark"] .iteration-lab-button {
@@ -541,21 +546,31 @@ figcaption {
 }
 
 .iteration-lab-button.secondary {
-    background: transparent;
+    background: color-mix(in srgb, var(--accent-color) 8%, transparent);
     color: var(--accent-color);
 }
 
 .iteration-lab-button:disabled {
+    background: color-mix(in srgb, var(--accent-color) 32%, var(--panel-background));
+    border-color: color-mix(in srgb, var(--accent-color) 56%, var(--panel-border-color));
+    color: var(--heading-color);
     cursor: default;
-    opacity: 0.45;
+    opacity: 1;
+}
+
+.iteration-lab-button.secondary:disabled {
+    background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+    border-color: color-mix(in srgb, var(--accent-color) 58%, var(--panel-border-color));
+    color: color-mix(in srgb, var(--accent-color) 72%, var(--text-color));
+    opacity: 1;
 }
 
 .iteration-lab-field {
     align-items: center;
     color: var(--muted-text-color);
     display: flex;
-    gap: 8px;
-    font-size: 0.9rem;
+    gap: 6px;
+    font-size: 0.86rem;
 }
 
 .iteration-lab-field input {
@@ -564,8 +579,8 @@ figcaption {
     border-radius: 6px;
     color: var(--text-color);
     font: inherit;
-    padding: 7px 8px;
-    width: 82px;
+    padding: 6px 7px;
+    width: 72px;
 }
 
 .iteration-lab-field input:focus {
@@ -577,7 +592,7 @@ figcaption {
 .iteration-lab-readout {
     color: var(--muted-text-color);
     font-family: Consolas, "Courier New", monospace;
-    font-size: 0.9rem;
+    font-size: 0.84rem;
 }
 
 .iteration-lab-legend {
