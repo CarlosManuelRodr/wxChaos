@@ -852,12 +852,14 @@ for each pixel (px, py):
     let points = [];
     let activeMovements = [];
     let traceOpacity = 0;
+    let traceHeadProgress = 1;
+    let traceTailProgress = 1;
     let currentIteration = 1;
     let animationFrame = null;
-    let clearTraceTimeout = null;
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const easeInOut = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    const mix = (from, to, progress) => from + (to - from) * progress;
     const squaredMagnitude = (point) => point.x * point.x + point.y * point.y;
 
     const displayPoint = (point) => ({
@@ -945,9 +947,22 @@ for each pixel (px, py):
             for (const movement of activeMovements) {
                 const from = canvasPoint(movement.from);
                 const to = canvasPoint(movement.to);
+                const head = {
+                    x: mix(from.x, to.x, traceHeadProgress),
+                    y: mix(from.y, to.y, traceHeadProgress)
+                };
+                const tail = {
+                    x: mix(from.x, to.x, traceTailProgress),
+                    y: mix(from.y, to.y, traceTailProgress)
+                };
+
+                if (Math.hypot(head.x - tail.x, head.y - tail.y) < 0.5) {
+                    continue;
+                }
+
                 context.beginPath();
-                context.moveTo(from.x, from.y);
-                context.lineTo(to.x, to.y);
+                context.moveTo(tail.x, tail.y);
+                context.lineTo(head.x, head.y);
                 context.stroke();
             }
         }
@@ -958,12 +973,9 @@ for each pixel (px, py):
     };
 
     const clearTrace = () => {
-        if (clearTraceTimeout !== null) {
-            window.clearTimeout(clearTraceTimeout);
-            clearTraceTimeout = null;
-        }
-
         traceOpacity = 0;
+        traceHeadProgress = 1;
+        traceTailProgress = 1;
         activeMovements = [];
     };
 
@@ -1040,11 +1052,16 @@ for each pixel (px, py):
 
         activeMovements = movingPoints;
         traceOpacity = 1;
+        traceHeadProgress = 0;
+        traceTailProgress = 0;
         const startedAt = performance.now();
 
         const animate = (now) => {
             const elapsed = now - startedAt;
-            const progress = easeInOut(Math.min(1, elapsed / animationDurationMs));
+            const linearProgress = Math.min(1, elapsed / animationDurationMs);
+            const progress = easeInOut(linearProgress);
+            traceHeadProgress = progress;
+            traceTailProgress = easeInOut(clamp((linearProgress - 0.22) / 0.78, 0, 1));
 
             for (const movement of movingPoints) {
                 movement.pointData.displayPosition = {
@@ -1068,14 +1085,8 @@ for each pixel (px, py):
                 movement.pointData.displayPosition = displayPoint(movement.pointData.history[currentIteration - 1]);
             }
 
-            traceOpacity = 0.42;
+            clearTrace();
             drawScene();
-
-            clearTraceTimeout = window.setTimeout(() => {
-                clearTrace();
-                drawScene();
-            }, 180);
-
             updateButtons();
         };
 
