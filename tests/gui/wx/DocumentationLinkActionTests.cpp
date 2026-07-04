@@ -74,6 +74,16 @@ TEST_CASE("DocumentationLinkAction parses formula dialog actions")
     CHECK(newton.GetTargetFormulaType() == FormulaType::NewtonRaphson);
 }
 
+TEST_CASE("DocumentationLinkAction parses fractal option actions")
+{
+    const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://options/mandelbrot-zn");
+
+    CHECK(action.GetType() == DocumentationLinkAction::Type::OpenFractalOptions);
+    CHECK(action.GetTarget() == "mandelbrot-zn");
+    CHECK(action.GetTargetFractalType() == FractalType::MandelbrotZN);
+    CHECK(action.TargetFractalEnablesJulia());
+}
+
 TEST_CASE("DocumentationLinkAction parses Mandelbrot rendering methods")
 {
     const DocumentationLinkAction action =

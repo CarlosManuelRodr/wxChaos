@@ -203,6 +203,7 @@ class MainFrame : public wxFrame
     bool OpenDocumentationLocation(const DocumentationLinkAction::Location& location);
     bool SetDocumentationRendering(const DocumentationLinkAction::RenderingMethod& method);
     bool OpenDocumentationFormulaDialog(const DocumentationLinkAction& action);
+    bool OpenDocumentationFractalOptions(const DocumentationLinkAction& action);
     bool ToggleDocumentationTool(const wxString& tool);
     void OpenScriptEditorFromDocumentation();
 

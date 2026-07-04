@@ -327,6 +327,8 @@ bool MainFrame::ExecuteDocumentationAction(const DocumentationLinkAction& action
             return SetDocumentationRendering(action.GetRenderingMethod());
         case DocumentationLinkAction::Type::OpenFormulaDialog:
             return OpenDocumentationFormulaDialog(action);
+        case DocumentationLinkAction::Type::OpenFractalOptions:
+            return OpenDocumentationFractalOptions(action);
         case DocumentationLinkAction::Type::Unknown:
         default:
             return false;
@@ -434,6 +436,25 @@ bool MainFrame::OpenDocumentationFormulaDialog(const DocumentationLinkAction& ac
     return true;
 }
 
+bool MainFrame::OpenDocumentationFractalOptions(const DocumentationLinkAction& action)
+{
+    if (action.GetTargetFractalType() == FractalType::Undefined || _fractalCanvas == nullptr)
+        return false;
+
+    ChangeFractal(action.GetTargetFractalType(), action.TargetFractalEnablesJulia());
+    if (_fractalOptionsItem == nullptr || !_fractalOptionsItem->IsEnabled())
+        return false;
+
+    if (!_showOptionsPanel)
+    {
+        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_OPTION_PANEL);
+        OnFractalOptions(event);
+    }
+
+    Raise();
+    return true;
+}
+
 bool MainFrame::ToggleDocumentationTool(const wxString& tool)
 {
     if (tool != "orbit" || _fractalCanvas == nullptr || !_fractalCanvas->GetFractal()->HasOrbit())
@@ -487,9 +508,9 @@ void MainFrame::SetUpGUI()
 #endif
 
     mandelbrot = new wxMenuItem(_formula, ID_MANDELBROT, wxString("Mandelbrot") + menuSeparator + "z = z^2 + c", wxEmptyString, wxITEM_NORMAL);
-    mandelbrotZN = new wxMenuItem(_formula, ID_MANDELBROT_ZN, wxString("Mandelbrot") + menuSeparator + "z = z^n + c", wxEmptyString, wxITEM_NORMAL);
+    mandelbrotZN = new wxMenuItem(_formula, ID_MANDELBROT_ZN, wxString("Mandelbrot Z^m") + menuSeparator + "z = z^m + c", wxEmptyString, wxITEM_NORMAL);
     julia = new wxMenuItem(_formula, ID_JULIA, wxString("Mandelbrot (Julia)") + menuSeparator + "z = z^2 + k", wxEmptyString, wxITEM_NORMAL);
-    juliaZN = new wxMenuItem(_formula, ID_JULIA_ZN, wxString("Mandelbrot (Julia)") + menuSeparator + "z = z^n + k", wxEmptyString, wxITEM_NORMAL);
+    juliaZN = new wxMenuItem(_formula, ID_JULIA_ZN, wxString("Julia Z^m") + menuSeparator + "z = z^m + k", wxEmptyString, wxITEM_NORMAL);
     newton = new wxMenuItem(_formula, ID_NEWTON, wxString("Newton") + menuSeparator + "z^3 - 1 = 0", wxEmptyString, wxITEM_NORMAL);
     sinusoidal = new wxMenuItem(_formula, ID_SINUSOIDAL, wxString("Sine (Julia)") + menuSeparator + "Z = c*Sin(Z)", wxEmptyString, wxITEM_NORMAL);
     magnet = new wxMenuItem(_formula, ID_MAGNET, wxString("Magnet"), wxEmptyString, wxITEM_NORMAL);

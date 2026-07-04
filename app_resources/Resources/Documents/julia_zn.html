@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Julia Zn</title>
+    <title>Julia Z^m</title>
     <link rel="stylesheet" href="fractal_info.css">
     <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
@@ -13,24 +13,24 @@
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Dynamical plane</p>
-            <h1>Julia Zn</h1>
+            <h1>Julia Z^m</h1>
             <p class="subtitle">A Julia family where the exponent becomes a sculpting tool.</p>
             <div class="formula hero-formula">
-                \(z_{n+1}=z_n^p+k\)
+                \(z_{n+1}=z_n^m+k\)
             </div>
-            <p class="hero-introduction">The familiar quadratic Julia set uses \(z^2+k\). Julia Zn lets you raise \(z\) to a chosen power, producing extra arms, symmetries, and rotational rhythms.</p>
+            <p class="hero-introduction">The familiar quadratic Julia set uses \(z^2+k\). Julia Z^m lets you raise \(z\) to a chosen power, producing extra arms, symmetries, and rotational rhythms.</p>
         </div>
         <figure class="hero-figure">
-            <img src="julia_zn/overview.png" alt="An overview of Julia Zn render">
+            <img src="julia_zn/overview.png" alt="An overview of Julia Z^m render">
             <figcaption><span class="figure-title">Change the exponent, change the architecture.</span> Add a render showing a higher-power Julia set.</figcaption>
         </figure>
-        <div class="action-row"><a class="action-link" href="wxchaos://fractal/julia-zn">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/julia-zn">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a><a class="action-link secondary" href="wxchaos://options/julia-zn">Change m</a></div>
     </section>
     <section>
         <h2>What to try first</h2>
         <div class="experiment">
             <div class="experiment-step">
-                <p>Set \(n=3\) or \(n=4\). Look for the way additional powers add rotational structure.</p>
+                <p>Use <strong>Change m</strong> to open View &gt; Fractal options, then set \(m=3\) or \(m=4\). Look for the way additional powers add rotational structure.</p>
             </div>
             <div class="experiment-step">
                 <p>Adjust the parameter \(k\) slightly. Watch the difference between a connected body and a broken dust of islands.</p>
@@ -45,7 +45,7 @@
         <details class="concept-details">
             <summary>What the exponent does</summary>
             <div class="concept-details-content">
-                <p>wxChaos iterates \(z_{n+1}=z_n^p+k\), where the pixel supplies \(z_0\), \(k\) is fixed, and \(p\) is the chosen exponent. Increasing \(p\) increases the natural rotational symmetry of the map and changes how quickly large values escape.</p>
+                <p>wxChaos iterates \(z_{n+1}=z_n^m+k\), where the pixel supplies \(z_0\), \(k\) is the fixed Julia constant, and \(m\) is the chosen exponent. Increasing \(m\) increases the natural rotational symmetry of the map and changes how quickly large values escape.</p>
             </div>
         </details>
     </section>
@@ -56,7 +56,7 @@
             <article class="view-card">
                 <img
                         src="julia_zn/escape-time.png"
-                        alt="Julia Z_n set rendered with Escape time">
+                        alt="Julia Z^m set rendered with Escape time">
                 <div class="view-card-content">
                     <h3>Escape time</h3>
                     <p>The baseline map: color follows how long each orbit takes to escape.</p>
@@ -66,7 +66,7 @@
             <article class="view-card">
                 <img
                         src="julia_zn/smooth-coloring.png"
-                        alt="Julia Z_n set rendered with Smooth coloring">
+                        alt="Julia Z^m set rendered with Smooth coloring">
                 <div class="view-card-content">
                     <h3>Smooth coloring</h3>
                     <p>Softens iteration bands into continuous gradients.</p>
@@ -76,7 +76,7 @@
             <article class="view-card">
                 <img
                         src="julia_zn/gaussian-integer.png"
-                        alt="Julia Z_n set rendered with Gaussian integer">
+                        alt="Julia Z^m set rendered with Gaussian integer">
                 <div class="view-card-content">
                     <h3>Gaussian integer</h3>
                     <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
@@ -86,7 +86,7 @@
             <article class="view-card">
                 <img
                         src="julia_zn/escape-angle.png"
-                        alt="Julia Z_n set rendered with Escape angle">
+                        alt="Julia Z^m set rendered with Escape angle">
                 <div class="view-card-content">
                     <h3>Escape angle</h3>
                     <p>Uses the direction of escape to reveal flow through the exterior.</p>
@@ -96,7 +96,7 @@
             <article class="view-card">
                 <img
                         src="julia_zn/triangle-inequality.png"
-                        alt="Julia Z_n set rendered with Triangle inequality">
+                        alt="Julia Z^m set rendered with Triangle inequality">
                 <div class="view-card-content">
                     <h3>Triangle inequality</h3>
                     <p>Turns relationships inside the orbit into layered, topographic texture.</p>
@@ -106,7 +106,7 @@
             <article class="view-card">
                 <img
                         src="julia_zn/orbit-trap.png"
-                        alt="Julia Z_n set rendered with Orbit traps">
+                        alt="Julia Z^m set rendered with Orbit traps">
                 <div class="view-card-content">
                     <h3>Orbit traps</h3>
                     <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>

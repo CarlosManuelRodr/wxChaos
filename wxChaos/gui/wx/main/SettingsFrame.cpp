@@ -94,7 +94,7 @@ wxPanel* SettingsFrame::CreatePresetsPage()
     sizer->AddGrowableCol(1, 1);
 
     const wxString names[] = {
-        "Mandelbrot", "Mandelbrot ZN", "Julia", "Julia ZN", "Newton",
+        "Mandelbrot", "Mandelbrot Z^m", "Julia", "Julia Z^m", "Newton",
         "Sine", "Magnet", "Jellyfish", "Manowar", "Manowar Julia",
         "Sierpinski Triangle", "Fixed Point: sin(z)", "Fixed Point: cos(z)",
         "Fixed Point: tan(z)", "Fixed Point: z^2", "Tricorn", "Burning Ship",

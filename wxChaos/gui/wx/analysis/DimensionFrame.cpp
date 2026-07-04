@@ -74,7 +74,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
                              0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
     const auto fractalBoxSizer = new wxBoxSizer(wxVERTICAL);
 
-    const wxString fractalChoiceChoices[] = { "Mandelbrot", "MandelbrotZN", "Mandelbrot (Julia)", "MandelbrotZN (Julia)", "Sine (Julia)", "Jellyfish",
+    const wxString fractalChoiceChoices[] = { "Mandelbrot", "Mandelbrot Z^m", "Mandelbrot (Julia)", "Julia Z^m", "Sine (Julia)", "Jellyfish",
                                               "Manowar", "Manowar (Julia)", "Tricorn", "Burning Ship", "Burning Ship (Julia)",
                                               "Fractory", "Cell", "Magnet", "Double pendulum" };
     constexpr int fractalChoiceNChoices = sizeof(fractalChoiceChoices) / sizeof(wxString);

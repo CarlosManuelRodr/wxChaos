@@ -7,7 +7,7 @@
  * @brief Power Julia set with configurable exponent and bailout.
  *
  * Each pixel supplies z_0 and the UI Julia constant supplies k. The orbit
- * iterates z_{n+1} = z_n^p + k, where p is the panel exponent. Escape is
+ * iterates z_{n+1} = z_n^m + k, where m is the panel exponent. Escape is
  * detected when |z|^2 exceeds bailout^2.
  */
 class JuliaZN: public Fractal
@@ -18,7 +18,7 @@ class JuliaZN: public Fractal
 public:
     JuliaZN(unsigned int width, unsigned int height);
     ~JuliaZN() override;
-    wxString GetName() const override { return "Julia ZN"; }
+    wxString GetName() const override { return "Julia Z^m"; }
 
     void CopyOptionFromPanel() override;
     void Render() override;

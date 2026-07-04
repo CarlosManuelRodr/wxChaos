@@ -31,7 +31,7 @@ MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) 
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkInt(PanelOptionType::Spin, "n: ", &n, "3");
+    _panelOpt.LinkInt(PanelOptionType::Spin, "m: ", &n, "3");
     _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &bailout, "2");
     n = 3;
     bailout = 2;

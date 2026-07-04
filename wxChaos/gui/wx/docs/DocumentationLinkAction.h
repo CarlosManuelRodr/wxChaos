@@ -30,7 +30,8 @@ public:
         OpenLocation,
         ToggleTool,
         SetRendering,
-        OpenFormulaDialog
+        OpenFormulaDialog,
+        OpenFractalOptions
     };
 
     struct Location
