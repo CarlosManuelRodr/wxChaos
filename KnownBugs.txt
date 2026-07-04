@@ -2,6 +2,7 @@ Bugs:
 - User formula Escape Time needs a Julia mode.
 
 Improvements to get to a release version:
+- Mandelbrot Z^m and Julia Z^m should support real exponent.
 - Instead of embedding ffmpeg, use a library to create the zoom videos.
 - Localization to Spanish, Japanese and possibly other languages.
 - Implement a proper tutorial mode.

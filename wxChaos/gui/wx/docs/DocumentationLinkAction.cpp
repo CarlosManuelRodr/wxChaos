@@ -66,7 +66,7 @@ std::optional<DocumentationLinkAction::Location> DocumentationLinkAction::FindLo
     static const Location mandelbrotLocations[] = {
         {"mandelbrot", FractalType::Mandelbrot, true, "seahorse-valley", -0.7453, 0.1127, 0.04},
         {"mandelbrot", FractalType::Mandelbrot, true, "elephant-valley", 0.275, 0.0, 0.075},
-        {"mandelbrot", FractalType::Mandelbrot, true, "miniature", -1.749, 0.0, 0.035}
+        {"mandelbrot", FractalType::Mandelbrot, true, "miniature", -1.765, 0.0, 0.035}
     };
 
     for (const Location& landmark : mandelbrotLocations)

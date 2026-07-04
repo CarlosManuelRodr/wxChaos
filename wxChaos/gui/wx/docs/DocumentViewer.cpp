@@ -8,7 +8,8 @@
 DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const wxWindowID id,
                                const wxString& title, const wxPoint& pos, const wxSize& size, const long style,
                                WxChaosLinkHandler wxChaosLinkHandler)
-                               : wxDialog(parent, id, title, pos, size, style),
+                               : wxFrame(nullptr, id, title, pos, size, style),
+                                 _lifetimeOwner(parent),
                                  _wxChaosLinkHandler(std::move(wxChaosLinkHandler))
 {
     SetSizeHints(wxSize(900, 620), wxDefaultSize);
@@ -38,6 +39,9 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
     wxTopLevelWindowBase::Layout();
     Centre(wxBOTH);
 
+    if (_lifetimeOwner != nullptr)
+        _lifetimeOwner->Bind(wxEVT_DESTROY, &DocumentViewer::OnOwnerDestroyed, this);
+
     _backButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnBack, this);
     _forwardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnForward, this);
     _webView->Bind(wxEVT_WEBVIEW_NAVIGATING, &DocumentViewer::OnNavigating, this);
@@ -50,6 +54,9 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
 
 DocumentViewer::~DocumentViewer()
 {
+    if (_lifetimeOwner != nullptr)
+        _lifetimeOwner->Unbind(wxEVT_DESTROY, &DocumentViewer::OnOwnerDestroyed, this);
+
     _backButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnBack, this);
     _forwardButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnForward, this);
     _webView->Unbind(wxEVT_WEBVIEW_NAVIGATING, &DocumentViewer::OnNavigating, this);
@@ -144,6 +151,17 @@ void DocumentViewer::OnNavigating(wxWebViewEvent& event)
 void DocumentViewer::OnNavigated(wxWebViewEvent&)
 {
     UpdateNavigationButtons();
+}
+
+void DocumentViewer::OnOwnerDestroyed(wxWindowDestroyEvent& event)
+{
+    if (event.GetEventObject() == _lifetimeOwner)
+    {
+        _lifetimeOwner = nullptr;
+        Destroy();
+    }
+
+    event.Skip();
 }
 
 void DocumentViewer::OnLoaded(wxWebViewEvent&)

@@ -13,12 +13,12 @@
 
 /**
 * @class DocumentViewer
-* @brief Dialog that displays local HTML documentation through wxWebView.
+* @brief Frame that displays local HTML documentation through wxWebView.
 *
 * DocumentViewer replaces the legacy wxHtmlWindow-based help dialog so bundled
 * pages can use modern HTML, CSS, and MathJax-rendered formulas.
 */
-class DocumentViewer : public wxDialog
+class DocumentViewer : public wxFrame
 {
 public:
     /// @brief Callback invoked when a wxchaos:// link is clicked.
@@ -30,6 +30,7 @@ private:
     wxButton* _backButton{};
     wxButton* _forwardButton{};
     wxButton* _closeButton{};
+    wxWindow* _lifetimeOwner{};
     std::vector<wxString> _navigationHistory;
     WxChaosLinkHandler _wxChaosLinkHandler;
     int _navigationHistoryIndex{-1};
@@ -67,6 +68,10 @@ private:
     /// @param event Web view navigation event.
     void OnNavigated(wxWebViewEvent& event);
 
+    /// @brief Closes the document when the window that opened it is destroyed.
+    /// @param event Destroy event emitted by the lifetime owner.
+    void OnOwnerDestroyed(wxWindowDestroyEvent& event);
+
     /// @brief Applies theme and navigation state after a page finishes loading.
     /// @param event Web view loaded event.
     void OnLoaded(wxWebViewEvent& event);
@@ -78,16 +83,16 @@ private:
 public:
     /// @brief Creates a documentation viewer for a local HTML file.
     /// @param htmlFile Local HTML file to load.
-    /// @param parent Parent wxWidgets window.
+    /// @param parent Window that owns the viewer lifetime without forcing native window stacking.
     /// @param id wxWidgets identifier.
-    /// @param title Dialog title.
-    /// @param pos Initial dialog position.
-    /// @param size Initial dialog size.
-    /// @param style Dialog style.
+    /// @param title Frame title.
+    /// @param pos Initial frame position.
+    /// @param size Initial frame size.
+    /// @param style Frame style.
     /// @param wxChaosLinkHandler
     DocumentViewer(const wxString& htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY,
                    const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
-                   const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+                   const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_FRAME_STYLE,
                    WxChaosLinkHandler wxChaosLinkHandler = nullptr);
     ~DocumentViewer() override;
 };
