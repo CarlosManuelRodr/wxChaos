@@ -20,13 +20,35 @@
             </div>
             <p class="hero-introduction">This page removes the parameter \(c\) from the Mandelbrot story and simply repeats \(z\mapsto z^2\). The result is a clean lesson in attraction, escape, and fixed points.</p>
         </div>
-        <figure class="hero-figure"><img src="fixed_point_z2/overview.png" alt="An overview of Fixed Point z2"><figcaption><span class="figure-title">The square map.</span> Add a render showing the convergence structure of \(z^2\).</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="fixed_point_z2/overview.png" alt="An overview of Fixed Point z2">
+            <figcaption><span class="figure-title">The square map.</span></figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-z2">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Choose a point inside the unit circle. Repeated squaring pulls it toward zero.</p></div><div class="experiment-step"><p>Choose a point outside the unit circle. Its magnitude grows instead.</p></div><div class="experiment-step"><p>Use orbit display on the unit circle, where rotation and doubling of angles become visible.</p></div></div></section>
-
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>Fixed points and the unit circle</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=z_n^2\). The fixed points solve \(z=z^2\), so \(z=0\) and \(z=1\). Points with \(|z|&lt;1\) move toward \(0\), while points with \(|z|&gt;1\) grow. The unit circle is the delicate boundary between those behaviors.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Choose a point inside the unit circle. Repeated squaring pulls it toward zero.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Choose a point outside the unit circle. Its magnitude grows instead.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Use orbit display on the unit circle, where rotation and doubling of angles become visible.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>Fixed points and the unit circle</summary>
+            <div class="concept-details-content">
+                <p>wxChaos iterates \(z_{n+1}=z_n^2\). The fixed points solve \(z=z^2\), so \(z=0\) and \(z=1\). Points with \(|z|&lt;1\) move toward \(0\), while points with \(|z|&gt;1\) grow. The unit circle is the delicate boundary between those behaviors.</p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>

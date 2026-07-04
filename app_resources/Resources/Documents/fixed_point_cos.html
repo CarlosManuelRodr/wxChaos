@@ -20,13 +20,35 @@
             </div>
             <p class="hero-introduction">Repeated cosine can pull many starting points toward stable behavior. In the complex plane, the borders around those destinations become the interesting part of the exhibit.</p>
         </div>
-        <figure class="hero-figure"><img src="fixed_point_cos/overview.png" alt="An overview of Fixed Point Cosine"><figcaption><span class="figure-title">The pull of a fixed point.</span> Add a render showing cosine convergence regions.</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="fixed_point_cos/overview.png" alt="An overview of Fixed Point Cosine">
+            <figcaption><span class="figure-title">The pull of a fixed point.</span></figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-cos">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Use orbit display in a broad region and watch the sequence settle.</p></div><div class="experiment-step"><p>Move toward a boundary where the color changes quickly. Convergence often slows near these borders.</p></div><div class="experiment-step"><p>Compare this page with Fixed Point Sine. The functions are simple siblings, but their complex basins have different personalities.</p></div></div></section>
-
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>What convergence means here</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=\cos(z_n)\). A fixed point satisfies \(z=\cos(z)\). The renderer stops treating the orbit as active once successive values are closer than the configured minimum step, so color becomes a map of how quickly the iteration settles.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Use orbit display in a broad region and watch the sequence settle.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Move toward a boundary where the color changes quickly. Convergence often slows near these borders.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Compare this page with Fixed Point Sine. The functions are simple siblings, but their complex basins have different personalities.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>What convergence means here</summary>
+            <div class="concept-details-content">
+                <p>wxChaos iterates \(z_{n+1}=\cos(z_n)\). A fixed point satisfies \(z=\cos(z)\). The renderer stops treating the orbit as active once successive values are closer than the configured minimum step, so color becomes a map of how quickly the iteration settles.</p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>

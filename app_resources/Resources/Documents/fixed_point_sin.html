@@ -20,13 +20,35 @@
             </div>
             <p class="hero-introduction">A fixed-point fractal asks a quieter question than escape-time fractals: if we keep applying the same function, do we settle into a stable value?</p>
         </div>
-        <figure class="hero-figure"><img src="fixed_point_sin/overview.png" alt="An overview of Fixed Point Sine"><figcaption><span class="figure-title">Convergence as color.</span> Add a render showing the basins and transition zones of repeated sine.</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="fixed_point_sin/overview.png" alt="An overview of Fixed Point Sine">
+            <figcaption><span class="figure-title">Convergence as color.</span></figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-sin">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Pick a point in a calm region and enable orbit display. The path should move toward a stable destination.</p></div><div class="experiment-step"><p>Move toward a color boundary. Those are the places where convergence becomes fragile or slow.</p></div><div class="experiment-step"><p>Adjust the minimum step threshold. A smaller threshold asks the orbit to prove convergence more carefully.</p></div></div></section>
-
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>Fixed points of sine</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=\sin(z_n)\) and watches when the step size \(|z_{n+1}-z_n|\) becomes small. A true fixed point satisfies \(z=\sin(z)\). In practice, the renderer colors how quickly each starting point appears to settle.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Pick a point in a calm region and enable orbit display. The path should move toward a stable destination.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Move toward a color boundary. Those are the places where convergence becomes fragile or slow.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Adjust the minimum step threshold. A smaller threshold asks the orbit to prove convergence more carefully.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>Fixed points of sine</summary>
+            <div class="concept-details-content">
+                <p>wxChaos iterates \(z_{n+1}=\sin(z_n)\) and watches when the step size \(|z_{n+1}-z_n|\) becomes small. A true fixed point satisfies \(z=\sin(z)\). In practice, the renderer colors how quickly each starting point appears to settle.</p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>

@@ -18,24 +18,36 @@
             <div class="formula hero-formula">
                 \(b_{n+1}=c+b_n/c-z_n,\quad z_{n+1}=z_n c+b_{n+1}/z_n\)
             </div>
-            <p class="hero-introduction">Fractory is less of a standard landmark and more of a workshop artifact. It mixes multiplication, division, and a sine-derived offset so the orbit carries an internal variable that keeps being reshaped.</p>
+            <p class="hero-introduction">Fractory is an experimental rational escape-time formula recovered from old online fractal sources. The author of wxChaos has not been able to identify a published origin or author.</p>
         </div>
-        <figure class="hero-figure"><img src="fractory/overview.png" alt="An overview of Fractory"><figcaption><span class="figure-title">A formula workshop.</span> Add a render that captures Fractory's experimental texture.</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="fractory/overview.png" alt="An overview of Fractory">
+            <figcaption><span class="figure-title">A formula workshop.</span></figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/fractory">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
     <section>
         <h2>What to try first</h2>
         <div class="experiment">
-            <div class="experiment-step"><p>Start by treating the image as terrain: find ridges, basins, and borders rather than searching for a famous silhouette.</p></div>
-            <div class="experiment-step"><p>Turn on orbit display. App-specific formulas become much clearer when you can see the orbit path that produces the color.</p></div>
-            <div class="experiment-step"><p>Use orbit traps or triangle inequality coloring to make the internal motion visible.</p></div>
+            <div class="experiment-step">
+                <p>Start by treating the image as terrain: find ridges, basins, and borders rather than searching for a famous silhouette.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Turn on orbit display. App-specific formulas become much clearer when you can see the orbit path that produces the color.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Use orbit traps or triangle inequality coloring to make the internal motion visible.</p>
+            </div>
         </div>
     </section>
-
     <section>
         <h2>Mathematical notes</h2>
-        <details class="concept-details"><summary>The auxiliary value \(b\)</summary><div class="concept-details-content"><p>wxChaos initializes \(z=c\) and \(b=c-\sin(c)\). Each step updates the auxiliary value with \(b_{n+1}=c+b_n/c-z_n\), then updates \(z\) with \(z_{n+1}=z_n c+b_{n+1}/z_n\). The changing \(b\) acts like a small internal memory that makes the iteration less predictable than a one-line quadratic map.</p></div></details>
+        <details class="concept-details">
+            <summary>The auxiliary value \(b\)</summary>
+            <div class="concept-details-content">
+                <p>wxChaos initializes \(z=c\) and \(b=c-\sin(c)\). Each step updates the auxiliary value with \(b_{n+1}=c+b_n/c-z_n\), then updates \(z\) with \(z_{n+1}=z_n c+b_{n+1}/z_n\). The changing \(b\) acts like a small internal memory that makes the iteration less predictable than a one-line quadratic map.</p>
+            </div>
+        </details>
     </section>
     <section>
         <h2>Coloring lenses</h2>
@@ -43,8 +55,8 @@
         <div class="view-grid">
             <article class="view-card">
                 <img
-                    src="fractory/escape-time.png"
-                    alt="Fractory rendered with Escape time">
+                        src="fractory/escape-time.png"
+                        alt="Fractory rendered with Escape time">
                 <div class="view-card-content">
                     <h3>Escape time</h3>
                     <p>The baseline map: color follows how long each orbit takes to escape.</p>
@@ -53,8 +65,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="fractory/smooth-coloring.png"
-                    alt="Fractory rendered with Smooth coloring">
+                        src="fractory/smooth-coloring.png"
+                        alt="Fractory rendered with Smooth coloring">
                 <div class="view-card-content">
                     <h3>Smooth coloring</h3>
                     <p>Softens iteration bands into continuous gradients.</p>
@@ -63,8 +75,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="fractory/gaussian-integer.png"
-                    alt="Fractory rendered with Gaussian integer">
+                        src="fractory/gaussian-integer.png"
+                        alt="Fractory rendered with Gaussian integer">
                 <div class="view-card-content">
                     <h3>Gaussian integer</h3>
                     <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
@@ -73,8 +85,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="fractory/escape-angle.png"
-                    alt="Fractory rendered with Escape angle">
+                        src="fractory/escape-angle.png"
+                        alt="Fractory rendered with Escape angle">
                 <div class="view-card-content">
                     <h3>Escape angle</h3>
                     <p>Uses the direction of escape to reveal flow through the exterior.</p>
@@ -83,8 +95,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="fractory/triangle-inequality.png"
-                    alt="Fractory rendered with Triangle inequality">
+                        src="fractory/triangle-inequality.png"
+                        alt="Fractory rendered with Triangle inequality">
                 <div class="view-card-content">
                     <h3>Triangle inequality</h3>
                     <p>Turns relationships inside the orbit into layered, topographic texture.</p>
@@ -93,8 +105,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="fractory/orbit-trap.png"
-                    alt="Fractory rendered with Orbit traps">
+                        src="fractory/orbit-trap.png"
+                        alt="Fractory rendered with Orbit traps">
                 <div class="view-card-content">
                     <h3>Orbit traps</h3>
                     <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>

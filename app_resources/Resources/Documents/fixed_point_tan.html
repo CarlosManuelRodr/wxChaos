@@ -20,13 +20,35 @@
             </div>
             <p class="hero-introduction">Tangent has built-in singularities. When you iterate it in the complex plane, those near-infinite jumps make the convergence landscape sharper and less forgiving than sine or cosine.</p>
         </div>
-        <figure class="hero-figure"><img src="fixed_point_tan/overview.png" alt="An overview of Fixed Point Tangent"><figcaption><span class="figure-title">Convergence near singularities.</span> Add a tangent fixed-point render here.</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="fixed_point_tan/overview.png" alt="An overview of Fixed Point Tangent">
+            <figcaption><span class="figure-title">Convergence near singularities.</span></figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-tan">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Look for abrupt color transitions. Tangent's poles can fling nearby orbits far away.</p></div><div class="experiment-step"><p>Enable orbit display near a boundary and compare it with a point deep inside a basin.</p></div><div class="experiment-step"><p>Then visit Fixed Point Sine or Cosine to feel how much calmer those maps are.</p></div></div></section>
-
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>Why tangent is sharper</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=\tan(z_n)\). Since \(\tan(z)=\sin(z)/\cos(z)\), the function has poles wherever \(\cos(z)=0\). Points near those poles can move dramatically in one iteration, creating sharp convergence boundaries.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Look for abrupt color transitions. Tangent's poles can fling nearby orbits far away.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Enable orbit display near a boundary and compare it with a point deep inside a basin.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Then visit Fixed Point Sine or Cosine to feel how much calmer those maps are.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>Why tangent is sharper</summary>
+            <div class="concept-details-content">
+                <p>wxChaos iterates \(z_{n+1}=\tan(z_n)\). Since \(\tan(z)=\sin(z)/\cos(z)\), the function has poles wherever \(\cos(z)=0\). Points near those poles can move dramatically in one iteration, creating sharp convergence boundaries.</p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>
