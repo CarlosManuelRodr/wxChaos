@@ -155,6 +155,11 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
         "Rainbow Fire",
         "Cool Blue",
         "Starry Night",
+        "Moonlit Garden",
+        "Coral Reef",
+        "Desert Mirage",
+        "Polar Ember",
+        "Jade Temple",
         "Classic Mandelbrot",
         "Custom",
         "System"

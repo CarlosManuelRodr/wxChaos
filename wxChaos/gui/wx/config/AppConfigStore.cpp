@@ -191,6 +191,11 @@ const std::map<std::string, ColorPaletteTypes>& AppConfigStore::ColorStyles()
         { "RainbowFire", RainbowFire },
         { "CoolBlue", CoolBlue },
         { "StarryNight", StarryNight },
+        { "MoonlitGarden", MoonlitGarden },
+        { "CoralReef", CoralReef },
+        { "DesertMirage", DesertMirage },
+        { "PolarEmber", PolarEmber },
+        { "JadeTemple", JadeTemple },
         { "ClassicMandelbrot", ClassicMandelbrot },
         { "Custom", CustomGradient },
         { "System", System }

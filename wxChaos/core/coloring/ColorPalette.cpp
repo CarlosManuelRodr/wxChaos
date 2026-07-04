@@ -108,6 +108,41 @@ void ColorPalette::SetStyle(const ColorPaletteTypes palette)
                 colorCycleLength = 72;
             }
             break;
+        case MoonlitGarden:
+            {
+                grad = "rgb(6,22,27);rgb(15,54,49);rgb(38,91,67);rgb(85,132,82);rgb(151,171,105);rgb(230,217,157);rgb(192,139,92);rgb(74,45,48);rgb(6,22,27);";
+                paletteSize = 540;
+                colorCycleLength = 84;
+            }
+            break;
+        case CoralReef:
+            {
+                grad = "rgb(5,24,46);rgb(0,74,103);rgb(0,135,143);rgb(91,199,184);rgb(238,235,189);rgb(244,151,118);rgb(197,82,96);rgb(79,35,73);rgb(5,24,46);";
+                paletteSize = 560;
+                colorCycleLength = 84;
+            }
+            break;
+        case DesertMirage:
+            {
+                grad = "rgb(18,16,35);rgb(46,43,82);rgb(102,76,101);rgb(158,111,88);rgb(213,164,94);rgb(245,219,154);rgb(146,163,126);rgb(58,71,71);rgb(18,16,35);";
+                paletteSize = 600;
+                colorCycleLength = 96;
+            }
+            break;
+        case PolarEmber:
+            {
+                grad = "rgb(7,17,24);rgb(20,59,82);rgb(75,139,162);rgb(170,220,218);rgb(244,244,226);rgb(223,151,93);rgb(145,68,67);rgb(48,29,43);rgb(7,17,24);";
+                paletteSize = 600;
+                colorCycleLength = 84;
+            }
+            break;
+        case JadeTemple:
+            {
+                grad = "rgb(8,18,18);rgb(18,65,53);rgb(31,123,84);rgb(96,164,111);rgb(210,201,131);rgb(238,226,178);rgb(167,124,67);rgb(64,48,40);rgb(8,18,18);";
+                paletteSize = 540;
+                colorCycleLength = 84;
+            }
+            break;
         case ClassicMandelbrot:
             {
                 grad = "rgb(8,12,28);rgb(18,38,114);rgb(27,99,183);rgb(137,218,236);rgb(255,255,236);rgb(255,194,67);rgb(184,68,20);rgb(72,18,44);rgb(8,12,28);";

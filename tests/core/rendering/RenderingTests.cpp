@@ -113,6 +113,44 @@ TEST_CASE("Recovered image-inspired palettes expose full cyclic gradients")
     CHECK(starryNight.grad.find("rgb(249,243,186)") != std::string::npos);
 }
 
+TEST_CASE("Creative palettes expose harmonious cyclic gradients")
+{
+    ColorPalette moonlitGarden;
+    moonlitGarden.SetStyle(MoonlitGarden);
+    CHECK(moonlitGarden.paletteSize == 540);
+    CHECK(moonlitGarden.colorCycleLength == 84);
+    CHECK(moonlitGarden.grad.find("rgb(85,132,82)") != std::string::npos);
+    CHECK(moonlitGarden.grad.find("rgb(230,217,157)") != std::string::npos);
+
+    ColorPalette coralReef;
+    coralReef.SetStyle(CoralReef);
+    CHECK(coralReef.paletteSize == 560);
+    CHECK(coralReef.colorCycleLength == 84);
+    CHECK(coralReef.grad.find("rgb(0,135,143)") != std::string::npos);
+    CHECK(coralReef.grad.find("rgb(244,151,118)") != std::string::npos);
+
+    ColorPalette desertMirage;
+    desertMirage.SetStyle(DesertMirage);
+    CHECK(desertMirage.paletteSize == 600);
+    CHECK(desertMirage.colorCycleLength == 96);
+    CHECK(desertMirage.grad.find("rgb(46,43,82)") != std::string::npos);
+    CHECK(desertMirage.grad.find("rgb(245,219,154)") != std::string::npos);
+
+    ColorPalette polarEmber;
+    polarEmber.SetStyle(PolarEmber);
+    CHECK(polarEmber.paletteSize == 600);
+    CHECK(polarEmber.colorCycleLength == 84);
+    CHECK(polarEmber.grad.find("rgb(75,139,162)") != std::string::npos);
+    CHECK(polarEmber.grad.find("rgb(223,151,93)") != std::string::npos);
+
+    ColorPalette jadeTemple;
+    jadeTemple.SetStyle(JadeTemple);
+    CHECK(jadeTemple.paletteSize == 540);
+    CHECK(jadeTemple.colorCycleLength == 84);
+    CHECK(jadeTemple.grad.find("rgb(31,123,84)") != std::string::npos);
+    CHECK(jadeTemple.grad.find("rgb(238,226,178)") != std::string::npos);
+}
+
 TEST_CASE("HighPrecisionReal formats compact and extended coordinate strings")
 {
     CHECK(HighPrecisionReal(0.2).ToString(15) == "0.2");

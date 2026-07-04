@@ -29,6 +29,11 @@ enum ColorPaletteTypes
     RainbowFire,
     CoolBlue,
     StarryNight,
+    MoonlitGarden,
+    CoralReef,
+    DesertMirage,
+    PolarEmber,
+    JadeTemple,
     ClassicMandelbrot,
     CustomGradient,
     System          ///< Resolves to Retro on light themes and SunsetDrive on dark themes.

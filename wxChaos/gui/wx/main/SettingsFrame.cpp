@@ -156,6 +156,11 @@ wxPanel* SettingsFrame::CreateRenderingPage()
         "Rainbow Fire",
         "Cool Blue",
         "Starry Night",
+        "Moonlit Garden",
+        "Coral Reef",
+        "Desert Mirage",
+        "Polar Ember",
+        "Jade Temple",
         "Classic Mandelbrot",
         "Custom"
     };
@@ -175,6 +180,11 @@ wxPanel* SettingsFrame::CreateRenderingPage()
         RainbowFire,
         CoolBlue,
         StarryNight,
+        MoonlitGarden,
+        CoralReef,
+        DesertMirage,
+        PolarEmber,
+        JadeTemple,
         ClassicMandelbrot,
         CustomGradient
     };
