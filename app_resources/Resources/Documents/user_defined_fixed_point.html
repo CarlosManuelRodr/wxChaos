@@ -17,13 +17,35 @@
             <p class="subtitle">Design your own convergence experiment.</p>
             <p class="hero-introduction">Instead of asking whether an orbit escapes, this room asks whether repeated application of your function settles down. It is ideal for exploring attraction, basins, and slow convergence.</p>
         </div>
-        <figure class="hero-figure"><img src="user_defined_fixed_point/overview.png" alt="An overview of user-defined fixed-point fractal"><figcaption><span class="figure-title">Your convergence map.</span> Add a render made from a custom fixed-point formula.</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="user_defined_fixed_point/overview.png" alt="An overview of user-defined fixed-point fractal">
+            <figcaption><span class="figure-title">Your convergence map.</span> Add a render made from a custom fixed-point formula.</figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/user-defined-fixed-point">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://fractal/script-editor">Open Script editor</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Start with <code>z = sin(z)</code>, <code>z = cos(z)</code>, or <code>z = z^2</code>. These connect directly to the fixed-point gallery.</p></div><div class="experiment-step"><p>Lower the minimum step only after you know the render is behaving. Strict convergence tests can require more iterations.</p></div><div class="experiment-step"><p>Look for basin boundaries. They show where nearly identical starting values settle in different ways.</p></div></div></section>
-
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>Fixed-point iteration</summary><div class="concept-details-content"><p>Given a function \(g\), fixed-point iteration computes \(z_{n+1}=g(z_n)\). A fixed point satisfies \(z=g(z)\). wxChaos treats an orbit as converged when the distance between consecutive values falls below the configured minimum step.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Start with <code>z = sin(z)</code>, <code>z = cos(z)</code>, or <code>z = z^2</code>. These connect directly to the fixed-point gallery.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Lower the minimum step only after you know the render is behaving. Strict convergence tests can require more iterations.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Look for basin boundaries. They show where nearly identical starting values settle in different ways.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>Fixed-point iteration</summary>
+            <div class="concept-details-content">
+                <p>Given a function \(g\), fixed-point iteration computes \(z_{n+1}=g(z_n)\). A fixed point satisfies \(z=g(z)\). wxChaos treats an orbit as converged when the distance between consecutive values falls below the configured minimum step.</p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>

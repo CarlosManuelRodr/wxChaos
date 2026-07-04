@@ -17,13 +17,35 @@
             <p class="subtitle">Write the rule and let the plane answer back.</p>
             <p class="hero-introduction">After visiting the galleries, this room lets you become the curator. Choose a recurrence using \(z\) and \(c\), then let wxChaos turn boundedness and escape into an image.</p>
         </div>
-        <figure class="hero-figure"><img src="user_defined_escape_time/overview.png" alt="An overview of user-defined escape-time fractal"><figcaption><span class="figure-title">A blank wall for your formula.</span> Add a render made from a custom escape-time formula.</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="user_defined_escape_time/overview.png" alt="An overview of user-defined escape-time fractal">
+            <figcaption><span class="figure-title">A blank wall for your formula.</span> Add a render made from a custom escape-time formula.</figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/user-defined-escape-time">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://fractal/script-editor">Open Script editor</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Begin with a known rule such as <code>z = z^2 + c</code>. Confirm that you recognize the behavior before changing it.</p></div><div class="experiment-step"><p>Change one ingredient at a time: the power, a sine term, a conjugate, or a small constant.</p></div><div class="experiment-step"><p>Use orbit display to debug your intuition. If the image surprises you, the orbit usually explains why.</p></div></div></section>
-
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>What escape-time means</summary><div class="concept-details-content"><p>An escape-time renderer repeats a recurrence until either the orbit passes a bailout radius or the iteration limit is reached. Pixels that escape are colored by when or how they escaped; pixels that do not escape are treated as inside for that render.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Begin with a known rule such as <code>z = z^2 + c</code>. Confirm that you recognize the behavior before changing it.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Change one ingredient at a time: the power, a sine term, a conjugate, or a small constant.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Use orbit display to debug your intuition. If the image surprises you, the orbit usually explains why.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>What escape-time means</summary>
+            <div class="concept-details-content">
+                <p>An escape-time renderer repeats a recurrence until either the orbit passes a bailout radius or the iteration limit is reached. Pixels that escape are colored by when or how they escaped; pixels that do not escape are treated as inside for that render.</p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>

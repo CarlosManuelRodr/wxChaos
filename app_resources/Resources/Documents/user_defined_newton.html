@@ -17,13 +17,35 @@
             <p class="subtitle">Turn your own equation into a map of roots.</p>
             <p class="hero-introduction">Choose a function and wxChaos builds the Newton iteration for it. The result is not just a solver, but a portrait of how guesses behave before they find a solution.</p>
         </div>
-        <figure class="hero-figure"><img src="user_defined_newton/overview.png" alt="An overview of user-defined Newton fractal"><figcaption><span class="figure-title">Roots as destinations.</span> Add a custom Newton render with several basins of attraction.</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="user_defined_newton/overview.png" alt="An overview of user-defined Newton fractal">
+            <figcaption><span class="figure-title">Roots as destinations.</span> Add a custom Newton render with several basins of attraction.</figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/user-defined-newton">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://fractal/script-editor">Open Script editor</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Start with <code>z^3 - 1</code>. Three roots usually produce three clear basins.</p></div><div class="experiment-step"><p>Try changing the degree or adding a small term. More roots can make the basin borders more intricate.</p></div><div class="experiment-step"><p>Use the orbit display near a boundary to see Newton's method hesitate, jump, and finally settle.</p></div></div></section>
-
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>Newton iteration for your function</summary><div class="concept-details-content"><p>For a function \(f\), Newton's method uses \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). The derivative points toward a local linear estimate of a root. When the estimate is good, convergence can be fast; near basin boundaries or derivative trouble, the path can become chaotic.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Start with <code>z^3 - 1</code>. Three roots usually produce three clear basins.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Try changing the degree or adding a small term. More roots can make the basin borders more intricate.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Use the orbit display near a boundary to see Newton's method hesitate, jump, and finally settle.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>Newton iteration for your function</summary>
+            <div class="concept-details-content">
+                <p>For a function \(f\), Newton's method uses \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). The derivative points toward a local linear estimate of a root. When the estimate is good, convergence can be fast; near basin boundaries or derivative trouble, the path can become chaotic.</p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>
