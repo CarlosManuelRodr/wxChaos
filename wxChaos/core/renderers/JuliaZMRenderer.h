@@ -2,13 +2,13 @@
 #include "../RenderWorker.h"
 
 /**
-* @class JuliaZNRenderer
+* @class JuliaZMRenderer
 * @brief Renders power Julia samples for one pixel region.
 *
 * The renderer owns the formula trace for JuliaZN and dispatches the selected
 * escape-time coloring algorithm through the shared Renderer paths.
 */
-class JuliaZNRenderer : public RenderWorker
+class JuliaZMRenderer : public RenderWorker
 {
     int _n;
     double _bailout;
@@ -17,7 +17,7 @@ class JuliaZNRenderer : public RenderWorker
     Point TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const;
 
 public:
-    JuliaZNRenderer();
+    JuliaZMRenderer();
 
     void Render() override;
     void SetParams(int n, double bailout);

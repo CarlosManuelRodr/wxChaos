@@ -1,8 +1,8 @@
 #include <complex>
-#include "MandelbrotZN.h"
+#include "MandelbrotZM.h"
 using namespace std;
 
-MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) : Fractal(width, height)
+MandelbrotZM::MandelbrotZM(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.87078;
@@ -20,7 +20,7 @@ MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) 
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _smoothRender = true;
-    myRender = new MandelbrotZNRenderer[_threadNumber];
+    myRender = new MandelbrotZMRenderer[_threadNumber];
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
@@ -36,19 +36,19 @@ MandelbrotZN::MandelbrotZN(const unsigned int width, const unsigned int height) 
     n = 3;
     bailout = 2;
 }
-MandelbrotZN::~MandelbrotZN()
+MandelbrotZM::~MandelbrotZM()
 {
     this->StopRender();
     delete[] myRender;
 }
-void MandelbrotZN::Render()
+void MandelbrotZM::Render()
 {
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(n, bailout);
 
-    this->SetRendererBounds<MandelbrotZNRenderer>(myRender);
+    this->SetRendererBounds<MandelbrotZMRenderer>(myRender);
 }
-void MandelbrotZN::DrawOrbit()
+void MandelbrotZM::DrawOrbit()
 {
     complex<double> z(_orbitX, _orbitY);
     complex<double> c = z;
@@ -72,7 +72,7 @@ void MandelbrotZN::DrawOrbit()
 
     _orbitDrawn = true;
 }
-void MandelbrotZN::CopyOptionFromPanel()
+void MandelbrotZM::CopyOptionFromPanel()
 {
     n = *_panelOpt.GetIntElement(0);
     bailout = *_panelOpt.GetDoubleElement(0);

@@ -13,9 +13,9 @@
 class FractalFactory
 {
     Mandelbrot* _mandelbrot;
-    MandelbrotZN* _mandelbrotZN;
+    MandelbrotZM* _mandelbrotZN;
     Julia* _julia;
-    JuliaZN* _juliaZN;
+    JuliaZM* _juliaZN;
     Newton* _newton;
     Sinusoidal* _sinusoidal;
     Magnet* _magnet;

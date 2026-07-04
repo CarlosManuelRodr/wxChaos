@@ -1,22 +1,23 @@
-#include "MandelbrotZNRenderer.h"
+// ReSharper disable CppTooWideScope
+#include "JuliaZMRenderer.h"
 using namespace std;
 
-MandelbrotZNRenderer::MandelbrotZNRenderer()
+JuliaZMRenderer::JuliaZMRenderer()
 {
     _n = 0;
     _bailout = 0;
 }
 
 template<class Real, class MeasurePoint>
-RenderWorker::Point MandelbrotZNRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RenderWorker::Point JuliaZMRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);
     point.startIm = ToDouble(pixelIm);
     measure(point, PointTraceEvent::Started, 0, point.startRe, point.startIm, 0.0, 0.0, 0.0, true);
 
-    const PrecisionComplex<Real> c(pixelRe, pixelIm);
-    PrecisionComplex<Real> z(Real(0), Real(0));
+    const PrecisionComplex<Real> k{Real(_kReal), Real(_kImaginary)};
+    PrecisionComplex<Real> z(pixelRe, pixelIm);
     const Real squaredBail = Real(_bailout) * Real(_bailout);
     const Real trapBailout = squaredBail * squaredBail;
     bool escaped = false;
@@ -24,7 +25,7 @@ RenderWorker::Point MandelbrotZNRenderer::TracePoint(const Real& pixelRe, const 
     for (unsigned i = 0; i < _maxIter; i++)
     {
         const PrecisionComplex<Real> poweredZ = ComplexPow(z, _n);
-        z = poweredZ + c;
+        z = poweredZ + k;
 
         const Real zNorm = ComplexNorm(z);
         point.zRe = ToDouble(z.re);
@@ -57,7 +58,7 @@ RenderWorker::Point MandelbrotZNRenderer::TracePoint(const Real& pixelRe, const 
     return point;
 }
 
-void MandelbrotZNRenderer::Render()
+void JuliaZMRenderer::Render()
 {
     const auto tracePoint = [this](const auto& pixelRe, const auto& pixelIm, auto measure)
     {
@@ -82,8 +83,7 @@ void MandelbrotZNRenderer::Render()
             break;
     }
 }
-
-void MandelbrotZNRenderer::SetParams(const int n, const double bailout)
+void JuliaZMRenderer::SetParams(const int n, const double bailout)
 {
     _n = n;
     _bailout = bailout;

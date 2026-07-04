@@ -2,13 +2,13 @@
 #include "../RenderWorker.h"
 
 /**
-* @class MandelbrotZNRenderer
+* @class MandelbrotZMRenderer
 * @brief Renders Multibrot samples for one pixel region.
 *
 * The renderer owns the formula trace for MandelbrotZN and dispatches the
 * selected escape-time coloring algorithm through the shared Renderer paths.
 */
-class MandelbrotZNRenderer : public RenderWorker
+class MandelbrotZMRenderer : public RenderWorker
 {
     int _n;
     double _bailout;
@@ -17,7 +17,7 @@ class MandelbrotZNRenderer : public RenderWorker
     Point TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const;
 
 public:
-    MandelbrotZNRenderer();
+    MandelbrotZMRenderer();
 
     void Render() override;
     void SetParams(int n, double bailout);

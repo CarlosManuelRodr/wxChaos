@@ -1,8 +1,8 @@
 #include <complex>
-#include "JuliaZN.h"
+#include "JuliaZM.h"
 using namespace std;
 
-JuliaZN::JuliaZN(const unsigned int width, const unsigned int height) : Fractal(width, height)
+JuliaZM::JuliaZM(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.77437;
@@ -22,7 +22,7 @@ JuliaZN::JuliaZN(const unsigned int width, const unsigned int height) : Fractal(
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _smoothRender = true;
-    myRender = new JuliaZNRenderer[_threadNumber];
+    myRender = new JuliaZMRenderer[_threadNumber];
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
@@ -38,12 +38,12 @@ JuliaZN::JuliaZN(const unsigned int width, const unsigned int height) : Fractal(
     n = 2;
     bailout = 2;
 }
-JuliaZN::~JuliaZN()
+JuliaZM::~JuliaZM()
 {
     this->StopRender();
     delete[] myRender;
 }
-void JuliaZN::DrawOrbit()
+void JuliaZM::DrawOrbit()
 {
     complex<double> z(_orbitX, _orbitY);
     const complex<double> k(_kReal, _kImaginary);
@@ -67,14 +67,14 @@ void JuliaZN::DrawOrbit()
 
     _orbitDrawn = true;
 }
-void JuliaZN::Render()
+void JuliaZM::Render()
 {
     for (unsigned int i=0; i<_threadNumber; i++)
         myRender[i].SetParams(n, bailout);
 
-    this->SetRendererBounds<JuliaZNRenderer>(myRender);
+    this->SetRendererBounds<JuliaZMRenderer>(myRender);
 }
-void JuliaZN::CopyOptionFromPanel()
+void JuliaZM::CopyOptionFromPanel()
 {
     n = *_panelOpt.GetIntElement(0);
     bailout = *_panelOpt.GetDoubleElement(0);

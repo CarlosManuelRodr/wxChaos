@@ -50,7 +50,7 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
             }
         case FractalType::MandelbrotZN:
             {
-                _fractal = _mandelbrotZN = new MandelbrotZN(width, height);
+                _fractal = _mandelbrotZN = new MandelbrotZM(width, height);
                 break;
             }
         case FractalType::Julia:
@@ -60,7 +60,7 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
             }
         case FractalType::JuliaZN:
             {
-                _fractal = _juliaZN = new JuliaZN(width, height);
+                _fractal = _juliaZN = new JuliaZM(width, height);
                 break;
             }
         case FractalType::NewtonRaphsonMethod:
