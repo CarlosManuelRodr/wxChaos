@@ -42,6 +42,10 @@ private:
     /// @return The themed navigation button bitmap.
     static wxBitmapBundle CreateNavigationButtonBitmap(bool back);
 
+    /// @brief Returns the currently open documentation viewers.
+    /// @return Shared list of open documentation viewers.
+    static std::vector<DocumentViewer*>& GetOpenViewers();
+
     /// @brief Adds a normal link navigation to the local document history.
     /// @param url URL that navigation is moving to.
     void AddNavigationHistoryEntry(const wxString& url);
@@ -95,4 +99,7 @@ public:
                    const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_FRAME_STYLE,
                    WxChaosLinkHandler wxChaosLinkHandler = nullptr);
     ~DocumentViewer() override;
+
+    /// @brief Closes every currently open documentation viewer.
+    static void CloseOpenViewers();
 };

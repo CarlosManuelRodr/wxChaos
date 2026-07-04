@@ -260,12 +260,6 @@ void MainFrame::OpenFractalInformation()
     if (documentFile.empty())
         return;
 
-    if (_informationViewer != nullptr)
-    {
-        _informationViewer->Destroy();
-        _informationViewer = nullptr;
-    }
-
     _informationViewer = new DocumentViewer(
         documentFile,
         this,
@@ -273,7 +267,7 @@ void MainFrame::OpenFractalInformation()
         _fractalCanvas->GetFractal()->GetName(),
         wxDefaultPosition,
         wxSize(1500, 960),
-        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+        wxDEFAULT_FRAME_STYLE,
         [this](const wxString& url) { return HandleDocumentationLink(url); });
     _informationFrameIsActive = true;
     DocumentViewer* viewer = _informationViewer;

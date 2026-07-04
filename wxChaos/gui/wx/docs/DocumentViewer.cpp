@@ -1,4 +1,5 @@
 #include "docs/DocumentViewer.h"
+#include <algorithm>
 #include <utility>
 #include <wx/filename.h>
 #include <wx/filesys.h>
@@ -39,6 +40,9 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
     wxTopLevelWindowBase::Layout();
     Centre(wxBOTH);
 
+    CloseOpenViewers();
+    GetOpenViewers().push_back(this);
+
     if (_lifetimeOwner != nullptr)
         _lifetimeOwner->Bind(wxEVT_DESTROY, &DocumentViewer::OnOwnerDestroyed, this);
 
@@ -63,6 +67,9 @@ DocumentViewer::~DocumentViewer()
     _webView->Unbind(wxEVT_WEBVIEW_NAVIGATED, &DocumentViewer::OnNavigated, this);
     _webView->Unbind(wxEVT_WEBVIEW_LOADED, &DocumentViewer::OnLoaded, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnClose, this);
+
+    std::vector<DocumentViewer*>& openViewers = GetOpenViewers();
+    openViewers.erase(std::remove(openViewers.begin(), openViewers.end(), this), openViewers.end());
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
@@ -84,6 +91,22 @@ wxBitmapBundle DocumentViewer::CreateNavigationButtonBitmap(const bool back)
         : (AppTheme::IsDark() ? "arrow_right_dark.svg" : "arrow_right_light.svg");
 
     return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), wxSize(20, 20));
+}
+
+std::vector<DocumentViewer*>& DocumentViewer::GetOpenViewers()
+{
+    static std::vector<DocumentViewer*> openViewers;
+    return openViewers;
+}
+
+void DocumentViewer::CloseOpenViewers()
+{
+    const std::vector<DocumentViewer*> openViewers = GetOpenViewers();
+    for (DocumentViewer* viewer : openViewers)
+    {
+        if (viewer != nullptr)
+            viewer->Close(true);
+    }
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall

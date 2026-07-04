@@ -192,7 +192,7 @@ void JuliaPreviewFrame::OpenFractalInformation()
         wxID_ANY,
         _previewCanvas->GetFractal()->GetName(),
         wxDefaultPosition,
-        wxSize(1100, 760),
+        wxSize(1500, 960),
         wxDEFAULT_FRAME_STYLE,
         [this](const wxString& url) { return HandleDocumentationLink(url); });
     viewer->Show(true);
