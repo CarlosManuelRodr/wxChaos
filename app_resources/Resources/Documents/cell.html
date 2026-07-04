@@ -14,25 +14,41 @@
         <div class="hero-header">
             <p class="eyebrow">Experimental formulas</p>
             <h1>Cell</h1>
-            <p class="subtitle">A division-driven map with organic compartments.</p>
-            <p class="hero-introduction">Cell is one of wxChaos' more idiosyncratic formulas. Its division term can carve the plane into compartments that feel less like astronomical spirals and more like tissue, walls, and membranes.</p>
+            <p class="subtitle">A division-driven map with organic-like compartments.</p>
+            <p class="hero-introduction">
+                Cell is one of wxChaos’s strangest formulas. Its division term partitions the complex plane into structures
+                resembling cells, walls, membranes, and organic tissue. The formula was discovered online by the author of
+                wxChaos many years ago, but its original source has since been lost and has not been identified.
+            </p>
         </div>
-        <figure class="hero-figure"><img src="cell/overview.png" alt="An overview of Cell fractal"><figcaption><span class="figure-title">Compartments in the complex plane.</span> Add a render showing the cellular geometry.</figcaption></figure>
+        <figure class="hero-figure">
+            <img src="cell/overview.png" alt="An overview of Cell fractal">
+            <figcaption><span class="figure-title">Compartments in the complex plane.</span> It looks like a cell membrane, doesn't it?</figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/cell">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
     </section>
-
     <section>
         <h2>What to try first</h2>
         <div class="experiment">
-            <div class="experiment-step"><p>Look for repeated walls and pockets. This page rewards looking at local texture more than global silhouette.</p></div>
-            <div class="experiment-step"><p>Turn on orbit display near a wall. Division by \(z\) can make neighboring paths diverge quickly.</p></div>
-            <div class="experiment-step"><p>Try smooth coloring when bands are too harsh, then orbit traps when you want a more graphic image.</p></div>
+            <div class="experiment-step">
+                <p>Look for repeated walls and pockets. This page rewards looking at local texture more than global silhouette.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Turn on orbit display near a wall. Division by \(z\) can make neighboring paths diverge quickly.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Try smooth coloring when bands are too harsh, then orbit traps when you want a more graphic image.</p>
+            </div>
         </div>
     </section>
-
     <section>
         <h2>Mathematical notes</h2>
-        <details class="concept-details"><summary>The wxChaos Cell recurrence</summary><div class="concept-details-content"><p>wxChaos starts with \(z=c\) and \(b=c-\sin(c)\), then uses \(b\leftarrow b/c\) and \(z\leftarrow zc+b/z\). The \(b/z\) term is the sharp ingredient: when \(z\) passes near zero, the next value can change dramatically.</p></div></details>
+        <details class="concept-details">
+            <summary>The wxChaos Cell recurrence</summary>
+            <div class="concept-details-content">
+                <p>wxChaos starts with \(z=c\) and \(b=c-\sin(c)\), then uses \(b\leftarrow b/c\) and \(z\leftarrow zc+b/z\). The \(b/z\) term is the sharp ingredient: when \(z\) passes near zero, the next value can change dramatically.</p>
+            </div>
+        </details>
     </section>
     <section>
         <h2>Coloring lenses</h2>
@@ -40,8 +56,8 @@
         <div class="view-grid">
             <article class="view-card">
                 <img
-                    src="cell/escape-time.png"
-                    alt="Cell rendered with Escape time">
+                        src="cell/escape-time.png"
+                        alt="Cell rendered with Escape time">
                 <div class="view-card-content">
                     <h3>Escape time</h3>
                     <p>The baseline map: color follows how long each orbit takes to escape.</p>
@@ -50,8 +66,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="cell/smooth-coloring.png"
-                    alt="Cell rendered with Smooth coloring">
+                        src="cell/smooth-coloring.png"
+                        alt="Cell rendered with Smooth coloring">
                 <div class="view-card-content">
                     <h3>Smooth coloring</h3>
                     <p>Softens iteration bands into continuous gradients.</p>
@@ -60,8 +76,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="cell/gaussian-integer.png"
-                    alt="Cell rendered with Gaussian integer">
+                        src="cell/gaussian-integer.png"
+                        alt="Cell rendered with Gaussian integer">
                 <div class="view-card-content">
                     <h3>Gaussian integer</h3>
                     <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
@@ -70,8 +86,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="cell/escape-angle.png"
-                    alt="Cell rendered with Escape angle">
+                        src="cell/escape-angle.png"
+                        alt="Cell rendered with Escape angle">
                 <div class="view-card-content">
                     <h3>Escape angle</h3>
                     <p>Uses the direction of escape to reveal flow through the exterior.</p>
@@ -80,8 +96,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="cell/triangle-inequality.png"
-                    alt="Cell rendered with Triangle inequality">
+                        src="cell/triangle-inequality.png"
+                        alt="Cell rendered with Triangle inequality">
                 <div class="view-card-content">
                     <h3>Triangle inequality</h3>
                     <p>Turns relationships inside the orbit into layered, topographic texture.</p>
@@ -90,8 +106,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="cell/orbit-trap.png"
-                    alt="Cell rendered with Orbit traps">
+                        src="cell/orbit-trap.png"
+                        alt="Cell rendered with Orbit traps">
                 <div class="view-card-content">
                     <h3>Orbit traps</h3>
                     <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>
