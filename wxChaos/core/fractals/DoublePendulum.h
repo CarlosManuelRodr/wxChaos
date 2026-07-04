@@ -28,5 +28,5 @@ public:
 
     void Render() override;
     void DrawOrbit() override;
-    void CopyOptFromPanel() override;
+    void CopyOptionFromPanel() override;
 };

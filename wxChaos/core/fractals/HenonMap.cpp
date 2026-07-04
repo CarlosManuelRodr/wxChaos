@@ -44,7 +44,7 @@ void HenonMap::Render()
     this->SetRendererBounds<HenonMapRenderer>(_myRender);
 }
 
-void HenonMap::CopyOptFromPanel()
+void HenonMap::CopyOptionFromPanel()
 {
     _alpha = *_panelOpt.GetDoubleElement(0);
     _beta = *_panelOpt.GetDoubleElement(1);

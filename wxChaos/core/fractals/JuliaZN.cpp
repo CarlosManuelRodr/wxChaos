@@ -74,7 +74,7 @@ void JuliaZN::Render()
 
     this->SetRendererBounds<JuliaZNRenderer>(myRender);
 }
-void JuliaZN::CopyOptFromPanel()
+void JuliaZN::CopyOptionFromPanel()
 {
     n = *_panelOpt.GetIntElement(0);
     bailout = *_panelOpt.GetDoubleElement(0);

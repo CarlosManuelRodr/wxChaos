@@ -80,7 +80,7 @@ public:
     void DrawOrbit() override;
 
     /** @brief Copy Newton-specific parameters from the options panel. */
-    void CopyOptFromPanel() override;
+    void CopyOptionFromPanel() override;
 
     /** @brief Report formula or render errors after rendering. */
     void PostRender() override;

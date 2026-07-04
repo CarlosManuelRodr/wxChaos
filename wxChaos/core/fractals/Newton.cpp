@@ -62,7 +62,7 @@ void Newton::Render()
 
     this->SetRendererBounds<NewtonRenderer>(myRender);
 }
-void Newton::CopyOptFromPanel()
+void Newton::CopyOptionFromPanel()
 {
     minStep = *_panelOpt.GetDoubleElement(0);
 }

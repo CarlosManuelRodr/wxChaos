@@ -20,5 +20,5 @@ public:
     wxString GetName() const override { return "Henon Map"; }
 
     void Render() override;
-    void CopyOptFromPanel() override;
+    void CopyOptionFromPanel() override;
 };

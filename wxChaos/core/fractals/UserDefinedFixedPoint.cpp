@@ -72,7 +72,7 @@ void UserDefinedFixedPoint::DrawOrbit()
     }
     catch (mup::ParserError&) {}
 }
-void UserDefinedFixedPoint::CopyOptFromPanel()
+void UserDefinedFixedPoint::CopyOptionFromPanel()
 {
     _minStep = *_panelOpt.GetDoubleElement(0);
 }

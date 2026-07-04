@@ -64,7 +64,7 @@ void FixedPoint3::DrawOrbit()
     }
     _orbitDrawn = true;
 }
-void FixedPoint3::CopyOptFromPanel()
+void FixedPoint3::CopyOptionFromPanel()
 {
     minStep = *_panelOpt.GetDoubleElement(0);
 }

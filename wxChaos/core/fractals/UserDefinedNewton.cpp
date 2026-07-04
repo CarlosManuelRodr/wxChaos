@@ -165,7 +165,7 @@ void UserDefinedNewton::DrawOrbit()
     _orbitDrawn = true;
 }
 
-void UserDefinedNewton::CopyOptFromPanel()
+void UserDefinedNewton::CopyOptionFromPanel()
 {
     _convergenceEpsilon = std::max(0.0, *_panelOpt.GetDoubleElement(0));
     _functionEpsilon = std::max(0.0, *_panelOpt.GetDoubleElement(1));

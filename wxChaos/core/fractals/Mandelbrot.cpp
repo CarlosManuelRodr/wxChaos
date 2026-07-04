@@ -71,7 +71,7 @@ void Mandelbrot::DrawOrbit()
 
     _orbitDrawn = true;
 }
-void Mandelbrot::CopyOptFromPanel()
+void Mandelbrot::CopyOptionFromPanel()
 {
     buddhaRandomP = *_panelOpt.GetIntElement(0);
 }

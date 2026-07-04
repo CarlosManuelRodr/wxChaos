@@ -23,6 +23,6 @@ public:
     void Render() override;
     void SetFormula(FormulaOptions formula) override;        ///< Sets user formula.
     void DrawOrbit() override;
-    void CopyOptFromPanel() override;
+    void CopyOptionFromPanel() override;
     void PostRender() override;
 };

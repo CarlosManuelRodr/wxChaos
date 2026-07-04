@@ -13,15 +13,14 @@
  */
 class Cell : public Fractal
 {
-private:
     CellRenderer* myRender;
     double bailout;
 public:
     Cell(unsigned int width, unsigned int height);
-    ~Cell();
+    ~Cell() override;
     wxString GetName() const override { return "Cell"; }
 
-    void Render();
-    void DrawOrbit();
-    void CopyOptFromPanel();
+    void Render() override;
+    void DrawOrbit() override;
+    void CopyOptionFromPanel() override;
 };

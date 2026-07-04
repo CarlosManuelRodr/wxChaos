@@ -53,7 +53,7 @@ void DoublePendulum::Render()
         myRender[i].SetParams(th1Bailout, th2Bailout, th1NumBailout, th2NumBailout, dt, m1, m2, l, g, referenced, rungeKutta);
     this->SetRendererBounds<DoublePendulumRenderer>(myRender);
 }
-void DoublePendulum::CopyOptFromPanel()
+void DoublePendulum::CopyOptionFromPanel()
 {
     th1Bailout = *_panelOpt.GetBoolElement(0);
     th1NumBailout = *_panelOpt.GetDoubleElement(0);

@@ -72,7 +72,7 @@ void MandelbrotZN::DrawOrbit()
 
     _orbitDrawn = true;
 }
-void MandelbrotZN::CopyOptFromPanel()
+void MandelbrotZN::CopyOptionFromPanel()
 {
     n = *_panelOpt.GetIntElement(0);
     bailout = *_panelOpt.GetDoubleElement(0);

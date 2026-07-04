@@ -20,7 +20,7 @@ public:
     ~JuliaZN() override;
     wxString GetName() const override { return "Julia ZN"; }
 
-    void CopyOptFromPanel() override;
+    void CopyOptionFromPanel() override;
     void Render() override;
     void DrawOrbit() override;
 };

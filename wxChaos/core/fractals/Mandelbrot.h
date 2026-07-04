@@ -23,7 +23,7 @@ public:
 
     void Render() override;     ///< Launch threads.
     void DrawOrbit() override;
-    void CopyOptFromPanel() override;
+    void CopyOptionFromPanel() override;
     void PreRender() override;
     void PreDrawMaps() override;
 };

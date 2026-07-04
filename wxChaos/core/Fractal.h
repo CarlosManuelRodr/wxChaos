@@ -357,7 +357,7 @@ public:
     ///@return true if there is an active thread. false if not.
     virtual bool IsRendering();
     virtual void SetFormula(FormulaOptions formula);                   ///< Sets user formula.
-    virtual void CopyOptFromPanel();                               ///< Copy options from the option panel.
+    virtual void CopyOptionFromPanel();                               ///< Copy options from the option panel.
 
     // Communication methods.
     ///@brief Get value of X number in the plane at the selected pixel.

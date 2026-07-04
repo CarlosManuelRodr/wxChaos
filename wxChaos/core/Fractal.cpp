@@ -1147,7 +1147,7 @@ void Fractal::SetFormula(FormulaOptions formula)
 {
     _userFormula = std::move(formula);
 }
-void Fractal::CopyOptFromPanel() {}
+void Fractal::CopyOptionFromPanel() {}
 
 // Communication methods.
 double Fractal::GetX(const int pixelX) const
@@ -1229,7 +1229,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     UpdatePreciseFactors();
     SyncDoubleViewFromPrecise();
 
-    this->CopyOptFromPanel();
+    this->CopyOptionFromPanel();
 }
 Options Fractal::GetOptions() const
 {
