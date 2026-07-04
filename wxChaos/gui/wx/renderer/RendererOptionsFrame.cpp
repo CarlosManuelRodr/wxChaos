@@ -1,4 +1,5 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
+#include <algorithm>
 #include <cmath>
 #include <utility>
 #include <wx/wx.h>
@@ -528,6 +529,50 @@ void RendererOptionsFrame::SetTarget(FractalPresenter* presenter)
 
     _gradStylesChoice->SetSelection(_target->GetColorPalette());
 }
+
+bool RendererOptionsFrame::SetRenderingOptions(const RenderingAlgorithmType algorithm, const bool smoothRender,
+                                               const bool orbitTrap)
+{
+    if (!ApplyRenderingOptions(_fractalPresenter, algorithm, smoothRender, orbitTrap))
+        return false;
+
+    SetTarget(_fractalPresenter);
+
+    const std::vector<RenderingAlgorithmType>& availableAlgorithms = _target->GetAvailableAlg();
+    const auto algorithmIterator = std::find(availableAlgorithms.begin(), availableAlgorithms.end(), algorithm);
+    if (algorithmIterator != availableAlgorithms.end())
+        _algorithmChoice->SetSelection(static_cast<int>(algorithmIterator - availableAlgorithms.begin()));
+
+    _smoothRender->SetValue(smoothRender);
+    _orbitTrap->SetValue(orbitTrap);
+    NotifyOptionsChanged();
+    return true;
+}
+
+bool RendererOptionsFrame::ApplyRenderingOptions(FractalPresenter* presenter, const RenderingAlgorithmType algorithm,
+                                                 const bool smoothRender, const bool orbitTrap)
+{
+    if (presenter == nullptr)
+        return false;
+
+    Fractal* target = presenter->GetFractal();
+    if (target == nullptr)
+        return false;
+
+    const std::vector<RenderingAlgorithmType>& availableAlgorithms = target->GetAvailableAlg();
+    if (std::find(availableAlgorithms.begin(), availableAlgorithms.end(), algorithm) == availableAlgorithms.end())
+        return false;
+    if (smoothRender && !target->HasSmoothRenderMode())
+        return false;
+    if (orbitTrap && !target->HasOrbitTrapMode())
+        return false;
+
+    presenter->SetAlgorithm(algorithm);
+    presenter->SetSmoothRender(smoothRender);
+    presenter->SetOrbitTrapMode(orbitTrap);
+    return true;
+}
+
 void RendererOptionsFrame::OnOk(wxCommandEvent&)
 {
     this->Close(true);

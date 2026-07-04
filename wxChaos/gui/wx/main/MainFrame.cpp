@@ -388,23 +388,41 @@ bool MainFrame::SetDocumentationRendering(const DocumentationLinkAction::Renderi
         return false;
 
     ChangeFractal(method.fractalType, method.enableJulia);
-    Fractal* fractal = _fractalCanvas->GetFractal();
-    const std::vector<RenderingAlgorithmType> availableAlgorithms = fractal->GetAvailableAlg();
-    if (std::find(availableAlgorithms.begin(), availableAlgorithms.end(), method.algorithm) == availableAlgorithms.end())
+    if (!ApplyDocumentationRenderingToCurrentFractal(method))
         return false;
-    if (method.smoothRender && !fractal->HasSmoothRenderMode())
+
+    Raise();
+    return true;
+}
+
+bool MainFrame::SetDocumentationRenderingFromJuliaPreview(const DocumentationLinkAction::RenderingMethod& method)
+{
+    if (_juliaPreviewFrame == nullptr || _fractalCanvas == nullptr)
         return false;
-    if (method.orbitTrap && !fractal->HasOrbitTrapMode())
+
+    if (!ApplyDocumentationRenderingToCurrentFractal(method))
+        return false;
+
+    Raise();
+    return true;
+}
+
+bool MainFrame::ApplyDocumentationRenderingToCurrentFractal(const DocumentationLinkAction::RenderingMethod& method)
+{
+    if (_fractalCanvas == nullptr)
         return false;
 
     FractalPresenter* presenter = _fractalCanvas->GetFractalPresenter();
-    presenter->SetAlgorithm(method.algorithm);
-    presenter->SetSmoothRender(method.smoothRender);
-    presenter->SetOrbitTrapMode(method.orbitTrap);
     if (_rendererOptions != nullptr)
+    {
         _rendererOptions->SetTarget(presenter);
+        return _rendererOptions->SetRenderingOptions(method.algorithm, method.smoothRender, method.orbitTrap);
+    }
 
-    Raise();
+    if (!RendererOptionsFrame::ApplyRenderingOptions(presenter, method.algorithm, method.smoothRender, method.orbitTrap))
+        return false;
+
+    UpdateJuliaRendererOptions(_fractalCanvas->GetFractal()->GetOptions());
     return true;
 }
 

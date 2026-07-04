@@ -206,6 +206,7 @@ class MainFrame : public wxFrame
     bool OpenDocumentationFractalOptions(const DocumentationLinkAction& action);
     bool ToggleDocumentationTool(const wxString& tool);
     bool ToggleDocumentationJuliaConstantSlider();
+    bool ApplyDocumentationRenderingToCurrentFractal(const DocumentationLinkAction::RenderingMethod& method);
     void OpenScriptEditorFromDocumentation();
 
 public :
@@ -218,6 +219,10 @@ public :
     /// @param automaticIterations True when the preview uses automatic iterations.
     void OpenJuliaPreviewInMainWindow(FractalType fractalType, const Options& options, ColorPaletteTypes colorPalette,
                                       const Rect& view, bool automaticIterations);
+    /// @brief Applies a rendering method selected from documentation opened in the Julia preview.
+    /// @param method Rendering method parsed from a documentation link.
+    /// @return true when the current main fractal can accept the rendering method.
+    bool SetDocumentationRenderingFromJuliaPreview(const DocumentationLinkAction::RenderingMethod& method);
 
     void OnSave(wxCommandEvent& event);                    ///< Saves a picture of the viewing area.
     void OnJuliaMode(wxCommandEvent& event);               ///< Opens a window with the Julia version of the selected fractal.

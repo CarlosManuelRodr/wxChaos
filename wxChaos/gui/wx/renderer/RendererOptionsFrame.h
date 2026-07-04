@@ -118,5 +118,19 @@ public:
     ///@brief Sets the target fractal.
     ///@param presenter Pointer to target fractal presenter.
     void SetTarget(FractalPresenter* presenter);
+    /// @brief Applies a rendering algorithm and feature flags through the same path as the options frame.
+    /// @param algorithm Rendering algorithm to select.
+    /// @param smoothRender Enables smooth escape-time coloring.
+    /// @param orbitTrap Enables orbit-trap coloring.
+    /// @return true when the current target supports the requested options.
+    bool SetRenderingOptions(RenderingAlgorithmType algorithm, bool smoothRender, bool orbitTrap);
+    /// @brief Applies a rendering algorithm and feature flags to a presenter without a visible options frame.
+    /// @param presenter Presenter to mutate.
+    /// @param algorithm Rendering algorithm to select.
+    /// @param smoothRender Enables smooth escape-time coloring.
+    /// @param orbitTrap Enables orbit-trap coloring.
+    /// @return true when the presenter target supports the requested options.
+    static bool ApplyRenderingOptions(FractalPresenter* presenter, RenderingAlgorithmType algorithm, bool smoothRender,
+                                      bool orbitTrap);
 
 };

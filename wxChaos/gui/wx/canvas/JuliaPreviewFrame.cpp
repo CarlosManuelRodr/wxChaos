@@ -2,7 +2,6 @@
 #include "canvas/JuliaPreviewFrame.h"
 #include "AppPaths.h"
 #include "docs/DocumentViewer.h"
-#include "docs/DocumentationLinkAction.h"
 #include "docs/FractalDocumentation.h"
 #include "main/MainFrame.h"
 
@@ -217,6 +216,8 @@ bool JuliaPreviewFrame::HandleDocumentationLink(const wxString& url)
     if (action.GetType() == DocumentationLinkAction::Type::ToggleTool &&
         action.GetTarget() == "julia-constant-slider")
         return FocusMainFrameFromDocumentation();
+    if (action.GetType() == DocumentationLinkAction::Type::SetRendering)
+        return SetDocumentationRenderingFromDocumentation(action.GetRenderingMethod());
 
     return false;
 }
@@ -232,6 +233,23 @@ bool JuliaPreviewFrame::FocusMainFrameFromDocumentation() const
     mainFrame->Raise();
     mainFrame->SetFocus();
     return true;
+}
+
+bool JuliaPreviewFrame::SetDocumentationRenderingFromDocumentation(
+    const DocumentationLinkAction::RenderingMethod& method) const
+{
+    if (_previewCanvas == nullptr || method.fractalType == FractalType::Undefined)
+        return false;
+
+    Fractal* fractal = _previewCanvas->GetFractal();
+    if (fractal == nullptr || fractal->GetType() != method.fractalType)
+        return false;
+
+    MainFrame* mainFrame = dynamic_cast<MainFrame*>(GetParent());
+    if (mainFrame == nullptr)
+        return false;
+
+    return mainFrame->SetDocumentationRenderingFromJuliaPreview(method);
 }
 
 void JuliaPreviewFrame::SetRendererOptions(const Options& options) const

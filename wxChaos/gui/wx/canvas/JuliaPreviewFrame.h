@@ -8,6 +8,7 @@
 #include <wx/timer.h>
 #include "canvas/FractalCanvas.h"
 #include "canvas/FractalToolbar.h"
+#include "docs/DocumentationLinkAction.h"
 #include "fractal/IterationsDialog.h"
 #include "canvas/RenderStatusWidget.h"
 
@@ -68,6 +69,7 @@ class JuliaPreviewFrame : public wxFrame
     void ResetColorRotationTool() const;
     bool HandleDocumentationLink(const wxString& url);
     bool FocusMainFrameFromDocumentation() const;
+    bool SetDocumentationRenderingFromDocumentation(const DocumentationLinkAction::RenderingMethod& method) const;
     void SyncConstantFromTarget() const;
     void OnConstantSyncTimer(wxTimerEvent& event);
     void OnCanvasStatusText(wxCommandEvent& event);
