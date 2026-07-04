@@ -10,8 +10,7 @@ wxString FractalDocumentation::ResolveScriptDocumentFile(const std::string& docu
     wxString path = wxString::FromUTF8(documentationPath.c_str());
     path.Replace("\\", "/");
 
-    wxFileName fileName(path);
-    if (fileName.IsAbsolute())
+    if (wxFileName fileName(path); fileName.IsAbsolute())
         return fileName.GetFullPath();
 
     if (path.StartsWith("Resources/Documents/"))
