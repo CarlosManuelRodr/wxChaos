@@ -457,6 +457,9 @@ bool MainFrame::OpenDocumentationFractalOptions(const DocumentationLinkAction& a
 
 bool MainFrame::ToggleDocumentationTool(const wxString& tool)
 {
+    if (tool == "julia-constant-slider")
+        return ToggleDocumentationJuliaConstantSlider();
+
     if (tool != "orbit" || _fractalCanvas == nullptr || !_fractalCanvas->GetFractal()->HasOrbit())
         return false;
 
@@ -464,6 +467,19 @@ bool MainFrame::ToggleDocumentationTool(const wxString& tool)
     _fractalCanvas->SetOrbitMode(orbitMode);
     if (_showOrbit != nullptr)
         _showOrbit->Check(orbitMode);
+
+    Raise();
+    return true;
+}
+
+bool MainFrame::ToggleDocumentationJuliaConstantSlider()
+{
+    if (_fractalCanvas == nullptr || _sliderJuliaConstant == nullptr || !_sliderJuliaConstant->IsEnabled())
+        return false;
+
+    const bool sliderMode = !_fractalCanvas->IsSliderMode();
+    _fractalCanvas->SetSliderMode(sliderMode);
+    _sliderJuliaConstant->Check(sliderMode);
 
     Raise();
     return true;

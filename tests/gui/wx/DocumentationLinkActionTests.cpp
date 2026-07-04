@@ -46,10 +46,15 @@ TEST_CASE("DocumentationLinkAction parses Mandelbrot landmarks")
 
 TEST_CASE("DocumentationLinkAction parses known tool actions")
 {
-    const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://tool/orbit");
+    const DocumentationLinkAction orbit = DocumentationLinkAction::Parse("wxchaos://tool/orbit");
+    const DocumentationLinkAction juliaConstantSlider =
+        DocumentationLinkAction::Parse("wxchaos://tool/julia-constant-slider");
 
-    CHECK(action.GetType() == DocumentationLinkAction::Type::ToggleTool);
-    CHECK(action.GetTarget() == "orbit");
+    CHECK(orbit.GetType() == DocumentationLinkAction::Type::ToggleTool);
+    CHECK(orbit.GetTarget() == "orbit");
+
+    CHECK(juliaConstantSlider.GetType() == DocumentationLinkAction::Type::ToggleTool);
+    CHECK(juliaConstantSlider.GetTarget() == "julia-constant-slider");
 }
 
 TEST_CASE("DocumentationLinkAction parses formula dialog actions")

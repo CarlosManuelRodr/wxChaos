@@ -205,6 +205,7 @@ class MainFrame : public wxFrame
     bool OpenDocumentationFormulaDialog(const DocumentationLinkAction& action);
     bool OpenDocumentationFractalOptions(const DocumentationLinkAction& action);
     bool ToggleDocumentationTool(const wxString& tool);
+    bool ToggleDocumentationJuliaConstantSlider();
     void OpenScriptEditorFromDocumentation();
 
 public :

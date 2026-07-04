@@ -66,6 +66,8 @@ class JuliaPreviewFrame : public wxFrame
     void OpenFractalInformation();
     void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
+    bool HandleDocumentationLink(const wxString& url);
+    bool FocusMainFrameFromDocumentation() const;
     void SyncConstantFromTarget() const;
     void OnConstantSyncTimer(wxTimerEvent& event);
     void OnCanvasStatusText(wxCommandEvent& event);

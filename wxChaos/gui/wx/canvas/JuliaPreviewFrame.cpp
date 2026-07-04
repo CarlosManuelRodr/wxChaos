@@ -2,6 +2,7 @@
 #include "canvas/JuliaPreviewFrame.h"
 #include "AppPaths.h"
 #include "docs/DocumentViewer.h"
+#include "docs/DocumentationLinkAction.h"
 #include "docs/FractalDocumentation.h"
 #include "main/MainFrame.h"
 
@@ -185,7 +186,15 @@ void JuliaPreviewFrame::OpenFractalInformation()
     if (documentFile.empty())
         return;
 
-    const auto viewer = new DocumentViewer(documentFile, this, wxID_ANY, _previewCanvas->GetFractal()->GetName());
+    const auto viewer = new DocumentViewer(
+        documentFile,
+        this,
+        wxID_ANY,
+        _previewCanvas->GetFractal()->GetName(),
+        wxDefaultPosition,
+        wxSize(1100, 760),
+        wxDEFAULT_FRAME_STYLE,
+        [this](const wxString& url) { return HandleDocumentationLink(url); });
     viewer->Show(true);
 }
 
@@ -200,6 +209,29 @@ void JuliaPreviewFrame::ResetColorRotationTool() const
 {
     if (_toolbar != nullptr)
         _toolbar->ResetColorRotationTool();
+}
+
+bool JuliaPreviewFrame::HandleDocumentationLink(const wxString& url)
+{
+    const DocumentationLinkAction action = DocumentationLinkAction::Parse(url);
+    if (action.GetType() == DocumentationLinkAction::Type::ToggleTool &&
+        action.GetTarget() == "julia-constant-slider")
+        return FocusMainFrameFromDocumentation();
+
+    return false;
+}
+
+bool JuliaPreviewFrame::FocusMainFrameFromDocumentation() const
+{
+    wxWindow* mainFrame = GetParent();
+    if (mainFrame == nullptr && _target != nullptr)
+        mainFrame = wxGetTopLevelParent(_target);
+    if (mainFrame == nullptr)
+        return false;
+
+    mainFrame->Raise();
+    mainFrame->SetFocus();
+    return true;
 }
 
 void JuliaPreviewFrame::SetRendererOptions(const Options& options) const
