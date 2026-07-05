@@ -108,7 +108,6 @@ class MainFrame : public wxFrame
     ScriptEditor* _scriptEditor{};
     DimensionFrame* _dimensionCalculator;
     CommandConsole* _commandConsole{};
-    SettingsFrame* _settingsFrame{};              ///< Active application settings frame.
     DocumentViewer* _informationViewer{};         ///< Active modeless fractal documentation viewer.
     
     bool _changeKeyboardGuide;
@@ -230,8 +229,7 @@ public :
     void OnAbout(wxCommandEvent& event);                   ///< Opens the About frame.
     void OnClose(wxCloseEvent& event);                     ///< Closes the frame.
     void OnQuit(wxCommandEvent& event);
-    void OnSettings(wxCommandEvent& event);                 ///< Opens or focuses the settings frame.
-    void OnSettingsFrameClosed(wxCommandEvent& event);      ///< Clears the settings frame reference after closure.
+    void OnSettings(wxCommandEvent& event);                 ///< Opens the settings dialog.
     void OnResize(wxSizeEvent& event);                      ///< Resizes the frame.
     void OnJuliaModeClosed(wxCommandEvent& event);          ///< Handles the Julia window closed event.
     void OnRendererOptionsClosed(wxCommandEvent& event);    ///< Handles the renderer options window closed event.

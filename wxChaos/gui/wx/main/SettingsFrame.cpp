@@ -10,14 +10,12 @@
 #include "coloring/ColorPalette.h"
 #include "renderer/wxGradientDialog.h"
 
-wxDEFINE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);
-
 SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::function<void(const AppConfig&)> configChanged)
-                             : wxFrame(parent, wxID_ANY, "Settings", wxDefaultPosition, wxSize(700, 520),
-                                  wxDEFAULT_FRAME_STYLE & ~wxMAXIMIZE_BOX),
+                             : wxDialog(parent, wxID_ANY, "Settings", wxDefaultPosition, wxSize(700, 520),
+                                  wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
                              _configChanged(std::move(configChanged))
 {
-    wxTopLevelWindowBase::SetMinSize(wxSize(620, 440));
+    SetMinSize(wxSize(620, 440));
 
     const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
@@ -394,7 +392,7 @@ void SettingsFrame::SaveSettings(const bool closeAfterSave)
     if (_configChanged)
         _configChanged(config);
     if (closeAfterSave)
-        Close();
+        EndModal(wxID_OK);
 }
 
 void SettingsFrame::OnColorStyleChanged(wxCommandEvent&)
@@ -432,15 +430,10 @@ void SettingsFrame::OnOk(wxCommandEvent&)
 
 void SettingsFrame::OnCancel(wxCommandEvent&)
 {
-    Close();
+    EndModal(wxID_CANCEL);
 }
 
 void SettingsFrame::OnClose(wxCloseEvent&)
 {
-    if (!_closing)
-    {
-        _closing = true;
-        wxQueueEvent(GetParent(), new wxCommandEvent(wxEVT_SETTINGS_FRAME_CLOSED));
-    }
-    Destroy();
+    EndModal(wxID_CANCEL);
 }

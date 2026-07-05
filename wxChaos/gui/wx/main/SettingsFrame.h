@@ -7,9 +7,6 @@
 #include "config/AppConfigStore.h"
 #include "common/wxGradient.h"
 
-/// @brief Emitted after the settings frame has been closed.
-wxDECLARE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);
-
 /**
  * @class SettingsFrame
  * @brief Provides a graphical editor for values persisted by AppConfigStore.
@@ -17,9 +14,9 @@ wxDECLARE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);
  * Settings are grouped into General, Presets, Rendering, and Zoom pages. Applying
  * changes saves the configuration and notifies the owning window.
  */
-class SettingsFrame final : public wxFrame
+class SettingsFrame final : public wxDialog
 {
-        /// @brief Creates the page containing startup behavior settings.
+    /// @brief Creates the page containing startup behavior settings.
     /// @return Newly created General settings page.
     wxPanel* CreateGeneralPage();
 
@@ -51,7 +48,7 @@ class SettingsFrame final : public wxFrame
     void ApplyColorStyle(ColorPaletteTypes style);
 
     /// @brief Persists and applies the current control values.
-    /// @param closeAfterSave Whether to close the frame after saving.
+    /// @param closeAfterSave Whether to close the dialog after saving.
     void SaveSettings(bool closeAfterSave);
 
     /// @brief Changes the default gradient when a color style is selected.
@@ -74,11 +71,11 @@ class SettingsFrame final : public wxFrame
     /// @param event OK button event.
     void OnOk(wxCommandEvent& event);
 
-    /// @brief Closes the frame without saving unapplied changes.
+    /// @brief Closes the dialog without saving unapplied changes.
     /// @param event Cancel button event.
     void OnCancel(wxCommandEvent& event);
 
-    /// @brief Notifies the parent and destroys the frame.
+    /// @brief Closes the dialog without saving unapplied changes.
     /// @param event Window close event.
     void OnClose(wxCloseEvent& event);
 
@@ -104,12 +101,11 @@ class SettingsFrame final : public wxFrame
     std::vector<FractalType> _fractalTypes;               ///< Values corresponding to the fractal choice entries.
     std::vector<ColorPaletteTypes> _colorStyles;          ///< Values corresponding to the color style choice entries.
     std::function<void(const AppConfig&)> _configChanged; ///< Applies saved settings to the running application.
-    bool _closing{};                                      ///< Prevents duplicate close notifications.
 
 public:
     /**
-     * @brief Creates the application settings frame.
-     * @param parent Window that owns the frame and receives the close event.
+     * @brief Creates the application settings dialog.
+     * @param parent Window that owns the dialog.
      * @param config Configuration values used to initialize the controls.
      * @param configChanged Callback invoked after configuration is saved.
      */

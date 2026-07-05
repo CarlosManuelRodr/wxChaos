@@ -104,7 +104,6 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnQuit, this, wxID_EXIT);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSettings, this, ID_SETTINGS);
-    this->Bind(wxEVT_SETTINGS_FRAME_CLOSED, &MainFrame::OnSettingsFrameClosed, this);
     this->Bind(wxEVT_SIZE, &MainFrame::OnResize, this);
     this->Bind(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, &MainFrame::OnCanvasStatusText, this);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnJuliaMode, this, ID_JULIA_MODE);
@@ -750,21 +749,8 @@ void MainFrame::OnQuit(wxCommandEvent&)
 }
 void MainFrame::OnSettings(wxCommandEvent&)
 {
-    if (_settingsFrame == nullptr)
-    {
-        _settingsFrame = new SettingsFrame(this, _appConfig,
-            [this](const AppConfig& config) { ApplyAppConfig(config); });
-        _settingsFrame->Show();
-    }
-    else
-    {
-        _settingsFrame->Raise();
-        _settingsFrame->SetFocus();
-    }
-}
-void MainFrame::OnSettingsFrameClosed(wxCommandEvent&)
-{
-    _settingsFrame = nullptr;
+    SettingsFrame dialog(this, _appConfig, [this](const AppConfig& config) { ApplyAppConfig(config); });
+    dialog.ShowModal();
 }
 void MainFrame::ApplyAppConfig(const AppConfig& config)
 {
@@ -811,11 +797,6 @@ void MainFrame::CloseAll()
     if (_fractalCanvas != nullptr)
         _fractalCanvas->PrepareForClose();
 
-    if (_settingsFrame != nullptr)
-    {
-        _settingsFrame->Destroy();
-        _settingsFrame = nullptr;
-    }
     if (_commandConsole != nullptr)
     {
         _commandConsole->Destroy();
