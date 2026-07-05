@@ -101,9 +101,9 @@ void ScriptFractal::PostRender()
 void ScriptFractal::PreRestartRender()
 {
     // Clears all the maps.
-    for (int i = 0; i < _screenWidth; i++)
+    for (int i = 0; i < _renderWidth; i++)
     {
-        for (int j = 0; j < _screenHeight; j++)
+        for (int j = 0; j < _renderHeight; j++)
         {
             _setMap[i][j] = false;
             _colorMap[i][j] = 0;

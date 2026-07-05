@@ -2,6 +2,7 @@
 #include "coloring/ColorPalette.h"
 #include "coloring/PaletteMapping.h"
 #include "numeric/HighPrecision.h"
+#include "Options.h"
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"
 
@@ -70,6 +71,13 @@ TEST_CASE("RenderJob can override progress origin")
 
     CHECK_FALSE(job.IsEmpty());
     CHECK(job.GetProgressOriginY() == 2);
+}
+
+TEST_CASE("Anti-aliasing is off by default")
+{
+    const Options options;
+
+    CHECK(options.antiAliasingScale == 1);
 }
 
 TEST_CASE("PaletteMapping keeps linear mapping compatible")

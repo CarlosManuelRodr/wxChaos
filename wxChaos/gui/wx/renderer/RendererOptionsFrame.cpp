@@ -96,6 +96,15 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _renderingPrecisionChoice = new wxChoice(algorithmContent, wxID_ANY, wxDefaultPosition, wxDefaultSize);
     algorithmContentSizer->Add(_renderingPrecisionChoice, 0, wxALL | wxEXPAND, 5);
     SyncRenderingPrecisionControl();
+
+    _antiAliasingText = new wxStaticText(algorithmContent, wxID_ANY, "Anti-aliasing", wxDefaultPosition, wxDefaultSize, 0);
+    _antiAliasingText->Wrap(-1);
+    algorithmContentSizer->Add(_antiAliasingText, 0, wxALL, 5);
+
+    wxString antiAliasingChoices[] = {"Off", "2x", "4x", "8x", "16x"};
+    _antiAliasingChoice = new wxChoice(algorithmContent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 5, antiAliasingChoices);
+    algorithmContentSizer->Add(_antiAliasingChoice, 0, wxALL | wxEXPAND, 5);
+    SyncAntiAliasingControl();
     algorithmSizer->Add(algorithmContentSizer, 0, wxEXPAND | wxALL, 5);
 
     auto* renderFeatureSizer = new wxStaticBoxSizer(
@@ -293,6 +302,7 @@ void RendererOptionsFrame::ConnectEvents()
     _gradStylesChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &RendererOptionsFrame::GradientColorChangeSelection, this);
     _algorithmChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &RendererOptionsFrame::OnChangeAlgorithm, this);
     _renderingPrecisionChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &RendererOptionsFrame::OnRenderingPrecision, this);
+    _antiAliasingChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &RendererOptionsFrame::OnAntiAliasing, this);
     _relativeCheck->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &RendererOptionsFrame::OnRelativeColor, this);
     _gradPalSize->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptionsFrame::OnGradPaletteSize, this);
     _colorCycleLength->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &RendererOptionsFrame::OnColorCycleLength, this);
@@ -362,6 +372,34 @@ void RendererOptionsFrame::SyncRenderingPrecisionControl()
     }
     _renderingPrecisionChoice->SetSelection(selection);
 }
+
+void RendererOptionsFrame::SyncAntiAliasingControl() const
+{
+    int selection = 0;
+    switch (_target->GetAntiAliasingScale())
+    {
+        case 2:
+            selection = 1;
+            break;
+        case 4:
+            selection = 2;
+            break;
+        case 8:
+            selection = 3;
+            break;
+        case 16:
+            selection = 4;
+            break;
+        default:
+            selection = 0;
+            break;
+    }
+
+    _antiAliasingChoice->SetSelection(selection);
+    _antiAliasingChoice->Enable(_target->SupportsAntiAliasing());
+    _antiAliasingText->Enable(_target->SupportsAntiAliasing());
+}
+
 void RendererOptionsFrame::SyncRelativeColorControl() const
 {
     _relativeCheck->SetValue(_target->GetRelativeColorMode());
@@ -478,6 +516,7 @@ void RendererOptionsFrame::SetTarget(FractalPresenter* presenter)
     _smoothRender->SetValue(_target->SmoothRenderActivated());
     _smoothRender->Enable(_target->HasSmoothRenderMode());
     SyncRenderingPrecisionControl();
+    SyncAntiAliasingControl();
 
     _algorithmChoice->Clear();
     _escapeTimeIndex = -1;
@@ -619,6 +658,33 @@ void RendererOptionsFrame::OnRenderingPrecision(wxCommandEvent&)
         return;
 
     _fractalPresenter->SetRenderingPrecisionMode(_renderingPrecisionModes[selection]);
+    NotifyOptionsChanged();
+}
+
+void RendererOptionsFrame::OnAntiAliasing(wxCommandEvent&)
+{
+    unsigned int scale = 1;
+    switch (_antiAliasingChoice->GetSelection())
+    {
+        case 1:
+            scale = 2;
+            break;
+        case 2:
+            scale = 4;
+            break;
+        case 3:
+            scale = 8;
+            break;
+        case 4:
+            scale = 16;
+            break;
+        default:
+            scale = 1;
+            break;
+    }
+
+    _fractalPresenter->SetAntiAliasingScale(scale);
+    SyncAntiAliasingControl();
     NotifyOptionsChanged();
 }
 

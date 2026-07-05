@@ -384,6 +384,7 @@ Options DimensionFrame::ReadDimensionOptions()
     options.minY = _minYCtrl->GetValue();
     options.maxY = options.minY + (options.maxX - options.minX);
     options.maxIter = _iterCtrl->GetValue();
+    options.antiAliasingScale = 1;
     _size = _sizeCtrl->GetValue();
     _maxYCtrl->SetValue(options.maxY);
     return options;

@@ -338,6 +338,7 @@ public:
     ///@brief Sets the rendering precision strategy and invalidates cached images.
     ///@param mode New rendering precision mode.
     void SetRenderingPrecisionMode(RenderingPrecisionMode mode);
+    void SetAntiAliasingScale(unsigned int scale);
 
     ///@brief Sets orbit trap mode and invalidates cached images.
     ///@param mode Orbit trap mode.

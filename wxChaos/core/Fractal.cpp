@@ -25,31 +25,14 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     // Copy window properties.
     _screenHeight = height;
     _screenWidth = width;
-    _backScreenWidth = _screenWidth;
+    _antiAliasingScale = 1;
+    UpdateRenderDimensions();
+    _backRenderWidth = _renderWidth;
 
     _fSetColor = wxColour(0, 0, 0);
 
-    // Allocates memory for the maps.
-    _setMap = new bool* [_screenWidth];
-    _colorMap = new double* [_screenWidth];
-    _auxMap = new unsigned int* [_screenWidth];
-    for (int i = 0; i < _screenWidth; i++)
-    {
-        _setMap[i] = new bool[_screenHeight];
-        _colorMap[i] = new double[_screenHeight];
-        _auxMap[i] = new unsigned int[_screenHeight];
-    }
-
-    // Initializes maps.
-    for (int i = 0; i < _screenWidth; i++)
-    {
-        for (int j = 0; j < _screenHeight; j++)
-        {
-            _setMap[i][j] = false;
-            _colorMap[i][j] = InvalidColor;
-            _auxMap[i][j] = 0;
-        }
-    }
+    AllocateRenderMaps();
+    ClearRenderMaps(InvalidColor);
 
     _pendingRenderOffset = {0, 0};
 
@@ -129,17 +112,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
 
 Fractal::~Fractal()
 {
-    // Cleanup.
-    for (int i = 0; i < _backScreenWidth; i++)
-    {
-        delete[] _setMap[i];
-        delete[] _colorMap[i];
-        delete[] _auxMap[i];
-    }
-
-    delete[] _setMap;
-    delete[] _colorMap;
-    delete[] _auxMap;
+    ReleaseRenderMaps();
 }
 
 wxString Fractal::GetRenderingAlgorithmName() const
@@ -163,6 +136,116 @@ sf::Color Fractal::InterpolatePaletteColors(const wxColour& first, const wxColou
 bool Fractal::IsValidColorMapValue(const double value)
 {
     return value != InvalidColor && std::isfinite(value);
+}
+
+unsigned int Fractal::NormalizeAntiAliasingScale(const unsigned int scale)
+{
+    switch (scale)
+    {
+        case 2:
+        case 4:
+        case 8:
+        case 16:
+            return scale;
+        default:
+            return 1;
+    }
+}
+
+void Fractal::UpdateRenderDimensions()
+{
+    const auto scaledWidth = static_cast<unsigned long long>(_screenWidth) * _antiAliasingScale;
+    const auto scaledHeight = static_cast<unsigned long long>(_screenHeight) * _antiAliasingScale;
+    _renderWidth = static_cast<unsigned int>(
+        std::min<unsigned long long>(std::numeric_limits<unsigned int>::max(), std::max(1ULL, scaledWidth)));
+    _renderHeight = static_cast<unsigned int>(
+        std::min<unsigned long long>(std::numeric_limits<unsigned int>::max(), std::max(1ULL, scaledHeight)));
+}
+
+void Fractal::AllocateRenderMaps()
+{
+    _setMap = new bool* [_renderWidth];
+    _colorMap = new double* [_renderWidth];
+    _auxMap = new unsigned int* [_renderWidth];
+    for (unsigned int i = 0; i < _renderWidth; i++)
+    {
+        _setMap[i] = new bool[_renderHeight];
+        _colorMap[i] = new double[_renderHeight];
+        _auxMap[i] = new unsigned int[_renderHeight];
+    }
+    _backRenderWidth = _renderWidth;
+}
+
+void Fractal::ReleaseRenderMaps()
+{
+    if (_setMap == nullptr || _colorMap == nullptr || _auxMap == nullptr)
+        return;
+
+    for (unsigned int i = 0; i < _backRenderWidth; i++)
+    {
+        delete[] _setMap[i];
+        delete[] _colorMap[i];
+        delete[] _auxMap[i];
+    }
+
+    delete[] _setMap;
+    delete[] _colorMap;
+    delete[] _auxMap;
+    _setMap = nullptr;
+    _colorMap = nullptr;
+    _auxMap = nullptr;
+    _backRenderWidth = 0;
+}
+
+void Fractal::ClearRenderMaps(const double initialColorValue)
+{
+    for (unsigned int i = 0; i < _renderWidth; i++)
+    {
+        for (unsigned int j = 0; j < _renderHeight; j++)
+        {
+            _setMap[i][j] = false;
+            _colorMap[i][j] = initialColorValue;
+            _auxMap[i][j] = 0;
+        }
+    }
+}
+
+Vector2Int Fractal::DisplayOffsetToRenderOffset(const Vector2Int displayOffset) const
+{
+    const auto scale = static_cast<int>(_antiAliasingScale);
+    return {displayOffset.x * scale, displayOffset.y * scale};
+}
+
+HighPrecisionReal Fractal::GetRenderPreciseXFactor() const
+{
+    EnsurePreciseViewInitialized();
+    if (_antiAliasingScale > 1)
+        return (_preciseView.right - _preciseView.left) / HighPrecisionReal(_renderWidth);
+
+    const HighPrecisionReal widthDivisor = _renderWidth > 1 ? HighPrecisionReal(_renderWidth - 1) : HighPrecisionReal(1);
+    return (_preciseView.right - _preciseView.left) / widthDivisor;
+}
+
+HighPrecisionReal Fractal::GetRenderPreciseYFactor() const
+{
+    EnsurePreciseViewInitialized();
+    if (_antiAliasingScale > 1)
+        return (_preciseView.top - _preciseView.bottom) / HighPrecisionReal(_renderHeight);
+
+    const HighPrecisionReal heightDivisor = _renderHeight > 1 ? HighPrecisionReal(_renderHeight - 1) : HighPrecisionReal(1);
+    return (_preciseView.top - _preciseView.bottom) / heightDivisor;
+}
+
+Options Fractal::GetRenderOptions() const
+{
+    Options opt = GetOptions();
+    opt.screenWidth = _renderWidth;
+    opt.screenHeight = _renderHeight;
+    opt.xFactor = ToDouble(GetRenderPreciseXFactor());
+    opt.yFactor = ToDouble(GetRenderPreciseYFactor());
+    opt.preciseXFactor = GetRenderPreciseXFactor();
+    opt.preciseYFactor = GetRenderPreciseYFactor();
+    return opt;
 }
 
 sf::Color Fractal::GetColorFromPalette(const double index) const
@@ -202,9 +285,9 @@ void Fractal::UpdateMaxColorMapValue()
     double minColorMapVal = std::numeric_limits<double>::max();
     std::vector<double> relativeValues;
 
-    for (int i = 0; i < _screenWidth; i++)
+    for (unsigned int i = 0; i < _renderWidth; i++)
     {
-        for (int j = 0; j < _screenHeight; j++)
+        for (unsigned int j = 0; j < _renderHeight; j++)
         {
             const double value = _colorMap[i][j];
             if (!IsValidColorMapValue(value))
@@ -254,7 +337,7 @@ void Fractal::UpdateMaxColorMapValue()
 }
 void Fractal::ConfigureRenderer(RenderWorker& renderer) const
 {
-    renderer.SetOptions(this->GetOptions());
+    renderer.SetOptions(this->GetRenderOptions());
     renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
     renderer.SetK(_kReal, _kImaginary);
 }
@@ -322,8 +405,8 @@ unsigned int Fractal::EstimateRequiredPrecisionBits() const
     using std::log;
     using std::max;
 
-    const HighPrecisionReal minStep = std::min(HighPrecisionReal(RealAbs(_preciseXFactor)),
-                                               HighPrecisionReal(RealAbs(_preciseYFactor)));
+    const HighPrecisionReal minStep = std::min(HighPrecisionReal(RealAbs(GetRenderPreciseXFactor())),
+                                               HighPrecisionReal(RealAbs(GetRenderPreciseYFactor())));
     if (minStep <= 0)
         return 1024;
 
@@ -373,8 +456,8 @@ void Fractal::ConfigureIterationDefaults(const unsigned int defaultIterations, c
 std::vector<RenderRegion> Fractal::BuildRenderRegions() const
 {
     std::vector<RenderRegion> regions;
-    const int screenWidth = static_cast<int>(_screenWidth);
-    const int screenHeight = static_cast<int>(_screenHeight);
+    const int screenWidth = static_cast<int>(_renderWidth);
+    const int screenHeight = static_cast<int>(_renderHeight);
 
     if (_pendingRenderOffset.x == 0 && _pendingRenderOffset.y == 0)
     {
@@ -419,8 +502,8 @@ std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>&
     std::vector<RenderJob> jobs;
 
     const unsigned int threadNumber = std::max(1U, _threadNumber);
-    const int screenWidth = static_cast<int>(_screenWidth);
-    const int screenHeight = static_cast<int>(_screenHeight);
+    const int screenWidth = static_cast<int>(_renderWidth);
+    const int screenHeight = static_cast<int>(_renderHeight);
     int totalArea = 0;
 
     if (tileHeight <= 0 && regions.size() > threadNumber)
@@ -516,48 +599,14 @@ void Fractal::Resize(const unsigned int width, const unsigned int height)
     this->StopRender();
     _paused = false;
 
-    // Frees memory.
-    for (int i = 0; i < _backScreenWidth; i++)
-    {
-        delete[] _setMap[i];
-        delete[] _colorMap[i];
-        delete[] _auxMap[i];
-        _setMap[i] = nullptr;
-        _colorMap[i] = nullptr;
-        _auxMap[i] = nullptr;
-    }
-    delete[] _setMap;
-    delete[] _colorMap;
-    delete[] _auxMap;
-    _setMap = nullptr;
-    _colorMap = nullptr;
-    _auxMap = nullptr;
+    ReleaseRenderMaps();
 
     // Copy window properties.
     _screenHeight = height;
-    _backScreenWidth = _screenWidth = width;
-
-    // Allocate memory.
-    _setMap = new bool* [_screenWidth];
-    _colorMap = new double* [_screenWidth];
-    _auxMap = new unsigned int* [_screenWidth];
-    for (int i = 0; i < _screenWidth; i++)
-    {
-        _setMap[i] = new bool[_screenHeight];
-        _colorMap[i] = new double[_screenHeight];
-        _auxMap[i] = new unsigned int[_screenHeight];
-    }
-
-    // Initialize maps.
-    for (int i = 0; i < _screenWidth; i++)
-    {
-        for (int j = 0; j < _screenHeight; j++)
-        {
-            _setMap[i][j] = false;
-            _colorMap[i][j] = InvalidColor;
-            _auxMap[i][j] = 0;
-        }
-    }
+    _screenWidth = width;
+    UpdateRenderDimensions();
+    AllocateRenderMaps();
+    ClearRenderMaps(InvalidColor);
 
     EnsurePreciseViewInitialized();
     _preciseView.top = _preciseView.bottom + (_preciseView.right - _preciseView.left) *
@@ -569,26 +618,18 @@ void Fractal::Resize(const unsigned int width, const unsigned int height)
 void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
 {
     this->PreRender();
-    _pendingRenderOffset = reusedMapOffset;
+    _pendingRenderOffset = DisplayOffsetToRenderOffset(reusedMapOffset);
     NotifyPrecisionStatusIfChanged();
 
     // Checks if the movement is valid.
-    if ((abs(_pendingRenderOffset.x) >= _screenWidth) || (abs(_pendingRenderOffset.y) >= _screenHeight))
+    if ((abs(_pendingRenderOffset.x) >= _renderWidth) || (abs(_pendingRenderOffset.y) >= _renderHeight))
         _redrawAll = true;
 
     // Clear maps.
     if ((!_pendingRenderOffset.x && !_pendingRenderOffset.y) || _redrawAll || _redrawAlways)
     {
         const double initialColorValue = _algorithm == RenderingAlgorithmType::Buddhabrot ? 0.0 : InvalidColor;
-        for (int i = 0; i < _screenWidth; i++)
-        {
-            for (int j = 0; j < _screenHeight; j++)
-            {
-                _setMap[i][j] = false;
-                _colorMap[i][j] = initialColorValue;
-                _auxMap[i][j] = 0;
-            }
-        }
+        ClearRenderMaps(initialColorValue);
         _pendingRenderOffset = {0, 0};
         _redrawAll = false;
     }
@@ -776,9 +817,10 @@ bool Fractal::ConsumeImageRefreshRequest()
 
 void Fractal::ReuseRenderedMaps(const Vector2Int reusedMapOffset)
 {
-    MoveMatrix<bool>(_setMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x);
-    MoveMatrix<double>(_colorMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x, InvalidColor);
-    MoveMatrix<unsigned int>(_auxMap, _screenHeight, _screenWidth, reusedMapOffset.y, reusedMapOffset.x);
+    const Vector2Int renderOffset = DisplayOffsetToRenderOffset(reusedMapOffset);
+    MoveMatrix<bool>(_setMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x);
+    MoveMatrix<double>(_colorMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x, InvalidColor);
+    MoveMatrix<unsigned int>(_auxMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x);
 }
 
 void Fractal::PrepareDisplayColorLookup()
@@ -796,10 +838,48 @@ double Fractal::NormalizeColorMapValue(const double value) const
 
 bool Fractal::HasDisplayPixelColor(const unsigned int x, const unsigned int y) const
 {
+    if (x >= _screenWidth || y >= _screenHeight)
+        return false;
+
+    if (_antiAliasingScale > 1)
+    {
+        const unsigned int renderX = x * _antiAliasingScale;
+        const unsigned int renderY = y * _antiAliasingScale;
+        for (unsigned int offsetX = 0; offsetX < _antiAliasingScale; offsetX++)
+        {
+            for (unsigned int offsetY = 0; offsetY < _antiAliasingScale; offsetY++)
+            {
+                if (HasRenderMapPixelColor(renderX + offsetX, renderY + offsetY))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    return HasRenderMapPixelColor(x, y);
+}
+
+bool Fractal::HasRenderMapPixelColor(const unsigned int x, const unsigned int y) const
+{
+    if (x >= _renderWidth || y >= _renderHeight)
+        return false;
+
     if (_setMap[x][y] && _colorSet)
         return true;
 
     return _colorMode && IsValidColorMapValue(_colorMap[x][y]);
+}
+
+sf::Color Fractal::GetRenderMapPixelColor(const unsigned int x, const unsigned int y) const
+{
+    if (_setMap[x][y] && _colorSet)
+        return GetSetColor();
+
+    if (!_colorMode || !IsValidColorMapValue(_colorMap[x][y]))
+        return sf::Color::White;
+
+    return GetColorFromPalette(NormalizeColorMapValue(_colorMap[x][y]) + _changeGradient);
 }
 
 sf::Color Fractal::GetInvalidPixelColor() const
@@ -820,6 +900,42 @@ bool Fractal::IsRelativeColorEnabled() const
 bool Fractal::IsSetColorEnabled() const
 {
     return _colorSet;
+}
+
+bool Fractal::SupportsAntiAliasing() const
+{
+    return true;
+}
+
+bool Fractal::IsAntiAliasingEnabled() const
+{
+    return _antiAliasingScale > 1;
+}
+
+void Fractal::SetAntiAliasingScale(const unsigned int scale)
+{
+    const unsigned int normalizedScale = NormalizeAntiAliasingScale(scale);
+    if (_antiAliasingScale == normalizedScale)
+        return;
+
+    this->StopRender();
+    ReleaseRenderMaps();
+    _antiAliasingScale = normalizedScale;
+    UpdateRenderDimensions();
+    AllocateRenderMaps();
+    const double initialColorValue = _algorithm == RenderingAlgorithmType::Buddhabrot ? 0.0 : InvalidColor;
+    ClearRenderMaps(initialColorValue);
+    _pendingRenderOffset = {0, 0};
+    _redrawAll = true;
+    _rendered = false;
+    _rendering = false;
+    _paused = false;
+    _refreshImage = true;
+}
+
+unsigned int Fractal::GetAntiAliasingScale() const
+{
+    return _antiAliasingScale;
 }
 
 bool Fractal::IsGradientAnimating() const
@@ -866,10 +982,7 @@ void Fractal::RefreshAnimatedColors(sf::Image& image)
         {
             for (unsigned int j = 0; j < _screenHeight; j++)
             {
-                if ((_setMap[i][j] || !_colorSet) && !IsValidColorMapValue(_colorMap[i][j]))
-                    continue;
-
-                if ((_setMap[i][j] == false || !_colorSet) && IsValidColorMapValue(_colorMap[i][j]))
+                if (HasDisplayPixelColor(i, j))
                     image.setPixel(i, j, GetRenderedPixelColor(i, j));
             }
         }
@@ -1025,7 +1138,10 @@ Fractal::PointSample Fractal::GetPointSample(const unsigned int x, const unsigne
     if (x >= _screenWidth || y >= _screenHeight)
         return {false, 0, false};
 
-    return {_setMap[x][y], _colorMap[x][y], IsValidColorMapValue(_colorMap[x][y])};
+    const unsigned int scale = _antiAliasingScale;
+    const unsigned int renderX = x * scale + scale / 2;
+    const unsigned int renderY = y * scale + scale / 2;
+    return {_setMap[renderX][renderY], _colorMap[renderX][renderY], IsValidColorMapValue(_colorMap[renderX][renderY])};
 }
 
 wxString Fractal::InspectPoint(const double real, const double imaginary,
@@ -1057,6 +1173,7 @@ wxString Fractal::InspectPoint(const double real, const double imaginary,
 
     options.orbitTrapMode = false;
     options.smoothRender = false;
+    options.antiAliasingScale = 1;
     if (iterations.has_value())
         options.maxIter = *iterations;
 
@@ -1181,6 +1298,7 @@ int Fractal::GetPixelY(const double yNum) const
 void Fractal::SetOptions(const Options& opt, const bool keepSize)
 {
     const bool usePreciseOptions = OptionsPreciseViewMatchesDoubleView(opt);
+    const unsigned int antiAliasingScale = NormalizeAntiAliasingScale(opt.antiAliasingScale);
 
     if (!keepSize)
     {
@@ -1208,6 +1326,8 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _colorCycleLength = opt.colorCycleLength > 0.0 ? opt.colorCycleLength : 72.0;
     _paletteMappingMode = opt.paletteMappingMode;
     _paletteMappingExponent = opt.paletteMappingExponent > 0.0 ? opt.paletteMappingExponent : 1.5;
+    if (_antiAliasingScale != antiAliasingScale)
+        SetAntiAliasingScale(antiAliasingScale);
     _algorithm = opt.alg;
     _renderingPrecisionMode = opt.renderingPrecisionMode;
     _fSetColor = wxColour(opt.fSetColor.r, opt.fSetColor.g, opt.fSetColor.b, opt.fSetColor.a);
@@ -1255,6 +1375,7 @@ Options Fractal::GetOptions() const
     opt.colorRotationSpeed = _colorRotationSpeed;
     opt.paletteMappingMode = _paletteMappingMode;
     opt.paletteMappingExponent = _paletteMappingExponent;
+    opt.antiAliasingScale = _antiAliasingScale;
     opt.panelOpt = _panelOpt;
     opt.type = _type;
 
@@ -1333,13 +1454,45 @@ bool Fractal::GetChangeFractalProp()
 // Save image.
 sf::Color Fractal::GetRenderedPixelColor(const unsigned int x, const unsigned int y) const
 {
-    if (_setMap[x][y] && _colorSet)
-        return GetSetColor();
-
-    if (!_colorMode || !IsValidColorMapValue(_colorMap[x][y]))
+    if (x >= _screenWidth || y >= _screenHeight)
         return sf::Color::White;
 
-    return GetColorFromPalette(NormalizeColorMapValue(_colorMap[x][y]) + _changeGradient);
+    if (_antiAliasingScale == 1)
+        return GetRenderMapPixelColor(x, y);
+
+    unsigned int red = 0;
+    unsigned int green = 0;
+    unsigned int blue = 0;
+    unsigned int alpha = 0;
+    unsigned int samples = 0;
+    const unsigned int renderX = x * _antiAliasingScale;
+    const unsigned int renderY = y * _antiAliasingScale;
+
+    for (unsigned int offsetX = 0; offsetX < _antiAliasingScale; offsetX++)
+    {
+        for (unsigned int offsetY = 0; offsetY < _antiAliasingScale; offsetY++)
+        {
+            const unsigned int sampleX = renderX + offsetX;
+            const unsigned int sampleY = renderY + offsetY;
+            if (!HasRenderMapPixelColor(sampleX, sampleY))
+                continue;
+
+            const sf::Color color = GetRenderMapPixelColor(sampleX, sampleY);
+            red += color.r;
+            green += color.g;
+            blue += color.b;
+            alpha += color.a;
+            samples++;
+        }
+    }
+
+    if (samples == 0)
+        return sf::Color::White;
+
+    return {static_cast<sf::Uint8>(red / samples),
+            static_cast<sf::Uint8>(green / samples),
+            static_cast<sf::Uint8>(blue / samples),
+            static_cast<sf::Uint8>(alpha / samples)};
 }
 
 sf::Image Fractal::GetRenderedImage()

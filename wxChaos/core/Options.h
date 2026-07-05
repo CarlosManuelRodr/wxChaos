@@ -30,6 +30,7 @@ struct Options
     double colorRotationSpeed;
     PaletteMappingMode paletteMappingMode;
     double paletteMappingExponent;
+    unsigned int antiAliasingScale;
     PanelOptions panelOpt;
 
     double kReal;
@@ -68,6 +69,7 @@ inline Options::Options()
     colorRotationSpeed = 120.0;
     paletteMappingMode = PaletteMappingMode::Linear;
     paletteMappingExponent = 1.5;
+    antiAliasingScale = 1;
     kReal = kImaginary = 0.0;
     orbitTrapMode = false;
     colorSet = false;

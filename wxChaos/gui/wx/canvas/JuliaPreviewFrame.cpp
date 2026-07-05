@@ -281,6 +281,7 @@ void JuliaPreviewFrame::ApplyRendererOptions(const Options& options) const
     presenter->SetColorRotationSpeed(options.colorRotationSpeed);
     presenter->SetAlgorithm(options.alg);
     presenter->SetRenderingPrecisionMode(options.renderingPrecisionMode);
+    presenter->SetAntiAliasingScale(options.antiAliasingScale);
     presenter->SetRelativeColor(options.relativeColor);
     presenter->SetExteriorColorMode(options.colorMode);
     presenter->SetFractalSetColorMode(options.colorSet);

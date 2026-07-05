@@ -1070,6 +1070,12 @@ void FractalPresenter::SetRenderingPrecisionMode(const RenderingPrecisionMode mo
     _fractal->SetRenderingPrecisionMode(mode);
 }
 
+void FractalPresenter::SetAntiAliasingScale(const unsigned int scale)
+{
+    ClearImageCache();
+    _fractal->SetAntiAliasingScale(scale);
+}
+
 void FractalPresenter::SetOrbitTrapMode(const bool mode)
 {
     ClearImageCache();

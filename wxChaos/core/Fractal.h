@@ -77,7 +77,10 @@ protected:
 
     unsigned int _screenWidth;
     unsigned int _screenHeight;
-    unsigned int _backScreenWidth;
+    unsigned int _renderWidth;
+    unsigned int _renderHeight;
+    unsigned int _backRenderWidth;
+    unsigned int _antiAliasingScale;
     unsigned int _changeGradient;
 
     // Color properties.
@@ -154,9 +157,21 @@ protected:
     double NormalizeColorMapValue(double value) const;
     static bool IsValidColorMapValue(double value);
     static sf::Color InterpolatePaletteColors(const wxColour& first, const wxColour& second, double ratio);
+    static unsigned int NormalizeAntiAliasingScale(unsigned int scale);
 
     ///@brief Rebuilds the color palette
     void RebuildPalette();
+
+    void UpdateRenderDimensions();
+    void AllocateRenderMaps();
+    void ReleaseRenderMaps();
+    void ClearRenderMaps(double initialColorValue);
+    [[nodiscard]] Vector2Int DisplayOffsetToRenderOffset(Vector2Int displayOffset) const;
+    [[nodiscard]] HighPrecisionReal GetRenderPreciseXFactor() const;
+    [[nodiscard]] HighPrecisionReal GetRenderPreciseYFactor() const;
+    [[nodiscard]] Options GetRenderOptions() const;
+    [[nodiscard]] bool HasRenderMapPixelColor(unsigned int x, unsigned int y) const;
+    [[nodiscard]] sf::Color GetRenderMapPixelColor(unsigned int x, unsigned int y) const;
 
     ///@brief If some minor change was made like a color adjustment, redraws the maps.
     void RedrawMaps();
@@ -298,6 +313,10 @@ public:
     bool IsExteriorColorEnabled() const;
     bool IsRelativeColorEnabled() const;
     bool IsSetColorEnabled() const;
+    bool SupportsAntiAliasing() const;
+    bool IsAntiAliasingEnabled() const;
+    void SetAntiAliasingScale(unsigned int scale);
+    unsigned int GetAntiAliasingScale() const;
     bool IsGradientAnimating() const;
     bool ConsumeGradientChangeRequest();
     void AdvanceGradientOffset(double elapsedSeconds);
@@ -508,7 +527,8 @@ public:
 template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer* myRender, const int tileHeight)
 {
     const std::vector<RenderRegion> regions = this->BuildRenderRegions();
-    const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions, tileHeight);
+    const int renderTileHeight = tileHeight > 0 ? tileHeight * static_cast<int>(_antiAliasingScale) : tileHeight;
+    const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions, renderTileHeight);
     _pendingRenderOffset = {0, 0};
 
     std::vector<RenderWorker*> renderers;
