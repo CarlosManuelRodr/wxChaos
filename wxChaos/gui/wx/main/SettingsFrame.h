@@ -104,6 +104,7 @@ private:
     wxCheckBox* _automaticIterations{};                   ///< Enables viewport-driven iteration counts.
     wxSpinCtrl* _paletteSize{};                           ///< Selects the default gradient palette size.
     wxSpinCtrl* _colorCycleLength{};                      ///< Selects the default palette cycle length.
+    wxChoice* _antiAliasing{};                             ///< Selects the default supersampling scale.
     wxCheckBox* _colorFractal{};                          ///< Enables coloring outside the fractal set.
     wxCheckBox* _colorSet{};                              ///< Enables coloring inside the fractal set.
     wxSpinCtrl* _zoomStepPercent{};                       ///< Selects the percentage zoomed by each mouse-wheel notch.

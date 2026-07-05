@@ -29,6 +29,7 @@ struct AppConfig
     int colorCycleLength = 0;
     ColorPaletteTypes colorStyle = System; ///< Default gradient preset, or CustomGradient for user-edited gradients.
     std::string colorStyleGrad;
+    int antiAliasingScale = 1;
     bool constantWindow = false;
     bool commandConsole = false;
     bool juliaMode = false;
@@ -80,6 +81,7 @@ private:
     static bool ReadBool(const std::map<std::string, std::string>& values, const std::string& key, bool defaultValue);
     static int ReadInt(const std::map<std::string, std::string>& values, const std::string& key, int defaultValue);
     static std::string ReadString(const std::map<std::string, std::string>& values, const std::string& key, const std::string& defaultValue);
+    static int NormalizeAntiAliasingScale(int scale);
     static const std::map<std::string, FractalType>& FractalTypes();
     ///@brief Returns the persisted names for gradient color style presets.
     static const std::map<std::string, ColorPaletteTypes>& ColorStyles();

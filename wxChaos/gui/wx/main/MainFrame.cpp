@@ -727,6 +727,7 @@ void MainFrame::SetUpGUI()
     _fractalCanvas->GetFractalPresenter()->SetColorPalette(_appConfig.colorStyle);
     _fractalCanvas->GetFractalPresenter()->SetGradient(grad);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(_appConfig.colorCycleLength);
+    _fractalCanvas->GetFractalPresenter()->SetAntiAliasingScale(_appConfig.antiAliasingScale);
 
     SetAutomaticIterations(_appConfig.automaticIterations);
     _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(_appConfig.colorFractal);
@@ -784,6 +785,7 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     _fractalCanvas->GetFractalPresenter()->SetColorPalette(config.colorStyle);
     _fractalCanvas->GetFractalPresenter()->SetGradient(gradient);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(config.colorCycleLength);
+    _fractalCanvas->GetFractalPresenter()->SetAntiAliasingScale(config.antiAliasingScale);
     SetAutomaticIterations(config.automaticIterations);
     _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(config.colorFractal);
     _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(config.colorSet);
@@ -1015,6 +1017,7 @@ void MainFrame::OnReset(wxCommandEvent&)
     _fractalCanvas->GetFractalPresenter()->SetColorPalette(_appConfig.colorStyle);
     _fractalCanvas->GetFractalPresenter()->SetGradient(grad);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(_appConfig.colorCycleLength);
+    _fractalCanvas->GetFractalPresenter()->SetAntiAliasingScale(_appConfig.antiAliasingScale);
     this->UpdateMenu();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -1324,6 +1327,7 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
         _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
         _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
         _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
+        _fractalCanvas->GetFractalPresenter()->SetAntiAliasingScale(_appConfig.antiAliasingScale);
         ApplyAutomaticIterationsSetting();
         _fractalType = type;
         ResetColorRotationTool();
@@ -1347,6 +1351,7 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
     _fractalCanvas->GetFractalPresenter()->SetColorRotationSpeed(fractOpt.colorRotationSpeed);
+    _fractalCanvas->GetFractalPresenter()->SetAntiAliasingScale(_appConfig.antiAliasingScale);
     ApplyAutomaticIterationsSetting();
 
     _fractalType = FractalType::ScriptFractal;

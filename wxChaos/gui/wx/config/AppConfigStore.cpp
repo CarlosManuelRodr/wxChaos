@@ -137,6 +137,18 @@ std::string AppConfigStore::ReadString(const std::map<std::string, std::string>&
     return it == values.end() ? defaultValue : it->second;
 }
 
+int AppConfigStore::NormalizeAntiAliasingScale(const int scale)
+{
+    switch (scale)
+    {
+        case 2:
+        case 4:
+            return scale;
+        default:
+            return 1;
+    }
+}
+
 const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
 {
     static const std::map<std::string, FractalType> fractalTypes = {
@@ -306,6 +318,8 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     if (config.colorStyleGrad.find("rgb(") == std::string::npos)
         config.colorStyleGrad = DefaultColorStyle();
     config.colorStyle = InferColorStyleFromGradient(config.colorStyleGrad);
+    config.antiAliasingScale = NormalizeAntiAliasingScale(
+        ReadInt(values, "ANTI_ALIASING_SCALE", config.antiAliasingScale));
 
     config.constantWindow = ReadBool(values, "CONSTANT_WINDOW", config.constantWindow);
     config.commandConsole = ReadBool(values, "COMMAND_CONSOLE", config.commandConsole);
@@ -382,6 +396,10 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/Fractal/color_cycle_length", &intValue, config.colorCycleLength);
     config.colorCycleLength = static_cast<int>(intValue);
 
+    intValue = config.antiAliasingScale;
+    fileConfig.Read("/Fractal/anti_aliasing_scale", &intValue, config.antiAliasingScale);
+    config.antiAliasingScale = NormalizeAntiAliasingScale(static_cast<int>(intValue));
+
     fileConfig.Read("/Fractal/constant_window", &config.constantWindow, config.constantWindow);
     fileConfig.Read("/Fractal/command_console", &config.commandConsole, config.commandConsole);
     fileConfig.Read("/Fractal/julia_mode", &config.juliaMode, config.juliaMode);
@@ -420,6 +438,8 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Fractal/color_type", wxString("Gradient"));
     fileConfig.Write("/Fractal/palette_size", static_cast<long>(config.paletteSize));
     fileConfig.Write("/Fractal/color_cycle_length", static_cast<long>(config.colorCycleLength));
+    fileConfig.Write("/Fractal/anti_aliasing_scale",
+                     static_cast<long>(NormalizeAntiAliasingScale(config.antiAliasingScale)));
     fileConfig.Write("/Fractal/color_style_preset", ToWxString(ColorStyleToString(config.colorStyle)));
     fileConfig.Write("/Fractal/color_style", ToWxString(config.colorStyleGrad));
     fileConfig.Write("/Fractal/fractal_type", ToWxString(FractalTypeToString(config.type)));

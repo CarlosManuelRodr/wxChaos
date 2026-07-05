@@ -140,6 +140,14 @@ wxPanel* SettingsFrame::CreateRenderingPage()
     cycleRow->Add(_colorCycleLength, 0);
     sizer->Add(cycleRow, 0, wxBOTTOM, 16);
 
+    const auto antiAliasingRow = new wxBoxSizer(wxHORIZONTAL);
+    antiAliasingRow->Add(new wxStaticText(page, wxID_ANY, "Anti-aliasing:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    const wxString antiAliasingChoices[] = {"Off", "2x", "4x"};
+    _antiAliasing = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                 std::size(antiAliasingChoices), antiAliasingChoices);
+    antiAliasingRow->Add(_antiAliasing, 0);
+    sizer->Add(antiAliasingRow, 0, wxBOTTOM, 16);
+
     const wxString colorStyleNames[] = {
         "System",
         "Retro",
@@ -254,6 +262,18 @@ void SettingsFrame::LoadControls(const AppConfig& config)
     _automaticIterations->SetValue(config.automaticIterations);
     _paletteSize->SetValue(config.paletteSize);
     _colorCycleLength->SetValue(config.colorCycleLength);
+    switch (config.antiAliasingScale)
+    {
+        case 2:
+            _antiAliasing->SetSelection(1);
+            break;
+        case 4:
+            _antiAliasing->SetSelection(2);
+            break;
+        default:
+            _antiAliasing->SetSelection(0);
+            break;
+    }
     _colorFractal->SetValue(config.colorFractal);
     _colorSet->SetValue(config.colorSet);
     _zoomStepPercent->SetValue(config.zoomStepPercent);
@@ -294,6 +314,18 @@ AppConfig SettingsFrame::ReadControls()
     config.automaticIterations = _automaticIterations->GetValue();
     config.paletteSize = _paletteSize->GetValue();
     config.colorCycleLength = _colorCycleLength->GetValue();
+    switch (_antiAliasing->GetSelection())
+    {
+        case 1:
+            config.antiAliasingScale = 2;
+            break;
+        case 2:
+            config.antiAliasingScale = 4;
+            break;
+        default:
+            config.antiAliasingScale = 1;
+            break;
+    }
     const int colorStyleSelection = _colorStyle->GetSelection();
     if (colorStyleSelection != wxNOT_FOUND)
         config.colorStyle = _colorStyles[colorStyleSelection];

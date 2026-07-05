@@ -101,9 +101,19 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _antiAliasingText->Wrap(-1);
     algorithmContentSizer->Add(_antiAliasingText, 0, wxALL, 5);
 
-    const wxString antiAliasingChoices[] = {"Off", "2x", "4x", "8x", "16x"};
-    _antiAliasingChoice = new wxChoice(algorithmContent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 5, antiAliasingChoices);
+    const wxString antiAliasingChoices[] = {"Off", "2x", "4x"};
+    _antiAliasingChoice = new wxChoice(algorithmContent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                       std::size(antiAliasingChoices), antiAliasingChoices);
     algorithmContentSizer->Add(_antiAliasingChoice, 0, wxALL | wxEXPAND, 5);
+    const auto antiAliasingNote = new wxStaticText(
+        algorithmContent,
+        wxID_ANY,
+        "Increasing this value makes the image clearer, but slower to render.",
+        wxDefaultPosition,
+        wxDefaultSize,
+        0);
+    antiAliasingNote->Wrap(280);
+    algorithmContentSizer->Add(antiAliasingNote, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
     SyncAntiAliasingControl();
     algorithmSizer->Add(algorithmContentSizer, 0, wxEXPAND | wxALL, 5);
 
@@ -383,12 +393,6 @@ void RendererOptionsFrame::SyncAntiAliasingControl() const
             break;
         case 4:
             selection = 2;
-            break;
-        case 8:
-            selection = 3;
-            break;
-        case 16:
-            selection = 4;
             break;
         default:
             selection = 0;
@@ -671,12 +675,6 @@ void RendererOptionsFrame::OnAntiAliasing(wxCommandEvent&)
             break;
         case 2:
             scale = 4;
-            break;
-        case 3:
-            scale = 8;
-            break;
-        case 4:
-            scale = 16;
             break;
         default:
             scale = 1;

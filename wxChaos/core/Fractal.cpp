@@ -144,8 +144,6 @@ unsigned int Fractal::NormalizeAntiAliasingScale(const unsigned int scale)
     {
         case 2:
         case 4:
-        case 8:
-        case 16:
             return scale;
         default:
             return 1;

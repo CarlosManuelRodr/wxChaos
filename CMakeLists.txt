@@ -193,9 +193,13 @@ if(BUILD_TESTING)
             tests/gui/sfml/SelectionRectTests.cpp
             tests/gui/wx/DocumentationLinkActionTests.cpp
             tests/gui/wx/FractalDocumentationTests.cpp
+            tests/gui/wx/AppConfigStoreTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
             tests/gui/wx/WxGradientTests.cpp
+            wxChaos/core/coloring/ColorPalette.cpp
             wxChaos/gui/sfml/SelectionRect.cpp
+            wxChaos/gui/wx/config/AppConfigStore.cpp
+            wxChaos/gui/wx/common/AppTheme.cpp
             wxChaos/gui/wx/docs/DocumentationLinkAction.cpp
             wxChaos/gui/wx/docs/FractalDocumentation.cpp
             wxChaos/gui/wx/common/PanelOptions.cpp
