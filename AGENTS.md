@@ -84,6 +84,30 @@ The refactored escape-time family generally supports `EscapeTime`, `GaussianInt`
 - `DocumentViewer` uses `wxWebView` and MathJax-capable HTML. Use viewer-side navigation state when immediate Back/Forward button responsiveness matters, because `wxWebView::CanGoBack()` and `CanGoForward()` may lag until the backend commits navigation.
 - Documentation pages should share `app_resources/Resources/Documents/fractal_info.css`; the viewer injects the current theme so pages can adapt to light and dark mode. Legacy tutorials under `app_resources/Resources/Tutorials/` can also reuse that stylesheet without changing their content.
 
+## GPU Color Rotation Postmortem
+
+Color rotation was attempted with an SFML fragment shader so palette animation would not require CPU recoloring every pixel on every frame. The narrow shader result was promising: once a complete render was available, rotating colors on the GPU was visually smooth and avoided the CPU thread-pool redraw bottleneck. The broader integration caused regressions and should be treated as an unfinished design problem, not a small presenter optimization.
+
+What made the attempt fail:
+
+- The current presentation model assumes that the CPU-owned `sf::Image _image` is the canonical visible image. Zoom previews, zoom history, zoom-back, partial render previews, panning reuse, export-adjacent code paths, and fallback drawing all expect a CPU image that already contains final display colors.
+- The shader path instead makes encoded render data plus palette state canonical. Final colors only exist after drawing through `sf::Shader`, so any code that needs an `sf::Image` either sees stale/unrotated colors or must force a GPU-to-CPU readback with `copyToImage()`.
+- That readback became the interaction killer. Capturing a shader-colored preview before zooming required rendering to an `sf::RenderTexture`, calling `copyToImage()`, then sometimes walking the whole screen on the CPU to merge partial render pixels. With antialiasing or larger windows, zoom and interactive zoom developed a visible pause before the animation even started.
+- Avoiding the readback by using a GPU-backed temporary preview fixed part of the delay, but introduced a second representation for temporary previews. Some paths now had `_tempSprite` backed by `sf::Texture` from `_tempImage`, while others had it backed by `sf::RenderTexture`. That split made cancellation, redraw, zoom-back, cached history, and preview layering fragile.
+- Partial render preview and shader colorization pull in opposite directions. The renderer reveals CPU-computed regions incrementally, while the shader wants a coherent encoded texture. Uploading dirty regions can make progressive preview possible, but then every render, pan reuse, reset, and completion path must precisely invalidate or update the encoded texture. Missing one transition creates stale pixels, holes, or sudden full-frame swaps.
+- Panning reuse is especially delicate because the visible display map and the supersampled/internal render map have different coordinate spaces. Any GPU-side cache has to track the same stitched regions and offsets as the CPU maps or visual seams appear.
+- The fallback paths multiplied. The code had to handle shader unavailable, shader compile errors, max texture size limits, partial data not uploaded yet, rendering vs rendered states, exterior color disabled, set color enabled, antialiasing scale, zoom animation active, and cached zoom images. This made it easy for one feature to work only by regressing another.
+- SFML/OpenGL object lifetime is risky inside this wxWidgets integration. Adding or reordering SFML members in `FractalPresenter` caused startup crashes until a clean rebuild, and previous direct ownership changes such as switching shader resources to `std::unique_ptr` also produced instability. Treat SFML resource lifetime and context ownership as part of the design, not a mechanical refactor.
+
+Lessons for a future attempt:
+
+- Do not bolt a shader-only color path onto the existing CPU-image presentation model. First define a single authoritative frame model: either CPU final-color frames, GPU encoded-data frames, or an explicit two-layer model with strict ownership and synchronization rules.
+- Separate "current visual frame for interaction" from "CPU image for history/export/cache". Zoom animation should never depend on a blocking GPU-to-CPU readback. If CPU snapshots are still needed, make them asynchronous, lower priority, or explicitly unavailable while GPU color rotation is active.
+- Design render preview, panning reuse, zoom previews, and zoom history together. A GPU colorizer that handles only final completed renders is easy; a GPU colorizer that preserves wxChaos' perceived responsiveness must support dirty-region updates and panned-map reuse as first-class behavior.
+- Add observability before optimizing: log when the GPU path is active, when it falls back, when full texture uploads occur, when dirty-region uploads occur, and when any GPU readback is performed. Treat unexpected readbacks during interaction as bugs.
+- Keep a CPU fallback path simple and intact. If the GPU path cannot support a feature without complicated bridge code, prefer temporarily disabling GPU color rotation for that feature over adding another mixed CPU/GPU representation.
+- If this is attempted again, prototype it behind a narrow feature flag and manually test color rotation, render-in-progress preview, wheel zoom, box zoom, interactive zoom, zoom-back, panning while rendered, panning while rendering, antialiasing 1x/2x/4x, exterior color disabled, set color enabled, and shader failure fallback before considering it integrated.
+
 ## Build Environment
 
 This project is built on Windows with CMake, Ninja, MSVC, wxWidgets, and SFML 2.6 from CMake FetchContent.
