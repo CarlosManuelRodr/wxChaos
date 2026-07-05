@@ -1,5 +1,22 @@
 wxChaos Changelog
 ------------------
+- Version 2.0.0
+	- Major codebase rewrite.
+	- Complete UI redesign.
+	- Dark theme.
+	- Standardized rendering algorithms. Now most fractals can use the same rendering algorithms.
+	- Created documentation for each fractal.
+	- Added viewport manipulation tools.
+	- Smooth zooming.
+	- Added settings menu.
+	- Added Newton Raphson user formula.
+	- Improved zoom recorder precision.
+	- Command console improvements: Better syntax, autocompletion, history.
+	- Improved threading performance.
+	- Miscellaneous crash bugfixes.
+	- New color palettes and color mapping.
+	- Implemented multiprecision. That means that users can perform infinite zooms.
+	- Implemented perturbation rendering in Mandelbrot and Julia sets. That means that infinite zooms are faster.
 
 - Version 1.1.0
 	- Linux: Modified the installing directories according to the Ubuntu store guidelines.
