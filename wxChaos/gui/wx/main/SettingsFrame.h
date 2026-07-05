@@ -19,17 +19,7 @@ wxDECLARE_EVENT(wxEVT_SETTINGS_FRAME_CLOSED, wxCommandEvent);
  */
 class SettingsFrame final : public wxFrame
 {
-public:
-    /**
-     * @brief Creates the application settings frame.
-     * @param parent Window that owns the frame and receives the close event.
-     * @param config Configuration values used to initialize the controls.
-     * @param configChanged Callback invoked after configuration is saved.
-     */
-    SettingsFrame(wxWindow* parent, const AppConfig& config, std::function<void(const AppConfig&)> configChanged);
-
-private:
-    /// @brief Creates the page containing startup behavior settings.
+        /// @brief Creates the page containing startup behavior settings.
     /// @return Newly created General settings page.
     wxPanel* CreateGeneralPage();
 
@@ -115,4 +105,13 @@ private:
     std::vector<ColorPaletteTypes> _colorStyles;          ///< Values corresponding to the color style choice entries.
     std::function<void(const AppConfig&)> _configChanged; ///< Applies saved settings to the running application.
     bool _closing{};                                      ///< Prevents duplicate close notifications.
+
+public:
+    /**
+     * @brief Creates the application settings frame.
+     * @param parent Window that owns the frame and receives the close event.
+     * @param config Configuration values used to initialize the controls.
+     * @param configChanged Callback invoked after configuration is saved.
+     */
+    SettingsFrame(wxWindow* parent, const AppConfig& config, std::function<void(const AppConfig&)> configChanged);
 };

@@ -113,7 +113,16 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
         wxDefaultSize,
         0);
     antiAliasingNote->Wrap(280);
+    const auto antiAliasingNote2 = new wxStaticText(
+        algorithmContent,
+        wxID_ANY,
+        "Note: To make this change permanent, configure it on File -> Settings -> Rendering.",
+        wxDefaultPosition,
+        wxDefaultSize,
+    0);
+    antiAliasingNote2->Wrap(280);
     algorithmContentSizer->Add(antiAliasingNote, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
+    algorithmContentSizer->Add(antiAliasingNote2, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
     SyncAntiAliasingControl();
     algorithmSizer->Add(algorithmContentSizer, 0, wxEXPAND | wxALL, 5);
 
