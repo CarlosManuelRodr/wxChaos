@@ -101,7 +101,7 @@ RendererOptionsFrame::RendererOptionsFrame(FractalPresenter* presenter, wxWindow
     _antiAliasingText->Wrap(-1);
     algorithmContentSizer->Add(_antiAliasingText, 0, wxALL, 5);
 
-    wxString antiAliasingChoices[] = {"Off", "2x", "4x", "8x", "16x"};
+    const wxString antiAliasingChoices[] = {"Off", "2x", "4x", "8x", "16x"};
     _antiAliasingChoice = new wxChoice(algorithmContent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 5, antiAliasingChoices);
     algorithmContentSizer->Add(_antiAliasingChoice, 0, wxALL | wxEXPAND, 5);
     SyncAntiAliasingControl();
