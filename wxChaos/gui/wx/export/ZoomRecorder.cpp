@@ -347,8 +347,7 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
     const std::string outputPath = AppPaths::ToStdPath(outputFile.GetFullPath());
 
     wxProgressDialog progressDialog("Generating video...", "Please wait until the process is complete.", totalFrames, this);
-    auto* renderer = new ZoomRenderer(
-        outputPath, _fractalCanvasPtr, _recordingWidth, _recordingHeight, totalFrames, framerate, colorSpeed);
+    auto* renderer = new ZoomRenderer(outputPath, _fractalCanvasPtr, _recordingWidth, _recordingHeight, totalFrames, framerate, colorSpeed);
     wxThreadError err = renderer->Create();
 
     if (err != wxTHREAD_NO_ERROR)
