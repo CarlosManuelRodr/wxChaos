@@ -548,7 +548,10 @@ void FractalCanvas::OnUpdate()
         {
             this->draw(_outHelp);
             if (!_keyboardGuide)
+            {
                 this->draw(_outKeyboard);
+                this->draw(_outMouse);
+            }
         }
 
         if (_juliaMode || _orbitMode || _sliderMode)
