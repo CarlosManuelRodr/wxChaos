@@ -172,6 +172,7 @@ class MainFrame : public wxFrame
     void ChangeFractal(FractalType type, bool enableJulia);
     void GetParserOpt();                  ///< Gets parameters from the config.ini file.
     void DeleteOptPanel();                ///< Deletes all the elements in the option panel.
+    void HideOptionsPanel(bool clearTarget);
     void GetScriptFractals();             ///< Creates the menu elements corresponding to the script fractals.
     void ConnectEvents();
     void CloseAll();

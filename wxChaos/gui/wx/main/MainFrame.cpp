@@ -1126,13 +1126,7 @@ void MainFrame::OnFractalOptions(wxCommandEvent&)
     }
     else
     {
-        _fractalOptionsItem->Check(false);
-        _optionPanel->Hide();
-        const wxSize windowSize = this->GetSize();
-        if (!this->IsMaximized())
-            this->SetSize(windowSize.GetWidth()-175, windowSize.GetHeight());
-        this->GetSizer()->Layout();
-        _showOptionsPanel = false;
+        HideOptionsPanel(false);
     }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -1370,7 +1364,7 @@ void MainFrame::UpdateOptionsPanel()
             }
         }
         else
-            _fractalOptionsItem->Check(false);
+            HideOptionsPanel(false);
 
         _optionSizer->Layout();
         _optionPanel->SetScrollbars(20, 20, 0, 50);
@@ -1379,14 +1373,20 @@ void MainFrame::UpdateOptionsPanel()
     {
         _fractalOptionsItem->Check(false);
         _fractalOptionsItem->Enable(false);
-        if (_showOptionsPanel)
-            this->DeleteOptPanel();
+        this->DeleteOptPanel();
     }
 }
 void MainFrame::DeleteOptPanel()
 {
-    _fractalOptionsPanel->ClearTarget();
+    HideOptionsPanel(true);
+}
 
+void MainFrame::HideOptionsPanel(const bool clearTarget)
+{
+    if (clearTarget)
+        _fractalOptionsPanel->ClearTarget();
+
+    _fractalOptionsItem->Check(false);
     if (_showOptionsPanel)
     {
         _optionPanel->Hide();
