@@ -3,4 +3,5 @@ Improvements to get to a release version:
 - Implement a proper tutorial mode.
 
 Future improvements:
+- Decouple wxWidgets from PanelOptions.
 - WebASM port.
