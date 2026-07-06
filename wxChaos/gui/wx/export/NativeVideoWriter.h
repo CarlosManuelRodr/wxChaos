@@ -17,9 +17,8 @@ public:
     NativeVideoWriter();
     ~NativeVideoWriter();
 
-    bool Open(const std::string& outputPath, unsigned int width, unsigned int height, unsigned int fps) const;
-    bool WriteFrame(const sf::Image& frame) const;
-    bool Close() const;
-
+    [[nodiscard]] bool Open(const std::string& outputPath, unsigned int width, unsigned int height, unsigned int fps) const;
+    [[nodiscard]] bool WriteFrame(const sf::Image& frame) const;
+    [[nodiscard]] bool Close() const;
     [[nodiscard]] std::string GetError() const;
 };
