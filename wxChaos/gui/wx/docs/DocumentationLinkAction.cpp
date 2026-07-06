@@ -179,7 +179,7 @@ DocumentationLinkAction DocumentationLinkAction::Parse(const wxString& url)
     if (kind == "tool")
     {
         const wxString tool = remainder.BeforeFirst('/');
-        if (tool == "orbit" || tool == "julia-constant-slider")
+        if (tool == "orbit" || tool == "julia-constant-slider" || tool == "renderer-options")
         {
             action._type = Type::ToggleTool;
             action._target = tool;

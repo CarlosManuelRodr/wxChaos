@@ -282,6 +282,24 @@ void MainFrame::OpenFractalInformation()
     _informationViewer->Show(true);
 }
 
+void MainFrame::OpenRendererOptions()
+{
+    if (_rendererOptions == nullptr)
+    {
+        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetFractalPresenter(), this,
+            [this](const Options& options) { UpdateJuliaRendererOptions(options); });
+        _rendererOptions->Show(true);
+
+        // Adjust position.
+        int h, w;
+        GetDesktopResolution(h, w);
+        if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
+            _rendererOptions->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
+    }
+    else
+        _rendererOptions->SetFocus();
+}
+
 void MainFrame::UpdateInformationTool() const
 {
     if (_interactionToolbar != nullptr && _fractalCanvas != nullptr)
@@ -468,6 +486,12 @@ bool MainFrame::OpenDocumentationFractalOptions(const DocumentationLinkAction& a
 
 bool MainFrame::ToggleDocumentationTool(const wxString& tool)
 {
+    if (tool == "renderer-options")
+    {
+        OpenRendererOptions();
+        return true;
+    }
+
     if (tool == "julia-constant-slider")
         return ToggleDocumentationJuliaConstantSlider();
 
@@ -946,21 +970,7 @@ void MainFrame::OpenJuliaPreviewInMainWindow(const FractalType fractalType, cons
 
 void MainFrame::OnPalette(wxCommandEvent&)
 {
-    // Color palette frame.
-    if (_rendererOptions == nullptr)
-    {
-        _rendererOptions = new RendererOptionsFrame(_fractalCanvas->GetFractalPresenter(), this,
-            [this](const Options& options) { UpdateJuliaRendererOptions(options); });
-        _rendererOptions->Show(true);
-
-        // Adjust position.
-        int h, w;
-        GetDesktopResolution(h, w);
-        if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
-            _rendererOptions->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
-    }
-    else
-        _rendererOptions->SetFocus();
+    OpenRendererOptions();
 }
 void MainFrame::OnFormulaDialog(wxCommandEvent&)
 {

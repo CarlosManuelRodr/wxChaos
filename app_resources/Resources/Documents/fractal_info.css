@@ -806,6 +806,14 @@ figcaption {
     width: 100%;
 }
 
+.welcome-renderer-note {
+    margin-bottom: 18px;
+}
+
+.welcome-renderer-note .action-row {
+    margin-top: 14px;
+}
+
 .feature-list {
     columns: 2;
     column-gap: 34px;

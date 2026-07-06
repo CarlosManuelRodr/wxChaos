@@ -193,6 +193,7 @@ class MainFrame : public wxFrame
     void LayoutStatusBarControls() const;
     void OpenIterationsDialog();
     void OpenFractalInformation();
+    void OpenRendererOptions();
     void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
     bool HandleDocumentationLink(const wxString& url);
