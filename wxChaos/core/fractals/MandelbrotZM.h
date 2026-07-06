@@ -12,7 +12,7 @@
  */
 class MandelbrotZM : public Fractal
 {
-    int _m;
+    double _m;
     double _bailout;
     MandelbrotZMRenderer* _myRender;
 public:

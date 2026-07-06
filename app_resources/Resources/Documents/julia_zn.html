@@ -45,7 +45,13 @@
         <details class="concept-details">
             <summary>What the exponent does</summary>
             <div class="concept-details-content">
-                <p>wxChaos iterates \(z_{n+1}=z_n^m+k\), where the pixel supplies \(z_0\), \(k\) is the fixed Julia constant, and \(m\) is the chosen exponent. Increasing \(m\) increases the natural rotational symmetry of the map and changes how quickly large values escape.</p>
+                <p>
+                    wxChaos iterates \(z_{n+1}=z_n^m+k\), where the pixel supplies \(z_0\), \(k\) is the fixed Julia
+                    constant, and \(m\) is the chosen exponent. Increasing \(m\) increases the natural rotational
+                    symmetry of the map and changes how quickly large values escape. Integer values such as \(m=3\) use
+                    the fast integer-power path and create stronger rotational symmetry, while real values such as
+                    \(m=2.5\) interpolate into asymmetric fractional-power shapes.
+                </p>
             </div>
         </details>
     </section>

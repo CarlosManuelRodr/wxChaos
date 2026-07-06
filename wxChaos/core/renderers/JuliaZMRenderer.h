@@ -10,8 +10,15 @@
 */
 class JuliaZMRenderer : public RenderWorker
 {
-    int _m;
+    double _m;
+    int _integerM;
+    bool _useIntegerExponent;
     double _bailout;
+
+    static bool IsIntegerExponent(double exponent, int& integerExponent);
+
+    template<class Real>
+    PrecisionComplex<Real> Power(const PrecisionComplex<Real>& z) const;
 
     template<class Real, class MeasurePoint>
     Point TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const;
@@ -20,5 +27,5 @@ public:
     JuliaZMRenderer();
 
     void Render() override;
-    void SetParams(int n, double bailout);
+    void SetParams(double m, double bailout);
 };

@@ -31,7 +31,7 @@ MandelbrotZM::MandelbrotZM(const unsigned int width, const unsigned int height) 
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkInt(PanelOptionType::Spin, "m: ", &_m, "3");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "m: ", &_m, "3");
     _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &_bailout, "2");
     _m = 3;
     _bailout = 2;
@@ -74,6 +74,6 @@ void MandelbrotZM::DrawOrbit()
 }
 void MandelbrotZM::CopyOptionFromPanel()
 {
-    _m = *_panelOpt.GetIntElement(0);
-    _bailout = *_panelOpt.GetDoubleElement(0);
+    _m = *_panelOpt.GetDoubleElement(0);
+    _bailout = *_panelOpt.GetDoubleElement(1);
 }

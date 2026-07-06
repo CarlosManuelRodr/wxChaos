@@ -1,11 +1,38 @@
 // ReSharper disable CppTooWideScope
 #include "JuliaZMRenderer.h"
+#include <cmath>
+#include <limits>
 using namespace std;
 
 JuliaZMRenderer::JuliaZMRenderer()
 {
-    _m = 0;
+    _m = 0.0;
+    _integerM = 0;
+    _useIntegerExponent = true;
     _bailout = 0;
+}
+
+bool JuliaZMRenderer::IsIntegerExponent(const double exponent, int& integerExponent)
+{
+    if (!std::isfinite(exponent) || exponent < static_cast<double>(std::numeric_limits<int>::min()) ||
+        exponent > static_cast<double>(std::numeric_limits<int>::max()))
+        return false;
+
+    const double roundedExponent = std::round(exponent);
+    if (std::abs(exponent - roundedExponent) > 1e-12)
+        return false;
+
+    integerExponent = static_cast<int>(roundedExponent);
+    return true;
+}
+
+template<class Real>
+PrecisionComplex<Real> JuliaZMRenderer::Power(const PrecisionComplex<Real>& z) const
+{
+    if (_useIntegerExponent)
+        return ComplexPow(z, _integerM);
+
+    return ComplexPow(z, _m);
 }
 
 template<class Real, class MeasurePoint>
@@ -24,7 +51,7 @@ RenderWorker::Point JuliaZMRenderer::TracePoint(const Real& pixelRe, const Real&
 
     for (unsigned i = 0; i < _maxIter; i++)
     {
-        const PrecisionComplex<Real> poweredZ = ComplexPow(z, _m);
+        const PrecisionComplex<Real> poweredZ = Power(z);
         z = poweredZ + k;
 
         const Real zNorm = ComplexNorm(z);
@@ -83,9 +110,9 @@ void JuliaZMRenderer::Render()
             break;
     }
 }
-void JuliaZMRenderer::SetParams(const int n, const double bailout)
+void JuliaZMRenderer::SetParams(const double m, const double bailout)
 {
-    _m = n;
+    _m = m;
+    _useIntegerExponent = IsIntegerExponent(_m, _integerM);
     _bailout = bailout;
 }
-

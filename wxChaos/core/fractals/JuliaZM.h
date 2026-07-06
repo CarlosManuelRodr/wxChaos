@@ -13,7 +13,7 @@
 class JuliaZM: public Fractal
 {
     JuliaZMRenderer* _myRender;
-    int _m;
+    double _m;
     double _bailout;
 public:
     JuliaZM(unsigned int width, unsigned int height);
