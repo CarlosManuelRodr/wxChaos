@@ -107,10 +107,10 @@ wxPanel* ImageExportSizeDialog::CreateSectionHeader(wxWindow* parent, const wxSt
     header->SetBackgroundColour(AppTheme::ControlBackground());
 
     const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
-    const wxSize iconSize(28, 28);
+    const wxSize iconSize(24, 24);
     const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
     iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
-    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 14);
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 16);
 
     const auto headerText = new wxStaticText(header, wxID_ANY, text);
     wxFont headerFont = headerText->GetFont();
@@ -122,7 +122,7 @@ wxPanel* ImageExportSizeDialog::CreateSectionHeader(wxWindow* parent, const wxSt
     headerSizer->Add(headerText, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
 
     header->SetSizer(headerSizer);
-    header->SetMinSize(wxSize(-1, 56));
+    header->SetMinSize(wxSize(-1, 64));
     return header;
 }
 
