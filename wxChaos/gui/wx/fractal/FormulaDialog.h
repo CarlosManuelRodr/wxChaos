@@ -49,6 +49,7 @@ class FormulaDialog : public wxDialog
     void OnClose(wxCloseEvent& event);
     void OnFunc(wxCommandEvent& event);
     void OnChoice(wxCommandEvent& event);
+    [[nodiscard]] FormulaOptions GetInitialFormulaOptions(const FormulaOptions* formulaOptions) const;
     [[nodiscard]] FormulaOptions ReadFormulaOptions() const;
     void SetFormulaTypeSelection(FormulaType type, bool updateFormulaText) const;
     [[nodiscard]] static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,

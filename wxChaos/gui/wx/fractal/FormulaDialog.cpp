@@ -21,7 +21,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fixedPointUserDe
     _fractalCanvas = fractalCanvas;
     _active = active;
     _applyHandler = std::move(applyHandler);
-    _formulaOptions = formulaOptions != nullptr ? *formulaOptions : _fractalCanvas->GetFormula();
+    _formulaOptions = GetInitialFormulaOptions(formulaOptions);
 
     _slider = juliaSlider;
     _manual = juliaManual;
@@ -215,6 +215,21 @@ void FormulaDialog::OnClose(wxCloseEvent&)
     if (_active != nullptr)
         *_active = false;
     this->Destroy();
+}
+FormulaOptions FormulaDialog::GetInitialFormulaOptions(const FormulaOptions* formulaOptions) const
+{
+    if (formulaOptions != nullptr)
+        return *formulaOptions;
+
+    if (_fractalCanvas != nullptr)
+        return _fractalCanvas->GetFormula();
+
+    FormulaOptions fallback;
+    fallback.userFormula = "z = z^2 + c";
+    fallback.type = FormulaType::Complex;
+    fallback.julia = false;
+    fallback.bailout = 4;
+    return fallback;
 }
 FormulaOptions FormulaDialog::ReadFormulaOptions() const
 {
