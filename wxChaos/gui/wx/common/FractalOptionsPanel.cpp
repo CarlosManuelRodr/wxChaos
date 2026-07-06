@@ -111,7 +111,7 @@ void FractalOptionsPanel::Build()
 
         for (int i = 0; i < panelOptions->GetElementsSize(); i++)
         {
-            switch (panelOptions->GetPanelOptType(i))
+            switch (panelOptions->GetPanelOptionType(i))
             {
                 case PanelOptionType::Label:
                 {

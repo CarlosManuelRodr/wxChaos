@@ -28,7 +28,7 @@ public:
     [[nodiscard]] double* GetDoubleValue(unsigned int index) const;
     [[nodiscard]] bool* GetBoolValue(unsigned int index) const;
     wxString GetDefault(unsigned int index);
-    [[nodiscard]] PanelOptionType GetPanelOptType(unsigned int index) const;
+    [[nodiscard]] PanelOptionType GetPanelOptionType(unsigned int index) const;
     void CopyValuesFrom(const PanelOptions& source);
     void SetForceShow(bool mode);
     [[nodiscard]] bool GetForceShow() const;

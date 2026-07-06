@@ -33,7 +33,7 @@ int* PanelOptions::GetIntegerValue(const unsigned int index) const { return _int
 double* PanelOptions::GetDoubleValue(const unsigned int index) const { return _doubleTarget.at(index); }
 bool* PanelOptions::GetBoolValue(const unsigned int index) const { return _boolTarget.at(index); }
 wxString PanelOptions::GetDefault(const unsigned int index) { return _defaults.at(index); }
-PanelOptionType PanelOptions::GetPanelOptType(const unsigned int index) const { return _type.at(index); }
+PanelOptionType PanelOptions::GetPanelOptionType(const unsigned int index) const { return _type.at(index); }
 void PanelOptions::CopyValuesFrom(const PanelOptions& source)
 {
     if (_linkTo.size() != source._linkTo.size())

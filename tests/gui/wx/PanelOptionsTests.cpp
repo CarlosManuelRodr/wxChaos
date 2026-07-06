@@ -18,7 +18,7 @@ TEST_CASE("PanelOptions stores linked integer option metadata")
     options.LinkInteger(PanelOptionType::Spin, "Iterations", &iterations, "100");
 
     CHECK(options.GetElementsSize() == 1);
-    CHECK(options.GetPanelOptType(0) == PanelOptionType::Spin);
+    CHECK(options.GetPanelOptionType(0) == PanelOptionType::Spin);
     CHECK(options.GetLinkType(0) == LinkTo::ToInt);
     CHECK(options.GetLabelValue(0) == "Iterations");
     CHECK(options.GetDefault(0) == "100");
@@ -33,7 +33,7 @@ TEST_CASE("PanelOptions stores linked double option metadata")
     options.LinkDouble(PanelOptionType::TextCtrl, "Exponent", &exponent, "2.0");
 
     CHECK(options.GetElementsSize() == 1);
-    CHECK(options.GetPanelOptType(0) == PanelOptionType::TextCtrl);
+    CHECK(options.GetPanelOptionType(0) == PanelOptionType::TextCtrl);
     CHECK(options.GetLinkType(0) == LinkTo::ToDouble);
     CHECK(options.GetLabelValue(0) == "Exponent");
     CHECK(options.GetDefault(0) == "2.0");
@@ -48,7 +48,7 @@ TEST_CASE("PanelOptions stores linked bool option metadata")
     options.LinkBool(PanelOptionType::CheckBox, "Enabled", &enabled, "true");
 
     CHECK(options.GetElementsSize() == 1);
-    CHECK(options.GetPanelOptType(0) == PanelOptionType::CheckBox);
+    CHECK(options.GetPanelOptionType(0) == PanelOptionType::CheckBox);
     CHECK(options.GetLinkType(0) == LinkTo::ToBool);
     CHECK(options.GetLabelValue(0) == "Enabled");
     CHECK(options.GetDefault(0) == "true");
