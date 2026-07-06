@@ -1129,7 +1129,8 @@ void DimensionFrame::GetScriptFractals()
 }
 void DimensionFrame::OnHelp(wxCommandEvent&)
 {
-    const auto diag = new DocumentViewer(AppPaths::ResourceFile({"Tutorials", "dimTut.html"}),
-                                         this, wxID_ANY, wxString("Calculate dimension help"));
+    const auto diag = new DocumentViewer(AppPaths::ResourceFile({"Documents", "fractal_dimension.html"}),
+                                         this, wxID_ANY, wxString("Calculate dimension help"),
+                                         wxDefaultPosition, wxSize(1500, 960));
     diag->Show(true);
 }

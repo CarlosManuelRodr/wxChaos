@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fractal Dimension</title>
+    <link rel="stylesheet" href="fractal_info.css">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)'], ['$', '$']]
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+
+<body>
+<main class="museum-page">
+    <section class="hero" aria-labelledby="page-title">
+        <div class="hero-header">
+            <p class="eyebrow">wxChaos tools</p>
+            <h1 id="page-title">Fractal Dimension</h1>
+            <p class="subtitle">
+                A friendly way to ask how much space a shape really occupies.
+            </p>
+            <p class="hero-introduction">
+                The dimension calculator estimates box-counting dimension, also
+                called Minkowski-Bouligand dimension. It is useful when a shape
+                is too wrinkled, branching, or self-similar to be described well
+                as only a line, an area, or a volume.
+            </p>
+        </div>
+    </section>
+
+    <section aria-labelledby="dimension-title">
+        <h2 id="dimension-title">Why fractals can have non-integer dimensions</h2>
+        <div class="key-idea">
+            <p>
+                Ordinary geometry has clean categories: a line is one-dimensional,
+                a filled square or disk is two-dimensional, and a cube is
+                three-dimensional. Fractals often live between those categories.
+                They may be made of curves, yet fold, branch, and repeat so much
+                detail that they occupy space faster than a smooth curve but not
+                as completely as a filled surface.
+            </p>
+        </div>
+        <p>
+            A circle's outline has dimension 1 because doubling the measurement
+            resolution roughly doubles the number of small ruler pieces needed
+            to cover it. A filled square has dimension 2 because halving the box
+            size makes the number of required boxes grow about four times. A
+            fractal boundary can grow by an in-between factor, and that in-between
+            growth is what fractal dimension tries to measure.
+        </p>
+    </section>
+
+    <section aria-labelledby="box-counting-title">
+        <h2 id="box-counting-title">The box-counting idea</h2>
+        <div class="two-column">
+            <div>
+                <p>
+                    Imagine placing a grid of square boxes over the fractal.
+                    Count how many boxes touch the set. Then use a finer grid
+                    and count again. If the box size is \(\varepsilon\), let
+                    \(N(\varepsilon)\) be the number of boxes that contain part
+                    of the set.
+                </p>
+                <p>
+                    The dimension is estimated from how quickly
+                    \(N(\varepsilon)\) grows as \(\varepsilon\) becomes smaller.
+                    Fast growth means the set fills space more densely. Slow
+                    growth means it behaves more like a simple curve or a sparse
+                    collection of points.
+                </p>
+            </div>
+            <figure class="hero-figure">
+                <img src="fractal_dimension/box_count_example.png" alt="A fractal image covered by grids of different box sizes">
+                <figcaption>
+                    <span class="figure-title">Counting occupied boxes.</span>
+                    Smaller boxes reveal more detail, so the count changes with
+                    scale.
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="formula hero-formula">
+            \[
+            \dim_\text{box}(S) := \lim_{\varepsilon \to 0} \frac {\log N(\varepsilon)}{\log(1/\varepsilon)} = - \lim_{\varepsilon \to 0} \frac {\log N(\varepsilon)}{\log(\varepsilon)}
+            \]
+        </div>
+        <p class="note">
+            In practice wxChaos cannot take the limit all the way to zero. It
+            renders the fractal at a finite resolution, tries several grid
+            sizes, and estimates the slope of the log-log relationship.
+        </p>
+    </section>
+
+    <section aria-labelledby="plot-title">
+        <h2 id="plot-title">What the plot means</h2>
+        <div class="two-column">
+            <figure class="hero-figure">
+                <img src="fractal_dimension/box_count_plot.png" alt="A log-log plot used to estimate box-counting dimension">
+                <figcaption>
+                    <span class="figure-title">The fitted trend.</span>
+                    The reported dimension is the slope of this plot in a logarithmic scale that displays the occupied
+                    box counts across the selected scales.
+                </figcaption>
+            </figure>
+            <div>
+                <p>
+                    The calculator compares several values of \(\varepsilon\).
+                    For each one it counts occupied boxes, then fits the trend
+                    between scale and count. A value near 1 means the visible
+                    set behaves like a curve. A value near 2 means it fills the
+                    image area more like a surface. Many fractals land somewhere
+                    between those values.
+                </p>
+                <p>
+                    Treat the result as an estimate, not a perfect identity.
+                    It depends on render size, chosen viewport, iteration count,
+                    the box sizes you ask it to test, and how much detail is
+                    visible at that resolution.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section aria-labelledby="using-title">
+        <h2 id="using-title">Using the DimensionFrame in wxChaos</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <div>
+                    <h3>Choose a fractal and region</h3>
+                    <p>
+                        Select the fractal, then set the real and imaginary
+                        bounds for the square area you want to measure. The
+                        preview shows the region that will be rendered.
+                    </p>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <h3>Set render detail</h3>
+                    <p>
+                        Pick the image size and iteration count. Higher values
+                        can reveal more structure, but they take longer to
+                        render and count.
+                    </p>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <h3>Choose box divisions</h3>
+                    <p>
+                        Use the function tab to generate box divisions, or enter
+                        a list manually. These divisions decide which box sizes
+                        are tested.
+                    </p>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <h3>Calculate and read the result</h3>
+                    <p>
+                        Press Calculate. wxChaos renders the set map, counts
+                        occupied boxes for each selected scale, logs progress,
+                        and reports an estimated box-counting dimension. If the
+                        value is 1.45, for example, the visible set is more
+                        space-filling than a smooth curve but still far from
+                        filling the whole square region.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

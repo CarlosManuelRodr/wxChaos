@@ -182,6 +182,7 @@ void FractalToolbar::OnInteractionTool(wxCommandEvent& event)
         _toolChangedHandler(tool);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void FractalToolbar::OnInformation(wxCommandEvent&)
 {
     if (_informationHandler)
