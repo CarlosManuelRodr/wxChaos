@@ -6,9 +6,8 @@
 #include <wx/panel.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
+#include "UnrestrictedSpinDoubleCtrl.h"
 #include "Fractal.h"
-
-class UnrestrictedSpinDoubleCtrl;
 
 class FractalOptionsPanel : public wxPanel
 {

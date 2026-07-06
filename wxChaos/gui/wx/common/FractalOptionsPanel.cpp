@@ -1,5 +1,4 @@
 #include "common/FractalOptionsPanel.h"
-
 #include "common/AppTheme.h"
 #include "common/UnrestrictedSpinDoubleCtrl.h"
 #include "AppPaths.h"

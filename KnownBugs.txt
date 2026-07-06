@@ -1,5 +1,4 @@
 Improvements to get to a release version:
-- Mandelbrot Z^m and Julia Z^m should support real exponent.
 - Localization to Spanish, Japanese and possibly other languages.
 - Implement a proper tutorial mode.
 
