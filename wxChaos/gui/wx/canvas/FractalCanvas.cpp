@@ -63,11 +63,11 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _coordinateSelector = new CoordinateSelector(this);
     _keyboardImage.loadFromFile(AppPaths::ResourceFileStd({"keyboard.png"}));
     _mouseImage.loadFromFile(AppPaths::ResourceFileStd({"mouse.png"}));
-    _clickDrawSelection.loadFromFile(AppPaths::ResourceFileStd({"ClickDragSelection.png"}));
+    _clickDragSelectionImage.loadFromFile(AppPaths::ResourceFileStd({"ClickDragSelection.png"}));
 
     _keyboardTexture.loadFromImage(_keyboardImage);
     _mouseTexture.loadFromImage(_mouseImage);
-    _helpTexture.loadFromImage(_clickDrawSelection);
+    _helpTexture.loadFromImage(_clickDragSelectionImage);
 
     _outKeyboard.setTexture(_keyboardTexture);
     _outMouse.setTexture(_mouseTexture);
@@ -421,7 +421,7 @@ float FractalCanvas::CalculateKeyboardGuideScale() const
     return std::clamp(std::min(widthScale, heightScale), 0.0F, 1.0F);
 }
 
-void FractalCanvas::UpdateKeyboardGuideLayout()
+void FractalCanvas::UpdateKeyboardGuideImageLayout()
 {
     const sf::Vector2u canvasSize = GetCurrentRenderSize();
     const sf::Vector2u keyboardSize = _keyboardImage.getSize();
@@ -451,10 +451,10 @@ void FractalCanvas::UpdateKeyboardGuideLayout()
     }
 }
 
-void FractalCanvas::UpdateHelpImageLayout()
+void FractalCanvas::UpdateClickDragSelectionImageLayout()
 {
     const sf::Vector2u canvasSize = GetCurrentRenderSize();
-    const sf::Vector2u helpSize = _clickDrawSelection.getSize();
+    const sf::Vector2u helpSize = _clickDragSelectionImage.getSize();
 
     if (helpSize.x == 0 || helpSize.y == 0)
         return;
@@ -466,8 +466,8 @@ void FractalCanvas::UpdateHelpImageLayout()
 
 void FractalCanvas::UpdateOverlayLayout()
 {
-    UpdateKeyboardGuideLayout();
-    UpdateHelpImageLayout();
+    UpdateKeyboardGuideImageLayout();
+    UpdateClickDragSelectionImageLayout();
 }
 
 void FractalCanvas::OnUpdate()
@@ -713,7 +713,7 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
 void FractalCanvas::SetKeyboardGuide(const bool mode)
 {
     _keyboardGuideMode = mode;
-    UpdateKeyboardGuideLayout();
+    UpdateKeyboardGuideImageLayout();
 }
 void FractalCanvas::ShowGuideImages()
 {

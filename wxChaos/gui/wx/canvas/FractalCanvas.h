@@ -45,7 +45,7 @@ class FractalCanvas : public wxSFMLCanvas
 
     sf::Image _keyboardImage;               ///< Texture of the info images.
     sf::Image _mouseImage;
-    sf::Image _clickDrawSelection;
+    sf::Image _clickDragSelectionImage;
     sf::Texture _keyboardTexture;
     sf::Texture _mouseTexture;
     sf::Texture _helpTexture;
@@ -105,8 +105,8 @@ class FractalCanvas : public wxSFMLCanvas
     void HidePointInfo();
     void CancelToolGestures();
     float CalculateKeyboardGuideScale() const;
-    void UpdateKeyboardGuideLayout();
-    void UpdateHelpImageLayout();
+    void UpdateKeyboardGuideImageLayout();
+    void UpdateClickDragSelectionImageLayout();
     void UpdateOverlayLayout();
     unsigned int GetStatusCoordinateSignificantDigits() const;
     wxString FormatStatusCoordinate(const HighPrecisionReal& value) const;
