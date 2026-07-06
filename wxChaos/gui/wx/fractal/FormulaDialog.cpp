@@ -1,5 +1,6 @@
 #include "fractal/FormulaDialog.h"
 
+#include <utility>
 #include "AppPaths.h"
 #include "common/AppTheme.h"
 #include "fractal/FunctionsHelpDialog.h"
@@ -41,7 +42,8 @@ wxBitmapBundle FormulaDialog::CreateIconBundle(const wxString& lightIcon, const 
 FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId, const int newtonUserDefinedId, wxMenuItem* juliaSlider,
                              wxMenuItem* juliaManual, bool* active, FractalCanvas* fCanvas, wxWindow* parent,
                              const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
-                             const long style) : wxDialog(parent, id, title, pos, size, style)
+                             const long style, const FormulaOptions* formulaOptions,
+                             std::function<void(const FormulaOptions&)> applyHandler) : wxDialog(parent, id, title, pos, size, style)
 {
     _userDefinedId = userDefinedId;
     _fpUserDefinedId = fPUserDefinedId;
@@ -51,6 +53,8 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     this->SetSizeHints(FormulaDialogSize, wxDefaultSize);
     _fCanvas = fCanvas;
     _active = active;
+    _applyHandler = std::move(applyHandler);
+    _formulaOptions = formulaOptions != nullptr ? *formulaOptions : _fCanvas->GetFormula();
 
     _slider = juliaSlider;
     _manual = juliaManual;
@@ -63,7 +67,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     formulaSizer->Add(CreateSectionHeader(_mainPanel, "Formula", "formula_light.svg", "formula_dark.svg"),
                       0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    _formulaCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, wxString(_fCanvas->GetFormula().userFormula), wxDefaultPosition, wxDefaultSize, 0);
+    _formulaCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, wxString(_formulaOptions.userFormula), wxDefaultPosition, wxDefaultSize, 0);
     formulaSizer->Add(_formulaCtrl, 0, wxALL | wxEXPAND, 10);
     panelSizer->Add(formulaSizer, 0, wxEXPAND, 5);
 
@@ -74,7 +78,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     _bailText->Wrap(-1);
     bailoutSizer->Add(_bailText, 0, wxALL, 5);
 
-    _bailCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, TextUtils::ToWxString(_fCanvas->GetFormula().bailout), wxDefaultPosition, wxDefaultSize, 0);
+    _bailCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, TextUtils::ToWxString(_formulaOptions.bailout), wxDefaultPosition, wxDefaultSize, 0);
     bailoutSizer->Add(_bailCtrl, 0, wxALL|wxEXPAND, 5);
     optionSizer->Add(bailoutSizer, 1, wxEXPAND, 5);
 
@@ -93,7 +97,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     _juliaCheck = new wxCheckBox(_mainPanel, wxID_ANY, "Julia type", wxDefaultPosition, wxDefaultSize, 0);
     typeSizer->Add(_juliaCheck, 0, wxALL, 5);
 
-    _juliaCheck->SetValue(_fCanvas->GetFormula().julia);
+    _juliaCheck->SetValue(_formulaOptions.julia);
 
     optionSizer->Add(typeSizer, 1, wxEXPAND, 5);
     panelSizer->Add(optionSizer, 0, wxEXPAND, 5);
@@ -120,13 +124,37 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
-    SetFormulaTypeSelection(_fCanvas->GetFormula().type, false);
+    SetFormulaTypeSelection(_formulaOptions.type, false);
+    if (_applyHandler)
+        _typeChoice->Enable(false);
 
     this->Bind(wxEVT_CLOSE_WINDOW, &FormulaDialog::OnClose, this);
     _typeChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &FormulaDialog::OnChoice, this);
     _acceptButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnAccept, this);
     _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnApply, this);
     _funcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnFunc, this);
+}
+
+FormulaDialog::FormulaDialog(FormulaOptions formulaOptions, std::function<void(const FormulaOptions&)> applyHandler,
+                             wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
+                             const wxSize& size, const long style)
+                             : FormulaDialog(
+                                 wxID_ANY,
+                                 wxID_ANY,
+                                 wxID_ANY,
+                                 nullptr,
+                                 nullptr,
+                                 nullptr,
+                                 nullptr,
+                                 parent,
+                                 id,
+                                 title,
+                                 pos,
+                                 size,
+                                 style,
+                                 &formulaOptions,
+                                 std::move(applyHandler))
+{
 }
 
 FormulaDialog::~FormulaDialog()
@@ -138,26 +166,26 @@ FormulaDialog::~FormulaDialog()
 }
 void FormulaDialog::OnAccept(wxCommandEvent&)
 {
+    if (_applyHandler)
+        _applyHandler(ReadFormulaOptions());
+
     // Closes window.
     this->Show(false);
-    *_active = false;
+    if (_active != nullptr)
+        *_active = false;
     this->Destroy();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void FormulaDialog::OnApply(wxCommandEvent&)
 {
     // Creates fractal with the formula.
-    FormulaOptions options;
-    options.userFormula = _formulaCtrl->GetValue();
-    options.bailout = TextUtils::ToInt(_bailCtrl->GetValue());
-    options.julia = _juliaCheck->GetValue();
+    const FormulaOptions options = ReadFormulaOptions();
 
-    if (_typeChoice->GetCurrentSelection() == 0)
-        options.type = FormulaType::Complex;
-    else if (_typeChoice->GetCurrentSelection() == 1)
-        options.type = FormulaType::FixedPoint;
-    else
-        options.type = FormulaType::NewtonRaphson;
+    if (_applyHandler)
+    {
+        _applyHandler(options);
+        return;
+    }
 
     _fCanvas->SetUserFormula(options);
 
@@ -183,8 +211,25 @@ void FormulaDialog::OnApply(wxCommandEvent&)
 void FormulaDialog::OnClose(wxCloseEvent&)
 {
     this->Show(false);
-    *_active = false;
+    if (_active != nullptr)
+        *_active = false;
     this->Destroy();
+}
+FormulaOptions FormulaDialog::ReadFormulaOptions() const
+{
+    FormulaOptions options;
+    options.userFormula = _formulaCtrl->GetValue();
+    options.bailout = TextUtils::ToInt(_bailCtrl->GetValue());
+    options.julia = _juliaCheck->GetValue();
+
+    if (_typeChoice->GetCurrentSelection() == 0)
+        options.type = FormulaType::Complex;
+    else if (_typeChoice->GetCurrentSelection() == 1)
+        options.type = FormulaType::FixedPoint;
+    else
+        options.type = FormulaType::NewtonRaphson;
+
+    return options;
 }
 void FormulaDialog::SetFormulaTypeSelection(const FormulaType type, const bool updateFormulaText) const
 {

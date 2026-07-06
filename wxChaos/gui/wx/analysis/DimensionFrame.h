@@ -51,6 +51,7 @@ class DimensionFrame : public wxFrame
     wxSpinCtrl* _iterCtrl;
     wxSpinCtrl* _sizeCtrl;
     wxButton* _fractalOptionsButton;
+    wxButton* _formulaButton;
     wxStaticText* _nDivTxt;
     wxSpinCtrl* _numberOfDivisionsSpinCtrl;
     wxStaticText* _divTxt;
@@ -82,6 +83,7 @@ class DimensionFrame : public wxFrame
     FractalFactory _fractalFactory;                         ///< The fractal factory.
     ImagePanel* _previewImage;                              ///< Panel to show a preview of the dimension calculator.
     Options _myOpt;                                         ///< Fractal options.
+    FormulaOptions _userFormula;                            ///< User-defined escape-time formula used by this tool.
     int _threadNumber;                                      ///< Number of dimension worker threads.
     std::vector<BoxCountWorker> _dimensionCalculator;       ///< Dimension workers, one per thread.
     std::vector<std::unique_ptr<sf::Thread>> _dimThreads;   ///< Owned dimension worker threads.
@@ -116,10 +118,13 @@ class DimensionFrame : public wxFrame
     void OnClose(wxCommandEvent&);
     void OnDestroy(wxCloseEvent&);
     void OnFractalOpt(wxCommandEvent&);
+    void OnFormula(wxCommandEvent& event);
     void OnSavePreview(wxCommandEvent& );
     void OnHelp(wxCommandEvent&);
     void AddBuiltInFractalChoice(const wxString& label, FractalType type);
     void PopulateFractalChoices();
+    [[nodiscard]] bool IsUserDefinedEscapeTimeSelected() const;
+    void UpdateFormulaButtonVisibility() const;
 
     static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
                                         const wxString& darkIcon);

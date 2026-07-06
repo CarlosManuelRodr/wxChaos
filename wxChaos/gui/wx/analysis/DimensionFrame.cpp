@@ -7,6 +7,7 @@
 #include "analysis/DimensionFrame.h"
 #include "TextUtils.h"
 #include "export/ImageExportSizeDialog.h"
+#include "fractal/FormulaDialog.h"
 #include "BmpImageWriter.h"
 #include "AngelscriptBindings.h"
 #include "docs/DocumentViewer.h"
@@ -55,6 +56,10 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _hasPreviewMap = false;
     _scriptSelected = false;
     _firstRender = true;
+    _userFormula.userFormula = "z = z^2 + c";
+    _userFormula.type = FormulaType::Complex;
+    _userFormula.julia = false;
+    _userFormula.bailout = 4;
     _clock.restart();
 
     this->SetSizeHints(wxSize(960, 700), wxDefaultSize);
@@ -105,6 +110,10 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
 
     _fractalOptionsButton = new wxButton(_mainPanel, wxID_ANY, "Configure fractal options", wxDefaultPosition, wxDefaultSize, 0);
     fractalBoxSizer->Add(_fractalOptionsButton, 0, wxALL | wxEXPAND, 10);
+
+    _formulaButton = new wxButton(_mainPanel, wxID_ANY, "Edit user formula", wxDefaultPosition, wxDefaultSize, 0);
+    _formulaButton->Hide();
+    fractalBoxSizer->Add(_formulaButton, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 10);
     fractalSectionSizer->Add(fractalBoxSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
     paramBoxSizer->Add(fractalSectionSizer, 0, wxEXPAND, 5);
 
@@ -264,6 +273,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     // Set the default fractal.
     _fractalChoice->SetSelection(0);
     this->CreateFractal(_previewSize);
+    UpdateFormulaButtonVisibility();
     _myOpt = _target->GetOptions();
     SetControlsFromOptions(_myOpt);
 
@@ -274,6 +284,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &DimensionFrame::OnClose, this, wxID_EXIT);
     _fractalChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
     _fractalOptionsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
+    _formulaButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
     _calcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
     _savePreviewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnSavePreview, this);
@@ -295,6 +306,7 @@ DimensionFrame::~DimensionFrame()
     this->Unbind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
     _fractalChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
     _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
+    _formulaButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
     _calcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
     _savePreviewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnSavePreview, this);
@@ -510,6 +522,9 @@ void DimensionFrame::CreateFractal(int size)
     }
 
     _target = _fractalFactory.GetFractal();
+    if (_target != nullptr && _target->GetType() == FractalType::UserDefinedEscapeTime)
+        _target->SetFormula(_userFormula);
+
     if (_fractalOptionsPanel != nullptr)
         _fractalOptionsPanel->SetTarget(_target);
 }
@@ -517,6 +532,7 @@ void DimensionFrame::OnChangeFractal(wxCommandEvent&)
 {
     _suppressPreviewUpdate = true;
     this->CreateFractal(_previewSize);
+    UpdateFormulaButtonVisibility();
     _myOpt = _target->GetOptions();
     SetControlsFromOptions(_myOpt);
     if (_fractalOptionsPanel != nullptr)
@@ -888,6 +904,25 @@ void DimensionFrame::OnFractalOpt(wxCommandEvent&)
     if (this->GetPosition().x + this->GetSize().GetWidth() + 5 < w && this->GetPosition().y < h)
         _fractalOptionsDialog->Move(this->GetPosition().x + this->GetSize().GetWidth() + 5, this->GetPosition().y);
 }
+
+void DimensionFrame::OnFormula(wxCommandEvent&)
+{
+    auto* dialog = new FormulaDialog(
+        _userFormula,
+        [this](const FormulaOptions& formula)
+        {
+            _userFormula = formula;
+            _userFormula.type = FormulaType::Complex;
+            if (_target != nullptr && _target->GetType() == FractalType::UserDefinedEscapeTime)
+                _target->SetFormula(_userFormula);
+
+            _hasPreviewMap = false;
+            SchedulePreviewRender();
+        },
+        this);
+    dialog->Show(true);
+}
+
 void DimensionFrame::OnSavePreview(wxCommandEvent&)
 {
     auto openFileDialog = new wxFileDialog(this, "Select file name", "",
@@ -1054,17 +1089,12 @@ void DimensionFrame::PopulateFractalChoices()
     AddBuiltInFractalChoice("Mandelbrot Z^m", FractalType::MandelbrotZN);
     AddBuiltInFractalChoice("Mandelbrot (Julia)", FractalType::Julia);
     AddBuiltInFractalChoice("Julia Z^m", FractalType::JuliaZN);
-    AddBuiltInFractalChoice("Newton", FractalType::NewtonRaphsonMethod);
     AddBuiltInFractalChoice("Sine (Julia)", FractalType::Sinusoidal);
     AddBuiltInFractalChoice("Magnet", FractalType::Magnetic);
     AddBuiltInFractalChoice("Jellyfish", FractalType::Jellyfish);
     AddBuiltInFractalChoice("Manowar", FractalType::Manowar);
     AddBuiltInFractalChoice("Manowar (Julia)", FractalType::ManowarJulia);
     AddBuiltInFractalChoice("Sierpinski Triangle", FractalType::SierpinskiTriangle);
-    AddBuiltInFractalChoice("Fixed Point: z = sin(z)", FractalType::FixedPoint1);
-    AddBuiltInFractalChoice("Fixed Point: z = cos(z)", FractalType::FixedPoint2);
-    AddBuiltInFractalChoice("Fixed Point: z = tan(z)", FractalType::FixedPoint3);
-    AddBuiltInFractalChoice("Fixed Point: z = z^2", FractalType::FixedPoint4);
     AddBuiltInFractalChoice("Tricorn", FractalType::Tricorn);
     AddBuiltInFractalChoice("Burning Ship", FractalType::BurningShip);
     AddBuiltInFractalChoice("Burning Ship (Julia)", FractalType::BurningShipJulia);
@@ -1073,10 +1103,22 @@ void DimensionFrame::PopulateFractalChoices()
     AddBuiltInFractalChoice("Henon map", FractalType::HenonMap);
     AddBuiltInFractalChoice("Double pendulum", FractalType::DoublePendulum);
     AddBuiltInFractalChoice("User Formula (Complex)", FractalType::UserDefinedEscapeTime);
-    AddBuiltInFractalChoice("User Formula (Fixed Point)", FractalType::UserDefinedFixedPoint);
-    AddBuiltInFractalChoice("User Formula (Newton-Raphson)", FractalType::UserDefinedNewtonRaphson);
 
     GetScriptFractals();
+}
+
+bool DimensionFrame::IsUserDefinedEscapeTimeSelected() const
+{
+    const int choice = _fractalChoice->GetCurrentSelection();
+    return choice >= 0 &&
+           choice < static_cast<int>(_builtInFractalList.size()) &&
+           _builtInFractalList[choice] == FractalType::UserDefinedEscapeTime;
+}
+
+void DimensionFrame::UpdateFormulaButtonVisibility() const
+{
+    _formulaButton->Show(IsUserDefinedEscapeTimeSelected());
+    _mainPanel->GetSizer()->Layout();
 }
 
 void DimensionFrame::GetScriptFractals()

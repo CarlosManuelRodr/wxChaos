@@ -9,8 +9,10 @@
 
 #pragma once
 
+#include <functional>
 #include <wx/wx.h>
 #include <wx/bmpbndl.h>
+#include "FormulaOptions.h"
 #include "types/FormulaType.h"
 #include "canvas/FractalCanvas.h"
 
@@ -39,12 +41,15 @@ class FormulaDialog : public wxDialog
     wxMenuItem* _manual;
     bool* _active;
     int _userDefinedId, _fpUserDefinedId, _newtonUserDefinedId;
+    FormulaOptions _formulaOptions;
+    std::function<void(const FormulaOptions&)> _applyHandler;
 
     void OnAccept(wxCommandEvent& event);
     void OnApply(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);
     void OnFunc(wxCommandEvent& event);
     void OnChoice(wxCommandEvent& event);
+    [[nodiscard]] FormulaOptions ReadFormulaOptions() const;
     void SetFormulaTypeSelection(FormulaType type, bool updateFormulaText) const;
     [[nodiscard]] static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
                                                       const wxString& darkIcon);
@@ -55,7 +60,13 @@ public:
     FormulaDialog(int userDefinedId, int fPUserDefinedId, int newtonUserDefinedId, wxMenuItem* juliaSlider,
                   wxMenuItem* juliaManual, bool* active, FractalCanvas* fCanvas, wxWindow* parent,
                   wxWindowID id = wxID_ANY, const wxString& title = "User formula", const wxPoint& pos = wxDefaultPosition,
-                  const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE);
+                  const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE,
+                  const FormulaOptions* formulaOptions = nullptr,
+                  std::function<void(const FormulaOptions&)> applyHandler = {});
+    FormulaDialog(FormulaOptions formulaOptions, std::function<void(const FormulaOptions&)> applyHandler,
+                  wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "User formula",
+                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = FormulaDialogSize,
+                  long style = wxDEFAULT_DIALOG_STYLE);
     ~FormulaDialog() override;
     void SelectFormulaType(FormulaType type) const;
 };
