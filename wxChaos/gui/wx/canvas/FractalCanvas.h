@@ -154,6 +154,9 @@ public:
     ///@return A pointer to the fractal.
     Fractal* GetFractal() const;
 
+    ///@return Current render size used by the embedded SFML canvas.
+    sf::Vector2u GetRenderSize() const;
+
     ///@return A pointer to the SFML fractal presenter.
     FractalPresenter* GetFractalPresenter() const;
 

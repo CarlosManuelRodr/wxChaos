@@ -1,4 +1,6 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
+#include <algorithm>
+#include <cmath>
 #include <wx/progdlg.h>
 #include <wx/bitmap.h>
 #include <wx/icon.h>
@@ -16,6 +18,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
 {
     // fractal factory initialization
     _fractalCanvasPtr = fractalCanvas;
+    InitializeRenderSizes();
     this->CreateFractalFactory();
     _fractalFactory.GetFractal()->SetPreciseView(_outermostZoom);
 
@@ -37,6 +40,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _previewBitmap = new wxStaticBitmap(_panel, wxID_ANY,
         _fractalFactory.GetFractal()->GetRenderedWxBitmap(),
         wxDefaultPosition, wxDefaultSize, 0);
+    _previewBitmap->SetMinSize(wxSize(_previewWidth, _previewHeight));
     previewSizer->Add(_previewBitmap, 0, wxALL | wxEXPAND, 10);
 
     _previewFrameText = new wxStaticText(_panel, wxID_ANY, "Frame:", wxDefaultPosition, wxDefaultSize, 0);
@@ -244,9 +248,32 @@ Rect ZoomRecorder::GetDefaultView(FractalCanvas* fractalCanvas, const int width,
 
 void ZoomRecorder::CreateFractalFactory()
 {
-    _outermostZoom = CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, 250, 166);
+    FractalFactory recordingFractalFactory;
+    _outermostZoom = CreateRecordingFractal(
+        recordingFractalFactory, _fractalCanvasPtr, _recordingWidth, _recordingHeight);
+    CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, _previewWidth, _previewHeight);
     _innermostZoom = _fractalCanvasPtr->GetFractal()->GetPreciseView();
 }
+
+void ZoomRecorder::InitializeRenderSizes()
+{
+    constexpr int maxPreviewWidth = 420;
+    constexpr int maxPreviewHeight = 280;
+
+    const sf::Vector2u renderSize = _fractalCanvasPtr->GetRenderSize();
+    _recordingWidth = std::max(1, static_cast<int>(renderSize.x));
+    _recordingHeight = std::max(1, static_cast<int>(renderSize.y));
+
+    const double previewScale = std::min({
+        1.0,
+        static_cast<double>(maxPreviewWidth) / _recordingWidth,
+        static_cast<double>(maxPreviewHeight) / _recordingHeight
+    });
+
+    _previewWidth = std::max(1, static_cast<int>(std::round(_recordingWidth * previewScale)));
+    _previewHeight = std::max(1, static_cast<int>(std::round(_recordingHeight * previewScale)));
+}
+
 void ZoomRecorder::RenderPreview(const int zoom, const double colorSpeed) const
 {
     const int totalFrames = this->GetTotalFrames();
@@ -323,7 +350,8 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
     const std::string selectedDirPath(selectedFile.mb_str());
 
     wxProgressDialog progressDialog("Generating video...", "Please wait until the process is complete.", totalFrames, this);
-    auto* renderer = new ZoomRenderer(selectedDirPath, _fractalCanvasPtr, 2500, 1660, totalFrames, colorSpeed);
+    auto* renderer = new ZoomRenderer(
+        selectedDirPath, _fractalCanvasPtr, _recordingWidth, _recordingHeight, totalFrames, colorSpeed);
     wxThreadError err = renderer->Create();
 
     if (err != wxTHREAD_NO_ERROR)

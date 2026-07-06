@@ -578,6 +578,10 @@ Fractal* FractalCanvas::GetFractal() const
 {
     return _fractal;
 }
+sf::Vector2u FractalCanvas::GetRenderSize() const
+{
+    return GetCurrentRenderSize();
+}
 FractalPresenter* FractalCanvas::GetFractalPresenter() const
 {
     return _fractalPresenter;

@@ -1163,10 +1163,6 @@ void MainFrame::OnZoomRecorder(wxCommandEvent&)
         return;
     }
 
-    this->SetSize(wxSize(1180, 820));
-    this->Layout();
-    this->Update();
-
     ZoomRecorder zoomRecorder(_fractalCanvas, this);
     zoomRecorder.ShowModal();
 }
