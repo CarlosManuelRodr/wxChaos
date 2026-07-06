@@ -91,7 +91,7 @@ void MainFrame::ShowFirstUseDialog()
         wxID_ANY,
         wxString("Welcome to wxChaos"),
         wxDefaultPosition,
-        wxSize(960, 700),
+        wxDefaultSize,
         wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
         [this](const wxString& url) { return HandleDocumentationLink(url); }
         );
