@@ -56,12 +56,11 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
 
     _saveButton = new wxButton(_panel, wxID_ANY, "Save video", wxDefaultPosition, wxDefaultSize, 0);
     SetButtonIcon(_saveButton, "save_light.svg", "save_dark.svg");
-    buttonSizer->AddStretchSpacer();
-    buttonSizer->Add(_saveButton, 0, wxALL, 5);
+    buttonSizer->Add(_saveButton, 1, wxALL | wxEXPAND, 5);
 
     _cancelButton = new wxButton(_panel, wxID_ANY, "Cancel", wxDefaultPosition, wxDefaultSize, 0);
     SetButtonIcon(_cancelButton, "close_light.svg", "close_dark.svg");
-    buttonSizer->Add(_cancelButton, 0, wxALL, 5);
+    buttonSizer->Add(_cancelButton, 1, wxALL | wxEXPAND, 5);
 
     previewAndButtonsSizer->Add(buttonSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
     panelSizer->Add(previewAndButtonsSizer, 0, wxEXPAND, 5);
