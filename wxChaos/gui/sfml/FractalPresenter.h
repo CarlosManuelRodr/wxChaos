@@ -55,6 +55,7 @@ class FractalPresenter
     bool _dontDrawTempImage;                    ///< Suppresses drawing the temporary image layer when it would be stale.
     bool _setHandleRightClickZoomBack;          ///< True when SFML right-click events should zoom back.
     bool _mousePanning;                         ///< True while a direct mouse pan gesture is active.
+    bool _panUpdatesOutermostZoom;              ///< True when the active pan began before any zoom was recorded.
     bool _automaticIterations;                  ///< True when iterations follow the current zoom level.
     unsigned int _automaticIterationBase;        ///< Minimum iteration count used by automatic mode.
     double _mouseWheelZoomScale;                ///< Fraction of the current view kept for each wheel zoom.

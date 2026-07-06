@@ -13,6 +13,7 @@ FractalPresenter::FractalPresenter(Fractal* fractal) : _committedPanOffset(Vecto
     _dontDrawTempImage = false;
     _setHandleRightClickZoomBack = true;
     _mousePanning = false;
+    _panUpdatesOutermostZoom = false;
     _automaticIterations = false;
     _mouseWheelZoomScale = 0.75;
     _zoomAnimationDurationSeconds = 0.18;
@@ -126,6 +127,7 @@ void FractalPresenter::ResetMovement()
     _posY = 0;
     _committedPanOffset = {0, 0};
     _hasCommittedPanOffset = false;
+    _panUpdatesOutermostZoom = false;
 }
 
 sf::Rect<int> FractalPresenter::GetPixelZoomRect(const int pixelX, const int pixelY, const double scale) const
@@ -490,10 +492,14 @@ void FractalPresenter::Move(const double elapsedSeconds)
         }
         else
         {
+            if (_panUpdatesOutermostZoom)
+                _outermostZoom = CaptureCurrentView();
+
             _committedPanOffset = {_posX, _posY};
             _hasCommittedPanOffset = true;
             _posX = 0;
             _posY = 0;
+            _panUpdatesOutermostZoom = false;
         }
     }
 }
@@ -514,7 +520,12 @@ void FractalPresenter::SetMovement(const Direction direction)
         return;
 
     ClearImageCache();
-    ResetZoomHistory();
+    if (!IsMoving())
+    {
+        _panUpdatesOutermostZoom = !HasZoomed();
+        if (_panUpdatesOutermostZoom)
+            ResetZoomHistory();
+    }
 
     switch (direction)
     {
@@ -565,7 +576,10 @@ void FractalPresenter::BeginMousePan()
         return;
 
     ClearImageCache();
-    ResetZoomHistory();
+    _panUpdatesOutermostZoom = !HasZoomed();
+    if (_panUpdatesOutermostZoom)
+        ResetZoomHistory();
+
     _mousePanning = true;
     _xVel = 0;
     _yVel = 0;
@@ -586,6 +600,10 @@ void FractalPresenter::PanByMousePixels(const int pixelDeltaX, const int pixelDe
 
 void FractalPresenter::EndMousePan()
 {
+    if (_panUpdatesOutermostZoom && (_posX != 0 || _posY != 0))
+        _outermostZoom = CaptureCurrentView();
+
+    _panUpdatesOutermostZoom = false;
     _mousePanning = false;
 }
 
