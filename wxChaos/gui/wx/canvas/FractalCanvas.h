@@ -104,6 +104,9 @@ class FractalCanvas : public wxSFMLCanvas
     void ShowPointInfo(wxPoint position, const wxString& text);
     void HidePointInfo();
     void CancelToolGestures();
+    void UpdateKeyboardGuideLayout();
+    void UpdateHelpImageLayout();
+    void UpdateOverlayLayout();
     unsigned int GetStatusCoordinateSignificantDigits() const;
     wxString FormatStatusCoordinate(const HighPrecisionReal& value) const;
 

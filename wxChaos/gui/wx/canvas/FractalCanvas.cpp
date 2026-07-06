@@ -403,6 +403,50 @@ void FractalCanvas::CancelToolGestures()
     EndMousePanGesture();
 }
 
+void FractalCanvas::UpdateKeyboardGuideLayout()
+{
+    const sf::Vector2u canvasSize = GetCurrentRenderSize();
+    const sf::Vector2u keyboardSize = _keyboardImage.getSize();
+    const sf::Vector2u mouseSize = _mouseImage.getSize();
+
+    const bool keyboardLoaded = keyboardSize.x > 0 && keyboardSize.y > 0;
+    const bool keyboardFits = keyboardLoaded && canvasSize.x >= keyboardSize.x && canvasSize.y >= keyboardSize.y;
+    _keyboardGuide = _keyboardGuideMode && keyboardFits;
+
+    if (keyboardLoaded)
+    {
+        _outKeyboard.setPosition(
+            static_cast<float>(canvasSize.x - std::min(canvasSize.x, keyboardSize.x)),
+            static_cast<float>(canvasSize.y - std::min(canvasSize.y, keyboardSize.y)));
+    }
+
+    if (mouseSize.x > 0 && mouseSize.y > 0)
+    {
+        _outMouse.setPosition(
+            static_cast<float>(canvasSize.x - std::min(canvasSize.x, mouseSize.x)),
+            0.0F);
+    }
+}
+
+void FractalCanvas::UpdateHelpImageLayout()
+{
+    const sf::Vector2u canvasSize = GetCurrentRenderSize();
+    const sf::Vector2u helpSize = _helpImage.getSize();
+
+    if (helpSize.x == 0 || helpSize.y == 0)
+        return;
+
+    _outHelp.setPosition(
+        static_cast<float>(canvasSize.x - std::min(canvasSize.x, helpSize.x)) / 2.0F,
+        static_cast<float>(canvasSize.y - std::min(canvasSize.y, helpSize.y)) / 2.0F);
+}
+
+void FractalCanvas::UpdateOverlayLayout()
+{
+    UpdateKeyboardGuideLayout();
+    UpdateHelpImageLayout();
+}
+
 void FractalCanvas::OnUpdate()
 {
     if (const wxSize clientSize = GetClientSize(); clientSize.GetWidth() <= 0 || clientSize.GetHeight() <= 0)
@@ -417,18 +461,6 @@ void FractalCanvas::OnUpdate()
             ResizePresentation(wxSize(
                 static_cast<int>(_event.size.width),
                 static_cast<int>(_event.size.height)));
-
-            if (_keyboardGuide && _keyboardGuideMode)
-            {
-                if (this->getSize().y > 300 || this->getSize().x > 300)
-                {
-                    _outKeyboard.setPosition(
-                        static_cast<float>(this->getSize().x - 120),
-                        static_cast<float>(this->getSize().y - 80)
-                        );
-                    _outMouse.setPosition(static_cast<float>(this->getSize().x - 90), 0);
-                }
-            }
 
         }
 
@@ -460,6 +492,7 @@ void FractalCanvas::OnUpdate()
     // This is here because the binding between SFML and wxWidgets makes SFML to incorrectly handle a resolution change.
     const sf::View view(sf::FloatRect(0, 0, static_cast<float>(_canvasSize.GetX()), static_cast<float>(_canvasSize.GetY())));
     this->setView(view);
+    UpdateOverlayLayout();
 
     // Clears the screen and draw GUI elements and fractal.
     this->clear();
@@ -502,30 +535,7 @@ void FractalCanvas::OnUpdate()
 void FractalCanvas::SetWxSize(const wxSize size)
 {
     _canvasSize = size;
-
-    // Adjust position of the keyboard guide.
-    if (_keyboardGuideMode)
-    {
-        if (this->getSize().y > 300 || this->getSize().x > 300)
-        {
-            _outKeyboard.setPosition(static_cast<float>(this->getSize().x - 120), static_cast<float>(this->getSize().y - 80));
-            _outMouse.setPosition(static_cast<float>(this->getSize().x - 90), 0);
-            _keyboardGuide = true;
-        }
-        else
-            _keyboardGuide = false;
-    }
-    if (_helpImageMode)
-    {
-        _outKeyboard.setPosition(
-            static_cast<float>(this->getSize().x - _keyboardImage.getSize().x),
-            static_cast<float>(this->getSize().y - _keyboardImage.getSize().y)
-            );
-        _outHelp.setPosition(
-            static_cast<float>((this->getSize().x - _helpImage.getSize().x) / 2.0),
-            static_cast<float>((this->getSize().y - _helpImage.getSize().y) / 2.0)
-            );
-    }
+    UpdateOverlayLayout();
 }
 
 void FractalCanvas::PrepareForClose()
@@ -680,35 +690,12 @@ void FractalCanvas::ChangeToScript(const ScriptData &scriptData)
 void FractalCanvas::SetKeyboardGuide(const bool mode)
 {
     _keyboardGuideMode = mode;
-    if (_keyboardGuideMode)
-    {
-        // Adjust position of the keyboard guide.
-        if (this->getSize().y > 300 || this->getSize().x > 300)
-        {
-            _outKeyboard.setPosition(
-                static_cast<float>(this->getSize().x - _keyboardImage.getSize().x),
-                static_cast<float>(this->getSize().y - _keyboardImage.getSize().y)
-                );
-            _outMouse.setPosition(static_cast<float>(this->getSize().x - _mouseImage.getSize().x), 0);
-            _keyboardGuide = true;
-        }
-        else
-            _keyboardGuide = false;
-    }
-    else
-        _keyboardGuide = false;
+    UpdateKeyboardGuideLayout();
 }
 void FractalCanvas::ShowHelpImage()
 {
-    _outKeyboard.setPosition(
-        static_cast<float>(this->getSize().x - _keyboardImage.getSize().x),
-        static_cast<float>(this->getSize().y - _keyboardImage.getSize().y)
-        );
-    _outHelp.setPosition(
-        static_cast<float>((this->getSize().x - _helpImage.getSize().x) / 2.0),
-        static_cast<float>((this->getSize().y - _helpImage.getSize().y) / 2.0)
-        );
     _helpImageMode = true;
+    UpdateOverlayLayout();
 }
 void FractalCanvas::Reset()
 {
@@ -806,27 +793,7 @@ void FractalCanvas::SetMainCanvasOverlaysVisible(const bool show)
 void FractalCanvas::OnResize(wxSizeEvent& event)
 {
     ResizePresentation(event.GetSize());
-
-    // Adjust position of the keyboard guide.
-    if (_keyboardGuideMode)
-    {
-        if (this->getSize().y > 300 || this->getSize().x > 300)
-        {
-            _outKeyboard.setPosition(static_cast<float>(this->getSize().x - 120), static_cast<float>(this->getSize().y - 80));
-            _outMouse.setPosition(static_cast<float>(this->getSize().x - 90), 0);
-            _keyboardGuide = true;
-        }
-        else
-            _keyboardGuide = false;
-    }
-    if (_helpImageMode)
-    {
-        _outKeyboard.setPosition(static_cast<float>(this->getSize().x - 120), static_cast<float>(this->getSize().y - 80));
-        _outHelp.setPosition(
-            static_cast<float>((this->getSize().x - _helpImage.getSize().x) / 2.0),
-            static_cast<float>((this->getSize().y - _helpImage.getSize().y) / 2.0)
-            );
-    }
+    UpdateOverlayLayout();
 }
 
 void FractalCanvas::OnClick(wxMouseEvent& event)
