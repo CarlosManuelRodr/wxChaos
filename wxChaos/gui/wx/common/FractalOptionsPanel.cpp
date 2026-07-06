@@ -118,7 +118,7 @@ void FractalOptionsPanel::Build()
                     auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
-                    static_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
+                    dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
                     _sizer->Add(_dynamicControls[labelIndex], 0, wxALL, 5);
                     _foundLabels.push_back(i);
                     break;
@@ -128,7 +128,7 @@ void FractalOptionsPanel::Build()
                     auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
-                    static_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
+                    dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
                     _sizer->Add(_dynamicControls[labelIndex], 0, wxALL, 5);
 
                     _textControls.push_back(new wxTextCtrl(this, wxID_ANY, wxString(panelOptions->GetDefault(i)), wxDefaultPosition, wxDefaultSize, 0));
@@ -144,7 +144,7 @@ void FractalOptionsPanel::Build()
                     auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
-                    static_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
+                    dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
                     _sizer->Add(_dynamicControls[labelIndex], 0, wxALL, 5);
 
                     _spinControls.push_back(new wxSpinCtrl(this, wxID_ANY, wxString(panelOptions->GetDefault(i)), wxDefaultPosition,
@@ -224,6 +224,7 @@ void FractalOptionsPanel::Apply() const
     _target->SetFractalPropChanged();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void FractalOptionsPanel::OnApply(wxCommandEvent&)
 {
     Apply();

@@ -2,23 +2,26 @@
 
 PanelOptions::PanelOptions() : _forceShow(false) {}
 
-void PanelOptions::LinkInteger(const PanelOptionType type, const wxString& labelText, int* linkInt, const wxString& defaultValue)
+void PanelOptions::LinkInteger(const PanelOptionType type, const wxString& labelText, int* linkInteger,
+                               const wxString& defaultValue)
 {
     _type.push_back(type);
     _label.push_back(labelText);
     _defaults.push_back(defaultValue);
     _linkTo.push_back(LinkTo::ToInt);
-    _integerTarget.push_back(linkInt);
+    _integerTarget.push_back(linkInteger);
 }
-void PanelOptions::LinkDouble(const PanelOptionType type, const wxString& labelText, double* linkDbl, const wxString& defaultValue)
+void PanelOptions::LinkDouble(const PanelOptionType type, const wxString& labelText, double* linkDouble,
+                              const wxString& defaultValue)
 {
     _type.push_back(type);
     _label.push_back(labelText);
     _defaults.push_back(defaultValue);
     _linkTo.push_back(LinkTo::ToDouble);
-    _doubleTarget.push_back(linkDbl);
+    _doubleTarget.push_back(linkDouble);
 }
-void PanelOptions::LinkBool(const PanelOptionType type, const wxString& labelText, bool* linkBool, const wxString& defaultValue)
+void PanelOptions::LinkBool(const PanelOptionType type, const wxString& labelText, bool* linkBool,
+                            const wxString& defaultValue)
 {
     _type.push_back(type);
     _label.push_back(labelText);

@@ -18,8 +18,8 @@ class PanelOptions
 
 public:
     PanelOptions();
-    void LinkInteger(PanelOptionType type, const wxString& labelText, int* linkInt, const wxString& defaultValue);
-    void LinkDouble(PanelOptionType type, const wxString& labelText, double* linkDbl, const wxString& defaultValue);
+    void LinkInteger(PanelOptionType type, const wxString& labelText, int* linkInteger, const wxString& defaultValue);
+    void LinkDouble(PanelOptionType type, const wxString& labelText, double* linkDouble, const wxString& defaultValue);
     void LinkBool(PanelOptionType type, const wxString& labelText, bool* linkBool, const wxString& defaultValue);
     [[nodiscard]] size_t GetElementsSize() const;
     [[nodiscard]] LinkTo GetLinkType(unsigned int index) const;
