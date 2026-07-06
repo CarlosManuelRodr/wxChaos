@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <cmath>
 #include "FractalPresenter.h"
+#include "FractalFactory.h"
+#include "fractals/ScriptFractal.h"
 
 constexpr double OldMovementFrameRate = 31.0;
 constexpr double MovementAcceleration = OldMovementFrameRate * OldMovementFrameRate;
@@ -358,6 +360,20 @@ void FractalPresenter::ApplyView(const PreciseRect& view)
     ApplyAutomaticIterations();
 }
 
+PreciseRect FractalPresenter::GetDefaultViewForSize(const unsigned int width, const unsigned int height) const
+{
+    FractalFactory fractalFactory;
+    if (_fractal->GetType() == FractalType::ScriptFractal)
+    {
+        auto* scriptFractal = reinterpret_cast<ScriptFractal*>(_fractal);
+        fractalFactory.CreateScriptFractal(width, height, scriptFractal->GetPath());
+    }
+    else
+        fractalFactory.CreateFractal(_fractal->GetType(), width, height);
+
+    return fractalFactory.GetFractal()->GetPreciseView();
+}
+
 unsigned int FractalPresenter::CalculateAutomaticIterations() const
 {
     constexpr unsigned int maximumAutomaticIterations = 20000000;
@@ -631,7 +647,7 @@ void FractalPresenter::Resize(const sf::RenderWindow* window)
     _dontDrawTempImage = true;
     ResetMovement();
     _fractal->Resize(windowSize.x, windowSize.y);
-    _outermostZoom = CaptureCurrentView();
+    _outermostZoom = GetDefaultViewForSize(windowSize.x, windowSize.y);
     ApplyAutomaticIterations();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
 
