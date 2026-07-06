@@ -8,7 +8,6 @@ Improvements to get to a release version:
 - Instead of embedding ffmpeg, use a library to create the zoom videos.
 - Localization to Spanish, Japanese and possibly other languages.
 - Implement a proper tutorial mode.
-- Documentation must be updated.
 
 Future improvements:
 - WebASM port.
