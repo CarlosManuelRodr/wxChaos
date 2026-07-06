@@ -717,6 +717,104 @@ figcaption {
     margin-top: 4px;
 }
 
+/* Welcome guide components. */
+.welcome-page .hero-header {
+    max-width: 820px;
+}
+
+.welcome-hero {
+    padding-bottom: 6px;
+}
+
+.tool-card-grid,
+.guide-image-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tool-card {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 8px;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: 46px 1fr;
+    padding: 18px;
+}
+
+.tool-card h3 {
+    color: var(--heading-color);
+    font-size: 1rem;
+    margin: 0 0 6px;
+}
+
+.tool-card p {
+    margin: 0;
+}
+
+.tool-card-icon {
+    align-items: center;
+    background: var(--page-background);
+    border: 1px solid var(--section-border-color);
+    border-radius: 8px;
+    display: flex;
+    height: 44px;
+    justify-content: center;
+    width: 44px;
+}
+
+.wxchaos-document .theme-icon {
+    border: 0;
+    border-radius: 0;
+    height: 24px;
+    padding: 0;
+    width: 24px;
+}
+
+.icon-dark {
+    display: none;
+}
+
+:root[data-theme="dark"] .icon-light {
+    display: none;
+}
+
+:root[data-theme="dark"] .icon-dark {
+    display: block;
+}
+
+.guide-image-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.guide-image-card {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.guide-image-card img {
+    border: 0;
+    border-radius: 0;
+    box-sizing: border-box;
+    display: block;
+    height: 190px;
+    object-fit: contain;
+    padding: 14px;
+    width: 100%;
+}
+
+.feature-list {
+    columns: 2;
+    column-gap: 34px;
+}
+
+.feature-list li {
+    break-inside: avoid;
+}
+
 @media (max-width: 800px) {
     .two-column {
         grid-template-columns: 1fr;
@@ -725,8 +823,14 @@ figcaption {
     .example-orbits,
     .view-grid,
     .landmark-grid,
-    .related-links {
+    .related-links,
+    .tool-card-grid,
+    .guide-image-grid {
         grid-template-columns: 1fr;
+    }
+
+    .feature-list {
+        columns: 1;
     }
 
     .hero-figure img {

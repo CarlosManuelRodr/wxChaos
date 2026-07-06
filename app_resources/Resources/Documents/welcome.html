@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to wxChaos</title>
+    <link rel="stylesheet" href="fractal_info.css">
+</head>
+
+<body>
+<main class="museum-page welcome-page">
+    <section class="hero welcome-hero" aria-labelledby="page-title">
+        <div class="hero-header">
+            <p class="eyebrow">wxChaos welcome guide</p>
+            <h1 id="page-title">Welcome to wxChaos</h1>
+            <p class="subtitle">
+                A small, old-soul fractal explorer for wandering through
+                beautiful mathematical landscapes.
+            </p>
+            <p class="hero-introduction">
+                wxChaos is built for curiosity. Pick a fractal, move through it
+                with the mouse or keyboard, change the colors and rendering
+                algorithms, and let the image pull you toward the next detail.
+            </p>
+            <div class="action-row">
+                <a class="action-link" href="wxchaos://fractal/mandelbrot">Open Mandelbrot</a>
+                <a class="action-link secondary" href="#tools">Learn the tools</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="tools" aria-labelledby="tools-title">
+        <h2 id="tools-title">The main canvas tools</h2>
+        <div class="tool-card-grid">
+            <article class="tool-card">
+                <div class="tool-card-icon">
+                    <img class="theme-icon icon-light" src="../Icons/cursor_light.svg" alt="">
+                    <img class="theme-icon icon-dark" src="../Icons/cursor_dark.svg" alt="">
+                </div>
+                <div>
+                    <h3>Mouse tool</h3>
+                    <p>
+                        Use the default pointer for direct fractal navigation.
+                        Left click zooms in, right click zooms back, and the
+                        keyboard can glide the view once a render is complete.
+                    </p>
+                </div>
+            </article>
+
+            <article class="tool-card">
+                <div class="tool-card-icon">
+                    <img class="theme-icon icon-light" src="../Icons/hand_light.svg" alt="">
+                    <img class="theme-icon icon-dark" src="../Icons/hand_dark.svg" alt="">
+                </div>
+                <div>
+                    <h3>Pan tool</h3>
+                    <p>
+                        Drag the rendered image by hand when you want to nudge
+                        the current view instead of choosing a new zoom target.
+                    </p>
+                </div>
+            </article>
+
+            <article class="tool-card">
+                <div class="tool-card-icon">
+                    <img class="theme-icon icon-light" src="../Icons/zoom_light.svg" alt="">
+                    <img class="theme-icon icon-dark" src="../Icons/zoom_dark.svg" alt="">
+                </div>
+                <div>
+                    <h3>Zoom tool</h3>
+                    <p>
+                        Click and drag to frame an area precisely. This is the
+                        best way to dive into spirals, bulbs, branches, and tiny
+                        copies hiding along the boundary.
+                    </p>
+                </div>
+            </article>
+
+            <article class="tool-card">
+                <div class="tool-card-icon">
+                    <img class="theme-icon icon-light" src="../Icons/picker_light.svg" alt="">
+                    <img class="theme-icon icon-dark" src="../Icons/picker_dark.svg" alt="">
+                </div>
+                <div>
+                    <h3>Point info tool</h3>
+                    <p>
+                        Inspect a point on the canvas to see what the active
+                        fractal knows about it. It is a quiet way to connect the
+                        picture back to the numbers underneath.
+                    </p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="interaction-title">
+        <h2 id="interaction-title">Friendly movement hints</h2>
+        <div class="guide-image-grid">
+            <figure class="guide-image-card">
+                <img src="../ClickDragSelection.png" alt="A mouse dragging a rectangle to select an area for zooming">
+                <figcaption>
+                    <span class="figure-title">Click and drag.</span>
+                    Draw a box around the region you want to explore next.
+                </figcaption>
+            </figure>
+
+            <figure class="guide-image-card">
+                <img src="../mouse.png" alt="Mouse buttons showing left click for zoom in and right click for zoom out">
+                <figcaption>
+                    <span class="figure-title">Mouse clicks.</span>
+                    Left click zooms in. Right click returns to the previous
+                    zoom level.
+                </figcaption>
+            </figure>
+
+            <figure class="guide-image-card">
+                <img src="../keyboard.png" alt="Keyboard arrows and WASD keys for moving through the fractal">
+                <figcaption>
+                    <span class="figure-title">Keyboard movement.</span>
+                    Use the arrow keys or WASD to move through a completed
+                    render.
+                </figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section aria-labelledby="features-title">
+        <h2 id="features-title">What else can wxChaos do?</h2>
+        <ul class="feature-list">
+            <li>Show the fractal orbit.</li>
+            <li>Save still images of the current fractal view.</li>
+            <li>Record zoom videos for long dives into a fractal.</li>
+            <li>Calculate fractal dimension with the built-in dimension tools.</li>
+            <li>Create user-defined fractals and experiment with your own formulas.</li>
+            <li>Switch rendering algorithms, including smooth coloring, Gaussian integer coloring, escape angle, orbit traps, and more.</li>
+            <li>Use the scripting interface to write new fractals.</li>
+            <li>Open the command console to inspect the current view and draw basic shapes.</li>
+        </ul>
+    </section>
+
+    <section aria-labelledby="fractal-links-title">
+        <h2 id="fractal-links-title">Some good places to begin</h2>
+        <ul class="related-links">
+            <li><a href="wxchaos://fractal/mandelbrot">Mandelbrot Set<span>The classic map of infinite boundary detail.</span></a></li>
+            <li><a href="wxchaos://fractal/julia">Julia Set<span>A family of worlds shaped by one complex constant.</span></a></li>
+            <li><a href="wxchaos://fractal/burning-ship">Burning Ship<span>A jagged, architectural fractal with dramatic ridges.</span></a></li>
+            <li><a href="wxchaos://fractal/newton">Newton<span>Basins of attraction from a numerical root finder.</span></a></li>
+            <li><a href="wxchaos://fractal/double-pendulum">Double Pendulum<span>A physics-inspired map of sensitive motion.</span></a></li>
+            <li><a href="wxchaos://fractal/henon-map">Henon Map<span>A strange attractor with a very different texture.</span></a></li>
+            <li><a href="wxchaos://fractal/jellyfish">Jellyfish<span>Fluid tendrils and orbit-trap friendly structure.</span></a></li>
+            <li><a href="wxchaos://fractal/fractory">Fractory<span>A playful escape-time fractal with crystalline geometry.</span></a></li>
+            <li><a href="wxchaos://formula/user-defined-escape-time">User-defined fractals<span>Open the formula dialog and make the program yours.</span></a></li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>

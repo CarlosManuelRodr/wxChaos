@@ -86,7 +86,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
 void MainFrame::ShowFirstUseDialog()
 {
     const auto firstUseDialog = new DocumentViewer(
-        AppPaths::ResourceFile({"Tutorials", "mainTut.html"}),
+        AppPaths::ResourceFile({"Documents", "welcome.html"}),
         this,
         wxID_ANY,
         wxString("Welcome to wxChaos"),
