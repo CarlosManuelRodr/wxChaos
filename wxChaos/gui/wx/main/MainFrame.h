@@ -258,9 +258,9 @@ public :
     void ChangeCell(wxCommandEvent& event);
     void ChangeHenonMap(wxCommandEvent& event);
     void ChangeDPendulum(wxCommandEvent& event);
-    void ChangeUserDefined(wxCommandEvent& event);
-    void ChangeFPUserDefined(wxCommandEvent& event);
-    void ChangeNewtonUserDefined(wxCommandEvent& event);
+    void ChangeUserDefinedEscapeTime(wxCommandEvent& event);
+    void ChangeUserDefinedFixedPoint(wxCommandEvent& event);
+    void ChangeUserDefinedNewton(wxCommandEvent& event);
     void ChangeScriptItem(wxCommandEvent& event);
     void OnKeyboardGuide(wxCommandEvent& event);
     void OnCanvasStatusText(wxCommandEvent& event);

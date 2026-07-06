@@ -139,9 +139,9 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeHenonMap, this, ID_HENON_MAP);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskiTriangle, this, ID_SIERPINSKI_TRIANGLE);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefined, this, ID_USER_DEFINED);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFPUserDefined, this, ID_FIXED_POINT_USER_DEFINED);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeNewtonUserDefined, this, ID_NEWTON_USER_DEFINED);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefinedEscapeTime, this, ID_USER_DEFINED);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefinedFixedPoint, this, ID_FIXED_POINT_USER_DEFINED);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefinedNewton, this, ID_NEWTON_USER_DEFINED);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbortRender, this, ID_ABORT_RENDER);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateAbortRender, this, ID_ABORT_RENDER);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnReset, this, ID_RESET);
@@ -1283,15 +1283,15 @@ void MainFrame::ChangeDPendulum(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::DoublePendulum, false);
 }
-void MainFrame::ChangeUserDefined(wxCommandEvent&)
+void MainFrame::ChangeUserDefinedEscapeTime(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::UserDefinedEscapeTime, true);
 }
-void MainFrame::ChangeFPUserDefined(wxCommandEvent&)
+void MainFrame::ChangeUserDefinedFixedPoint(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::UserDefinedFixedPoint, false);
 }
-void MainFrame::ChangeNewtonUserDefined(wxCommandEvent&)
+void MainFrame::ChangeUserDefinedNewton(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::UserDefinedNewtonRaphson, false);
 }
