@@ -63,11 +63,11 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _coordinateSelector = new CoordinateSelector(this);
     _keyboardImage.loadFromFile(AppPaths::ResourceFileStd({"keyboard.png"}));
     _mouseImage.loadFromFile(AppPaths::ResourceFileStd({"mouse.png"}));
-    _helpImage.loadFromFile(AppPaths::ResourceFileStd({"HelpImage.png"}));
+    _clickDrawSelection.loadFromFile(AppPaths::ResourceFileStd({"ClickDragSelection.png"}));
 
     _keyboardTexture.loadFromImage(_keyboardImage);
     _mouseTexture.loadFromImage(_mouseImage);
-    _helpTexture.loadFromImage(_helpImage);
+    _helpTexture.loadFromImage(_clickDrawSelection);
 
     _outKeyboard.setTexture(_keyboardTexture);
     _outMouse.setTexture(_mouseTexture);
@@ -403,27 +403,50 @@ void FractalCanvas::CancelToolGestures()
     EndMousePanGesture();
 }
 
+float FractalCanvas::CalculateKeyboardGuideScale() const
+{
+    constexpr float maximumCanvasWidthRatio = 0.25F;
+    constexpr float maximumCanvasHeightRatio = 0.34F;
+
+    const sf::Vector2u canvasSize = GetCurrentRenderSize();
+    const sf::Vector2u keyboardSize = _keyboardImage.getSize();
+    if (keyboardSize.x == 0 || keyboardSize.y == 0)
+        return 1.0F;
+
+    const float widthScale = static_cast<float>(canvasSize.x) * maximumCanvasWidthRatio /
+        static_cast<float>(keyboardSize.x);
+    const float heightScale = static_cast<float>(canvasSize.y) * maximumCanvasHeightRatio /
+        static_cast<float>(keyboardSize.y);
+
+    return std::clamp(std::min(widthScale, heightScale), 0.0F, 1.0F);
+}
+
 void FractalCanvas::UpdateKeyboardGuideLayout()
 {
     const sf::Vector2u canvasSize = GetCurrentRenderSize();
     const sf::Vector2u keyboardSize = _keyboardImage.getSize();
     const sf::Vector2u mouseSize = _mouseImage.getSize();
+    const float guideScale = CalculateKeyboardGuideScale();
 
     const bool keyboardLoaded = keyboardSize.x > 0 && keyboardSize.y > 0;
-    const bool keyboardFits = keyboardLoaded && canvasSize.x >= keyboardSize.x && canvasSize.y >= keyboardSize.y;
-    _keyboardGuide = _keyboardGuideMode && keyboardFits;
+    _keyboardGuide = _keyboardGuideMode && keyboardLoaded && guideScale > 0.0F;
 
     if (keyboardLoaded)
     {
+        const float keyboardWidth = static_cast<float>(keyboardSize.x) * guideScale;
+        const float keyboardHeight = static_cast<float>(keyboardSize.y) * guideScale;
+        _outKeyboard.setScale(guideScale, guideScale);
         _outKeyboard.setPosition(
-            static_cast<float>(canvasSize.x - std::min(canvasSize.x, keyboardSize.x)),
-            static_cast<float>(canvasSize.y - std::min(canvasSize.y, keyboardSize.y)));
+            static_cast<float>(canvasSize.x) - std::min(static_cast<float>(canvasSize.x), keyboardWidth),
+            static_cast<float>(canvasSize.y) - std::min(static_cast<float>(canvasSize.y), keyboardHeight));
     }
 
     if (mouseSize.x > 0 && mouseSize.y > 0)
     {
+        const float mouseWidth = static_cast<float>(mouseSize.x) * guideScale;
+        _outMouse.setScale(guideScale, guideScale);
         _outMouse.setPosition(
-            static_cast<float>(canvasSize.x - std::min(canvasSize.x, mouseSize.x)),
+            static_cast<float>(canvasSize.x) - std::min(static_cast<float>(canvasSize.x), mouseWidth),
             0.0F);
     }
 }
@@ -431,7 +454,7 @@ void FractalCanvas::UpdateKeyboardGuideLayout()
 void FractalCanvas::UpdateHelpImageLayout()
 {
     const sf::Vector2u canvasSize = GetCurrentRenderSize();
-    const sf::Vector2u helpSize = _helpImage.getSize();
+    const sf::Vector2u helpSize = _clickDrawSelection.getSize();
 
     if (helpSize.x == 0 || helpSize.y == 0)
         return;
