@@ -68,7 +68,7 @@ class FractalCanvas : public wxSFMLCanvas
     bool _coordinateSelectorChange;                    ///< If there is a change in the pointer, this boolean is activated.
     bool _keyboardGuide;                    ///< State of the keyboard guide.
     bool _keyboardGuideMode;
-    bool _helpImageMode;
+    bool _guideImagesMode;
     bool _orbitMode;
     bool _sliderMode;
     bool _onUpdate;
@@ -184,7 +184,7 @@ public:
     void SetKeyboardGuide(bool mode);
 
     ///@brief Shows the help image.
-    void ShowHelpImage();
+    void ShowGuideImages();
 
     ///@brief Resets the fractal. Internally, it deletes it and creates a new one exactly the same.
     void Reset();

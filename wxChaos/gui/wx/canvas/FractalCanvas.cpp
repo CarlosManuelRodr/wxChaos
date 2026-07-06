@@ -27,7 +27,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _coordinateSelectorChange = false;
     _keyboardGuide = false;
     _keyboardGuideMode = false;
-    _helpImageMode = false;
+    _guideImagesMode = false;
     _orbitMode = false;
     _sliderMode = false;
     _onUpdate = false;
@@ -544,7 +544,7 @@ void FractalCanvas::OnUpdate()
             this->draw(_outMouse);
         }
 
-        if (_helpImageMode)
+        if (_guideImagesMode)
         {
             this->draw(_outHelp);
             if (!_keyboardGuide)
@@ -715,9 +715,9 @@ void FractalCanvas::SetKeyboardGuide(const bool mode)
     _keyboardGuideMode = mode;
     UpdateKeyboardGuideLayout();
 }
-void FractalCanvas::ShowHelpImage()
+void FractalCanvas::ShowGuideImages()
 {
-    _helpImageMode = true;
+    _guideImagesMode = true;
     UpdateOverlayLayout();
 }
 void FractalCanvas::Reset()
@@ -882,10 +882,10 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         _selectionRect->ClickEvent(event);
 
     // Mouse event.
-    if (_helpImageMode)
+    if (_guideImagesMode)
     {
         if (event.ButtonDown(wxMOUSE_BTN_LEFT))
-            _helpImageMode = false;
+            _guideImagesMode = false;
     }
 
     if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_fractalPresenter->IsMoving())

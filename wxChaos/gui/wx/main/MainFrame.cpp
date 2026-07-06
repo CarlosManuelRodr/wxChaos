@@ -97,7 +97,7 @@ void MainFrame::ShowFirstUseDialog()
         );
 
     firstUseDialog->Show(true);
-    _fractalCanvas->ShowHelpImage();
+    _fractalCanvas->ShowGuideImages();
 }
 void MainFrame::ConnectEvents()
 {
