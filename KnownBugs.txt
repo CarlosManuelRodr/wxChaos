@@ -1,7 +1,3 @@
-Bugs:
-- Under some conditions that I don't know yet the options panel opens when the Zoom recorder is started and it messes
-  with its internal resolution, causing the view to be distorted.
-
 Improvements to get to a release version:
 - Mandelbrot Z^m and Julia Z^m should support real exponent.
 - Instead of embedding ffmpeg, use a library to create the zoom videos.
