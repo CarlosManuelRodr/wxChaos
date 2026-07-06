@@ -74,11 +74,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
                              0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
     const auto fractalBoxSizer = new wxBoxSizer(wxVERTICAL);
 
-    const wxString fractalChoiceChoices[] = { "Mandelbrot", "Mandelbrot Z^m", "Mandelbrot (Julia)", "Julia Z^m", "Sine (Julia)", "Jellyfish",
-                                              "Manowar", "Manowar (Julia)", "Tricorn", "Burning Ship", "Burning Ship (Julia)",
-                                              "Fractory", "Cell", "Magnet", "Double pendulum" };
-    constexpr int fractalChoiceNChoices = sizeof(fractalChoiceChoices) / sizeof(wxString);
-    _fractalChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, fractalChoiceNChoices, fractalChoiceChoices, 0);
+    _fractalChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, 0);
     fractalBoxSizer->Add(CreateFractalParameterRow("Fractal", _fractalChoice), 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     const auto parameterGridSizer = new wxFlexGridSizer(0, 2, 0, 8);
@@ -263,7 +259,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     // Set welcome log text.
     _logCtrl->WriteText("Dimension calculator log.\n\n");
 
-    this->GetScriptFractals();
+    PopulateFractalChoices();
 
     // Set the default fractal.
     _fractalChoice->SetSelection(0);
@@ -494,95 +490,24 @@ void DimensionFrame::CreateFractal(int size)
 {
     _firstRender = true;
     const int choice = _fractalChoice->GetCurrentSelection();
-    switch (choice)
-    {
-        case FL_MANDELBROT:
-        {
-            _fractalFactory.CreateFractal(FractalType::Mandelbrot, size, size);
-            break;
-        }
-        case FL_MANDELBROT_ZN:
-        {
-            _fractalFactory.CreateFractal(FractalType::MandelbrotZN, size, size);
-            break;
-        }
-        case FL_JULIA:
-        {
-            _fractalFactory.CreateFractal(FractalType::Julia, size, size);
-            break;
-        }
-        case FL_JULIA_ZN:
-        {
-            _fractalFactory.CreateFractal(FractalType::JuliaZN, size, size);
-            break;
-        }
-        case FL_SINUSOIDAL:
-        {
-            _fractalFactory.CreateFractal(FractalType::Sinusoidal, size, size);
-            break;
-        }
-        case FL_JELLYFISH:
-        {
-            _fractalFactory.CreateFractal(FractalType::Jellyfish, size, size);
-            break;
-        }
-        case FL_MANOWAR:
-        {
-            _fractalFactory.CreateFractal(FractalType::Manowar, size, size);
-            break;
-        }
-        case FL_MANOWAR_JULIA:
-        {
-            _fractalFactory.CreateFractal(FractalType::ManowarJulia, size, size);
-            break;
-        }
-        case FL_TRICORN:
-        {
-            _fractalFactory.CreateFractal(FractalType::Tricorn, size, size);
-            break;
-        }
-        case FL_BURNING_SHIP:
-        {
-            _fractalFactory.CreateFractal(FractalType::BurningShip, size, size);
-            break;
-        }
-        case FL_BURNING_SHIP_JULIA:
-        {
-            _fractalFactory.CreateFractal(FractalType::BurningShipJulia, size, size);
-            break;
-        }
-        case FL_FRACTORY:
-        {
-            _fractalFactory.CreateFractal(FractalType::Fractory, size, size);
-            break;
-        }
-        case FL_CELL:
-        {
-            _fractalFactory.CreateFractal(FractalType::Cell, size, size);
-            break;
-        }
-        case FL_MAGNET:
-        {
-            _fractalFactory.CreateFractal(FractalType::Magnetic, size, size);
-            break;
-        }
-        case FL_DOUBLE_PENDULUM:
-        {
-            _fractalFactory.CreateFractal(FractalType::DoublePendulum, size, size);
-            break;
-        }
-        default: ;
-    }
 
-    // Script fractals.
-    if (choice >= COUNT)
+    if (choice < 0)
+        return;
+
+    if (choice < static_cast<int>(_builtInFractalList.size()))
     {
-        const int idx = choice - COUNT;
+        _fractalFactory.CreateFractal(_builtInFractalList[choice], size, size);
+        _scriptSelected = false;
+    }
+    else
+    {
+        const int idx = choice - static_cast<int>(_builtInFractalList.size());
+        if (idx < 0 || idx >= static_cast<int>(_scriptList.size()))
+            return;
+
         _fractalFactory.CreateScriptFractal(size, size, _loadedScripts[_scriptList[idx]]);
         _scriptSelected = true;
     }
-    else
-        _scriptSelected = false;
 
     _target = _fractalFactory.GetFractal();
     if (_fractalOptionsPanel != nullptr)
@@ -1113,6 +1038,47 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
     }
     openFileDialog->Destroy();
 }
+void DimensionFrame::AddBuiltInFractalChoice(const wxString& label, const FractalType type)
+{
+    _fractalChoice->Append(label);
+    _builtInFractalList.push_back(type);
+}
+
+void DimensionFrame::PopulateFractalChoices()
+{
+    _fractalChoice->Clear();
+    _builtInFractalList.clear();
+    _scriptList.clear();
+
+    AddBuiltInFractalChoice("Mandelbrot", FractalType::Mandelbrot);
+    AddBuiltInFractalChoice("Mandelbrot Z^m", FractalType::MandelbrotZN);
+    AddBuiltInFractalChoice("Mandelbrot (Julia)", FractalType::Julia);
+    AddBuiltInFractalChoice("Julia Z^m", FractalType::JuliaZN);
+    AddBuiltInFractalChoice("Newton", FractalType::NewtonRaphsonMethod);
+    AddBuiltInFractalChoice("Sine (Julia)", FractalType::Sinusoidal);
+    AddBuiltInFractalChoice("Magnet", FractalType::Magnetic);
+    AddBuiltInFractalChoice("Jellyfish", FractalType::Jellyfish);
+    AddBuiltInFractalChoice("Manowar", FractalType::Manowar);
+    AddBuiltInFractalChoice("Manowar (Julia)", FractalType::ManowarJulia);
+    AddBuiltInFractalChoice("Sierpinski Triangle", FractalType::SierpinskiTriangle);
+    AddBuiltInFractalChoice("Fixed Point: z = sin(z)", FractalType::FixedPoint1);
+    AddBuiltInFractalChoice("Fixed Point: z = cos(z)", FractalType::FixedPoint2);
+    AddBuiltInFractalChoice("Fixed Point: z = tan(z)", FractalType::FixedPoint3);
+    AddBuiltInFractalChoice("Fixed Point: z = z^2", FractalType::FixedPoint4);
+    AddBuiltInFractalChoice("Tricorn", FractalType::Tricorn);
+    AddBuiltInFractalChoice("Burning Ship", FractalType::BurningShip);
+    AddBuiltInFractalChoice("Burning Ship (Julia)", FractalType::BurningShipJulia);
+    AddBuiltInFractalChoice("Fractory", FractalType::Fractory);
+    AddBuiltInFractalChoice("Cell", FractalType::Cell);
+    AddBuiltInFractalChoice("Henon map", FractalType::HenonMap);
+    AddBuiltInFractalChoice("Double pendulum", FractalType::DoublePendulum);
+    AddBuiltInFractalChoice("User Formula (Complex)", FractalType::UserDefinedEscapeTime);
+    AddBuiltInFractalChoice("User Formula (Fixed Point)", FractalType::UserDefinedFixedPoint);
+    AddBuiltInFractalChoice("User Formula (Newton-Raphson)", FractalType::UserDefinedNewtonRaphson);
+
+    GetScriptFractals();
+}
+
 void DimensionFrame::GetScriptFractals()
 {
     _loadedScripts = GetValidUserScripts();
@@ -1120,7 +1086,7 @@ void DimensionFrame::GetScriptFractals()
     // Gets script parameters.
     for (unsigned int i = 0; i < _loadedScripts.size(); i++)
     {
-        if (!_loadedScripts[i].noSetMap)
+        if (!_loadedScripts[i].noSetMap && _loadedScripts[i].scriptCategory != ScriptCategory::NumMet)
         {
             _scriptList.push_back(i);
             _fractalChoice->Append(wxString(_loadedScripts[i].name.c_str(), wxConvUTF8));

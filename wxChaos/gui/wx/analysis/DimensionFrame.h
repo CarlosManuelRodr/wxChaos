@@ -33,30 +33,6 @@ void GetDesktopResolution(int& width, int& height);
 #define DimensionFrameSize wxSize(1200, 1260)
 
 /**
-* @enum FractalList
-* @brief Lists the fractals available for selection on the DimensionFrame.
-*/
-
-enum FractalList
-{
-    FL_MANDELBROT = 0,
-    FL_MANDELBROT_ZN,
-    FL_JULIA,
-    FL_JULIA_ZN,
-    FL_SINUSOIDAL,
-    FL_JELLYFISH,
-    FL_MANOWAR,
-    FL_MANOWAR_JULIA,
-    FL_TRICORN,
-    FL_BURNING_SHIP,
-    FL_BURNING_SHIP_JULIA,
-    FL_FRACTORY,
-    FL_CELL,
-    FL_MAGNET,
-    FL_DOUBLE_PENDULUM,
-    COUNT
-};
-/**
 * @class DimensionFrame
 * @brief Tool window for estimating fractal dimension by box counting.
 *
@@ -113,6 +89,7 @@ class DimensionFrame : public wxFrame
     std::vector<double> _epsilon;                           ///< Vector to hold the epsilon values.
     std::vector<int> _boxCount;                             ///< Vector to hold the box counting.
     std::vector<ScriptData> _loadedScripts;                 ///< Parameters and location of user scripts.
+    std::vector<FractalType> _builtInFractalList;           ///< Built-in fractals shown before user scripts.
     std::vector<unsigned int> _scriptList;                  ///< List of script fractals.
     int _divIndex{};                                        ///< Division index.
     bool _scriptSelected;
@@ -141,6 +118,8 @@ class DimensionFrame : public wxFrame
     void OnFractalOpt(wxCommandEvent&);
     void OnSavePreview(wxCommandEvent& );
     void OnHelp(wxCommandEvent&);
+    void AddBuiltInFractalChoice(const wxString& label, FractalType type);
+    void PopulateFractalChoices();
 
     static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
                                         const wxString& darkIcon);
