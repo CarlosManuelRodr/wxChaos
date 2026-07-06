@@ -1,6 +1,7 @@
 #include "common/FractalOptionsPanel.h"
 
 #include "common/AppTheme.h"
+#include "common/UnrestrictedSpinDoubleCtrl.h"
 #include "AppPaths.h"
 #include "TextUtils.h"
 
@@ -165,10 +166,8 @@ void FractalOptionsPanel::Build()
                     dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
                     _sizer->Add(_dynamicControls[labelIndex], 0, wxALL, 5);
 
-                    const double defaultValue = TextUtils::ToDouble(panelOptions->GetDefault(i));
-                    _spinDoubleControls.push_back(new wxSpinCtrlDouble(this, wxID_ANY, panelOptions->GetDefault(i),
-                                              wxDefaultPosition,wxDefaultSize, 0, -100000000.0, 100000000.0,
-                                             defaultValue, panelOptions->GetIncrement(i)));
+                    _spinDoubleControls.push_back(new UnrestrictedSpinDoubleCtrl(this, panelOptions->GetDefault(i),
+                                                                                 panelOptions->GetIncrement(i)));
                     index = _spinDoubleControls.size() - 1;
                     _dynamicControls.push_back(_spinDoubleControls[index]);
                     _sizer->Add(_spinDoubleControls[index], 0, wxALL | wxEXPAND, 5);

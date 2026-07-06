@@ -8,6 +8,8 @@
 #include <wx/textctrl.h>
 #include "Fractal.h"
 
+class UnrestrictedSpinDoubleCtrl;
+
 class FractalOptionsPanel : public wxPanel
 {
     wxBoxSizer* _sizer{};
@@ -27,7 +29,7 @@ class FractalOptionsPanel : public wxPanel
     std::vector<wxWindow*> _dynamicControls;
     std::vector<wxTextCtrl*> _textControls;
     std::vector<wxSpinCtrl*> _spinControls;
-    std::vector<wxSpinCtrlDouble*> _spinDoubleControls;
+    std::vector<UnrestrictedSpinDoubleCtrl*> _spinDoubleControls;
     std::vector<wxCheckBox*> _checkBoxes;
     std::function<void()> _applyHandler;
 

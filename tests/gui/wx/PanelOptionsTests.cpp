@@ -40,6 +40,18 @@ TEST_CASE("PanelOptions stores linked double option metadata")
     CHECK(options.GetDoubleValue(0) == &exponent);
 }
 
+TEST_CASE("PanelOptions stores linked double spin increment")
+{
+    double exponent = 3.0;
+    PanelOptions options;
+
+    options.LinkDouble(PanelOptionType::SpinDouble, "Exponent", &exponent, "3.0", 0.1);
+
+    CHECK(options.GetPanelOptionType(0) == PanelOptionType::SpinDouble);
+    CHECK(options.GetDoubleValue(0) == &exponent);
+    CHECK(options.GetIncrement(0) == doctest::Approx(0.1));
+}
+
 TEST_CASE("PanelOptions stores linked bool option metadata")
 {
     bool enabled = true;
