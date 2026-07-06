@@ -11,46 +11,6 @@
 #include "export/ZoomRecorder.h"
 #include "export/ZoomRenderer.h"
 
-// ZoomRecorder implementation.
-wxPanel* ZoomRecorder::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                           const wxString& darkIcon) const
-{
-    const auto header = new wxPanel(parent, wxID_ANY);
-    header->SetBackgroundColour(AppTheme::ControlBackground());
-
-    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
-    const wxSize iconSize(24, 24);
-    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
-    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
-    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 8);
-
-    const auto headerText = new wxStaticText(header, wxID_ANY, text);
-    wxFont headerFont = headerText->GetFont();
-    headerFont.SetPointSize(headerFont.GetPointSize() + 1);
-    headerFont.SetWeight(wxFONTWEIGHT_BOLD);
-    headerText->SetFont(headerFont);
-    headerText->SetBackgroundColour(AppTheme::ControlBackground());
-    headerText->SetForegroundColour(AppTheme::Foreground());
-    headerSizer->Add(headerText, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
-
-    header->SetSizer(headerSizer);
-    header->SetMinSize(wxSize(-1, 44));
-    return header;
-}
-
-wxBitmapBundle ZoomRecorder::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
-                                              const wxSize& size) const
-{
-    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
-    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
-}
-
-void ZoomRecorder::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const
-{
-    button->SetBitmap(CreateIconBundle(lightIcon, darkIcon, wxSize(20, 20)));
-    button->SetBitmapMargins(FromDIP(6), 0);
-}
-
 ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const wxWindowID id, const wxString& title,
                            const wxPoint& pos, const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
 {
@@ -169,9 +129,9 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     this->SetSizer(mainSizer);
     mainSizer->Fit(this);
     const int fittedHeight = this->GetSize().GetHeight();
-    this->SetMinSize(wxSize(820, fittedHeight));
+    this->wxTopLevelWindowBase::SetMinSize(wxSize(820, fittedHeight));
     this->SetSize(wxSize(900, fittedHeight));
-    this->Layout();
+    this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
     // Connect Events
@@ -214,6 +174,45 @@ ZoomRecorder::~ZoomRecorder()
     _colorSpeedCtrl->Unbind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
 
+wxPanel* ZoomRecorder::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                           const wxString& darkIcon)
+{
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 8);
+
+    const auto headerText = new wxStaticText(header, wxID_ANY, text);
+    wxFont headerFont = headerText->GetFont();
+    headerFont.SetPointSize(headerFont.GetPointSize() + 1);
+    headerFont.SetWeight(wxFONTWEIGHT_BOLD);
+    headerText->SetFont(headerFont);
+    headerText->SetBackgroundColour(AppTheme::ControlBackground());
+    headerText->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(headerText, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 44));
+    return header;
+}
+
+wxBitmapBundle ZoomRecorder::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                              const wxSize& size)
+{
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
+}
+
+void ZoomRecorder::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const
+{
+    button->SetBitmap(CreateIconBundle(lightIcon, darkIcon, wxSize(20, 20)));
+    button->SetBitmapMargins(FromDIP(6), 0);
+}
+
 void ZoomRecorder::CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
 {
     const FractalType fractalType = fractalCanvas->GetFractalType();
@@ -226,7 +225,8 @@ void ZoomRecorder::CreateFractalInstance(FractalFactory& fractalFactory, Fractal
         fractalFactory.CreateFractal(fractalType, width, height);
 }
 
-PreciseRect ZoomRecorder::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
+PreciseRect ZoomRecorder::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas,
+                                                 const int width, const int height)
 {
     CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
     const PreciseRect defaultView = fractalFactory.GetFractal()->GetPreciseView();

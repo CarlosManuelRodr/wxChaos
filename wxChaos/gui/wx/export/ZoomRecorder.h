@@ -1,9 +1,7 @@
 #pragma once
-#include <wx/xrc/xmlres.h>
 #include <wx/statbmp.h>
 #include <wx/gdicmn.h>
 #include <wx/string.h>
-#include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
@@ -56,10 +54,10 @@ class ZoomRecorder : public wxDialog
     void RenderPreview();
     void UpdateTotalFrames();
     [[nodiscard]] int GetTotalFrames() const;
-    [[nodiscard]] wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                               const wxString& darkIcon) const;
-    [[nodiscard]] wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
-                                                  const wxSize& size) const;
+    [[nodiscard]] static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                                      const wxString& darkIcon);
+    [[nodiscard]] static wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                                         const wxSize& size);
     void SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const;
     static void CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
     static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
