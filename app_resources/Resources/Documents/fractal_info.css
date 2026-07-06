@@ -322,6 +322,12 @@ figcaption {
     object-fit: contain;
 }
 
+.box-count-plot-figure img {
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
+}
+
 .observation-panel {
     background: var(--panel-background);
     border: 1px solid var(--panel-border-color);
