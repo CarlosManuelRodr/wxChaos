@@ -107,6 +107,7 @@ void FractalOptionsPanel::Build()
         size_t index;
         int textControlTargetIndex = 0;
         int spinControlTargetIndex = 0;
+        int spinDoubleControlTargetIndex = 0;
         int checkBoxTargetIndex = 0;
 
         for (int i = 0; i < panelOptions->GetElementsSize(); i++)
@@ -156,6 +157,25 @@ void FractalOptionsPanel::Build()
                     ++spinControlTargetIndex;
                     break;
                 }
+                case PanelOptionType::SpinDouble:
+                {
+                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
+                    _dynamicControls.push_back(label);
+                    labelIndex = _dynamicControls.size() - 1;
+                    dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
+                    _sizer->Add(_dynamicControls[labelIndex], 0, wxALL, 5);
+
+                    const double defaultValue = TextUtils::ToDouble(panelOptions->GetDefault(i));
+                    _spinDoubleControls.push_back(new wxSpinCtrlDouble(this, wxID_ANY, panelOptions->GetDefault(i),
+                                              wxDefaultPosition,wxDefaultSize, 0, -100000000.0, 100000000.0,
+                                             defaultValue, panelOptions->GetIncrement(i)));
+                    index = _spinDoubleControls.size() - 1;
+                    _dynamicControls.push_back(_spinDoubleControls[index]);
+                    _sizer->Add(_spinDoubleControls[index], 0, wxALL | wxEXPAND, 5);
+                    _foundSpinDoubleControls.push_back(spinDoubleControlTargetIndex);
+                    ++spinDoubleControlTargetIndex;
+                    break;
+                }
                 case PanelOptionType::CheckBox:
                 {
                     _checkBoxes.push_back(new wxCheckBox(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0));
@@ -192,9 +212,11 @@ void FractalOptionsPanel::ClearDynamicControls()
     _foundLabels.clear();
     _foundTextControls.clear();
     _foundSpinControls.clear();
+    _foundSpinDoubleControls.clear();
     _foundCheckBoxes.clear();
     _textControls.clear();
     _spinControls.clear();
+    _spinDoubleControls.clear();
     _checkBoxes.clear();
     _kRealLabel = nullptr;
     _kRealCtrl = nullptr;
@@ -214,6 +236,9 @@ void FractalOptionsPanel::Apply() const
 
     for (unsigned int i = 0; i < _foundSpinControls.size(); i++)
         *panelOptions->GetIntegerValue(_foundSpinControls[i]) = _spinControls[i]->GetValue();
+
+    for (unsigned int i = 0; i < _foundSpinDoubleControls.size(); i++)
+        *panelOptions->GetDoubleValue(_foundSpinDoubleControls[i]) = _spinDoubleControls[i]->GetValue();
 
     for (unsigned int i = 0; i < _foundCheckBoxes.size(); i++)
         *panelOptions->GetBoolValue(_foundCheckBoxes[i]) = _checkBoxes[i]->GetValue();

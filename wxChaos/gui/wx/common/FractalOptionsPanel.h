@@ -2,10 +2,8 @@
 
 #include <functional>
 #include <vector>
-#include <wx/bmpbndl.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
-#include <wx/statbmp.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
 #include "Fractal.h"
@@ -24,10 +22,12 @@ class FractalOptionsPanel : public wxPanel
     std::vector<int> _foundLabels;
     std::vector<int> _foundTextControls;
     std::vector<int> _foundSpinControls;
+    std::vector<int> _foundSpinDoubleControls;
     std::vector<int> _foundCheckBoxes;
     std::vector<wxWindow*> _dynamicControls;
     std::vector<wxTextCtrl*> _textControls;
     std::vector<wxSpinCtrl*> _spinControls;
+    std::vector<wxSpinCtrlDouble*> _spinDoubleControls;
     std::vector<wxCheckBox*> _checkBoxes;
     std::function<void()> _applyHandler;
 
