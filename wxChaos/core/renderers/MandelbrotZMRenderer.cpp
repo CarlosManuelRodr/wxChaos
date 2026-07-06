@@ -3,7 +3,7 @@ using namespace std;
 
 MandelbrotZMRenderer::MandelbrotZMRenderer()
 {
-    _n = 0;
+    _m = 0;
     _bailout = 0;
 }
 
@@ -23,7 +23,7 @@ RenderWorker::Point MandelbrotZMRenderer::TracePoint(const Real& pixelRe, const 
 
     for (unsigned i = 0; i < _maxIter; i++)
     {
-        const PrecisionComplex<Real> poweredZ = ComplexPow(z, _n);
+        const PrecisionComplex<Real> poweredZ = ComplexPow(z, _m);
         z = poweredZ + c;
 
         const Real zNorm = ComplexNorm(z);
@@ -85,7 +85,7 @@ void MandelbrotZMRenderer::Render()
 
 void MandelbrotZMRenderer::SetParams(const int n, const double bailout)
 {
-    _n = n;
+    _m = n;
     _bailout = bailout;
 }
 

@@ -4,7 +4,7 @@ using namespace std;
 
 JuliaZMRenderer::JuliaZMRenderer()
 {
-    _n = 0;
+    _m = 0;
     _bailout = 0;
 }
 
@@ -24,7 +24,7 @@ RenderWorker::Point JuliaZMRenderer::TracePoint(const Real& pixelRe, const Real&
 
     for (unsigned i = 0; i < _maxIter; i++)
     {
-        const PrecisionComplex<Real> poweredZ = ComplexPow(z, _n);
+        const PrecisionComplex<Real> poweredZ = ComplexPow(z, _m);
         z = poweredZ + k;
 
         const Real zNorm = ComplexNorm(z);
@@ -85,7 +85,7 @@ void JuliaZMRenderer::Render()
 }
 void JuliaZMRenderer::SetParams(const int n, const double bailout)
 {
-    _n = n;
+    _m = n;
     _bailout = bailout;
 }
 

@@ -22,7 +22,7 @@ JuliaZM::JuliaZM(const unsigned int width, const unsigned int height) : Fractal(
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _smoothRender = true;
-    myRender = new JuliaZMRenderer[_threadNumber];
+    _myRender = new JuliaZMRenderer[_threadNumber];
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
@@ -33,15 +33,15 @@ JuliaZM::JuliaZM(const unsigned int width, const unsigned int height) : Fractal(
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkInt(PanelOptionType::Spin, "m: ", &n, "2");
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &bailout, "2");
-    n = 2;
-    bailout = 2;
+    _panelOpt.LinkInt(PanelOptionType::Spin, "m: ", &_m, "2");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &_bailout, "2");
+    _m = 2;
+    _bailout = 2;
 }
 JuliaZM::~JuliaZM()
 {
     this->StopRender();
-    delete[] myRender;
+    delete[] _myRender;
 }
 void JuliaZM::DrawOrbit()
 {
@@ -53,12 +53,12 @@ void JuliaZM::DrawOrbit()
     for (unsigned i=0; i<_maxIter; i++)
     {
         zVector.push_back(z);
-        if (z.real()*z.real() + z.imag()*z.imag() > bailout*bailout)
+        if (z.real()*z.real() + z.imag()*z.imag() > _bailout*_bailout)
         {
             outOfSet = true;
             break;
         }
-        z = pow(z, n) + k;
+        z = pow(z, _m) + k;
     }
 
     const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
@@ -70,12 +70,12 @@ void JuliaZM::DrawOrbit()
 void JuliaZM::Render()
 {
     for (unsigned int i=0; i<_threadNumber; i++)
-        myRender[i].SetParams(n, bailout);
+        _myRender[i].SetParams(_m, _bailout);
 
-    this->SetRendererBounds<JuliaZMRenderer>(myRender);
+    this->SetRendererBounds<JuliaZMRenderer>(_myRender);
 }
 void JuliaZM::CopyOptionFromPanel()
 {
-    n = *_panelOpt.GetIntElement(0);
-    bailout = *_panelOpt.GetDoubleElement(0);
+    _m = *_panelOpt.GetIntElement(0);
+    _bailout = *_panelOpt.GetDoubleElement(0);
 }

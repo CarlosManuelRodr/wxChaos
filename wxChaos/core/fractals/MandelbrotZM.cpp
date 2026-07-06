@@ -20,7 +20,7 @@ MandelbrotZM::MandelbrotZM(const unsigned int width, const unsigned int height) 
     _hasOrbitTrap = true;
     _hasSmoothRender = true;
     _smoothRender = true;
-    myRender = new MandelbrotZMRenderer[_threadNumber];
+    _myRender = new MandelbrotZMRenderer[_threadNumber];
 
     // Specify algorithms.
     _algorithm = RenderingAlgorithmType::EscapeTime;
@@ -31,22 +31,22 @@ MandelbrotZM::MandelbrotZM(const unsigned int width, const unsigned int height) 
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkInt(PanelOptionType::Spin, "m: ", &n, "3");
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &bailout, "2");
-    n = 3;
-    bailout = 2;
+    _panelOpt.LinkInt(PanelOptionType::Spin, "m: ", &_m, "3");
+    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Bailout: ", &_bailout, "2");
+    _m = 3;
+    _bailout = 2;
 }
 MandelbrotZM::~MandelbrotZM()
 {
     this->StopRender();
-    delete[] myRender;
+    delete[] _myRender;
 }
 void MandelbrotZM::Render()
 {
     for (unsigned int i=0; i<_threadNumber; i++)
-        myRender[i].SetParams(n, bailout);
+        _myRender[i].SetParams(_m, _bailout);
 
-    this->SetRendererBounds<MandelbrotZMRenderer>(myRender);
+    this->SetRendererBounds<MandelbrotZMRenderer>(_myRender);
 }
 void MandelbrotZM::DrawOrbit()
 {
@@ -63,7 +63,7 @@ void MandelbrotZM::DrawOrbit()
             outOfSet = true;
             break;
         }
-        z = pow(z, n) + c;
+        z = pow(z, _m) + c;
     }
 
     const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
@@ -74,6 +74,6 @@ void MandelbrotZM::DrawOrbit()
 }
 void MandelbrotZM::CopyOptionFromPanel()
 {
-    n = *_panelOpt.GetIntElement(0);
-    bailout = *_panelOpt.GetDoubleElement(0);
+    _m = *_panelOpt.GetIntElement(0);
+    _bailout = *_panelOpt.GetDoubleElement(0);
 }

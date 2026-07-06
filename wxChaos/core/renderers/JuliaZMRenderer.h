@@ -10,7 +10,7 @@
 */
 class JuliaZMRenderer : public RenderWorker
 {
-    int _n;
+    int _m;
     double _bailout;
 
     template<class Real, class MeasurePoint>

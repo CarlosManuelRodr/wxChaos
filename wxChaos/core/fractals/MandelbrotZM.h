@@ -12,9 +12,9 @@
  */
 class MandelbrotZM : public Fractal
 {
-    int n;
-    double bailout;
-    MandelbrotZMRenderer* myRender;
+    int _m;
+    double _bailout;
+    MandelbrotZMRenderer* _myRender;
 public:
     MandelbrotZM(unsigned int width, unsigned int height);
     ~MandelbrotZM() override;

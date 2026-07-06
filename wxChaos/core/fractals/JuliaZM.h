@@ -12,9 +12,9 @@
  */
 class JuliaZM: public Fractal
 {
-    JuliaZMRenderer* myRender;
-    int n;
-    double bailout;
+    JuliaZMRenderer* _myRender;
+    int _m;
+    double _bailout;
 public:
     JuliaZM(unsigned int width, unsigned int height);
     ~JuliaZM() override;
