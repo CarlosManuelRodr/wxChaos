@@ -35,6 +35,13 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     _toolbar->SetInformationHandler([this] { OpenFractalInformation(); });
 
     _previewCanvas = new FractalCanvas(fractalType, this, wxID_ANY, wxDefaultPosition, size);
+    if (_target != nullptr && fractalType == FractalType::UserDefinedEscapeTime)
+    {
+        FormulaOptions previewFormula = _target->GetFormula();
+        previewFormula.julia = true;
+        _previewCanvas->SetUserFormula(previewFormula);
+        _previewCanvas->GetFractal()->SetFormula(previewFormula);
+    }
     _previewCanvas->SetMainCanvasOverlaysVisible(false);
     _previewCanvas->GetFractal()->SetOptions(juliaOpt, true);
     _previewCanvas->GetFractal()->SetJuliaMode(true);

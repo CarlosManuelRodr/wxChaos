@@ -1,5 +1,4 @@
 Bugs:
-- User formula Escape Time needs a Julia mode.
 - Under some conditions that I don't know yet the options panel opens when the Zoom recorder is started and it messes
   with its internal resolution, causing the view to be distorted.
 

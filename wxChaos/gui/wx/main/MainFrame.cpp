@@ -1285,7 +1285,7 @@ void MainFrame::ChangeDPendulum(wxCommandEvent&)
 }
 void MainFrame::ChangeUserDefined(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::UserDefinedEscapeTime, false);
+    this->ChangeFractal(FractalType::UserDefinedEscapeTime, true);
 }
 void MainFrame::ChangeFPUserDefined(wxCommandEvent&)
 {
@@ -1536,6 +1536,7 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
         case FractalType::MandelbrotZN: juliaType = FractalType::JuliaZN; break;
         case FractalType::Manowar: juliaType = FractalType::ManowarJulia; break;
         case FractalType::BurningShip: juliaType = FractalType::BurningShipJulia; break;
+        case FractalType::UserDefinedEscapeTime: juliaType = FractalType::UserDefinedEscapeTime; break;
         default: return false;
     }
 
