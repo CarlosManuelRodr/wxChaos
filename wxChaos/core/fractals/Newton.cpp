@@ -22,7 +22,7 @@ Newton::Newton(const unsigned int width, const unsigned int height) : Fractal(wi
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Min step: ", &minStep, "0.001");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Min step: ", &minStep, "0.001");
     minStep = 0.001;
 
     // Specify algorithms.

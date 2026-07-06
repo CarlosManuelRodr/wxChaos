@@ -10,7 +10,7 @@ void PanelOptions::LinkInt(const PanelOptionType type, const wxString& labelText
     _linkTo.push_back(LinkTo::ToInt);
     _intTarget.push_back(linkInt);
 }
-void PanelOptions::LinkDbl(const PanelOptionType type, const wxString& labelText, double* linkDbl, const wxString& defaultValue)
+void PanelOptions::LinkDouble(const PanelOptionType type, const wxString& labelText, double* linkDbl, const wxString& defaultValue)
 {
     _type.push_back(type);
     _label.push_back(labelText);

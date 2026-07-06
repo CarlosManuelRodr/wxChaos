@@ -20,7 +20,7 @@ UserDefinedFixedPoint::UserDefinedFixedPoint(const unsigned int width, const uns
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Min step: ", &_minStep, "0.001");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Min step: ", &_minStep, "0.001");
     _minStep = 0.001;
 
     // Specify algorithms.

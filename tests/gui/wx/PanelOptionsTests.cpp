@@ -30,7 +30,7 @@ TEST_CASE("PanelOptions stores linked double option metadata")
     double exponent = 2.0;
     PanelOptions options;
 
-    options.LinkDbl(PanelOptionType::TextCtrl, "Exponent", &exponent, "2.0");
+    options.LinkDouble(PanelOptionType::TextCtrl, "Exponent", &exponent, "2.0");
 
     CHECK(options.GetElementsSize() == 1);
     CHECK(options.GetPanelOptType(0) == PanelOptionType::TextCtrl);
@@ -73,7 +73,7 @@ TEST_CASE("PanelOptions copies values without replacing target links")
     bool sourceEnabled = true;
     PanelOptions source;
     source.LinkInt(PanelOptionType::Spin, "Power", &sourcePower, "2");
-    source.LinkDbl(PanelOptionType::TextCtrl, "Bailout", &sourceBailout, "2");
+    source.LinkDouble(PanelOptionType::TextCtrl, "Bailout", &sourceBailout, "2");
     source.LinkBool(PanelOptionType::CheckBox, "Enabled", &sourceEnabled, "false");
 
     int targetPower = 2;
@@ -81,7 +81,7 @@ TEST_CASE("PanelOptions copies values without replacing target links")
     bool targetEnabled = false;
     PanelOptions target;
     target.LinkInt(PanelOptionType::Spin, "Power", &targetPower, "2");
-    target.LinkDbl(PanelOptionType::TextCtrl, "Bailout", &targetBailout, "2");
+    target.LinkDouble(PanelOptionType::TextCtrl, "Bailout", &targetBailout, "2");
     target.LinkBool(PanelOptionType::CheckBox, "Enabled", &targetEnabled, "false");
 
     target.CopyValuesFrom(source);

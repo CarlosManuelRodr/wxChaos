@@ -19,10 +19,10 @@ HenonMap::HenonMap(const unsigned int width, const unsigned int height) : Fracta
     SetPreciseView(PreciseRect(Rect(_minX, _minY, _maxX, _maxY)));
 
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Alpha: ", &_alpha, "1.4");
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Beta: ", &_beta, "0.3");
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "X0: ", &_x0, "0.5");
-    _panelOpt.LinkDbl(PanelOptionType::TextCtrl, "Y0: ", &_y0, "0.2");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Alpha: ", &_alpha, "1.4");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Beta: ", &_beta, "0.3");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "X0: ", &_x0, "0.5");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Y0: ", &_y0, "0.2");
     _alpha = 1.4;
     _beta = 0.3;
     _x0 = 0.5;
