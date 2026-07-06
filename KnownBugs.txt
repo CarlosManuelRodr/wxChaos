@@ -2,7 +2,6 @@ TODO:
 Credit https://opengameart.org/content/pc-keyboard-mouse-and-touch-input-icons on the About dialog.
 
 Bugs:
-- DimensionFrame is not showing all fractals.
 - Bring back Logistic Map.
 
 Improvements to get to a release version:
