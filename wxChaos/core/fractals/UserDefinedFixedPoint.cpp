@@ -74,7 +74,7 @@ void UserDefinedFixedPoint::DrawOrbit()
 }
 void UserDefinedFixedPoint::CopyOptionFromPanel()
 {
-    _minStep = *_panelOpt.GetDoubleElement(0);
+    _minStep = *_panelOpt.GetDoubleValue(0);
 }
 void UserDefinedFixedPoint::PostRender()
 {

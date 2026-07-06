@@ -71,5 +71,5 @@ void Cell::DrawOrbit()
 }
 void Cell::CopyOptionFromPanel()
 {
-    bailout = *_panelOpt.GetDoubleElement(0);
+    bailout = *_panelOpt.GetDoubleValue(0);
 }

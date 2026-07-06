@@ -66,5 +66,5 @@ void FixedPoint4::DrawOrbit()
 
 void FixedPoint4::CopyOptionFromPanel()
 {
-    minStep = *_panelOpt.GetDoubleElement(0);
+    minStep = *_panelOpt.GetDoubleValue(0);
 }

@@ -64,5 +64,5 @@ void Newton::Render()
 }
 void Newton::CopyOptionFromPanel()
 {
-    minStep = *_panelOpt.GetDoubleElement(0);
+    minStep = *_panelOpt.GetDoubleValue(0);
 }

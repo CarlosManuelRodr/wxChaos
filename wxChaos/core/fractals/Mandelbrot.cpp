@@ -24,7 +24,7 @@ Mandelbrot::Mandelbrot(const unsigned int width, const unsigned int height) : Fr
 
     // Creates panel.
     _panelOpt.SetForceShow(false);
-    _panelOpt.LinkInt(PanelOptionType::Spin, "Number of buddhabrot\nrandom points:", &buddhaRandomP, "1000000");
+    _panelOpt.LinkInteger(PanelOptionType::Spin, "Number of buddhabrot\nrandom points:", &buddhaRandomP, "1000000");
     buddhaRandomP = 1000000;
 
     // Specify algorithms.
@@ -73,7 +73,7 @@ void Mandelbrot::DrawOrbit()
 }
 void Mandelbrot::CopyOptionFromPanel()
 {
-    buddhaRandomP = *_panelOpt.GetIntElement(0);
+    buddhaRandomP = *_panelOpt.GetIntegerValue(0);
 }
 void Mandelbrot::PreRender()
 {

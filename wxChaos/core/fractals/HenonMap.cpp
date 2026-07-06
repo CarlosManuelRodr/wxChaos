@@ -46,8 +46,8 @@ void HenonMap::Render()
 
 void HenonMap::CopyOptionFromPanel()
 {
-    _alpha = *_panelOpt.GetDoubleElement(0);
-    _beta = *_panelOpt.GetDoubleElement(1);
-    _x0 = *_panelOpt.GetDoubleElement(2);
-    _y0 = *_panelOpt.GetDoubleElement(3);
+    _alpha = *_panelOpt.GetDoubleValue(0);
+    _beta = *_panelOpt.GetDoubleValue(1);
+    _x0 = *_panelOpt.GetDoubleValue(2);
+    _y0 = *_panelOpt.GetDoubleValue(3);
 }

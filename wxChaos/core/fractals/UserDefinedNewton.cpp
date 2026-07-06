@@ -167,11 +167,11 @@ void UserDefinedNewton::DrawOrbit()
 
 void UserDefinedNewton::CopyOptionFromPanel()
 {
-    _convergenceEpsilon = std::max(0.0, *_panelOpt.GetDoubleElement(0));
-    _functionEpsilon = std::max(0.0, *_panelOpt.GetDoubleElement(1));
-    _derivativeEpsilon = std::max(0.0, *_panelOpt.GetDoubleElement(2));
-    _rootTolerance = std::max(0.0, *_panelOpt.GetDoubleElement(3));
-    _escapeRadius = std::max(1.0, *_panelOpt.GetDoubleElement(4));
+    _convergenceEpsilon = std::max(0.0, *_panelOpt.GetDoubleValue(0));
+    _functionEpsilon = std::max(0.0, *_panelOpt.GetDoubleValue(1));
+    _derivativeEpsilon = std::max(0.0, *_panelOpt.GetDoubleValue(2));
+    _rootTolerance = std::max(0.0, *_panelOpt.GetDoubleValue(3));
+    _escapeRadius = std::max(1.0, *_panelOpt.GetDoubleValue(4));
 }
 
 void UserDefinedNewton::PostRender()

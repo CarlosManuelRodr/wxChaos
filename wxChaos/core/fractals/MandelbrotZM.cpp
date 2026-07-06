@@ -74,6 +74,6 @@ void MandelbrotZM::DrawOrbit()
 }
 void MandelbrotZM::CopyOptionFromPanel()
 {
-    _m = *_panelOpt.GetDoubleElement(0);
-    _bailout = *_panelOpt.GetDoubleElement(1);
+    _m = *_panelOpt.GetDoubleValue(0);
+    _bailout = *_panelOpt.GetDoubleValue(1);
 }

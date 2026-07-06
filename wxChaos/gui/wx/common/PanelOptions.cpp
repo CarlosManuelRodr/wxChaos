@@ -2,13 +2,13 @@
 
 PanelOptions::PanelOptions() : _forceShow(false) {}
 
-void PanelOptions::LinkInt(const PanelOptionType type, const wxString& labelText, int* linkInt, const wxString& defaultValue)
+void PanelOptions::LinkInteger(const PanelOptionType type, const wxString& labelText, int* linkInt, const wxString& defaultValue)
 {
     _type.push_back(type);
     _label.push_back(labelText);
     _defaults.push_back(defaultValue);
     _linkTo.push_back(LinkTo::ToInt);
-    _intTarget.push_back(linkInt);
+    _integerTarget.push_back(linkInt);
 }
 void PanelOptions::LinkDouble(const PanelOptionType type, const wxString& labelText, double* linkDbl, const wxString& defaultValue)
 {
@@ -16,7 +16,7 @@ void PanelOptions::LinkDouble(const PanelOptionType type, const wxString& labelT
     _label.push_back(labelText);
     _defaults.push_back(defaultValue);
     _linkTo.push_back(LinkTo::ToDouble);
-    _dblTarget.push_back(linkDbl);
+    _doubleTarget.push_back(linkDbl);
 }
 void PanelOptions::LinkBool(const PanelOptionType type, const wxString& labelText, bool* linkBool, const wxString& defaultValue)
 {
@@ -28,10 +28,10 @@ void PanelOptions::LinkBool(const PanelOptionType type, const wxString& labelTex
 }
 size_t PanelOptions::GetElementsSize() const { return _type.size(); }
 LinkTo PanelOptions::GetLinkType(const unsigned int index) const { return _linkTo.at(index); }
-wxString PanelOptions::GetLabelElement(const unsigned int index) { return _label.at(index); }
-int* PanelOptions::GetIntElement(const unsigned int index) const { return _intTarget.at(index); }
-double* PanelOptions::GetDoubleElement(const unsigned int index) const { return _dblTarget.at(index); }
-bool* PanelOptions::GetBoolElement(const unsigned int index) const { return _boolTarget.at(index); }
+wxString PanelOptions::GetLabelValue(const unsigned int index) { return _label.at(index); }
+int* PanelOptions::GetIntegerValue(const unsigned int index) const { return _integerTarget.at(index); }
+double* PanelOptions::GetDoubleValue(const unsigned int index) const { return _doubleTarget.at(index); }
+bool* PanelOptions::GetBoolValue(const unsigned int index) const { return _boolTarget.at(index); }
 wxString PanelOptions::GetDefault(const unsigned int index) { return _defaults.at(index); }
 PanelOptionType PanelOptions::GetPanelOptType(const unsigned int index) const { return _type.at(index); }
 void PanelOptions::CopyValuesFrom(const PanelOptions& source)
@@ -53,11 +53,11 @@ void PanelOptions::CopyValuesFrom(const PanelOptions& source)
         switch (_linkTo[i])
         {
             case LinkTo::ToInt:
-                *_intTarget.at(intIndex) = *source._intTarget.at(intIndex);
+                *_integerTarget.at(intIndex) = *source._integerTarget.at(intIndex);
                 ++intIndex;
                 break;
             case LinkTo::ToDouble:
-                *_dblTarget.at(doubleIndex) = *source._dblTarget.at(doubleIndex);
+                *_doubleTarget.at(doubleIndex) = *source._doubleTarget.at(doubleIndex);
                 ++doubleIndex;
                 break;
             case LinkTo::ToBool:

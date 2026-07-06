@@ -55,17 +55,17 @@ void DoublePendulum::Render()
 }
 void DoublePendulum::CopyOptionFromPanel()
 {
-    th1Bailout = *_panelOpt.GetBoolElement(0);
-    th1NumBailout = *_panelOpt.GetDoubleElement(0);
-    th2Bailout = *_panelOpt.GetBoolElement(1);
-    th2NumBailout = *_panelOpt.GetDoubleElement(1);
-    dt = *_panelOpt.GetDoubleElement(2);
-    m1 = *_panelOpt.GetDoubleElement(3);
-    m2 = *_panelOpt.GetDoubleElement(4);
-    l = *_panelOpt.GetDoubleElement(5);
-    g = *_panelOpt.GetDoubleElement(6);
-    referenced = *_panelOpt.GetBoolElement(2);
-    rungeKutta = *_panelOpt.GetBoolElement(3);
+    th1Bailout = *_panelOpt.GetBoolValue(0);
+    th1NumBailout = *_panelOpt.GetDoubleValue(0);
+    th2Bailout = *_panelOpt.GetBoolValue(1);
+    th2NumBailout = *_panelOpt.GetDoubleValue(1);
+    dt = *_panelOpt.GetDoubleValue(2);
+    m1 = *_panelOpt.GetDoubleValue(3);
+    m2 = *_panelOpt.GetDoubleValue(4);
+    l = *_panelOpt.GetDoubleValue(5);
+    g = *_panelOpt.GetDoubleValue(6);
+    referenced = *_panelOpt.GetBoolValue(2);
+    rungeKutta = *_panelOpt.GetBoolValue(3);
 }
 void DoublePendulum::DrawOrbit()
 {

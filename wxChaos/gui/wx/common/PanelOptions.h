@@ -11,22 +11,22 @@ class PanelOptions
     std::vector<wxString> _label;
     std::vector<wxString> _defaults;
     std::vector<LinkTo> _linkTo;
-    std::vector<int*> _intTarget;
-    std::vector<double*> _dblTarget;
+    std::vector<int*> _integerTarget;
+    std::vector<double*> _doubleTarget;
     std::vector<bool*> _boolTarget;
     bool _forceShow;
 
 public:
     PanelOptions();
-    void LinkInt(PanelOptionType type, const wxString& labelText, int* linkInt, const wxString& defaultValue);
+    void LinkInteger(PanelOptionType type, const wxString& labelText, int* linkInt, const wxString& defaultValue);
     void LinkDouble(PanelOptionType type, const wxString& labelText, double* linkDbl, const wxString& defaultValue);
     void LinkBool(PanelOptionType type, const wxString& labelText, bool* linkBool, const wxString& defaultValue);
     [[nodiscard]] size_t GetElementsSize() const;
     [[nodiscard]] LinkTo GetLinkType(unsigned int index) const;
-    wxString GetLabelElement(unsigned int index);
-    [[nodiscard]] int* GetIntElement(unsigned int index) const;
-    [[nodiscard]] double* GetDoubleElement(unsigned int index) const;
-    [[nodiscard]] bool* GetBoolElement(unsigned int index) const;
+    wxString GetLabelValue(unsigned int index);
+    [[nodiscard]] int* GetIntegerValue(unsigned int index) const;
+    [[nodiscard]] double* GetDoubleValue(unsigned int index) const;
+    [[nodiscard]] bool* GetBoolValue(unsigned int index) const;
     wxString GetDefault(unsigned int index);
     [[nodiscard]] PanelOptionType GetPanelOptType(unsigned int index) const;
     void CopyValuesFrom(const PanelOptions& source);

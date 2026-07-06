@@ -115,7 +115,7 @@ void FractalOptionsPanel::Build()
             {
                 case PanelOptionType::Label:
                 {
-                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0);
+                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
                     static_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
@@ -125,7 +125,7 @@ void FractalOptionsPanel::Build()
                 }
                 case PanelOptionType::TextCtrl:
                 {
-                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0);
+                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
                     static_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
@@ -141,7 +141,7 @@ void FractalOptionsPanel::Build()
                 }
                 case PanelOptionType::Spin:
                 {
-                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0);
+                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
                     static_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
@@ -158,7 +158,7 @@ void FractalOptionsPanel::Build()
                 }
                 case PanelOptionType::CheckBox:
                 {
-                    _checkBoxes.push_back(new wxCheckBox(this, wxID_ANY, wxString(panelOptions->GetLabelElement(i)), wxDefaultPosition, wxDefaultSize, 0));
+                    _checkBoxes.push_back(new wxCheckBox(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0));
                     index = _checkBoxes.size() - 1;
                     _checkBoxes[index]->SetValue(panelOptions->GetDefault(i) == "true");
                     _dynamicControls.push_back(_checkBoxes[index]);
@@ -210,13 +210,13 @@ void FractalOptionsPanel::Apply() const
 
     const PanelOptions* panelOptions = _target->GetOptPanel();
     for (unsigned int i = 0; i < _foundTextControls.size(); i++)
-        *panelOptions->GetDoubleElement(_foundTextControls[i]) = TextUtils::ToDouble(_textControls[i]->GetValue());
+        *panelOptions->GetDoubleValue(_foundTextControls[i]) = TextUtils::ToDouble(_textControls[i]->GetValue());
 
     for (unsigned int i = 0; i < _foundSpinControls.size(); i++)
-        *panelOptions->GetIntElement(_foundSpinControls[i]) = _spinControls[i]->GetValue();
+        *panelOptions->GetIntegerValue(_foundSpinControls[i]) = _spinControls[i]->GetValue();
 
     for (unsigned int i = 0; i < _foundCheckBoxes.size(); i++)
-        *panelOptions->GetBoolElement(_foundCheckBoxes[i]) = _checkBoxes[i]->GetValue();
+        *panelOptions->GetBoolValue(_foundCheckBoxes[i]) = _checkBoxes[i]->GetValue();
 
     if (_showJuliaConstants && _target->IsJuliaVariety())
         _target->SetK(TextUtils::ToDouble(_kRealCtrl->GetValue()), TextUtils::ToDouble(_kImaginaryCtrl->GetValue()));
