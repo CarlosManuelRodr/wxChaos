@@ -248,9 +248,7 @@ Rect ZoomRecorder::GetDefaultView(FractalCanvas* fractalCanvas, const int width,
 
 void ZoomRecorder::CreateFractalFactory()
 {
-    FractalFactory recordingFractalFactory;
-    _outermostZoom = CreateRecordingFractal(
-        recordingFractalFactory, _fractalCanvasPtr, _recordingWidth, _recordingHeight);
+    _outermostZoom = _fractalCanvasPtr->GetFractalPresenter()->GetPreciseOutermostZoom();
     CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, _previewWidth, _previewHeight);
     _innermostZoom = _fractalCanvasPtr->GetFractal()->GetPreciseView();
 }

@@ -102,7 +102,8 @@ std::string ZoomRenderer::QuoteCommandArg(const std::string& value)
 wxThread::ExitCode ZoomRenderer::Entry()
 {
     FractalFactory fractalHandler;
-    const PreciseRect outermostZoom = CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height);
+    CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height);
+    const PreciseRect outermostZoom = _fractalCanvasPtr->GetFractalPresenter()->GetPreciseOutermostZoom();
     const PreciseRect innermostZoom = _fractalCanvasPtr->GetFractal()->GetPreciseView();
 
     const int outputFileDigits = static_cast<int>(std::log10(_totalFrames) + 1);

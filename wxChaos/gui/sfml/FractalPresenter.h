@@ -242,6 +242,9 @@ public:
     ///@brief Return the farthest zoom viewed by the user.
     Rect GetOutermostZoom() const;
 
+    ///@brief Return the farthest zoom viewed by the user without losing precision.
+    PreciseRect GetPreciseOutermostZoom() const;
+
     ///@brief Return the current zoom rect.
     Rect GetCurrentZoom() const;
 

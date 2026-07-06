@@ -859,6 +859,11 @@ Rect FractalPresenter::GetOutermostZoom() const
     return _outermostZoom.ToRect();
 }
 
+PreciseRect FractalPresenter::GetPreciseOutermostZoom() const
+{
+    return _outermostZoom;
+}
+
 Rect FractalPresenter::GetCurrentZoom() const
 {
     return CaptureCurrentView().ToRect();
