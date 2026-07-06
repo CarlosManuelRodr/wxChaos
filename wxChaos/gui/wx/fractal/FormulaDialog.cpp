@@ -6,55 +6,22 @@
 #include "fractal/FunctionsHelpDialog.h"
 #include "TextUtils.h"
 
-wxPanel* FormulaDialog::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                            const wxString& darkIcon)
-{
-    const auto header = new wxPanel(parent, wxID_ANY);
-    header->SetBackgroundColour(AppTheme::ControlBackground());
-
-    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
-    const wxSize iconSize(24, 24);
-    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
-    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
-    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 10);
-
-    const auto title = new wxStaticText(header, wxID_ANY, text);
-    wxFont titleFont = title->GetFont();
-    titleFont.SetPointSize(titleFont.GetPointSize() + 1);
-    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
-    title->SetFont(titleFont);
-    title->SetBackgroundColour(AppTheme::ControlBackground());
-    title->SetForegroundColour(AppTheme::Foreground());
-    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
-
-    header->SetSizer(headerSizer);
-    header->SetMinSize(wxSize(-1, 48));
-    return header;
-}
-
-wxBitmapBundle FormulaDialog::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
-                                               const wxSize& size)
-{
-    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
-    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
-}
-
-FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId, const int newtonUserDefinedId, wxMenuItem* juliaSlider,
-                             wxMenuItem* juliaManual, bool* active, FractalCanvas* fCanvas, wxWindow* parent,
-                             const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
+FormulaDialog::FormulaDialog(const int userDefinedId, const int fixedPointUserDefinedId, const int newtonUserDefinedId,
+                             wxMenuItem* juliaSlider, wxMenuItem* juliaManual, bool* active, FractalCanvas* fractalCanvas,
+                             wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
                              const long style, const FormulaOptions* formulaOptions,
                              std::function<void(const FormulaOptions&)> applyHandler) : wxDialog(parent, id, title, pos, size, style)
 {
     _userDefinedId = userDefinedId;
-    _fpUserDefinedId = fPUserDefinedId;
+    _fpUserDefinedId = fixedPointUserDefinedId;
     _newtonUserDefinedId = newtonUserDefinedId;
 
     _parent = parent;
     this->SetSizeHints(FormulaDialogSize, wxDefaultSize);
-    _fCanvas = fCanvas;
+    _fractalCanvas = fractalCanvas;
     _active = active;
     _applyHandler = std::move(applyHandler);
-    _formulaOptions = formulaOptions != nullptr ? *formulaOptions : _fCanvas->GetFormula();
+    _formulaOptions = formulaOptions != nullptr ? *formulaOptions : _fractalCanvas->GetFormula();
 
     _slider = juliaSlider;
     _manual = juliaManual;
@@ -135,7 +102,7 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fPUserDefinedId,
     _funcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnFunc, this);
 }
 
-FormulaDialog::FormulaDialog(FormulaOptions formulaOptions, std::function<void(const FormulaOptions&)> applyHandler,
+FormulaDialog::FormulaDialog(const FormulaOptions& formulaOptions, std::function<void(const FormulaOptions&)> applyHandler,
                              wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
                              const wxSize& size, const long style)
                              : FormulaDialog(
@@ -164,6 +131,40 @@ FormulaDialog::~FormulaDialog()
     _applyButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnApply, this);
     _funcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnFunc, this);
 }
+
+wxPanel* FormulaDialog::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                            const wxString& darkIcon)
+{
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, CreateIconBundle(lightIcon, darkIcon, iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 10);
+
+    const auto title = new wxStaticText(header, wxID_ANY, text);
+    wxFont titleFont = title->GetFont();
+    titleFont.SetPointSize(titleFont.GetPointSize() + 1);
+    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+    title->SetFont(titleFont);
+    title->SetBackgroundColour(AppTheme::ControlBackground());
+    title->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 48));
+    return header;
+}
+
+wxBitmapBundle FormulaDialog::CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon,
+                                               const wxSize& size)
+{
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), size);
+}
+
 void FormulaDialog::OnAccept(wxCommandEvent&)
 {
     if (_applyHandler)
@@ -187,7 +188,7 @@ void FormulaDialog::OnApply(wxCommandEvent&)
         return;
     }
 
-    _fCanvas->SetUserFormula(options);
+    _fractalCanvas->SetUserFormula(options);
 
     if (_typeChoice->GetCurrentSelection() == 0)
     {
