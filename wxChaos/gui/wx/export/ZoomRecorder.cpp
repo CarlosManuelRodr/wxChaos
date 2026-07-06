@@ -3,6 +3,8 @@
 #include <cmath>
 #include <wx/progdlg.h>
 #include <wx/bitmap.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
 #include <wx/icon.h>
 #include <wx/slider.h>
 #include <wx/button.h>
@@ -323,36 +325,35 @@ void ZoomRecorder::OnScrollPreview(wxScrollEvent& event)
 }
 void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
 {
-    // Select the output directory
-    auto* dirDialog = new wxDirDialog(this);
-    wxString selectedFile;
+    wxFileDialog saveDialog(
+        this,
+        "Save zoom video",
+        wxEmptyString,
+        "Zoom.mp4",
+        "MP4 video (*.mp4)|*.mp4",
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
-    if (dirDialog->ShowModal() == wxID_OK)
-    {
-        selectedFile = dirDialog->GetPath();
-        dirDialog->Destroy();
-    }
-    else
-    {
-        dirDialog->Destroy();
+    if (saveDialog.ShowModal() != wxID_OK)
         return;
-    }
+
+    wxFileName outputFile(saveDialog.GetPath());
+    if (outputFile.GetExt().empty())
+        outputFile.SetExt("mp4");
 
     // Create ZoomRenderer and execute it.
     const int totalFrames = this->GetTotalFrames();
+    const int framerate = _framerateSpinCtrl->GetValue();
     const double colorSpeed = _colorSpeedCtrl->GetValue();
-    // wxString::mb_str() returns a wxCharBuffer which cannot be implicitly
-    // converted to std::string on GCC.  Explicitly construct the std::string
-    // from the buffer.
-    const std::string selectedDirPath(selectedFile.mb_str());
+    const std::string outputPath = AppPaths::ToStdPath(outputFile.GetFullPath());
 
     wxProgressDialog progressDialog("Generating video...", "Please wait until the process is complete.", totalFrames, this);
     auto* renderer = new ZoomRenderer(
-        selectedDirPath, _fractalCanvasPtr, _recordingWidth, _recordingHeight, totalFrames, colorSpeed);
+        outputPath, _fractalCanvasPtr, _recordingWidth, _recordingHeight, totalFrames, framerate, colorSpeed);
     wxThreadError err = renderer->Create();
 
     if (err != wxTHREAD_NO_ERROR)
     {
+        delete renderer;
         wxMessageBox(_("Couldn't create thread!"));
         return;
     }
@@ -361,6 +362,7 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
 
     if (err != wxTHREAD_NO_ERROR)
     {
+        delete renderer;
         wxMessageBox(_("Couldn't run thread!"));
         return;
     }
@@ -378,7 +380,17 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
         }
     }
 
+    renderer->Wait();
+    const std::string error = renderer->GetError();
+    delete renderer;
+
     progressDialog.Show(false);
+    if (!error.empty())
+    {
+        wxMessageBox(wxString::FromUTF8(error.c_str()), "Could not save video", wxOK | wxICON_ERROR, this);
+        return;
+    }
+
     this->EndModal(0);
 }
 void ZoomRecorder::OnCancel(wxCommandEvent&)

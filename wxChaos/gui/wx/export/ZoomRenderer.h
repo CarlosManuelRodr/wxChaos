@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <string>
 #include <wx/thread.h>
 #include "canvas/FractalCanvas.h"
@@ -11,26 +12,28 @@
 class ZoomRenderer : public wxThread
 {
     FractalCanvas* _fractalCanvasPtr;
-    int _currentFrame;
+    std::atomic<int> _currentFrame;
     int _totalFrames;
+    int _framerate;
     int _width;
     int _height;
     double _colorSpeed;
-    std::string _filepath;
+    std::string _outputPath;
+    std::string _error;
 
     static void CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
     static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
-    static std::string FixedLengthToString(int i, int length);
-    static std::string QuoteCommandArg(const std::string& value);
 
 protected:
     ExitCode Entry() override;
 
 public:
-    ZoomRenderer(std::string filepath, FractalCanvas* fractalCanvas, int width, int height, int totalFrames, double colorSpeed);
+    ZoomRenderer(std::string outputPath, FractalCanvas* fractalCanvas, int width, int height, int totalFrames,
+                 int framerate, double colorSpeed);
 
     static double GetFrameProgress(int frame, int totalFrames);
     static PreciseRect GetZoomViewport(const PreciseRect& outermostZoom, const PreciseRect& innermostZoom, double progress);
 
     [[nodiscard]] int GetProgress() const;
+    [[nodiscard]] std::string GetError() const;
 };

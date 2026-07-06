@@ -126,16 +126,6 @@ namespace AppPaths
         return scriptFiles;
     }
 
-    wxString FfmpegFile()
-    {
-        return AppFile({"FFmpeg", "ffmpeg.exe"});
-    }
-
-    std::string FfmpegFileStd()
-    {
-        return ToStdPath(FfmpegFile());
-    }
-
     wxString DumpFile()
     {
         return AppFile({"dump.csv"});

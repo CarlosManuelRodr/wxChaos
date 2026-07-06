@@ -24,8 +24,6 @@ namespace AppPaths
     std::string ScriptFileStd(const wxString& filename);
     std::vector<std::string> ScriptFilenames();
 
-    wxString FfmpegFile();
-    std::string FfmpegFileStd();
     wxString DumpFile();
 
     wxString Join(const wxString& directory, const wxString& filename);

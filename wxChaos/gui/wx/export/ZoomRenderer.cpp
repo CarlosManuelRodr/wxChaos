@@ -1,11 +1,8 @@
 #include "export/ZoomRenderer.h"
 
 #include <cmath>
-#include <cstdlib>
-#include <iomanip>
-#include <sstream>
 #include <utility>
-#include "AppPaths.h"
+#include "export/NativeVideoWriter.h"
 #include "fractals/ScriptFractal.h"
 
 void ZoomRenderer::CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
@@ -75,30 +72,6 @@ PreciseRect ZoomRenderer::GetZoomViewport(const PreciseRect& outermostZoom, cons
     return {left, bottom, left + width, bottom + height};
 }
 
-std::string ZoomRenderer::FixedLengthToString(const int i, const int length)
-{
-    std::ostringstream ostr;
-    if (i < 0)
-        ostr << '-';
-
-    ostr << std::setfill('0') << std::setw(length) << (i < 0 ? -i : i);
-    return ostr.str();
-}
-
-std::string ZoomRenderer::QuoteCommandArg(const std::string& value)
-{
-    std::string quoted = "\"";
-    for (const char ch : value)
-    {
-        if (ch == '"')
-            quoted += "\\\"";
-        else
-            quoted += ch;
-    }
-    quoted += "\"";
-    return quoted;
-}
-
 wxThread::ExitCode ZoomRenderer::Entry()
 {
     FractalFactory fractalHandler;
@@ -106,12 +79,19 @@ wxThread::ExitCode ZoomRenderer::Entry()
     const PreciseRect outermostZoom = _fractalCanvasPtr->GetFractalPresenter()->GetPreciseOutermostZoom();
     const PreciseRect innermostZoom = _fractalCanvasPtr->GetFractal()->GetPreciseView();
 
-    const int outputFileDigits = static_cast<int>(std::log10(_totalFrames) + 1);
-
-    for (_currentFrame = 0; _currentFrame < _totalFrames; _currentFrame++)
+    NativeVideoWriter videoWriter;
+    if (!videoWriter.Open(_outputPath, static_cast<unsigned int>(_width), static_cast<unsigned int>(_height),
+                          static_cast<unsigned int>(_framerate)))
     {
-        const double t = _currentFrame;
-        const double progress = GetFrameProgress(_currentFrame, _totalFrames);
+        _error = videoWriter.GetError();
+        return nullptr;
+    }
+
+    for (int frame = 0; frame < _totalFrames; frame++)
+    {
+        _currentFrame = frame;
+        const double t = frame;
+        const double progress = GetFrameProgress(frame, _totalFrames);
         const PreciseRect viewport = GetZoomViewport(outermostZoom, innermostZoom, progress);
 
         fractalHandler.GetFractal()->SetPreciseView(viewport);
@@ -122,32 +102,28 @@ wxThread::ExitCode ZoomRenderer::Entry()
             fractalHandler.GetFractal()->SetVarGradient(0);
 
         const sf::Image out = fractalHandler.GetFractal()->GetRenderedImage();
-        const std::string filename = "frame_" + FixedLengthToString(_currentFrame, outputFileDigits) + ".jpg";
-        const std::string fullPath = AppPaths::JoinStd(_filepath, filename);
-
-        // ReSharper disable once CppExpressionWithoutSideEffects
-        out.saveToFile(fullPath);
+        if (!videoWriter.WriteFrame(out))
+        {
+            _error = videoWriter.GetError();
+            return nullptr;
+        }
     }
 
-    const std::string ffmpegPath = AppPaths::FfmpegFileStd();
-    const std::string fileTemplate = "frame_%0" + std::to_string(outputFileDigits) + "d.jpg";
-    const std::string inputFrames = AppPaths::JoinStd(_filepath, fileTemplate);
-    const std::string outputVideo = AppPaths::JoinStd(_filepath, "Zoom.mp4");
-    const std::string renderVideoCommand = QuoteCommandArg(ffmpegPath) + " -i " + QuoteCommandArg(inputFrames) +
-        " -c:v libx264 -vf fps=30 -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\" -pix_fmt yuv420p " + QuoteCommandArg(outputVideo);
-
-    system(renderVideoCommand.c_str());
+    _currentFrame = _totalFrames;
+    if (!videoWriter.Close())
+        _error = videoWriter.GetError();
 
     return nullptr;
 }
 
-ZoomRenderer::ZoomRenderer(std::string filepath, FractalCanvas* fractalCanvas, const int width, const int height, const int totalFrames,
-                           const double colorSpeed)
+ZoomRenderer::ZoomRenderer(std::string outputPath, FractalCanvas* fractalCanvas, const int width, const int height,
+                           const int totalFrames, const int framerate, const double colorSpeed) : wxThread(wxTHREAD_JOINABLE)
 {
-    _filepath = std::move(filepath);
+    _outputPath = std::move(outputPath);
     _fractalCanvasPtr = fractalCanvas;
     _currentFrame = 0;
     _totalFrames = totalFrames;
+    _framerate = framerate;
     _width = width;
     _height = height;
     _colorSpeed = colorSpeed;
@@ -155,5 +131,10 @@ ZoomRenderer::ZoomRenderer(std::string filepath, FractalCanvas* fractalCanvas, c
 
 int ZoomRenderer::GetProgress() const
 {
-    return _currentFrame;
+    return _currentFrame.load();
+}
+
+std::string ZoomRenderer::GetError() const
+{
+    return _error;
 }

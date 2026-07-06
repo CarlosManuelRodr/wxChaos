@@ -26,7 +26,12 @@ set(WXCHAOS_WX_LIBRARIES
 )
 
 find_package(doctest CONFIG REQUIRED)
-find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS graphics window system main)
+if(WIN32)
+        set(WXCHAOS_SFML_COMPONENTS graphics window system main)
+else()
+        set(WXCHAOS_SFML_COMPONENTS graphics window system)
+endif()
+find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS ${WXCHAOS_SFML_COMPONENTS})
 find_package(Angelscript CONFIG REQUIRED)
 
 # SymEngine's exported CMake config currently declares compatibility with
@@ -47,6 +52,11 @@ find_library(GMP_LIBRARY NAMES gmp REQUIRED)
 # -------------
 
 find_package(Threads REQUIRED)
+
+if(UNIX AND NOT APPLE)
+        find_package(PkgConfig REQUIRED)
+        pkg_check_modules(GSTREAMER REQUIRED IMPORTED_TARGET gstreamer-1.0 gstreamer-app-1.0)
+endif()
 
 # -------------------------------------------------------------------
 # Source Files (trimmed here for readability)
@@ -85,11 +95,17 @@ target_include_directories(wxChaos PRIVATE
 # Definitions
 # -------------------------------------------------------------------
 target_compile_definitions(wxChaos PRIVATE
-        WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
         WXCHAOS_BUILD_TYPE="$<CONFIG>"
         $<$<CONFIG:Debug>:__WXDEBUG__>
-        _HAS_STD_BYTE=0    # turns off the enum class std::byte in MSVC’s STL
 )
+
+if(WIN32)
+        target_compile_definitions(wxChaos PRIVATE WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_)
+endif()
+
+if(MSVC)
+        target_compile_definitions(wxChaos PRIVATE _HAS_STD_BYTE=0) # turns off the enum class std::byte in MSVC’s STL
+endif()
 
 # -------------------------------------------------------------------
 # Linking
@@ -99,14 +115,22 @@ target_link_libraries(wxChaos PRIVATE
         sfml-graphics
         sfml-window
         sfml-system
-        sfml-main
         Angelscript::angelscript
         ${SYMENGINE_LIBRARIES}
         ${MPFR_LIBRARY}
         ${GMP_LIBRARY}
         Threads::Threads          # pthreads
-        winmm comctl32 rpcrt4 wsock32 opengl32
 )
+
+if(WIN32)
+        target_link_libraries(wxChaos PRIVATE
+                sfml-main
+                winmm comctl32 rpcrt4 wsock32 opengl32
+                mfplat mfreadwrite mfuuid ole32
+        )
+elseif(UNIX AND NOT APPLE)
+        target_link_libraries(wxChaos PRIVATE PkgConfig::GSTREAMER)
+endif()
 
 # -------------------------------------------------------------------
 # Optional MSVC Settings
@@ -225,11 +249,15 @@ if(BUILD_TESTING)
             sfml-system
     )
 
-    target_compile_definitions(wxChaosGuiTests PRIVATE
-            WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
-            $<$<CONFIG:Debug>:__WXDEBUG__>
-            _HAS_STD_BYTE=0
-    )
+    target_compile_definitions(wxChaosGuiTests PRIVATE $<$<CONFIG:Debug>:__WXDEBUG__>)
+
+    if(WIN32)
+        target_compile_definitions(wxChaosGuiTests PRIVATE WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_)
+    endif()
+
+    if(MSVC)
+        target_compile_definitions(wxChaosGuiTests PRIVATE _HAS_STD_BYTE=0)
+    endif()
 
     add_test(NAME wxChaosGuiTests COMMAND wxChaosGuiTests)
 endif()
