@@ -1357,7 +1357,7 @@ void MainFrame::GetParserOpt()
 }
 void MainFrame::UpdateOptionsPanel()
 {
-    if (PanelOptions* panelOptions = _fractalCanvas->GetFractal()->GetOptPanel(); panelOptions->GetElementsSize() > 0)
+    if (PanelOptions* panelOptions = _fractalCanvas->GetFractal()->GetOptionsPanel(); panelOptions->GetElementsSize() > 0)
     {
         _fractalOptionsItem->Enable(true);
         _fractalOptionsPanel->SetTarget(_fractalCanvas->GetFractal());

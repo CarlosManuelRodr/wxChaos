@@ -38,7 +38,7 @@ void FractalOptionsPanel::SetApplyHandler(std::function<void()> handler)
 
 bool FractalOptionsPanel::HasVisibleOptions() const
 {
-    return _target != nullptr && (_showJuliaConstants || _target->GetOptPanel()->GetElementsSize() > 0);
+    return _target != nullptr && (_showJuliaConstants || _target->GetOptionsPanel()->GetElementsSize() > 0);
 }
 
 wxPanel* FractalOptionsPanel::CreateFractalOptionsHeader()
@@ -101,7 +101,7 @@ void FractalOptionsPanel::Build()
         _kImaginaryCtrl->Enable(juliaOptionsEnabled);
     }
 
-    if (PanelOptions* panelOptions = _target->GetOptPanel(); panelOptions->GetElementsSize() > 0)
+    if (PanelOptions* panelOptions = _target->GetOptionsPanel(); panelOptions->GetElementsSize() > 0)
     {
         size_t labelIndex;
         size_t index;
@@ -228,7 +228,7 @@ void FractalOptionsPanel::Apply() const
     if (_target == nullptr)
         return;
 
-    const PanelOptions* panelOptions = _target->GetOptPanel();
+    const PanelOptions* panelOptions = _target->GetOptionsPanel();
     for (unsigned int i = 0; i < _foundTextControls.size(); i++)
         *panelOptions->GetDoubleValue(_foundTextControls[i]) = TextUtils::ToDouble(_textControls[i]->GetValue());
 

@@ -1881,11 +1881,11 @@ unsigned int Fractal::GetIterationStep() const
     return _iterationStep;
 }
 // Option panel.
-bool Fractal::HasOptPanel() const
+bool Fractal::HasOptionsPanel() const
 {
     return _panelOpt.GetElementsSize() > 0;
 }
-PanelOptions* Fractal::GetOptPanel()
+PanelOptions* Fractal::GetOptionsPanel()
 {
     return &_panelOpt;
 }

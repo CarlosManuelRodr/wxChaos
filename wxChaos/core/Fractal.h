@@ -342,8 +342,7 @@ public:
     PointSample GetPointSample(unsigned int x, unsigned int y) const;
 
     ///@brief Evaluates and describes one world-coordinate point using the current fractal settings.
-    wxString InspectPoint(double real, double imaginary,
-                          std::optional<unsigned int> iterations = std::nullopt) const;
+    wxString InspectPoint(double real, double imaginary, std::optional<unsigned int> iterations = std::nullopt) const;
 
     // Thread control.
     ///@brief Calculate drawing limits of each worker and launches them.
@@ -512,8 +511,8 @@ public:
     unsigned int GetIterationStep() const;
 
     // Option panel.
-    bool HasOptPanel() const;
-    PanelOptions* GetOptPanel();
+    bool HasOptionsPanel() const;
+    PanelOptions* GetOptionsPanel();
 
     // Geometry.
     ///@brief Draws a simple line. Used in orbit mode.

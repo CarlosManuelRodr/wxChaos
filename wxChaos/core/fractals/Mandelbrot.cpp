@@ -50,7 +50,7 @@ void Mandelbrot::Render()
 void Mandelbrot::DrawOrbit()
 {
     complex<double> z(_orbitX, _orbitY);
-    complex<double> c = z;
+    const complex<double> c = z;
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
@@ -66,7 +66,7 @@ void Mandelbrot::DrawOrbit()
     }
 
     const auto color = outOfSet ? sf::Color(255, 0, 0) : sf::Color(0, 255, 0);
-    for (unsigned int i=0; i<zVector.size()-1; i++)
+    for (unsigned int i=0; i<zVector.size() - 1; i++)
         this->DrawLine(zVector[i].real(), zVector[i].imag(), zVector[i+1].real(), zVector[i+1].imag(), color, true);
 
     _orbitDrawn = true;
