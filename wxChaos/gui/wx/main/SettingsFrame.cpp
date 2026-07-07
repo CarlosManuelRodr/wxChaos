@@ -11,7 +11,7 @@
 #include "renderer/wxGradientDialog.h"
 
 SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::function<void(const AppConfig&)> configChanged)
-                             : wxDialog(parent, wxID_ANY, "Settings", wxDefaultPosition, wxSize(700, 520),
+                             : wxDialog(parent, wxID_ANY, _("Settings"), wxDefaultPosition, wxSize(700, 520),
                                   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
                              _configChanged(std::move(configChanged))
 {
@@ -22,10 +22,10 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
     _pages = new wxListbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLB_LEFT);
-    _pages->AddPage(CreateGeneralPage(), "General", true);
-    _pages->AddPage(CreatePresetsPage(), "Presets");
-    _pages->AddPage(CreateRenderingPage(), "Rendering");
-    _pages->AddPage(CreateZoomPage(), "Zoom");
+    _pages->AddPage(CreateGeneralPage(), _("General"), true);
+    _pages->AddPage(CreatePresetsPage(), _("Presets"));
+    _pages->AddPage(CreateRenderingPage(), _("Rendering"));
+    _pages->AddPage(CreateZoomPage(), _("Zoom"));
 #ifdef __WXMSW__
     // wxMSW uses a no-header report view for left-side listbook labels.
     // Autosize its text column so page titles are not occluded.
@@ -34,7 +34,7 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
     mainSizer->Add(_pages, 1, wxEXPAND | wxALL, 12);
 
     const auto buttons = new wxBoxSizer(wxHORIZONTAL);
-    const auto defaultsButton = new wxButton(this, wxID_REVERT_TO_SAVED, "Restore defaults");
+    const auto defaultsButton = new wxButton(this, wxID_REVERT_TO_SAVED, _("Restore defaults"));
     const auto okButton = new wxButton(this, wxID_OK);
     const auto cancelButton = new wxButton(this, wxID_CANCEL);
     const auto applyButton = new wxButton(this, wxID_APPLY);
@@ -60,15 +60,19 @@ wxPanel* SettingsFrame::CreateGeneralPage()
 {
     const auto page = new wxPanel(_pages);
     const auto sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->Add(new wxStaticText(page, wxID_ANY, "Startup"), 0, wxBOTTOM, 8);
+    sizer->Add(new wxStaticText(page, wxID_ANY, _("Startup")), 0, wxBOTTOM, 8);
 
-    _constantWindow = new wxCheckBox(page, wxID_ANY, "Open the Julia constant window");
-    _commandConsole = new wxCheckBox(page, wxID_ANY, "Open the command console");
-    _juliaMode = new wxCheckBox(page, wxID_ANY, "Open Julia mode");
-    _colorPaletteWindow = new wxCheckBox(page, wxID_ANY, "Open renderer options");
-    _firstUse = new wxCheckBox(page, wxID_ANY, "Show the welcome guide on next launch");
-    const wxString themeChoices[] = {"System", "Light", "Dark"};
+    _constantWindow = new wxCheckBox(page, wxID_ANY, _("Open the Julia constant window"));
+    _commandConsole = new wxCheckBox(page, wxID_ANY, _("Open the command console"));
+    _juliaMode = new wxCheckBox(page, wxID_ANY, _("Open Julia mode"));
+    _colorPaletteWindow = new wxCheckBox(page, wxID_ANY, _("Open renderer options"));
+    _firstUse = new wxCheckBox(page, wxID_ANY, _("Show the welcome guide on next launch"));
+    const wxString themeChoices[] = {_("System"), _("Light"), _("Dark")};
     _theme = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(themeChoices), themeChoices);
+    const wxString languageChoices[] = {_("System"), _("English"), _("Spanish")};
+    _languages = {AppLanguage::System, AppLanguage::English, AppLanguage::Spanish};
+    _language = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                             std::size(languageChoices), languageChoices);
 
     sizer->Add(_constantWindow, 0, wxBOTTOM, 8);
     sizer->Add(_commandConsole, 0, wxBOTTOM, 8);
@@ -76,11 +80,15 @@ wxPanel* SettingsFrame::CreateGeneralPage()
     sizer->Add(_colorPaletteWindow, 0, wxBOTTOM, 8);
     sizer->Add(_firstUse, 0, wxBOTTOM, 8);
     const auto themeRow = new wxBoxSizer(wxHORIZONTAL);
-    themeRow->Add(new wxStaticText(page, wxID_ANY, "Appearance:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    themeRow->Add(new wxStaticText(page, wxID_ANY, _("Appearance:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
     themeRow->Add(_theme, 0);
     sizer->Add(themeRow, 0, wxTOP | wxBOTTOM, 12);
+    const auto languageRow = new wxBoxSizer(wxHORIZONTAL);
+    languageRow->Add(new wxStaticText(page, wxID_ANY, _("Language:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    languageRow->Add(_language, 0);
+    sizer->Add(languageRow, 0, wxBOTTOM, 12);
     sizer->Add(new wxStaticText(page, wxID_ANY,
-        "Startup window changes take effect the next time wxChaos starts."), 0, wxTOP, 12);
+        _("Startup window and language changes take effect the next time wxChaos starts.")), 0, wxTOP, 12);
     page->SetSizer(sizer);
     return page;
 }
@@ -92,12 +100,12 @@ wxPanel* SettingsFrame::CreatePresetsPage()
     sizer->AddGrowableCol(1, 1);
 
     const wxString names[] = {
-        "Mandelbrot", "Mandelbrot Z^m", "Julia", "Julia Z^m", "Newton",
-        "Sine", "Magnet", "Jellyfish", "Manowar", "Manowar Julia",
-        "Sierpinski Triangle", "Fixed Point: sin(z)", "Fixed Point: cos(z)",
-        "Fixed Point: tan(z)", "Fixed Point: z^2", "Tricorn", "Burning Ship",
-        "Burning Ship Julia", "Fractory", "Cell", "Logistic Map", "Henon Map", "Double Pendulum",
-        "User Defined", "User Defined Fixed Point", "User Defined Newton-Raphson"
+        _("Mandelbrot"), _("Mandelbrot Z^m"), _("Julia"), _("Julia Z^m"), _("Newton"),
+        _("Sine"), _("Magnet"), _("Jellyfish"), _("Manowar"), _("Manowar Julia"),
+        _("Sierpinski Triangle"), _("Fixed Point: sin(z)"), _("Fixed Point: cos(z)"),
+        _("Fixed Point: tan(z)"), _("Fixed Point: z^2"), _("Tricorn"), _("Burning Ship"),
+        _("Burning Ship Julia"), _("Fractory"), _("Cell"), _("Logistic Map"), _("Henon Map"), _("Double Pendulum"),
+        _("User Defined"), _("User Defined Fixed Point"), _("User Defined Newton-Raphson")
     };
     _fractalTypes = {
         FractalType::Mandelbrot, FractalType::MandelbrotZN, FractalType::Julia, FractalType::JuliaZN,
@@ -110,8 +118,8 @@ wxPanel* SettingsFrame::CreatePresetsPage()
     };
 
     _fractalType = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(names), names);
-    _automaticIterations = new wxCheckBox(page, wxID_ANY, "Automatic iterations");
-    sizer->Add(new wxStaticText(page, wxID_ANY, "Default fractal:"), 0, wxALIGN_CENTER_VERTICAL);
+    _automaticIterations = new wxCheckBox(page, wxID_ANY, _("Automatic iterations"));
+    sizer->Add(new wxStaticText(page, wxID_ANY, _("Default fractal:")), 0, wxALIGN_CENTER_VERTICAL);
     sizer->Add(_fractalType, 1, wxEXPAND);
     sizer->AddSpacer(0);
     sizer->Add(_automaticIterations, 0, wxEXPAND);
@@ -125,29 +133,29 @@ wxPanel* SettingsFrame::CreateRenderingPage()
     const auto sizer = new wxBoxSizer(wxVERTICAL);
 
     const auto paletteRow = new wxBoxSizer(wxHORIZONTAL);
-    paletteRow->Add(new wxStaticText(page, wxID_ANY, "Palette size:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    paletteRow->Add(new wxStaticText(page, wxID_ANY, _("Palette size:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
     _paletteSize = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
         wxSP_ARROW_KEYS, 1, 20000, 300);
     paletteRow->Add(_paletteSize, 0);
     sizer->Add(paletteRow, 0, wxBOTTOM, 16);
 
     const auto cycleRow = new wxBoxSizer(wxHORIZONTAL);
-    cycleRow->Add(new wxStaticText(page, wxID_ANY, "Color cycle length:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    cycleRow->Add(new wxStaticText(page, wxID_ANY, _("Color cycle length:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
     _colorCycleLength = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
         wxSP_ARROW_KEYS, 1, 20000, 72);
     cycleRow->Add(_colorCycleLength, 0);
     sizer->Add(cycleRow, 0, wxBOTTOM, 16);
 
     const auto antiAliasingRow = new wxBoxSizer(wxHORIZONTAL);
-    antiAliasingRow->Add(new wxStaticText(page, wxID_ANY, "Anti-aliasing:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
-    const wxString antiAliasingChoices[] = {"Off", "2x", "4x"};
+    antiAliasingRow->Add(new wxStaticText(page, wxID_ANY, _("Anti-aliasing:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    const wxString antiAliasingChoices[] = {_("Off"), "2x", "4x"};
     _antiAliasing = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                  std::size(antiAliasingChoices), antiAliasingChoices);
     antiAliasingRow->Add(_antiAliasing, 0);
     sizer->Add(antiAliasingRow, 0, wxBOTTOM, 16);
 
     const wxString colorStyleNames[] = {
-        "System",
+        _("System"),
         "Retro",
         "Hakim",
         "Aquamarine",
@@ -195,21 +203,21 @@ wxPanel* SettingsFrame::CreateRenderingPage()
         CustomGradient
     };
     const auto styleRow = new wxBoxSizer(wxHORIZONTAL);
-    styleRow->Add(new wxStaticText(page, wxID_ANY, "Color style:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    styleRow->Add(new wxStaticText(page, wxID_ANY, _("Color style:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
     _colorStyle = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(colorStyleNames), colorStyleNames);
     styleRow->Add(_colorStyle, 0);
     sizer->Add(styleRow, 0, wxBOTTOM, 12);
 
-    sizer->Add(new wxStaticText(page, wxID_ANY, "Gradient preview:"), 0, wxBOTTOM, 6);
+    sizer->Add(new wxStaticText(page, wxID_ANY, _("Gradient preview:")), 0, wxBOTTOM, 6);
     const auto gradientRow = new wxBoxSizer(wxHORIZONTAL);
     _gradientPreview = new wxStaticBitmap(page, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(320, 44), wxBORDER_SIMPLE);
-    const auto editGradient = new wxButton(page, wxID_EDIT, "Edit...");
+    const auto editGradient = new wxButton(page, wxID_EDIT, _("Edit..."));
     gradientRow->Add(_gradientPreview, 1, wxEXPAND | wxRIGHT, 12);
     gradientRow->Add(editGradient, 0, wxALIGN_CENTER_VERTICAL);
     sizer->Add(gradientRow, 0, wxEXPAND | wxBOTTOM, 18);
 
-    _colorFractal = new wxCheckBox(page, wxID_ANY, "Color points outside the fractal set");
-    _colorSet = new wxCheckBox(page, wxID_ANY, "Color points inside the fractal set");
+    _colorFractal = new wxCheckBox(page, wxID_ANY, _("Color points outside the fractal set"));
+    _colorSet = new wxCheckBox(page, wxID_ANY, _("Color points inside the fractal set"));
     sizer->Add(_colorFractal, 0, wxBOTTOM, 8);
     sizer->Add(_colorSet, 0, wxBOTTOM, 8);
     page->SetSizer(sizer);
@@ -230,9 +238,9 @@ wxPanel* SettingsFrame::CreateZoomPage()
     _zoomInertiaMilliseconds = new wxSpinCtrl(page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
         wxSP_ARROW_KEYS, 0, 1000, 180);
 
-    sizer->Add(new wxStaticText(page, wxID_ANY, "Wheel zoom step (%):"), 0, wxALIGN_CENTER_VERTICAL);
+    sizer->Add(new wxStaticText(page, wxID_ANY, _("Wheel zoom step (%):")), 0, wxALIGN_CENTER_VERTICAL);
     sizer->Add(_zoomStepPercent, 0);
-    sizer->Add(new wxStaticText(page, wxID_ANY, "Preview inertia (ms):"), 0, wxALIGN_CENTER_VERTICAL);
+    sizer->Add(new wxStaticText(page, wxID_ANY, _("Preview inertia (ms):")), 0, wxALIGN_CENTER_VERTICAL);
     sizer->Add(_zoomInertiaMilliseconds, 0);
     page->SetSizer(sizer);
     return page;
@@ -256,6 +264,15 @@ void SettingsFrame::LoadControls(const AppConfig& config)
         case AppAppearance::System:
             _theme->SetSelection(0);
             break;
+    }
+    _language->SetSelection(0);
+    for (size_t i = 0; i < _languages.size(); ++i)
+    {
+        if (_languages[i] == config.language)
+        {
+            _language->SetSelection(static_cast<int>(i));
+            break;
+        }
     }
     _automaticIterations->SetValue(config.automaticIterations);
     _paletteSize->SetValue(config.paletteSize);
@@ -349,6 +366,9 @@ AppConfig SettingsFrame::ReadControls()
             config.appearance = AppAppearance::System;
             break;
     }
+    const int languageSelection = _language->GetSelection();
+    if (languageSelection != wxNOT_FOUND)
+        config.language = _languages[languageSelection];
     return config;
 }
 

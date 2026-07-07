@@ -1,5 +1,6 @@
 #include "gui/wx/main/MainFrame.h"
 #include "gui/wx/common/AppTheme.h"
+#include "gui/wx/common/AppLocalization.h"
 #include "gui/wx/config/AppConfigStore.h"
 #include "utils/AppPaths.h"
 
@@ -86,10 +87,12 @@ public:
 #ifdef _WIN32
         EnableHighDpiSupport();
 #endif
-        const AppAppearance appearance = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load().appearance;
+        const AppConfig config = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load();
+        const AppAppearance appearance = config.appearance;
         if (SetAppearance(ToWxAppearance(appearance)) == AppearanceResult::Failure)
             wxLogWarning("The requested application appearance is not available.");
 
+        AppLocalization::Initialize(config.language);
         AppTheme::SetAppearance(appearance);
         AppTheme::Install();
         const auto main = new MainFrame;

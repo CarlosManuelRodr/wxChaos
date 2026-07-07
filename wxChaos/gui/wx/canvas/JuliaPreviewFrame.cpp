@@ -10,7 +10,7 @@ wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, const FractalType fractalType,
                                      const Options& juliaOpt, const int zoomStepPercent, const int zoomInertiaMilliseconds,
                                      const wxSize& size)
-                                     : wxFrame(parent, wxID_ANY, "Julia mode", wxDefaultPosition, wxDefaultSize),
+                                     : wxFrame(parent, wxID_ANY, _("Julia mode"), wxDefaultPosition, wxDefaultSize),
                                        _target(target),
                                        _constantSyncTimer(this)
 {
@@ -94,35 +94,35 @@ void JuliaPreviewFrame::CreateMenuBar()
     _fractalMenu = new wxMenu();
     _iterationsMenu = new wxMenu();
 
-    _fileMenu->Append(wxID_CLOSE, "Close");
+    _fileMenu->Append(wxID_CLOSE, _("Close"));
 
-    _toolbarItem = new wxMenuItem(_viewMenu, ID_JULIA_PREVIEW_VIEW_TOOLBAR, "Toolbar", wxEmptyString, wxITEM_CHECK);
+    _toolbarItem = new wxMenuItem(_viewMenu, ID_JULIA_PREVIEW_VIEW_TOOLBAR, _("Toolbar"), wxEmptyString, wxITEM_CHECK);
     _viewMenu->Append(_toolbarItem);
     _toolbarItem->Check(true);
 
-    _fractalMenu->Append(ID_JULIA_PREVIEW_OPEN_IN_MAIN, "Open this in main window");
+    _fractalMenu->Append(ID_JULIA_PREVIEW_OPEN_IN_MAIN, _("Open this in main window"));
     _fractalMenu->AppendSeparator();
-    _abortRenderItem = _fractalMenu->Append(ID_JULIA_PREVIEW_ABORT_RENDER, wxString("Abort") + '\t' + "P");
+    _abortRenderItem = _fractalMenu->Append(ID_JULIA_PREVIEW_ABORT_RENDER, _("Abort") + '\t' + "P");
     _abortRenderItem->Enable(false);
-    _fractalMenu->Append(ID_JULIA_PREVIEW_REDRAW, wxString("Redraw") + '\t' + "F5");
-    _fractalMenu->Append(ID_JULIA_PREVIEW_RESET, "Reset");
+    _fractalMenu->Append(ID_JULIA_PREVIEW_REDRAW, _("Redraw") + '\t' + "F5");
+    _fractalMenu->Append(ID_JULIA_PREVIEW_RESET, _("Reset"));
 
-    _iterationsMenu->Append(ID_JULIA_PREVIEW_SET_ITERATIONS, "Set iterations");
-    _iterationsMenu->Append(ID_JULIA_PREVIEW_INCREASE_ITERATIONS, wxString("Increase iterations") + '\t' + "L");
-    _iterationsMenu->Append(ID_JULIA_PREVIEW_DECREASE_ITERATIONS, wxString("Decrease iterations") + '\t' + "K");
+    _iterationsMenu->Append(ID_JULIA_PREVIEW_SET_ITERATIONS, _("Set iterations"));
+    _iterationsMenu->Append(ID_JULIA_PREVIEW_INCREASE_ITERATIONS, _("Increase iterations") + '\t' + "L");
+    _iterationsMenu->Append(ID_JULIA_PREVIEW_DECREASE_ITERATIONS, _("Decrease iterations") + '\t' + "K");
     _iterationsMenu->AppendSeparator();
     _automaticIterationsItem = new wxMenuItem(
         _iterationsMenu,
         ID_JULIA_PREVIEW_AUTOMATIC_ITERATIONS,
-        "Automatic iterations",
+        _("Automatic iterations"),
         wxEmptyString,
         wxITEM_CHECK);
     _iterationsMenu->Append(_automaticIterationsItem);
 
-    _menubar->Append(_fileMenu, "File");
-    _menubar->Append(_viewMenu, "View");
-    _menubar->Append(_fractalMenu, "Fractal");
-    _menubar->Append(_iterationsMenu, "Iterations");
+    _menubar->Append(_fileMenu, _("File"));
+    _menubar->Append(_viewMenu, _("View"));
+    _menubar->Append(_fractalMenu, _("Fractal"));
+    _menubar->Append(_iterationsMenu, _("Iterations"));
     SetMenuBar(_menubar);
 }
 

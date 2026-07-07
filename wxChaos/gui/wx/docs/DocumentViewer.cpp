@@ -27,12 +27,12 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
     _forwardButton = new wxButton(this, wxID_ANY, "", wxDefaultPosition, wxSize(36, 32), 0);
     _backButton->SetBitmap(CreateNavigationButtonBitmap(true));
     _forwardButton->SetBitmap(CreateNavigationButtonBitmap(false));
-    _backButton->SetToolTip("Back");
-    _forwardButton->SetToolTip("Forward");
+    _backButton->SetToolTip(_("Back"));
+    _forwardButton->SetToolTip(_("Forward"));
     buttonSizer->Add(_backButton, 0, wxALL, 5);
     buttonSizer->Add(_forwardButton, 0, wxALL, 5);
     buttonSizer->AddStretchSpacer();
-    _closeButton = new wxButton(this, wxID_ANY, "Close", wxDefaultPosition, wxDefaultSize, 0);
+    _closeButton = new wxButton(this, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_closeButton, 0, wxALL, 5);
     mainSizer->Add(buttonSizer, 0, wxEXPAND, 5);
 

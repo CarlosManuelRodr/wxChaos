@@ -1,0 +1,186 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wxChaos\n"
+"Language: es\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Settings"
+msgstr "Configuración"
+
+msgid "General"
+msgstr "General"
+
+msgid "Presets"
+msgstr "Preajustes"
+
+msgid "Rendering"
+msgstr "Renderizado"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Restore defaults"
+msgstr "Restaurar valores predeterminados"
+
+msgid "Startup"
+msgstr "Inicio"
+
+msgid "Open the Julia constant window"
+msgstr "Abrir la ventana de constante de Julia"
+
+msgid "Open the command console"
+msgstr "Abrir la consola de comandos"
+
+msgid "Open Julia mode"
+msgstr "Abrir modo Julia"
+
+msgid "Open renderer options"
+msgstr "Abrir opciones de renderizado"
+
+msgid "Show the welcome guide on next launch"
+msgstr "Mostrar la guía de bienvenida en el próximo inicio"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "Dark"
+msgstr "Oscuro"
+
+msgid "English"
+msgstr "Inglés"
+
+msgid "Spanish"
+msgstr "Español"
+
+msgid "Appearance:"
+msgstr "Apariencia:"
+
+msgid "Language:"
+msgstr "Idioma:"
+
+msgid "Startup window and language changes take effect the next time wxChaos starts."
+msgstr "Los cambios de ventanas de inicio e idioma tendrán efecto la próxima vez que wxChaos se inicie."
+
+msgid "Automatic iterations"
+msgstr "Iteraciones automáticas"
+
+msgid "Default fractal:"
+msgstr "Fractal predeterminado:"
+
+msgid "Palette size:"
+msgstr "Tamaño de paleta:"
+
+msgid "Color cycle length:"
+msgstr "Longitud del ciclo de color:"
+
+msgid "Anti-aliasing:"
+msgstr "Suavizado:"
+
+msgid "Off"
+msgstr "Desactivado"
+
+msgid "Color style:"
+msgstr "Estilo de color:"
+
+msgid "Gradient preview:"
+msgstr "Vista previa del gradiente:"
+
+msgid "Edit..."
+msgstr "Editar..."
+
+msgid "Color points outside the fractal set"
+msgstr "Colorear puntos fuera del conjunto fractal"
+
+msgid "Color points inside the fractal set"
+msgstr "Colorear puntos dentro del conjunto fractal"
+
+msgid "Wheel zoom step (%):"
+msgstr "Paso de zoom de la rueda (%):"
+
+msgid "Preview inertia (ms):"
+msgstr "Inercia de vista previa (ms):"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Back"
+msgstr "Atrás"
+
+msgid "Forward"
+msgstr "Adelante"
+
+msgid "File"
+msgstr "Archivo"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "Fractal"
+msgstr "Fractal"
+
+msgid "Iterations"
+msgstr "Iteraciones"
+
+msgid "Renderer"
+msgstr "Renderizador"
+
+msgid "Tools"
+msgstr "Herramientas"
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Save image"
+msgstr "Guardar imagen"
+
+msgid "Quit"
+msgstr "Salir"
+
+msgid "Toolbar"
+msgstr "Barra de herramientas"
+
+msgid "Fractal options"
+msgstr "Opciones del fractal"
+
+msgid "Set iterations"
+msgstr "Definir iteraciones"
+
+msgid "Increase iterations"
+msgstr "Aumentar iteraciones"
+
+msgid "Decrease iterations"
+msgstr "Disminuir iteraciones"
+
+msgid "Abort"
+msgstr "Abortar"
+
+msgid "Redraw"
+msgstr "Redibujar"
+
+msgid "Reset"
+msgstr "Restablecer"
+
+msgid "Renderer options"
+msgstr "Opciones de renderizado"
+
+msgid "User manual"
+msgstr "Manual de usuario"
+
+msgid "Keyboard guide"
+msgstr "Guía de teclado"
+
+msgid "Open welcome guide"
+msgstr "Abrir guía de bienvenida"
+
+msgid "About"
+msgstr "Acerca de"
+
+msgid "Julia mode"
+msgstr "Modo Julia"
+
+msgid "Show orbit"
+msgstr "Mostrar órbita"

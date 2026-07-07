@@ -1,6 +1,7 @@
 #include <doctest/doctest.h>
 
 #include <filesystem>
+#include <fstream>
 #include <wx/init.h>
 #include "config/AppConfigStore.h"
 
@@ -46,6 +47,62 @@ TEST_CASE("AppConfigStore preserves Logistic Map fractal type")
 
     const AppConfig loaded = store.Load();
     CHECK(loaded.type == FractalType::LogisticMap);
+
+    std::filesystem::remove(path);
+}
+
+TEST_CASE("AppConfigStore persists application language")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path = std::filesystem::temp_directory_path() / "wxchaos_language_config_store_test.ini";
+    std::filesystem::remove(path);
+
+    AppConfig config;
+    CHECK(config.language == AppLanguage::System);
+    config.language = AppLanguage::Spanish;
+
+    const AppConfigStore store(path.string());
+    store.Save(config);
+
+    const AppConfig loaded = store.Load();
+    CHECK(loaded.language == AppLanguage::Spanish);
+
+    std::filesystem::remove(path);
+}
+
+TEST_CASE("AppConfigStore falls back to system language for invalid values")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path = std::filesystem::temp_directory_path() / "wxchaos_invalid_language_config_test.ini";
+    {
+        std::ofstream file(path);
+        file << "[General]\n";
+        file << "language=Klingon\n";
+    }
+
+    const AppConfig loaded = AppConfigStore(path.string()).Load();
+    CHECK(loaded.language == AppLanguage::System);
+
+    std::filesystem::remove(path);
+}
+
+TEST_CASE("AppConfigStore legacy config keeps system language by default")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path = std::filesystem::temp_directory_path() / "wxchaos_legacy_language_config_test.ini";
+    {
+        std::ofstream file(path);
+        file << "FRACTAL_TYPE=Mandelbrot\n";
+    }
+
+    const AppConfig loaded = AppConfigStore(path.string()).Load();
+    CHECK(loaded.language == AppLanguage::System);
 
     std::filesystem::remove(path);
 }

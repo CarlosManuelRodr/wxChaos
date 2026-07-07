@@ -4,6 +4,7 @@
 #include <string>
 #include <wx/string.h>
 #include "../common/AppAppearance.h"
+#include "../common/AppLanguage.h"
 #include "coloring/ColorPaletteTypes.h"
 #include "../../../core/types/FractalType.h"
 
@@ -38,6 +39,7 @@ struct AppConfig
     bool colorSet = true;
     bool firstUse = false;
     AppAppearance appearance = AppAppearance::System; ///< Application appearance preference.
+    AppLanguage language = AppLanguage::System;       ///< Application language preference.
     int zoomStepPercent = 50;                         ///< Percent zoomed in by one mouse-wheel notch.
     int zoomInertiaMilliseconds = 685;                ///< Temporary zoom preview easing duration.
 };
@@ -87,6 +89,8 @@ private:
     static const std::map<std::string, ColorPaletteTypes>& ColorStyles();
     ///@brief Returns the persisted names for application appearance preferences.
     static const std::map<std::string, AppAppearance>& Appearances();
+    ///@brief Returns the persisted names for application language preferences.
+    static const std::map<std::string, AppLanguage>& Languages();
     static FractalType FractalTypeFromString(const std::string& value, FractalType defaultValue);
     static std::string FractalTypeToString(FractalType type);
     ///@brief Converts a persisted gradient color style name to its enum value.
@@ -107,6 +111,8 @@ private:
     ///@param appearance Appearance preference to serialize.
     ///@return Persisted appearance name.
     static std::string AppearanceToString(AppAppearance appearance);
+    static AppLanguage LanguageFromString(const std::string& value, AppLanguage defaultValue);
+    static std::string LanguageToString(AppLanguage language);
     ///@brief Identifies whether a saved gradient string matches a built-in preset.
     ///@param gradient Serialized gradient string.
     ///@return Matching preset, or CustomGradient when no preset matches.

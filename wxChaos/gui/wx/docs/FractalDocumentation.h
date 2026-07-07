@@ -6,6 +6,7 @@
 #pragma once
 
 #include <wx/string.h>
+#include "common/AppLanguage.h"
 #include "ScriptData.h"
 #include "types/FractalType.h"
 
@@ -17,6 +18,7 @@ class FractalDocumentation
 {
     static wxString GetDocumentFilename(FractalType type);
     static wxString ResolveScriptDocumentFile(const std::string& documentationPath);
+    static wxString ResolveBundledDocumentFile(const wxString& relativePath, AppLanguage language);
 
 public:
     /// @brief Checks whether a fractal type has bundled documentation.
@@ -28,6 +30,7 @@ public:
     /// @param type Fractal type to inspect.
     /// @return Full local file path, or an empty string when unavailable.
     static wxString GetDocumentFile(FractalType type);
+    static wxString GetDocumentFile(FractalType type, AppLanguage language);
 
     /// @brief Checks whether script metadata declares a documentation page.
     /// @param scriptData Script configuration captured from Configure().
@@ -38,4 +41,5 @@ public:
     /// @param scriptData Script configuration captured from Configure().
     /// @return Full local file path, or an empty string when unavailable.
     static wxString GetDocumentFile(const ScriptData& scriptData);
+    static wxString GetDocumentFile(const ScriptData& scriptData, AppLanguage language);
 };

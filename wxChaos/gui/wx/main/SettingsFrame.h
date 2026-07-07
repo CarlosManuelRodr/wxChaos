@@ -86,6 +86,7 @@ class SettingsFrame final : public wxDialog
     wxCheckBox* _colorPaletteWindow{};                    ///< Opens renderer options at startup.
     wxCheckBox* _firstUse{};                              ///< Shows the welcome guide on the next launch.
     wxChoice* _theme{};                                   ///< Selects the system, light, or dark application appearance.
+    wxChoice* _language{};                                ///< Selects the system, English, or Spanish application language.
     wxChoice* _fractalType{};                             ///< Selects the default fractal type.
     wxChoice* _colorStyle{};                              ///< Selects the default gradient color style.
     wxCheckBox* _automaticIterations{};                   ///< Enables viewport-driven iteration counts.
@@ -100,6 +101,7 @@ class SettingsFrame final : public wxDialog
     wxGradient _gradient;                                 ///< Gradient being edited by the frame.
     std::vector<FractalType> _fractalTypes;               ///< Values corresponding to the fractal choice entries.
     std::vector<ColorPaletteTypes> _colorStyles;          ///< Values corresponding to the color style choice entries.
+    std::vector<AppLanguage> _languages;                  ///< Values corresponding to the language choice entries.
     std::function<void(const AppConfig&)> _configChanged; ///< Applies saved settings to the running application.
 
 public:

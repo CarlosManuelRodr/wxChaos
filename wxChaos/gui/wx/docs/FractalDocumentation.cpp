@@ -1,13 +1,64 @@
 #include "docs/FractalDocumentation.h"
 #include "AppPaths.h"
+#include "common/AppLocalization.h"
 #include <wx/filename.h>
+
+wxString FractalDocumentation::ResolveBundledDocumentFile(const wxString& relativePath, const AppLanguage language)
+{
+    if (relativePath.empty())
+        return wxEmptyString;
+
+    const wxString languageDirectory = AppLocalization::DocumentationLanguageDirectory(language);
+    if (!languageDirectory.empty())
+    {
+        wxFileName localizedFile;
+        localizedFile.AssignDir(AppPaths::AppDirectory({"Resources", "Documents", languageDirectory}));
+
+        wxString remaining = relativePath;
+        while (remaining.Contains("/"))
+        {
+            const wxString directory = remaining.BeforeFirst('/');
+            if (!directory.empty() && directory != ".")
+                localizedFile.AppendDir(directory);
+            remaining = remaining.AfterFirst('/');
+        }
+
+        localizedFile.SetFullName(remaining);
+        localizedFile.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE);
+        if (localizedFile.FileExists())
+            return localizedFile.GetFullPath();
+    }
+
+    wxFileName defaultFile;
+    defaultFile.AssignDir(AppPaths::AppDirectory({"Resources", "Documents"}));
+
+    wxString remaining = relativePath;
+    while (remaining.Contains("/"))
+    {
+        const wxString directory = remaining.BeforeFirst('/');
+        if (!directory.empty() && directory != ".")
+            defaultFile.AppendDir(directory);
+        remaining = remaining.AfterFirst('/');
+    }
+
+    defaultFile.SetFullName(remaining);
+    defaultFile.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE);
+    return defaultFile.GetFullPath();
+}
 
 wxString FractalDocumentation::ResolveScriptDocumentFile(const std::string& documentationPath)
 {
-    if (documentationPath.empty())
+    ScriptData scriptData;
+    scriptData.documentationPath = documentationPath;
+    return GetDocumentFile(scriptData, AppLocalization::CurrentLanguage());
+}
+
+wxString FractalDocumentation::GetDocumentFile(const ScriptData& scriptData, const AppLanguage language)
+{
+    if (scriptData.documentationPath.empty())
         return wxEmptyString;
 
-    wxString path = wxString::FromUTF8(documentationPath.c_str());
+    wxString path = wxString::FromUTF8(scriptData.documentationPath.c_str());
     path.Replace("\\", "/");
 
     if (wxFileName fileName(path); fileName.IsAbsolute())
@@ -18,21 +69,7 @@ wxString FractalDocumentation::ResolveScriptDocumentFile(const std::string& docu
     else if (path.StartsWith("Documents/"))
         path = path.Mid(wxString("Documents/").length());
 
-    wxFileName documentFile;
-    documentFile.AssignDir(AppPaths::AppDirectory({"Resources", "Documents"}));
-
-    wxString remaining = path;
-    while (remaining.Contains("/"))
-    {
-        const wxString directory = remaining.BeforeFirst('/');
-        if (!directory.empty() && directory != ".")
-            documentFile.AppendDir(directory);
-        remaining = remaining.AfterFirst('/');
-    }
-
-    documentFile.SetFullName(remaining);
-    documentFile.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE);
-    return documentFile.GetFullPath();
+    return ResolveBundledDocumentFile(path, language);
 }
 
 wxString FractalDocumentation::GetDocumentFilename(const FractalType type)
@@ -76,8 +113,13 @@ bool FractalDocumentation::HasDocumentation(const FractalType type)
 
 wxString FractalDocumentation::GetDocumentFile(const FractalType type)
 {
+    return GetDocumentFile(type, AppLocalization::CurrentLanguage());
+}
+
+wxString FractalDocumentation::GetDocumentFile(const FractalType type, const AppLanguage language)
+{
     const wxString filename = GetDocumentFilename(type);
-    return filename.empty() ? wxEmptyString : AppPaths::ResourceFile({"Documents", filename});
+    return filename.empty() ? wxEmptyString : ResolveBundledDocumentFile(filename, language);
 }
 
 bool FractalDocumentation::HasDocumentation(const ScriptData& scriptData)
@@ -87,5 +129,5 @@ bool FractalDocumentation::HasDocumentation(const ScriptData& scriptData)
 
 wxString FractalDocumentation::GetDocumentFile(const ScriptData& scriptData)
 {
-    return ResolveScriptDocumentFile(scriptData.documentationPath);
+    return GetDocumentFile(scriptData, AppLocalization::CurrentLanguage());
 }

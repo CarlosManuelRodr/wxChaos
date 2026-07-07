@@ -33,6 +33,7 @@ else()
 endif()
 find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS ${WXCHAOS_SFML_COMPONENTS})
 find_package(Angelscript CONFIG REQUIRED)
+find_package(Gettext)
 
 # SymEngine's exported CMake config currently declares compatibility with
 # CMake 2.8.12, which CMake 4 rejects. Keep this workaround local to package
@@ -121,6 +122,30 @@ target_link_libraries(wxChaos PRIVATE
         ${GMP_LIBRARY}
         Threads::Threads          # pthreads
 )
+
+if(GETTEXT_FOUND)
+        file(GLOB WXCHAOS_PO_FILES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/locale/*/wxchaos.po")
+        foreach(WXCHAOS_PO_FILE ${WXCHAOS_PO_FILES})
+                get_filename_component(WXCHAOS_LOCALE_DIR "${WXCHAOS_PO_FILE}" DIRECTORY)
+                get_filename_component(WXCHAOS_LOCALE "${WXCHAOS_LOCALE_DIR}" NAME)
+                set(WXCHAOS_MO_FILE
+                        "${CMAKE_SOURCE_DIR}/app_resources/Resources/Locale/${WXCHAOS_LOCALE}/LC_MESSAGES/wxchaos.mo")
+                add_custom_command(
+                        OUTPUT "${WXCHAOS_MO_FILE}"
+                        COMMAND ${CMAKE_COMMAND} -E make_directory
+                        "${CMAKE_SOURCE_DIR}/app_resources/Resources/Locale/${WXCHAOS_LOCALE}/LC_MESSAGES"
+                        COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o "${WXCHAOS_MO_FILE}" "${WXCHAOS_PO_FILE}"
+                        DEPENDS "${WXCHAOS_PO_FILE}"
+                        COMMENT "Compiling ${WXCHAOS_LOCALE} wxChaos translation catalog..."
+                )
+                list(APPEND WXCHAOS_MO_FILES "${WXCHAOS_MO_FILE}")
+        endforeach()
+
+        if(WXCHAOS_MO_FILES)
+                add_custom_target(wxChaosTranslations DEPENDS ${WXCHAOS_MO_FILES})
+                add_dependencies(wxChaos wxChaosTranslations)
+        endif()
+endif()
 
 if(WIN32)
         target_link_libraries(wxChaos PRIVATE
@@ -225,12 +250,14 @@ if(BUILD_TESTING)
             tests/gui/wx/DocumentationLinkActionTests.cpp
             tests/gui/wx/FractalDocumentationTests.cpp
             tests/gui/wx/AppConfigStoreTests.cpp
+            tests/gui/wx/AppLocalizationTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
             tests/gui/wx/WxGradientTests.cpp
             wxChaos/core/coloring/ColorPalette.cpp
             wxChaos/gui/sfml/SelectionRect.cpp
             wxChaos/gui/wx/config/AppConfigStore.cpp
             wxChaos/gui/wx/common/AppTheme.cpp
+            wxChaos/gui/wx/common/AppLocalization.cpp
             wxChaos/gui/wx/docs/DocumentationLinkAction.cpp
             wxChaos/gui/wx/docs/FractalDocumentation.cpp
             wxChaos/gui/wx/common/PanelOptions.cpp

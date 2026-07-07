@@ -230,6 +230,17 @@ const std::map<std::string, AppAppearance>& AppConfigStore::Appearances()
     return appearances;
 }
 
+const std::map<std::string, AppLanguage>& AppConfigStore::Languages()
+{
+    static const std::map<std::string, AppLanguage> languages = {
+        { "System", AppLanguage::System },
+        { "English", AppLanguage::English },
+        { "Spanish", AppLanguage::Spanish }
+    };
+
+    return languages;
+}
+
 // ReSharper disable once CppDFAConstantParameter
 FractalType AppConfigStore::FractalTypeFromString(const std::string& value, const FractalType defaultValue)
 {
@@ -294,6 +305,23 @@ std::string AppConfigStore::AppearanceToString(const AppAppearance appearance)
     return "System";
 }
 
+AppLanguage AppConfigStore::LanguageFromString(const std::string& value, const AppLanguage defaultValue)
+{
+    const auto it = Languages().find(value);
+    return it == Languages().end() ? defaultValue : it->second;
+}
+
+std::string AppConfigStore::LanguageToString(const AppLanguage language)
+{
+    for (const auto& item : Languages())
+    {
+        if (item.second == language)
+            return item.first;
+    }
+
+    return "System";
+}
+
 ColorPaletteTypes AppConfigStore::InferColorStyleFromGradient(const std::string& gradient)
 {
     for (const auto& item : ColorStyles())
@@ -339,6 +367,8 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
         config.appearance = AppearanceFromString(ReadString(values, "APPEARANCE", "System"), config.appearance);
     else if (values.find("DARK_THEME") != values.end())
         config.appearance = ReadBool(values, "DARK_THEME", false) ? AppAppearance::Dark : AppAppearance::Light;
+    if (values.find("LANGUAGE") != values.end())
+        config.language = LanguageFromString(ReadString(values, "LANGUAGE", "System"), config.language);
 
     return config;
 }
@@ -431,6 +461,10 @@ AppConfig AppConfigStore::Load() const
             config.appearance = darkTheme ? AppAppearance::Dark : AppAppearance::Light;
     }
 
+    wxString language;
+    if (fileConfig.Read("/General/language", &language))
+        config.language = LanguageFromString(language.ToStdString(), config.language);
+
     return config;
 }
 
@@ -460,6 +494,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Zoom/inertia_ms", static_cast<long>(config.zoomInertiaMilliseconds));
     fileConfig.Write("/General/appearance", ToWxString(AppearanceToString(config.appearance)));
     fileConfig.Write("/General/dark_theme", config.appearance == AppAppearance::Dark);
+    fileConfig.Write("/General/language", ToWxString(LanguageToString(config.language)));
     fileConfig.Flush();
 }
 
