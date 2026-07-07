@@ -136,6 +136,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeBurningShipJulia, this, ID_BURNING_SHIP_JULIA);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFractory, this, ID_FRACTORY);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeCell, this, ID_CELL);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeLogisticMap, this, ID_LOGISTIC_MAP);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeHenonMap, this, ID_HENON_MAP);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskiTriangle, this, ID_SIERPINSKI_TRIANGLE);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
@@ -550,7 +551,7 @@ void MainFrame::SetUpGUI()
     wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinusoidal, *magnet;
     wxMenuItem* jellyfish, *manowar, *manowarJulia, *sierpinskiTriangle, *fixedPoint1, *fixedPoint2;
     wxMenuItem* fixedPoint3, *fixedPoint4, *userDefined, *fpUserDefined, *newtonUserDefined;
-    wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *henonMap, *dPendulum;
+    wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *logisticMap, *henonMap, *dPendulum;
 
 #ifdef _WIN32
 #define menuSeparator '\t'
@@ -578,6 +579,7 @@ void MainFrame::SetUpGUI()
     burningShipJulia = new wxMenuItem(_formula, ID_BURNING_SHIP_JULIA, wxString("Burning Ship (Julia)"), wxEmptyString, wxITEM_NORMAL);
     fractory = new wxMenuItem(_formula, ID_FRACTORY, wxString("Fractory"), wxEmptyString, wxITEM_NORMAL);
     cell = new wxMenuItem(_formula, ID_CELL, wxString("Cell"), wxEmptyString, wxITEM_NORMAL);
+    logisticMap = new wxMenuItem(_formula, ID_LOGISTIC_MAP, wxString("Logistic Map"), wxEmptyString, wxITEM_NORMAL);
     henonMap = new wxMenuItem(_formula, ID_HENON_MAP, wxString("Henon map"), wxEmptyString, wxITEM_NORMAL);
     dPendulum = new wxMenuItem(_formula, ID_DOUBLE_PENDULUM, wxString("Double pendulum"), wxEmptyString, wxITEM_NORMAL);
     userDefined = new wxMenuItem(_formula, ID_USER_DEFINED, wxString("User Formula (Complex)"), wxEmptyString, wxITEM_NORMAL);
@@ -609,6 +611,7 @@ void MainFrame::SetUpGUI()
     _typeNumericalMethod->Append(fixedPoint4);
     _typePhysics->Append(magnet);
     _typePhysics->Append(dPendulum);
+    _typeOther->Append(logisticMap);
     _typeOther->Append(henonMap);
     _typeOther->Append(sierpinskiTriangle);
 
@@ -1274,6 +1277,10 @@ void MainFrame::ChangeFractory(wxCommandEvent&)
 void MainFrame::ChangeCell(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::Cell, false);
+}
+void MainFrame::ChangeLogisticMap(wxCommandEvent&)
+{
+    this->ChangeFractal(FractalType::LogisticMap, false);
 }
 void MainFrame::ChangeHenonMap(wxCommandEvent&)
 {

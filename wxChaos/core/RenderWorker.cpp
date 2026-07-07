@@ -51,11 +51,14 @@ void RenderWorker::SetOptions(const Options& opt)
     _minY = opt.minY;
     _maxY = opt.maxY;
     _maxIter = opt.maxIter;
-    _preciseView = opt.hasPreciseView ? opt.preciseView : PreciseRect(Rect(opt.minX, opt.minY, opt.maxX, opt.maxY));
-    _preciseXFactor = opt.preciseXFactor;
-    _preciseYFactor = opt.preciseYFactor;
     _useHighPrecision = opt.useHighPrecision;
     _highPrecisionBits = opt.highPrecisionBits;
+    if (_useHighPrecision)
+    {
+        _preciseView = opt.hasPreciseView ? opt.preciseView : PreciseRect(Rect(opt.minX, opt.minY, opt.maxX, opt.maxY));
+        _preciseXFactor = opt.preciseXFactor;
+        _preciseYFactor = opt.preciseYFactor;
+    }
     _renderingPrecisionMode = opt.renderingPrecisionMode;
     _type = opt.type;
 }

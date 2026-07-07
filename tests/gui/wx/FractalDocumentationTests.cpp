@@ -11,6 +11,12 @@ TEST_CASE("script documentation is absent by default")
     CHECK(FractalDocumentation::GetDocumentFile(scriptData).empty());
 }
 
+TEST_CASE("Logistic Map documentation is registered")
+{
+    CHECK(FractalDocumentation::HasDocumentation(FractalType::LogisticMap));
+    CHECK(FractalDocumentation::GetDocumentFile(FractalType::LogisticMap).EndsWith("logistic_map.html"));
+}
+
 TEST_CASE("script documentation path resolves under bundled documents")
 {
     ScriptData scriptData;

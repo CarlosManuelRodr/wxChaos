@@ -59,6 +59,7 @@ wxString FractalDocumentation::GetDocumentFilename(const FractalType type)
         case FractalType::BurningShipJulia: return "burning_ship_julia.html";
         case FractalType::Fractory: return "fractory.html";
         case FractalType::Cell: return "cell.html";
+        case FractalType::LogisticMap: return "logistic_map.html";
         case FractalType::HenonMap: return "henon_map.html";
         case FractalType::DoublePendulum: return "double_pendulum.html";
         case FractalType::UserDefinedEscapeTime: return "user_defined_escape_time.html";

@@ -12,6 +12,16 @@ TEST_CASE("DocumentationLinkAction parses known fractal actions")
     CHECK(action.TargetFractalEnablesJulia());
 }
 
+TEST_CASE("DocumentationLinkAction parses Logistic Map actions")
+{
+    const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://fractal/logistic-map");
+
+    CHECK(action.GetType() == DocumentationLinkAction::Type::OpenFractal);
+    CHECK(action.GetTarget() == "logistic-map");
+    CHECK(action.GetTargetFractalType() == FractalType::LogisticMap);
+    CHECK_FALSE(action.TargetFractalEnablesJulia());
+}
+
 TEST_CASE("DocumentationLinkAction parses Julia mode actions for compatible fractals")
 {
     const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://julia/mandelbrot");
@@ -132,6 +142,22 @@ TEST_CASE("DocumentationLinkAction uses a shared rendering method vocabulary")
     CHECK_FALSE(action.GetRenderingMethod().enableJulia);
     CHECK(action.GetRenderingMethod().id == "escape-angle");
     CHECK(action.GetRenderingMethod().algorithm == RenderingAlgorithmType::EscapeAngle);
+}
+
+TEST_CASE("DocumentationLinkAction parses Logistic Map rendering methods")
+{
+    const DocumentationLinkAction chaoticMap =
+        DocumentationLinkAction::Parse("wxchaos://rendering/logistic-map/chaotic-map");
+    const DocumentationLinkAction lyapunov =
+        DocumentationLinkAction::Parse("wxchaos://rendering/logistic-map/lyapunov");
+
+    CHECK(chaoticMap.GetType() == DocumentationLinkAction::Type::SetRendering);
+    CHECK(chaoticMap.GetRenderingMethod().fractalType == FractalType::LogisticMap);
+    CHECK(chaoticMap.GetRenderingMethod().algorithm == RenderingAlgorithmType::ChaoticMap);
+
+    CHECK(lyapunov.GetType() == DocumentationLinkAction::Type::SetRendering);
+    CHECK(lyapunov.GetRenderingMethod().fractalType == FractalType::LogisticMap);
+    CHECK(lyapunov.GetRenderingMethod().algorithm == RenderingAlgorithmType::Lyapunov);
 }
 
 TEST_CASE("DocumentationLinkAction rejects unknown actions")

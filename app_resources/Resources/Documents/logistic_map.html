@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logistic Map</title>
+    <link rel="stylesheet" href="fractal_info.css">
+</head>
+<body>
+<main>
+    <h1>Logistic Map</h1>
+
+    <p>
+        The logistic map is a one-dimensional recurrence that shows how a simple feedback rule can move from
+        stable behavior into period doubling and chaos:
+    </p>
+
+    <math display="block">
+        <msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub>
+        <mo>=</mo>
+        <mi>a</mi><msub><mi>x</mi><mi>n</mi></msub>
+        <mo>(</mo><mn>1</mn><mo>-</mo><msub><mi>x</mi><mi>n</mi></msub><mo>)</mo>
+    </math>
+
+    <p>
+        wxChaos plots the parameter <math><mi>a</mi></math> horizontally. For each column it starts from the
+        configured seed, optionally discards an initial settling pass, then plots the remaining iterates.
+        The restored default view follows the original wxChaos 1.2.0 range, with
+        <math><mn>2.8</mn><mo>&le;</mo><mi>a</mi><mo>&le;</mo><mn>4</mn></math>.
+    </p>
+
+    <h2>Rendering Methods</h2>
+
+    <p>
+        <strong>Chaotic map</strong> draws the bifurcation diagram itself. Enabling <strong>Stabilize point</strong>
+        runs one extra pass before plotting so transient values do not dominate the picture.
+    </p>
+
+    <p>
+        <strong>Lyapunov</strong> plots the average logarithmic derivative of the same recurrence. Values above
+        zero indicate sensitive dependence on initial conditions; values below zero indicate stable attraction.
+    </p>
+
+    <h2>Options</h2>
+
+    <p>
+        <strong>Seed</strong> is the initial <math><msub><mi>x</mi><mn>0</mn></msub></math> value. A seed between
+        0 and 1 is usually the most useful for the classic logistic map.
+    </p>
+
+    <p>
+        <a href="wxchaos://fractal/logistic-map">Open Logistic Map</a>
+        &nbsp;|&nbsp;
+        <a href="wxchaos://rendering/logistic-map/chaotic-map">Chaotic map</a>
+    </p>
+</main>
+</body>
+</html>

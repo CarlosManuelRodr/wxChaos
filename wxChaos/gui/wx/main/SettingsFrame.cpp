@@ -96,7 +96,7 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         "Sine", "Magnet", "Jellyfish", "Manowar", "Manowar Julia",
         "Sierpinski Triangle", "Fixed Point: sin(z)", "Fixed Point: cos(z)",
         "Fixed Point: tan(z)", "Fixed Point: z^2", "Tricorn", "Burning Ship",
-        "Burning Ship Julia", "Fractory", "Cell", "Henon Map", "Double Pendulum",
+        "Burning Ship Julia", "Fractory", "Cell", "Logistic Map", "Henon Map", "Double Pendulum",
         "User Defined", "User Defined Fixed Point", "User Defined Newton-Raphson"
     };
     _fractalTypes = {
@@ -105,7 +105,7 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskiTriangle, FractalType::FixedPoint1,
         FractalType::FixedPoint2, FractalType::FixedPoint3, FractalType::FixedPoint4, FractalType::Tricorn,
         FractalType::BurningShip, FractalType::BurningShipJulia, FractalType::Fractory, FractalType::Cell,
-        FractalType::HenonMap, FractalType::DoublePendulum, FractalType::UserDefinedEscapeTime,
+        FractalType::LogisticMap, FractalType::HenonMap, FractalType::DoublePendulum, FractalType::UserDefinedEscapeTime,
         FractalType::UserDefinedFixedPoint, FractalType::UserDefinedNewtonRaphson
     };
 

@@ -23,6 +23,7 @@ std::optional<DocumentationLinkAction::FractalReference> DocumentationLinkAction
         {"burning-ship-julia", FractalType::BurningShipJulia, false},
         {"fractory", FractalType::Fractory, false},
         {"cell", FractalType::Cell, false},
+        {"logistic-map", FractalType::LogisticMap, false},
         {"henon-map", FractalType::HenonMap, false},
         {"double-pendulum", FractalType::DoublePendulum, false},
         {"user-defined-escape-time", FractalType::UserDefinedEscapeTime, false},
@@ -87,7 +88,9 @@ std::optional<DocumentationLinkAction::RenderingMethod> DocumentationLinkAction:
         {wxEmptyString, FractalType::Undefined, false, "escape-angle", RenderingAlgorithmType::EscapeAngle, false, false},
         {wxEmptyString, FractalType::Undefined, false, "triangle-inequality", RenderingAlgorithmType::TriangleInequality, false, false},
         {wxEmptyString, FractalType::Undefined, false, "orbit-traps", RenderingAlgorithmType::EscapeTime, false, true},
-        {wxEmptyString, FractalType::Undefined, false, "buddhabrot", RenderingAlgorithmType::Buddhabrot, false, false}
+        {wxEmptyString, FractalType::Undefined, false, "buddhabrot", RenderingAlgorithmType::Buddhabrot, false, false},
+        {wxEmptyString, FractalType::Undefined, false, "chaotic-map", RenderingAlgorithmType::ChaoticMap, false, false},
+        {wxEmptyString, FractalType::Undefined, false, "lyapunov", RenderingAlgorithmType::Lyapunov, false, false}
     };
 
     for (const RenderingMethod& renderingMethod : methods)

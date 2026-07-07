@@ -58,6 +58,7 @@ enum IDS
     ID_BURNING_SHIP_JULIA,
     ID_FRACTORY,
     ID_CELL,
+    ID_LOGISTIC_MAP,
     ID_HENON_MAP,
     ID_DOUBLE_PENDULUM,
     ID_USER_DEFINED,
@@ -258,6 +259,7 @@ public :
     void ChangeBurningShipJulia(wxCommandEvent& event);
     void ChangeFractory(wxCommandEvent& event);
     void ChangeCell(wxCommandEvent& event);
+    void ChangeLogisticMap(wxCommandEvent& event);
     void ChangeHenonMap(wxCommandEvent& event);
     void ChangeDPendulum(wxCommandEvent& event);
     void ChangeUserDefinedEscapeTime(wxCommandEvent& event);

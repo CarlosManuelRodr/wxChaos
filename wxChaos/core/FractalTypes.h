@@ -39,6 +39,8 @@
 #include "fractals/Fractory.h"
 #include "renderers/CellRenderer.h"
 #include "fractals/Cell.h"
+#include "renderers/LogisticMapRenderer.h"
+#include "fractals/LogisticMap.h"
 #include "renderers/HenonMapRenderer.h"
 #include "fractals/HenonMap.h"
 #include "renderers/DoublePendulumRenderer.h"

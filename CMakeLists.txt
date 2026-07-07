@@ -166,11 +166,13 @@ if(BUILD_TESTING)
             tests/core/geometry/GeometryTests.cpp
             tests/core/rendering/RenderingTests.cpp
             tests/core/rendering/HenonMapRendererTests.cpp
+            tests/core/rendering/LogisticMapRendererTests.cpp
             tests/core/UserFormulaSymbolicCompilerTests.cpp
             tests/core/NewtonRootRegistryTests.cpp
             wxChaos/core/UserFormulaSymbolicCompiler.cpp
             wxChaos/core/renderers/utils/NewtonRootRegistry.cpp
             wxChaos/core/renderers/HenonMapRenderer.cpp
+            wxChaos/core/renderers/LogisticMapRenderer.cpp
             wxChaos/core/RenderWorker.cpp
             wxChaos/core/coloring/ColorPalette.cpp
             wxChaos/core/coloring/PaletteMapping.cpp

@@ -1100,6 +1100,7 @@ void DimensionFrame::PopulateFractalChoices()
     AddBuiltInFractalChoice("Burning Ship (Julia)", FractalType::BurningShipJulia);
     AddBuiltInFractalChoice("Fractory", FractalType::Fractory);
     AddBuiltInFractalChoice("Cell", FractalType::Cell);
+    AddBuiltInFractalChoice("Logistic map", FractalType::LogisticMap);
     AddBuiltInFractalChoice("Henon map", FractalType::HenonMap);
     AddBuiltInFractalChoice("Double pendulum", FractalType::DoublePendulum);
     AddBuiltInFractalChoice("User Formula (Complex)", FractalType::UserDefinedEscapeTime);

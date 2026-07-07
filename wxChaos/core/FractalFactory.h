@@ -32,6 +32,7 @@ class FractalFactory
     BurningShipJulia* _burningShipJulia;
     Fractory* _fractory;
     Cell* _cell;
+    LogisticMap* _logisticMap;
     HenonMap* _henonMap;
     DoublePendulum* _doublePendulum;
     UserDefinedEscapeTime* _userDefined;

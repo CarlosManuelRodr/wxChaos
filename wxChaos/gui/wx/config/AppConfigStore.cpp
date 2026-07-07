@@ -175,6 +175,9 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
         { "Burning_Ship_Julia", FractalType::BurningShipJulia },
         { "Fractory", FractalType::Fractory },
         { "Cell", FractalType::Cell },
+        { "Logistic", FractalType::LogisticMap },
+        { "Logistic_Map", FractalType::LogisticMap },
+        { "LogisticMap", FractalType::LogisticMap },
         { "Henon_Map", FractalType::HenonMap },
         { "HenonMap", FractalType::HenonMap },
         { "Double_Pendulum", FractalType::DoublePendulum },
@@ -242,6 +245,8 @@ std::string AppConfigStore::FractalTypeToString(FractalType type)
         return "Jellyfish";
     if (type == FractalType::SierpinskiTriangle)
         return "Sierpinski_Triangle";
+    if (type == FractalType::LogisticMap)
+        return "Logistic_Map";
     if (type == FractalType::HenonMap)
         return "Henon_Map";
 

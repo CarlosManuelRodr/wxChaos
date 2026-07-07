@@ -29,3 +29,23 @@ TEST_CASE("AppConfigStore persists anti-aliasing scale")
 
     std::filesystem::remove(path);
 }
+
+TEST_CASE("AppConfigStore preserves Logistic Map fractal type")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path = std::filesystem::temp_directory_path() / "wxchaos_logistic_config_store_test.ini";
+    std::filesystem::remove(path);
+
+    AppConfig config;
+    config.type = FractalType::LogisticMap;
+
+    const AppConfigStore store(path.string());
+    store.Save(config);
+
+    const AppConfig loaded = store.Load();
+    CHECK(loaded.type == FractalType::LogisticMap);
+
+    std::filesystem::remove(path);
+}

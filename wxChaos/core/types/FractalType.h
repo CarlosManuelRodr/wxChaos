@@ -23,6 +23,7 @@ enum class FractalType
     BurningShipJulia,
     Fractory,
     Cell,
+    LogisticMap,
     HenonMap,
     DoublePendulum,
     UserDefinedEscapeTime,
