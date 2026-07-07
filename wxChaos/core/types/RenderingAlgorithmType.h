@@ -7,7 +7,6 @@ enum class RenderingAlgorithmType
     EscapeAngle,
     TriangleInequality,
     ChaoticMap,
-    Lyapunov,
     ConvergenceTest,
     Buddhabrot,
     Other

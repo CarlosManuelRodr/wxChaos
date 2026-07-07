@@ -5,7 +5,6 @@ LogisticMap::LogisticMap(const unsigned int width, const unsigned int height) : 
     _type = FractalType::LogisticMap;
     _algorithm = RenderingAlgorithmType::ChaoticMap;
     _availableAlg.push_back(RenderingAlgorithmType::ChaoticMap);
-    _availableAlg.push_back(RenderingAlgorithmType::Lyapunov);
 
     _threadNumber = 1;
     _redrawAlways = true;

@@ -90,7 +90,6 @@ std::optional<DocumentationLinkAction::RenderingMethod> DocumentationLinkAction:
         {wxEmptyString, FractalType::Undefined, false, "orbit-traps", RenderingAlgorithmType::EscapeTime, false, true},
         {wxEmptyString, FractalType::Undefined, false, "buddhabrot", RenderingAlgorithmType::Buddhabrot, false, false},
         {wxEmptyString, FractalType::Undefined, false, "chaotic-map", RenderingAlgorithmType::ChaoticMap, false, false},
-        {wxEmptyString, FractalType::Undefined, false, "lyapunov", RenderingAlgorithmType::Lyapunov, false, false}
     };
 
     for (const RenderingMethod& renderingMethod : methods)

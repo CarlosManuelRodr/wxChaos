@@ -463,12 +463,6 @@ void RendererOptionsFrame::SetAlgorithmChoices()
                     _chaoticMapIndex = static_cast<int>(i);
                 }
                 break;
-            case RenderingAlgorithmType::Lyapunov:
-                {
-                    _algorithmChoice->Append("Lyapunov");
-                    _lyapunovIndex = static_cast<int>(i);
-                }
-                break;
             case RenderingAlgorithmType::ConvergenceTest:
                 {
                     _algorithmChoice->Append("Convergence test");

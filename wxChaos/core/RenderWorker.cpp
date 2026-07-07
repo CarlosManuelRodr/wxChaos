@@ -34,7 +34,6 @@ wxString RenderWorker::GetAlgorithmName(const RenderingAlgorithmType algorithm)
         case RenderingAlgorithmType::EscapeAngle: return "escape angle";
         case RenderingAlgorithmType::TriangleInequality: return "triangle inequality";
         case RenderingAlgorithmType::ChaoticMap: return "chaotic map";
-        case RenderingAlgorithmType::Lyapunov: return "Lyapunov";
         case RenderingAlgorithmType::ConvergenceTest: return "convergence test";
         case RenderingAlgorithmType::Buddhabrot: return "Buddhabrot";
         default: return "renderer-specific";
