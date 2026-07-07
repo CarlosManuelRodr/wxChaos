@@ -15,7 +15,7 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
                                   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
                              _configChanged(std::move(configChanged))
 {
-    SetMinSize(wxSize(620, 440));
+    wxTopLevelWindowBase::SetMinSize(wxSize(620, 440));
 
     const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
     this->SetIcon(icon);
