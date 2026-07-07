@@ -103,7 +103,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
             }
         }
 
-        wxString outText = "N = ";
+        wxString outText = _("N = ");
         outText += TextUtils::ToWxString(boxes);
         int textWidth;
         int textHeight;

@@ -90,7 +90,7 @@ public:
 
     CommandConsole(FractalCanvas* fractalCanvas, std::function<void()> reloadScripts,
                    std::function<bool(double, double)> openJuliaMode, wxWindow* parent,
-                   wxWindowID id = wxID_ANY, const wxString& title = "Command console",
+                   wxWindowID id = wxID_ANY, const wxString& title = wxTRANSLATE("Command console"),
                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(760, 520),
                    long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 };

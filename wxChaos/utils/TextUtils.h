@@ -9,6 +9,7 @@ namespace TextUtils
     std::string ToString(int value);
     std::string ToString(double value);
     wxString ToWxString(int value);
+    wxString ToWxString(long long value);
     wxString ToWxString(double value);
     double ToDouble(const wxString& value);
     double ToDouble(const std::string& value);

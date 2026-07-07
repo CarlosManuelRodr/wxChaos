@@ -9,7 +9,7 @@ using namespace std;
 ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable,
                                                      const wxWindowID id, const wxString& title, const wxPoint& pos,
                                                      const wxSize& size, const long style)
-                                                     : wxDialog(parent, id, title, pos, size, style)
+                                                     : wxDialog(parent, id, wxGetTranslation(title), pos, size, style)
 {
     _myFractal = targetFractal;
     _saveProgressAvailable = saveProgressAvailable;
@@ -23,7 +23,7 @@ ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxW
     _myType = _myFractal->GetType();
     if (_myType == FractalType::ScriptFractal)
     {
-        _progressLabel = new wxStaticText(this, wxID_ANY, "Saving...", wxDefaultPosition, wxDefaultSize, 0);
+        _progressLabel = new wxStaticText(this, wxID_ANY, _("Saving..."), wxDefaultPosition, wxDefaultSize, 0);
         _progressLabel->Wrap(-1);
         progressSizer->Add(_progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
         _progress = nullptr;
@@ -33,7 +33,7 @@ ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxW
         _progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
         progressSizer->Add(_progress, 0, wxALL | wxEXPAND, 5);
 
-        _progressLabel = new wxStaticText(this, wxID_ANY, wxString("Rendering: ") + "0%", wxDefaultPosition, wxDefaultSize, 0);
+        _progressLabel = new wxStaticText(this, wxID_ANY, _("Rendering: ") + "0%", wxDefaultPosition, wxDefaultSize, 0);
         _progressLabel->Wrap(-1);
         progressSizer->Add(_progressLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
     }
@@ -45,7 +45,7 @@ ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxW
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _cancelButton = new wxButton(this, wxID_ANY, "Cancel", wxDefaultPosition, wxDefaultSize, 0);
+    _cancelButton = new wxButton(this, wxID_ANY, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_cancelButton, 0, wxALL, 5);
 
     mainSizer->Add(buttonSizer, 1, wxEXPAND, 5);
@@ -74,7 +74,7 @@ void ImageExportProgressDialog::CalcProgress(wxUpdateUIEvent&)
         if (_myFractal->GetType() != FractalType::ScriptFractal)
         {
             const int progressValue = _myFractal->GetRenderProgress();
-            _progressLabel->SetLabel(wxString("Rendering: ") + TextUtils::ToWxString(progressValue) + "%");
+            _progressLabel->SetLabel(_("Rendering: ") + TextUtils::ToWxString(progressValue) + "%");
 
             _progress->SetValue(progressValue);
             if (progressValue >= 100 && !_myFractal->IsRendering())
@@ -142,7 +142,7 @@ void ImageExportSizeDialog::SetButtonIcon(wxButton* button, const wxString& ligh
 ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const FractalType type, const Fractal* target,
                                wxWindow* parent, const string& scriptPath, const wxWindowID id, const wxString& title,
                                const wxPoint& pos, const wxSize& size, const long style)
-                               : wxDialog(parent, id, title, pos, size, style)
+                               : wxDialog(parent, id, wxGetTranslation(title), pos, size, style)
 {
     _extension = 0;
     _fractalCanvas = fractalCanvas;
@@ -158,13 +158,13 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
 
     _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
-    panelSizer->Add(CreateSectionHeader(_mainPanel, "Image export", "picture_light.svg", "picture_dark.svg"),
+    panelSizer->Add(CreateSectionHeader(_mainPanel, _("Image export"), "picture_light.svg", "picture_dark.svg"),
                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     const auto exportSizer = new wxFlexGridSizer(3, 2, 12, 12);
     exportSizer->AddGrowableCol(1, 1);
 
-    _widthText = new wxStaticText(_mainPanel, wxID_ANY, "Width", wxDefaultPosition, wxDefaultSize, 0);
+    _widthText = new wxStaticText(_mainPanel, wxID_ANY, _("Width"), wxDefaultPosition, wxDefaultSize, 0);
     _widthText->Wrap(-1);
     exportSizer->Add(_widthText, 0, wxALIGN_CENTER_VERTICAL);
 
@@ -172,7 +172,7 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
     exportSizer->Add(_widthSpin, 1, wxEXPAND);
     _widthSpin->SetValue(static_cast<int>(_options.screenWidth));
 
-    _heightText = new wxStaticText(_mainPanel, wxID_ANY, "Height", wxDefaultPosition, wxDefaultSize, 0);
+    _heightText = new wxStaticText(_mainPanel, wxID_ANY, _("Height"), wxDefaultPosition, wxDefaultSize, 0);
     _heightText->Wrap(-1);
     exportSizer->Add(_heightText, 0, wxALIGN_CENTER_VERTICAL);
 
@@ -180,7 +180,7 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
     exportSizer->Add(_heightSpin, 1, wxEXPAND);
     _heightSpin->SetValue(static_cast<int>(_options.screenHeight));
 
-    _iterationsText = new wxStaticText(_mainPanel, wxID_ANY, "Iterations", wxDefaultPosition, wxDefaultSize, 0);
+    _iterationsText = new wxStaticText(_mainPanel, wxID_ANY, _("Iterations"), wxDefaultPosition, wxDefaultSize, 0);
     _iterationsText->Wrap(-1);
     exportSizer->Add(_iterationsText, 0, wxALIGN_CENTER_VERTICAL);
 
@@ -191,7 +191,7 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
     panelSizer->Add(exportSizer, 0, wxEXPAND | wxALL, 16);
 
     _largeImageWarningText = new wxStaticText(_mainPanel, wxID_ANY,
-        "For very large images, the BMP format is recommended because the exporter is optimized for very large sizes.");
+        _("For very large images, the BMP format is recommended because the exporter is optimized for very large sizes."));
     _largeImageWarningText->Wrap(420);
     _largeImageWarningText->SetForegroundColour(AppTheme::IsDark() ? wxColour(242, 190, 95) : wxColour(128, 82, 0));
     _largeImageWarningText->Hide();
@@ -200,11 +200,11 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
     buttonSizer->AddStretchSpacer();
 
-    _saveButton = new wxButton(_mainPanel, wxID_ANY, "Save", wxDefaultPosition, wxDefaultSize, 0);
+    _saveButton = new wxButton(_mainPanel, wxID_ANY, _("Save"), wxDefaultPosition, wxDefaultSize, 0);
     SetButtonIcon(_saveButton, "save_light.svg", "save_dark.svg");
     buttonSizer->Add(_saveButton, 0, wxALL, 5);
 
-    _cancelButton = new wxButton(_mainPanel, wxID_ANY, "Cancel", wxDefaultPosition, wxDefaultSize, 0);
+    _cancelButton = new wxButton(_mainPanel, wxID_ANY, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0);
     SetButtonIcon(_cancelButton, "close_light.svg", "close_dark.svg");
     buttonSizer->Add(_cancelButton, 0, wxALL, 5);
 
@@ -271,7 +271,7 @@ void ImageExportSizeDialog::OnSave(wxCommandEvent&)
 {
     const auto saveFileDialog = new wxFileDialog(
         this,
-        "Select file name",
+        _("Select file name"),
         "",
         "fractal.png",
         "PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp",
@@ -312,13 +312,13 @@ void ImageExportSizeDialog::OnSave(wxCommandEvent&)
             _fractalFactory.GetFractal()->SetRendered(true);
             const sf::Image out = _fractalFactory.GetFractal()->GetRenderedImage();
             if (const bool result = out.saveToFile(_path); !result)
-                wxMessageBox("Failed to save image to file: " + _path, "Error", wxOK | wxICON_ERROR);
+                wxMessageBox(_("Failed to save image to file: ") + wxString::FromUTF8(_path.c_str()), _("Error"), wxOK | wxICON_ERROR);
         }
         else  // BMP
         {
             _fractalFactory.GetFractal()->SetRendered(true);
             if (const bool result = _fractalFactory.GetFractal()->SaveBmp(_path); !result)
-                wxMessageBox("Failed to save image to file: " + _path, "Error", wxOK | wxICON_ERROR);
+                wxMessageBox(_("Failed to save image to file: ") + wxString::FromUTF8(_path.c_str()), _("Error"), wxOK | wxICON_ERROR);
         }
     }
 

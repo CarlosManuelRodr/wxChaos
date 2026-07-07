@@ -184,3 +184,741 @@ msgstr "Modo Julia"
 
 msgid "Show orbit"
 msgstr "Mostrar órbita"
+
+msgid "Settings..."
+msgstr "Configuración..."
+
+msgid "Formula"
+msgstr "Fórmula"
+
+msgid "Complex"
+msgstr "Complejos"
+
+msgid "Numerical method"
+msgstr "Método numérico"
+
+msgid "Physics"
+msgstr "Física"
+
+msgid "Other"
+msgstr "Otros"
+
+msgid "Manual"
+msgstr "Manual"
+
+msgid "Slider"
+msgstr "Deslizador"
+
+msgid "Enter Julia constant"
+msgstr "Introducir constante de Julia"
+
+msgid "Enter user formula"
+msgstr "Introducir fórmula de usuario"
+
+msgid "Script editor"
+msgstr "Editor de scripts"
+
+msgid "Create new fractals with a scripting language."
+msgstr "Crear nuevos fractales con un lenguaje de scripting."
+
+msgid "Command console"
+msgstr "Consola de comandos"
+
+msgid "Control and inspect the current fractal with commands."
+msgstr "Controlar e inspeccionar el fractal actual con comandos."
+
+msgid "Zoom recorder"
+msgstr "Grabador de zoom"
+
+msgid "Record a video zoom."
+msgstr "Grabar un video de zoom."
+
+msgid "Dimension calculator"
+msgstr "Calculadora de dimensión"
+
+msgid "Calculate fractal dimension."
+msgstr "Calcular la dimensión fractal."
+
+msgid "To use the zoom recorder you need to first perform a zoom on the main window."
+msgstr "Para usar el grabador de zoom, primero debes hacer zoom en la ventana principal."
+
+msgid "wxChaos does not know how to handle this documentation action:\n"
+msgstr "wxChaos no sabe cómo manejar esta acción de documentación:\n"
+
+msgid "Documentation action"
+msgstr "Acción de documentación"
+
+msgid "You need to restart wxChaos for appearance and language changes to take effect."
+msgstr "Debes reiniciar wxChaos para que los cambios de apariencia e idioma tengan efecto."
+
+msgid "Restart required"
+msgstr "Reinicio requerido"
+
+msgid "Mandelbrot"
+msgstr "Mandelbrot"
+
+msgid "Mandelbrot Z^m"
+msgstr "Mandelbrot Z^m"
+
+msgid "Mandelbrot (Julia)"
+msgstr "Mandelbrot (Julia)"
+
+msgid "Julia Z^m"
+msgstr "Julia Z^m"
+
+msgid "Newton"
+msgstr "Newton"
+
+msgid "Sine (Julia)"
+msgstr "Seno (Julia)"
+
+msgid "Magnet"
+msgstr "Imán"
+
+msgid "Jellyfish"
+msgstr "Medusa"
+
+msgid "Manowar"
+msgstr "Manowar"
+
+msgid "Manowar (Julia)"
+msgstr "Manowar (Julia)"
+
+msgid "Sierpinski Triangle"
+msgstr "Triángulo de Sierpinski"
+
+msgid "Fixed Point"
+msgstr "Punto fijo"
+
+msgid "Tricorn"
+msgstr "Tricornio"
+
+msgid "Burning Ship"
+msgstr "Burning Ship"
+
+msgid "Burning Ship (Julia)"
+msgstr "Burning Ship (Julia)"
+
+msgid "Fractory"
+msgstr "Fractory"
+
+msgid "Cell"
+msgstr "Celda"
+
+msgid "Logistic Map"
+msgstr "Mapa logístico"
+
+msgid "Logistic map"
+msgstr "Mapa logístico"
+
+msgid "Henon map"
+msgstr "Mapa de Hénon"
+
+msgid "Double pendulum"
+msgstr "Doble péndulo"
+
+msgid "User Formula (Complex)"
+msgstr "Fórmula de usuario (compleja)"
+
+msgid "User Formula (Fixed Point)"
+msgstr "Fórmula de usuario (punto fijo)"
+
+msgid "User Formula (Newton-Raphson)"
+msgstr "Fórmula de usuario (Newton-Raphson)"
+
+msgid "Open this in main window"
+msgstr "Abrir esto en la ventana principal"
+
+msgid "Algorithm"
+msgstr "Algoritmo"
+
+msgid "Color algorithm"
+msgstr "Algoritmo de color"
+
+msgid "Rendering precision"
+msgstr "Precisión de renderizado"
+
+msgid "Anti-aliasing"
+msgstr "Suavizado"
+
+msgid "Increasing this value makes the image clearer, but slower to render."
+msgstr "Aumentar este valor hace la imagen más nítida, pero más lenta de renderizar."
+
+msgid "Note: To make this change permanent, configure it on File -> Settings -> Rendering."
+msgstr "Nota: para hacer permanente este cambio, configúralo en Archivo -> Configuración -> Renderizado."
+
+msgid "Render features"
+msgstr "Características de renderizado"
+
+msgid "Options"
+msgstr "Opciones"
+
+msgid "Relative colors"
+msgstr "Colores relativos"
+
+msgid "Orbit traps"
+msgstr "Trampas de órbita"
+
+msgid "Smooth render"
+msgstr "Renderizado suave"
+
+msgid "Color options"
+msgstr "Opciones de color"
+
+msgid "Gradient"
+msgstr "Gradiente"
+
+msgid "Color styles:"
+msgstr "Estilos de color:"
+
+msgid "Change gradient"
+msgstr "Cambiar gradiente"
+
+msgid "Set and exterior colors"
+msgstr "Colores del conjunto y exteriores"
+
+msgid "Fractal color (external color)"
+msgstr "Color del fractal (color externo)"
+
+msgid "Set color (internal color)"
+msgstr "Color del conjunto (color interno)"
+
+msgid "Interior set color:"
+msgstr "Color interior del conjunto:"
+
+msgid "Variation and rotation"
+msgstr "Variación y rotación"
+
+msgid "Color variation"
+msgstr "Variación de color"
+
+msgid "Color rotation speed"
+msgstr "Velocidad de rotación de color"
+
+msgid "Advanced color options"
+msgstr "Opciones avanzadas de color"
+
+msgid "Palette mapping:"
+msgstr "Mapeo de paleta:"
+
+msgid "Linear"
+msgstr "Lineal"
+
+msgid "Exponentially mapped"
+msgstr "Mapeo exponencial"
+
+msgid "Exponent:"
+msgstr "Exponente:"
+
+msgid "N/A"
+msgstr "N/D"
+
+msgid "Adaptative"
+msgstr "Adaptativa"
+
+msgid "Precise"
+msgstr "Precisa"
+
+msgid "Fast"
+msgstr "Rápida"
+
+msgid "Escape time"
+msgstr "Tiempo de escape"
+
+msgid "Gaussian integer"
+msgstr "Entero gaussiano"
+
+msgid "Escape angle"
+msgstr "Ángulo de escape"
+
+msgid "Triangle inequality"
+msgstr "Desigualdad triangular"
+
+msgid "Chaotic map"
+msgstr "Mapa caótico"
+
+msgid "Convergence test"
+msgstr "Prueba de convergencia"
+
+msgid "Buddhabrot"
+msgstr "Buddhabrot"
+
+msgid "Special algorithm"
+msgstr "Algoritmo especial"
+
+msgid "Gradient editor"
+msgstr "Editor de gradientes"
+
+msgid "Stops"
+msgstr "Paradas"
+
+msgid "Color: "
+msgstr "Color: "
+
+msgid "Erase"
+msgstr "Borrar"
+
+msgid "Select size"
+msgstr "Seleccionar tamaño"
+
+msgid "Saving..."
+msgstr "Guardando..."
+
+msgid "Rendering: "
+msgstr "Renderizando: "
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Image export"
+msgstr "Exportar imagen"
+
+msgid "Width"
+msgstr "Ancho"
+
+msgid "Height"
+msgstr "Alto"
+
+msgid "The selected size is large and may take a long time to render."
+msgstr "El tamaño seleccionado es grande y puede tardar mucho en renderizarse."
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Select file name"
+msgstr "Seleccionar nombre de archivo"
+
+msgid "Failed to save image to file: "
+msgstr "No se pudo guardar la imagen en el archivo: "
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Preview"
+msgstr "Vista previa"
+
+msgid "Frame:"
+msgstr "Fotograma:"
+
+msgid "Save video"
+msgstr "Guardar video"
+
+msgid "Zoom options"
+msgstr "Opciones de zoom"
+
+msgid "Video duration:"
+msgstr "Duración del video:"
+
+msgid "Minutes"
+msgstr "Minutos"
+
+msgid "Seconds"
+msgstr "Segundos"
+
+msgid "Framerate:"
+msgstr "Tasa de fotogramas:"
+
+msgid "Frames Per Second"
+msgstr "Fotogramas por segundo"
+
+msgid "Rotate colors"
+msgstr "Rotar colores"
+
+msgid "Color rotation speed:"
+msgstr "Velocidad de rotación de color:"
+
+msgid "Save zoom video"
+msgstr "Guardar video de zoom"
+
+msgid "Could not save video"
+msgstr "No se pudo guardar el video"
+
+msgid "Couldn't create thread!"
+msgstr "¡No se pudo crear el hilo!"
+
+msgid "Couldn't run thread!"
+msgstr "¡No se pudo ejecutar el hilo!"
+
+msgid "User formula"
+msgstr "Fórmula de usuario"
+
+msgid "Bailout value:"
+msgstr "Valor de escape:"
+
+msgid "Fractal type:"
+msgstr "Tipo de fractal:"
+
+msgid "Fixed point"
+msgstr "Punto fijo"
+
+msgid "Newton-Raphson"
+msgstr "Newton-Raphson"
+
+msgid "Julia type"
+msgstr "Tipo Julia"
+
+msgid "Ok"
+msgstr "Aceptar"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Available functions"
+msgstr "Funciones disponibles"
+
+msgid "Enter constant"
+msgstr "Introducir constante"
+
+msgid "Real value"
+msgstr "Valor real"
+
+msgid "Imaginary value"
+msgstr "Valor imaginario"
+
+msgid "Max iter:"
+msgstr "Iter. máx.:"
+
+msgid "Higher values reveal more detail\nbut increase render time."
+msgstr "Los valores más altos revelan más detalle\npero aumentan el tiempo de renderizado."
+
+msgid "Iterations must be greater than zero."
+msgstr "Las iteraciones deben ser mayores que cero."
+
+msgid "Set a name for the script"
+msgstr "Definir un nombre para el script"
+
+msgid "Script name: "
+msgstr "Nombre del script: "
+
+msgid "User script editor"
+msgstr "Editor de scripts de usuario"
+
+msgid "Scripts"
+msgstr "Scripts"
+
+msgid "Save Changes"
+msgstr "Guardar cambios"
+
+msgid "New script"
+msgstr "Nuevo script"
+
+msgid "Delete script"
+msgstr "Eliminar script"
+
+msgid "Close and reload"
+msgstr "Cerrar y recargar"
+
+msgid "Source"
+msgstr "Código fuente"
+
+msgid "Debugger"
+msgstr "Depurador"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "Validate"
+msgstr "Validar"
+
+msgid "Run"
+msgstr "Ejecutar"
+
+msgid "Clear"
+msgstr "Limpiar"
+
+msgid "Console"
+msgstr "Consola"
+
+msgid "This operation cannot be undone. Are you sure you want to continue?"
+msgstr "Esta operación no se puede deshacer. ¿Seguro que quieres continuar?"
+
+msgid "No script selected."
+msgstr "No hay ningún script seleccionado."
+
+msgid "Compile error: "
+msgstr "Error de compilación: "
+
+msgid "Execution error: "
+msgstr "Error de ejecución: "
+
+msgid "No errors found."
+msgstr "No se encontraron errores."
+
+msgid "Rendered preview in "
+msgstr "Vista previa renderizada en "
+
+msgid " ms."
+msgstr " ms."
+
+msgid " script console\n"
+msgstr " consola de scripts\n"
+
+msgid "Validate or run a script to inspect results.\n"
+msgstr "Valida o ejecuta un script para inspeccionar los resultados.\n"
+
+msgid "Ready.\n"
+msgstr "Listo.\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "ERROR"
+msgstr "ERROR"
+
+msgid " command console\n"
+msgstr " consola de comandos\n"
+
+msgid "Type Help() for commands. Named and positional arguments are supported.\n\n"
+msgstr "Escribe Help() para ver los comandos. Se admiten argumentos con nombre y posicionales.\n\n"
+
+msgid "Console cleared."
+msgstr "Consola limpiada."
+
+msgid "Scripts reloaded."
+msgstr "Scripts recargados."
+
+msgid "Redraw requested."
+msgstr "Redibujado solicitado."
+
+msgid "Nothing to abort."
+msgstr "No hay nada que abortar."
+
+msgid "Render aborted."
+msgstr "Renderizado abortado."
+
+msgid "Figures deleted."
+msgstr "Figuras eliminadas."
+
+msgid "Maximum iterations: %u"
+msgstr "Iteraciones máximas: %u"
+
+msgid "Error:"
+msgstr "Error:"
+
+msgid "Error: iterations must be greater than zero."
+msgstr "Error: las iteraciones deben ser mayores que cero."
+
+msgid "Maximum iterations set to %u."
+msgstr "Iteraciones máximas definidas en %u."
+
+msgid "Error: radius must be greater than zero."
+msgstr "Error: el radio debe ser mayor que cero."
+
+msgid "Filled circle drawn."
+msgstr "Círculo relleno dibujado."
+
+msgid "Circle drawn."
+msgstr "Círculo dibujado."
+
+msgid "Line drawn."
+msgstr "Línea dibujada."
+
+msgid "View focused."
+msgstr "Vista enfocada."
+
+msgid "Error: Julia mode is unavailable for the current fractal."
+msgstr "Error: el modo Julia no está disponible para el fractal actual."
+
+msgid "Julia mode opened or updated at the requested point."
+msgstr "Modo Julia abierto o actualizado en el punto solicitado."
+
+msgid "Error: minimum boundaries must be smaller than maximum boundaries."
+msgstr "Error: los límites mínimos deben ser menores que los máximos."
+
+msgid "View boundaries updated."
+msgstr "Límites de la vista actualizados."
+
+msgid "Error: unknown command. Type Help() for the command list."
+msgstr "Error: comando desconocido. Escribe Help() para ver la lista de comandos."
+
+msgid "Error: expected Command(argument=value, ...)."
+msgstr "Error: se esperaba Command(argument=value, ...)."
+
+msgid "Error: empty argument."
+msgstr "Error: argumento vacío."
+
+msgid "Error: invalid named argument."
+msgstr "Error: argumento con nombre no válido."
+
+msgid "Error: duplicate argument '"
+msgstr "Error: argumento duplicado '"
+
+msgid "Error: missing numeric argument."
+msgstr "Error: falta un argumento numérico."
+
+msgid "Error: '"
+msgstr "Error: '"
+
+msgid "' is not a number."
+msgstr "' no es un número."
+
+msgid "Error: missing integer argument."
+msgstr "Error: falta un argumento entero."
+
+msgid "' is not a valid non-negative integer."
+msgstr "' no es un entero no negativo válido."
+
+msgid "Error: positional colors require red, green, and blue values."
+msgstr "Error: los colores posicionales requieren valores rojo, verde y azul."
+
+msgid "Error: color components must be integers between 0 and 255."
+msgstr "Error: los componentes de color deben ser enteros entre 0 y 255."
+
+msgid "' is not a boolean. Use true or false."
+msgstr "' no es booleano. Usa true o false."
+
+msgid "Iterations: --"
+msgstr "Iteraciones: --"
+
+msgid "Rendering..."
+msgstr "Renderizando..."
+
+msgid "Iterations: %u"
+msgstr "Iteraciones: %u"
+
+msgid "Real: "
+msgstr "Real: "
+
+msgid "   Imaginary: "
+msgstr "   Imaginario: "
+
+msgid "Multiprecision: "
+msgstr "Multiprecisión: "
+
+msgid "-bit"
+msgstr " bits"
+
+msgid "Fractal parameters"
+msgstr "Parámetros del fractal"
+
+msgid "Min X"
+msgstr "X mín."
+
+msgid "Max X"
+msgstr "X máx."
+
+msgid "Min Y"
+msgstr "Y mín."
+
+msgid "Max Y"
+msgstr "Y máx."
+
+msgid "Square image size (pixels)"
+msgstr "Tamaño de imagen cuadrada (píxeles)"
+
+msgid "Configure fractal options"
+msgstr "Configurar opciones del fractal"
+
+msgid "Edit user formula"
+msgstr "Editar fórmula de usuario"
+
+msgid "Box-counting parameters"
+msgstr "Parámetros de conteo de cajas"
+
+msgid "Divisions"
+msgstr "Divisiones"
+
+msgid "Function:"
+msgstr "Función:"
+
+msgid "x goes from"
+msgstr "x va de"
+
+msgid "to"
+msgstr "a"
+
+msgid "By function"
+msgstr "Por función"
+
+msgid "By list"
+msgstr "Por lista"
+
+msgid "Plotting"
+msgstr "Graficado"
+
+msgid "Plot data"
+msgstr "Graficar datos"
+
+msgid "Plot fitted data"
+msgstr "Graficar datos ajustados"
+
+msgid "Calculate"
+msgstr "Calcular"
+
+msgid "Box count preview"
+msgstr "Vista previa de conteo de cajas"
+
+msgid "Number of divisions"
+msgstr "Número de divisiones"
+
+msgid "Save preview"
+msgstr "Guardar vista previa"
+
+msgid "Dimension count log"
+msgstr "Registro de cálculo de dimensión"
+
+msgid "Progress: Stopped"
+msgstr "Progreso: detenido"
+
+msgid "Dimension calculator log.\n\n"
+msgstr "Registro de la calculadora de dimensión.\n\n"
+
+msgid "Parser error: "
+msgstr "Error del analizador: "
+
+msgid "Stop"
+msgstr "Detener"
+
+msgid "Calculation stopped\n"
+msgstr "Cálculo detenido\n"
+
+msgid "Progress: "
+msgstr "Progreso: "
+
+msgid "Progress: Done"
+msgstr "Progreso: finalizado"
+
+msgid "Starting box count.\n"
+msgstr "Iniciando conteo de cajas.\n"
+
+msgid "Epsilon   |   BoxCount.\n"
+msgstr "Epsilon   |   ConteoCajas.\n"
+
+msgid "Dimension = "
+msgstr "Dimensión = "
+
+msgid "Data plot"
+msgstr "Gráfica de datos"
+
+msgid "Fitted data plot"
+msgstr "Gráfica de datos ajustados"
+
+msgid "Done\n"
+msgstr "Listo\n"
+
+msgid "Calculating dimension"
+msgstr "Calculando dimensión"
+
+msgid "Calculate Dimension"
+msgstr "Calcular dimensión"
+
+msgid "Calculate dimension help"
+msgstr "Ayuda para calcular dimensión"
+
+msgid "N = "
+msgstr "N = "
+
+msgid "Epsilon"
+msgstr "Epsilon"
+
+msgid "N"
+msgstr "N"
+
+msgid "Log(1/Epsilon)"
+msgstr "Log(1/Epsilon)"
+
+msgid "Log(N)"
+msgstr "Log(N)"
+
+msgid "Data"
+msgstr "Datos"

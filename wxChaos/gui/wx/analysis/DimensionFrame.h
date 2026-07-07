@@ -150,7 +150,7 @@ class DimensionFrame : public wxFrame
     void GetScriptFractals();                   ///< Creates the menu elements corresponding to the script fractals.
     void WriteText(const wxString &txt) const;  ///< Writes text to the output panel.
 public:
-    explicit DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "Calculate Dimension",
+    explicit DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxTRANSLATE("Calculate Dimension"),
                             const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
                             long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~DimensionFrame() override;

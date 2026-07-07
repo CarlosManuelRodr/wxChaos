@@ -59,11 +59,11 @@ void RenderStatusWidget::OnPaintEvent(wxPaintEvent&)
 
     Fractal* fractal = _presenter != nullptr ? _presenter->GetFractal() : nullptr;
     const bool rendering = fractal != nullptr && (fractal->IsRenderStarted() || fractal->IsRendering());
-    wxString text = "Iterations: --";
+    wxString text = _("Iterations: --");
     int textX = 12;
 
     if (fractal != nullptr)
-        text = rendering ? "Rendering..." : wxString::Format("Iterations: %u", fractal->GetIterations());
+        text = rendering ? _("Rendering...") : wxString::Format(_("Iterations: %u"), fractal->GetIterations());
 
     if (rendering)
     {

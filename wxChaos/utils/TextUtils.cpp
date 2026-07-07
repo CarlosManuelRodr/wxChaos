@@ -27,6 +27,11 @@ namespace TextUtils
         return wxString::Format("%d", value);
     }
 
+    wxString ToWxString(const long long value)
+    {
+        return wxString::Format("%d", value);
+    }
+
     wxString ToWxString(const double value)
     {
         return wxString::FromUTF8(ToString(value).c_str());

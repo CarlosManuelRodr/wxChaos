@@ -37,7 +37,7 @@ class JuliaConstantDialog : public wxDialog
 
 public:
     JuliaConstantDialog(bool* active, FractalPresenter* presenter, wxWindow* parent, wxWindowID id = wxID_ANY,
-                        const wxString& title = "Enter constant", const wxPoint& pos = wxDefaultPosition,
+                        const wxString& title = wxTRANSLATE("Enter constant"), const wxPoint& pos = wxDefaultPosition,
                         const wxSize& size = wxSize(320, 250), long style = wxDEFAULT_DIALOG_STYLE);
     ~JuliaConstantDialog() override;
 };

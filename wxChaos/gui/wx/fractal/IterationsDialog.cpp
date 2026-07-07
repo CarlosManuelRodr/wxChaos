@@ -26,7 +26,7 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
     _panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto subSizer = new wxBoxSizer(wxVERTICAL);
 
-    const auto titleLabel = new wxStaticText(_panel, wxID_ANY, "Iterations");
+    const auto titleLabel = new wxStaticText(_panel, wxID_ANY, _("Iterations"));
     wxFont titleFont = titleLabel->GetFont();
     titleFont.SetPointSize(titleFont.GetPointSize() + 2);
     titleFont.SetWeight(wxFONTWEIGHT_BOLD);
@@ -37,7 +37,7 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
 
     _number = _target->GetIterations();
     const auto inputSizer = new wxBoxSizer(wxHORIZONTAL);
-    const auto label = new wxStaticText(_panel, wxID_ANY, "Max iter:");
+    const auto label = new wxStaticText(_panel, wxID_ANY, _("Max iter:"));
     inputSizer->Add(label, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 10);
 
     const auto spinValue = static_cast<int>(std::min(
@@ -57,7 +57,7 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
     subSizer->Add(_scalePanel, 0, wxEXPAND | wxLEFT | wxRIGHT, 20);
 
     const auto hint = new wxStaticText(_panel, wxID_ANY,
-        "Higher values reveal more detail\nbut increase render time.");
+        _("Higher values reveal more detail\nbut increase render time."));
     wxFont hintFont = hint->GetFont();
     hintFont.SetStyle(wxFONTSTYLE_ITALIC);
     hint->SetFont(hintFont);
@@ -65,11 +65,11 @@ IterationsDialog::IterationsDialog(bool* Active, FractalPresenter* presenter, wx
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _acceptButton = new wxButton(_panel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
+    _acceptButton = new wxButton(_panel, wxID_ANY, _("Ok"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->AddStretchSpacer(1);
     buttonSizer->Add(_acceptButton, 0, wxALL, 5);
 
-    _applyButton = new wxButton(_panel, wxID_ANY, "Apply", wxDefaultPosition, wxDefaultSize, 0);
+    _applyButton = new wxButton(_panel, wxID_ANY, _("Apply"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_applyButton, 0, wxALL, 5);
     subSizer->Add(buttonSizer, 0, wxEXPAND | wxALL, 10);
 
@@ -140,7 +140,7 @@ bool IterationsDialog::ReadIterationValue(unsigned int& iterations) const
     const int value = _iterationsSpinCtrl->GetValue();
     if (value <= 0)
     {
-        wxMessageBox("Iterations must be greater than zero.", "Error", wxOK | wxICON_ERROR);
+        wxMessageBox(_("Iterations must be greater than zero."), _("Error"), wxOK | wxICON_ERROR);
         return false;
     }
 

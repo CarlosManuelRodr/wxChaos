@@ -203,6 +203,7 @@ if(BUILD_TESTING)
             tests/core/UserFormulaSymbolicCompilerTests.cpp
             tests/core/NewtonRootRegistryTests.cpp
             ${WXCHAOS_CORE_TEST_SOURCES}
+            wxChaos/gui/wx/common/AppLocalization.cpp
             wxChaos/gui/wx/common/PanelOptions.cpp
             wxChaos/gui/wx/common/wxGradient.cpp
             wxChaos/gui/wx/docs/FractalDocumentation.cpp

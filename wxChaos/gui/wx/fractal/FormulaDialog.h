@@ -60,12 +60,12 @@ class FormulaDialog : public wxDialog
 public:
     FormulaDialog(int userDefinedId, int fixedPointUserDefinedId, int newtonUserDefinedId, wxMenuItem* juliaSlider,
                   wxMenuItem* juliaManual, bool* active, FractalCanvas* fractalCanvas, wxWindow* parent,
-                  wxWindowID id = wxID_ANY, const wxString& title = "User formula", const wxPoint& pos = wxDefaultPosition,
+                  wxWindowID id = wxID_ANY, const wxString& title = wxTRANSLATE("User formula"), const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = FormulaDialogSize, long style = wxDEFAULT_DIALOG_STYLE,
                   const FormulaOptions* formulaOptions = nullptr,
                   std::function<void(const FormulaOptions&)> applyHandler = {});
     FormulaDialog(const FormulaOptions& formulaOptions, std::function<void(const FormulaOptions&)> applyHandler,
-                  wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = "User formula",
+                  wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxTRANSLATE("User formula"),
                   const wxPoint& pos = wxDefaultPosition, const wxSize& size = FormulaDialogSize,
                   long style = wxDEFAULT_DIALOG_STYLE);
     ~FormulaDialog() override;

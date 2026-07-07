@@ -13,8 +13,8 @@ PlotWindow::PlotWindow(const vector<double> &xList, const vector<double> &yList,
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     _plot = new mpWindow(this, -1, wxPoint(0, 0), wxSize(500, 500), wxBORDER_NONE);
-    auto* xAxis = new mpScaleX("Epsilon", mpALIGN_BOTTOM, true, mpX_NORMAL);
-    const auto yAxis = new mpScaleY("N", mpALIGN_LEFT, true);
+    auto* xAxis = new mpScaleX(_("Epsilon"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+    const auto yAxis = new mpScaleY(_("N"), mpALIGN_LEFT, true);
     xAxis->SetDrawOutsideMargins(false);
     yAxis->SetDrawOutsideMargins(false);
     xAxis->SetFont(graphFont);
@@ -44,8 +44,8 @@ PlotWindow::PlotWindow(const LineParams params, const vector<double> &xList, con
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     _plot = new mpWindow(this, -1, wxPoint(0, 0), wxSize(500, 500), wxBORDER_NONE);
-    const auto xAxis = new mpScaleX("Log(1/Epsilon)", mpALIGN_BOTTOM, true, mpX_NORMAL);
-    const auto yAxis = new mpScaleY("Log(N)", mpALIGN_LEFT, true);
+    const auto xAxis = new mpScaleX(_("Log(1/Epsilon)"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+    const auto yAxis = new mpScaleY(_("Log(N)"), mpALIGN_LEFT, true);
     xAxis->SetDrawOutsideMargins(false);
     yAxis->SetDrawOutsideMargins(false);
     xAxis->SetFont(graphFont);

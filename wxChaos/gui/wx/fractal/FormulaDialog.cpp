@@ -10,7 +10,8 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fixedPointUserDe
                              wxMenuItem* juliaSlider, wxMenuItem* juliaManual, bool* active, FractalCanvas* fractalCanvas,
                              wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
                              const long style, const FormulaOptions* formulaOptions,
-                             std::function<void(const FormulaOptions&)> applyHandler) : wxDialog(parent, id, title, pos, size, style)
+                             std::function<void(const FormulaOptions&)> applyHandler)
+                             : wxDialog(parent, id, wxGetTranslation(title), pos, size, style)
 {
     _userDefinedId = userDefinedId;
     _fpUserDefinedId = fixedPointUserDefinedId;
@@ -31,17 +32,17 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fixedPointUserDe
     _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
     const auto formulaSizer = new wxBoxSizer(wxVERTICAL);
-    formulaSizer->Add(CreateSectionHeader(_mainPanel, "Formula", "formula_light.svg", "formula_dark.svg"),
+    formulaSizer->Add(CreateSectionHeader(_mainPanel, _("Formula"), "formula_light.svg", "formula_dark.svg"),
                       0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _formulaCtrl = new wxTextCtrl(_mainPanel, wxID_ANY, wxString(_formulaOptions.userFormula), wxDefaultPosition, wxDefaultSize, 0);
     formulaSizer->Add(_formulaCtrl, 0, wxALL | wxEXPAND, 10);
     panelSizer->Add(formulaSizer, 0, wxEXPAND, 5);
 
-    const auto optionSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, "Options"), wxHORIZONTAL);
+    const auto optionSizer = new wxStaticBoxSizer(new wxStaticBox(_mainPanel, wxID_ANY, _("Options")), wxHORIZONTAL);
     const auto bailoutSizer = new wxBoxSizer(wxVERTICAL);
 
-    _bailText = new wxStaticText(_mainPanel, wxID_ANY, "Bailout value:", wxDefaultPosition, wxDefaultSize, 0);
+    _bailText = new wxStaticText(_mainPanel, wxID_ANY, _("Bailout value:"), wxDefaultPosition, wxDefaultSize, 0);
     _bailText->Wrap(-1);
     bailoutSizer->Add(_bailText, 0, wxALL, 5);
 
@@ -51,17 +52,17 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fixedPointUserDe
 
     const auto typeSizer = new wxBoxSizer(wxVERTICAL);
 
-    _typeText = new wxStaticText(_mainPanel, wxID_ANY, "Fractal type:", wxDefaultPosition, wxDefaultSize, 0);
+    _typeText = new wxStaticText(_mainPanel, wxID_ANY, _("Fractal type:"), wxDefaultPosition, wxDefaultSize, 0);
     _typeText->Wrap(-1);
     typeSizer->Add(_typeText, 0, wxALL, 5);
 
-    const wxString typeChoiceChoices[] = { "Escape time", "Fixed point", "Newton-Raphson" };
+    const wxString typeChoiceChoices[] = { _("Escape time"), _("Fixed point"), _("Newton-Raphson") };
     constexpr int typeChoiceNChoices = sizeof(typeChoiceChoices) / sizeof(wxString);
     _typeChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, typeChoiceNChoices, typeChoiceChoices, 0);
 
     typeSizer->Add(_typeChoice, 0, wxALL | wxEXPAND, 5);
 
-    _juliaCheck = new wxCheckBox(_mainPanel, wxID_ANY, "Julia type", wxDefaultPosition, wxDefaultSize, 0);
+    _juliaCheck = new wxCheckBox(_mainPanel, wxID_ANY, _("Julia type"), wxDefaultPosition, wxDefaultSize, 0);
     typeSizer->Add(_juliaCheck, 0, wxALL, 5);
 
     _juliaCheck->SetValue(_formulaOptions.julia);
@@ -70,13 +71,13 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fixedPointUserDe
     panelSizer->Add(optionSizer, 0, wxEXPAND, 5);
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-    _acceptButton = new wxButton(_mainPanel, wxID_ANY, "Ok", wxDefaultPosition, wxDefaultSize, 0);
+    _acceptButton = new wxButton(_mainPanel, wxID_ANY, _("Ok"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_acceptButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
 
-    _applyButton = new wxButton(_mainPanel, wxID_ANY, "Apply", wxDefaultPosition, wxDefaultSize, 0);
+    _applyButton = new wxButton(_mainPanel, wxID_ANY, _("Apply"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_applyButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
 
-    _funcButton = new wxButton( _mainPanel, wxID_ANY, "Available functions", wxDefaultPosition, wxDefaultSize, 0 );
+    _funcButton = new wxButton( _mainPanel, wxID_ANY, _("Available functions"), wxDefaultPosition, wxDefaultSize, 0 );
     buttonSizer->Add( _funcButton, 0, wxALL, 5 );
     panelSizer->Add(buttonSizer, 0, wxEXPAND, 5);
 

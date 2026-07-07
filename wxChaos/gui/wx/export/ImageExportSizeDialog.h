@@ -39,7 +39,7 @@ class ImageExportProgressDialog : public wxDialog
 
 public:
     ImageExportProgressDialog(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable = true, wxWindowID id = wxID_ANY,
-                              const wxString& title = "Saving...", const wxPoint& pos = wxDefaultPosition,
+                              const wxString& title = wxTRANSLATE("Saving..."), const wxPoint& pos = wxDefaultPosition,
                               const wxSize& size = wxSize(480, 180), long style = wxDEFAULT_DIALOG_STYLE);
     ~ImageExportProgressDialog() override;
 
@@ -91,7 +91,7 @@ class ImageExportSizeDialog : public wxDialog
 public:
     ImageExportSizeDialog(FractalCanvas* fractalCanvas, FractalType type, const Fractal* target,
                           wxWindow* parent, const std::string& scriptPath = "",
-                          wxWindowID id = wxID_ANY, const wxString& title = "Select size",
+                          wxWindowID id = wxID_ANY, const wxString& title = wxTRANSLATE("Select size"),
                           const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(480, 280),
                           long style = wxDEFAULT_DIALOG_STYLE);
     ~ImageExportSizeDialog() override;

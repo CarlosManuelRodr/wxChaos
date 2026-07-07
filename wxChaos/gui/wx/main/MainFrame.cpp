@@ -1170,8 +1170,8 @@ void MainFrame::OnZoomRecorder(wxCommandEvent&)
     if (const FractalPresenter* fractal = _fractalCanvas->GetFractalPresenter(); !fractal->HasZoomed())
     {
         wxMessageBox(
-            "To use the zoom recorder you need to first perform a zoom on the main window.",
-            "Zoom recorder",
+            _("To use the zoom recorder you need to first perform a zoom on the main window."),
+            _("Zoom recorder"),
             wxOK | wxICON_INFORMATION,
             this);
         return;

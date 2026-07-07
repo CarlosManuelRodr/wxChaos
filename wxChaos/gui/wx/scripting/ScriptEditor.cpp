@@ -7,6 +7,7 @@
 #include "scripting/ScriptEditor.h"
 #include "FractalTypes.h"
 #include "global.h"
+#include "TextUtils.h"
 #include "AngelscriptConfigurationEngine.h"
 using namespace std;
 
@@ -69,15 +70,15 @@ void Render()
 })"""";
 
 ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
-                                   const wxSize& size, const long style) : wxDialog(parent, id, title, pos, size, style)
+                                   const wxSize& size, const long style) : wxDialog(parent, id, wxGetTranslation(title), pos, size, style)
 {
     this->SetSizeHints(wxSize(600, 220), wxDefaultSize);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    const auto scriptNameSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, "Set a name for the script"), wxHORIZONTAL);
+    const auto scriptNameSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Set a name for the script")), wxHORIZONTAL);
 
-    _scriptNameText = new wxStaticText(scriptNameSizer->GetStaticBox(), wxID_ANY, "Script name: ", wxDefaultPosition, wxDefaultSize, 0);
+    _scriptNameText = new wxStaticText(scriptNameSizer->GetStaticBox(), wxID_ANY, _("Script name: "), wxDefaultPosition, wxDefaultSize, 0);
     _scriptNameText->Wrap(-1);
     scriptNameSizer->Add(_scriptNameText, 0, wxALL, 5);
 
@@ -127,7 +128,7 @@ wxString ScriptNameDialog::GetScriptName() const
 
 
 ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
-                           const wxSize& size, const long style) : wxFrame(parent, id, title, pos, size, style)
+                           const wxSize& size, const long style) : wxFrame(parent, id, wxGetTranslation(title), pos, size, style)
 {
     _currentScriptIndex = -1;
 
@@ -140,43 +141,43 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto mainPanelSizer = new wxBoxSizer(wxVERTICAL);
-    mainPanelSizer->Add(CreateSectionHeader(_mainPanel, "User script editor",
+    mainPanelSizer->Add(CreateSectionHeader(_mainPanel, _("User script editor"),
                                             "code_editor_light.svg", "code_editor_dark.svg"),
                         0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _scriptPanel = new wxPanel(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    const auto scriptListSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, "Scripts"), wxVERTICAL);
+    const auto scriptListSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, _("Scripts")), wxVERTICAL);
 
     scriptListSizer->SetMinSize(wxSize(250, -1));
     _scriptsListBox = new wxListBox(scriptListSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, wxLB_ALWAYS_SB | wxLB_HSCROLL);
     scriptListSizer->Add(_scriptsListBox, 1, wxALL | wxEXPAND, 5);
 
-    _saveChangesButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Save Changes", wxDefaultPosition, wxDefaultSize, 0);
+    _saveChangesButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Save Changes"), wxDefaultPosition, wxDefaultSize, 0);
 
     SetButtonIcon(_saveChangesButton, "save_light.svg", "save_dark.svg");
     _saveChangesButton->Enable(false);
 
     scriptListSizer->Add(_saveChangesButton, 0, wxALL | wxEXPAND, 5);
 
-    _newButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "New script", wxDefaultPosition, wxDefaultSize, 0);
+    _newButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("New script"), wxDefaultPosition, wxDefaultSize, 0);
 
     SetButtonIcon(_newButton, "new_light.svg", "new_dark.svg");
     scriptListSizer->Add(_newButton, 0, wxALL | wxEXPAND, 5);
 
-    _removeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Delete script", wxDefaultPosition, wxDefaultSize, 0);
+    _removeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Delete script"), wxDefaultPosition, wxDefaultSize, 0);
 
     SetButtonIcon(_removeButton, "delete_light.svg", "delete_dark.svg");
     scriptListSizer->Add(_removeButton, 0, wxALL | wxEXPAND, 5);
 
-    _closeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, "Close and reload", wxDefaultPosition, wxDefaultSize, 0);
+    _closeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Close and reload"), wxDefaultPosition, wxDefaultSize, 0);
 
     SetButtonIcon(_closeButton, "close_light.svg", "close_dark.svg");
     scriptListSizer->Add(_closeButton, 0, wxALL | wxEXPAND, 5);
     panelSizer->Add(scriptListSizer, 0, wxEXPAND, 5);
 
-    const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, "Source"), wxVERTICAL);
+    const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, _("Source")), wxVERTICAL);
 
     _codeEditor = new wxStyledTextCtrl(codeSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString);
     _codeEditor->SetUseTabs(false);
@@ -228,29 +229,29 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     _debugPanel = new wxPanel(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto debugSizer = new wxBoxSizer(wxVERTICAL);
-    debugSizer->Add(CreateSectionHeader(_debugPanel, "Debugger", "debugger_light.svg", "debugger_dark.svg"),
+    debugSizer->Add(CreateSectionHeader(_debugPanel, _("Debugger"), "debugger_light.svg", "debugger_dark.svg"),
                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     const auto debugElementsSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    const auto debugButtonsSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, "Actions"), wxVERTICAL);
+    const auto debugButtonsSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, _("Actions")), wxVERTICAL);
 
-    _validateButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, "Validate", wxDefaultPosition, wxDefaultSize, 0);
+    _validateButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, _("Validate"), wxDefaultPosition, wxDefaultSize, 0);
 
     SetButtonIcon(_validateButton, "validate_light.svg", "validate_dark.svg");
     debugButtonsSizer->Add(_validateButton, 0, wxALL | wxEXPAND, 5);
 
-    _runButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, "Run", wxDefaultPosition, wxDefaultSize, 0);
+    _runButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, _("Run"), wxDefaultPosition, wxDefaultSize, 0);
 
     SetButtonIcon(_runButton, "run_light.svg", "run_dark.svg");
     debugButtonsSizer->Add(_runButton, 0, wxALL | wxEXPAND, 5);
 
-    _clearConsoleButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, "Clear", wxDefaultPosition, wxDefaultSize, 0);
+    _clearConsoleButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, _("Clear"), wxDefaultPosition, wxDefaultSize, 0);
     SetButtonIcon(_clearConsoleButton, "erase_light.svg", "erase_dark.svg");
     debugButtonsSizer->Add(_clearConsoleButton, 0, wxALL | wxEXPAND, 5);
     debugElementsSizer->Add(debugButtonsSizer, 0, wxEXPAND, 5);
 
-    const auto consoleSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, "Console"), wxVERTICAL);
+    const auto consoleSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, _("Console")), wxVERTICAL);
     consoleSizer->SetMinSize(wxSize(300, -1));
 
     _console = new wxRichTextCtrl(consoleSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 
@@ -264,7 +265,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     consoleSizer->Add(_console, 1, wxEXPAND | wxALL, 5);
     debugElementsSizer->Add(consoleSizer, 1, wxEXPAND, 5);
 
-    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, "Preview"), wxVERTICAL);
+    const auto previewSizer = new wxStaticBoxSizer(new wxStaticBox(_debugPanel, wxID_ANY, _("Preview")), wxVERTICAL);
 
     _renderPreviewBitmap = new wxStaticBitmap(previewSizer->GetStaticBox(), wxID_ANY, 
                                              wxBitmap(AppPaths::ResourceFile({"fractal_thumbnail.png"}), wxBITMAP_TYPE_ANY),
@@ -410,7 +411,7 @@ void ScriptEditor::OnNewScript(wxCommandEvent&)
 }
 void ScriptEditor::OnDeleteScript(wxCommandEvent&)
 {
-    wxMessageDialog messageDialog(this, "This operation cannot be undone. Are you sure you want to continue?",
+    wxMessageDialog messageDialog(this, _("This operation cannot be undone. Are you sure you want to continue?"),
                                   wxMessageBoxCaptionStr, wxYES | wxNO);
     if (messageDialog.ShowModal() == wxID_YES)
     {
@@ -440,31 +441,31 @@ void ScriptEditor::OnValidateScript(wxCommandEvent&)
 {
     if (_currentScriptIndex < 0 || _currentScriptIndex >= static_cast<int>(_loadedScripts.size()))
     {
-        this->ConsoleAppendEntry("Validate", "No script selected.", false);
+        this->ConsoleAppendEntry(_("Validate"), _("No script selected."), false);
         return;
     }
 
     AngelscriptConfigurationEngine configEngine;
     if (!configEngine.CompileFromPath(_loadedScripts[_currentScriptIndex].file))
     {
-        this->ConsoleAppendEntry("Validate", wxString("Compile error: ") << configEngine.GetErrorInfo(), false);
+        this->ConsoleAppendEntry(_("Validate"), _("Compile error: ") + configEngine.GetErrorInfo(), false);
         return;
     }
 
     if (!configEngine.Execute())
     {
-        this->ConsoleAppendEntry("Validate", wxString("Execution error: ") << configEngine.GetErrorInfo(), false);
+        this->ConsoleAppendEntry(_("Validate"), _("Execution error: ") + configEngine.GetErrorInfo(), false);
         return;
     }
 
-    this->ConsoleAppendEntry("Validate", "No errors found.", configEngine.GetStatus() == EngineStatus::Ok);
+    this->ConsoleAppendEntry(_("Validate"), _("No errors found."), configEngine.GetStatus() == EngineStatus::Ok);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnRunScript(wxCommandEvent&)
 {
     if (_currentScriptIndex < 0 || _currentScriptIndex >= static_cast<int>(_loadedScripts.size()))
     {
-        this->ConsoleAppendEntry("Run", "No script selected.", false);
+        this->ConsoleAppendEntry(_("Run"), _("No script selected."), false);
         return;
     }
 
@@ -482,13 +483,14 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
 
     if (scriptFractal.IsThereError())
     {
-        this->ConsoleAppendEntry("Run", scriptFractal.GetErrorInfo(), false);
+        this->ConsoleAppendEntry(_("Run"), scriptFractal.GetErrorInfo(), false);
         scriptFractal.ClearErrorInfo();
     }
     else
-        this->ConsoleAppendEntry("Run", wxString("Rendered preview in ") << elapsed.count() << " ms.", true);
+        this->ConsoleAppendEntry(_("Run"), _("Rendered preview in ") + TextUtils::ToWxString(elapsed.count()) + _(" ms."), true);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void ScriptEditor::OnClearConsole(wxCommandEvent&)
 {
     ConsoleClear();
@@ -505,9 +507,9 @@ void ScriptEditor::ConsoleWriteText(const wxString& text, const wxColour& color)
 
 void ScriptEditor::ConsoleSetWelcomeText() const
 {
-    ConsoleWriteText("wxChaos " + wxString::FromUTF8(APP_VERSION) + " script console\n", ConsoleActionColor());
-    ConsoleWriteText("Validate or run a script to inspect results.\n", ConsoleMutedColor());
-    ConsoleWriteText("Ready.\n", ConsoleTextColor());
+    ConsoleWriteText("wxChaos " + wxString::FromUTF8(APP_VERSION) + _(" script console\n"), ConsoleActionColor());
+    ConsoleWriteText(_("Validate or run a script to inspect results.\n"), ConsoleMutedColor());
+    ConsoleWriteText(_("Ready.\n"), ConsoleTextColor());
 }
 
 void ScriptEditor::ConsoleClear() const
@@ -520,7 +522,7 @@ void ScriptEditor::ConsoleAppendEntry(const wxString& action, const wxString& me
 {
     ConsoleWriteText("\n[" + ConsoleTimestamp() + "] ", ConsoleMutedColor());
     ConsoleWriteText(action + "\n", ConsoleActionColor());
-    ConsoleWriteText(success ? "  OK     " : "  ERROR  ", success ? ConsoleSuccessColor() : ConsoleErrorColor());
+    ConsoleWriteText(success ? _("  OK     ") : _("  ERROR  "), success ? ConsoleSuccessColor() : ConsoleErrorColor());
     ConsoleWriteText(FormatConsoleMessage(message) + "\n", ConsoleTextColor());
     _console->ShowPosition(_console->GetLastPosition());
 }

@@ -152,23 +152,23 @@ wxString FractalCanvas::BuildStatusText() const
     {
         if (const FractalType fractalType = GetFractalType(); fractalType == FractalType::DoublePendulum)
         {
-            text = "θ2: ";
+            text = _("θ2: ");
             text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
-            text += "   θ1: ";
+            text += _("   θ1: ");
             text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
         }
         else if (fractalType == FractalType::SierpinskiTriangle || fractalType == FractalType::ScriptFractal)
         {
-            text = "x: ";
+            text = _("x: ");
             text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
-            text += "   y: ";
+            text += _("   y: ");
             text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
         }
         else
         {
-            text = "Real: ";
+            text = _("Real: ");
             text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
-            text += "   Imaginary: ";
+            text += _("   Imaginary: ");
             text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
         }
     }
@@ -178,9 +178,9 @@ wxString FractalCanvas::BuildStatusText() const
         if (!text.empty())
             text += "   ";
 
-        text += "Multiprecision: ";
+        text += _("Multiprecision: ");
         text += wxString::Format("%u", _fractal->GetHighPrecisionRenderBits());
-        text += "-bit";
+        text += _("-bit");
     }
 
     return text;

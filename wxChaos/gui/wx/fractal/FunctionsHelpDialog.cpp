@@ -47,7 +47,7 @@ FunctionsHelpDialog::FunctionsHelpDialog(wxWindow* parent, const wxWindowID id, 
 
     _mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
-    panelSizer->Add(CreateSectionHeader(_mainPanel, "Available functions", "function_light.svg", "function_dark.svg"),
+    panelSizer->Add(CreateSectionHeader(_mainPanel, _("Available functions"), "function_light.svg", "function_dark.svg"),
                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _text = new wxTextCtrl(_mainPanel, wxID_ANY,
@@ -61,7 +61,7 @@ FunctionsHelpDialog::FunctionsHelpDialog(wxWindow* parent, const wxWindowID id, 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
     buttonSizer->AddStretchSpacer();
 
-    _closeButton = new wxButton(_mainPanel, wxID_ANY, "Close", wxDefaultPosition, wxDefaultSize, 0);
+    _closeButton = new wxButton(_mainPanel, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_closeButton, 0, wxALL, 5);
     panelSizer->Add(buttonSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
 

@@ -54,7 +54,7 @@ wxPanel* FractalOptionsPanel::CreateFractalOptionsHeader()
     iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
     headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 12);
 
-    const auto title = new wxStaticText(header, wxID_ANY, "Fractal options");
+    const auto title = new wxStaticText(header, wxID_ANY, _("Fractal options"));
     wxFont titleFont = title->GetFont();
     titleFont.SetWeight(wxFONTWEIGHT_BOLD);
     titleFont.SetPointSize(titleFont.GetPointSize() + 1);
@@ -80,7 +80,7 @@ void FractalOptionsPanel::Build()
 
     if (_showJuliaConstants)
     {
-        _kRealLabel = new wxStaticText(this, wxID_ANY, "K real", wxDefaultPosition, wxDefaultSize, 0);
+        _kRealLabel = new wxStaticText(this, wxID_ANY, _("K real"), wxDefaultPosition, wxDefaultSize, 0);
         _dynamicControls.push_back(_kRealLabel);
         _sizer->Add(_kRealLabel, 0, wxALL, 5);
 
@@ -88,7 +88,7 @@ void FractalOptionsPanel::Build()
         _dynamicControls.push_back(_kRealCtrl);
         _sizer->Add(_kRealCtrl, 0, wxALL | wxEXPAND, 5);
 
-        _kImaginaryLabel = new wxStaticText(this, wxID_ANY, "K imaginary", wxDefaultPosition, wxDefaultSize, 0);
+        _kImaginaryLabel = new wxStaticText(this, wxID_ANY, _("K imaginary"), wxDefaultPosition, wxDefaultSize, 0);
         _dynamicControls.push_back(_kImaginaryLabel);
         _sizer->Add(_kImaginaryLabel, 0, wxALL, 5);
 
@@ -189,7 +189,7 @@ void FractalOptionsPanel::Build()
         }
     }
 
-    _applyButton = new wxButton(this, wxID_ANY, "Apply", wxDefaultPosition, wxDefaultSize, 0);
+    _applyButton = new wxButton(this, wxID_ANY, _("Apply"), wxDefaultPosition, wxDefaultSize, 0);
     _dynamicControls.push_back(_applyButton);
     _sizer->Add(_applyButton, 0, wxALL, 5);
     _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FractalOptionsPanel::OnApply, this);
