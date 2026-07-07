@@ -34,6 +34,13 @@ endif()
 find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS ${WXCHAOS_SFML_COMPONENTS})
 find_package(Angelscript CONFIG REQUIRED)
 find_package(Gettext)
+if(GETTEXT_MSGFMT_EXECUTABLE)
+        get_filename_component(WXCHAOS_GETTEXT_BIN_DIR "${GETTEXT_MSGFMT_EXECUTABLE}" DIRECTORY)
+endif()
+find_program(GETTEXT_XGETTEXT_EXECUTABLE
+        NAMES xgettext
+        HINTS "${WXCHAOS_GETTEXT_BIN_DIR}"
+)
 
 # SymEngine's exported CMake config currently declares compatibility with
 # CMake 2.8.12, which CMake 4 rejects. Keep this workaround local to package
@@ -124,6 +131,29 @@ target_link_libraries(wxChaos PRIVATE
 )
 
 if(GETTEXT_FOUND)
+        file(GLOB_RECURSE WXCHAOS_TRANSLATABLE_SOURCES CONFIGURE_DEPENDS
+                wxChaos/*.cpp
+                wxChaos/*.h
+        )
+
+        if(GETTEXT_XGETTEXT_EXECUTABLE)
+                add_custom_target(wxChaosPot
+                        COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE}
+                        --language=C++
+                        --from-code=UTF-8
+                        --keyword=_
+                        --keyword=wxTRANSLATE
+                        --keyword=WXCHAOS_TRANSLATE_NOOP
+                        --output
+                        "${CMAKE_SOURCE_DIR}/locale/wxchaos.pot"
+                        ${WXCHAOS_TRANSLATABLE_SOURCES}
+                        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+                        DEPENDS ${WXCHAOS_TRANSLATABLE_SOURCES}
+                        COMMENT "Extracting wxChaos translation template..."
+                        VERBATIM
+                )
+        endif()
+
         file(GLOB WXCHAOS_PO_FILES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/locale/*/wxchaos.po")
         foreach(WXCHAOS_PO_FILE ${WXCHAOS_PO_FILES})
                 get_filename_component(WXCHAOS_LOCALE_DIR "${WXCHAOS_PO_FILE}" DIRECTORY)
