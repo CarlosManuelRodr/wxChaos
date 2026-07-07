@@ -1,45 +1,145 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Logistic Map</title>
     <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main>
-    <h1>Logistic Map</h1>
+<main class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Bifurcation diagram</p>
+            <h1>Logistic Map</h1>
+            <p class="subtitle">A tiny feedback rule that opens into period doubling and chaos.</p>
+            <div class="formula hero-formula">
+                \(x_{n+1}=a x_n(1-x_n)\)
+            </div>
+            <p class="hero-introduction">
+                The logistic map looks almost too simple to be dangerous. Start with one number \(x_0\), feed it
+                back into the same formula, and repeat. As the parameter \(a\) changes (horizontal axis), the long-term
+                behavior moves from a single steady value to pairs, then four-cycles, then a flickering band of chaos.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="logistic_map/overview.png" alt="An overview of the Logistic Map bifurcation diagram">
+            <figcaption>
+                <span class="figure-title">The route to chaos.</span>
+                Horizontal axis represents the parameter \(a\).
+                Each vertical slice shows where repeated values of \(x_n\) eventually land for one value of \(a\).
+            </figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/logistic-map">Open in wxChaos</a>
+        </div>
+    </section>
 
-    <p>
-        The logistic map is a one-dimensional recurrence that shows how a simple feedback rule can move from
-        stable behavior into period doubling and chaos:
-    </p>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Read the horizontal direction as the parameter \(a\). The default view follows the classic
+                    window \(2.8 \le a \le 4.0\), where the calm fixed point begins to split.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Move from left to right. First the orbit settles to one value, then it alternates between two,
+                    then four, then a cascade of increasingly fine branches.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Turn on the <strong>Point picker</strong> tool and click along the diagram. wxChaos reports the
+                    Lyapunov exponent for the selected \(a\), giving a numeric hint about whether nearby orbits
+                    converge, separate, or sit on a boundary.
+                </p>
+            </div>
+        </div>
+    </section>
 
-    <math display="block">
-        <msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub>
-        <mo>=</mo>
-        <mi>a</mi><msub><mi>x</mi><mi>n</mi></msub>
-        <mo>(</mo><mn>1</mn><mo>-</mo><msub><mi>x</mi><mi>n</mi></msub><mo>)</mo>
-    </math>
+    <section>
+        <h2>How to read the image</h2>
+        <p>
+            For each value of \(a\), wxChaos starts from the configured seed and iterates
+            \(x_{n+1}=a x_n(1-x_n)\). After the initial settling period, the remaining values are plotted vertically.
+            A single dot means the orbit has settled. Two dots mean it alternates. A dense vertical spray means the
+            orbit keeps visiting many values.
+        </p>
+        <p>
+            The diagram is not a picture of many different formulas. It is one formula watched across many choices
+            of \(a\). That is the trick: the complexity comes from repetition, not from adding more ingredients.
+        </p>
+    </section>
 
-    <p>
-        wxChaos plots the parameter <math><mi>a</mi></math> horizontally. For each column it starts from the
-        configured seed, optionally discards an initial settling pass, then plots the remaining iterates.
-        The restored default view follows the original wxChaos 1.2.0 range, with
-        <math><mn>2.8</mn><mo>&le;</mo><mi>a</mi><mo>&le;</mo><mn>4</mn></math>.
-    </p>
+    <section>
+        <h2>Things to change</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Change <strong>Seed</strong> in the fractal options. Values between 0 and 1 are the natural
+                    playground for the classic logistic map.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Toggle <strong>Stabilize point</strong>. With stabilization on, wxChaos lets the orbit settle
+                    before measuring and drawing the values that matter most for the long-term behavior.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Increase the iteration count to make the branches denser. The image is accumulated from many
+                    visits of the same orbit, so more iterations reveal more of the structure.
+                </p>
+            </div>
+        </div>
+    </section>
 
-    <h2>Options</h2>
-
-    <p>
-        <strong>Seed</strong> is the initial <math><msub><mi>x</mi><mn>0</mn></msub></math> value. A seed between
-        0 and 1 is usually the most useful for the classic logistic map.
-    </p>
-
-    <p>
-        <a href="wxchaos://fractal/logistic-map">Open Logistic Map</a>
-        &nbsp;|&nbsp;
-        <a href="wxchaos://rendering/logistic-map/chaotic-map">Chaotic map</a>
-    </p>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>The recurrence</summary>
+            <div class="concept-details-content">
+                <p>
+                    The logistic map is \(x_{n+1}=a x_n(1-x_n)\). The number \(x_n\) is the current state, often
+                    interpreted as a normalized population, and \(a\) controls how strongly the next state responds
+                    to the current one. The factor \(1-x_n\) keeps growth from being unlimited.
+                </p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>Period doubling</summary>
+            <div class="concept-details-content">
+                <p>
+                    For smaller values of \(a\), many seeds settle to one attracting fixed point. As \(a\) increases,
+                    that fixed point loses stability and the orbit alternates between two values. Later it splits
+                    again into four values, then eight, and so on. This repeating split is the period-doubling route
+                    to chaos.
+                </p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>Lyapunov exponent</summary>
+            <div class="concept-details-content">
+                <p>
+                    The Lyapunov exponent estimates the average rate at which nearby starting values separate under
+                    iteration. For the logistic map, wxChaos averages
+                    \(\log |a(1-2x_n)|\) along the orbit. A negative exponent usually means nearby orbits are pulled
+                    together into stable or periodic behavior. A positive exponent means nearby orbits separate, which
+                    is a signature of chaos. Values close to zero often mark delicate transition boundaries.
+                </p>
+                <p>
+                    You can inspect this directly with the <strong>Point picker</strong> tool: click a parameter
+                    value in the diagram and read the Lyapunov exponent in the point information output.
+                </p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>
