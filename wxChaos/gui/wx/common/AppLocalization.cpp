@@ -30,7 +30,7 @@ int AppLocalization::ToWxLanguage(const AppLanguage language)
     }
 }
 
-wxString AppLocalization::DocumentationLanguageDirectory(const AppLanguage language)
+wxString AppLocalization::DocumentationLanguageCode(const AppLanguage language)
 {
     switch (ResolveLanguage(language))
     {
@@ -39,7 +39,7 @@ wxString AppLocalization::DocumentationLanguageDirectory(const AppLanguage langu
         case AppLanguage::English:
         case AppLanguage::System:
         default:
-            return wxEmptyString;
+            return "en";
     }
 }
 

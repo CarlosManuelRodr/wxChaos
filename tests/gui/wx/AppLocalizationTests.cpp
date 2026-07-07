@@ -10,8 +10,8 @@ TEST_CASE("AppLocalization maps explicit languages to wx language ids")
     CHECK(AppLocalization::ToWxLanguage(AppLanguage::Spanish) == wxLANGUAGE_SPANISH);
 }
 
-TEST_CASE("AppLocalization maps documentation language directories")
+TEST_CASE("AppLocalization maps documentation language codes")
 {
-    CHECK(AppLocalization::DocumentationLanguageDirectory(AppLanguage::English).empty());
-    CHECK(AppLocalization::DocumentationLanguageDirectory(AppLanguage::Spanish) == "es");
+    CHECK(AppLocalization::DocumentationLanguageCode(AppLanguage::English) == "en");
+    CHECK(AppLocalization::DocumentationLanguageCode(AppLanguage::Spanish) == "es");
 }

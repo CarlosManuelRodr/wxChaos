@@ -5,29 +5,10 @@
 
 wxString FractalDocumentation::ResolveBundledDocumentFile(const wxString& relativePath, const AppLanguage language)
 {
+    (void) language;
+
     if (relativePath.empty())
         return wxEmptyString;
-
-    const wxString languageDirectory = AppLocalization::DocumentationLanguageDirectory(language);
-    if (!languageDirectory.empty())
-    {
-        wxFileName localizedFile;
-        localizedFile.AssignDir(AppPaths::AppDirectory({"Resources", "Documents", languageDirectory}));
-
-        wxString remaining = relativePath;
-        while (remaining.Contains("/"))
-        {
-            const wxString directory = remaining.BeforeFirst('/');
-            if (!directory.empty() && directory != ".")
-                localizedFile.AppendDir(directory);
-            remaining = remaining.AfterFirst('/');
-        }
-
-        localizedFile.SetFullName(remaining);
-        localizedFile.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE);
-        if (localizedFile.FileExists())
-            return localizedFile.GetFullPath();
-    }
 
     wxFileName defaultFile;
     defaultFile.AssignDir(AppPaths::AppDirectory({"Resources", "Documents"}));

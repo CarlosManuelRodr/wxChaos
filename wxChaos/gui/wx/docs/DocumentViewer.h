@@ -50,8 +50,8 @@ private:
     /// @param url URL that navigation is moving to.
     void AddNavigationHistoryEntry(const wxString& url);
 
-    /// @brief Applies the current wxChaos light or dark theme to the loaded page.
-    void ApplyDocumentTheme() const;
+    /// @brief Applies the current wxChaos theme and language to the loaded page.
+    void ApplyDocumentPresentation() const;
 
     /// @brief Enables navigation buttons according to the web view history.
     void UpdateNavigationButtons() const;

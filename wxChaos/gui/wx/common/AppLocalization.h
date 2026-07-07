@@ -13,7 +13,7 @@ class AppLocalization
 public:
     static AppLanguage ResolveLanguage(AppLanguage language);
     static int ToWxLanguage(AppLanguage language);
-    static wxString DocumentationLanguageDirectory(AppLanguage language);
+    static wxString DocumentationLanguageCode(AppLanguage language);
     static void Initialize(AppLanguage language);
     static AppLanguage CurrentLanguage();
 

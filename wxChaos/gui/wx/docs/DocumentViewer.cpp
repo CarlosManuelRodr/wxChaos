@@ -4,6 +4,7 @@
 #include <wx/filename.h>
 #include <wx/filesys.h>
 #include "AppPaths.h"
+#include "common/AppLocalization.h"
 #include "common/AppTheme.h"
 
 DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const wxWindowID id,
@@ -73,13 +74,33 @@ DocumentViewer::~DocumentViewer()
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
-void DocumentViewer::ApplyDocumentTheme() const
+void DocumentViewer::ApplyDocumentPresentation() const
 {
     const wxString theme = AppTheme::IsDark() ? "dark" : "light";
+    const wxString language = AppLocalization::DocumentationLanguageCode(AppLocalization::CurrentLanguage());
     const wxString script = wxString::Format(
         "document.documentElement.setAttribute('data-theme', '%s');"
+        "document.documentElement.setAttribute('data-language', '%s');"
+        "document.documentElement.setAttribute('lang', '%s');"
+        "document.querySelectorAll('[data-i18n-en],[data-i18n-es]').forEach(function(element) {"
+        "var text = element.getAttribute('data-i18n-' + '%s');"
+        "if (text !== null) { element.textContent = text; }"
+        "});"
+        "document.querySelectorAll('[data-i18n-alt-en],[data-i18n-alt-es]').forEach(function(element) {"
+        "var text = element.getAttribute('data-i18n-alt-' + '%s');"
+        "if (text !== null) { element.setAttribute('alt', text); }"
+        "});"
+        "document.querySelectorAll('[data-i18n-title-en],[data-i18n-title-es]').forEach(function(element) {"
+        "var text = element.getAttribute('data-i18n-title-' + '%s');"
+        "if (text !== null) { element.setAttribute('title', text); }"
+        "});"
         "if (document.body) { document.body.classList.add('wxchaos-document'); }",
-        theme.c_str()
+        theme.c_str(),
+        language.c_str(),
+        language.c_str(),
+        language.c_str(),
+        language.c_str(),
+        language.c_str()
         );
     _webView->RunScript(script);
 }
@@ -194,7 +215,7 @@ void DocumentViewer::OnLoaded(wxWebViewEvent&)
 
     _hasLoadedInitialDocument = true;
     _isNavigatingHistory = false;
-    ApplyDocumentTheme();
+    ApplyDocumentPresentation();
     UpdateNavigationButtons();
 }
 

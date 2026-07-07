@@ -1,9 +1,6 @@
 #include <doctest/doctest.h>
-#include <filesystem>
-#include <fstream>
 #include <wx/filename.h>
 
-#include "AppPaths.h"
 #include "common/AppLocalization.h"
 #include "docs/FractalDocumentation.h"
 
@@ -21,28 +18,7 @@ TEST_CASE("Logistic Map documentation is registered")
     CHECK(FractalDocumentation::GetDocumentFile(FractalType::LogisticMap).EndsWith("logistic_map.html"));
 }
 
-TEST_CASE("localized fractal documentation uses Spanish file when present")
-{
-    const std::filesystem::path localizedDirectory =
-        std::filesystem::path(AppPaths::ToStdPath(AppPaths::AppDirectory({"Resources", "Documents", "es"})));
-    std::filesystem::create_directories(localizedDirectory);
-
-    const std::filesystem::path localizedFile = localizedDirectory / "logistic_map.html";
-    {
-        std::ofstream file(localizedFile);
-        file << "<html lang=\"es\"></html>\n";
-    }
-
-    const wxString documentFile = FractalDocumentation::GetDocumentFile(FractalType::LogisticMap, AppLanguage::Spanish);
-
-    CHECK(documentFile.Contains("Documents"));
-    CHECK(documentFile.Contains("es"));
-    CHECK(documentFile.EndsWith("logistic_map.html"));
-
-    std::filesystem::remove(localizedFile);
-}
-
-TEST_CASE("localized fractal documentation falls back to English when missing")
+TEST_CASE("localized fractal documentation keeps the canonical document file")
 {
     const wxString documentFile = FractalDocumentation::GetDocumentFile(FractalType::Mandelbrot, AppLanguage::Spanish);
     wxString normalizedDocumentFile = documentFile;
@@ -77,30 +53,6 @@ TEST_CASE("script documentation path accepts bundled documents prefix")
     CHECK(documentFile.Contains("Resources"));
     CHECK(documentFile.Contains("Documents"));
     CHECK(documentFile.EndsWith("duffing.html"));
-}
-
-TEST_CASE("script documentation path accepts localized bundled documents prefix")
-{
-    const std::filesystem::path localizedDirectory =
-        std::filesystem::path(AppPaths::ToStdPath(AppPaths::AppDirectory({"Resources", "Documents", "es"})));
-    std::filesystem::create_directories(localizedDirectory);
-
-    const std::filesystem::path localizedFile = localizedDirectory / "duffing.html";
-    {
-        std::ofstream file(localizedFile);
-        file << "<html lang=\"es\"></html>\n";
-    }
-
-    ScriptData scriptData;
-    scriptData.documentationPath = "Documents/duffing.html";
-
-    const wxString documentFile = FractalDocumentation::GetDocumentFile(scriptData, AppLanguage::Spanish);
-
-    CHECK(documentFile.Contains("Documents"));
-    CHECK(documentFile.Contains("es"));
-    CHECK(documentFile.EndsWith("duffing.html"));
-
-    std::filesystem::remove(localizedFile);
 }
 
 TEST_CASE("script documentation path preserves absolute paths")
