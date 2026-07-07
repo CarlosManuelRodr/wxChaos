@@ -1142,8 +1142,7 @@ Fractal::PointSample Fractal::GetPointSample(const unsigned int x, const unsigne
     return {_setMap[renderX][renderY], _colorMap[renderX][renderY], IsValidColorMapValue(_colorMap[renderX][renderY])};
 }
 
-wxString Fractal::InspectPoint(const double real, const double imaginary,
-                               const optional<unsigned int> iterations) const
+wxString Fractal::InspectPoint(const double real, const double imaginary, const optional<unsigned int> iterations) const
 {
     constexpr unsigned int probeSize = 3;
     FractalFactory probeHandler;
