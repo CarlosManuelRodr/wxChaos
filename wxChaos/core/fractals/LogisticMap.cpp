@@ -1,5 +1,4 @@
 #include "LogisticMap.h"
-#include <cmath>
 #include <limits>
 
 LogisticMap::LogisticMap(const unsigned int width, const unsigned int height) : Fractal(width, height)

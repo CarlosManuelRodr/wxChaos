@@ -345,7 +345,7 @@ public:
     PointSample GetPointSample(unsigned int x, unsigned int y) const;
 
     ///@brief Evaluates and describes one world-coordinate point using the current fractal settings.
-    virtual wxString InspectPoint(double x, double y, std::optional<unsigned int> iterations = std::nullopt) const;
+    virtual wxString InspectPoint(double x, double y, std::optional<unsigned int> iterations) const;
 
     // Thread control.
     ///@brief Calculate drawing limits of each worker and launches them.

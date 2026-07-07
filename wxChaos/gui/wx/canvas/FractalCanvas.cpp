@@ -349,7 +349,7 @@ wxString FractalCanvas::InspectPointAt(const wxPoint position) const
     if (_fractal == nullptr)
         return "No fractal loaded.";
 
-    return _fractal->InspectPoint(_fractal->GetX(position.x), _fractal->GetY(position.y));
+    return _fractal->InspectPoint(_fractal->GetX(position.x), _fractal->GetY(position.y), std::nullopt);
 }
 
 void FractalCanvas::ShowPointInfo(const wxPoint position, const wxString& text)
