@@ -18,6 +18,7 @@
 #include "coloring/ColorPaletteTypes.h"
 #include "Options.h"
 #include "FormulaOptions.h"
+#include "Translation.h"
 #include "RenderWorker.h"
 #include "rendering/RenderJob.h"
 #include "rendering/RenderRegion.h"

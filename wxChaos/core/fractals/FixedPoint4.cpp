@@ -20,7 +20,7 @@ FixedPoint4::FixedPoint4(const unsigned int width, const unsigned int height) : 
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Min step: ", &minStep, "0.001");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Min step: "), &minStep, "0.001");
     minStep = 0.001;
 
     // Specify algorithms.

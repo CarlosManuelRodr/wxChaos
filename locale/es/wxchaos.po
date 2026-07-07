@@ -922,3 +922,78 @@ msgstr "Log(N)"
 
 msgid "Data"
 msgstr "Datos"
+
+msgid "Bailout: "
+msgstr "Escape: "
+
+msgid " θ1 Bailout"
+msgstr " Escape θ1"
+
+msgid "Value: "
+msgstr "Valor: "
+
+msgid " θ2 Bailout"
+msgstr " Escape θ2"
+
+msgid "DeltaT: "
+msgstr "DeltaT: "
+
+msgid "m1: "
+msgstr "m1: "
+
+msgid "m2: "
+msgstr "m2: "
+
+msgid "Longitude: "
+msgstr "Longitud: "
+
+msgid "Gravity: "
+msgstr "Gravedad: "
+
+msgid " Relative angles"
+msgstr " Ángulos relativos"
+
+msgid " Runge-Kutta"
+msgstr " Runge-Kutta"
+
+msgid "Min step: "
+msgstr "Paso mín.: "
+
+msgid "Alpha: "
+msgstr "Alfa: "
+
+msgid "Beta: "
+msgstr "Beta: "
+
+msgid "X0: "
+msgstr "X0: "
+
+msgid "Y0: "
+msgstr "Y0: "
+
+msgid "m: "
+msgstr "m: "
+
+msgid "Seed: "
+msgstr "Semilla: "
+
+msgid "Stabilize point: "
+msgstr "Estabilizar punto: "
+
+msgid "Number of buddhabrot\nrandom points:"
+msgstr "Número de puntos aleatorios\npara Buddhabrot:"
+
+msgid "Convergence epsilon: "
+msgstr "Épsilon de convergencia: "
+
+msgid "Function epsilon: "
+msgstr "Épsilon de función: "
+
+msgid "Derivative epsilon: "
+msgstr "Épsilon de derivada: "
+
+msgid "Root tolerance: "
+msgstr "Tolerancia de raíz: "
+
+msgid "Escape radius: "
+msgstr "Radio de escape: "

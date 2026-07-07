@@ -1,6 +1,7 @@
 #include "common/FractalOptionsPanel.h"
 #include "common/AppTheme.h"
 #include "common/UnrestrictedSpinDoubleCtrl.h"
+#include <wx/translation.h>
 #include "AppPaths.h"
 #include "TextUtils.h"
 
@@ -116,7 +117,7 @@ void FractalOptionsPanel::Build()
             {
                 case PanelOptionType::Label:
                 {
-                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
+                    auto* label = new wxStaticText(this, wxID_ANY, TranslateOptionLabel(panelOptions, i), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
                     dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
@@ -126,7 +127,7 @@ void FractalOptionsPanel::Build()
                 }
                 case PanelOptionType::TextCtrl:
                 {
-                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
+                    auto* label = new wxStaticText(this, wxID_ANY, TranslateOptionLabel(panelOptions, i), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
                     dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
@@ -142,7 +143,7 @@ void FractalOptionsPanel::Build()
                 }
                 case PanelOptionType::Spin:
                 {
-                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
+                    auto* label = new wxStaticText(this, wxID_ANY, TranslateOptionLabel(panelOptions, i), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
                     dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
@@ -159,7 +160,7 @@ void FractalOptionsPanel::Build()
                 }
                 case PanelOptionType::SpinDouble:
                 {
-                    auto* label = new wxStaticText(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0);
+                    auto* label = new wxStaticText(this, wxID_ANY, TranslateOptionLabel(panelOptions, i), wxDefaultPosition, wxDefaultSize, 0);
                     _dynamicControls.push_back(label);
                     labelIndex = _dynamicControls.size() - 1;
                     dynamic_cast<wxStaticText*>(_dynamicControls[labelIndex])->Wrap(-1);
@@ -176,7 +177,7 @@ void FractalOptionsPanel::Build()
                 }
                 case PanelOptionType::CheckBox:
                 {
-                    _checkBoxes.push_back(new wxCheckBox(this, wxID_ANY, wxString(panelOptions->GetLabelValue(i)), wxDefaultPosition, wxDefaultSize, 0));
+                    _checkBoxes.push_back(new wxCheckBox(this, wxID_ANY, TranslateOptionLabel(panelOptions, i), wxDefaultPosition, wxDefaultSize, 0));
                     index = _checkBoxes.size() - 1;
                     _checkBoxes[index]->SetValue(panelOptions->GetDefault(i) == "true");
                     _dynamicControls.push_back(_checkBoxes[index]);
@@ -196,6 +197,11 @@ void FractalOptionsPanel::Build()
 
     _sizer->Layout();
     Layout();
+}
+
+wxString FractalOptionsPanel::TranslateOptionLabel(PanelOptions* panelOptions, const unsigned int index) const
+{
+    return wxGetTranslation(panelOptions->GetLabelValue(index));
 }
 
 void FractalOptionsPanel::ClearDynamicControls()

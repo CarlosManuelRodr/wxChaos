@@ -13,7 +13,7 @@ Cell::Cell(const unsigned int width, const unsigned int height) : Fractal(width,
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     // Creates panel.
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Bailout: ", &bailout, "2");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Bailout: "), &bailout, "2");
     bailout = 2;
 
     _hasOrbit = true;

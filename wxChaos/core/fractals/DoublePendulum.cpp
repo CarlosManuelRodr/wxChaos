@@ -15,17 +15,17 @@ DoublePendulum::DoublePendulum(const unsigned int width, const unsigned int heig
 
     // Creates panel.
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, " θ1 Bailout", &th1Bailout, "true");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Value: ", &th1NumBailout, "3.14159");
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, " θ2 Bailout", &th2Bailout, "true");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Value: ", &th2NumBailout, "3.14159");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "DeltaT: ", &dt, "0.005");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "m1: ", &m1, "10");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "m2: ", &m2, "10");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Longitude: ", &l, "20");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Gravity: ", &g, "9.81");
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, " Relative angles", &referenced, "false");
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, " Runge-Kutta", &rungeKutta, "false");
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, WXCHAOS_TRANSLATE_NOOP(" θ1 Bailout"), &th1Bailout, "true");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Value: "), &th1NumBailout, "3.14159");
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, WXCHAOS_TRANSLATE_NOOP(" θ2 Bailout"), &th2Bailout, "true");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Value: "), &th2NumBailout, "3.14159");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("DeltaT: "), &dt, "0.005");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("m1: "), &m1, "10");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("m2: "), &m2, "10");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Longitude: "), &l, "20");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Gravity: "), &g, "9.81");
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, WXCHAOS_TRANSLATE_NOOP(" Relative angles"), &referenced, "false");
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, WXCHAOS_TRANSLATE_NOOP(" Runge-Kutta"), &rungeKutta, "false");
     th1Bailout = true;
     th2Bailout = true;
     th1NumBailout = 3.14159;

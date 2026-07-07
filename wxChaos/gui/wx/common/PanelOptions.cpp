@@ -13,7 +13,7 @@ void PanelOptions::LinkInteger(const PanelOptionType type, const wxString& label
     _increments.push_back(1.0);
 }
 void PanelOptions::LinkDouble(const PanelOptionType type, const wxString& labelText, double* linkDouble,
-                              const wxString& defaultValue, double increment)
+                              const wxString& defaultValue, const double increment)
 {
     _type.push_back(type);
     _label.push_back(labelText);

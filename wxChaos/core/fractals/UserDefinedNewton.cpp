@@ -33,11 +33,11 @@ UserDefinedNewton::UserDefinedNewton(const unsigned int width, const unsigned in
     _escapeRadius = 1e6;
 
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Convergence epsilon: ", &_convergenceEpsilon, "0.00000001");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Function epsilon: ", &_functionEpsilon, "0.00000001");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Derivative epsilon: ", &_derivativeEpsilon, "0.000000000001");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Root tolerance: ", &_rootTolerance, "0.00001");
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Escape radius: ", &_escapeRadius, "1000000");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Convergence epsilon: "), &_convergenceEpsilon, "0.00000001");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Function epsilon: "), &_functionEpsilon, "0.00000001");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Derivative epsilon: "), &_derivativeEpsilon, "0.000000000001");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Root tolerance: "), &_rootTolerance, "0.00001");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Escape radius: "), &_escapeRadius, "1000000");
 
     _algorithm = RenderingAlgorithmType::ConvergenceTest;
     _availableAlg.push_back(RenderingAlgorithmType::ConvergenceTest);

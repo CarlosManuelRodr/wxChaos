@@ -49,6 +49,9 @@ class FractalOptionsPanel : public wxPanel
     /// @brief Destroys all controls owned by the current dynamic build.
     void ClearDynamicControls();
 
+    /// @brief Returns the localized display label for a target option.
+    wxString TranslateOptionLabel(PanelOptions* panelOptions, unsigned int index) const;
+
     /// @brief Handles the Apply button click.
     void OnApply(wxCommandEvent& event);
 

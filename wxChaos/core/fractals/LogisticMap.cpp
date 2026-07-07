@@ -20,8 +20,8 @@ LogisticMap::LogisticMap(const unsigned int width, const unsigned int height) : 
     SetPreciseView(PreciseRect(Rect(_minX, _minY, _maxX, _maxY)));
 
     _panelOpt.SetForceShow(true);
-    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, "Seed: ", &_logisticSeed, "0.25");
-    _panelOpt.LinkBool(PanelOptionType::CheckBox, "Stabilize point: ", &_stabilizePoint, "true");
+    _panelOpt.LinkDouble(PanelOptionType::TextCtrl, WXCHAOS_TRANSLATE_NOOP("Seed: "), &_logisticSeed, "0.25");
+    _panelOpt.LinkBool(PanelOptionType::CheckBox, WXCHAOS_TRANSLATE_NOOP("Stabilize point: "), &_stabilizePoint, "true");
     _logisticSeed = 0.25;
     _stabilizePoint = true;
 

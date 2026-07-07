@@ -24,7 +24,7 @@ Mandelbrot::Mandelbrot(const unsigned int width, const unsigned int height) : Fr
 
     // Creates panel.
     _panelOpt.SetForceShow(false);
-    _panelOpt.LinkInteger(PanelOptionType::Spin, "Number of buddhabrot\nrandom points:", &buddhaRandomP, "1000000");
+    _panelOpt.LinkInteger(PanelOptionType::Spin, WXCHAOS_TRANSLATE_NOOP("Number of buddhabrot\nrandom points:"), &buddhaRandomP, "1000000");
     buddhaRandomP = 1000000;
 
     // Specify algorithms.
