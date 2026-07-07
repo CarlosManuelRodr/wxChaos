@@ -17,6 +17,7 @@
     "version>=" : "2.38.0"
   }, {
     "name" : "gettext",
+    "features" : [ "runtime-tools", "tools" ],
     "version>=" : "0.22.5#4"
   } ],
   "overrides" : [ {
