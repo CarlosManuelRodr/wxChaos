@@ -16,6 +16,10 @@ class ScriptFractal : public Fractal
     std::string _path;
     ScriptData _myScriptData;
     ScriptFractalRenderer* _myRender;
+
+protected:
+    void CreateInspectionFractal(FractalFactory& factory, unsigned int width, unsigned int height) const override;
+
 public:
     ScriptFractal(unsigned int width, unsigned int height, const ScriptData& scriptData, int renderThreads = -1);
     ScriptFractal(unsigned int width, unsigned int height, const std::string& scriptPath);

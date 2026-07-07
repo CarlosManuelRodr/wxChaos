@@ -24,6 +24,8 @@
 #include "rendering/RenderThreadPool.h"
 #include "wx/common/PanelOptions.h"
 
+class FractalFactory;
+
 /**
 * @class Fractal
 * @brief Abstract model for a renderable fractal and its display state.
@@ -204,6 +206,7 @@ protected:
 
     static wxString FormatNumber(double value);
     static wxString FormatComplex(double real, double imaginary);
+    virtual void CreateInspectionFractal(FractalFactory& factory, unsigned int width, unsigned int height) const;
 
 public:
     static constexpr double InvalidColor = std::numeric_limits<double>::max();
@@ -342,7 +345,7 @@ public:
     PointSample GetPointSample(unsigned int x, unsigned int y) const;
 
     ///@brief Evaluates and describes one world-coordinate point using the current fractal settings.
-    wxString InspectPoint(double real, double imaginary, std::optional<unsigned int> iterations = std::nullopt) const;
+    virtual wxString InspectPoint(double x, double y, std::optional<unsigned int> iterations = std::nullopt) const;
 
     // Thread control.
     ///@brief Calculate drawing limits of each worker and launches them.

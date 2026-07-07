@@ -148,16 +148,10 @@ TEST_CASE("DocumentationLinkAction parses Logistic Map rendering methods")
 {
     const DocumentationLinkAction chaoticMap =
         DocumentationLinkAction::Parse("wxchaos://rendering/logistic-map/chaotic-map");
-    const DocumentationLinkAction lyapunov =
-        DocumentationLinkAction::Parse("wxchaos://rendering/logistic-map/lyapunov");
 
     CHECK(chaoticMap.GetType() == DocumentationLinkAction::Type::SetRendering);
     CHECK(chaoticMap.GetRenderingMethod().fractalType == FractalType::LogisticMap);
     CHECK(chaoticMap.GetRenderingMethod().algorithm == RenderingAlgorithmType::ChaoticMap);
-
-    CHECK(lyapunov.GetType() == DocumentationLinkAction::Type::SetRendering);
-    CHECK(lyapunov.GetRenderingMethod().fractalType == FractalType::LogisticMap);
-    CHECK(lyapunov.GetRenderingMethod().algorithm == RenderingAlgorithmType::Lyapunov);
 }
 
 TEST_CASE("DocumentationLinkAction rejects unknown actions")

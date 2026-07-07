@@ -4,7 +4,7 @@
 
 /**
 * @class LogisticMap
-* @brief Renders the logistic map bifurcation diagram and Lyapunov curve.
+* @brief Renders the logistic map bifurcation diagram.
 */
 class LogisticMap : public Fractal
 {
@@ -17,6 +17,7 @@ public:
     ~LogisticMap() override;
 
     wxString GetName() const override { return "Logistic Map"; }
+    wxString InspectPoint(double x, double y, std::optional<unsigned int> iterations = std::nullopt) const override;
     void Render() override;
     void CopyOptionFromPanel() override;
 };

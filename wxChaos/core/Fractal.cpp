@@ -6,7 +6,6 @@
 #include <utility>
 #include "Fractal.h"
 #include "FractalFactory.h"
-#include "fractals/ScriptFractal.h"
 #include "BmpImageWriter.h"
 #include "coloring/ColorPalette.h"
 #include "coloring/PaletteMapping.h"
@@ -1114,6 +1113,11 @@ wxString Fractal::FormatComplex(const double real, const double imaginary)
            + FormatNumber(abs(imaginary)) + "i";
 }
 
+void Fractal::CreateInspectionFractal(FractalFactory& factory, unsigned int width, unsigned int height) const
+{
+    factory.CreateFractal(_type, width, height);
+}
+
 void Fractal::RenderBlocking()
 {
     const bool previousSnapshot = _onSnapshot;
@@ -1142,20 +1146,11 @@ Fractal::PointSample Fractal::GetPointSample(const unsigned int x, const unsigne
     return {_setMap[renderX][renderY], _colorMap[renderX][renderY], IsValidColorMapValue(_colorMap[renderX][renderY])};
 }
 
-wxString Fractal::InspectPoint(const double real, const double imaginary, const optional<unsigned int> iterations) const
+wxString Fractal::InspectPoint(double x, double y, optional<unsigned int> iterations) const
 {
     constexpr unsigned int probeSize = 3;
     FractalFactory probeHandler;
-
-    if (_type == FractalType::ScriptFractal)
-    {
-        const auto* scriptFractal = dynamic_cast<const ScriptFractal*>(this);
-        if (scriptFractal == nullptr)
-            return "This fractal cannot be inspected.";
-        probeHandler.CreateScriptFractal(probeSize, probeSize, scriptFractal->GetScriptData());
-    }
-    else
-        probeHandler.CreateFractal(_type, probeSize, probeSize);
+    CreateInspectionFractal(probeHandler, probeSize, probeSize);
 
     Fractal* probe = probeHandler.GetFractal();
     if (probe == nullptr)
@@ -1177,15 +1172,15 @@ wxString Fractal::InspectPoint(const double real, const double imaginary, const 
     probe->SetOptions(options);
     probe->SetFormula(_userFormula);
 
-    const double scale = max({1.0, abs(real), abs(imaginary)});
+    const double scale = max({1.0, abs(x), abs(y)});
     const double epsilon = scale * 1e-10;
-    probe->SetView({real - epsilon, imaginary - epsilon, real + epsilon, imaginary + epsilon});
+    probe->SetView({x - epsilon, y - epsilon, x + epsilon, y + epsilon});
     probe->RenderBlocking();
 
     const PointSample sample = probe->GetPointSample(1, 1);
     wxString output;
     output << "Fractal: " << probe->GetName() << "\n"
-           << "Point: " << FormatComplex(real, imaginary) << "\n"
+           << "Coordinates: (" << FormatNumber(x) << ", " << FormatNumber(y) << ")\n"
            << "Algorithm: " << probe->GetRenderingAlgorithmName() << "\n"
            << "Maximum iterations: " << options.maxIter << "\n";
 
@@ -1201,7 +1196,7 @@ wxString Fractal::InspectPoint(const double real, const double imaginary, const 
     if (probe->HasOrbit())
     {
         probe->SetOrbitMode(true);
-        probe->SetOrbitPoint(real, imaginary);
+        probe->SetOrbitPoint(x, y);
         probe->DrawOrbit();
         output << "\n" << probe->DescribeOrbit(!sample.inSet);
     }

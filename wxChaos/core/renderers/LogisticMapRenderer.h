@@ -3,7 +3,7 @@
 
 /**
 * @class LogisticMapRenderer
-* @brief Plots the logistic map bifurcation and Lyapunov curves into the current viewport.
+* @brief Plots the logistic map bifurcation diagram into the current viewport.
 */
 class LogisticMapRenderer : public RenderWorker
 {

@@ -1,4 +1,5 @@
 #include "ScriptFractal.h"
+#include "../FractalFactory.h"
 #include "TextUtils.h"
 #include "docs/FractalDocumentation.h"
 #include "../../scripting/AngelscriptConfigurationEngine.h"
@@ -75,6 +76,10 @@ void ScriptFractal::Render()
     asSetMap = _setMap;
     asColorMap = _colorMap;
     this->SetRendererBounds<ScriptFractalRenderer>(_myRender);
+}
+void ScriptFractal::CreateInspectionFractal(FractalFactory& factory, unsigned int width, unsigned int height) const
+{
+    factory.CreateScriptFractal(width, height, _myScriptData);
 }
 void ScriptFractal::PostRender()
 {

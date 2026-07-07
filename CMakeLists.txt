@@ -159,9 +159,17 @@ add_custom_command(
 include(CTest)
 
 if(BUILD_TESTING)
+    file(GLOB_RECURSE WXCHAOS_CORE_TEST_SOURCES CONFIGURE_DEPENDS
+            wxChaos/core/*.cpp
+            wxChaos/scripting/*.cpp
+            wxChaos/utils/*.cpp
+            third_party/muParserX/*.cpp
+    )
+
     add_executable(wxChaosCoreTests
             tests/core/CoreTestsMain.cpp
             tests/core/FractalUtilitiesTests.cpp
+            tests/core/FractalInspectionTests.cpp
             tests/core/RenderingAlgorithmTests.cpp
             tests/core/geometry/GeometryTests.cpp
             tests/core/rendering/RenderingTests.cpp
@@ -169,21 +177,10 @@ if(BUILD_TESTING)
             tests/core/rendering/LogisticMapRendererTests.cpp
             tests/core/UserFormulaSymbolicCompilerTests.cpp
             tests/core/NewtonRootRegistryTests.cpp
-            wxChaos/core/UserFormulaSymbolicCompiler.cpp
-            wxChaos/core/renderers/utils/NewtonRootRegistry.cpp
-            wxChaos/core/renderers/HenonMapRenderer.cpp
-            wxChaos/core/renderers/LogisticMapRenderer.cpp
-            wxChaos/core/RenderWorker.cpp
-            wxChaos/core/coloring/ColorPalette.cpp
-            wxChaos/core/coloring/PaletteMapping.cpp
-            wxChaos/core/coloring/RenderingAlgorithm.cpp
-            wxChaos/core/geometry/Rect.cpp
-            wxChaos/core/geometry/Vector2Double.cpp
-            wxChaos/core/rendering/RenderJob.cpp
-            wxChaos/core/rendering/RenderRegion.cpp
+            ${WXCHAOS_CORE_TEST_SOURCES}
             wxChaos/gui/wx/common/PanelOptions.cpp
             wxChaos/gui/wx/common/wxGradient.cpp
-            wxChaos/utils/TextUtils.cpp
+            wxChaos/gui/wx/docs/FractalDocumentation.cpp
     )
 
     target_include_directories(wxChaosCoreTests PRIVATE
@@ -193,19 +190,27 @@ if(BUILD_TESTING)
             wxChaos/gui
             wxChaos/gui/wx
             wxChaos/utils
+            wxChaos/scripting
+            wxChaos/scripting/angelscript
+            third_party/muParserX
     )
 
     target_link_libraries(wxChaosCoreTests PRIVATE
             doctest::doctest
             ${WXCHAOS_WX_LIBRARIES}
+            Angelscript::angelscript
             ${SYMENGINE_LIBRARIES}
+            ${MPFR_LIBRARY}
+            ${GMP_LIBRARY}
             sfml-graphics
             sfml-window
             sfml-system
+            Threads::Threads
     )
 
     if(MSVC)
         target_compile_definitions(wxChaosCoreTests PRIVATE
+                WXCHAOS_BUILD_TYPE="$<CONFIG>"
                 WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_
                 $<$<CONFIG:Debug>:__WXDEBUG__>
                 _HAS_STD_BYTE=0

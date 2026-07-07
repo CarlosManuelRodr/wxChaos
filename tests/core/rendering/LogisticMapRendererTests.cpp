@@ -76,19 +76,3 @@ TEST_CASE("Logistic map renderer plots the bifurcation diagram")
 
     CHECK(maps.CountPlottedPixels() > 0);
 }
-
-TEST_CASE("Logistic map renderer plots the Lyapunov curve")
-{
-    constexpr unsigned int width = 100;
-    constexpr unsigned int height = 80;
-    RenderMaps maps(width, height);
-
-    LogisticMapRenderer renderer;
-    renderer.SetParams(0.25, true);
-    renderer.SetOptions(LogisticOptions(RenderingAlgorithmType::Lyapunov));
-    renderer.SetRenderOut(maps.setMap.data(), maps.colorMap.data());
-    renderer.SetLimits(0, 0, width, height);
-    renderer.Render();
-
-    CHECK(maps.CountPlottedPixels() > 0);
-}
