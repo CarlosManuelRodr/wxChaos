@@ -13,6 +13,10 @@ class wxPanel;
 class wxPaintEvent;
 class wxSizeEvent;
 
+/**
+ * @class AboutDialog
+ * @brief Dialog for displaying information about the application, the dependencies, and credit icon authors.
+ */
 class AboutDialog final : public wxDialog
 {
 public:

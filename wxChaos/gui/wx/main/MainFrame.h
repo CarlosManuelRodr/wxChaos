@@ -10,23 +10,23 @@
 #pragma once
 
 #include <optional>
-#include "canvas/FractalCanvas.h"
 #include "config/AppConfigStore.h"
-#include "canvas/JuliaPreviewFrame.h"
-#include "main/About.h"
 #include "renderer/RendererOptionsFrame.h"
 #include "fractal/JuliaConstantDialog.h"
 #include "fractal/IterationsDialog.h"
 #include "fractal/FormulaDialog.h"
-#include "scripting/ScriptEditor.h"
-#include "export/ZoomRecorder.h"
-#include "analysis/DimensionFrame.h"
-#include "tools/CommandConsole.h"
-#include "main/SettingsFrame.h"
+#include "canvas/FractalCanvas.h"
+#include "canvas/JuliaPreviewFrame.h"
 #include "canvas/FractalToolbar.h"
 #include "canvas/RenderStatusWidget.h"
 #include "common/FractalOptionsPanel.h"
 #include "docs/DocumentationLinkAction.h"
+#include "main/AboutDialog.h"
+#include "main/SettingsFrame.h"
+#include "export/ZoomRecorder.h"
+#include "tools/CommandConsole.h"
+#include "analysis/DimensionFrame.h"
+#include "scripting/ScriptEditor.h"
 
 class DocumentViewer;
 

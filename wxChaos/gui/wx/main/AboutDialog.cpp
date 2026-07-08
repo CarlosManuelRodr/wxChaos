@@ -1,4 +1,4 @@
-#include "main/About.h"
+#include "main/AboutDialog.h"
 
 #include <SFML/Config.hpp>
 #include <angelscript.h>
