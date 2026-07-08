@@ -156,6 +156,19 @@ void AboutDialog::CreateControls()
     iconsRow->Add(iconsLink, 0, wxALIGN_CENTER_VERTICAL);
     contentSizer->Add(iconsRow, 0, wxTOP, FromDIP(4));
 
+    auto* iconsRow2 = new wxBoxSizer(wxHORIZONTAL);
+    auto* iconsLabel2 = new wxStaticText(content, wxID_ANY, _("On screen icon guides by Brett Post Script \u2014 "));
+    iconsLabel2->SetForegroundColour(muted);
+    auto* iconsLink2 = new wxHyperlinkCtrl(
+        content,
+        wxID_ANY,
+        "Link",
+        "https://opengameart.org/content/pc-keyboard-mouse-and-touch-input-icons");
+    iconsLink2->SetNormalColour(accent);
+    iconsRow2->Add(iconsLabel2, 0, wxALIGN_CENTER_VERTICAL);
+    iconsRow2->Add(iconsLink2, 0, wxALIGN_CENTER_VERTICAL);
+    contentSizer->Add(iconsRow2, 0, wxTOP, FromDIP(4));
+
     auto* footer = new wxBoxSizer(wxHORIZONTAL);
     auto* license = new wxStaticText(content, wxID_ANY, _("Licensed under GPLv3"));
     license->SetForegroundColour(muted);

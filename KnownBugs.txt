@@ -1,8 +1,5 @@
-TODO:
-Credit https://opengameart.org/content/pc-keyboard-mouse-and-touch-input-icons on the About dialog.
-
 Improvements to get to a release version:
-- Localization to Spanish, Japanese and possibly other languages.
+- Localization to Spanish
 
 Future improvements:
 - Decouple wxWidgets from PanelOptions.
