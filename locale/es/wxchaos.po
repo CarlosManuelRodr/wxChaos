@@ -997,3 +997,52 @@ msgstr "Tolerancia de raíz: "
 
 msgid "Escape radius: "
 msgstr "Radio de escape: "
+
+msgid "About wxChaos"
+msgstr "Acerca de wxChaos"
+
+msgid "Could not load the About banner"
+msgstr "No se pudo cargar el banner de Acerca de"
+
+msgid ""
+"An open-source playground for exploring fractals, dynamical systems, and "
+"generative mathematics."
+msgstr ""
+"Un entorno abierto para explorar fractales, sistemas dinámicos y matemática "
+"generativa."
+
+msgid "Created by Carlos Manuel Rodriguez Martinez."
+msgstr "Creado por Carlos Manuel Rodriguez Martinez."
+
+msgid "Source code"
+msgstr "Código fuente"
+
+msgid "Contact the author"
+msgstr "Contactar al autor"
+
+msgid "Application"
+msgstr "Aplicación"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Build"
+msgstr "Compilación"
+
+msgid "Compiler"
+msgstr "Compilador"
+
+msgid "Built with"
+msgstr "Compilado con"
+
+msgid "Icons by Streamline — "
+msgstr "Iconos por Streamline — "
+
+msgid "On screen icon guides by Brett Post Script — "
+msgstr "Guías de iconos en pantalla por Brett Post Script — "
+
+msgid "Link"
+msgstr "Enlace"
+
+msgid "Licensed under GPLv3"
+msgstr "Licenciado bajo GPLv3"

@@ -162,7 +162,7 @@ void AboutDialog::CreateControls()
     auto* iconsLink2 = new wxHyperlinkCtrl(
         content,
         wxID_ANY,
-        "Link",
+        _("Link"),
         "https://opengameart.org/content/pc-keyboard-mouse-and-touch-input-icons");
     iconsLink2->SetNormalColour(accent);
     iconsRow2->Add(iconsLabel2, 0, wxALIGN_CENTER_VERTICAL);
