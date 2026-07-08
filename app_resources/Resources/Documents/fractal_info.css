@@ -732,6 +732,7 @@ figcaption {
     text-decoration: none;
 }
 
+.related-links a span,
 .related-link-description {
     color: var(--muted-text-color);
     display: block;
