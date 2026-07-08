@@ -3,34 +3,34 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title data-i18n-es="Bienvenido a wxChaos">Welcome to wxChaos</title>
+    <title>Welcome to wxChaos</title>
     <link rel="stylesheet" href="fractal_info.css">
 </head>
 
 <body>
-<main class="museum-page welcome-page">
+<main data-i18n-lang="en" class="museum-page welcome-page">
     <section class="hero welcome-hero" aria-labelledby="page-title">
         <div class="hero-header">
-            <p class="eyebrow" data-i18n-es="Guia de bienvenida de wxChaos">wxChaos welcome guide</p>
-            <h1 id="page-title" data-i18n-es="Bienvenido a wxChaos">Welcome to wxChaos</h1>
-            <p class="subtitle" data-i18n-es="Un pequeño explorador de fractales, con alma antigua, para recorrer paisajes matematicos hermosos.">
+            <p class="eyebrow">wxChaos welcome guide</p>
+            <h1 id="page-title">Welcome to wxChaos</h1>
+            <p class="subtitle">
                 A small, old-soul fractal explorer for wandering through
                 beautiful mathematical landscapes.
             </p>
-            <p class="hero-introduction" data-i18n-es="wxChaos esta hecho para la curiosidad. Elige un fractal, navega con el mouse o el teclado, cambia los colores y los algoritmos de renderizado, y deja que la imagen te lleve hacia el siguiente detalle.">
+            <p class="hero-introduction">
                 wxChaos is built for curiosity. Pick a fractal, move through it
                 with the mouse or keyboard, change the colors and rendering
                 algorithms, and let the image pull you toward the next detail.
             </p>
             <div class="action-row">
-                <a class="action-link" href="wxchaos://fractal/mandelbrot" data-i18n-es="Abrir Mandelbrot">Open Mandelbrot</a>
-                <a class="action-link secondary" href="#tools" data-i18n-es="Conocer las herramientas">Learn the tools</a>
+                <a class="action-link" href="wxchaos://fractal/mandelbrot">Open Mandelbrot</a>
+                <a class="action-link secondary" href="#tools">Learn the tools</a>
             </div>
         </div>
     </section>
 
     <section id="tools" aria-labelledby="tools-title">
-        <h2 id="tools-title" data-i18n-es="Las herramientas del lienzo principal">The main canvas tools</h2>
+        <h2 id="tools-title">The main canvas tools</h2>
         <div class="tool-card-grid">
             <article class="tool-card">
                 <div class="tool-card-icon">
@@ -38,8 +38,8 @@
                     <img class="theme-icon icon-dark" src="../Icons/cursor_dark.svg" alt="">
                 </div>
                 <div>
-                    <h3 data-i18n-es="Herramienta de mouse">Mouse tool</h3>
-                    <p data-i18n-es="Usa el puntero predeterminado para navegar directamente por el fractal. El clic izquierdo acerca, el clic derecho vuelve atras y el teclado puede desplazar la vista cuando termina el renderizado.">
+                    <h3>Mouse tool</h3>
+                    <p>
                         Use the default pointer for direct fractal navigation.
                         Left click zooms in, right click zooms back, and the
                         keyboard can glide the view once a render is complete.
@@ -53,8 +53,8 @@
                     <img class="theme-icon icon-dark" src="../Icons/hand_dark.svg" alt="">
                 </div>
                 <div>
-                    <h3 data-i18n-es="Herramienta de desplazamiento">Pan tool</h3>
-                    <p data-i18n-es="Arrastra la imagen renderizada con la mano cuando quieras ajustar la vista actual en vez de elegir un nuevo objetivo de zoom.">
+                    <h3>Pan tool</h3>
+                    <p>
                         Drag the rendered image by hand when you want to nudge
                         the current view instead of choosing a new zoom target.
                     </p>
@@ -67,8 +67,8 @@
                     <img class="theme-icon icon-dark" src="../Icons/zoom_dark.svg" alt="">
                 </div>
                 <div>
-                    <h3 data-i18n-es="Herramienta de zoom">Zoom tool</h3>
-                    <p data-i18n-es="Haz clic y arrastra para encuadrar un area con precision. Es la mejor forma de entrar en espirales, bulbos, ramas y copias diminutas escondidas en la frontera.">
+                    <h3>Zoom tool</h3>
+                    <p>
                         Click and drag to frame an area precisely. This is the
                         best way to dive into spirals, bulbs, branches, and tiny
                         copies hiding along the boundary.
@@ -82,8 +82,8 @@
                     <img class="theme-icon icon-dark" src="../Icons/picker_dark.svg" alt="">
                 </div>
                 <div>
-                    <h3 data-i18n-es="Herramienta de informacion de punto">Point info tool</h3>
-                    <p data-i18n-es="Inspecciona un punto del lienzo para ver que sabe el fractal activo sobre el. Es una forma tranquila de conectar la imagen con los numeros que hay debajo.">
+                    <h3>Point info tool</h3>
+                    <p>
                         Inspect a point on the canvas to see what the active
                         fractal knows about it. It is a quiet way to connect the
                         picture back to the numbers underneath.
@@ -94,33 +94,30 @@
     </section>
 
     <section aria-labelledby="interaction-title">
-        <h2 id="interaction-title" data-i18n-es="Consejos sencillos de movimiento">Friendly movement hints</h2>
+        <h2 id="interaction-title">Friendly movement hints</h2>
         <div class="guide-image-grid">
             <figure class="guide-image-card">
-                <img src="../ClickDragSelection.png" alt="A mouse dragging a rectangle to select an area for zooming"
-                     data-i18n-alt-es="Un mouse arrastrando un rectangulo para seleccionar un area de zoom">
+                <img src="../ClickDragSelection.png" alt="A mouse dragging a rectangle to select an area for zooming">
                 <figcaption>
-                    <span class="figure-title" data-i18n-es="Haz clic y arrastra.">Click and drag.</span>
-                    <span data-i18n-es="Dibuja un recuadro alrededor de la region que quieres explorar.">Draw a box around the region you want to explore next.</span>
+                    <span class="figure-title">Click and drag.</span>
+                    <span>Draw a box around the region you want to explore next.</span>
                 </figcaption>
             </figure>
 
             <figure class="guide-image-card">
-                <img src="../mouse.png" alt="Mouse buttons showing left click for zoom in and right click for zoom out"
-                     data-i18n-alt-es="Botones del mouse: clic izquierdo para acercar y clic derecho para alejar">
+                <img src="../mouse.png" alt="Mouse buttons showing left click for zoom in and right click for zoom out">
                 <figcaption>
-                    <span class="figure-title" data-i18n-es="Clics del mouse.">Mouse clicks.</span>
-                    <span data-i18n-es="El clic izquierdo acerca. El clic derecho vuelve al nivel de zoom anterior.">Left click zooms in. Right click returns to the previous
+                    <span class="figure-title">Mouse clicks.</span>
+                    <span>Left click zooms in. Right click returns to the previous
                     zoom level.</span>
                 </figcaption>
             </figure>
 
             <figure class="guide-image-card">
-                <img src="../keyboard.png" alt="Keyboard arrows and WASD keys for moving through the fractal"
-                     data-i18n-alt-es="Flechas del teclado y teclas WASD para moverse por el fractal">
+                <img src="../keyboard.png" alt="Keyboard arrows and WASD keys for moving through the fractal">
                 <figcaption>
-                    <span class="figure-title" data-i18n-es="Movimiento con teclado.">Keyboard movement.</span>
-                    <span data-i18n-es="Usa las flechas o WASD para moverte por un renderizado terminado.">Use the arrow keys or WASD to move through a completed
+                    <span class="figure-title">Keyboard movement.</span>
+                    <span>Use the arrow keys or WASD to move through a completed
                     render.</span>
                 </figcaption>
             </figure>
@@ -128,41 +125,194 @@
     </section>
 
     <section aria-labelledby="features-title">
-        <h2 id="features-title" data-i18n-es="Que mas puede hacer wxChaos?">What else can wxChaos do?</h2>
+        <h2 id="features-title">What else can wxChaos do?</h2>
         <div class="key-idea welcome-renderer-note">
-            <p data-i18n-es="No olvides probar las opciones del renderizador. Un cambio pequeño en el coloreado, el suavizado, las orbit traps o el algoritmo activo puede hacer que el mismo fractal parezca un lugar completamente distinto.">
+            <p>
                 Make sure to play with the renderer options. A small change in
                 coloring, smoothing, orbit traps, or the active algorithm can
                 make the same fractal feel like a completely different place.
             </p>
             <div class="action-row">
-                <a class="action-link" href="wxchaos://tool/renderer-options" data-i18n-es="Abrir opciones del renderizador">Open renderer options</a>
+                <a class="action-link" href="wxchaos://tool/renderer-options">Open renderer options</a>
             </div>
         </div>
         <ul class="feature-list">
-            <li data-i18n-es="Mostrar la orbita del fractal.">Show the fractal orbit.</li>
-            <li data-i18n-es="Guardar imagenes fijas de la vista actual del fractal.">Save still images of the current fractal view.</li>
-            <li data-i18n-es="Grabar videos de zoom para recorridos largos dentro de un fractal.">Record zoom videos for long dives into a fractal.</li>
-            <li data-i18n-es="Calcular la dimension fractal con las herramientas integradas.">Calculate fractal dimension with the built-in dimension tools.</li>
-            <li data-i18n-es="Crear fractales definidos por el usuario y experimentar con tus propias formulas.">Create user-defined fractals and experiment with your own formulas.</li>
-            <li data-i18n-es="Cambiar algoritmos de renderizado, incluyendo coloreado suave, enteros gaussianos, angulo de escape, orbit traps y mas.">Switch rendering algorithms, including smooth coloring, Gaussian integer coloring, escape angle, orbit traps, and more.</li>
-            <li data-i18n-es="Usar la interfaz de scripts para escribir nuevos fractales.">Use the scripting interface to write new fractals.</li>
-            <li data-i18n-es="Abrir la consola de comandos para inspeccionar la vista actual y dibujar formas basicas.">Open the command console to inspect the current view and draw basic shapes.</li>
+            <li>Show the fractal orbit.</li>
+            <li>Save still images of the current fractal view.</li>
+            <li>Record zoom videos for long dives into a fractal.</li>
+            <li>Calculate fractal dimension with the built-in dimension tools.</li>
+            <li>Create user-defined fractals and experiment with your own formulas.</li>
+            <li>Switch rendering algorithms, including smooth coloring, Gaussian integer coloring, escape angle, orbit traps, and more.</li>
+            <li>Use the scripting interface to write new fractals.</li>
+            <li>Open the command console to inspect the current view and draw basic shapes.</li>
         </ul>
     </section>
 
     <section aria-labelledby="fractal-links-title">
-        <h2 id="fractal-links-title" data-i18n-es="Buenos lugares para comenzar">Some good places to begin</h2>
+        <h2 id="fractal-links-title">Some good places to begin</h2>
         <ul class="related-links">
-            <li><a href="mandelbrot.html"><b data-i18n-es="Conjunto de Mandelbrot">Mandelbrot Set</b><span class="related-link-description" data-i18n-es="El mapa clasico de detalle infinito en la frontera.">The classic map of infinite boundary detail.</span></a></li>
-            <li><a href="julia.html"><b data-i18n-es="Conjunto de Julia">Julia Set</b><span class="related-link-description" data-i18n-es="Una familia de mundos definidos por una constante compleja.">A family of worlds shaped by one complex constant.</span></a></li>
-            <li><a href="burning_ship.html"><b data-i18n-es="Burning Ship">Burning Ship</b><span class="related-link-description" data-i18n-es="Un fractal irregular y arquitectonico con crestas dramaticas.">A jagged, architectural fractal with dramatic ridges.</span></a></li>
-            <li><a href="newton.html"><b data-i18n-es="Newton">Newton</b><span class="related-link-description" data-i18n-es="Cuencas de atraccion producidas por un metodo numerico para encontrar raices.">Basins of attraction from a numerical root finder.</span></a></li>
-            <li><a href="double_pendulum.html"><b data-i18n-es="Pendulo doble">Double Pendulum</b><span class="related-link-description" data-i18n-es="Un mapa inspirado en fisica y movimiento sensible.">A physics-inspired map of sensitive motion.</span></a></li>
-            <li><a href="henon_map.html"><b data-i18n-es="Mapa de Henon">Henon Map</b><span class="related-link-description" data-i18n-es="Un atractor extraño con una textura muy distinta.">A strange attractor with a very different texture.</span></a></li>
-            <li><a href="jellyfish.html"><b data-i18n-es="Jellyfish">Jellyfish</b><span class="related-link-description" data-i18n-es="Zarcillos fluidos y estructura amigable para orbit traps.">Fluid tendrils and orbit-trap friendly structure.</span></a></li>
-            <li><a href="fractory.html"><b data-i18n-es="Fractory">Fractory</b><span class="related-link-description" data-i18n-es="Un fractal de tiempo de escape jugueton con geometria cristalina.">A playful escape-time fractal with crystalline geometry.</span></a></li>
-            <li><a href="user_defined_escape_time.html"><b data-i18n-es="Fractales definidos por el usuario">User-defined fractals</b><span class="related-link-description" data-i18n-es="Escribe formulas y haz tuyo el programa.">Write formulas and make the program yours.</span></a></li>
+            <li><a href="mandelbrot.html"><b>Mandelbrot Set</b><span class="related-link-description">The classic map of infinite boundary detail.</span></a></li>
+            <li><a href="julia.html"><b>Julia Set</b><span class="related-link-description">A family of worlds shaped by one complex constant.</span></a></li>
+            <li><a href="burning_ship.html"><b>Burning Ship</b><span class="related-link-description">A jagged, architectural fractal with dramatic ridges.</span></a></li>
+            <li><a href="newton.html"><b>Newton</b><span class="related-link-description">Basins of attraction from a numerical root finder.</span></a></li>
+            <li><a href="double_pendulum.html"><b>Double Pendulum</b><span class="related-link-description">A physics-inspired map of sensitive motion.</span></a></li>
+            <li><a href="henon_map.html"><b>Henon Map</b><span class="related-link-description">A strange attractor with a very different texture.</span></a></li>
+            <li><a href="jellyfish.html"><b>Jellyfish</b><span class="related-link-description">Fluid tendrils and orbit-trap friendly structure.</span></a></li>
+            <li><a href="fractory.html"><b>Fractory</b><span class="related-link-description">A playful escape-time fractal with crystalline geometry.</span></a></li>
+            <li><a href="user_defined_escape_time.html"><b>User-defined fractals</b><span class="related-link-description">Write formulas and make the program yours.</span></a></li>
+        </ul>
+    </section>
+</main>
+<main data-i18n-lang="es" class="museum-page welcome-page">
+    <section class="hero welcome-hero" aria-labelledby="page-title-es">
+        <div class="hero-header">
+            <p class="eyebrow">Guia de bienvenida de wxChaos</p>
+            <h1 id="page-title-es">Bienvenido a wxChaos</h1>
+            <p class="subtitle">
+                Un pequeno explorador de fractales, con alma antigua, para recorrer
+                paisajes matematicos hermosos.
+            </p>
+            <p class="hero-introduction">
+                wxChaos esta hecho para la curiosidad. Elige un fractal, navega con
+                el mouse o el teclado, cambia los colores y los algoritmos de
+                renderizado, y deja que la imagen te lleve hacia el siguiente detalle.
+            </p>
+            <div class="action-row">
+                <a class="action-link" href="wxchaos://fractal/mandelbrot">Abrir Mandelbrot</a>
+                <a class="action-link secondary" href="#tools-es">Conocer las herramientas</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="tools-es" aria-labelledby="tools-title-es">
+        <h2 id="tools-title-es">Las herramientas del lienzo principal</h2>
+        <div class="tool-card-grid">
+            <article class="tool-card">
+                <div class="tool-card-icon">
+                    <img class="theme-icon icon-light" src="../Icons/cursor_light.svg" alt="">
+                    <img class="theme-icon icon-dark" src="../Icons/cursor_dark.svg" alt="">
+                </div>
+                <div>
+                    <h3>Herramienta de mouse</h3>
+                    <p>
+                        Usa el puntero predeterminado para navegar directamente por el
+                        fractal. El clic izquierdo acerca, el clic derecho vuelve al zoom
+                        anterior y el teclado puede desplazar la vista cuando termina el renderizado.
+                    </p>
+                </div>
+            </article>
+
+            <article class="tool-card">
+                <div class="tool-card-icon">
+                    <img class="theme-icon icon-light" src="../Icons/hand_light.svg" alt="">
+                    <img class="theme-icon icon-dark" src="../Icons/hand_dark.svg" alt="">
+                </div>
+                <div>
+                    <h3>Herramienta de desplazamiento</h3>
+                    <p>
+                        Arrastra la imagen renderizada cuando quieras ajustar la vista
+                        actual en vez de elegir un nuevo objetivo de zoom.
+                    </p>
+                </div>
+            </article>
+
+            <article class="tool-card">
+                <div class="tool-card-icon">
+                    <img class="theme-icon icon-light" src="../Icons/zoom_light.svg" alt="">
+                    <img class="theme-icon icon-dark" src="../Icons/zoom_dark.svg" alt="">
+                </div>
+                <div>
+                    <h3>Herramienta de zoom</h3>
+                    <p>
+                        Haz clic y arrastra para encuadrar un area con precision. Es la
+                        mejor forma de entrar en espirales, bulbos, ramas y copias diminutas
+                        escondidas en la frontera.
+                    </p>
+                </div>
+            </article>
+
+            <article class="tool-card">
+                <div class="tool-card-icon">
+                    <img class="theme-icon icon-light" src="../Icons/picker_light.svg" alt="">
+                    <img class="theme-icon icon-dark" src="../Icons/picker_dark.svg" alt="">
+                </div>
+                <div>
+                    <h3>Herramienta de informacion de punto</h3>
+                    <p>
+                        Inspecciona un punto del lienzo para ver que sabe el fractal activo
+                        sobre el. Es una forma tranquila de conectar la imagen con los numeros
+                        que hay debajo.
+                    </p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="interaction-title-es">
+        <h2 id="interaction-title-es">Consejos sencillos de movimiento</h2>
+        <div class="guide-image-grid">
+            <figure class="guide-image-card">
+                <img src="../ClickDragSelection.png" alt="Un mouse arrastrando un rectangulo para seleccionar un area de zoom">
+                <figcaption>
+                    <span class="figure-title">Haz clic y arrastra.</span>
+                    Dibuja un recuadro alrededor de la region que quieres explorar.
+                </figcaption>
+            </figure>
+
+            <figure class="guide-image-card">
+                <img src="../mouse.png" alt="Botones del mouse: clic izquierdo para acercar y clic derecho para alejar">
+                <figcaption>
+                    <span class="figure-title">Clics del mouse.</span>
+                    El clic izquierdo acerca. El clic derecho vuelve al nivel de zoom anterior.
+                </figcaption>
+            </figure>
+
+            <figure class="guide-image-card">
+                <img src="../keyboard.png" alt="Flechas del teclado y teclas WASD para moverse por el fractal">
+                <figcaption>
+                    <span class="figure-title">Movimiento con teclado.</span>
+                    Usa las flechas o WASD para moverte por un renderizado terminado.
+                </figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section aria-labelledby="features-title-es">
+        <h2 id="features-title-es">Que mas puede hacer wxChaos?</h2>
+        <div class="key-idea welcome-renderer-note">
+            <p>
+                No olvides probar las opciones del renderizador. Un cambio pequeno en
+                el coloreado, el suavizado, las orbit traps o el algoritmo activo puede
+                hacer que el mismo fractal parezca un lugar completamente distinto.
+            </p>
+            <div class="action-row">
+                <a class="action-link" href="wxchaos://tool/renderer-options">Abrir opciones del renderizador</a>
+            </div>
+        </div>
+        <ul class="feature-list">
+            <li>Mostrar la orbita del fractal.</li>
+            <li>Guardar imagenes fijas de la vista actual del fractal.</li>
+            <li>Grabar videos de zoom para recorridos largos dentro de un fractal.</li>
+            <li>Calcular la dimension fractal con las herramientas integradas.</li>
+            <li>Crear fractales definidos por el usuario y experimentar con tus propias formulas.</li>
+            <li>Cambiar algoritmos de renderizado, incluyendo coloreado suave, enteros gaussianos, angulo de escape, orbit traps y mas.</li>
+            <li>Usar la interfaz de scripts para escribir nuevos fractales.</li>
+            <li>Abrir la consola de comandos para inspeccionar la vista actual y dibujar formas basicas.</li>
+        </ul>
+    </section>
+
+    <section aria-labelledby="fractal-links-title-es">
+        <h2 id="fractal-links-title-es">Buenos lugares para comenzar</h2>
+        <ul class="related-links">
+            <li><a href="mandelbrot.html"><b>Conjunto de Mandelbrot</b><span class="related-link-description">El mapa clasico de detalle infinito en la frontera.</span></a></li>
+            <li><a href="julia.html"><b>Conjunto de Julia</b><span class="related-link-description">Una familia de mundos definidos por una constante compleja.</span></a></li>
+            <li><a href="burning_ship.html"><b>Burning Ship</b><span class="related-link-description">Un fractal irregular y arquitectonico con crestas dramaticas.</span></a></li>
+            <li><a href="newton.html"><b>Newton</b><span class="related-link-description">Cuencas de atraccion producidas por un metodo numerico para encontrar raices.</span></a></li>
+            <li><a href="double_pendulum.html"><b>Pendulo doble</b><span class="related-link-description">Un mapa inspirado en fisica y movimiento sensible.</span></a></li>
+            <li><a href="henon_map.html"><b>Mapa de Henon</b><span class="related-link-description">Un atractor extrano con una textura muy distinta.</span></a></li>
+            <li><a href="jellyfish.html"><b>Jellyfish</b><span class="related-link-description">Zarcillos fluidos y estructura amigable para orbit traps.</span></a></li>
+            <li><a href="fractory.html"><b>Fractory</b><span class="related-link-description">Un fractal de tiempo de escape jugueton con geometria cristalina.</span></a></li>
+            <li><a href="user_defined_escape_time.html"><b>Fractales definidos por el usuario</b><span class="related-link-description">Escribe formulas y haz tuyo el programa.</span></a></li>
         </ul>
     </section>
 </main>

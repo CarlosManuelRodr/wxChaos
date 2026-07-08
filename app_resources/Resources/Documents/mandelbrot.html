@@ -18,7 +18,7 @@
 </head>
 
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
 
     <section class="hero" aria-labelledby="page-title">
         <div class="hero-header">
@@ -824,12 +824,451 @@ for each pixel (px, py):
     </section>
 
 </main>
+<main data-i18n-lang="es" class="museum-page">
+
+    <section class="hero" aria-labelledby="page-title-es">
+        <div class="hero-header">
+            <p class="eyebrow">Documentacion de wxChaos</p>
+            <h1 id="page-title-es">Conjunto de Mandelbrot</h1>
+            <p class="subtitle">
+                Un mapa de orden y caos escondido en una de las reglas iterativas
+                mas simples de las matematicas.
+            </p>
+            <div class="formula hero-formula">
+                \(z_0=0,\quad z_{n+1}=z_n^2+c\)
+            </div>
+            <p class="hero-introduction">
+                Una sola formula crea un paisaje aparentemente interminable de
+                bulbos, espirales, filamentos y mundos en miniatura. Cada punto
+                de la imagen representa un experimento matematico distinto.
+            </p>
+        </div>
+
+        <figure class="hero-figure">
+            <img
+                src="mandelbrot/overview.png"
+                alt="Vista general del conjunto de Mandelbrot con su cardioide central, bulbos unidos y bandas exteriores de color">
+            <figcaption>
+                <span class="figure-title">El conjunto completo de Mandelbrot.</span>
+                La gran region con forma de corazon y el bulbo circular unido a ella
+                forman solo la parte mas visible del conjunto. La mayor parte de su
+                complejidad se concentra en la frontera infinitamente intrincada.
+            </figcaption>
+        </figure>
+
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/mandelbrot">
+                Abrir en wxChaos
+            </a>
+            <a class="action-link secondary" href="#guided-exploration-es">
+                Iniciar exploracion guiada
+            </a>
+        </div>
+    </section>
+
+    <section aria-labelledby="key-idea-title-es">
+        <h2 id="key-idea-title-es">La idea clave</h2>
+        <div class="key-idea">
+            <p>
+                El conjunto de Mandelbrot no es un solo sistema dinamico. Es un mapa
+                de una familia completa de sistemas. Cada punto \(c\) indica si al
+                aplicar repetidamente \(z \mapsto z^2+c\), comenzando con \(z=0\),
+                la orbita permanece acotada o termina escapando hacia el infinito.
+            </p>
+        </div>
+    </section>
+
+    <section aria-labelledby="looking-title-es">
+        <div class="two-column">
+            <div>
+                <h2 id="looking-title-es">Que estas viendo?</h2>
+                <p>
+                    Desde lejos, el conjunto de Mandelbrot tiene una silueta
+                    reconocible: una gran cardioide con bulbos circulares unidos.
+                    De cerca, ese contorno limpio se disuelve en estructuras
+                    ramificadas, zarcillos estrechos, espirales y ecos mas pequenos
+                    del conjunto completo.
+                </p>
+                <p>
+                    La region oscura representa parametros \(c\) cuya orbita no
+                    escapa durante el calculo. Los colores exteriores muestran que tan
+                    rapido las orbitas escapadas crecen mas alla del radio de bailout elegido.
+                </p>
+            </div>
+
+            <aside class="observation-panel" aria-labelledby="notice-title-es">
+                <h3 id="notice-title-es">Que observar</h3>
+                <ul>
+                    <li>La region central con forma de corazon es la cardioide principal.</li>
+                    <li>El gran bulbo de la izquierda corresponde a comportamiento de periodo dos.</li>
+                    <li>Los bulbos menores representan otros ciclos periodicos.</li>
+                    <li>La frontera es donde se encuentran el comportamiento estable y el caotico.</li>
+                    <li>Aparecen copias miniatura en muchas escalas, unidas por filamentos delicados.</li>
+                </ul>
+            </aside>
+        </div>
+    </section>
+
+    <section aria-labelledby="works-title-es">
+        <h2 id="works-title-es">Como funciona</h2>
+
+        <div class="formula">
+            \[
+                z_0 = 0,
+                \qquad
+                z_{n+1}=z_n^2+c
+            \]
+        </div>
+
+        <div class="experiment" aria-label="Pasos del calculo de Mandelbrot">
+            <div class="experiment-step">
+                <div>
+                    <p>
+                        <strong>Elige un punto.</strong>
+                        Cada pixel de la imagen representa un numero complejo \(c\).
+                    </p>
+
+                    <details class="concept-details">
+                        <summary>Que es un numero complejo?</summary>
+                        <div class="concept-details-content">
+                            <p>
+                                Los numeros complejos tienen una parte real y una parte
+                                imaginaria, \(x + iy\). \(x\) es la parte real y corresponde
+                                al eje horizontal, mientras que \(y\) es la parte imaginaria
+                                y corresponde al eje vertical.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <p>
+                        <strong>Itera la formula.</strong>
+                        Comienza con \(z_0=0\), eleva al cuadrado el valor actual y suma
+                        \(c\) repetidamente.
+                    </p>
+
+                    <details class="concept-details">
+                        <summary>Como funciona?</summary>
+                        <div class="concept-details-content">
+                            <p>
+                                Esto es una relacion de recurrencia. Empezamos con \(z_0 = 0\).
+                                Para obtener \(z_1\) aplicamos la recurrencia:
+                                \[
+                                    z_1 = z_0^2 + c = c
+                                \]
+                                Una vez que tenemos este resultado podemos calcular \(z_2\)
+                                aplicando la misma regla otra vez:
+                                \[
+                                    z_2 = z_1^2 + c = c^2 + c
+                                \]
+                                Cada valor posterior se obtiene exactamente de la misma forma:
+                                \[
+                                \begin{aligned}
+                                    z_3 &= z_2^2 + c = (c^2 + c)^2 + c \\
+                                    z_4 &= z_3^2 + c = \bigl((c^2 + c)^2 + c\bigr)^2 + c \\
+                                    z_5 &= z_4^2 + c = \bigl(\bigl((c^2 + c)^2 + c\bigr)^2 + c\bigr)^2 + c \\
+                                    &\vdots
+                                \end{aligned}
+                                \]
+                            </p>
+                        </div>
+                    </details>
+                    <details class="concept-details">
+                        <summary>Como puedo hacer el calculo?</summary>
+                        <div class="concept-details-content">
+                            <p>
+                                Las expresiones con numeros complejos pueden expandirse usando
+                                algebra ordinaria junto con la propiedad \(i^2=-1\).
+                            </p>
+                            <p>Escribe el valor actual y el parametro seleccionado como:</p>
+                            \[
+                                z=z_x+iz_y,
+                                \qquad
+                                c=c_x+ic_y
+                            \]
+                            <p>Entonces podemos expandir \(z^2+c\):</p>
+                            \[
+                            \begin{aligned}
+                                z^2+c
+                                    &= (z_x+iz_y)^2+(c_x+ic_y) \\
+                                    &= z_x^2+2iz_xz_y+i^2z_y^2+c_x+ic_y
+                            \end{aligned}
+                            \]
+                            <p>Como \(i^2=-1\), esto se convierte en:</p>
+                            \[
+                                z^2+c
+                                =
+                                (z_x^2-z_y^2+c_x)
+                                +
+                                i(2z_xz_y+c_y)
+                            \]
+                            <p>
+                                Por lo tanto, cada iteracion puede calcularse usando dos
+                                ecuaciones de valores reales:
+                            </p>
+                            \[
+                            \begin{aligned}
+                                z_{x,n+1} &= z_{x,n}^2-z_{y,n}^2+c_x \\
+                                z_{y,n+1} &= 2z_{x,n}z_{y,n}+c_y
+                            \end{aligned}
+                            \]
+                            <p>Por ejemplo, como \(z_0=0\):</p>
+                            \[
+                            \begin{aligned}
+                                z_1
+                                    &= c_x+ic_y \\
+                                z_2
+                                    &= (c_x+ic_y)^2+c_x+ic_y \\
+                                    &= (c_x^2-c_y^2+c_x)
+                                    +i(2c_xc_y+c_y) \\
+                                &\vdots
+                            \end{aligned}
+                            \]
+                        </div>
+                    </details>
+                    <details class="concept-details">
+                        <summary>Como puedo programarlo?</summary>
+                        <div class="concept-details-content">
+                            <p>
+                                Para renderizar el conjunto de Mandelbrot, evalua la recurrencia
+                                para cada pixel de la imagen. Cada pixel se convierte en un
+                                parametro complejo \(c=c_x+i c_y\), mientras que la orbita
+                                comienza en \(z_0=0\).
+                            </p>
+                            <p>
+                                En lugar de usar objetos de numeros complejos, el calculo puede
+                                escribirse directamente con las componentes real e imaginaria:
+                            </p>
+                            \[
+                            \begin{aligned}
+                                z_{x,n+1} &= z_{x,n}^2-z_{y,n}^2+c_x \\
+                                z_{y,n+1} &= 2z_{x,n}z_{y,n}+c_y
+                            \end{aligned}
+                            \]
+                            <pre>
+<code>
+for each pixel (px, py):
+    cx = map px to the horizontal fractal range
+    cy = map py to the vertical fractal range
+
+    zx = 0
+    zy = 0
+    iteration = 0
+
+    while zx*zx + zy*zy &lt;= 4
+        and iteration &lt; maxIterations:
+
+        nextZx = zx*zx - zy*zy + cx
+        nextZy = 2*zx*zy + cy
+
+        zx = nextZx
+        zy = nextZy
+        iteration++
+
+    if iteration == maxIterations:
+        color the pixel as inside the set
+    else:
+        color the pixel using iteration
+</code>
+                            </pre>
+                            <p>
+                                La prueba \(z_x^2+z_y^2&gt;4\) equivale, y es mas rapida,
+                                a comprobar \(|z|&gt;2\). Cuando esto ocurre, la orbita tiene
+                                garantizado escapar, asi que no hacen falta mas iteraciones.
+                            </p>
+                            <p>
+                                Si te animas, puedes probar esto en wxChaos usando el
+                                <a href="wxchaos://fractal/script-editor">Editor de scripts</a>!.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <p>
+                        <strong>Observa la orbita.</strong>
+                        Si un punto de la orbita se aleja mas de dos unidades del centro,
+                        se garantiza que seguira escapando hacia afuera. Si eso no ocurre
+                        antes de alcanzar el limite de iteraciones, wxChaos trata el punto
+                        como perteneciente al conjunto.
+                    </p>
+                    <details class="concept-details">
+                        <summary>Como se calcula esa distancia?</summary>
+                        <div class="concept-details-content">
+                            <p>
+                                Un numero complejo \(z=x+iy\) puede verse como un punto con
+                                coordenada horizontal \(x\) y coordenada vertical \(y\).
+                            </p>
+                            <p>Su distancia al centro es:</p>
+                            \[
+                                |z|=\sqrt{x^2+y^2}
+                            \]
+                            <p>
+                                Para evitar calcular una raiz cuadrada en cada iteracion,
+                                los programas suelen comparar la distancia al cuadrado:
+                            </p>
+                            \[
+                                x^2+y^2>4
+                            \]
+                            <p>Esto equivale a comprobar si la distancia es mayor que dos.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-orbits">
+            <article class="orbit-card">
+                <h3>\(c=0\)</h3>
+                <p class="orbit-sequence">0, 0, 0, 0, ...</p>
+                <p>La orbita permanece fija en el origen.</p>
+                <span class="status bounded">Acotado</span>
+            </article>
+            <article class="orbit-card">
+                <h3>\(c=-1\)</h3>
+                <p class="orbit-sequence">0, -1, 0, -1, ...</p>
+                <p>La orbita se repite en un ciclo estable de periodo dos.</p>
+                <span class="status bounded">Acotado</span>
+            </article>
+            <article class="orbit-card">
+                <h3>\(c=1\)</h3>
+                <p class="orbit-sequence">0, 1, 2, 5, 26, ...</p>
+                <p>Los valores crecen rapidamente sin limite.</p>
+                <span class="status escaping">Escapa</span>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="iteration-lab-title-es">
+        <h2 id="iteration-lab-title-es">La iteracion es todo el truco</h2>
+        <p>
+            Cada punto de abajo es un valor seleccionado de \(c\). La cuadricula
+            empieza en el primer paso visible, \(z_1=c\). Pulsa <strong>Mas iteraciones</strong>
+            para aplicar \(z_{n+1}=z_n^2+c\) otra vez y observar hacia donde se mueve cada orbita.
+        </p>
+        <div class="iteration-lab" data-mandelbrot-iteration-lab>
+            <div class="iteration-lab-stage">
+                <canvas data-iteration-canvas width="980" height="756" role="img" aria-label="Cuadricula animada de parametros complejos moviendose bajo iteraciones repetidas de Mandelbrot"></canvas>
+            </div>
+            <div class="iteration-lab-controls">
+                <div class="iteration-lab-buttons">
+                    <button class="iteration-lab-button secondary" type="button" data-less-iterations>Menos iteraciones</button>
+                    <button class="iteration-lab-button" type="button" data-more-iterations>Mas iteraciones</button>
+                    <button class="iteration-lab-button secondary" type="button" data-reset-iterations>Reiniciar</button>
+                </div>
+                <label class="iteration-lab-field">
+                    <span>Puntos iniciales</span>
+                    <input type="number" min="25" max="1200" step="25" value="459" data-point-count>
+                </label>
+                <div class="iteration-lab-readout" data-iteration-readout>Mostrando z1 = c</div>
+            </div>
+        </div>
+        <p>
+            Puedes ver una forma familiar emergiendo del patron de iteracion despues de varias iteraciones? Es el conjunto de Mandelbrot!
+        </p>
+    </section>
+
+    <section id="guided-exploration-es" aria-labelledby="explore-title-es">
+        <h2 id="explore-title-es">Pruebalo en wxChaos</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Empieza con el conjunto completo e identifica la cardioide principal y el gran bulbo de periodo dos unido a su izquierda.</p></div>
+            <div class="experiment-step"><p>Acercate a la frontera estrecha donde esas dos regiones se encuentran. La silueta suave dara paso a estructuras ramificadas y formas enrolladas asociadas con <strong>Seahorse Valley</strong>.</p></div>
+            <div class="experiment-step"><p>Selecciona un punto cerca de la frontera y muestra su orbita. Mueve el punto ligeramente y observa lo dramaticamente que puede cambiar la orbita.</p></div>
+            <div class="experiment-step"><p>Abre el conjunto de Julia correspondiente. Mueve el parametro seleccionado a traves de la frontera de Mandelbrot y compara los conjuntos de Julia conectados y desconectados a cada lado.</p></div>
+        </div>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://location/mandelbrot/seahorse-valley">Explorar Seahorse Valley</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Activar vista de orbita</a>
+        </div>
+    </section>
+
+    <section aria-labelledby="julia-title-es">
+        <div class="two-column">
+            <div>
+                <h2 id="julia-title-es">Un mapa de conjuntos de Julia</h2>
+                <p>Para cada parametro \(c\), la funcion \(f_c(z)=z^2+c\) tiene su propio conjunto de Julia en el plano \(z\). El conjunto de Mandelbrot registra como se comportan esos conjuntos de Julia.</p>
+                <p>Cuando \(c\) pertenece al conjunto de Mandelbrot, el conjunto de Julia correspondiente es conectado. Cuando \(c\) queda fuera, el conjunto de Julia es desconectado y se rompe en piezas separadas.</p>
+                <p>Por eso moverse por el espacio de parametros de Mandelbrot puede entenderse como explorar un atlas de toda la familia cuadratica de Julia.</p>
+                <div class="action-row"><a class="action-link" href="wxchaos://julia/mandelbrot">Activar modo Julia</a></div>
+            </div>
+            <figure class="hero-figure julia-relationship-figure">
+                <img src="mandelbrot/julia-relationship.gif" alt="Un punto de parametro de Mandelbrot junto a su conjunto de Julia correspondiente">
+                <figcaption><span class="figure-title">Espacio de parametros y espacio dinamico.</span> Un punto seleccionado en el conjunto de Mandelbrot determina la forma de su conjunto de Julia correspondiente.</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section aria-labelledby="views-title-es">
+        <h2 id="views-title-es">Lentes de color</h2>
+        <p>Los metodos de coloreado no cambian el conjunto de Mandelbrot en si. Revelan propiedades distintas de las orbitas que lo rodean.</p>
+        <div class="view-grid">
+            <article class="view-card"><img src="mandelbrot/escape-time.png" alt="Conjunto de Mandelbrot renderizado con coloracion de tiempo de escape"><div class="view-card-content"><h3>Tiempo de escape</h3><p>Colorea cada punto segun la iteracion en la que escapa su orbita.</p><span class="note">Ideal para entender el algoritmo basico.</span><a class="inline-link" href="wxchaos://rendering/mandelbrot/escape-time">Aplicar en wxChaos</a></div></article>
+            <article class="view-card"><img src="mandelbrot/smooth-coloring.png" alt="Conjunto de Mandelbrot renderizado con coloracion suave"><div class="view-card-content"><h3>Coloracion suave</h3><p>Elimina bandas duras de iteracion y revela gradientes continuos en la velocidad de escape.</p><span class="note">Ideal para renderizados exteriores pulidos.</span><a class="inline-link" href="wxchaos://rendering/mandelbrot/smooth-coloring">Aplicar en wxChaos</a></div></article>
+            <article class="view-card"><img src="mandelbrot/gaussian-integer.png" alt="Conjunto de Mandelbrot renderizado con coloracion de enteros gaussianos"><div class="view-card-content"><h3>Entero gaussiano</h3><p>Mide que tan cerca pasan las orbitas escapadas de la reticula de puntos enteros complejos.</p><span class="note">Ideal para revelar estructuras de orbita parecidas a una cuadricula.</span><a class="inline-link" href="wxchaos://rendering/mandelbrot/gaussian-integer">Aplicar en wxChaos</a></div></article>
+            <article class="view-card"><img src="mandelbrot/escape-angle.png" alt="Conjunto de Mandelbrot renderizado con coloracion de angulo de escape"><div class="view-card-content"><h3>Angulo de escape</h3><p>Usa la direccion de la orbita que escapa para enfatizar rayos y estructura direccional.</p><span class="note">Ideal para revelar la geometria exterior.</span><a class="inline-link" href="wxchaos://rendering/mandelbrot/escape-angle">Aplicar en wxChaos</a></div></article>
+            <article class="view-card"><img src="mandelbrot/triangle-inequality.png" alt="Conjunto de Mandelbrot renderizado con coloracion de desigualdad triangular"><div class="view-card-content"><h3>Desigualdad triangular</h3><p>Convierte relaciones entre valores sucesivos de la orbita en texturas fluidas.</p><span class="note">Ideal para coloreado con mucho detalle.</span><a class="inline-link" href="wxchaos://rendering/mandelbrot/triangle-inequality">Aplicar en wxChaos</a></div></article>
+            <article class="view-card"><img src="mandelbrot/orbit-trap.png" alt="Conjunto de Mandelbrot renderizado con una orbit trap"><div class="view-card-content"><h3>Orbit traps</h3><p>Mide que tan cerca se aproxima cada orbita a los ejes real e imaginario.</p><span class="note">Ideal para imagenes experimentales y decorativas.</span><a class="inline-link" href="wxchaos://rendering/mandelbrot/orbit-traps">Aplicar en wxChaos</a></div></article>
+            <article class="view-card"><img src="mandelbrot/buddhabrot.png" alt="Renderizado Buddhabrot basado en orbitas escapadas de Mandelbrot"><div class="view-card-content"><h3>Buddhabrot</h3><p>Dibuja por donde viajan las orbitas escapadas en vez de colorear solo el parametro que las produjo.</p><span class="note">Ideal para ver los caminos detras de la imagen.</span><a class="inline-link" href="wxchaos://rendering/mandelbrot/buddhabrot">Aplicar en wxChaos</a></div></article>
+        </div>
+    </section>
+
+    <section aria-labelledby="landmarks-title-es">
+        <h2 id="landmarks-title-es">Lugares para explorar</h2>
+        <p>El conjunto de Mandelbrot tiene una geografia informal creada por generaciones de exploradores. Estas regiones con nombre son buenos puntos de partida para aprender como sus estructuras se repiten y se transforman.</p>
+        <div class="landmark-grid">
+            <article class="landmark-card"><img src="mandelbrot/seahorse-valley.png" alt="Vista profunda de estructuras espirales enrolladas en Seahorse Valley"><div class="landmark-content"><h3>Seahorse Valley</h3><p>Una region estrecha llena de espirales enrolladas y formas repetidas que recuerdan colas de caballito de mar.</p><p class="landmark-meta">Center -0.7453 + 0.1127i, radius 0.04</p><a class="inline-link" href="wxchaos://location/mandelbrot/seahorse-valley">Abrir ubicacion</a></div></article>
+            <article class="landmark-card"><img src="mandelbrot/elephant-valley.png" alt="Formas ramificadas que parecen trompas de elefante en Elephant Valley"><div class="landmark-content"><h3>Elephant Valley</h3><p>Una region donde formas ramificadas amplias se dividen en estructuras parecidas a trompas a escalas menores.</p><p class="landmark-meta">Center 0.275 + 0.0i, radius 0.075</p><a class="inline-link" href="wxchaos://location/mandelbrot/elephant-valley">Abrir ubicacion</a></div></article>
+            <article class="landmark-card"><img src="mandelbrot/mini-mandelbrot.png" alt="Una copia miniatura parecida a Mandelbrot conectada por filamentos finos"><div class="landmark-content"><h3>Una copia miniatura</h3><p>Un eco mas pequeno del conjunto completo, rodeado de decoraciones locales que hacen distinta a cada copia.</p><p class="landmark-meta">Center -1.765 + 0.0i, radius 0.035</p><a class="inline-link" href="wxchaos://location/mandelbrot/miniature">Abrir ubicacion</a></div></article>
+        </div>
+    </section>
+
+    <section aria-labelledby="precision-title-es">
+        <h2 id="precision-title-es">Ir mas profundo</h2>
+        <div class="two-column">
+            <div><p>Los numeros de punto flotante ordinarios tarde o temprano pierden la capacidad de distinguir pixeles vecinos durante un zoom extremo. wxChaos puede cambiar a aritmetica de alta precision y usar tecnicas de perturbacion para seguir explorando estructuras muy por debajo de la escala disponible con double precision estandar.</p><p>Aumentar el limite de iteraciones revela puntos cuyas orbitas tardan mas en escapar. Aumentar la precision numerica conserva las coordenadas necesarias para distinguir rasgos diminutos. Un zoom profundo requiere ambas cosas.</p></div>
+            <aside class="observation-panel"><h3>Controles utiles</h3><dl><dt>Iteraciones</dt><dd>Durante cuanto tiempo se prueba cada orbita.</dd><dt>Precision de renderizado</dt><dd>Con que precision se representan coordenadas diminutas.</dd><dt>Vista de orbita</dt><dd>Muestra el camino generado por el parametro seleccionado.</dd></dl></aside>
+        </div>
+    </section>
+
+    <section aria-labelledby="history-title-es">
+        <h2 id="history-title-es">De la teoria abstracta al paisaje visible</h2>
+        <div class="timeline">
+            <article class="timeline-entry"><time>Principios del siglo XX</time><p>Pierre Fatou y Gaston Julia establecen las bases de la dinamica compleja al estudiar funciones racionales repetidas, decadas antes de la visualizacion por computadora de alta resolucion.</p></article>
+            <article class="timeline-entry"><time>Finales del siglo XX</time><p>La computacion digital hace practico inspeccionar visualmente espacios de parametros y experimentar con enormes cantidades de puntos iterados.</p></article>
+            <article class="timeline-entry"><time>Decada de 1980</time><p>Las imagenes asociadas con Benoit Mandelbrot ayudan a convertir el conjunto en un simbolo definitorio de la geometria fractal y del arte matematico generado por computadora.</p></article>
+            <article class="timeline-entry"><time>Hoy</time><p>La precision arbitraria y el renderizado por perturbacion permiten visitar estructuras a profundidades que las visualizaciones tempranas no podian alcanzar.</p></article>
+        </div>
+    </section>
+
+    <section aria-labelledby="matters-title-es">
+        <h2 id="matters-title-es">Por que importa</h2>
+        <p>El conjunto de Mandelbrot reune iteracion, estabilidad, periodicidad, geometria y caos en una sola imagen. Su frontera demuestra como una regla determinista extremadamente simple puede producir estructuras de complejidad extraordinaria.</p>
+        <p>Tambien es una puerta de entrada: aprender a leer el conjunto de Mandelbrot facilita entender conjuntos de Julia, comportamiento orbital, bifurcacion y el campo mas amplio de la dinamica compleja.</p>
+    </section>
+
+    <section aria-labelledby="related-title-es">
+        <h2 id="related-title-es">Continuar explorando</h2>
+        <ul class="related-links">
+            <li><a href="julia.html">Conjuntos de Julia<span>Explora el plano dinamico asociado con un parametro fijo.</span></a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Complex_dynamics">Dinamica compleja<span>Aprende sobre el campo matematico detras de la iteracion en el plano complejo.</span></a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Referencia del conjunto de Mandelbrot<span>Lee un panorama matematico e historico mas amplio.</span></a></li>
+        </ul>
+    </section>
+
+</main>
 <script>
-(() => {
-    const lab = document.querySelector("[data-mandelbrot-iteration-lab]");
-    if (!lab) {
+window.wxChaosInitializeDocument = () => {
+    const language = document.documentElement.getAttribute("data-language") || "en";
+    const lab =
+        document.querySelector(`[data-i18n-lang="${language}"] [data-mandelbrot-iteration-lab]`) ||
+        document.querySelector("[data-mandelbrot-iteration-lab]");
+    if (!lab || lab.dataset.initialized === "true") {
         return;
     }
+    lab.dataset.initialized = "true";
 
     const canvas = lab.querySelector("[data-iteration-canvas]");
     const context = canvas.getContext("2d");
@@ -1029,7 +1468,8 @@ for each pixel (px, py):
         moreButton.disabled = currentIteration >= maxVisibleIteration;
         resetButton.disabled = currentIteration <= 1;
         pointCountInput.disabled = false;
-        readout.textContent = `Showing z${currentIteration}${currentIteration === 1 ? " = c" : ""}`;
+        readout.textContent =
+            `${language === "es" ? "Mostrando" : "Showing"} z${currentIteration}${currentIteration === 1 ? " = c" : ""}`;
     };
 
     const moveToIteration = (targetIteration) => {
@@ -1107,7 +1547,7 @@ for each pixel (px, py):
 
     buildPoints(defaultPointCount);
     resetIterationLab();
-})();
+};
 </script>
 </body>
 </html>

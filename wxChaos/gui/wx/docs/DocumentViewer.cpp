@@ -94,6 +94,7 @@ void DocumentViewer::ApplyDocumentPresentation() const
         "var text = element.getAttribute('data-i18n-title-' + '%s');"
         "if (text !== null) { element.setAttribute('title', text); }"
         "});"
+        "if (window.wxChaosInitializeDocument) { window.wxChaosInitializeDocument(); }"
         "if (document.body) { document.body.classList.add('wxchaos-document'); }",
         theme.c_str(),
         language.c_str(),

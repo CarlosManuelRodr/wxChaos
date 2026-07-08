@@ -110,12 +110,13 @@ a {
     background: var(--page-background);
 }
 
-.wxchaos-document [data-i18n-lang] {
+[data-i18n-lang] {
     display: none;
 }
 
-:root[data-language="en"] .wxchaos-document [data-i18n-lang="en"],
-:root[data-language="es"] .wxchaos-document [data-i18n-lang="es"] {
+:root:not([data-language]) [data-i18n-lang="en"],
+:root[data-language="en"] [data-i18n-lang="en"],
+:root[data-language="es"] [data-i18n-lang="es"] {
     display: revert;
 }
 
