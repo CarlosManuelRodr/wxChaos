@@ -107,15 +107,23 @@
             <details class="concept-details">
                <summary>What is the Newton-Raphson method?</summary>
                <div class="concept-details-content">
-                  <p>Newton-Raphson is a way to solve \(f(z)=0\) by improving a guess. At the current guess \(z_n\), it uses the derivative \(f'(z_n)\) as a local linear approximation, predicts where that approximation reaches zero, and uses that crossing as the next guess.</p>
+                  <p>Newton-Raphson is a way to solve \(f(z)=0\) by progressively improving a guess. At the current guess \(z_n\), it uses the derivative \(f'(z_n)\) as a local linear approximation, predicts where that approximation reaches zero, and uses that crossing as the next guess.</p>
                   <p>The update rule is \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). For \(f(z)=z^3-1\), the roots are \(1\), \(-\frac{1}{2}+\frac{\sqrt{3}}{2}i\), and \(-\frac{1}{2}-\frac{\sqrt{3}}{2}i\). Newton iteration sends most starting guesses toward one of those three destinations.</p>
                </div>
             </details>
             <details class="concept-details">
                <summary>Why does root finding produce a fractal?</summary>
                <div class="concept-details-content">
-                  <p>If a starting point is already close to one root, Newton's method usually falls into that root quickly. Farther away, the tangent step can jump across the plane. Near the boundary between basins, two nearly identical guesses can be pulled toward different roots after several steps.</p>
-                  <p>Those boundary regions fold and repeat under the Newton map. Coloring every starting guess by the root it reaches turns numerical sensitivity into visible geometry: smooth basins surrounded by intricate fractal borders.</p>
+                  <p>
+                     If a starting point is already close to one root, Newton's method usually falls into that root
+                     quickly. Farther away, the tangent step can jump across the plane. The real action happens near the
+                     boundary between basins. Two nearly identical guesses can be pulled toward different roots after several steps.
+                  </p>
+                  <p>
+                     Those boundary regions fold and repeat under the Newton map. Coloring every starting guess by the
+                     root it reaches turns numerical sensitivity into visible geometry: smooth basins surrounded by
+                     intricate fractal borders.
+                  </p>
                </div>
             </details>
          </section>
