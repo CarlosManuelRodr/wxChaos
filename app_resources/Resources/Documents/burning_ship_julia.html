@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Dynamical plane</p>
@@ -139,5 +139,139 @@
         </div>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Plano dinámico</p>
+            <h1>Julia del Burning Ship</h1>
+            <p class="subtitle">La regla de la órbita plegada, vista ahora desde el interior de un parámetro elegido.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=(|\operatorname{Re}(z_n)|+i|\operatorname{Im}(z_n)|)^2+k\)
+            </div>
+            <p class="hero-introduction">
+                En lugar de permitir que cada píxel elija un parámetro, esta vista fija el parámetro \(k\).
+                Cada píxel se convierte en un punto inicial, lo que permite examinar el universo local generado por una
+                coordenada concreta del Burning Ship.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="burning_ship_julia/overview.png" alt="Vista general de un conjunto de Julia del Burning Ship">
+            <figcaption><span class="figure-title">Una coordenada, muchos destinos.</span></figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/burning-ship-julia">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a>
+            <a class="action-link secondary" href="wxchaos://tool/julia-constant-slider">Cambiar constante de Julia</a>
+        </div>
+    </section>
+
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Abre el conjunto de parámetros del Burning Ship y activa el modo Julia. Mueve el selector desde el
+                    cuerpo oscuro hacia el exterior y observa cómo se fragmenta la vista de Julia.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Prueba un punto cercano a una frontera estrecha o, mejor aún, uno situado en la frontera de la pequeña
+                    copia. Cambios diminutos en el parámetro pueden transformar formas amplias y conexas en islas semejantes
+                    al polvo.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Usa la visualización de la órbita para comparar un punto inicial que permanece estable con otro que
+                    escapa de inmediato.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Espacio de parámetros frente a espacio dinámico</summary>
+            <div class="concept-details-content">
+                <p>
+                    En la vista Julia del Burning Ship, wxChaos fija un parámetro complejo \(k\) e itera
+                    \(z_{n+1}=(|\operatorname{Re}(z_n)|+i|\operatorname{Im}(z_n)|)^2+k\). El píxel proporciona \(z_0\).
+                    Es la misma regla que usa el Burning Ship, pero se intercambian las funciones del punto de la imagen
+                    y del parámetro de la fórmula.
+                </p>
+            </div>
+        </details>
+    </section>
+    <section>
+        <h2>Métodos de coloreado</h2>
+        <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                    src="burning_ship_julia/escape-time.png"
+                    alt="Julia del Burning Ship renderizado con tiempo de escape">
+                <div class="view-card-content">
+                    <h3>Tiempo de escape</h3>
+                    <p>El mapa básico: el color indica cuánto tarda cada órbita en escapar.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship-julia/escape-time">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship_julia/smooth-coloring.png"
+                    alt="Julia del Burning Ship renderizado con coloreado suave">
+                <div class="view-card-content">
+                    <h3>Coloreado suave</h3>
+                    <p>Suaviza las bandas de iteración y las convierte en gradientes continuos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship-julia/smooth-coloring">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship_julia/gaussian-integer.png"
+                    alt="Julia del Burning Ship renderizado con enteros gaussianos">
+                <div class="view-card-content">
+                    <h3>Enteros gaussianos</h3>
+                    <p>Mide qué tan cerca pasan las órbitas que escapan de la retícula de enteros complejos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship-julia/gaussian-integer">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship_julia/escape-angle.png"
+                    alt="Julia del Burning Ship renderizado con ángulo de escape">
+                <div class="view-card-content">
+                    <h3>Ángulo de escape</h3>
+                    <p>Usa la dirección de escape para revelar el flujo a través del exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship-julia/escape-angle">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship_julia/triangle-inequality.png"
+                    alt="Julia del Burning Ship renderizado con desigualdad triangular">
+                <div class="view-card-content">
+                    <h3>Desigualdad triangular</h3>
+                    <p>Convierte las relaciones internas de la órbita en una textura estratificada y topográfica.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship-julia/triangle-inequality">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship_julia/orbit-trap.png"
+                    alt="Julia del Burning Ship renderizado con trampas de órbita">
+                <div class="view-card-content">
+                    <h3>Trampas de órbita</h3>
+                    <p>Colorea los puntos según qué tan cerca pasan sus órbitas de los ejes real e imaginario.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship-julia/orbit-traps">Aplicar en wxChaos</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
