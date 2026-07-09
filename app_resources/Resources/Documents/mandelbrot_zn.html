@@ -9,7 +9,7 @@
         <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     </head>
     <body>
-        <main class="museum-page">
+        <main data-i18n-lang="en" class="museum-page">
             <section class="hero">
                 <div class="hero-header">
                     <p class="eyebrow">Parameter space</p>
@@ -117,6 +117,120 @@
                             <h3>Orbit traps</h3>
                             <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>
                             <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/orbit-traps">Apply in wxChaos</a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+
+        <main data-i18n-lang="es" class="museum-page">
+            <section class="hero">
+                <div class="hero-header">
+                    <p class="eyebrow">Espacio de parámetros</p>
+                    <h1>Mandelbrot Z^m</h1>
+                    <p class="subtitle">La idea de Mandelbrot con el exponente liberado.</p>
+                    <div class="formula hero-formula">
+                        \(z_0=0,\quad z_{n+1}=z_n^m+c\)
+                    </div>
+                    <p class="hero-introduction">Este fractal explora qué ocurre cuando el cuadrado clásico se convierte en \(z^m\). El resultado es una familia de mapas con más lóbulos, nuevas simetrías y una complejidad similar en la frontera.</p>
+                </div>
+                <figure class="hero-figure">
+                    <img
+                        src="mandelbrot_zn/overview.png"
+                        alt="Vista general del conjunto de Mandelbrot Z^m">
+                    <figcaption><span class="figure-title">Un retrato de \(z_0=0,\quad z_{n+1}=z_n^3+c\).</span></figcaption>
+                </figure>
+                <div class="action-row"><a class="action-link" href="wxchaos://fractal/mandelbrot-zn">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://julia/mandelbrot-zn">Alternar modo Julia</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a><a class="action-link secondary" href="wxchaos://options/mandelbrot-zn">Cambiar m</a></div>
+            </section>
+            <section>
+                <h2>Qué probar primero</h2>
+                <div class="experiment">
+                    <div class="experiment-step">
+                        <p>Cambia el exponente y aleja la vista lo suficiente para apreciar la silueta completa. Cuenta los brazos principales antes de acercarte.</p>
+                    </div>
+                    <div class="experiment-step">
+                        <p>Activa el modo Julia y mueve el parámetro seleccionado a través de la frontera. La vista de Julia es la forma más rápida de percibir qué representa el mapa de parámetros.</p>
+                    </div>
+                    <div class="experiment-step">
+                        <p>Compara el tiempo de escape con el coloreado suave. Las potencias mayores pueden producir bandas muy marcadas que el coloreado suave convierte en gradientes.</p>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h2>Notas matemáticas</h2>
+                <details class="concept-details">
+                    <summary>De \(z^2+c\) a \(z^m+c\)</summary>
+                    <div class="concept-details-content">
+                        <p>
+                            El conjunto clásico de Mandelbrot usa \(z_{n+1}=z_n^2+c\) con \(z_0=0\). Mandelbrot Z^m cambia
+                            el exponente: \(z_{n+1}=z_n^m+c\). Usa <strong>Cambiar m</strong> para abrir Ver &gt; Opciones
+                            del fractal y elegir el exponente.
+                        </p>
+                    </div>
+                </details>
+            </section>
+            <section>
+                <h2>Métodos de coloreado</h2>
+                <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+                <div class="view-grid">
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/escape-time.png"
+                            alt="Conjunto de Mandelbrot Z^m renderizado con tiempo de escape">
+                        <div class="view-card-content">
+                            <h3>Tiempo de escape</h3>
+                            <p>El mapa básico: el color indica cuánto tarda cada órbita en escapar.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/escape-time">Aplicar en wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/smooth-coloring.png"
+                            alt="Conjunto de Mandelbrot Z^m renderizado con coloreado suave">
+                        <div class="view-card-content">
+                            <h3>Coloreado suave</h3>
+                            <p>Suaviza las bandas de iteración y las convierte en gradientes continuos.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/smooth-coloring">Aplicar en wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/gaussian-integer.png"
+                            alt="Conjunto de Mandelbrot Z^m renderizado con enteros gaussianos">
+                        <div class="view-card-content">
+                            <h3>Enteros gaussianos</h3>
+                            <p>Mide qué tan cerca pasan las órbitas que escapan de la retícula de enteros complejos.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/gaussian-integer">Aplicar en wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/escape-angle.png"
+                            alt="Conjunto de Mandelbrot Z^m renderizado con ángulo de escape">
+                        <div class="view-card-content">
+                            <h3>Ángulo de escape</h3>
+                            <p>Usa la dirección de escape para revelar el flujo a través del exterior.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/escape-angle">Aplicar en wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/triangle-inequality.png"
+                            alt="Conjunto de Mandelbrot Z^m renderizado con desigualdad triangular">
+                        <div class="view-card-content">
+                            <h3>Desigualdad triangular</h3>
+                            <p>Convierte las relaciones internas de la órbita en una textura estratificada y topográfica.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/triangle-inequality">Aplicar en wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/orbit-trap.png"
+                            alt="Conjunto de Mandelbrot Z^m renderizado con trampas de órbita">
+                        <div class="view-card-content">
+                            <h3>Trampas de órbita</h3>
+                            <p>Colorea los puntos según qué tan cerca pasan sus órbitas de los ejes real e imaginario.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/orbit-traps">Aplicar en wxChaos</a>
                         </div>
                     </article>
                 </div>
