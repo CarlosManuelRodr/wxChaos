@@ -1,0 +1,7 @@
+Shortcuts
+
+Set spanish localization on documentation pages:
+document.documentElement.setAttribute("data-language", "es")
+
+Set dark theme:
+document.documentElement.setAttribute("data-theme", "dark")
