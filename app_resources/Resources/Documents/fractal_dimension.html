@@ -17,7 +17,7 @@
 </head>
 
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero" aria-labelledby="page-title">
         <div class="hero-header">
             <p class="eyebrow">wxChaos tools</p>
@@ -177,6 +177,178 @@
                         value is 1.45, for example, the visible set is more
                         space-filling than a smooth curve but still far from
                         filling the whole square region.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero" aria-labelledby="page-title-es">
+        <div class="hero-header">
+            <p class="eyebrow">Herramientas de wxChaos</p>
+            <h1 id="page-title-es">Dimensión fractal</h1>
+            <p class="subtitle">
+                Una forma de preguntar cuánto espacio ocupa realmente una figura.
+            </p>
+            <p class="hero-introduction">
+                La calculadora de dimensión estima la dimensión por conteo de cajas,
+                también llamada dimensión de Minkowski-Bouligand. Es útil cuando una
+                figura es demasiado irregular, ramificada o autosimilar para describirla
+                adecuadamente solo como una línea, un área o un volumen.
+            </p>
+        </div>
+    </section>
+
+    <section aria-labelledby="dimension-title-es">
+        <h2 id="dimension-title-es">Por qué los fractales pueden tener dimensiones no enteras</h2>
+        <div class="key-idea">
+            <p>
+                La geometría ordinaria tiene categorías bien definidas: una línea es
+                unidimensional, un cuadrado o un disco relleno es bidimensional y un
+                cubo es tridimensional. Los fractales suelen encontrarse entre esas
+                categorías. Pueden estar formados por curvas y, aun así, plegarse,
+                ramificarse y repetir tantos detalles que ocupan el espacio más
+                rápidamente que una curva suave, aunque no tan completamente como una
+                superficie rellena.
+            </p>
+        </div>
+        <p>
+            Una línea o el contorno de un círculo tienen dimensión 1 porque duplicar la
+            resolución de medición duplica aproximadamente el número de pequeños
+            segmentos necesarios para cubrirlos. Un cuadrado relleno tiene dimensión 2
+            porque reducir a la mitad el tamaño de las cajas hace que el número de cajas
+            necesarias aumente aproximadamente cuatro veces. Una frontera fractal puede
+            crecer según un factor intermedio, y ese crecimiento intermedio es lo que la
+            dimensión fractal intenta medir.
+        </p>
+    </section>
+
+    <section aria-labelledby="box-counting-title-es">
+        <h2 id="box-counting-title-es">La idea del conteo de cajas</h2>
+        <div class="two-column">
+            <div>
+                <p>
+                    Imagina que colocas una cuadrícula de cajas sobre el fractal.
+                    Cuenta cuántas cajas tocan el conjunto. Después usa una cuadrícula
+                    más fina y vuelve a contar. Si el tamaño de las cajas es
+                    \(\varepsilon\), sea \(N(\varepsilon)\) el número de cajas que
+                    contienen alguna parte del conjunto.
+                </p>
+                <p>
+                    La dimensión se estima a partir de la rapidez con la que
+                    \(N(\varepsilon)\) crece cuando \(\varepsilon\) disminuye. Un
+                    crecimiento rápido significa que el conjunto llena el espacio con
+                    mayor densidad. Un crecimiento lento significa que se comporta más
+                    como una curva simple o como una colección dispersa de puntos.
+                </p>
+            </div>
+            <figure class="hero-figure box-count-example-figure">
+                <img src="fractal_dimension/box_count_example.png" alt="Una imagen fractal cubierta por cuadrículas con cajas de distintos tamaños">
+                <figcaption>
+                    <span class="figure-title">Conteo de cajas ocupadas.</span>
+                    Las cajas más pequeñas revelan más detalles, por lo que el conteo
+                    cambia con la escala.
+                </figcaption>
+            </figure>
+        </div>
+
+        <div>
+            <p>
+                La dimensión fractal se estima mediante la siguiente fórmula, que compara
+                el número de cajas ocupadas con el tamaño de la cuadrícula.
+            </p>
+        </div>
+
+        <div class="formula hero-formula">
+            \[
+            \dim_\text{box}(S) := \lim_{\varepsilon \to 0} \frac {\log N(\varepsilon)}{\log(1/\varepsilon)} = - \lim_{\varepsilon \to 0} \frac {\log N(\varepsilon)}{\log(\varepsilon)}
+            \]
+        </div>
+        <p class="note">
+            En la práctica, ningún programa puede llevar el límite completamente hasta
+            cero. Por ello, wxChaos renderiza el fractal con una resolución finita,
+            prueba varios tamaños de cuadrícula y estima la pendiente de la relación
+            logarítmica entre ambas variables.
+        </p>
+    </section>
+
+    <section aria-labelledby="plot-title-es">
+        <h2 id="plot-title-es">Qué significa la gráfica</h2>
+        <div class="two-column">
+            <figure class="hero-figure box-count-plot-figure">
+                <img src="fractal_dimension/box_count_plot.png" alt="Una gráfica log-log utilizada para estimar la dimensión por conteo de cajas">
+                <figcaption>
+                    <span class="figure-title">La tendencia ajustada.</span>
+                    La dimensión reportada es la pendiente de esta gráfica en escala
+                    logarítmica, que muestra el número de cajas ocupadas en las escalas
+                    seleccionadas.
+                </figcaption>
+            </figure>
+            <div>
+                <p>
+                    La calculadora compara varios valores de \(\varepsilon\). Para cada
+                    uno cuenta las cajas ocupadas y después ajusta la tendencia entre la
+                    escala y el conteo. Un valor cercano a 1 significa que el conjunto
+                    visible se comporta como una curva. Un valor cercano a 2 significa
+                    que llena el área de la imagen de manera más parecida a una
+                    superficie. Muchos fractales se encuentran en algún punto entre
+                    ambos valores.
+                </p>
+                <p>
+                    Considera el resultado como una estimación, no como una identidad
+                    exacta. Depende del tamaño del renderizado, la región seleccionada,
+                    el número de iteraciones, los tamaños de caja que se prueben y la
+                    cantidad de detalle visible con esa resolución.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section aria-labelledby="using-title-es">
+        <h2 id="using-title-es">Cómo usar la calculadora de dimensión en wxChaos</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <div>
+                    <h3>Elige un fractal y una región</h3>
+                    <p>
+                        Selecciona el fractal y después establece los límites horizontales
+                        y verticales del área cuadrada que quieres medir. La vista previa
+                        muestra la región que se renderizará.
+                    </p>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <h3>Configura el detalle del renderizado</h3>
+                    <p>
+                        Elige el tamaño de la imagen y el número de iteraciones. Los valores
+                        más altos pueden revelar más estructura, pero requieren más tiempo
+                        para renderizar y realizar el conteo.
+                    </p>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <h3>Elige las divisiones de las cajas</h3>
+                    <p>
+                        Usa la pestaña de función para generar las divisiones de las cajas
+                        o introduce una lista manualmente. Estas divisiones determinan qué
+                        tamaños de caja se pondrán a prueba.
+                    </p>
+                </div>
+            </div>
+            <div class="experiment-step">
+                <div>
+                    <h3>Calcula e interpreta el resultado</h3>
+                    <p>
+                        Presiona Calcular. wxChaos renderiza el mapa del conjunto, cuenta
+                        las cajas ocupadas para cada escala seleccionada, registra el
+                        progreso y reporta una estimación de la dimensión por conteo de
+                        cajas. Si el valor es 1.45, por ejemplo, el conjunto visible llena
+                        más espacio que una curva suave, pero todavía está lejos de llenar
+                        toda la región cuadrada.
                     </p>
                 </div>
             </div>
