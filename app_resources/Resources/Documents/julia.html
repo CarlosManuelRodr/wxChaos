@@ -14,7 +14,7 @@
         <div class="hero-header">
             <p class="eyebrow">Dynamical plane</p>
             <h1>Julia Sets</h1>
-            <p class="subtitle">The Mandelbrot set is the atlas; a Julia set is one country seen up close.</p>
+            <p class="subtitle">If the Mandelbrot set is an atlas, then the Julia set is one country seen up close.</p>
             <div class="formula hero-formula">
                 \(z_{n+1}=z_n^2+k\)
             </div>
@@ -56,6 +56,9 @@
     <section>
         <h2>Coloring lenses</h2>
         <p>The set stays the same, but each rendering method asks a different question about the orbit.</p>
+        <p>
+            You can explore the rendering algorithms in the "Rendering → Renderer options" menu.
+        </p>
         <div class="view-grid">
             <article class="view-card">
                 <img
@@ -63,7 +66,10 @@
                         alt="Julia set rendered with Escape time">
                 <div class="view-card-content">
                     <h3>Escape time</h3>
-                    <p>The baseline map: color follows how long each orbit takes to escape.</p>
+                    <p>
+                        Colors each point according to the iteration at which
+                        its orbit escapes.
+                    </p>
                     <a class="inline-link" href="wxchaos://rendering/julia/escape-time">Apply in wxChaos</a>
                 </div>
             </article>
@@ -73,7 +79,10 @@
                         alt="Julia set rendered with Smooth coloring">
                 <div class="view-card-content">
                     <h3>Smooth coloring</h3>
-                    <p>Softens iteration bands into continuous gradients.</p>
+                    <p>
+                        Removes hard iteration bands and reveals continuous
+                        gradients in escape speed.
+                    </p>
                     <a class="inline-link" href="wxchaos://rendering/julia/smooth-coloring">Apply in wxChaos</a>
                 </div>
             </article>
@@ -83,7 +92,10 @@
                         alt="Julia set rendered with Gaussian integer">
                 <div class="view-card-content">
                     <h3>Gaussian integer</h3>
-                    <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
+                    <p>
+                        Measures how closely escaping orbits pass near the
+                        lattice of complex integer points.
+                    </p>
                     <a class="inline-link" href="wxchaos://rendering/julia/gaussian-integer">Apply in wxChaos</a>
                 </div>
             </article>
@@ -93,7 +105,10 @@
                         alt="Julia set rendered with Escape angle">
                 <div class="view-card-content">
                     <h3>Escape angle</h3>
-                    <p>Uses the direction of escape to reveal flow through the exterior.</p>
+                    <p>
+                        Uses the direction of the escaping orbit to emphasize
+                        rays and directional structure.
+                    </p>
                     <a class="inline-link" href="wxchaos://rendering/julia/escape-angle">Apply in wxChaos</a>
                 </div>
             </article>
@@ -103,7 +118,10 @@
                         alt="Julia set rendered with Triangle inequality">
                 <div class="view-card-content">
                     <h3>Triangle inequality</h3>
-                    <p>Turns relationships inside the orbit into layered, topographic texture.</p>
+                    <p>
+                        Converts relationships between successive orbit values
+                        into flowing textures.
+                    </p>
                     <a class="inline-link" href="wxchaos://rendering/julia/triangle-inequality">Apply in wxChaos</a>
                 </div>
             </article>
@@ -113,7 +131,10 @@
                         alt="Julia set rendered with Orbit traps">
                 <div class="view-card-content">
                     <h3>Orbit traps</h3>
-                    <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>
+                    <p>
+                        Measures how closely each orbit approaches the real
+                        and imaginary axes.
+                    </p>
                     <a class="inline-link" href="wxchaos://rendering/julia/orbit-traps">Apply in wxChaos</a>
                 </div>
             </article>
