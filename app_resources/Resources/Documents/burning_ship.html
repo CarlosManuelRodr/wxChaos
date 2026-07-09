@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -36,7 +36,7 @@
     </section>
 
     <section>
-        <h2>What to try first</h2>
+        <h2>Try it in wxChaos</h2>
         <div class="experiment">
             <div class="experiment-step">
                 <p>
@@ -145,5 +145,144 @@
         </ul>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Burning Ship</h1>
+            <p class="subtitle">Un pariente del conjunto de Mandelbrot con las velas plegadas en detalles intrincados.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=(|\operatorname{Re}(z_n)|+i|\operatorname{Im}(z_n)|)^2+c\)
+            </div>
+            <p class="hero-introduction">
+                El Burning Ship (barco en llamas en inglés) comienza con el conocido proceso del tiempo de escape,
+                pero cambia un solo paso:
+                antes de elevar al cuadrado, refleja la órbita hacia el primer cuadrante. Ese pequeño pliegue convierte
+                los bulbos redondeados en mástiles, cubiertas y patrones extremadamente intrincados.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="burning_ship/overview.png" alt="Vista general del Burning Ship">
+            <figcaption><span class="figure-title">La forma principal.</span></figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/burning-ship">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://julia/burning-ship">Alternar modo Julia</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a>
+        </div>
+    </section>
+
+    <section>
+        <h2>Pruébalo en wxChaos</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    <strong>Comienza con una vista amplia.</strong> Busca el casco oscuro y las torres que se elevan desde él.
+                    La silueta es menos amigable que la del conjunto de Mandelbrot, pero cuando encuentres la pequeña copia
+                    entenderás por qué se le llama barco en llamas.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    <strong>Acércate a lo largo del borde superior.</strong> Los detalles más espectaculares se encuentran
+                    en la frontera de la pequeña copia: chimeneas apiladas, salpicaduras y filamentos finos.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    <strong>Activa la visualización de la órbita.</strong> Mueve el selector cerca de un borde afilado
+                    y observa cómo la órbita reflejada rebota entre mitades especulares.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Métodos de coloreado</h2>
+        <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                    src="burning_ship/escape-time.png"
+                    alt="Burning Ship renderizado con tiempo de escape">
+                <div class="view-card-content">
+                    <h3>Tiempo de escape</h3>
+                    <p>El mapa básico: el color indica cuánto tarda cada órbita en escapar.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/escape-time">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/smooth-coloring.png"
+                    alt="Burning Ship renderizado con coloreado suave">
+                <div class="view-card-content">
+                    <h3>Coloreado suave</h3>
+                    <p>Suaviza las bandas de iteración y las convierte en gradientes continuos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/smooth-coloring">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/gaussian-integer.png"
+                    alt="Burning Ship renderizado con enteros gaussianos">
+                <div class="view-card-content">
+                    <h3>Enteros gaussianos</h3>
+                    <p>Mide qué tan cerca pasan las órbitas que escapan de la retícula de enteros complejos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/gaussian-integer">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/escape-angle.png"
+                    alt="Burning Ship renderizado con ángulo de escape">
+                <div class="view-card-content">
+                    <h3>Ángulo de escape</h3>
+                    <p>Usa la dirección de escape para revelar el flujo a través del exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/escape-angle">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/triangle-inequality.png"
+                    alt="Burning Ship renderizado con desigualdad triangular">
+                <div class="view-card-content">
+                    <h3>Desigualdad triangular</h3>
+                    <p>Convierte las relaciones internas de la órbita en una textura estratificada y topográfica.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/triangle-inequality">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="burning_ship/orbit-trap.png"
+                    alt="Burning Ship renderizado con trampas de órbita">
+                <div class="view-card-content">
+                    <h3>Trampas de órbita</h3>
+                    <p>Colorea los puntos según qué tan cerca pasan sus órbitas de los ejes real e imaginario.</p>
+                    <a class="inline-link" href="wxchaos://rendering/burning-ship/orbit-traps">Aplicar en wxChaos</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>La fórmula detrás del pliegue</summary>
+            <div class="concept-details-content">
+                <p>El Burning Ship usa \(z_0=0\) y \(z_{n+1}=(|\operatorname{Re}(z_n)|+i|\operatorname{Im}(z_n)|)^2+c\). Los valores absolutos reflejan cada paso de la órbita antes de aplicar el cuadrado. Como la conjugación compleja y los valores absolutos rompen la diferenciabilidad compleja, la geometría se comporta de forma distinta a la de los mapas cuadráticos analíticos, como el de Mandelbrot.</p>
+            </div>
+        </details>
+    </section>
+
+    <section>
+        <h2>Continuar explorando</h2>
+        <ul class="related-links">
+            <li><a href="mandelbrot.html">Conjunto de Mandelbrot<span>El mapa clásico antes del pliegue.</span></a></li>
+            <li><a href="burning_ship_julia.html">Julia del Burning Ship<span>Fija un parámetro y explora su plano dinámico.</span></a></li>
+            <li><a href="tricorn.html">Tricorn<span>Otro pariente de Mandelbrot basado en reflexiones.</span></a></li>
+        </ul>
+    </section>
+</main>
+
 </body>
 </html>

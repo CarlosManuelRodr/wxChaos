@@ -1,3 +1,6 @@
+Bugs:
+- Headers in documentation pages are inconsistent.
+
 Improvements to get to a release version:
 - Localization to Spanish
 
