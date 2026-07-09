@@ -47,76 +47,80 @@
                 <details class="concept-details">
                     <summary>From \(z^2+c\) to \(z^m+c\)</summary>
                     <div class="concept-details-content">
-                        <p>The classic Mandelbrot set uses \(z_{n+1}=z_n^2+c\) with \(z_0=0\). Mandelbrot Z^m changes the exponent: \(z_{n+1}=z_n^m+c\). Use <strong>Change m</strong> to open View &gt; Fractal options and choose the exponent. Integer values such as \(m=3\) use the fast integer-power path and create stronger rotational symmetry, while real values such as \(m=2.5\) interpolate into asymmetric fractional-power shapes. The same bounded-versus-escaping test defines the set.</p>
+                        <p>
+                            The classic Mandelbrot set uses \(z_{n+1}=z_n^2+c\) with \(z_0=0\). Mandelbrot Z^m changes
+                            the exponent: \(z_{n+1}=z_n^m+c\). Use <strong>Change m</strong> to open View &gt; Fractal
+                            options and choose the exponent.
+                        </p>
                     </div>
                 </details>
             </section>
-    <section>
-        <h2>Coloring lenses</h2>
-        <p>The set stays the same, but each rendering method asks a different question about the orbit.</p>
-        <div class="view-grid">
-            <article class="view-card">
-                <img
-                    src="mandelbrot_zn/escape-time.png"
-                    alt="Mandelbrot Z^m set rendered with Escape time">
-                <div class="view-card-content">
-                    <h3>Escape time</h3>
-                    <p>The baseline map: color follows how long each orbit takes to escape.</p>
-                    <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/escape-time">Apply in wxChaos</a>
+            <section>
+                <h2>Coloring lenses</h2>
+                <p>The set stays the same, but each rendering method asks a different question about the orbit.</p>
+                <div class="view-grid">
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/escape-time.png"
+                            alt="Mandelbrot Z^m set rendered with Escape time">
+                        <div class="view-card-content">
+                            <h3>Escape time</h3>
+                            <p>The baseline map: color follows how long each orbit takes to escape.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/escape-time">Apply in wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/smooth-coloring.png"
+                            alt="Mandelbrot Z^m set rendered with Smooth coloring">
+                        <div class="view-card-content">
+                            <h3>Smooth coloring</h3>
+                            <p>Softens iteration bands into continuous gradients.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/smooth-coloring">Apply in wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/gaussian-integer.png"
+                            alt="Mandelbrot Z^m set rendered with Gaussian integer">
+                        <div class="view-card-content">
+                            <h3>Gaussian integer</h3>
+                            <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/gaussian-integer">Apply in wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/escape-angle.png"
+                            alt="Mandelbrot Z^m set rendered with Escape angle">
+                        <div class="view-card-content">
+                            <h3>Escape angle</h3>
+                            <p>Uses the direction of escape to reveal flow through the exterior.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/escape-angle">Apply in wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/triangle-inequality.png"
+                            alt="Mandelbrot Z^m set rendered with Triangle inequality">
+                        <div class="view-card-content">
+                            <h3>Triangle inequality</h3>
+                            <p>Turns relationships inside the orbit into layered, topographic texture.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/triangle-inequality">Apply in wxChaos</a>
+                        </div>
+                    </article>
+                    <article class="view-card">
+                        <img
+                            src="mandelbrot_zn/orbit-trap.png"
+                            alt="Mandelbrot Z^m set rendered with Orbit traps">
+                        <div class="view-card-content">
+                            <h3>Orbit traps</h3>
+                            <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>
+                            <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/orbit-traps">Apply in wxChaos</a>
+                        </div>
+                    </article>
                 </div>
-            </article>
-            <article class="view-card">
-                <img
-                    src="mandelbrot_zn/smooth-coloring.png"
-                    alt="Mandelbrot Z^m set rendered with Smooth coloring">
-                <div class="view-card-content">
-                    <h3>Smooth coloring</h3>
-                    <p>Softens iteration bands into continuous gradients.</p>
-                    <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/smooth-coloring">Apply in wxChaos</a>
-                </div>
-            </article>
-            <article class="view-card">
-                <img
-                    src="mandelbrot_zn/gaussian-integer.png"
-                    alt="Mandelbrot Z^m set rendered with Gaussian integer">
-                <div class="view-card-content">
-                    <h3>Gaussian integer</h3>
-                    <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
-                    <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/gaussian-integer">Apply in wxChaos</a>
-                </div>
-            </article>
-            <article class="view-card">
-                <img
-                    src="mandelbrot_zn/escape-angle.png"
-                    alt="Mandelbrot Z^m set rendered with Escape angle">
-                <div class="view-card-content">
-                    <h3>Escape angle</h3>
-                    <p>Uses the direction of escape to reveal flow through the exterior.</p>
-                    <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/escape-angle">Apply in wxChaos</a>
-                </div>
-            </article>
-            <article class="view-card">
-                <img
-                    src="mandelbrot_zn/triangle-inequality.png"
-                    alt="Mandelbrot Z^m set rendered with Triangle inequality">
-                <div class="view-card-content">
-                    <h3>Triangle inequality</h3>
-                    <p>Turns relationships inside the orbit into layered, topographic texture.</p>
-                    <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/triangle-inequality">Apply in wxChaos</a>
-                </div>
-            </article>
-            <article class="view-card">
-                <img
-                    src="mandelbrot_zn/orbit-trap.png"
-                    alt="Mandelbrot Z^m set rendered with Orbit traps">
-                <div class="view-card-content">
-                    <h3>Orbit traps</h3>
-                    <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>
-                    <a class="inline-link" href="wxchaos://rendering/mandelbrot-zn/orbit-traps">Apply in wxChaos</a>
-                </div>
-            </article>
-        </div>
-    </section>
+            </section>
         </main>
     </body>
 </html>
