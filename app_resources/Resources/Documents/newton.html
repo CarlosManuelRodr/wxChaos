@@ -9,7 +9,7 @@
       <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
    </head>
    <body>
-      <main class="museum-page">
+      <main data-i18n-lang="en" class="museum-page">
          <section class="hero">
             <div class="hero-header">
                <p class="eyebrow">Root-finding gallery</p>
@@ -136,12 +136,148 @@
             </ul>
          </section>
       </main>
+
+      <main data-i18n-lang="es" class="museum-page">
+         <section class="hero">
+            <div class="hero-header">
+               <p class="eyebrow">Galería de búsqueda de raíces</p>
+               <h1>Fractal de Newton</h1>
+               <p class="subtitle">Un mapa que muestra qué aproximaciones encuentran cada raíz.</p>
+               <div class="formula hero-formula">
+                   \(z_{n+1}=z_n-\frac{z_n^3-1}{3z_n^2}\)
+               </div>
+               <p class="hero-introduction">El método de Newton suele enseñarse como una herramienta numérica. En el plano complejo se convierte en un mapa territorial: cada punto inicial se colorea según la solución que finalmente encuentra, y las fronteras entre los territorios son fractales.</p>
+            </div>
+            <figure class="hero-figure">
+                <img
+                    src="newton/overview.png"
+                    alt="Vista general de un renderizado de Newton en el que varias cuencas de raíces se encuentran en fronteras intrincadas.">
+               <figcaption><span class="figure-title">Cuencas de atracción.</span></figcaption>
+            </figure>
+            <div class="action-row"><a class="action-link" href="wxchaos://fractal/newton">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a></div>
+         </section>
+         <section>
+            <h2>Qué probar primero</h2>
+            <div class="experiment">
+               <div class="experiment-step">
+                  <p>Busca un lugar donde se encuentren tres colores. Esas fronteras son las regiones más sensibles: un desplazamiento diminuto puede hacer que la iteración termine en otra raíz.</p>
+               </div>
+               <div class="experiment-step">
+                  <p>Activa la visualización de la órbita cerca de una frontera y compárala con la de un punto situado en lo profundo de una sola cuenca de color.</p>
+               </div>
+               <div class="experiment-step">
+                  <p>Después de esta página, abre Newton definido por el usuario y prueba tu propio polinomio.</p>
+               </div>
+            </div>
+         </section>
+
+         <section aria-labelledby="newton-lab-title-es">
+            <h2 id="newton-lab-title-es">Aproximaciones que caen hacia las soluciones</h2>
+            <p>
+               Cada punto de abajo es una aproximación inicial \(z_0\) para la ecuación
+               \(z^3-1=0\). Pulsa <strong>Más iteraciones</strong> para aplicar un paso
+               de Newton-Raphson. Los tres destinos de colores son las tres
+               soluciones de la ecuación.
+            </p>
+
+            <div class="iteration-lab" data-newton-iteration-lab>
+               <div class="iteration-lab-stage">
+                  <canvas
+                     data-iteration-canvas
+                     width="980"
+                     height="756"
+                     role="img"
+                     aria-label="Cuadrícula animada de aproximaciones que se desplazan hacia las raíces mediante la iteración de Newton-Raphson">
+                  </canvas>
+               </div>
+               <div class="iteration-lab-controls">
+                  <div class="iteration-lab-buttons">
+                     <button class="iteration-lab-button secondary" type="button" data-less-iterations>
+                        Menos iteraciones
+                     </button>
+                     <button class="iteration-lab-button" type="button" data-more-iterations>
+                        Más iteraciones
+                     </button>
+                     <button class="iteration-lab-button secondary" type="button" data-reset-iterations>
+                        Reiniciar
+                     </button>
+                  </div>
+                  <label class="iteration-lab-field">
+                     <span>Aproximaciones iniciales</span>
+                     <input
+                        type="number"
+                        min="25"
+                        max="1200"
+                        step="25"
+                        value="459"
+                        data-point-count>
+                  </label>
+                  <div class="iteration-lab-readout" data-iteration-readout>
+                     Mostrando aproximaciones z0
+                  </div>
+               </div>
+               <div class="iteration-lab-legend">
+                  <span style="--legend-color: #8cc7ff;">Raíz \(1\)</span>
+                  <span style="--legend-color: #f7b267;">Raíz \(-0.5+0.866i\)</span>
+                  <span style="--legend-color: #d6a3ff;">Raíz \(-0.5-0.866i\)</span>
+               </div>
+            </div>
+         </section>
+
+         <section>
+            <h2>Notas matemáticas</h2>
+            <details class="concept-details">
+               <summary>El método de Newton como sistema dinámico</summary>
+               <div class="concept-details-content">
+                  <p>Para una función \(f\), el método de Newton aplica repetidamente \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). Una raíz se convierte en un destino atractor, y cada píxel pertenece a la cuenca de la raíz alcanzada desde ese punto inicial. El fractal de Newton integrado en wxChaos representa el comportamiento de convergencia de un problema cúbico de búsqueda de raíces.</p>
+               </div>
+            </details>
+            <details class="concept-details">
+               <summary>¿Qué es el método de Newton-Raphson?</summary>
+               <div class="concept-details-content">
+                  <p>Newton-Raphson es un método para resolver \(f(z)=0\) mediante el refinamiento progresivo de una aproximación. En la aproximación actual \(z_n\), utiliza la derivada \(f'(z_n)\) como una aproximación lineal local, predice dónde esa aproximación alcanza el cero y usa ese cruce como la siguiente aproximación.</p>
+                  <p>La regla de actualización es \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). Para \(f(z)=z^3-1\), las raíces son \(1\), \(-\frac{1}{2}+\frac{\sqrt{3}}{2}i\) y \(-\frac{1}{2}-\frac{\sqrt{3}}{2}i\). La iteración de Newton conduce la mayoría de las aproximaciones iniciales hacia uno de esos tres destinos.</p>
+               </div>
+            </details>
+            <details class="concept-details">
+               <summary>¿Por qué la búsqueda de raíces produce un fractal?</summary>
+               <div class="concept-details-content">
+                  <p>
+                     Cuando un punto inicial ya está cerca de una raíz, el método de Newton suele converger rápidamente
+                     hacia ella. Más lejos, el paso tangente puede saltar a través del plano. Lo más interesante ocurre
+                     cerca de la frontera entre las cuencas. Dos aproximaciones casi idénticas pueden ser atraídas hacia
+                     raíces diferentes después de varios pasos.
+                  </p>
+                  <p>
+                     Esas regiones fronterizas se pliegan y se repiten bajo el mapa de Newton. Colorear cada aproximación
+                     inicial según la raíz que alcanza convierte la sensibilidad numérica en geometría visible: cuencas
+                     suaves rodeadas por fronteras fractales intrincadas.
+                  </p>
+               </div>
+            </details>
+         </section>
+         <section>
+            <h2>Continuar explorando</h2>
+            <ul class="related-links">
+               <li><a href="user_defined_newton.html">Newton definido por el usuario<span>Elige la función cuyas raíces quieres representar.</span></a></li>
+               <li><a href="fixed_point_z2.html">Mapas de punto fijo<span>Otra forma de ver la convergencia como una geografía.</span></a></li>
+               <li><a href="julia.html">Conjuntos de Julia<span>Iteración sin búsqueda explícita de raíces.</span></a></li>
+            </ul>
+         </section>
+      </main>
       <script>
-      (() => {
-         const lab = document.querySelector("[data-newton-iteration-lab]");
-         if (!lab) {
+      window.wxChaosInitializeDocument = () => {
+         const language =
+            document.documentElement.getAttribute("data-language") || "en";
+         const lab =
+            document.querySelector(
+               `[data-i18n-lang="${language}"] [data-newton-iteration-lab]`
+            ) ||
+            document.querySelector("[data-newton-iteration-lab]");
+         if (!lab || lab.dataset.initialized === "true") {
             return;
          }
+         lab.dataset.initialized = "true";
 
          const canvas = lab.querySelector("[data-iteration-canvas]");
          const context = canvas.getContext("2d");
@@ -369,9 +505,10 @@
             moreButton.disabled = currentIteration >= maxVisibleIteration;
             resetButton.disabled = currentIteration <= 0;
             pointCountInput.disabled = false;
+            const isSpanish = language === "es";
             readout.textContent = currentIteration === 0
-               ? "Showing z0 guesses"
-               : `Showing z${currentIteration}`;
+               ? (isSpanish ? "Mostrando aproximaciones z0" : "Showing z0 guesses")
+               : (isSpanish ? `Mostrando z${currentIteration}` : `Showing z${currentIteration}`);
          };
 
          const resetIterationLab = () => {
@@ -466,7 +603,7 @@
 
          buildPoints(defaultPointCount);
          resetIterationLab();
-      })();
+      };
       </script>
    </body>
 </html>
