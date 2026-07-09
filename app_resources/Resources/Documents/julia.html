@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Dynamical plane</p>
@@ -18,7 +18,10 @@
             <div class="formula hero-formula">
                 \(z_{n+1}=z_n^2+k\)
             </div>
-            <p class="hero-introduction">A Julia set fixes \(k\) and asks what happens to every possible starting point \(z_0\). Some choices make connected lace. Others scatter into islands.</p>
+            <p class="hero-introduction">
+                A Julia set fixes \(k\) and asks what happens to every possible starting point \(z_0\).
+                Some choices make connected sets. Others scatter into islands.
+            </p>
         </div>
         <figure class="hero-figure">
             <img src="julia/overview.png" alt="An overview of Julia set">
@@ -34,10 +37,17 @@
         <h2>A good first visit</h2>
         <div class="experiment">
             <div class="experiment-step">
-                <p>Start with the default parameter. Look for the boundary between dark stable regions and the colored escaping exterior.</p>
+                <p>
+                    Open the <a href="wxchaos://tool/julia-constant-slider">Fractal → Enter Julia constant</a> menu
+                    and experiment with different parameter values.
+                    Notice how even small changes can completely transform the Julia set into a different world.
+                </p>
             </div>
             <div class="experiment-step">
-                <p>Open the Mandelbrot page and toggle Julia mode from there. Move the Mandelbrot selector and watch the Julia set respond like a live specimen.</p>
+                <p>
+                    Open the Mandelbrot page and toggle Julia mode from there. Move the Mandelbrot selector and watch
+                    the Julia set respond like a live specimen. Can you see the relationship between the Mandelbrot set and the Julia set?
+                </p>
             </div>
             <div class="experiment-step">
                 <p>Try orbit display near a boundary point. The orbit is the hidden choreography behind the visible lace.</p>
@@ -141,5 +151,158 @@
         </div>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Plano dinámico</p>
+            <h1>Conjuntos de Julia</h1>
+            <p class="subtitle">Si el conjunto de Mandelbrot es un atlas, entonces un conjunto de Julia es uno de sus países visto de cerca.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n^2+k\)
+            </div>
+            <p class="hero-introduction">
+                Un conjunto de Julia fija \(k\) y pregunta qué ocurre con cada posible punto inicial \(z_0\).
+                Algunos valores producen conjuntos conectados. Otros se dispersan en islas.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="julia/overview.png" alt="Vista general de un conjunto de Julia">
+            <figcaption><span class="figure-title">Un parámetro, un mundo entero.</span> ¡Y existe una cantidad infinita de parámetros! No olvides experimentar con ellos en el menú «Fractal → Introducir constante de Julia».</figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/julia">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a>
+            <a class="action-link secondary" href="wxchaos://tool/julia-constant-slider">Cambiar constante de Julia</a>
+        </div>
+    </section>
+    <section>
+        <h2>Una buena primera visita</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Abre el menú <a href="wxchaos://tool/julia-constant-slider">Fractal → Introducir constante de Julia</a>
+                    y experimenta con distintos valores del parámetro. Observa cómo incluso cambios muy pequeños pueden
+                    transformar por completo el conjunto de Julia en un mundo diferente.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Abre la página del conjunto de Mandelbrot y activa desde ahí el modo Julia. Mueve el selector de
+                    Mandelbrot y observa cómo el conjunto de Julia responde como si fuera un espécimen vivo.
+                    ¿Puedes ver la relación entre el conjunto de Mandelbrot y el conjunto de Julia?
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Prueba la visualización de la órbita cerca de un punto de la frontera. La órbita es la coreografía
+                    oculta detrás del lienzo visible.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Por qué el conjunto de Mandelbrot predice las formas de los conjuntos de Julia</summary>
+            <div class="concept-details-content">
+                <p>
+                    Para \(f_k(z)=z^2+k\), el conjunto de Julia lleno contiene los valores iniciales cuyas órbitas
+                    permanecen acotadas. El conjunto de Mandelbrot registra los parámetros \(k\) para los cuales la
+                    órbita crítica que comienza en \(0\) permanece acotada. En los mapas cuadráticos, esa órbita
+                    crítica determina si el conjunto de Julia es conexo.
+                </p>
+            </div>
+        </details>
+    </section>
+    <section>
+        <h2>Métodos de coloreado</h2>
+        <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+        <p>
+            Puedes explorar los algoritmos de renderizado en el menú «Renderizado → Opciones del renderizador».
+        </p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                        src="julia/escape-time.png"
+                        alt="Conjunto de Julia renderizado con tiempo de escape">
+                <div class="view-card-content">
+                    <h3>Tiempo de escape</h3>
+                    <p>
+                        Colorea cada punto según la iteración en la que
+                        su órbita escapa.
+                    </p>
+                    <a class="inline-link" href="wxchaos://rendering/julia/escape-time">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="julia/smooth-coloring.png"
+                        alt="Conjunto de Julia renderizado con coloreado suave">
+                <div class="view-card-content">
+                    <h3>Coloreado suave</h3>
+                    <p>
+                        Elimina las bandas marcadas entre iteraciones y revela
+                        gradientes continuos en la velocidad de escape.
+                    </p>
+                    <a class="inline-link" href="wxchaos://rendering/julia/smooth-coloring">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="julia/gaussian-integer.png"
+                        alt="Conjunto de Julia renderizado con enteros gaussianos">
+                <div class="view-card-content">
+                    <h3>Enteros gaussianos</h3>
+                    <p>
+                        Mide qué tan cerca pasan las órbitas que escapan de la
+                        retícula de puntos enteros complejos.
+                    </p>
+                    <a class="inline-link" href="wxchaos://rendering/julia/gaussian-integer">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="julia/escape-angle.png"
+                        alt="Conjunto de Julia renderizado con ángulo de escape">
+                <div class="view-card-content">
+                    <h3>Ángulo de escape</h3>
+                    <p>
+                        Usa la dirección de la órbita que escapa para resaltar
+                        rayos y estructuras direccionales.
+                    </p>
+                    <a class="inline-link" href="wxchaos://rendering/julia/escape-angle">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="julia/triangle-inequality.png"
+                        alt="Conjunto de Julia renderizado con desigualdad triangular">
+                <div class="view-card-content">
+                    <h3>Desigualdad triangular</h3>
+                    <p>
+                        Convierte las relaciones entre valores sucesivos de la
+                        órbita en texturas fluidas.
+                    </p>
+                    <a class="inline-link" href="wxchaos://rendering/julia/triangle-inequality">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="julia/orbit-trap.png"
+                        alt="Conjunto de Julia renderizado con trampas de órbita">
+                <div class="view-card-content">
+                    <h3>Trampas de órbita</h3>
+                    <p>
+                        Mide qué tan cerca se aproxima cada órbita a los ejes
+                        real e imaginario.
+                    </p>
+                    <a class="inline-link" href="wxchaos://rendering/julia/orbit-traps">Aplicar en wxChaos</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
