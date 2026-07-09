@@ -47,7 +47,7 @@
             </p>
         </div>
         <p>
-            A circle's outline has dimension 1 because doubling the measurement
+            A line or a circle's outline has dimension 1 because doubling the measurement
             resolution roughly doubles the number of small ruler pieces needed
             to cover it. A filled square has dimension 2 because halving the box
             size makes the number of required boxes grow about four times. A
@@ -85,13 +85,20 @@
             </figure>
         </div>
 
+        <div>
+            <p>
+                The fractal dimension is estimated by the following formula that compares the number
+                of occupied boxes compared to the size of the grid.
+            </p>
+        </div>
+
         <div class="formula hero-formula">
             \[
             \dim_\text{box}(S) := \lim_{\varepsilon \to 0} \frac {\log N(\varepsilon)}{\log(1/\varepsilon)} = - \lim_{\varepsilon \to 0} \frac {\log N(\varepsilon)}{\log(\varepsilon)}
             \]
         </div>
         <p class="note">
-            In practice wxChaos cannot take the limit all the way to zero. It
+            In practice no program can take the limit all the way to zero. So wxChaos
             renders the fractal at a finite resolution, tries several grid
             sizes, and estimates the slope of the log-log relationship.
         </p>
@@ -128,13 +135,13 @@
     </section>
 
     <section aria-labelledby="using-title">
-        <h2 id="using-title">Using the DimensionFrame in wxChaos</h2>
+        <h2 id="using-title">Using the Dimension Calculator in wxChaos</h2>
         <div class="experiment">
             <div class="experiment-step">
                 <div>
                     <h3>Choose a fractal and region</h3>
                     <p>
-                        Select the fractal, then set the real and imaginary
+                        Select the fractal, then set the horizontal and vertical
                         bounds for the square area you want to measure. The
                         preview shows the region that will be rendered.
                     </p>
