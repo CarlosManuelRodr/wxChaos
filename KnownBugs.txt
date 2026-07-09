@@ -3,6 +3,7 @@ Bugs:
 
 Improvements to get to a release version:
 - Localization to Spanish
+- Julia mode needs to be able to display orbits
 
 Future improvements:
 - Decouple wxWidgets from PanelOptions.
