@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -110,5 +110,108 @@
         </div>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Magnet</h1>
+            <p class="subtitle">Un fractal en el que la atracción y el escape compiten mediante una fracción.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=\left(\frac{z_n^2+c-1}{2z_n+c-2}\right)^2\)
+            </div>
+            <p class="hero-introduction">
+                La fórmula Magnet no se limita a elevar al cuadrado y sumar. Divide una expresión polinómica entre otra
+                antes de elevar el resultado al cuadrado.
+            </p>
+            <p class="hero-introduction">
+                La fórmula se originó en la física teórica, donde fue desarrollada para estudiar transiciones de fase magnéticas.
+            </p>
+        </div>
+        <figure class="hero-figure"><img src="magnet/overview.png" alt="Vista general del fractal Magnet"><figcaption><span class="figure-title">Un paisaje racional.</span></figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/magnet">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a></div>
+    </section>
+
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Comienza con la vista completa y busca regiones que parezcan ser atraídas hacia cuencas, en lugar de limitarse a escapar hacia el exterior.</p></div>
+            <div class="experiment-step"><p>Acércate a las estructuras exteriores delgadas. Los mapas racionales suelen ocultar estiramientos espectaculares cerca de las zonas sensibles de su denominador.</p></div>
+            <div class="experiment-step"><p>Compara el tiempo de escape con el coloreado por enteros gaussianos; el coloreado de la retícula puede hacer más visibles las trayectorias estiradas.</p></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details"><summary>La fórmula Magnet de wxChaos</summary><div class="concept-details-content"><p>wxChaos comienza en \(z_0=0\) e itera \(z_{n+1}=\left(\frac{z_n^2+c-1}{2z_n+c-2}\right)^2\). Como se trata de una función racional, el denominador puede amplificar con fuerza los puntos cercanos. Ese estiramiento forma parte de lo que da al conjunto Magnet su geometría característica.</p></div></details>
+    </section>
+    <section>
+        <h2>Métodos de coloreado</h2>
+        <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                    src="magnet/escape-time.png"
+                    alt="Magnet renderizado con tiempo de escape">
+                <div class="view-card-content">
+                    <h3>Tiempo de escape</h3>
+                    <p>El mapa básico: el color indica cuánto tarda cada órbita en escapar.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/escape-time">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/smooth-coloring.png"
+                    alt="Magnet renderizado con coloreado suave">
+                <div class="view-card-content">
+                    <h3>Coloreado suave</h3>
+                    <p>Suaviza las bandas de iteración y las convierte en gradientes continuos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/smooth-coloring">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/gaussian-integer.png"
+                    alt="Magnet renderizado con enteros gaussianos">
+                <div class="view-card-content">
+                    <h3>Enteros gaussianos</h3>
+                    <p>Mide qué tan cerca pasan las órbitas que escapan de la retícula de enteros complejos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/gaussian-integer">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/escape-angle.png"
+                    alt="Magnet renderizado con ángulo de escape">
+                <div class="view-card-content">
+                    <h3>Ángulo de escape</h3>
+                    <p>Usa la dirección de escape para revelar el flujo a través del exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/escape-angle">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/triangle-inequality.png"
+                    alt="Magnet renderizado con desigualdad triangular">
+                <div class="view-card-content">
+                    <h3>Desigualdad triangular</h3>
+                    <p>Convierte las relaciones internas de la órbita en una textura estratificada y topográfica.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/triangle-inequality">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="magnet/orbit-trap.png"
+                    alt="Magnet renderizado con trampas de órbita">
+                <div class="view-card-content">
+                    <h3>Trampas de órbita</h3>
+                    <p>Colorea los puntos según qué tan cerca pasan sus órbitas de los ejes real e imaginario.</p>
+                    <a class="inline-link" href="wxchaos://rendering/magnet/orbit-traps">Aplicar en wxChaos</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
