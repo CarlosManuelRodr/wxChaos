@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -133,5 +133,133 @@
         </p>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Fractory</h1>
+            <p class="subtitle">Un fractal original de wxChaos con un término auxiliar cambiante.</p>
+            <div class="formula hero-formula">
+                \(b_{n+1}=c+b_n/c-z_n,\quad z_{n+1}=z_n c+b_{n+1}/z_n\)
+            </div>
+            <p class="hero-introduction">Fractory es una fórmula racional experimental de tiempo de escape recuperada de antiguas fuentes de fractales en internet. El autor de wxChaos no ha podido identificar un origen publicado ni a su autor.</p>
+        </div>
+        <figure class="hero-figure">
+            <img src="fractory/overview.png" alt="Vista general de Fractory">
+            <figcaption><span class="figure-title">Una forma extraña, supongo.</span></figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/fractory">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Comienza tratando la imagen como si fuera un terreno: busca crestas, cuencas y fronteras en lugar de una silueta famosa.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Activa la visualización de la órbita. Las fórmulas específicas de la aplicación se entienden mucho mejor cuando puedes ver la trayectoria que produce el color.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Usa trampas de órbita o el coloreado por desigualdad triangular para hacer visible el movimiento interno.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El valor auxiliar \(b\)</summary>
+            <div class="concept-details-content">
+                <p>wxChaos inicializa \(z=c\) y \(b=c-\sin(c)\). En cada paso actualiza el valor auxiliar con \(b_{n+1}=c+b_n/c-z_n\), y después actualiza \(z\) con \(z_{n+1}=z_n c+b_{n+1}/z_n\). El valor cambiante de \(b\) actúa como una pequeña memoria interna que hace que la iteración sea menos predecible que un mapa cuadrático de una sola línea.</p>
+            </div>
+        </details>
+    </section>
+    <section>
+        <h2>Métodos de coloreado</h2>
+        <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                        src="fractory/escape-time.png"
+                        alt="Fractory renderizado con tiempo de escape">
+                <div class="view-card-content">
+                    <h3>Tiempo de escape</h3>
+                    <p>El mapa básico: el color indica cuánto tarda cada órbita en escapar.</p>
+                    <a class="inline-link" href="wxchaos://rendering/fractory/escape-time">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="fractory/smooth-coloring.png"
+                        alt="Fractory renderizado con coloreado suave">
+                <div class="view-card-content">
+                    <h3>Coloreado suave</h3>
+                    <p>Suaviza las bandas de iteración y las convierte en gradientes continuos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/fractory/smooth-coloring">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="fractory/gaussian-integer.png"
+                        alt="Fractory renderizado con enteros gaussianos">
+                <div class="view-card-content">
+                    <h3>Enteros gaussianos</h3>
+                    <p>Mide qué tan cerca pasan las órbitas que escapan de la retícula de enteros complejos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/fractory/gaussian-integer">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="fractory/escape-angle.png"
+                        alt="Fractory renderizado con ángulo de escape">
+                <div class="view-card-content">
+                    <h3>Ángulo de escape</h3>
+                    <p>Usa la dirección de escape para revelar el flujo a través del exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/fractory/escape-angle">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="fractory/triangle-inequality.png"
+                        alt="Fractory renderizado con desigualdad triangular">
+                <div class="view-card-content">
+                    <h3>Desigualdad triangular</h3>
+                    <p>Convierte las relaciones internas de la órbita en una textura estratificada y topográfica.</p>
+                    <a class="inline-link" href="wxchaos://rendering/fractory/triangle-inequality">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                        src="fractory/orbit-trap.png"
+                        alt="Fractory renderizado con trampas de órbita">
+                <div class="view-card-content">
+                    <h3>Trampas de órbita</h3>
+                    <p>Colorea los puntos según qué tan cerca pasan sus órbitas de los ejes real e imaginario.</p>
+                    <a class="inline-link" href="wxchaos://rendering/fractory/orbit-traps">Aplicar en wxChaos</a>
+                </div>
+            </article>
+        </div>
+    </section>
+    <section>
+        <h2>Nota sobre su procedencia</h2>
+        <p>
+            wxChaos comenzó alrededor de 2010, cuando internet todavía tenía muchos sitios personales pequeños,
+            páginas de aficionados, archivos al estilo de Geocities y colecciones dispersas de curiosidades matemáticas.
+            Algunas fórmulas de la aplicación, incluida Fractory, se encontraron en sitios como esos y se incorporaron a
+            wxChaos como experimentos.
+        </p>
+        <p>
+            En aquel momento, el programa no estaba pensado para publicarse. Era un proyecto personal llamado
+            GrufiFractalGen, en referencia a GruFi, el grupo de divulgación científica del autor. El objetivo era crear
+            una aplicación llamativa para mostrar fractales a otras personas, no elaborar un catálogo cuidadosamente
+            documentado. Por esa razón, las fuentes originales no se registraron de forma sistemática y muchas de
+            aquellas páginas web antiguas han desaparecido desde entonces.
+        </p>
+        <p>
+            Si eres el autor de este fractal o sabes algo sobre su origen, ponte en contacto con nosotros.
+        </p>
+    </section>
+</main>
+
 </body>
 </html>
