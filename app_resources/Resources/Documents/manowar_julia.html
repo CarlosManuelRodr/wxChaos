@@ -16,7 +16,7 @@
             <h1>Manowar Julia</h1>
             <p class="subtitle">A Julia set with a short-term memory.</p>
             <div class="formula hero-formula">
-                \(z_{n+1}=z_n^2+m_n+k\)
+                \(z_0=m_0=p,\quad z_{n+1}=z_n^2+m_n+k,\quad m_{n+1}=z_n\)
             </div>
             <p class="hero-introduction">
                 Here the parameter is fixed and each pixel chooses the starting value. Because the Manowar rule
@@ -56,7 +56,7 @@
 
     <section>
         <h2>Mathematical notes</h2>
-        <details class="concept-details"><summary>Fixed parameter, remembered past</summary><div class="concept-details-content"><p>The Manowar Julia rule fixes \(k\) and iterates \(z_{n+1}=z_n^2+m_n+k\). The memory value \(m_n\) is updated from the previous \(z\). Unlike a standard Julia set, the visible fate of a point depends on a two-value state.</p></div></details>
+        <details class="concept-details"><summary>Fixed parameter, remembered past</summary><div class="concept-details-content"><p>The Manowar Julia rule fixes \(k\). For each pixel with complex coordinate \(p\), wxChaos starts with \(z_0=m_0=p\), then iterates \(z_{n+1}=z_n^2+m_n+k\). The memory value \(m_n\) is updated from the previous \(z\). Unlike a standard Julia set, the visible fate of a point depends on a two-value state.</p></div></details>
     </section>
     <section>
         <h2>Coloring lenses</h2>

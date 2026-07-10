@@ -16,7 +16,7 @@
             <h1>Manowar</h1>
             <p class="subtitle">A quadratic fractal that remembers where it just was.</p>
             <div class="formula hero-formula">
-                \(z_{n+1}=z_n^2+m_n+c\)
+                \(z_0=m_0=c,\quad z_{n+1}=z_n^2+m_n+c,\quad m_{n+1}=z_n\)
             </div>
             <p class="hero-introduction">
                 Most fractals update only from the current value. Manowar adds a second voice: the previous
@@ -56,7 +56,7 @@
 
     <section>
         <h2>Mathematical notes</h2>
-        <details class="concept-details"><summary>The extra state variable</summary><div class="concept-details-content"><p>wxChaos uses a recurrence of the form \(z_{n+1}=z_n^2+m_n+c\), where \(m_n\) stores the previous value of \(z\). After each update, the old \(z_n\) becomes the next memory value. This makes the system second-order: to know what happens next, you need the present and the immediate past.</p></div></details>
+        <details class="concept-details"><summary>The extra state variable</summary><div class="concept-details-content"><p>wxChaos starts both state values at the selected parameter: \(z_0=m_0=c\). It then uses \(z_{n+1}=z_n^2+m_n+c\), where \(m_n\) stores the previous value of \(z\). After each update, the old \(z_n\) becomes the next memory value. This makes the system second-order: to know what happens next, you need the present and the immediate past.</p></div></details>
     </section>
     <section>
         <h2>Coloring lenses</h2>
