@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -50,5 +50,48 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Punto fijo del coseno</h1>
+            <p class="subtitle">Una función ondulatoria conocida convertida en un mapa de cuencas.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=\cos(z_n)\)
+            </div>
+            <p class="hero-introduction">La aplicación repetida del coseno puede atraer muchos puntos iniciales hacia un comportamiento estable. En el plano complejo, las fronteras que rodean esos destinos se convierten en la parte más interesante de la imagen.</p>
+        </div>
+        <figure class="hero-figure">
+            <img src="fixed_point_cos/overview.png" alt="Vista general del punto fijo del coseno">
+            <figcaption><span class="figure-title">La atracción de un punto fijo.</span></figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-cos">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Activa la visualización de la órbita en una región amplia y observa cómo se estabiliza la sucesión.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Acércate a una frontera donde el color cambie rápidamente. La convergencia suele volverse más lenta cerca de estos bordes.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Compara esta página con Punto fijo del seno. Las funciones son parientes simples, pero sus cuencas complejas tienen personalidades diferentes.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Qué significa la convergencia en este caso</summary>
+            <div class="concept-details-content">
+                <p>wxChaos itera \(z_{n+1}=\cos(z_n)\). Un punto fijo satisface \(z=\cos(z)\). El renderizador deja de considerar activa la órbita cuando dos valores sucesivos están separados por menos que el paso mínimo configurado, por lo que el color se convierte en un mapa de la rapidez con la que se estabiliza la iteración.</p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

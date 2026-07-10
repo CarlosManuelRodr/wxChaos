@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -50,5 +50,48 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Punto fijo de la tangente</h1>
+            <p class="subtitle">Un mapa de convergencia con polos, saltos y fronteras abruptas.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=\tan(z_n)\)
+            </div>
+            <p class="hero-introduction">La tangente tiene singularidades inherentes. Al iterarla en el plano complejo, esos saltos casi infinitos hacen que el paisaje de convergencia sea más abrupto y menos indulgente que el del seno o el coseno.</p>
+        </div>
+        <figure class="hero-figure">
+            <img src="fixed_point_tan/overview.png" alt="Vista general del punto fijo de la tangente">
+            <figcaption><span class="figure-title">Convergencia cerca de singularidades.</span></figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-tan">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Busca transiciones bruscas de color. Los polos de la tangente pueden lanzar muy lejos a las órbitas cercanas.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Activa la visualización de la órbita cerca de una frontera y compárala con la de un punto situado en lo profundo de una cuenca.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Después visita Punto fijo del seno o Punto fijo del coseno para percibir cuánto más tranquilos son esos mapas.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Por qué la tangente produce fronteras más abruptas</summary>
+            <div class="concept-details-content">
+                <p>wxChaos itera \(z_{n+1}=\tan(z_n)\). Como \(\tan(z)=\sin(z)/\cos(z)\), la función tiene polos en todos los puntos donde \(\cos(z)=0\). Los puntos cercanos a esos polos pueden desplazarse drásticamente en una sola iteración, lo que crea fronteras de convergencia muy marcadas.</p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

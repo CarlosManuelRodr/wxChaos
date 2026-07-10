@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -50,5 +50,48 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Punto fijo del seno</h1>
+            <p class="subtitle">Donde la aplicación repetida del seno se estabiliza, divaga o se niega a decidirse.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=\sin(z_n)\)
+            </div>
+            <p class="hero-introduction">Un fractal de punto fijo plantea una pregunta más tranquila que los fractales de tiempo de escape: si seguimos aplicando la misma función, ¿terminaremos estabilizándonos en un valor?</p>
+        </div>
+        <figure class="hero-figure">
+            <img src="fixed_point_sin/overview.png" alt="Vista general del punto fijo del seno">
+            <figcaption><span class="figure-title">La convergencia representada mediante color.</span></figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-sin">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Elige un punto en una región estable y activa la visualización de la órbita. La trayectoria debería avanzar hacia un destino estable.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Acércate a una frontera de color. Esos son los lugares donde la convergencia se vuelve frágil o lenta.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Ajusta el umbral de paso mínimo. Un umbral más pequeño exige que la órbita demuestre la convergencia con mayor precisión.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Puntos fijos del seno</summary>
+            <div class="concept-details-content">
+                <p>wxChaos itera \(z_{n+1}=\sin(z_n)\) y observa cuándo el tamaño del paso \(|z_{n+1}-z_n|\) se vuelve pequeño. Un punto fijo verdadero satisface \(z=\sin(z)\). En la práctica, el renderizador colorea la rapidez con la que cada punto inicial parece estabilizarse.</p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

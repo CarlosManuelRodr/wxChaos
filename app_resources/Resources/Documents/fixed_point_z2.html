@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -18,7 +18,7 @@
             <div class="formula hero-formula">
                 \(z_{n+1}=z_n^2\)
             </div>
-            <p class="hero-introduction">This page removes the parameter \(c\) from the Mandelbrot story and simply repeats \(z\mapsto z^2\). The result is a clean lesson in attraction, escape, and fixed points.</p>
+            <p class="hero-introduction">This map removes the parameter \(c\) from the Mandelbrot story and simply repeats \(z\mapsto z^2\). The result is a clean lesson in attraction, escape, and fixed points.</p>
         </div>
         <figure class="hero-figure">
             <img src="fixed_point_z2/overview.png" alt="An overview of Fixed Point z2">
@@ -50,5 +50,48 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Punto fijo z2</h1>
+            <p class="subtitle">El mapa cuadrático reducido a la convergencia pura.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n^2\)
+            </div>
+            <p class="hero-introduction">Este mapa elimina el parámetro \(c\) de la historia de Mandelbrot y se limita a repetir \(z\mapsto z^2\). El resultado es una lección clara sobre atracción, escape y puntos fijos.</p>
+        </div>
+        <figure class="hero-figure">
+            <img src="fixed_point_z2/overview.png" alt="Vista general del punto fijo z2">
+            <figcaption><span class="figure-title">El mapa cuadrático.</span></figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/fixed-point-z2">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Elige un punto dentro del círculo unitario. Al elevarlo repetidamente al cuadrado, se aproxima a cero.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Elige un punto fuera del círculo unitario. En ese caso, su magnitud aumenta.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Activa la visualización de la órbita sobre el círculo unitario, donde se hacen visibles la rotación y la duplicación de los ángulos.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Puntos fijos y el círculo unitario</summary>
+            <div class="concept-details-content">
+                <p>wxChaos itera \(z_{n+1}=z_n^2\). Los puntos fijos satisfacen \(z=z^2\), por lo que son \(z=0\) y \(z=1\). Los puntos con \(|z|&lt;1\) se aproximan a \(0\), mientras que los puntos con \(|z|&gt;1\) crecen. El círculo unitario es la delicada frontera entre ambos comportamientos.</p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>
