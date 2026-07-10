@@ -732,6 +732,58 @@ figcaption {
     text-decoration: none;
 }
 
+.pendulum-lab {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 10px;
+    margin: 18px auto 20px;
+    max-width: 760px;
+    overflow: hidden;
+}
+
+.pendulum-lab-stage {
+    background: #090b10;
+    border-bottom: 1px solid var(--panel-border-color);
+}
+
+.pendulum-lab-stage canvas {
+    aspect-ratio: 960 / 570;
+    display: block;
+    height: auto;
+    touch-action: none;
+    width: 100%;
+}
+
+.pendulum-lab-controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 11px 14px;
+}
+
+.pendulum-lab-switch {
+    align-items: center;
+    color: var(--text-color);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 0.9rem;
+    gap: 7px;
+}
+
+.pendulum-lab-switch input {
+    accent-color: var(--accent-color);
+    height: 16px;
+    margin: 0;
+    width: 16px;
+}
+
+.pendulum-lab-readout {
+    color: var(--muted-text-color);
+    font-size: 0.85rem;
+    margin-left: auto;
+}
+
 .related-links a span,
 .related-link-description {
     color: var(--muted-text-color);
@@ -885,6 +937,15 @@ figcaption {
 
     .hero h1 {
         font-size: 2.4rem;
+    }
+
+    .pendulum-lab-controls {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .pendulum-lab-readout {
+        margin-left: 0;
     }
 }
 

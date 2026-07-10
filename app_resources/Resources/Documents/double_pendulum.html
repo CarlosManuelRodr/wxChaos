@@ -42,6 +42,29 @@
                 \]
                 Solved numerically with Euler or Runge-Kutta integration.
             </div>
+            <div class="pendulum-lab" data-double-pendulum-lab>
+                <div class="pendulum-lab-stage">
+                    <canvas
+                        data-pendulum-canvas
+                        width="960"
+                        height="570"
+                        role="img"
+                        aria-label="Interactive double pendulum simulation with a blue first mass and red second mass">
+                    </canvas>
+                </div>
+                <div class="pendulum-lab-controls">
+                    <button class="iteration-lab-button secondary" type="button" data-pendulum-reset>
+                        Reset
+                    </button>
+                    <label class="pendulum-lab-switch">
+                        <input type="checkbox" data-runge-kutta>
+                        <span data-runge-kutta-label>Use Runge-Kutta integration</span>
+                    </label>
+                    <div class="pendulum-lab-readout" data-pendulum-readout aria-live="polite">
+                        Drag a mass to move it, then release to give it a push.
+                    </div>
+                </div>
+            </div>
             <p class="hero-introduction">
                 A double pendulum is only two arms and two masses, but its motion can become wildly sensitive. wxChaos
                 turns each pixel into a pair of starting angles and colors how long that simulated pendulum stays within
@@ -120,5 +143,340 @@
         </details>
     </section>
 </main>
+<script>
+window.wxChaosInitializeDocument = () => {
+    const lab = document.querySelector("[data-double-pendulum-lab]");
+    if (!lab || lab.dataset.initialized === "true") {
+        return;
+    }
+
+    lab.dataset.initialized = "true";
+
+    const canvas = lab.querySelector("[data-pendulum-canvas]");
+    const context = canvas.getContext("2d");
+    const resetButton = lab.querySelector("[data-pendulum-reset]");
+    const rungeKuttaInput = lab.querySelector("[data-runge-kutta]");
+    const rungeKuttaLabel = lab.querySelector("[data-runge-kutta-label]");
+    const readout = lab.querySelector("[data-pendulum-readout]");
+    const language = document.documentElement.getAttribute("data-language") || "en";
+    const text = language === "es"
+        ? {
+            reset: "Reiniciar",
+            rungeKutta: "Usar integración Runge-Kutta",
+            hint: "Arrastra una masa para moverla y suéltala para darle un impulso.",
+            euler: "Integración de Euler",
+            rk: "Integración de Runge-Kutta"
+        }
+        : {
+            reset: "Reset",
+            rungeKutta: "Use Runge-Kutta integration",
+            hint: "Drag a mass to move it, then release to give it a push.",
+            euler: "Euler integration",
+            rk: "Runge-Kutta integration"
+        };
+    const physics = {
+        m1: 1,
+        m2: 1.25,
+        l1: 1,
+        l2: 1,
+        gravity: 9.81,
+        timeStep: 1 / 240
+    };
+    const scale = 164;
+    const pivot = {x: canvas.width / 2, y: 126};
+    const blue = "#69b7ff";
+    const red = "#ff7369";
+    const trailLimit = 2600;
+    let state;
+    let trails;
+    let dragging = null;
+    let lastPointer = null;
+    let lastFrameTime = performance.now();
+    let simulationRemainder = 0;
+
+    resetButton.textContent = text.reset;
+    rungeKuttaLabel.textContent = text.rungeKutta;
+
+    const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
+    const normalizeAngle = (angle) => Math.atan2(Math.sin(angle), Math.cos(angle));
+
+    const acceleration = (current) => {
+        const delta = current.theta1 - current.theta2;
+        const denominator = 2 * physics.m1 + physics.m2 - physics.m2 * Math.cos(2 * delta);
+        const theta1Acceleration = (
+            -physics.gravity * (2 * physics.m1 + physics.m2) * Math.sin(current.theta1) -
+            physics.m2 * physics.gravity * Math.sin(current.theta1 - 2 * current.theta2) -
+            2 * Math.sin(delta) * physics.m2 * (
+                current.omega2 * current.omega2 * physics.l2 +
+                current.omega1 * current.omega1 * physics.l1 * Math.cos(delta)
+            )
+        ) / (physics.l1 * denominator);
+        const theta2Acceleration = (
+            2 * Math.sin(delta) * (
+                current.omega1 * current.omega1 * physics.l1 * (physics.m1 + physics.m2) +
+                physics.gravity * (physics.m1 + physics.m2) * Math.cos(current.theta1) +
+                current.omega2 * current.omega2 * physics.l2 * physics.m2 * Math.cos(delta)
+            )
+        ) / (physics.l2 * denominator);
+
+        return {theta1Acceleration, theta2Acceleration};
+    };
+
+    const derivative = (current) => {
+        const nextAcceleration = acceleration(current);
+        return {
+            theta1: current.omega1,
+            theta2: current.omega2,
+            omega1: nextAcceleration.theta1Acceleration,
+            omega2: nextAcceleration.theta2Acceleration
+        };
+    };
+
+    const addScaled = (current, change, factor) => ({
+        theta1: current.theta1 + change.theta1 * factor,
+        theta2: current.theta2 + change.theta2 * factor,
+        omega1: current.omega1 + change.omega1 * factor,
+        omega2: current.omega2 + change.omega2 * factor
+    });
+
+    const eulerStep = () => {
+        const change = derivative(state);
+        state = addScaled(state, change, physics.timeStep);
+    };
+
+    const rungeKuttaStep = () => {
+        const k1 = derivative(state);
+        const k2 = derivative(addScaled(state, k1, physics.timeStep / 2));
+        const k3 = derivative(addScaled(state, k2, physics.timeStep / 2));
+        const k4 = derivative(addScaled(state, k3, physics.timeStep));
+
+        state = {
+            theta1: state.theta1 + physics.timeStep * (k1.theta1 + 2 * k2.theta1 + 2 * k3.theta1 + k4.theta1) / 6,
+            theta2: state.theta2 + physics.timeStep * (k1.theta2 + 2 * k2.theta2 + 2 * k3.theta2 + k4.theta2) / 6,
+            omega1: state.omega1 + physics.timeStep * (k1.omega1 + 2 * k2.omega1 + 2 * k3.omega1 + k4.omega1) / 6,
+            omega2: state.omega2 + physics.timeStep * (k1.omega2 + 2 * k2.omega2 + 2 * k3.omega2 + k4.omega2) / 6
+        };
+    };
+
+    const positions = () => {
+        const first = {
+            x: pivot.x + Math.sin(state.theta1) * physics.l1 * scale,
+            y: pivot.y + Math.cos(state.theta1) * physics.l1 * scale
+        };
+        const second = {
+            x: first.x + Math.sin(state.theta2) * physics.l2 * scale,
+            y: first.y + Math.cos(state.theta2) * physics.l2 * scale
+        };
+        return {first, second};
+    };
+
+    const clearTrails = () => {
+        const currentPositions = positions();
+        trails = {
+            first: [currentPositions.first],
+            second: [currentPositions.second]
+        };
+    };
+
+    const reset = () => {
+        state = {
+            theta1: 2.18,
+            theta2: 1.17,
+            omega1: 0,
+            omega2: 0
+        };
+        simulationRemainder = 0;
+        clearTrails();
+        readout.textContent = text.hint;
+    };
+
+    const appendTrail = (currentPositions) => {
+        trails.first.push(currentPositions.first);
+        trails.second.push(currentPositions.second);
+
+        if (trails.first.length > trailLimit) {
+            trails.first.shift();
+            trails.second.shift();
+        }
+    };
+
+    const drawTrail = (trail, color) => {
+        if (trail.length < 2) {
+            return;
+        }
+
+        context.lineCap = "round";
+        context.lineWidth = 1.45;
+        const minimumOpacity = 0.11;
+        const segmentCount = trail.length - 1;
+
+        for (let index = 1; index < trail.length; index++) {
+            const age = index / segmentCount;
+            const opacity = minimumOpacity + age * 0.48;
+            context.beginPath();
+            context.moveTo(trail[index - 1].x, trail[index - 1].y);
+            context.lineTo(trail[index].x, trail[index].y);
+            context.strokeStyle = `${color}${Math.round(opacity * 255).toString(16).padStart(2, "0")}`;
+            context.stroke();
+        }
+    };
+
+    const drawMass = (position, radius, color) => {
+        context.beginPath();
+        context.arc(position.x, position.y, radius, 0, Math.PI * 2);
+        context.fillStyle = color;
+        context.fill();
+        context.strokeStyle = "rgba(255, 255, 255, 0.82)";
+        context.lineWidth = 1.5;
+        context.stroke();
+    };
+
+    const drawScene = () => {
+        const currentPositions = positions();
+        context.fillStyle = "#090b10";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        const gradient = context.createRadialGradient(pivot.x, pivot.y, 20, pivot.x, pivot.y, 430);
+        gradient.addColorStop(0, "rgba(105, 183, 255, 0.08)");
+        gradient.addColorStop(1, "rgba(9, 11, 16, 0)");
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        drawTrail(trails.first, blue);
+        drawTrail(trails.second, red);
+
+        context.lineCap = "round";
+        context.lineWidth = 5;
+        context.strokeStyle = "rgba(225, 232, 240, 0.72)";
+        context.beginPath();
+        context.moveTo(pivot.x, pivot.y);
+        context.lineTo(currentPositions.first.x, currentPositions.first.y);
+        context.lineTo(currentPositions.second.x, currentPositions.second.y);
+        context.stroke();
+
+        context.beginPath();
+        context.arc(pivot.x, pivot.y, 7, 0, Math.PI * 2);
+        context.fillStyle = "#e1e8f0";
+        context.fill();
+        drawMass(currentPositions.first, 16, blue);
+        drawMass(currentPositions.second, 18, red);
+    };
+
+    const pointerPosition = (event) => {
+        const bounds = canvas.getBoundingClientRect();
+        return {
+            x: (event.clientX - bounds.left) * canvas.width / bounds.width,
+            y: (event.clientY - bounds.top) * canvas.height / bounds.height
+        };
+    };
+
+    const distanceTo = (point, target) => Math.hypot(point.x - target.x, point.y - target.y);
+
+    const applyDrag = (point, elapsedSeconds) => {
+        const currentPositions = positions();
+        let angle;
+        let velocity;
+
+        if (dragging === "first") {
+            angle = Math.atan2(point.x - pivot.x, point.y - pivot.y);
+            velocity = normalizeAngle(angle - state.theta1) / Math.max(elapsedSeconds, 1 / 240);
+            state.theta1 = angle;
+            state.omega1 = clamp(velocity * 0.58, -14, 14);
+        }
+        else {
+            angle = Math.atan2(point.x - currentPositions.first.x, point.y - currentPositions.first.y);
+            velocity = normalizeAngle(angle - state.theta2) / Math.max(elapsedSeconds, 1 / 240);
+            state.theta2 = angle;
+            state.omega2 = clamp(velocity * 0.58, -14, 14);
+        }
+
+        clearTrails();
+    };
+
+    canvas.addEventListener("pointerdown", (event) => {
+        const point = pointerPosition(event);
+        const currentPositions = positions();
+        const firstDistance = distanceTo(point, currentPositions.first);
+        const secondDistance = distanceTo(point, currentPositions.second);
+
+        if (Math.min(firstDistance, secondDistance) > 28) {
+            return;
+        }
+
+        dragging = firstDistance <= secondDistance ? "first" : "second";
+        state.omega1 = 0;
+        state.omega2 = 0;
+        lastPointer = {point, time: performance.now()};
+        canvas.setPointerCapture(event.pointerId);
+        clearTrails();
+        event.preventDefault();
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+        const point = pointerPosition(event);
+
+        if (!dragging) {
+            const currentPositions = positions();
+            canvas.style.cursor = Math.min(distanceTo(point, currentPositions.first), distanceTo(point, currentPositions.second)) <= 28
+                ? "grab"
+                : "default";
+            return;
+        }
+
+        const now = performance.now();
+        applyDrag(point, (now - lastPointer.time) / 1000);
+        lastPointer = {point, time: now};
+        canvas.style.cursor = "grabbing";
+        event.preventDefault();
+    });
+
+    const releasePointer = (event) => {
+        if (!dragging) {
+            return;
+        }
+
+        dragging = null;
+        lastPointer = null;
+        canvas.style.cursor = "default";
+        if (canvas.hasPointerCapture(event.pointerId)) {
+            canvas.releasePointerCapture(event.pointerId);
+        }
+    };
+
+    canvas.addEventListener("pointerup", releasePointer);
+    canvas.addEventListener("pointercancel", releasePointer);
+    resetButton.addEventListener("click", reset);
+    rungeKuttaInput.addEventListener("change", () => {
+        clearTrails();
+        readout.textContent = rungeKuttaInput.checked ? text.rk : text.euler;
+    });
+
+    const animate = (now) => {
+        const elapsed = Math.min((now - lastFrameTime) / 1000, 0.05);
+        lastFrameTime = now;
+
+        if (!dragging) {
+            simulationRemainder += elapsed;
+            while (simulationRemainder >= physics.timeStep) {
+                if (rungeKuttaInput.checked) {
+                    rungeKuttaStep();
+                }
+                else {
+                    eulerStep();
+                }
+                simulationRemainder -= physics.timeStep;
+            }
+            appendTrail(positions());
+        }
+
+        drawScene();
+        requestAnimationFrame(animate);
+    };
+
+    readout.textContent = text.hint;
+    reset();
+    requestAnimationFrame(animate);
+};
+</script>
 </body>
 </html>
