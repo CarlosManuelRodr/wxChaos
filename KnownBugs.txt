@@ -1,5 +1,6 @@
 Bugs:
 - Headers in documentation pages are inconsistent.
+- θ1 and θ2 are not renderer correctly on the UI.
 
 Improvements to get to a release version:
 - Localization to Spanish
