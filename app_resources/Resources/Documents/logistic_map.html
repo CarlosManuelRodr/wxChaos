@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -141,5 +141,142 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Mapa logístico</h1>
+            <p class="subtitle">Una diminuta regla de retroalimentación que se abre hacia la duplicación de periodo y el caos.</p>
+            <div class="formula hero-formula">
+                \(x_{n+1}=a x_n(1-x_n)\)
+            </div>
+            <p class="hero-introduction">
+                El mapa logístico parece casi demasiado simple para ser peligroso. Comienza con un número \(x_0\),
+                introdúcelo de nuevo en la misma fórmula y repite el proceso. A medida que cambia el parámetro \(a\)
+                (eje horizontal), el comportamiento a largo plazo pasa de un único valor estable a pares, después a
+                ciclos de cuatro valores y finalmente a una banda fluctuante de caos.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="logistic_map/overview.png" alt="Vista general del diagrama de bifurcación del mapa logístico">
+            <figcaption>
+                <span class="figure-title">La ruta hacia el caos.</span>
+                El eje horizontal representa el parámetro \(a\).
+                Cada corte vertical muestra dónde terminan los valores repetidos de \(x_n\) para un valor concreto de \(a\).
+            </figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/logistic-map">Abrir en wxChaos</a>
+        </div>
+    </section>
+
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Interpreta la dirección horizontal como el parámetro \(a\). La vista predeterminada recorre la
+                    ventana clásica \(2.8 \le a \le 4.0\), donde el punto fijo estable comienza a dividirse.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Avanza de izquierda a derecha. Primero la órbita se estabiliza en un solo valor; después alterna
+                    entre dos, luego entre cuatro y finalmente aparece una cascada de ramas cada vez más finas.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Activa la herramienta <strong>Selector de punto</strong> y haz clic a lo largo del diagrama.
+                    wxChaos muestra el exponente de Lyapunov para el valor seleccionado de \(a\), lo que proporciona
+                    una indicación numérica de si las órbitas cercanas convergen, se separan o se encuentran en una frontera.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Cómo interpretar la imagen</h2>
+        <p>
+            Para cada valor de \(a\), wxChaos parte de la semilla configurada e itera
+            \(x_{n+1}=a x_n(1-x_n)\). Después del periodo inicial de estabilización, los valores restantes se
+            representan verticalmente. Un solo punto significa que la órbita se ha estabilizado. Dos puntos indican
+            que alterna. Una dispersión vertical densa significa que la órbita continúa visitando muchos valores.
+        </p>
+        <p>
+            El diagrama no es una imagen de muchas fórmulas diferentes. Es una sola fórmula observada para muchas
+            elecciones de \(a\). Ese es el truco: la complejidad surge de la repetición, no de añadir más ingredientes.
+        </p>
+    </section>
+
+    <section>
+        <h2>Qué puedes modificar</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Cambia la <strong>Semilla</strong> en las opciones del fractal. Los valores entre 0 y 1 son el
+                    dominio natural del mapa logístico clásico.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Activa o desactiva <strong>Estabilizar punto</strong>. Cuando la estabilización está activa,
+                    wxChaos permite que la órbita se asiente antes de medir y dibujar los valores más relevantes para
+                    el comportamiento a largo plazo.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Aumenta el número de iteraciones para hacer más densas las ramas. La imagen se acumula a partir de
+                    muchas visitas de la misma órbita, por lo que más iteraciones revelan una mayor parte de la estructura.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>La recurrencia</summary>
+            <div class="concept-details-content">
+                <p>
+                    El mapa logístico es \(x_{n+1}=a x_n(1-x_n)\). El número \(x_n\) representa el estado actual,
+                    a menudo interpretado como una población normalizada, y \(a\) controla la intensidad con la que el
+                    estado siguiente responde al actual. El factor \(1-x_n\) impide que el crecimiento sea ilimitado.
+                </p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>Duplicación de periodo</summary>
+            <div class="concept-details-content">
+                <p>
+                    Para valores pequeños de \(a\), muchas semillas convergen hacia un único punto fijo atractor.
+                    A medida que \(a\) aumenta, ese punto fijo pierde estabilidad y la órbita comienza a alternar entre
+                    dos valores. Más adelante vuelve a dividirse en cuatro valores, después en ocho y así sucesivamente.
+                    Esta división repetida es la ruta hacia el caos por duplicación de periodo.
+                </p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>Exponente de Lyapunov</summary>
+            <div class="concept-details-content">
+                <p>
+                    El exponente de Lyapunov estima la velocidad media a la que se separan valores iniciales cercanos
+                    durante la iteración. Para el mapa logístico, wxChaos calcula el promedio de
+                    \(\log |a(1-2x_n)|\) a lo largo de la órbita. Un exponente negativo suele indicar que las órbitas
+                    cercanas son atraídas entre sí hacia un comportamiento estable o periódico. Un exponente positivo
+                    indica que las órbitas cercanas se separan, lo cual es una señal de caos. Los valores próximos a cero
+                    suelen marcar delicadas fronteras de transición.
+                </p>
+                <p>
+                    Puedes examinarlo directamente con la herramienta <strong>Selector de punto</strong>: haz clic en
+                    un valor del parámetro dentro del diagrama y consulta el exponente de Lyapunov en la información del punto.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>
