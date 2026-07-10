@@ -1719,6 +1719,13 @@ window.wxChaosInitializeDocument = () => {
     buildPoints(defaultPointCount);
     resetIterationLab();
 };
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", window.wxChaosInitializeDocument, {once: true});
+}
+else {
+    window.wxChaosInitializeDocument();
+}
 </script>
 </body>
 </html>

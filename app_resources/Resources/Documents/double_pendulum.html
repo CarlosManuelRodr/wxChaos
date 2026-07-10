@@ -53,6 +53,9 @@
                     </canvas>
                 </div>
                 <div class="pendulum-lab-controls">
+                    <button class="iteration-lab-button" type="button" data-pendulum-pause aria-pressed="false">
+                        Pause
+                    </button>
                     <button class="iteration-lab-button secondary" type="button" data-pendulum-reset>
                         Reset
                     </button>
@@ -154,6 +157,7 @@ window.wxChaosInitializeDocument = () => {
 
     const canvas = lab.querySelector("[data-pendulum-canvas]");
     const context = canvas.getContext("2d");
+    const pauseButton = lab.querySelector("[data-pendulum-pause]");
     const resetButton = lab.querySelector("[data-pendulum-reset]");
     const rungeKuttaInput = lab.querySelector("[data-runge-kutta]");
     const rungeKuttaLabel = lab.querySelector("[data-runge-kutta-label]");
@@ -162,6 +166,8 @@ window.wxChaosInitializeDocument = () => {
     const text = language === "es"
         ? {
             reset: "Reiniciar",
+            pause: "Pausar",
+            resume: "Continuar",
             rungeKutta: "Usar integración Runge-Kutta",
             hint: "Arrastra una masa para moverla y suéltala para darle un impulso.",
             euler: "Integración de Euler",
@@ -169,6 +175,8 @@ window.wxChaosInitializeDocument = () => {
         }
         : {
             reset: "Reset",
+            pause: "Pause",
+            resume: "Resume",
             rungeKutta: "Use Runge-Kutta integration",
             hint: "Drag a mass to move it, then release to give it a push.",
             euler: "Euler integration",
@@ -193,7 +201,9 @@ window.wxChaosInitializeDocument = () => {
     let lastPointer = null;
     let lastFrameTime = performance.now();
     let simulationRemainder = 0;
+    let paused = false;
 
+    pauseButton.textContent = text.pause;
     resetButton.textContent = text.reset;
     rungeKuttaLabel.textContent = text.rungeKutta;
 
@@ -288,6 +298,11 @@ window.wxChaosInitializeDocument = () => {
         simulationRemainder = 0;
         clearTrails();
         readout.textContent = text.hint;
+    };
+
+    const updatePauseButton = () => {
+        pauseButton.textContent = paused ? text.resume : text.pause;
+        pauseButton.setAttribute("aria-pressed", String(paused));
     };
 
     const appendTrail = (currentPositions) => {
@@ -445,6 +460,11 @@ window.wxChaosInitializeDocument = () => {
 
     canvas.addEventListener("pointerup", releasePointer);
     canvas.addEventListener("pointercancel", releasePointer);
+    pauseButton.addEventListener("click", () => {
+        paused = !paused;
+        simulationRemainder = 0;
+        updatePauseButton();
+    });
     resetButton.addEventListener("click", reset);
     rungeKuttaInput.addEventListener("change", () => {
         clearTrails();
@@ -455,7 +475,7 @@ window.wxChaosInitializeDocument = () => {
         const elapsed = Math.min((now - lastFrameTime) / 1000, 0.05);
         lastFrameTime = now;
 
-        if (!dragging) {
+        if (!dragging && !paused) {
             simulationRemainder += elapsed;
             while (simulationRemainder >= physics.timeStep) {
                 if (rungeKuttaInput.checked) {
@@ -475,8 +495,16 @@ window.wxChaosInitializeDocument = () => {
 
     readout.textContent = text.hint;
     reset();
+    updatePauseButton();
     requestAnimationFrame(animate);
 };
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", window.wxChaosInitializeDocument, {once: true});
+}
+else {
+    window.wxChaosInitializeDocument();
+}
 </script>
 </body>
 </html>
