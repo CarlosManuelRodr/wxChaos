@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -125,5 +125,123 @@
         </div>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Julia de Manowar</h1>
+            <p class="subtitle">Un conjunto de Julia con memoria a corto plazo.</p>
+            <div class="formula hero-formula">
+                \(z_0=m_0=p,\quad z_{n+1}=z_n^2+m_n+k,\quad m_{n+1}=z_n\)
+            </div>
+            <p class="hero-introduction">
+                Aquí el parámetro permanece fijo y cada píxel elige el valor inicial. Como la regla de Manowar
+                recuerda el paso anterior, la órbita puede sentirse menos como un punto que salta y más como un punto
+                que arrastra un hilo.
+            </p>
+            <p class="hero-introduction">
+                Este fractal fue creado por Scott Taylor y Lee Skinner para FractInt.
+            </p>
+        </div>
+        <figure class="hero-figure"><img src="manowar_julia/overview.png" alt="Vista general del conjunto de Julia de Manowar"><figcaption><span class="figure-title">Una órbita recordada.</span></figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/manowar-julia">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a><a class="action-link secondary" href="wxchaos://tool/julia-constant-slider">Cambiar constante de Julia</a></div>
+    </section>
+
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Elige un punto de la frontera y activa la visualización de la órbita. Observa que el siguiente paso
+                    depende tanto del punto actual como de su predecesor.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Cambia el parámetro fijo desde el panel de control. Busca transiciones entre masas conexas y
+                    fragmentos dispersos.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Usa trampas de órbita para apreciar detalles adicionales. Se ven especialmente hermosas en este fractal.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details"><summary>Parámetro fijo, pasado recordado</summary><div class="concept-details-content"><p>La regla Julia de Manowar fija \(k\). Para cada píxel con coordenada compleja \(p\), wxChaos comienza con \(z_0=m_0=p\) y después itera \(z_{n+1}=z_n^2+m_n+k\). El valor de memoria \(m_n\) se actualiza a partir del valor anterior de \(z\). A diferencia de un conjunto de Julia estándar, el destino visible de un punto depende de un estado formado por dos valores.</p></div></details>
+    </section>
+    <section>
+        <h2>Métodos de coloreado</h2>
+        <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                    src="manowar_julia/escape-time.png"
+                    alt="Julia de Manowar renderizado con tiempo de escape">
+                <div class="view-card-content">
+                    <h3>Tiempo de escape</h3>
+                    <p>El mapa básico: el color indica cuánto tarda cada órbita en escapar.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/escape-time">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/smooth-coloring.png"
+                    alt="Julia de Manowar renderizado con coloreado suave">
+                <div class="view-card-content">
+                    <h3>Coloreado suave</h3>
+                    <p>Suaviza las bandas de iteración y las convierte en gradientes continuos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/smooth-coloring">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/gaussian-integer.png"
+                    alt="Julia de Manowar renderizado con enteros gaussianos">
+                <div class="view-card-content">
+                    <h3>Enteros gaussianos</h3>
+                    <p>Mide qué tan cerca pasan las órbitas que escapan de la retícula de enteros complejos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/gaussian-integer">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/escape-angle.png"
+                    alt="Julia de Manowar renderizado con ángulo de escape">
+                <div class="view-card-content">
+                    <h3>Ángulo de escape</h3>
+                    <p>Usa la dirección de escape para revelar el flujo a través del exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/escape-angle">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/triangle-inequality.png"
+                    alt="Julia de Manowar renderizado con desigualdad triangular">
+                <div class="view-card-content">
+                    <h3>Desigualdad triangular</h3>
+                    <p>Convierte las relaciones internas de la órbita en una textura estratificada y topográfica.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/triangle-inequality">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="manowar_julia/orbit-trap.png"
+                    alt="Julia de Manowar renderizado con trampas de órbita">
+                <div class="view-card-content">
+                    <h3>Trampas de órbita</h3>
+                    <p>Colorea los puntos según qué tan cerca pasan sus órbitas de los ejes real e imaginario.</p>
+                    <a class="inline-link" href="wxchaos://rendering/manowar-julia/orbit-traps">Aplicar en wxChaos</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
