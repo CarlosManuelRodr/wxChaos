@@ -68,13 +68,20 @@
         <h2>What the controls mean</h2>
         <div class="two-column">
             <div>
-                <p>The bailout check decides when a simulated pendulum has moved too far. Masses, length, gravity, and time step change the physical model. Relative angles compare movement against the starting pose instead of absolute angle limits.</p>
+                <p>
+                    The bailout threshold determines when the simulated pendulum has moved too far
+                    from its initial state. wxChaos renders a pixel in black if the threshold is never
+                    exceeded and assigns it a color if it is. That color represents how long the simulation
+                    took to cross the threshold. The masses, lengths, gravity, and time step define the
+                    physical model, while the relative-angle option measures motion from the starting pose
+                    instead of using absolute angle limits.
+                </p>
             </div>
             <aside class="observation-panel">
                 <h3>Good experiments</h3>
                 <ul>
                     <li>Lower DeltaT for more stable integration.</li>
-                    <li>Increase iterations to see long-lived starts.</li>
+                    <li>Increase iterations to see long-lived starts. In the context of this map, an iteration is a step in the numerical integration process.</li>
                     <li>Change one mass at a time so the effect remains readable.</li>
                 </ul>
             </aside>
