@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Experimental formulas</p>
@@ -137,5 +137,126 @@
         </p>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Fórmulas experimentales</p>
+            <h1>Cell</h1>
+            <p class="subtitle">Un mapa impulsado por divisiones con compartimentos de apariencia orgánica.</p>
+            <div class="formula hero-formula">
+                \(b_{n+1}=b_n/c,\quad z_{n+1}=z_n c+b_{n+1}/z_n\)
+            </div>
+            <p class="hero-introduction">
+                Cell es una de las fórmulas más extrañas de wxChaos. Su término de división fragmenta el plano complejo
+                en estructuras que recuerdan a paredes celulares, membranas y tejido orgánico. El autor de wxChaos
+                encontró la fórmula en internet hace muchos años, pero desde entonces se perdió la fuente original y
+                todavía no ha podido ser identificada.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="cell/overview.png" alt="Vista general del fractal Cell">
+            <figcaption><span class="figure-title">Compartimentos en el plano complejo.</span> Parece una membrana celular, ¿no?</figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/cell">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Busca paredes y cavidades que se repiten. Esta página recompensa más la observación de las texturas locales que la silueta global.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Activa la visualización de la órbita cerca de una pared. ¿Puedes ver la diferencia entre las órbitas del interior y las del exterior?</p>
+            </div>
+            <div class="experiment-step">
+                <p>Activa las trampas de órbita para apreciar plenamente lo extraño de sus órbitas.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>La recurrencia de Cell en wxChaos</summary>
+            <div class="concept-details-content">
+                <p>wxChaos comienza con \(z=c\) y \(b=c-\sin(c)\), y después usa \(b\leftarrow b/c\) y \(z\leftarrow zc+b/z\). El término \(b/z\) es el ingrediente más brusco: cuando \(z\) pasa cerca de cero, el valor siguiente puede cambiar drásticamente.</p>
+            </div>
+        </details>
+    </section>
+    <section>
+        <h2>Métodos de coloreado</h2>
+        <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img src="cell/escape-time.png" alt="Cell renderizado con tiempo de escape">
+                <div class="view-card-content">
+                    <h3>Tiempo de escape</h3>
+                    <p>El mapa básico: el color indica cuánto tarda cada órbita en escapar.</p>
+                    <a class="inline-link" href="wxchaos://rendering/cell/escape-time">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img src="cell/smooth-coloring.png" alt="Cell renderizado con coloreado suave">
+                <div class="view-card-content">
+                    <h3>Coloreado suave</h3>
+                    <p>Suaviza las bandas de iteración y las convierte en gradientes continuos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/cell/smooth-coloring">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img src="cell/gaussian-integer.png" alt="Cell renderizado con enteros gaussianos">
+                <div class="view-card-content">
+                    <h3>Enteros gaussianos</h3>
+                    <p>Mide qué tan cerca pasan las órbitas que escapan de la retícula de enteros complejos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/cell/gaussian-integer">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img src="cell/escape-angle.png" alt="Cell renderizado con ángulo de escape">
+                <div class="view-card-content">
+                    <h3>Ángulo de escape</h3>
+                    <p>Usa la dirección de escape para revelar el flujo a través del exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/cell/escape-angle">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img src="cell/triangle-inequality.png" alt="Cell renderizado con desigualdad triangular">
+                <div class="view-card-content">
+                    <h3>Desigualdad triangular</h3>
+                    <p>Convierte las relaciones internas de la órbita en una textura estratificada y topográfica.</p>
+                    <a class="inline-link" href="wxchaos://rendering/cell/triangle-inequality">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img src="cell/orbit-trap.png" alt="Cell renderizado con trampas de órbita">
+                <div class="view-card-content">
+                    <h3>Trampas de órbita</h3>
+                    <p>Colorea los puntos según qué tan cerca pasan sus órbitas de los ejes real e imaginario.</p>
+                    <a class="inline-link" href="wxchaos://rendering/cell/orbit-traps">Aplicar en wxChaos</a>
+                </div>
+            </article>
+        </div>
+    </section>
+    <section>
+        <h2>Nota sobre su procedencia</h2>
+        <p>
+            wxChaos comenzó alrededor de 2010, cuando internet todavía tenía muchos sitios personales pequeños,
+            páginas de aficionados, archivos al estilo de Geocities y colecciones dispersas de curiosidades matemáticas.
+            Algunas fórmulas de la aplicación, incluida Cell, se encontraron en sitios como esos y se incorporaron a
+            wxChaos como experimentos.
+        </p>
+        <p>
+            En aquel momento, el programa no estaba pensado para publicarse. Era un proyecto personal llamado
+            GrufiFractalGen, en referencia a GruFi, el grupo de divulgación científica del autor. El objetivo era crear
+            una aplicación llamativa para mostrar fractales a otras personas, no elaborar un catálogo cuidadosamente
+            documentado. Por esa razón, las fuentes originales no se registraron de forma sistemática y muchas de
+            aquellas páginas web antiguas han desaparecido desde entonces.
+        </p>
+        <p>
+            Si eres el autor de este fractal o sabes algo sobre su origen, ponte en contacto con nosotros.
+        </p>
+    </section>
+</main>
+
 </body>
 </html>
