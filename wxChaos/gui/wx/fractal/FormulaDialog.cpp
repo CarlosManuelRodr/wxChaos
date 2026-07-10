@@ -1,3 +1,7 @@
+// ReSharper disable CppDFAConstantConditions
+// ReSharper disable CppDFAConstantParameter
+// ReSharper disable CppDFAUnreachableCode
+// ReSharper disable CppDFAUnreachableFunctionCall
 #include "fractal/FormulaDialog.h"
 
 #include <utility>
