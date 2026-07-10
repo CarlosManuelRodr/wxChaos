@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -120,5 +120,118 @@
         </div>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Jellyfish</h1>
+            <p class="subtitle">Un mapa similar a un conjunto de Julia con brazos plegados por la potencia \(1.5\).</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n^{1.5}+k\)
+            </div>
+            <p class="hero-introduction">Jellyfish se encuentra entre los conocidos mundos de potencias enteras. Elevar \(z\) a
+                \(1.5\) introduce un comportamiento de ramas y un tipo distinto de simetría, lo que da a la imagen un carácter
+                espiral.
+            </p>
+        </div>
+        <figure class="hero-figure"><img src="jellyfish/overview.png" alt="Vista general del fractal Jellyfish"><figcaption><span class="figure-title">Una floración de potencia fraccionaria.</span></figcaption></figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/jellyfish">Abrir en wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a><a class="action-link secondary" href="wxchaos://tool/julia-constant-slider">Cambiar constante de Julia</a></div>
+    </section>
+
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Activa la visualización de la órbita cerca de un zarcillo. Observa qué ocurre con la órbita.
+                    ¿Puedes ver ahora por qué la estructura principal se repite infinitamente hacia la derecha?
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Prueba las trampas de órbita para obtener una textura más visible.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Cambia la constante \(k\) en pasos pequeños. Este fractal responde con rapidez.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details"><summary>Por qué las potencias fraccionarias se sienten diferentes</summary><div class="concept-details-content"><p>wxChaos itera \(z_{n+1}=z_n^{1.5}+k\). Las potencias enteras rotan y estiran el plano con simetrías de orden entero. Una potencia fraccionaria requiere elegir una rama compleja, por lo que la estructura visual puede abrirse en cortes, abanicos y brazos asimétricos.</p></div></details>
+    </section>
+    <section>
+        <h2>Métodos de coloreado</h2>
+        <p>El conjunto permanece igual, pero cada método de renderizado plantea una pregunta distinta sobre la órbita.</p>
+        <div class="view-grid">
+            <article class="view-card">
+                <img
+                    src="jellyfish/escape-time.png"
+                    alt="Jellyfish renderizado con tiempo de escape">
+                <div class="view-card-content">
+                    <h3>Tiempo de escape</h3>
+                    <p>El mapa básico: el color indica cuánto tarda cada órbita en escapar.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/escape-time">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/smooth-coloring.png"
+                    alt="Jellyfish renderizado con coloreado suave">
+                <div class="view-card-content">
+                    <h3>Coloreado suave</h3>
+                    <p>Suaviza las bandas de iteración y las convierte en gradientes continuos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/smooth-coloring">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/gaussian-integer.png"
+                    alt="Jellyfish renderizado con enteros gaussianos">
+                <div class="view-card-content">
+                    <h3>Enteros gaussianos</h3>
+                    <p>Mide qué tan cerca pasan las órbitas que escapan de la retícula de enteros complejos.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/gaussian-integer">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/escape-angle.png"
+                    alt="Jellyfish renderizado con ángulo de escape">
+                <div class="view-card-content">
+                    <h3>Ángulo de escape</h3>
+                    <p>Usa la dirección de escape para revelar el flujo a través del exterior.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/escape-angle">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/triangle-inequality.png"
+                    alt="Jellyfish renderizado con desigualdad triangular">
+                <div class="view-card-content">
+                    <h3>Desigualdad triangular</h3>
+                    <p>Convierte las relaciones internas de la órbita en una textura estratificada y topográfica.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/triangle-inequality">Aplicar en wxChaos</a>
+                </div>
+            </article>
+            <article class="view-card">
+                <img
+                    src="jellyfish/orbit-trap.png"
+                    alt="Jellyfish renderizado con trampas de órbita">
+                <div class="view-card-content">
+                    <h3>Trampas de órbita</h3>
+                    <p>Colorea los puntos según qué tan cerca pasan sus órbitas de los ejes real e imaginario.</p>
+                    <a class="inline-link" href="wxchaos://rendering/jellyfish/orbit-traps">Aplicar en wxChaos</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
