@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Physical chaos</p>
@@ -146,9 +146,154 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Caos físico</p>
+            <h1>Péndulo doble</h1>
+            <p class="subtitle">Un sistema mecánico cuyos ángulos iniciales se convierten en un mapa fractal.</p>
+            <div class="formula hero-formula">
+                \[
+                \ddot{\theta}_1=
+                \frac{
+                    -g(2m_1+m_2)\sin\theta_1
+                    -m_2g\sin(\theta_1-2\theta_2)
+                    -2m_2\sin(\theta_1-\theta_2)
+                    \left(\dot{\theta}_2^2l_2+\dot{\theta}_1^2l_1\cos(\theta_1-\theta_2)\right)
+                }{
+                    l_1\left(2m_1+m_2-m_2\cos(2\theta_1-2\theta_2)\right)
+                }
+                \]
+                \[
+                \ddot{\theta}_2=
+                \frac{
+                    2\sin(\theta_1-\theta_2)
+                    \left(
+                        \dot{\theta}_1^2l_1(m_1+m_2)
+                        +g(m_1+m_2)\cos\theta_1
+                        +\dot{\theta}_2^2l_2m_2\cos(\theta_1-\theta_2)
+                    \right)
+                }{
+                    l_2\left(2m_1+m_2-m_2\cos(2\theta_1-2\theta_2)\right)
+                }
+                \]
+                Resuelto numéricamente mediante integración de Euler o Runge-Kutta.
+            </div>
+            <div class="pendulum-lab" data-double-pendulum-lab>
+                <div class="pendulum-lab-stage">
+                    <canvas
+                        data-pendulum-canvas
+                        width="960"
+                        height="570"
+                        role="img"
+                        aria-label="Simulación interactiva de un péndulo doble con una primera masa azul y una segunda masa roja">
+                    </canvas>
+                </div>
+                <div class="pendulum-lab-controls">
+                    <button class="iteration-lab-button" type="button" data-pendulum-pause aria-pressed="false">
+                        Pausar
+                    </button>
+                    <button class="iteration-lab-button secondary" type="button" data-pendulum-reset>
+                        Reiniciar
+                    </button>
+                    <label class="pendulum-lab-switch">
+                        <input type="checkbox" data-runge-kutta>
+                        <span data-runge-kutta-label>Usar integración de Runge-Kutta</span>
+                    </label>
+                    <div class="pendulum-lab-readout" data-pendulum-readout aria-live="polite">
+                        Arrastra una masa para moverla y suéltala para darle un impulso.
+                    </div>
+                </div>
+            </div>
+            <p class="hero-introduction">
+                Un péndulo doble solo tiene dos brazos y dos masas, pero su movimiento puede volverse extremadamente
+                sensible. wxChaos convierte cada píxel en un par de ángulos iniciales y colorea cuánto tiempo permanece
+                el péndulo simulado dentro de los límites elegidos.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="double_pendulum/overview.png" alt="Vista general del fractal de péndulo doble">
+            <figcaption><span class="figure-title">Las condiciones iniciales como geografía.</span> El eje horizontal representa el ángulo inicial \(\theta_1\) y el eje vertical representa \(\theta_2\).</figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/double-pendulum">Abrir en wxChaos</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Interpreta los ejes horizontal y vertical como los ángulos iniciales \(\theta_1\) y \(\theta_2\). Los píxeles vecinos representan péndulos con condiciones iniciales casi idénticas.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Elige un punto cercano a una frontera y acércate poco a poco. Ángulos iniciales vecinos pueden producir resultados muy diferentes.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Activa Runge-Kutta en las opciones y compáralo con la integración de Euler. La imagen cambia porque el método numérico modifica la forma en que se aproxima el movimiento físico.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Qué significan los controles</h2>
+        <div class="two-column">
+            <div>
+                <p>
+                    El umbral de escape determina cuándo el péndulo simulado se ha alejado demasiado
+                    de su estado inicial. wxChaos renderiza un píxel en negro si nunca se supera el
+                    umbral y le asigna un color cuando sí se supera. Ese color representa cuánto tardó
+                    la simulación en cruzar el umbral. Las masas, las longitudes, la gravedad y el paso
+                    de tiempo definen el modelo físico, mientras que la opción de ángulos relativos mide
+                    el movimiento respecto a la posición inicial en lugar de usar límites angulares absolutos.
+                </p>
+            </div>
+            <aside class="observation-panel">
+                <h3>Experimentos recomendados</h3>
+                <ul>
+                    <li>Reduce DeltaT para obtener una integración más estable.</li>
+                    <li>Aumenta las iteraciones para observar condiciones iniciales de larga duración. En este mapa, una iteración corresponde a un paso del proceso de integración numérica.</li>
+                    <li>Modifica una sola masa a la vez para que el efecto siga siendo fácil de interpretar.</li>
+                </ul>
+            </aside>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>De dónde provienen las ecuaciones</summary>
+            <div class="concept-details-content">
+                <p>La derivación comienza expresando las dos masas en coordenadas polares y usando \(\theta_1\) y \(\theta_2\) como coordenadas generalizadas. A partir de esas posiciones se calculan los cuadrados de las velocidades, se construyen la energía cinética \(T\) y la energía potencial gravitatoria \(V\), y después se forma el lagrangiano \(L=T-V\).</p>
+                <p>Al aplicar la ecuación de Euler-Lagrange \(\frac{d}{dt}\frac{\partial L}{\partial\dot{\theta_i}}-\frac{\partial L}{\partial\theta_i}=0\) se obtienen dos ecuaciones diferenciales acopladas de segundo orden. Resolverlas simultáneamente produce las aceleraciones \(\ddot{\theta}_1\) y \(\ddot{\theta}_2\) mostradas arriba. Como las masas se conservan como \(m_1\) y \(m_2\), la fórmula coincide con los controles para masas desiguales que ofrece wxChaos.</p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>Integración de Euler</summary>
+            <div class="concept-details-content">
+                <p>El método de Euler estima el estado siguiente usando la aceleración actual. En forma simplificada, \(v_{n+1}=v_n+\Delta t\,a(\theta_n,v_n)\), y después \(\theta_{n+1}=\theta_n+\Delta t\,v_{n+1}\). Es rápido y fácil de comprender, pero en sistemas caóticos sus errores pueden crecer con rapidez.</p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>Integración de Runge-Kutta</summary>
+            <div class="concept-details-content">
+                <p>Los métodos de Runge-Kutta mejoran el método de Euler al evaluar varias pendientes dentro del mismo paso de tiempo y combinarlas. El esquema común de cuarto orden utiliza los pesos \(1/6,1/3,1/3,1/6\). wxChaos ofrece para las aceleraciones del péndulo una opción de estilo Runge-Kutta con cuatro pendientes, que normalmente produce una aproximación más estable que usar una sola pendiente de Euler por paso.</p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>Por qué esto se convierte en una imagen fractal</summary>
+            <div class="concept-details-content">
+                <p>El péndulo doble está gobernado por ecuaciones diferenciales no lineales acopladas. Dos ángulos iniciales cercanos pueden permanecer próximos durante un tiempo y después divergir. Cuando cada píxel representa un par inicial \((\theta_1,\theta_2)\), la frontera entre las condiciones iniciales que duran mucho tiempo y las que escapan rápidamente puede volverse extremadamente intrincada.</p>
+            </div>
+        </details>
+    </section>
+</main>
+
 <script>
 window.wxChaosInitializeDocument = () => {
-    const lab = document.querySelector("[data-double-pendulum-lab]");
+    const language = document.documentElement.getAttribute("data-language") || "en";
+    const lab =
+        document.querySelector(
+            `[data-i18n-lang="${language}"] [data-double-pendulum-lab]`
+        ) ||
+        document.querySelector("[data-double-pendulum-lab]");
+
     if (!lab || lab.dataset.initialized === "true") {
         return;
     }
@@ -162,7 +307,6 @@ window.wxChaosInitializeDocument = () => {
     const rungeKuttaInput = lab.querySelector("[data-runge-kutta]");
     const rungeKuttaLabel = lab.querySelector("[data-runge-kutta-label]");
     const readout = lab.querySelector("[data-pendulum-readout]");
-    const language = document.documentElement.getAttribute("data-language") || "en";
     const text = language === "es"
         ? {
             reset: "Reiniciar",
@@ -290,7 +434,7 @@ window.wxChaosInitializeDocument = () => {
 
     const reset = () => {
         state = {
-            theta1: 2.18,
+            theta1: 1.18,
             theta2: 1.17,
             omega1: 0,
             omega2: 0
