@@ -11,7 +11,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
                                      const Options& juliaOpt, const int zoomStepPercent, const int zoomInertiaMilliseconds,
                                      const wxSize& size)
                                      : wxFrame(parent, wxID_ANY, _("Julia mode"), wxDefaultPosition, wxDefaultSize),
-                                       _target(target),
+                                       _parentFractalCanvas(target),
                                        _constantSyncTimer(this)
 {
     const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
@@ -21,36 +21,36 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     _toolbar = new FractalToolbar(this);
     _toolbar->SetToolChangedHandler([this](const FractalInteractionTool tool)
     {
-        if (_previewCanvas != nullptr)
-            _previewCanvas->SetInteractionTool(tool);
+        if (_previewFractalCanvas != nullptr)
+            _previewFractalCanvas->SetInteractionTool(tool);
     });
     _toolbar->SetColorRotationHandler([this]
     {
-        if (_previewCanvas == nullptr || _previewCanvas->GetFractal()->IsRendering())
+        if (_previewFractalCanvas == nullptr || _previewFractalCanvas->GetFractal()->IsRendering())
             return false;
 
-        _previewCanvas->GetFractalPresenter()->ToggleColorRotation();
+        _previewFractalCanvas->GetFractalPresenter()->ToggleColorRotation();
         return true;
     });
     _toolbar->SetInformationHandler([this] { OpenFractalInformation(); });
 
-    _previewCanvas = new FractalCanvas(fractalType, this, wxID_ANY, wxDefaultPosition, size);
-    if (_target != nullptr && fractalType == FractalType::UserDefinedEscapeTime)
+    _previewFractalCanvas = new FractalCanvas(fractalType, this, wxID_ANY, wxDefaultPosition, size);
+    if (_parentFractalCanvas != nullptr && fractalType == FractalType::UserDefinedEscapeTime)
     {
-        FormulaOptions previewFormula = _target->GetFormula();
+        FormulaOptions previewFormula = _parentFractalCanvas->GetFormula();
         previewFormula.julia = true;
-        _previewCanvas->SetUserFormula(previewFormula);
-        _previewCanvas->GetFractal()->SetFormula(previewFormula);
+        _previewFractalCanvas->SetUserFormula(previewFormula);
+        _previewFractalCanvas->GetFractal()->SetFormula(previewFormula);
     }
-    _previewCanvas->SetMainCanvasOverlaysVisible(false);
-    _previewCanvas->GetFractal()->SetOptions(juliaOpt, true);
-    _previewCanvas->GetFractal()->SetJuliaMode(true);
-    _previewCanvas->GetFractalPresenter()->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
+    _previewFractalCanvas->SetMainCanvasOverlaysVisible(false);
+    _previewFractalCanvas->GetFractal()->SetOptions(juliaOpt, true);
+    _previewFractalCanvas->GetFractal()->SetJuliaMode(true);
+    _previewFractalCanvas->GetFractalPresenter()->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
     ApplyRendererOptions(juliaOpt);
 
     const auto sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(_toolbar, 0, wxEXPAND);
-    sizer->Add(_previewCanvas, 1, wxEXPAND);
+    sizer->Add(_previewFractalCanvas, 1, wxEXPAND);
     SetSizer(sizer);
     CreateStatusBarControls();
     SetClientSize(wxSize(size.GetWidth() + _toolbar->GetBestSize().GetWidth(), size.GetHeight()));
@@ -80,6 +80,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     Bind(wxEVT_MENU, &JuliaPreviewFrame::OnSetIterations, this, ID_JULIA_PREVIEW_SET_ITERATIONS);
     Bind(wxEVT_MENU, &JuliaPreviewFrame::OnIncreaseIterations, this, ID_JULIA_PREVIEW_INCREASE_ITERATIONS);
     Bind(wxEVT_MENU, &JuliaPreviewFrame::OnDecreaseIterations, this, ID_JULIA_PREVIEW_DECREASE_ITERATIONS);
+    Bind(wxEVT_MENU, &JuliaPreviewFrame::OnShowOrbit, this, ID_JULIA_PREVIEW_SHOW_ORBIT);
     Bind(wxEVT_MENU, &JuliaPreviewFrame::OnAutomaticIterations, this, ID_JULIA_PREVIEW_AUTOMATIC_ITERATIONS);
     Bind(wxEVT_UPDATE_UI, &JuliaPreviewFrame::OnUpdateAutomaticIterations, this, ID_JULIA_PREVIEW_AUTOMATIC_ITERATIONS);
 
@@ -96,11 +97,15 @@ void JuliaPreviewFrame::CreateMenuBar()
 
     _fileMenu->Append(wxID_CLOSE, _("Close"));
 
+
     _toolbarItem = new wxMenuItem(_viewMenu, ID_JULIA_PREVIEW_VIEW_TOOLBAR, _("Toolbar"), wxEmptyString, wxITEM_CHECK);
     _viewMenu->Append(_toolbarItem);
     _toolbarItem->Check(true);
 
     _fractalMenu->Append(ID_JULIA_PREVIEW_OPEN_IN_MAIN, _("Open this in main window"));
+
+    _showOrbit = new wxMenuItem(_fractalMenu, ID_JULIA_PREVIEW_SHOW_ORBIT, _("Show orbit") + '\t' + "F2", wxEmptyString, wxITEM_CHECK);
+    _fractalMenu->Append(_showOrbit);
     _fractalMenu->AppendSeparator();
     _abortRenderItem = _fractalMenu->Append(ID_JULIA_PREVIEW_ABORT_RENDER, _("Abort") + '\t' + "P");
     _abortRenderItem->Enable(false);
@@ -136,7 +141,7 @@ void JuliaPreviewFrame::CreateStatusBarControls()
 
     _renderStatusWidget = new RenderStatusWidget(
         _statusBar,
-        _previewCanvas->GetFractalPresenter(),
+        _previewFractalCanvas->GetFractalPresenter(),
         [this] { OpenIterationsDialog(); });
     _statusBar->Bind(wxEVT_SIZE, [this](wxSizeEvent& event)
     {
@@ -170,9 +175,9 @@ void JuliaPreviewFrame::OpenIterationsDialog()
     {
         _iterationsDialog = new IterationsDialog(
             &_iterationsDialogIsActive,
-            _previewCanvas->GetFractalPresenter(),
+            _previewFractalCanvas->GetFractalPresenter(),
             this,
-            _previewCanvas);
+            _previewFractalCanvas);
         _iterationsDialog->Show(true);
         _iterationsDialogIsActive = true;
     }
@@ -185,10 +190,10 @@ void JuliaPreviewFrame::OpenIterationsDialog()
 
 void JuliaPreviewFrame::OpenFractalInformation()
 {
-    if (_previewCanvas == nullptr)
+    if (_previewFractalCanvas == nullptr)
         return;
 
-    const wxString documentFile = _previewCanvas->GetFractal()->GetFractalInformationFile();
+    const wxString documentFile = _previewFractalCanvas->GetFractal()->GetFractalInformationFile();
     if (documentFile.empty())
         return;
 
@@ -196,7 +201,7 @@ void JuliaPreviewFrame::OpenFractalInformation()
         documentFile,
         this,
         wxID_ANY,
-        _previewCanvas->GetFractal()->GetName(),
+        _previewFractalCanvas->GetFractal()->GetName(),
         wxDefaultPosition,
         wxSize(1500, 960),
         wxDEFAULT_FRAME_STYLE,
@@ -206,8 +211,8 @@ void JuliaPreviewFrame::OpenFractalInformation()
 
 void JuliaPreviewFrame::UpdateInformationTool() const
 {
-    if (_toolbar != nullptr && _previewCanvas != nullptr)
-        _toolbar->SetInformationEnabled(_previewCanvas->GetFractal()->HasFractalInformation());
+    if (_toolbar != nullptr && _previewFractalCanvas != nullptr)
+        _toolbar->SetInformationEnabled(_previewFractalCanvas->GetFractal()->HasFractalInformation());
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
@@ -232,8 +237,8 @@ bool JuliaPreviewFrame::HandleDocumentationLink(const wxString& url)
 bool JuliaPreviewFrame::FocusMainFrameFromDocumentation() const
 {
     wxWindow* mainFrame = GetParent();
-    if (mainFrame == nullptr && _target != nullptr)
-        mainFrame = wxGetTopLevelParent(_target);
+    if (mainFrame == nullptr && _parentFractalCanvas != nullptr)
+        mainFrame = wxGetTopLevelParent(_parentFractalCanvas);
     if (mainFrame == nullptr)
         return false;
 
@@ -245,10 +250,10 @@ bool JuliaPreviewFrame::FocusMainFrameFromDocumentation() const
 bool JuliaPreviewFrame::SetDocumentationRenderingFromDocumentation(
     const DocumentationLinkAction::RenderingMethod& method) const
 {
-    if (_previewCanvas == nullptr || method.fractalType == FractalType::Undefined)
+    if (_previewFractalCanvas == nullptr || method.fractalType == FractalType::Undefined)
         return false;
 
-    Fractal* fractal = _previewCanvas->GetFractal();
+    Fractal* fractal = _previewFractalCanvas->GetFractal();
     if (fractal == nullptr || fractal->GetType() != method.fractalType)
         return false;
 
@@ -266,22 +271,22 @@ void JuliaPreviewFrame::SetRendererOptions(const Options& options) const
 
 void JuliaPreviewFrame::SetConstant(const double real, const double imaginary) const
 {
-    if (_previewCanvas != nullptr)
-        _previewCanvas->GetFractalPresenter()->SetK(real, imaginary);
+    if (_previewFractalCanvas != nullptr)
+        _previewFractalCanvas->GetFractalPresenter()->SetK(real, imaginary);
 }
 
 void JuliaPreviewFrame::SetZoomOptions(const int zoomStepPercent, const int zoomInertiaMilliseconds) const
 {
-    if (_previewCanvas != nullptr)
-        _previewCanvas->GetFractalPresenter()->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
+    if (_previewFractalCanvas != nullptr)
+        _previewFractalCanvas->GetFractalPresenter()->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
 }
 
 void JuliaPreviewFrame::ApplyRendererOptions(const Options& options) const
 {
-    if (_previewCanvas == nullptr)
+    if (_previewFractalCanvas == nullptr)
         return;
 
-    FractalPresenter* presenter = _previewCanvas->GetFractalPresenter();
+    FractalPresenter* presenter = _previewFractalCanvas->GetFractalPresenter();
     presenter->SetGradient(options.gradient);
     presenter->SetGradientSize(options.gradPaletteSize);
     presenter->SetColorVariationOffset(options.colorVariationOffset);
@@ -301,8 +306,8 @@ void JuliaPreviewFrame::ApplyRendererOptions(const Options& options) const
 // ReSharper disable once CppDFAUnreachableFunctionCall
 void JuliaPreviewFrame::SyncConstantFromTarget() const
 {
-    if (_target != nullptr && _target->ChangeInCoordinateSelector())
-        SetConstant(_target->GetKReal(), _target->GetKImaginary());
+    if (_parentFractalCanvas != nullptr && _parentFractalCanvas->ChangeInCoordinateSelector())
+        SetConstant(_parentFractalCanvas->GetKReal(), _parentFractalCanvas->GetKImaginary());
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -348,13 +353,13 @@ void JuliaPreviewFrame::OnToolbarVisibility(wxCommandEvent& event)
 void JuliaPreviewFrame::OnOpenInMainWindow(wxCommandEvent&)
 {
     auto* mainFrame = dynamic_cast<MainFrame*>(GetParent());
-    if (mainFrame == nullptr || _previewCanvas == nullptr)
+    if (mainFrame == nullptr || _previewFractalCanvas == nullptr)
         return;
 
-    FractalPresenter* presenter = _previewCanvas->GetFractalPresenter();
-    Fractal* fractal = _previewCanvas->GetFractal();
+    FractalPresenter* presenter = _previewFractalCanvas->GetFractalPresenter();
+    Fractal* fractal = _previewFractalCanvas->GetFractal();
     mainFrame->OpenJuliaPreviewInMainWindow(
-        _previewCanvas->GetFractalType(),
+        _previewFractalCanvas->GetFractalType(),
         fractal->GetOptions(),
         fractal->GetColorPalette(),
         presenter->GetCurrentZoom(),
@@ -365,32 +370,32 @@ void JuliaPreviewFrame::OnOpenInMainWindow(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnAbortRender(wxCommandEvent&)
 {
-    if (_previewCanvas != nullptr)
-        _previewCanvas->AbortRender();
+    if (_previewFractalCanvas != nullptr)
+        _previewFractalCanvas->AbortRender();
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnRedraw(wxCommandEvent&)
 {
-    if (_previewCanvas != nullptr)
-        _previewCanvas->GetFractalPresenter()->Redraw();
+    if (_previewFractalCanvas != nullptr)
+        _previewFractalCanvas->GetFractalPresenter()->Redraw();
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnReset(wxCommandEvent&)
 {
-    if (_previewCanvas == nullptr)
+    if (_previewFractalCanvas == nullptr)
         return;
 
-    FractalPresenter* presenter = _previewCanvas->GetFractalPresenter();
-    Fractal* fractal = _previewCanvas->GetFractal();
+    FractalPresenter* presenter = _previewFractalCanvas->GetFractalPresenter();
+    Fractal* fractal = _previewFractalCanvas->GetFractal();
     const Options options = fractal->GetOptions();
     const ColorPaletteTypes colorPalette = fractal->GetColorPalette();
     const bool automaticIterations = presenter->AutomaticIterationsEnabled();
 
-    _previewCanvas->Reset();
-    _previewCanvas->GetFractal()->SetJuliaMode(true);
-    _previewCanvas->GetFractal()->SetOptions(options, true);
+    _previewFractalCanvas->Reset();
+    _previewFractalCanvas->GetFractal()->SetJuliaMode(true);
+    _previewFractalCanvas->GetFractal()->SetOptions(options, true);
     presenter->SetColorPalette(colorPalette);
     presenter->SetAutomaticIterations(automaticIterations);
     ResetColorRotationTool();
@@ -404,37 +409,45 @@ void JuliaPreviewFrame::OnSetIterations(wxCommandEvent&)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnIncreaseIterations(wxCommandEvent&)
 {
-    if (_previewCanvas != nullptr)
-        _previewCanvas->GetFractalPresenter()->IncreaseIterations();
+    if (_previewFractalCanvas != nullptr)
+        _previewFractalCanvas->GetFractalPresenter()->IncreaseIterations();
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnDecreaseIterations(wxCommandEvent&)
 {
-    if (_previewCanvas != nullptr)
-        _previewCanvas->GetFractalPresenter()->DecreaseIterations();
+    if (_previewFractalCanvas != nullptr)
+        _previewFractalCanvas->GetFractalPresenter()->DecreaseIterations();
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::OnShowOrbit(wxCommandEvent&)
+{
+    const bool mode = _showOrbit->IsChecked();
+    _previewFractalCanvas->SetOrbitMode(mode);
+    _showOrbit->Check(mode);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnAutomaticIterations(wxCommandEvent&)
 {
-    if (_previewCanvas == nullptr)
+    if (_previewFractalCanvas == nullptr)
         return;
 
     const bool automaticIterations = _automaticIterationsItem != nullptr && _automaticIterationsItem->IsChecked();
-    _previewCanvas->GetFractalPresenter()->SetAutomaticIterations(automaticIterations);
+    _previewFractalCanvas->GetFractalPresenter()->SetAutomaticIterations(automaticIterations);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnUpdateAbortRender(wxUpdateUIEvent& event)
 {
-    event.Enable(_previewCanvas != nullptr && _previewCanvas->CanAbortRender());
+    event.Enable(_previewFractalCanvas != nullptr && _previewFractalCanvas->CanAbortRender());
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void JuliaPreviewFrame::OnUpdateAutomaticIterations(wxUpdateUIEvent& event)
 {
-    event.Check(_previewCanvas != nullptr && _previewCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
+    event.Check(_previewFractalCanvas != nullptr && _previewFractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
 }
 
 void JuliaPreviewFrame::OnClose(wxCloseEvent&)
@@ -447,8 +460,8 @@ void JuliaPreviewFrame::OnClose(wxCloseEvent&)
     if (_iterationsDialogIsActive && _iterationsDialog != nullptr)
         _iterationsDialog->Destroy();
 
-    if (_previewCanvas != nullptr)
-        _previewCanvas->PrepareForClose();
+    if (_previewFractalCanvas != nullptr)
+        _previewFractalCanvas->PrepareForClose();
 
     if (GetParent() != nullptr)
         wxQueueEvent(GetParent(), new wxCommandEvent(wxEVT_JULIA_MODE_CLOSED));

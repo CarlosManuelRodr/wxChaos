@@ -9,12 +9,12 @@
 
 #pragma once
 
+#include <functional>
+#include <vector>
 #include <wx/wx.h>
 #include <wx/clrpicker.h>
 #include <wx/spinctrl.h>
 #include <SFML/Graphics/Color.hpp>
-#include <functional>
-#include <vector>
 #include "coloring/ColorPalette.h"
 #include "sfml/FractalPresenter.h"
 #include "renderer/wxGradientDialog.h"
@@ -123,7 +123,7 @@ public:
     ///@brief Sets the target fractal.
     ///@param presenter Pointer to target fractal presenter.
     void SetTarget(FractalPresenter* presenter);
-    /// @brief Applies a rendering algorithm and feature flags through the same path as the options frame.
+    /// @brief Applies a rendering algorithm and feature flags through the same path as the option's frame.
     /// @param algorithm Rendering algorithm to select.
     /// @param smoothRender Enables smooth escape-time coloring.
     /// @param orbitTrap Enables orbit-trap coloring.

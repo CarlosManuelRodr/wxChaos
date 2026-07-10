@@ -16,9 +16,9 @@
 #include "sfml/SelectionRect.h"
 #include "sfml/FractalPresenter.h"
 #include "sfml/CoordinateSelector.h"
-#include "FractalFactory.h"
 #include "canvas/FractalInteractionTool.h"
 #include "numeric/HighPrecision.h"
+#include "FractalFactory.h"
 
 class wxPopupWindow;
 class wxStaticText;

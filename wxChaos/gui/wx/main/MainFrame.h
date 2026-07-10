@@ -22,7 +22,6 @@
 #include "common/FractalOptionsPanel.h"
 #include "docs/DocumentationLinkAction.h"
 #include "main/AboutDialog.h"
-#include "main/SettingsFrame.h"
 #include "export/ZoomRecorder.h"
 #include "tools/CommandConsole.h"
 #include "analysis/DimensionFrame.h"
@@ -112,7 +111,7 @@ class MainFrame : public wxFrame
     DocumentViewer* _informationViewer{};         ///< Active modeless fractal documentation viewer.
     
     bool _changeKeyboardGuide;
-    bool _introConstActive;
+    bool _manualJuliaConstantActive;
     bool _iterationsDialogIsActive;
     bool _informationFrameIsActive;
     bool _formulaDialogIsActive;
@@ -276,11 +275,11 @@ public :
     void OnUpdateAutomaticIterations(wxUpdateUIEvent& event);
     void OnRedraw(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);
-    void OnMoreIt(wxCommandEvent& event);
-    void OnLessIt(wxCommandEvent& event);
+    void OnIncreaseIterations(wxCommandEvent& event);
+    void OnDecreaseIterations(wxCommandEvent& event);
     void OnShowOrbit(wxCommandEvent& event);
-    void OnManIntroConst(wxCommandEvent& event);
-    void OnSldIntroConst(wxCommandEvent& event);
+    void OnManualJuliaConstant(wxCommandEvent& event);
+    void OnSliderJuliaConstant(wxCommandEvent& event);
     void OnSetIterations(wxCommandEvent& event);
     void OnAutomaticIterations(wxCommandEvent& event);
     void OnFormulaDialog(wxCommandEvent& event);

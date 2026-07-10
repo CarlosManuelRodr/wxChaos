@@ -97,10 +97,10 @@ FormulaDialog::FormulaDialog(const int userDefinedId, const int fixedPointUserDe
         _typeChoice->Enable(false);
 
     this->Bind(wxEVT_CLOSE_WINDOW, &FormulaDialog::OnClose, this);
-    _typeChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &FormulaDialog::OnChoice, this);
+    _typeChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &FormulaDialog::OnChangeFractalType, this);
     _acceptButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnAccept, this);
     _applyButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnApply, this);
-    _funcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnFunc, this);
+    _funcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnShowAvailableFunctions, this);
 }
 
 FormulaDialog::FormulaDialog(const FormulaOptions& formulaOptions, std::function<void(const FormulaOptions&)> applyHandler,
@@ -127,10 +127,10 @@ FormulaDialog::FormulaDialog(const FormulaOptions& formulaOptions, std::function
 
 FormulaDialog::~FormulaDialog()
 {
-    _typeChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &FormulaDialog::OnChoice, this);
+    _typeChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &FormulaDialog::OnChangeFractalType, this);
     _acceptButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnAccept, this);
     _applyButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnApply, this);
-    _funcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnFunc, this);
+    _funcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &FormulaDialog::OnShowAvailableFunctions, this);
 }
 
 wxPanel* FormulaDialog::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
@@ -282,7 +282,7 @@ void FormulaDialog::SelectFormulaType(const FormulaType type) const
     SetFormulaTypeSelection(type, false);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void FormulaDialog::OnChoice(wxCommandEvent&)
+void FormulaDialog::OnChangeFractalType(wxCommandEvent&)
 {
     if (_typeChoice->GetCurrentSelection() == 0)
         SetFormulaTypeSelection(FormulaType::Complex, true);
@@ -291,7 +291,7 @@ void FormulaDialog::OnChoice(wxCommandEvent&)
     else
         SetFormulaTypeSelection(FormulaType::NewtonRaphson, true);
 }
-void FormulaDialog::OnFunc(wxCommandEvent&)
+void FormulaDialog::OnShowAvailableFunctions(wxCommandEvent&)
 {
     const auto diag = new FunctionsHelpDialog(this, wxID_ANY);
     diag->Move(this->GetPosition().x + this->GetSize().x, this->GetPosition().y);

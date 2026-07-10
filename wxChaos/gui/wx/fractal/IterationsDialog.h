@@ -44,7 +44,6 @@ public:
                      wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString,
                      const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(560, 340),
                      long style = wxCAPTION|wxCLOSE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL);
-
     ~IterationsDialog() override;
 
     void OnSlider(wxCommandEvent& event);

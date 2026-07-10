@@ -1,16 +1,14 @@
 // ReSharper disable CppEnumeratorNeverUsed
 #include "main/MainFrame.h"
 #include <algorithm>
-#include "export/ImageExportSizeDialog.h"
+#include <wx/panel.h>
 #include "AngelscriptBindings.h"
 #include "AppPaths.h"
+#include "export/ImageExportSizeDialog.h"
 #include "docs/DocumentViewer.h"
 #include "docs/FractalDocumentation.h"
+#include "main/SettingsFrame.h"
 #include "common/AppTheme.h"
-#include <wx/bmpbndl.h>
-#include <wx/panel.h>
-#include <wx/statbmp.h>
-#include <wx/stattext.h>
 
 using namespace std;
 
@@ -44,7 +42,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     _juliaPreviewFrame = nullptr;
     _dimensionCalculator = nullptr;
     _changeKeyboardGuide = false;
-    _introConstActive = false;
+    _manualJuliaConstantActive = false;
     _iterationsDialogIsActive = false;
     _informationFrameIsActive = false;
     _formulaDialogIsActive = false;
@@ -62,9 +60,9 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     }
     if (_appConfig.constantWindow)
     {
-        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetFractalPresenter(), this);
+        _juliaConstantDialog = new JuliaConstantDialog(&_manualJuliaConstantActive, _fractalCanvas->GetFractalPresenter(), this);
         _juliaConstantDialog->Show(true);
-        _introConstActive = true;
+        _manualJuliaConstantActive = true;
     }
     if (!_appConfig.colorSet)
         _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(false);
@@ -102,72 +100,72 @@ void MainFrame::ShowFirstUseDialog()
 void MainFrame::ConnectEvents()
 {
     this->Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnQuit, this, wxID_EXIT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSettings, this, ID_SETTINGS);
+    this->Bind(wxEVT_MENU, &MainFrame::OnQuit, this, wxID_EXIT);
+    this->Bind(wxEVT_MENU, &MainFrame::OnSettings, this, ID_SETTINGS);
     this->Bind(wxEVT_SIZE, &MainFrame::OnResize, this);
     this->Bind(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, &MainFrame::OnCanvasStatusText, this);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnJuliaMode, this, ID_JULIA_MODE);
+    this->Bind(wxEVT_MENU, &MainFrame::OnJuliaMode, this, ID_JULIA_MODE);
     this->Bind(wxEVT_JULIA_MODE_CLOSED, &MainFrame::OnJuliaModeClosed, this);
     this->Bind(wxEVT_RENDERER_OPTIONS_CLOSED, &MainFrame::OnRendererOptionsClosed, this);
     this->Bind(wxEVT_SCRIPT_EDITOR_CLOSED, &MainFrame::OnScriptEditorClosed, this);
     this->Bind(wxEVT_DIMENSION_FRAME_CLOSED, &MainFrame::OnDimensionFrameClosed, this);
     this->Bind(wxEVT_COMMAND_CONSOLE_CLOSED, &MainFrame::OnCommandConsoleClosed, this);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnWelcomeDialog, this, ID_WELCOME_DIALOG);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, ID_ABOUT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnKeyboardGuide, this, ID_KEYBOARD_GUIDE);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSave, this, ID_SAVE);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPalette, this, ID_PALETTE);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMandelbrot, this, ID_MANDELBROT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMandelbrotZN, this, ID_MANDELBROT_ZN);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeJulia, this, ID_JULIA);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeJuliaZN, this, ID_JULIA_ZN);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeNewton, this, ID_NEWTON);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSinusoidal, this, ID_SINUSOIDAL);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeMagnet, this, ID_MAGNET);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeJellyfish, this, ID_JELLYFISH);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeManowar, this, ID_MANOWAR);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeManowarJulia, this, ID_MANOWAR_JULIA);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint1, this, ID_FIXEDPOINT1);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint2, this, ID_FIXEDPOINT2);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint3, this, ID_FIXEDPOINT3);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFixedPoint4, this, ID_FIXEDPOINT4);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeTricorn, this, ID_TRICORN);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeBurningShip, this, ID_BURNING_SHIP);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeBurningShipJulia, this, ID_BURNING_SHIP_JULIA);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeFractory, this, ID_FRACTORY);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeCell, this, ID_CELL);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeLogisticMap, this, ID_LOGISTIC_MAP);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeHenonMap, this, ID_HENON_MAP);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeSierpinskiTriangle, this, ID_SIERPINSKI_TRIANGLE);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefinedEscapeTime, this, ID_USER_DEFINED);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefinedFixedPoint, this, ID_FIXED_POINT_USER_DEFINED);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::ChangeUserDefinedNewton, this, ID_NEWTON_USER_DEFINED);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbortRender, this, ID_ABORT_RENDER);
+    this->Bind(wxEVT_MENU, &MainFrame::OnWelcomeDialog, this, ID_WELCOME_DIALOG);
+    this->Bind(wxEVT_MENU, &MainFrame::OnAbout, this, ID_ABOUT);
+    this->Bind(wxEVT_MENU, &MainFrame::OnKeyboardGuide, this, ID_KEYBOARD_GUIDE);
+    this->Bind(wxEVT_MENU, &MainFrame::OnSave, this, ID_SAVE);
+    this->Bind(wxEVT_MENU, &MainFrame::OnPalette, this, ID_PALETTE);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeMandelbrot, this, ID_MANDELBROT);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeMandelbrotZN, this, ID_MANDELBROT_ZN);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeJulia, this, ID_JULIA);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeJuliaZN, this, ID_JULIA_ZN);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeNewton, this, ID_NEWTON);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeSinusoidal, this, ID_SINUSOIDAL);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeMagnet, this, ID_MAGNET);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeJellyfish, this, ID_JELLYFISH);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeManowar, this, ID_MANOWAR);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeManowarJulia, this, ID_MANOWAR_JULIA);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeFixedPoint1, this, ID_FIXEDPOINT1);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeFixedPoint2, this, ID_FIXEDPOINT2);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeFixedPoint3, this, ID_FIXEDPOINT3);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeFixedPoint4, this, ID_FIXEDPOINT4);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeTricorn, this, ID_TRICORN);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeBurningShip, this, ID_BURNING_SHIP);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeBurningShipJulia, this, ID_BURNING_SHIP_JULIA);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeFractory, this, ID_FRACTORY);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeCell, this, ID_CELL);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeLogisticMap, this, ID_LOGISTIC_MAP);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeHenonMap, this, ID_HENON_MAP);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeSierpinskiTriangle, this, ID_SIERPINSKI_TRIANGLE);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeUserDefinedEscapeTime, this, ID_USER_DEFINED);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeUserDefinedFixedPoint, this, ID_FIXED_POINT_USER_DEFINED);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeUserDefinedNewton, this, ID_NEWTON_USER_DEFINED);
+    this->Bind(wxEVT_MENU, &MainFrame::OnAbortRender, this, ID_ABORT_RENDER);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateAbortRender, this, ID_ABORT_RENDER);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnReset, this, ID_RESET);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnRedraw, this, ID_REDRAW);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMoreIt, this, ID_INCREASE_IT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnLessIt, this, ID_DECREASE_IT);
+    this->Bind(wxEVT_MENU, &MainFrame::OnReset, this, ID_RESET);
+    this->Bind(wxEVT_MENU, &MainFrame::OnRedraw, this, ID_REDRAW);
+    this->Bind(wxEVT_MENU, &MainFrame::OnIncreaseIterations, this, ID_INCREASE_IT);
+    this->Bind(wxEVT_MENU, &MainFrame::OnDecreaseIterations, this, ID_DECREASE_IT);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateManualIterations, this, ID_IT_MANUAL);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateManualIterations, this, ID_INCREASE_IT);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateManualIterations, this, ID_DECREASE_IT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnShowOrbit, this, ID_SHOW_ORBIT);
+    this->Bind(wxEVT_MENU, &MainFrame::OnShowOrbit, this, ID_SHOW_ORBIT);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateShowOrbit, this, ID_SHOW_ORBIT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnManIntroConst, this, ID_ENTER_MAN_CONSTANT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSldIntroConst, this, ID_ENTER_SLD_CONSTANT);
+    this->Bind(wxEVT_MENU, &MainFrame::OnManualJuliaConstant, this, ID_ENTER_MAN_CONSTANT);
+    this->Bind(wxEVT_MENU, &MainFrame::OnSliderJuliaConstant, this, ID_ENTER_SLD_CONSTANT);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateSliderMode, this, ID_ENTER_SLD_CONSTANT);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSetIterations, this, ID_IT_MANUAL);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAutomaticIterations, this, ID_AUTOMATIC_ITERATIONS);
+    this->Bind(wxEVT_MENU, &MainFrame::OnSetIterations, this, ID_IT_MANUAL);
+    this->Bind(wxEVT_MENU, &MainFrame::OnAutomaticIterations, this, ID_AUTOMATIC_ITERATIONS);
     this->Bind(wxEVT_UPDATE_UI, &MainFrame::OnUpdateAutomaticIterations, this, ID_AUTOMATIC_ITERATIONS);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFormulaDialog, this, ID_FORMULA_DIALOG);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnToolbarVisibility, this, ID_VIEW_TOOLBAR);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnFractalOptions, this, ID_OPTION_PANEL);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnUserManual, this, ID_USER_MANUAL);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnScriptEditor, this, ID_SCRIPT_EDITOR);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnZoomRecorder, this, ID_ZOOM_RECORDER);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnDimensionCalculator, this, ID_DIMENSION_CALCULATOR);
-    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnCommandConsole, this, ID_COMMAND_CONSOLE);
+    this->Bind(wxEVT_MENU, &MainFrame::OnFormulaDialog, this, ID_FORMULA_DIALOG);
+    this->Bind(wxEVT_MENU, &MainFrame::OnToolbarVisibility, this, ID_VIEW_TOOLBAR);
+    this->Bind(wxEVT_MENU, &MainFrame::OnFractalOptions, this, ID_OPTION_PANEL);
+    this->Bind(wxEVT_MENU, &MainFrame::OnUserManual, this, ID_USER_MANUAL);
+    this->Bind(wxEVT_MENU, &MainFrame::OnScriptEditor, this, ID_SCRIPT_EDITOR);
+    this->Bind(wxEVT_MENU, &MainFrame::OnZoomRecorder, this, ID_ZOOM_RECORDER);
+    this->Bind(wxEVT_MENU, &MainFrame::OnDimensionCalculator, this, ID_DIMENSION_CALCULATOR);
+    this->Bind(wxEVT_MENU, &MainFrame::OnCommandConsole, this, ID_COMMAND_CONSOLE);
 }
 
 void MainFrame::ResetColorRotationTool() const
@@ -641,7 +639,6 @@ void MainFrame::SetUpGUI()
     _showOrbit = new wxMenuItem(_fractalMenu, ID_SHOW_ORBIT, _("Show orbit") + '\t' + "F2", wxEmptyString, wxITEM_CHECK);
 
     _fractalMenu->Append(_juliaMode);
-
     _fractalMenu->Append(_showOrbit);
     _juliaMode->Check(false);
     _showOrbit->Check(false);
@@ -1016,45 +1013,44 @@ void MainFrame::OnReset(wxCommandEvent&)
     this->UpdateMenu();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void MainFrame::OnMoreIt(wxCommandEvent&)
+void MainFrame::OnIncreaseIterations(wxCommandEvent&)
 {
     _fractalCanvas->GetFractalPresenter()->IncreaseIterations();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void MainFrame::OnLessIt(wxCommandEvent&)
+void MainFrame::OnDecreaseIterations(wxCommandEvent&)
 {
     _fractalCanvas->GetFractalPresenter()->DecreaseIterations();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 void MainFrame::OnShowOrbit(wxCommandEvent&)
 {
-    const bool modo = _showOrbit->IsChecked();
-    _fractalCanvas->SetOrbitMode(modo);
-    _showOrbit->Check(modo);
+    const bool mode = _showOrbit->IsChecked();
+    _fractalCanvas->SetOrbitMode(mode);
+    _showOrbit->Check(mode);
 }
-void MainFrame::OnManIntroConst(wxCommandEvent&)
+void MainFrame::OnManualJuliaConstant(wxCommandEvent&)
 {
     // Manual constant.
-    if (!_introConstActive)
+    if (!_manualJuliaConstantActive)
     {
-        _juliaConstantDialog = new JuliaConstantDialog(&_introConstActive, _fractalCanvas->GetFractalPresenter(), this);
+        _juliaConstantDialog = new JuliaConstantDialog(&_manualJuliaConstantActive, _fractalCanvas->GetFractalPresenter(), this);
         _juliaConstantDialog->Show(true);
-        _introConstActive = true;
+        _manualJuliaConstantActive = true;
     }
     else
     {
         _juliaConstantDialog->Show(false);
-        _introConstActive = false;
+        _manualJuliaConstantActive = false;
         delete _juliaConstantDialog;
     }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void MainFrame::OnSldIntroConst(wxCommandEvent&)
+void MainFrame::OnSliderJuliaConstant(wxCommandEvent&)
 {
-    // Slider constant.
-    const bool modo = _sliderJuliaConstant->IsChecked();
-    _fractalCanvas->SetSliderMode(modo);
-    _sliderJuliaConstant->Check(modo);
+    const bool mode = _sliderJuliaConstant->IsChecked();
+    _fractalCanvas->SetSliderMode(mode);
+    _sliderJuliaConstant->Check(mode);
 }
 void MainFrame::OnKeyboardGuide(wxCommandEvent&)
 {
@@ -1485,10 +1481,10 @@ void MainFrame::UpdateMenu()
     _automaticIterations->Check(_fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
 
     // Closes constant dialog.
-    if (_introConstActive)
+    if (_manualJuliaConstantActive)
     {
         _juliaConstantDialog->Show(false);
-        _introConstActive = false;
+        _manualJuliaConstantActive = false;
         delete _juliaConstantDialog;
     }
 

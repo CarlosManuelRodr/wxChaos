@@ -47,8 +47,8 @@ class FormulaDialog : public wxDialog
     void OnAccept(wxCommandEvent& event);
     void OnApply(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);
-    void OnFunc(wxCommandEvent& event);
-    void OnChoice(wxCommandEvent& event);
+    void OnShowAvailableFunctions(wxCommandEvent& event);
+    void OnChangeFractalType(wxCommandEvent& event);
     [[nodiscard]] FormulaOptions GetInitialFormulaOptions(const FormulaOptions* formulaOptions) const;
     [[nodiscard]] FormulaOptions ReadFormulaOptions() const;
     void SetFormulaTypeSelection(FormulaType type, bool updateFormulaText) const;

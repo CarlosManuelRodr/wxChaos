@@ -28,6 +28,7 @@ enum JuliaPreviewFrameIds
     ID_JULIA_PREVIEW_SET_ITERATIONS,
     ID_JULIA_PREVIEW_INCREASE_ITERATIONS,
     ID_JULIA_PREVIEW_DECREASE_ITERATIONS,
+    ID_JULIA_PREVIEW_SHOW_ORBIT,
     ID_JULIA_PREVIEW_AUTOMATIC_ITERATIONS
 };
 
@@ -42,8 +43,8 @@ enum JuliaPreviewFrameIds
 */
 class JuliaPreviewFrame : public wxFrame
 {
-    FractalCanvas* _target{};
-    FractalCanvas* _previewCanvas{};
+    FractalCanvas* _parentFractalCanvas{};
+    FractalCanvas* _previewFractalCanvas{};
     FractalToolbar* _toolbar{};
     wxMenuBar* _menubar{};
     wxMenu* _fileMenu{};
@@ -53,6 +54,7 @@ class JuliaPreviewFrame : public wxFrame
     wxMenuItem* _toolbarItem{};
     wxMenuItem* _abortRenderItem{};
     wxMenuItem* _automaticIterationsItem{};
+    wxMenuItem* _showOrbit{};
     wxStatusBar* _statusBar{};
     RenderStatusWidget* _renderStatusWidget{};
     IterationsDialog* _iterationsDialog{};
@@ -68,8 +70,8 @@ class JuliaPreviewFrame : public wxFrame
     void UpdateInformationTool() const;
     void ResetColorRotationTool() const;
     bool HandleDocumentationLink(const wxString& url);
-    bool FocusMainFrameFromDocumentation() const;
-    bool SetDocumentationRenderingFromDocumentation(const DocumentationLinkAction::RenderingMethod& method) const;
+    [[nodiscard]] bool FocusMainFrameFromDocumentation() const;
+    [[nodiscard]] bool SetDocumentationRenderingFromDocumentation(const DocumentationLinkAction::RenderingMethod& method) const;
     void SyncConstantFromTarget() const;
     void OnConstantSyncTimer(wxTimerEvent& event);
     void OnCanvasStatusText(wxCommandEvent& event);
@@ -113,6 +115,10 @@ class JuliaPreviewFrame : public wxFrame
     /// @brief Decreases the Julia preview iteration count.
     /// @param event Menu event emitted by wxWidgets.
     void OnDecreaseIterations(wxCommandEvent& event);
+
+    /// @brief Shows the orbit of a point in the Julia preview.
+    /// @param event Menu event emitted by wxWidgets.
+    void OnShowOrbit(wxCommandEvent& event);
 
     /// @brief Toggles automatic iterations for the Julia preview.
     /// @param event Menu event emitted by wxWidgets.

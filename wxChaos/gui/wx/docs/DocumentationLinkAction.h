@@ -6,10 +6,10 @@
 #pragma once
 
 #include <optional>
+#include <wx/string.h>
 #include "types/FractalType.h"
 #include "types/FormulaType.h"
 #include "types/RenderingAlgorithmType.h"
-#include <wx/string.h>
 
 /**
 * @class DocumentationLinkAction

@@ -3,9 +3,9 @@
 #include <map>
 #include <string>
 #include <wx/string.h>
+#include "coloring/ColorPaletteTypes.h"
 #include "../common/AppAppearance.h"
 #include "../common/AppLanguage.h"
-#include "coloring/ColorPaletteTypes.h"
 #include "../../../core/types/FractalType.h"
 
 /**
