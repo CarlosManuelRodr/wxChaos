@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -56,5 +56,54 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Mapa de Hénon</h1>
+            <p class="subtitle">Un punto que se pliega y estira repetidamente hasta dibujar un atractor.</p>
+            <div class="formula hero-formula">
+                \(x_{n+1}=y_n+1-\alpha x_n^2,\quad y_{n+1}=\beta x_n\)
+            </div>
+            <p class="hero-introduction">A diferencia de los fractales de tiempo de escape, el mapa de Hénon se dibuja siguiendo un solo punto en movimiento durante muchos pasos. La trayectoria no llena una región suave, sino que se estabiliza en un conjunto delgado y extraño, en parte curva y en parte polvo.</p>
+        </div>
+        <figure class="hero-figure">
+            <img src="henon_map/overview.png" alt="Vista general del mapa de Hénon">
+            <figcaption><span class="figure-title">Un atractor extraño.</span></figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/henon-map">Abrir en wxChaos</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Aumenta el número de iteraciones y observa cómo el atractor se vuelve más denso. Este fractal se acumula punto por punto; no se colorea píxel por píxel.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Modifica suavemente \(\alpha\) o \(\beta\). Cambios pequeños en los parámetros pueden estirar el atractor, romperlo o hacer que la órbita se aleje.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Busca la forma de cinta plegada. Ese pliegue es el gesto característico del mapa.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El mapa que itera wxChaos</summary>
+            <div class="concept-details-content">
+                <p>wxChaos usa \(x_{n+1}=y_n+1-\alpha x_n^2\) y \(y_{n+1}=\beta x_n\). El parámetro \(\alpha\) controla el pliegue no lineal, mientras que \(\beta\) determina cuánto de la posición horizontal anterior reaparece como la nueva posición vertical.</p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>¿Qué hace que un atractor sea extraño?</summary>
+            <div class="concept-details-content">
+                <p>Un atractor atrae hacia sí a las órbitas cercanas. Un atractor extraño tiene estructura fractal y dependencia sensible de las condiciones iniciales. El atractor clásico de Hénon suele describirse como suave en una dirección y semejante a un conjunto de Cantor en la otra.</p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>
