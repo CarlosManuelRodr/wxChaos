@@ -14,7 +14,7 @@ using namespace std;
 wxDEFINE_EVENT(wxEVT_SCRIPT_EDITOR_CLOSED, wxCommandEvent);
 
 wxPanel* ScriptEditor::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                           const wxString& darkIcon) const
+                                           const wxString& darkIcon)
 {
     const auto header = new wxPanel(parent, wxID_ANY);
     header->SetBackgroundColour(AppTheme::ControlBackground());
@@ -41,7 +41,7 @@ wxPanel* ScriptEditor::CreateSectionHeader(wxWindow* parent, const wxString& tex
     return header;
 }
 
-void ScriptEditor::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const
+void ScriptEditor::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon)
 {
     const wxSize iconSize(20, 20);
     const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
@@ -534,12 +534,12 @@ void ScriptEditor::ConsoleAppendEntry(const wxString& action, const wxString& me
     _console->ShowPosition(_console->GetLastPosition());
 }
 
-wxString ScriptEditor::ConsoleTimestamp() const
+wxString ScriptEditor::ConsoleTimestamp()
 {
     return wxDateTime::Now().Format("%H:%M:%S");
 }
 
-wxString ScriptEditor::FormatConsoleMessage(wxString message) const
+wxString ScriptEditor::FormatConsoleMessage(wxString message)
 {
     message.Replace("\r\n", "\n");
     message.Trim(true);
@@ -548,27 +548,27 @@ wxString ScriptEditor::FormatConsoleMessage(wxString message) const
     return message;
 }
 
-wxColour ScriptEditor::ConsoleTextColor() const
+wxColour ScriptEditor::ConsoleTextColor()
 {
     return AppTheme::IsDark() ? wxColour(226, 232, 240) : wxColour(31, 41, 55);
 }
 
-wxColour ScriptEditor::ConsoleMutedColor() const
+wxColour ScriptEditor::ConsoleMutedColor()
 {
     return AppTheme::IsDark() ? wxColour(148, 163, 184) : wxColour(100, 116, 139);
 }
 
-wxColour ScriptEditor::ConsoleActionColor() const
+wxColour ScriptEditor::ConsoleActionColor()
 {
     return AppTheme::IsDark() ? wxColour(96, 165, 250) : wxColour(29, 78, 216);
 }
 
-wxColour ScriptEditor::ConsoleSuccessColor() const
+wxColour ScriptEditor::ConsoleSuccessColor()
 {
     return AppTheme::IsDark() ? wxColour(52, 211, 153) : wxColour(4, 120, 87);
 }
 
-wxColour ScriptEditor::ConsoleErrorColor() const
+wxColour ScriptEditor::ConsoleErrorColor()
 {
     return AppTheme::IsDark() ? wxColour(248, 113, 113) : wxColour(185, 28, 28);
 }

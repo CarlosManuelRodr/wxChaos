@@ -71,18 +71,18 @@ class ScriptEditor : public wxFrame
     void ConsoleSetWelcomeText() const;
     void ConsoleClear() const;
     void ConsoleAppendEntry(const wxString& action, const wxString& message, bool success) const;
-    [[nodiscard]] wxString ConsoleTimestamp() const;
-    [[nodiscard]] wxString FormatConsoleMessage(wxString message) const;
-    [[nodiscard]] wxColour ConsoleTextColor() const;
-    [[nodiscard]] wxColour ConsoleMutedColor() const;
-    [[nodiscard]] wxColour ConsoleActionColor() const;
-    [[nodiscard]] wxColour ConsoleSuccessColor() const;
-    [[nodiscard]] wxColour ConsoleErrorColor() const;
+    [[nodiscard]] static wxString ConsoleTimestamp();
+    [[nodiscard]] static wxString FormatConsoleMessage(wxString message);
+    [[nodiscard]] static wxColour ConsoleTextColor();
+    [[nodiscard]] static wxColour ConsoleMutedColor();
+    [[nodiscard]] static wxColour ConsoleActionColor();
+    [[nodiscard]] static wxColour ConsoleSuccessColor();
+    [[nodiscard]] static wxColour ConsoleErrorColor();
     void SetBlackPreview() const;
     [[nodiscard]] int GetScriptIndex(const wxString& scriptName) const;
-    wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                 const wxString& darkIcon) const;
-    void SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const;
+    static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                        const wxString& darkIcon);
+    static void SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon);
 
     void OnSelectScript(wxCommandEvent& event);
     void OnSaveChanges(wxCommandEvent& event);
