@@ -4,7 +4,6 @@ Bugs:
 
 Improvements to get to a release version:
 - Add a menu to pick script presets from the ScriptSamples folder.
-- Localization to Spanish
 - Add a Windows installer.
 - Make it work on Linux again.
 
