@@ -22,6 +22,21 @@ TEST_CASE("bundled scripts compile with the orbit drawing interface")
     }
 }
 
+TEST_CASE("script configuration registers its coordinate system")
+{
+    std::filesystem::path scriptsDirectory = std::filesystem::current_path() / "bin" / "Scripts";
+    if (!std::filesystem::exists(scriptsDirectory))
+        scriptsDirectory = std::filesystem::current_path() / "cmake-build-debug" / "bin" / "Scripts";
+
+    AngelscriptConfigurationEngine engine;
+    REQUIRE(engine.CompileFromPath((scriptsDirectory / "Duffing.as").string()));
+    REQUIRE(engine.Execute());
+
+    const ScriptData data = engine.GetScriptData();
+    CHECK(data.horizontalCoordinate == "x");
+    CHECK(data.verticalCoordinate == "y");
+}
+
 TEST_CASE("a complete bundled script executes its orbit entry point")
 {
     std::filesystem::path scriptsDirectory = std::filesystem::current_path() / "bin" / "Scripts";

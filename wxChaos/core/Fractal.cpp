@@ -16,6 +16,11 @@ using namespace std;
 
 constexpr ColorPaletteTypes defaultGradientStyle = ClassicMandelbrot;
 
+Fractal::CoordinateSystem Fractal::GetCoordinateSystem() const
+{
+    return {_("Real"), _("Imaginary")};
+}
+
 Fractal::Fractal(const unsigned int width, const unsigned int height) : _pendingRenderOffset(Vector2Int::Zero())
 {
     // System.

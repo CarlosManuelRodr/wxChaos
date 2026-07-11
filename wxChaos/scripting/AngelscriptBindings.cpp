@@ -21,6 +21,8 @@ static constexpr asPWORD OrbitFractalUserData = 2000;
 static constexpr asPWORD ScriptOptionsUserData = 2001;
 static string name;
 static string documentationPath;
+static string horizontalCoordinate;
+static string verticalCoordinate;
 static ScriptCategory scriptCategory;
 static double minX, maxX, minY;
 static int defaultIter;
@@ -140,6 +142,12 @@ static void asSetCategory(string& str)
         scriptCategory = ScriptCategory::Physic;
     else
         scriptCategory = ScriptCategory::Other;
+}
+
+static void asSetCoordinateSystem(const string& horizontal, const string& vertical)
+{
+    horizontalCoordinate = horizontal;
+    verticalCoordinate = vertical;
 }
 
 static void asSetMinX(double _minX)
@@ -297,6 +305,8 @@ ScriptData FetchScriptData(const string& fileName)
     data.file = fileName;
     data.name = name;
     data.documentationPath = documentationPath;
+    data.horizontalCoordinate = horizontalCoordinate;
+    data.verticalCoordinate = verticalCoordinate;
     data.minX = minXSet ? minX : -2;
     data.maxX = maxXSet ? maxX : 2;
     data.minY = minYSet ? minY : -2;
@@ -309,6 +319,8 @@ ScriptData FetchScriptData(const string& fileName)
     minXSet = maxXSet = minYSet = false;
     defaultIterSet = false;
     documentationPath.clear();
+    horizontalCoordinate.clear();
+    verticalCoordinate.clear();
     juliaVarietySet = false;
     asRedrawAlways = false;
     disableSetMap = false;
@@ -435,6 +447,8 @@ void RegisterWxChaosInterface(asIScriptEngine* engine)
     r = engine->RegisterGlobalFunction("void SetFractalName(string &in)", asFUNCTION(asSetFractalName), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetDocumentationPath(string &in)", asFUNCTION(asSetDocumentationPath), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetCategory(string &in)", asFUNCTION(asSetCategory), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void SetCoordinateSystem(const string &in, const string &in)",
+                                       asFUNCTION(asSetCoordinateSystem), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetPoint(int, int, bool, int)", asFUNCTION(asSetPoint), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetMinX(double)", asFUNCTION(asSetMinX), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetMaxX(double)", asFUNCTION(asSetMaxX), asCALL_CDECL); assert(r >= 0);

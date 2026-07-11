@@ -40,6 +40,12 @@ class FractalFactory;
 class Fractal
 {
 public:
+    struct CoordinateSystem
+    {
+        wxString horizontalAxis;
+        wxString verticalAxis;
+    };
+
     struct PointSample
     {
         bool inSet;
@@ -222,6 +228,9 @@ public:
 
     ///@brief Returns the display name supplied by the concrete fractal.
     virtual wxString GetName() const = 0;
+
+    ///@brief Returns the labels used to describe points in this fractal's plane.
+    virtual CoordinateSystem GetCoordinateSystem() const;
 
     ///@brief Returns the display name of the selected rendering algorithm.
     wxString GetRenderingAlgorithmName() const;

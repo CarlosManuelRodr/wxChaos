@@ -150,27 +150,11 @@ wxString FractalCanvas::BuildStatusText() const
 
     if (_hasLastMousePosition)
     {
-        if (const FractalType fractalType = GetFractalType(); fractalType == FractalType::DoublePendulum)
-        {
-            text = _("θ2: ");
-            text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
-            text += _("   θ1: ");
-            text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
-        }
-        else if (fractalType == FractalType::SierpinskiTriangle || fractalType == FractalType::ScriptFractal)
-        {
-            text = _("x: ");
-            text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
-            text += _("   y: ");
-            text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
-        }
-        else
-        {
-            text = _("Real: ");
-            text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
-            text += _("   Imaginary: ");
-            text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
-        }
+        const auto [horizontalAxis, verticalAxis] = _fractal->GetCoordinateSystem();
+        text = horizontalAxis + ": ";
+        text += FormatStatusCoordinate(_fractal->GetPreciseX(_lastMousePosition.x));
+        text += "   " + verticalAxis + ": ";
+        text += FormatStatusCoordinate(_fractal->GetPreciseY(_lastMousePosition.y));
     }
 
     if (_fractal->IsHighPrecisionRenderActive())

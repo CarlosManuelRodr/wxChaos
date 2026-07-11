@@ -17,6 +17,7 @@ class SierpinskiTriangle : public Fractal
 public:
     SierpinskiTriangle(unsigned int width, unsigned int height);
     wxString GetName() const override { return "Sierpinski Triangle"; }
+    CoordinateSystem GetCoordinateSystem() const override { return {_("x"), _("y")}; }
 
     void Render() override;
 };

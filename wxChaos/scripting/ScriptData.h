@@ -10,6 +10,8 @@ struct ScriptData
     std::string file;
     std::string name;
     std::string documentationPath;
+    std::string horizontalCoordinate;
+    std::string verticalCoordinate;
     ScriptCategory scriptCategory;
     double minX, maxX, minY;
     int defaultIter;

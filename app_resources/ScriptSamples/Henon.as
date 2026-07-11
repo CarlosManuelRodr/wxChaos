@@ -2,6 +2,7 @@ void Configure()
 {
 	SetFractalName("Henon Map (script)");
 	SetCategory("Other");
+	SetCoordinateSystem("x", "y");
 	SetMinX(-1.5);
 	SetMaxX(1.5);
 	SetMinY(-0.4);

@@ -25,6 +25,7 @@ public:
     DoublePendulum(unsigned int width, unsigned int height);
     ~DoublePendulum() override;
     wxString GetName() const override { return "Double Pendulum"; }
+    CoordinateSystem GetCoordinateSystem() const override { return {_("θ2"), _("θ1")}; }
 
     void Render() override;
     void DrawOrbit() override;

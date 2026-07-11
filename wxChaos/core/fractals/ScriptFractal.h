@@ -36,6 +36,7 @@ public:
     ScriptFractal(unsigned int width, unsigned int height, const std::string& scriptPath);
     ~ScriptFractal() override;
     wxString GetName() const override { return "Script Fractal"; }
+    CoordinateSystem GetCoordinateSystem() const override;
 
     void Render() override;
     /** @brief Executes the script's DrawOrbit() entry point for the selected orbit point. */

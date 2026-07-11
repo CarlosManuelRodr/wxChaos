@@ -70,6 +70,14 @@ const ScriptData& ScriptFractal::GetScriptData() const
 {
     return _myScriptData;
 }
+Fractal::CoordinateSystem ScriptFractal::GetCoordinateSystem() const
+{
+    if (_myScriptData.horizontalCoordinate.empty() || _myScriptData.verticalCoordinate.empty())
+        return Fractal::GetCoordinateSystem();
+
+    return {wxString::FromUTF8(_myScriptData.horizontalCoordinate),
+            wxString::FromUTF8(_myScriptData.verticalCoordinate)};
+}
 void ScriptFractal::Render()
 {
     asSetMap = _setMap;

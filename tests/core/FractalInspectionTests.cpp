@@ -3,6 +3,8 @@
 #include "FractalFactory.h"
 #include "fractals/LogisticMap.h"
 #include "fractals/Mandelbrot.h"
+#include "fractals/DoublePendulum.h"
+#include "fractals/SierpinskiTriangle.h"
 #include "fractals/ScriptFractal.h"
 
 namespace
@@ -64,6 +66,38 @@ TEST_CASE("script fractal creates inspection probes through its override")
 
     REQUIRE(factory.GetFractal() != nullptr);
     CHECK(factory.GetFractal()->GetType() == FractalType::ScriptFractal);
+}
+
+TEST_CASE("fractals own their coordinate system labels")
+{
+    Mandelbrot complexFractal(8, 8);
+    SierpinskiTriangle cartesianFractal(8, 8);
+    DoublePendulum pendulum(8, 8);
+
+    CHECK(ToString(complexFractal.GetCoordinateSystem().horizontalAxis) == "Real");
+    CHECK(ToString(complexFractal.GetCoordinateSystem().verticalAxis) == "Imaginary");
+    CHECK(ToString(cartesianFractal.GetCoordinateSystem().horizontalAxis) == "x");
+    CHECK(ToString(cartesianFractal.GetCoordinateSystem().verticalAxis) == "y");
+    CHECK(ToString(pendulum.GetCoordinateSystem().horizontalAxis) == "θ2");
+    CHECK(ToString(pendulum.GetCoordinateSystem().verticalAxis) == "θ1");
+}
+
+TEST_CASE("script fractals can register coordinate system labels")
+{
+    ScriptData defaultData;
+    defaultData.file = "default-coordinates.as";
+    ScriptFractal defaultFractal(8, 8, defaultData, 1);
+
+    ScriptData customData;
+    customData.file = "custom-coordinates.as";
+    customData.horizontalCoordinate = "u";
+    customData.verticalCoordinate = "v";
+    ScriptFractal customFractal(8, 8, customData, 1);
+
+    CHECK(ToString(defaultFractal.GetCoordinateSystem().horizontalAxis) == "Real");
+    CHECK(ToString(defaultFractal.GetCoordinateSystem().verticalAxis) == "Imaginary");
+    CHECK(ToString(customFractal.GetCoordinateSystem().horizontalAxis) == "u");
+    CHECK(ToString(customFractal.GetCoordinateSystem().verticalAxis) == "v");
 }
 
 TEST_CASE("Logistic map point inspection calculates Lyapunov exponent from x coordinate")
