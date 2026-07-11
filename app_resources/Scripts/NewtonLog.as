@@ -7,7 +7,8 @@ void Configure()
     SetMaxX(11.6189);
     SetMinY(-8.12002);
     SetEnableSetMap(false);
-    AddDoubleOption("minStep", "Min step: ", 0.01);
+    const string minStepLabel = GetCurrentLocale() == "es" ? "Paso mínimo: " : "Minimum step: ";
+    AddDoubleOption("minStep", minStepLabel, 0.01);
 }
 
 void Render()

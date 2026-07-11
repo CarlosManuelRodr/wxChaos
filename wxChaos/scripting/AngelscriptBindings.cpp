@@ -3,12 +3,14 @@
 // ReSharper disable CppDFAUnusedValue
 #include <cassert>
 #include <limits>
+#include <new>
 #include "AngelscriptBindings.h"
 #include "AngelscriptConfigurationEngine.h"
 #include "AppPaths.h"
 #include "TextUtils.h"
 #include "Complex.h"
 #include "Fractal.h"
+#include "common/AppLocalization.h"
 
 using namespace std;
 
@@ -182,6 +184,12 @@ static void asSetExtColorMode(bool mode)
 static void asSetEnableSetMap(bool mode)
 {
     disableSetMap = !mode;
+}
+
+static void asGetCurrentLocale(asIScriptGeneric* generic)
+{
+    new (generic->GetAddressOfReturnLocation()) string(
+        AppLocalization::DocumentationLanguageCode(AppLocalization::CurrentLanguage()).ToStdString());
 }
 
 static void asSetPoint(int x, int y, bool setVal, int colorVal)
@@ -440,6 +448,7 @@ void RegisterWxChaosInterface(asIScriptEngine* engine)
     r = engine->RegisterGlobalFunction("void SetRedrawAlways(bool)", asFUNCTION(asSetRedrawAlways), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetExtColorMode(bool)", asFUNCTION(asSetExtColorMode), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetEnableSetMap(bool)", asFUNCTION(asSetEnableSetMap), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("string GetCurrentLocale()", asFUNCTION(asGetCurrentLocale), asCALL_GENERIC); assert(r >= 0);
 }
 
 void RegisterOrbitDrawingInterface(asIScriptEngine* engine, Fractal* fractal)

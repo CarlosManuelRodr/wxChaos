@@ -141,6 +141,7 @@ void DrawOrbit()
 <tr><td><code>SetExtColorMode(false)</code></td><td>Disables the normal exterior-color behavior when the script is plotting its own geometry.</td></tr>
 <tr><td><code>SetEnableSetMap(false)</code></td><td>Disables the usual set-map coloring for specialized scripts.</td></tr>
 <tr><td><code>SetDocumentationPath(file)</code></td><td>Connects the fractal to an HTML information page in <code>Resources/Documents</code>.</td></tr>
+<tr><td><code>GetCurrentLocale()</code></td><td>Returns the active language code so names, labels, and other script text can follow the application language.</td></tr>
 </tbody>
 </table>
 </div>
@@ -154,19 +155,27 @@ void DrawOrbit()
         </p>
 <pre class="code-example"><code>void Configure()
 {
-    AddDoubleOption("a", "Feedback a: ", 2.75);
+    const string minStepLabel = GetCurrentLocale() == "es" ? "Paso mínimo: " : "Min step: ";
+
+    AddDoubleOption("minStep", minStepLabel, 0.01);
     AddIntegerOption("seed", "Seed: ", 12);
     AddBoolOption("mirror", "Mirror the orbit", true);
 }
 
 void Render()
 {
-    const double a = GetDoubleOption("a");
+    const double minStep = GetDoubleOption("minStep");
     const int seed = GetIntegerOption("seed");
     const bool mirror = GetBoolOption("mirror");
 
-    // Use a, seed, and mirror in any formula you can imagine.
+    // Use minStep, seed, and mirror in any formula you can imagine.
 }</code></pre>
+<p>
+            <code>GetCurrentLocale()</code> returns the active wxChaos language as a short code: currently
+            <code>"en"</code> or <code>"es"</code>. Use it for every user-facing string your script supplies,
+            such as option labels. Keep the English text as the fallback so the script remains friendly if wxChaos
+            gains another language later.
+        </p>
 <p class="note">
             Keep option keys consistent and unique. Fetch them outside inner pixel loops: one lookup per render is clearer
             and cheaper than looking up the same value millions of times.
@@ -425,6 +434,7 @@ definir una vista inicial útil y establecer un comportamiento razonable.
 <tr><td><code>SetExtColorMode(false)</code></td><td>Desactiva el comportamiento normal de color exterior cuando el script dibuja su propia geometría.</td></tr>
 <tr><td><code>SetEnableSetMap(false)</code></td><td>Desactiva el coloreado habitual del mapa del conjunto para scripts especializados.</td></tr>
 <tr><td><code>SetDocumentationPath(file)</code></td><td>Conecta el fractal con una página HTML informativa dentro de <code>Resources/Documents</code>.</td></tr>
+<tr><td><code>GetCurrentLocale()</code></td><td>Devuelve el código del idioma activo para adaptar nombres, etiquetas y otros textos del script al idioma de la aplicación.</td></tr>
 </tbody>
 </table>
 </div>
@@ -438,19 +448,27 @@ o <code>DrawOrbit()</code>. Los valores aparecen automáticamente en las opcione
 </p>
 <pre class="code-example"><code>void Configure()
 {
-    AddDoubleOption("a", "Feedback a: ", 2.75);
+    const string minStepLabel = GetCurrentLocale() == "es" ? "Paso mínimo: " : "Min step: ";
+
+    AddDoubleOption("minStep", minStepLabel, 0.01);
     AddIntegerOption("seed", "Seed: ", 12);
     AddBoolOption("mirror", "Mirror the orbit", true);
 }
 
 void Render()
 {
-    const double a = GetDoubleOption("a");
+    const double minStep = GetDoubleOption("minStep");
     const int seed = GetIntegerOption("seed");
     const bool mirror = GetBoolOption("mirror");
 
-    // Use a, seed, and mirror in any formula you can imagine.
+    // Usa minStep, seed y mirror en cualquier formula que imagines.
 }</code></pre>
+<p>
+<code>GetCurrentLocale()</code> devuelve el idioma activo de wxChaos como un código corto: actualmente
+<code>"en"</code> o <code>"es"</code>. Úsalo para cada texto visible que proporcione tu script, como las
+etiquetas de opciones. Conserva el texto inglés como alternativa para que el script siga siendo acogedor si
+wxChaos incorpora otro idioma más adelante.
+</p>
 <p class="note">
 Mantén las claves de las opciones coherentes y únicas. Obtén sus valores fuera de los bucles internos de
 píxeles: una consulta por renderizado es más clara y barata que buscar el mismo valor millones de veces.
