@@ -105,6 +105,58 @@ a {
     color: var(--muted-text-color);
 }
 
+.code-example {
+    background: var(--panel-background);
+    border: 1px solid var(--panel-border-color);
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: var(--text-color);
+    font: 0.9rem/1.5 Consolas, "Courier New", monospace;
+    margin: 16px 0;
+    overflow-x: auto;
+    padding: 16px 18px;
+    tab-size: 4;
+    white-space: pre;
+}
+
+.code-example code,
+.api-table code,
+.key-idea code,
+p code,
+li code {
+    font-family: Consolas, "Courier New", monospace;
+}
+
+.api-table-wrap {
+    border: 1px solid var(--panel-border-color);
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.api-table {
+    border-collapse: collapse;
+    min-width: 620px;
+    width: 100%;
+}
+
+.api-table th,
+.api-table td {
+    border-bottom: 1px solid var(--section-border-color);
+    padding: 11px 14px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.api-table th {
+    background: var(--panel-background);
+    color: var(--heading-color);
+    font-weight: 650;
+}
+
+.api-table tr:last-child td {
+    border-bottom: 0;
+}
+
 .wxchaos-document {
     color: var(--text-color);
     background: var(--page-background);

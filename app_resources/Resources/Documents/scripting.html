@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Writing Fractals with AngelScript</title>
+    <link rel="stylesheet" href="fractal_info.css">
+</head>
+<body>
+<main class="museum-page scripting-guide">
+    <section class="hero" aria-labelledby="page-title">
+        <div class="hero-header">
+            <p class="eyebrow">Make your own mathematical worlds</p>
+            <h1 id="page-title">Writing fractals with AngelScript</h1>
+            <p class="subtitle">A guided path from an empty file to a colorful, explorable fractal.</p>
+            <p class="hero-introduction">
+                wxChaos scripts let you concentrate on the experiment: choose a formula, visit points, assign colors,
+                and see what grows. You do not need to rebuild the application. A script is simply an
+                <a href="https://angelcode.com/angelscript/">AngelScript</a> file with two small entry points, plus
+                an optional orbit drawer when you want to reveal a point's journey.
+            </p>
+            <div class="action-row">
+                <a class="action-link" href="wxchaos://fractal/script-editor">Open the script editor</a>
+                <a class="action-link secondary" href="#first-fractal">Write the first fractal</a>
+            </div>
+        </div>
+    </section>
+
+    <section aria-labelledby="shape-title">
+        <h2 id="shape-title">The shape of every script</h2>
+        <div class="key-idea">
+            <p>
+                <code>Configure()</code> describes the fractal. <code>Render()</code> creates its pixels.
+                <code>DrawOrbit()</code> is optional and traces the motion of a selected point.
+            </p>
+        </div>
+        <pre class="code-example"><code>void Configure()
+{
+    SetFractalName("My first fractal");
+    SetCategory("Complex");
+}
+
+void Render()
+{
+    // Your formula and pixel loops live here.
+}
+
+void DrawOrbit()
+{
+    // Optional: connect successive orbit points with DrawLine().
+}</code></pre>
+        <p>
+            Save the file from the script editor and render the preview. When the script compiles successfully it can
+            join the scripted fractals in the application menu. If you leave out <code>DrawOrbit()</code>, wxChaos
+            simply disables the Show orbit command for that fractal.
+        </p>
+    </section>
+
+    <section id="first-fractal" aria-labelledby="first-title">
+        <h2 id="first-title">First expedition: a Mandelbrot set</h2>
+        <p>
+            The classic Mandelbrot loop is a wonderful first script because every part has a visible purpose. Copy this
+            into the editor, render it, and then change the power, bailout, or palette value to make it yours.
+        </p>
+        <pre class="code-example"><code>void Configure()
+{
+    SetFractalName("My Mandelbrot");
+    SetCategory("Complex");
+    SetMinX(-2.5);
+    SetMaxX(1.2);
+    SetMinY(-1.2);
+    SetDefaultIter(100);
+
+    AddDoubleOption("bailout", "Bailout: ", 4.0);
+}
+
+void Render()
+{
+    const double bailout = GetDoubleOption("bailout");
+
+    for (int y = ho; y &lt; hf; y++)
+    {
+        const double cImaginary = maxY - y * yFactor;
+        for (int x = wo; x &lt; wf; x++)
+        {
+            const complex c(minX + x * xFactor, cImaginary);
+            complex z(0.0, 0.0);
+            bool inside = true;
+            int n = 0;
+
+            for (n = 0; n &lt; maxIter; n++)
+            {
+                z = z * z + c;
+                if (z.real() * z.real() + z.imag() * z.imag() &gt; bailout)
+                {
+                    inside = false;
+                    break;
+                }
+            }
+
+            SetPoint(x, y, inside, n);
+        }
+    }
+}
+
+void DrawOrbit()
+{
+    const double bailout = GetDoubleOption("bailout");
+    const complex c(orbitX, orbitY);
+    complex z(0.0, 0.0);
+
+    for (uint n = 0; n &lt; maxIter; n++)
+    {
+        const complex previous = z;
+        z = z * z + c;
+        DrawLine(previous.real(), previous.imag(), z.real(), z.imag(), 0, 255, 0);
+
+        if (z.real() * z.real() + z.imag() * z.imag() &gt; bailout)
+            break;
+    }
+}</code></pre>
+        <div class="experiment">
+            <div class="experiment-step"><p>Render it unchanged and visit the familiar boundary near ((-0.75, 0)).</p></div>
+            <div class="experiment-step"><p>Open Fractal options and try a larger bailout. Look for subtle changes in the exterior bands.</p></div>
+            <div class="experiment-step"><p>Replace <code>z * z</code> with <code>pow(z, 3)</code>, widen the view, and meet a new Multibrot world.</p></div>
+            <div class="experiment-step"><p>Select Show orbit and click near a boundary. The green path turns an invisible iteration into a visible story.</p></div>
+        </div>
+    </section>
+
+    <section aria-labelledby="configure-title">
+        <h2 id="configure-title">Configure the room before painting it</h2>
+        <p><code>Configure()</code> runs when wxChaos discovers the script. Use it to give the fractal a name, a useful starting view, and sensible behavior.</p>
+        <div class="api-table-wrap">
+            <table class="api-table">
+                <thead><tr><th>Function</th><th>What it changes</th></tr></thead>
+                <tbody>
+                <tr><td><code>SetFractalName(name)</code></td><td>The name shown in the scripted fractal menu.</td></tr>
+                <tr><td><code>SetCategory(category)</code></td><td>Places it under <code>Complex</code>, <code>NumMet</code>, <code>Physic</code>, or <code>Other</code>.</td></tr>
+                <tr><td><code>SetMinX</code>, <code>SetMaxX</code>, <code>SetMinY</code></td><td>Defines the initial mathematical view. wxChaos calculates the top edge from the canvas aspect ratio.</td></tr>
+                <tr><td><code>SetDefaultIter(value)</code></td><td>Chooses the initial maximum iteration count.</td></tr>
+                <tr><td><code>SetJuliaVariety(true)</code></td><td>Enables the editable Julia constant exposed as <code>kReal</code> and <code>kImaginary</code>.</td></tr>
+                <tr><td><code>SetRedrawAlways(true)</code></td><td>Requests a fresh render when the view changes; useful for orbit plots and random constructions.</td></tr>
+                <tr><td><code>SetExtColorMode(false)</code></td><td>Disables the normal exterior-color behavior when the script is plotting its own geometry.</td></tr>
+                <tr><td><code>NoSetMap(true)</code></td><td>Opts out of the usual set-map behavior for specialized scripts.</td></tr>
+                <tr><td><code>SetDocumentationPath(file)</code></td><td>Connects the fractal to an HTML information page in <code>Resources/Documents</code>.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section aria-labelledby="options-title">
+        <h2 id="options-title">Give explorers a few knobs to turn</h2>
+        <p>
+            Options are not limited to names known by wxChaos. Your script invents each key. Declare options in
+            <code>Configure()</code>, then read them once near the start of <code>Render()</code> or
+            <code>DrawOrbit()</code>. The values appear automatically in Fractal options.
+        </p>
+        <pre class="code-example"><code>void Configure()
+{
+    AddDoubleOption("a", "Feedback a: ", 2.75);
+    AddIntegerOption("seed", "Seed: ", 12);
+    AddBoolOption("mirror", "Mirror the orbit", true);
+}
+
+void Render()
+{
+    const double a = GetDoubleOption("a");
+    const int seed = GetIntegerOption("seed");
+    const bool mirror = GetBoolOption("mirror");
+
+    // Use a, seed, and mirror in any formula you can imagine.
+}</code></pre>
+        <p class="note">
+            Keep option keys consistent and unique. Fetch them outside inner pixel loops: one lookup per render is clearer
+            and cheaper than looking up the same value millions of times.
+        </p>
+    </section>
+
+    <section aria-labelledby="canvas-title">
+        <h2 id="canvas-title">The canvas globals</h2>
+        <p>wxChaos supplies the current view and the region assigned to this render worker as global variables.</p>
+        <div class="api-table-wrap">
+            <table class="api-table">
+                <thead><tr><th>Globals</th><th>Meaning</th></tr></thead>
+                <tbody>
+                <tr><td><code>minX</code>, <code>maxX</code>, <code>minY</code>, <code>maxY</code></td><td>The current mathematical view.</td></tr>
+                <tr><td><code>xFactor</code>, <code>yFactor</code></td><td>Mathematical distance represented by one pixel.</td></tr>
+                <tr><td><code>wo</code>, <code>wf</code>, <code>ho</code>, <code>hf</code></td><td>Half-open pixel bounds for this worker: loop from origin up to, but not including, final.</td></tr>
+                <tr><td><code>screenWidth</code>, <code>screenHeight</code></td><td>The canvas dimensions.</td></tr>
+                <tr><td><code>maxIter</code></td><td>The current maximum iteration count selected by the user.</td></tr>
+                <tr><td><code>paletteSize</code></td><td>The number of colors available in the active palette.</td></tr>
+                <tr><td><code>threadIndex</code></td><td>The worker number. Use worker zero for algorithms that must run exactly once.</td></tr>
+                <tr><td><code>kReal</code>, <code>kImaginary</code></td><td>The editable Julia constant when Julia variety is enabled.</td></tr>
+                <tr><td><code>orbitX</code>, <code>orbitY</code></td><td>The mathematical point selected for orbit drawing.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <details class="concept-details">
+            <summary>Why do the loops begin at ho and wo?</summary>
+            <div class="concept-details-content">
+                <p>
+                    Pixel fractals are divided among render workers. Each worker receives a different rectangle, so
+                    respecting <code>wo..wf</code> and <code>ho..hf</code> prevents duplicated work. A single-orbit map
+                    such as Henon or Duffing is different: guard it with <code>if (threadIndex == 0)</code> so only one
+                    worker plots the orbit.
+                </p>
+            </div>
+        </details>
+    </section>
+
+    <section aria-labelledby="pixels-title">
+        <h2 id="pixels-title">Turn mathematics into pixels and colors</h2>
+        <p>The usual coordinate conversion is small enough to memorize:</p>
+        <pre class="code-example"><code>double real = minX + x * xFactor;
+double imaginary = maxY - y * yFactor;
+
+int x = (real - minX) / xFactor;
+int y = (maxY - imaginary) / yFactor;</code></pre>
+        <p>
+            Call <code>SetPoint(x, y, insideSet, colorValue)</code> to store a result. For an escape-time fractal,
+            <code>insideSet</code> is normally true when the point never escaped, while <code>colorValue</code> is often
+            the iteration count. For maps that visit isolated coordinates, check that the converted pixel lies inside
+            the canvas before calling <code>SetPoint()</code>.
+        </p>
+        <div class="key-idea">
+            <p>Color is another playground. Try <code>n</code>, <code>n * 3</code>, an angle quadrant, or a distance transformed into the palette range.</p>
+        </div>
+    </section>
+
+    <section aria-labelledby="math-title">
+        <h2 id="math-title">Complex numbers and useful mathematics</h2>
+        <p>
+            The built-in <code>complex</code> type supports arithmetic, <code>real()</code>, <code>imag()</code>, and
+            functions including <code>pow</code>, <code>sqrt</code>, <code>sin</code>, <code>cos</code>, <code>tan</code>,
+            <code>sinh</code>, <code>cosh</code>, <code>tanh</code>, <code>exp</code>, <code>log</code>, and
+            <code>log10</code>. Real-number versions carry an <code>_r</code> suffix, such as <code>sin_r</code>,
+            <code>pow_r</code>, <code>sqrt_r</code>, <code>abs_r</code>, <code>floor_r</code>, and <code>ceil_r</code>.
+        </p>
+        <pre class="code-example"><code>complex z(0.2, -0.4);
+complex transformed = sin(z) + pow(z, 3);
+double radius = sqrt_r(z.real() * z.real() + z.imag() * z.imag());</code></pre>
+    </section>
+
+    <section aria-labelledby="orbit-title">
+        <h2 id="orbit-title">Make an orbit visible</h2>
+        <p>
+            In <code>DrawOrbit()</code>, start from <code>orbitX</code> and <code>orbitY</code>, apply the same recurrence
+            used by the fractal, and connect each old point to the new one:
+        </p>
+        <pre class="code-example"><code>void DrawOrbit()
+{
+    complex z(orbitX, orbitY);
+    for (uint n = 0; n &lt; maxIter; n++)
+    {
+        const complex previous = z;
+        z = cos(z);
+        DrawLine(previous.real(), previous.imag(), z.real(), z.imag(), 255, 180, 0);
+    }
+}</code></pre>
+        <p>
+            The final three arguments are red, green, and blue values from 0 to 255. Use green for convergence, red for
+            escape, or invent a visual language that fits your experiment.
+        </p>
+    </section>
+
+    <section aria-labelledby="samples-title">
+        <h2 id="samples-title">Borrow, remix, and wander</h2>
+        <p>
+            The directory <code>app_resources/ScriptSamples/</code> contains compact starting points. They are meant to
+            be read, copied, broken, and rebuilt:
+        </p>
+        <ul class="related-links">
+            <li><a href="#samples-title"><b>Gradient.as</b><span class="related-link-description">The smallest useful tour of palette values and SetPoint.</span></a></li>
+            <li><a href="#samples-title"><b>ScriptMandelbrot.as</b><span class="related-link-description">A complete escape-time pixel loop.</span></a></li>
+            <li><a href="#samples-title"><b>ScriptJulia.as</b><span class="related-link-description">Uses kReal and kImaginary to expose a Julia family.</span></a></li>
+            <li><a href="#samples-title"><b>Henon.as</b><span class="related-link-description">Plots one long orbit instead of testing every pixel.</span></a></li>
+            <li><a href="#samples-title"><b>Escape_angle.as</b><span class="related-link-description">Turns the direction of escape into color structure.</span></a></li>
+            <li><a href="#samples-title"><b>hello_world.as</b><span class="related-link-description">Experiments with PrintString, PrintInt, PrintFloat, and PrintComplex.</span></a></li>
+        </ul>
+        <p>
+            The official scripts in <code>app_resources/Scripts/</code> go further. Duffing demonstrates a custom
+            option, while the Newton scripts combine options with orbit drawing. Start with a copy, change one idea,
+            and let the resulting image tell you what to try next.
+        </p>
+    </section>
+
+    <section aria-labelledby="debug-title">
+        <h2 id="debug-title">When the first render is not what you expected</h2>
+        <ul>
+            <li>Read the compiler row and column first; a missing semicolon often causes several later messages.</li>
+            <li>Check every array-like pixel access. Call <code>SetPoint()</code> only with coordinates inside the canvas.</li>
+            <li>Use <code>PrintString</code>, <code>PrintInt</code>, <code>PrintFloat</code>, and <code>PrintComplex</code> for small clues, not inside a million-pixel loop.</li>
+            <li>If a plotted map looks many times too bright, make sure only <code>threadIndex == 0</code> runs the orbit.</li>
+            <li>If an option always reads zero, check that the key passed to <code>Get…Option</code> exactly matches the key declared in <code>Configure()</code>.</li>
+        </ul>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/script-editor">Open the editor and experiment</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>
