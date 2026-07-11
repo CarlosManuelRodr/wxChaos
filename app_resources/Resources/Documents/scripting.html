@@ -122,13 +122,13 @@ void DrawOrbit()
         <div class="experiment">
             <div class="experiment-step"><p>Render it unchanged and visit the familiar boundary near ((-0.75, 0)).</p></div>
             <div class="experiment-step"><p>Open Fractal options and try a larger bailout. Look for subtle changes in the exterior bands.</p></div>
-            <div class="experiment-step"><p>Replace <code>z * z</code> with <code>pow(z, 3)</code>, widen the view, and meet a new Multibrot world.</p></div>
-            <div class="experiment-step"><p>Select Show orbit and click near a boundary. The green path turns an invisible iteration into a visible story.</p></div>
+            <div class="experiment-step"><p>Replace <code>z * z</code> with <code>pow(z, 3)</code>, widen the view, and meet the Multibrot set.</p></div>
+            <div class="experiment-step"><p>Select Show orbit to view the full path.</p></div>
         </div>
     </section>
 
     <section aria-labelledby="configure-title">
-        <h2 id="configure-title">Configure the room before painting it</h2>
+        <h2 id="configure-title">Configure the fractal before painting it</h2>
         <p><code>Configure()</code> runs when wxChaos discovers the script. Use it to give the fractal a name, a useful starting view, and sensible behavior.</p>
         <div class="api-table-wrap">
             <table class="api-table">
@@ -136,10 +136,10 @@ void DrawOrbit()
                 <tbody>
                 <tr><td><code>SetFractalName(name)</code></td><td>The name shown in the scripted fractal menu.</td></tr>
                 <tr><td><code>SetCategory(category)</code></td><td>Places it under <code>Complex</code>, <code>NumMet</code>, <code>Physic</code>, or <code>Other</code>.</td></tr>
-                <tr><td><code>SetMinX</code>, <code>SetMaxX</code>, <code>SetMinY</code></td><td>Defines the initial mathematical view. wxChaos calculates the top edge from the canvas aspect ratio.</td></tr>
+                <tr><td><code>SetMinX</code>, <code>SetMaxX</code>, <code>SetMinY</code></td><td>Defines the initial viewport. wxChaos calculates the top edge from the canvas aspect ratio.</td></tr>
                 <tr><td><code>SetDefaultIter(value)</code></td><td>Chooses the initial maximum iteration count.</td></tr>
                 <tr><td><code>SetJuliaVariety(true)</code></td><td>Enables the editable Julia constant exposed as <code>kReal</code> and <code>kImaginary</code>.</td></tr>
-                <tr><td><code>SetRedrawAlways(true)</code></td><td>Requests a fresh render when the view changes; useful for orbit plots and random constructions.</td></tr>
+                <tr><td><code>SetRedrawAlways(true)</code></td><td>Requests a fresh render when the view changes. Useful for fractals that cannot be drawn partially such as the Gauss or Duffing maps.</td></tr>
                 <tr><td><code>SetExtColorMode(false)</code></td><td>Disables the normal exterior-color behavior when the script is plotting its own geometry.</td></tr>
                 <tr><td><code>NoSetMap(true)</code></td><td>Opts out of the usual set-map behavior for specialized scripts.</td></tr>
                 <tr><td><code>SetDocumentationPath(file)</code></td><td>Connects the fractal to an HTML information page in <code>Resources/Documents</code>.</td></tr>
@@ -183,15 +183,15 @@ void Render()
             <table class="api-table">
                 <thead><tr><th>Globals</th><th>Meaning</th></tr></thead>
                 <tbody>
-                <tr><td><code>minX</code>, <code>maxX</code>, <code>minY</code>, <code>maxY</code></td><td>The current mathematical view.</td></tr>
+                <tr><td><code>minX</code>, <code>maxX</code>, <code>minY</code>, <code>maxY</code></td><td>The current viewport.</td></tr>
                 <tr><td><code>xFactor</code>, <code>yFactor</code></td><td>Mathematical distance represented by one pixel.</td></tr>
                 <tr><td><code>wo</code>, <code>wf</code>, <code>ho</code>, <code>hf</code></td><td>Half-open pixel bounds for this worker: loop from origin up to, but not including, final.</td></tr>
                 <tr><td><code>screenWidth</code>, <code>screenHeight</code></td><td>The canvas dimensions.</td></tr>
                 <tr><td><code>maxIter</code></td><td>The current maximum iteration count selected by the user.</td></tr>
                 <tr><td><code>paletteSize</code></td><td>The number of colors available in the active palette.</td></tr>
-                <tr><td><code>threadIndex</code></td><td>The worker number. Use worker zero for algorithms that must run exactly once.</td></tr>
+                <tr><td><code>threadIndex</code></td><td>The worker number. Use worker zero for algorithms that must run exactly one thread.</td></tr>
                 <tr><td><code>kReal</code>, <code>kImaginary</code></td><td>The editable Julia constant when Julia variety is enabled.</td></tr>
-                <tr><td><code>orbitX</code>, <code>orbitY</code></td><td>The mathematical point selected for orbit drawing.</td></tr>
+                <tr><td><code>orbitX</code>, <code>orbitY</code></td><td>The point selected for orbit drawing.</td></tr>
                 </tbody>
             </table>
         </div>
