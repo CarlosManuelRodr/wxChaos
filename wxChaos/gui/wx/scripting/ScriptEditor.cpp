@@ -3,6 +3,7 @@
 #include <wx/bmpbndl.h>
 #include <wx/datetime.h>
 #include "common/AppTheme.h"
+#include "docs/DocumentViewer.h"
 #include "AppPaths.h"
 #include "scripting/ScriptEditor.h"
 #include "FractalTypes.h"
@@ -182,6 +183,11 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     SetButtonIcon(_closeButton, "close_light.svg", "close_dark.svg");
     scriptListSizer->Add(_closeButton, 0, wxALL | wxEXPAND, 5);
+
+    _documentationButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Documentation"),
+                                        wxDefaultPosition, wxDefaultSize, 0);
+    SetButtonIcon(_documentationButton, "help_light.svg", "help_dark.svg");
+    scriptListSizer->Add(_documentationButton, 0, wxALL | wxEXPAND, 5);
     panelSizer->Add(scriptListSizer, 0, wxEXPAND, 5);
 
     const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, _("Source")), wxVERTICAL);
@@ -305,6 +311,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     _newButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewScript, this);
     _removeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnCloseButton, this);
+    _documentationButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDocumentation, this);
     this->Bind(wxEVT_CLOSE_WINDOW, &ScriptEditor::OnClose, this);
     _codeEditor->Bind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
@@ -320,6 +327,7 @@ ScriptEditor::~ScriptEditor()
     _newButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewScript, this);
     _removeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnCloseButton, this);
+    _documentationButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDocumentation, this);
     _codeEditor->Unbind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
     _runButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
@@ -430,6 +438,13 @@ void ScriptEditor::OnDeleteScript(wxCommandEvent&)
 void ScriptEditor::OnCloseButton(wxCommandEvent&)
 {
     this->Close(true);
+}
+void ScriptEditor::OnDocumentation(wxCommandEvent&)
+{
+    const auto viewer = new DocumentViewer(AppPaths::ResourceFile({"Documents", "scripting.html"}),
+                                           this, wxID_ANY, _("Scripting guide"),
+                                           wxDefaultPosition, wxSize(1500, 960));
+    viewer->Show(true);
 }
 void ScriptEditor::OnClose(wxCloseEvent&)
 {
