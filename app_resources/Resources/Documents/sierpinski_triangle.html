@@ -18,25 +18,54 @@
             <div class="formula hero-formula">
                 \(T_i(p)=\frac{1}{2}(p+v_i)\)
             </div>
-            <p class="hero-introduction">This fractal is built by repetition so simple it feels like a magic trick: remove the middle triangle, then do the same to every remaining triangle forever.</p>
+            <p class="hero-introduction">
+                This fractal is built by repetition so simple it feels like a magic trick: remove the middle triangle,
+                then do the same to every remaining triangle forever.
+            </p>
         </div>
-        <figure class="hero-figure"><img src="sierpinski_triangle/overview.png" alt="An overview of Sierpinski triangle"><figcaption><span class="figure-title">Three copies at every scale.</span></figcaption></figure>
+        <figure class="hero-figure">
+            <img src="sierpinski_triangle/overview.png" alt="An overview of Sierpinski triangle">
+            <figcaption><span class="figure-title">Three copies at every scale.</span></figcaption>
+        </figure>
         <div class="action-row"><a class="action-link" href="wxchaos://fractal/sierpinski-triangle">Open in wxChaos</a></div>
     </section>
-
     <section>
         <h2>What to try first</h2>
         <div class="experiment">
-            <div class="experiment-step"><p>Look at the largest empty triangle, then find the same emptiness repeated inside each corner.</p></div>
-            <div class="experiment-step"><p>Zoom into any corner. The image should feel unchanged because each part contains smaller copies of the whole.</p></div>
-            <div class="experiment-step"><p>Use this page as a calm interlude after chaotic escape-time fractals. Here the rule is geometric rather than turbulent.</p></div>
+            <div class="experiment-step">
+                <p>Look at the largest empty triangle, then find the same emptiness repeated inside each corner.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Zoom into any corner. The image should feel unchanged because each part contains smaller copies of the whole.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Use this page as a calm interlude after chaotic escape-time fractals. Here the rule is geometric rather than turbulent.</p>
+            </div>
         </div>
     </section>
-
     <section>
         <h2>Mathematical notes</h2>
-        <details class="concept-details"><summary>Dimension between line and surface</summary><div class="concept-details-content"><p>The Sierpinski triangle contains three half-size copies of itself. Its similarity dimension is therefore \(\log(3)/\log(2)\), about \(1.585\). That is larger than a line but smaller than a filled area, matching the way it spreads across the plane while leaving holes everywhere.</p></div></details>
-        <details class="concept-details"><summary>The chaos game version</summary><div class="concept-details-content"><p>A common construction starts from any point, repeatedly chooses one triangle vertex at random, and moves halfway toward it. After many steps the points reveal the Sierpinski triangle. Random choices create a deterministic shape because the transformations contract space toward the same invariant set.</p></div></details>
+        <details class="concept-details">
+            <summary>Dimension between line and surface</summary>
+            <div class="concept-details-content">
+                <p>
+                    The Sierpinski triangle contains three half-size copies of itself. Its similarity dimension is
+                    therefore \(\log(3)/\log(2)\), about \(1.585\). That is larger than a line but smaller than a
+                    filled area, matching the way it spreads across the plane while leaving holes everywhere.
+                </p>
+            </div>
+        </details>
+        <details class="concept-details">
+            <summary>The chaos game version</summary>
+            <div class="concept-details-content">
+                <p>
+                    A common construction starts from any point, repeatedly chooses one triangle vertex at random,
+                    and moves halfway toward it. After many steps the points reveal the Sierpinski triangle. Random
+                    choices create a deterministic shape because the transformations contract space toward the same
+                    invariant set.
+                </p>
+            </div>
+        </details>
     </section>
 </main>
 </body>

@@ -26,22 +26,47 @@
                 Also known as Mandelbar, this fractal was created by Crowe, Hasson, Rippon and Strain-Clark in 1989.
             </p>
         </div>
-        <figure class="hero-figure"><img src="tricorn/overview.png" alt="An overview of Tricorn"><figcaption><span class="figure-title">The Mandelbar silhouette.</span></figcaption></figure>
-        <div class="action-row"><a class="action-link" href="wxchaos://fractal/tricorn">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a></div>
+        <figure class="hero-figure">
+            <img src="tricorn/overview.png" alt="An overview of Tricorn">
+            <figcaption><span class="figure-title">The Mandelbar silhouette.</span></figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/tricorn">Open in wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a>
+        </div>
     </section>
-
     <section>
         <h2>What to try first</h2>
         <div class="experiment">
-            <div class="experiment-step"><p>Compare the complete shape with the Mandelbrot set. It feels related, but every lobe seems to have been turned through a mirror.</p></div>
-            <div class="experiment-step"><p>Zoom near a corner. The Tricorn is famous for parameter-space structures that do not behave like the analytic Mandelbrot family.</p></div>
-            <div class="experiment-step"><p>Try escape angle coloring to emphasize the reflected exterior flow.</p></div>
+            <div class="experiment-step">
+                <p>
+                    Compare the complete shape with the Mandelbrot set. It feels related, but every lobe seems to have
+                    been turned through a mirror.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Zoom near a corner. The Tricorn is famous for parameter-space structures that do not behave like
+                    the analytic Mandelbrot family.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Try escape angle coloring to emphasize the reflected exterior flow.</p>
+            </div>
         </div>
     </section>
-
     <section>
         <h2>Mathematical notes</h2>
-        <details class="concept-details"><summary>The conjugate square</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=\overline{z_n}^2+c\), starting at \(z_0=0\). Complex conjugation changes \(x+iy\) into \(x-iy\). This reflection makes the map anti-holomorphic rather than holomorphic, which is why it belongs to the Mandelbar family rather than the ordinary Mandelbrot family.</p></div></details>
+        <details class="concept-details">
+            <summary>The conjugate square</summary>
+            <div class="concept-details-content">
+                <p>
+                    wxChaos iterates \(z_{n+1}=\overline{z_n}^2+c\), starting at \(z_0=0\). Complex conjugation
+                    changes \(x+iy\) into \(x-iy\). This reflection makes the map anti-holomorphic rather than
+                    holomorphic, which is why it belongs to the Mandelbar family rather than the ordinary Mandelbrot family.
+                </p>
+            </div>
+        </details>
     </section>
     <section>
         <h2>Coloring lenses</h2>
@@ -49,8 +74,8 @@
         <div class="view-grid">
             <article class="view-card">
                 <img
-                    src="tricorn/escape-time.png"
-                    alt="Tricorn rendered with Escape time">
+                        src="tricorn/escape-time.png"
+                        alt="Tricorn rendered with Escape time">
                 <div class="view-card-content">
                     <h3>Escape time</h3>
                     <p>The baseline map: color follows how long each orbit takes to escape.</p>
@@ -59,8 +84,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="tricorn/smooth-coloring.png"
-                    alt="Tricorn rendered with Smooth coloring">
+                        src="tricorn/smooth-coloring.png"
+                        alt="Tricorn rendered with Smooth coloring">
                 <div class="view-card-content">
                     <h3>Smooth coloring</h3>
                     <p>Softens iteration bands into continuous gradients.</p>
@@ -69,8 +94,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="tricorn/gaussian-integer.png"
-                    alt="Tricorn rendered with Gaussian integer">
+                        src="tricorn/gaussian-integer.png"
+                        alt="Tricorn rendered with Gaussian integer">
                 <div class="view-card-content">
                     <h3>Gaussian integer</h3>
                     <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
@@ -79,8 +104,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="tricorn/escape-angle.png"
-                    alt="Tricorn rendered with Escape angle">
+                        src="tricorn/escape-angle.png"
+                        alt="Tricorn rendered with Escape angle">
                 <div class="view-card-content">
                     <h3>Escape angle</h3>
                     <p>Uses the direction of escape to reveal flow through the exterior.</p>
@@ -89,8 +114,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="tricorn/triangle-inequality.png"
-                    alt="Tricorn rendered with Triangle inequality">
+                        src="tricorn/triangle-inequality.png"
+                        alt="Tricorn rendered with Triangle inequality">
                 <div class="view-card-content">
                     <h3>Triangle inequality</h3>
                     <p>Turns relationships inside the orbit into layered, topographic texture.</p>
@@ -99,8 +124,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="tricorn/orbit-trap.png"
-                    alt="Tricorn rendered with Orbit traps">
+                        src="tricorn/orbit-trap.png"
+                        alt="Tricorn rendered with Orbit traps">
                 <div class="view-card-content">
                     <h3>Orbit traps</h3>
                     <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>

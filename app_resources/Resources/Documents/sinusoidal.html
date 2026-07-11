@@ -18,24 +18,47 @@
             <div class="formula hero-formula">
                 \(z_{n+1}=k\sin(z_n)\)
             </div>
-            <p class="hero-introduction">The sine function is familiar from circles and waves. In complex iteration it stops being merely periodic and starts building repeated corridors, folds, and escape channels.</p>
+            <p class="hero-introduction">
+                The sine function is familiar from circles and waves. In complex iteration it stops being merely
+                periodic and starts building repeated corridors, folds, and escape channels.
+            </p>
         </div>
-        <figure class="hero-figure"><img src="sinusoidal/overview.png" alt="An overview of Sinusoidal fractal"><figcaption><span class="figure-title">Periodic motion, complex escape.</span></figcaption></figure>
-        <div class="action-row"><a class="action-link" href="wxchaos://fractal/sinusoidal">Open in wxChaos</a><a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a><a class="action-link secondary" href="wxchaos://tool/julia-constant-slider">Change Julia constant</a></div>
+        <figure class="hero-figure">
+            <img src="sinusoidal/overview.png" alt="An overview of Sinusoidal fractal">
+            <figcaption><span class="figure-title">Periodic motion, complex escape.</span></figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/sinusoidal">Open in wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Toggle orbit display</a>
+            <a class="action-link secondary" href="wxchaos://tool/julia-constant-slider">Change Julia constant</a>
+        </div>
     </section>
-
     <section>
         <h2>What to try first</h2>
         <div class="experiment">
-            <div class="experiment-step"><p>Look for repeated bands. Sine keeps a memory of periodicity even after being promoted to complex iteration.</p></div>
-            <div class="experiment-step"><p>Move the orbit selector across a band boundary and watch the path switch from contained motion to escape.</p></div>
-            <div class="experiment-step"><p>Try escape angle coloring to see the directional channels more clearly.</p></div>
+            <div class="experiment-step">
+                <p>Look for repeated bands. Sine keeps a memory of periodicity even after being promoted to complex iteration.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Move the orbit selector across a band boundary and watch the path switch from contained motion to escape.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Try escape angle coloring to see the directional channels more clearly.</p>
+            </div>
         </div>
     </section>
-
     <section>
         <h2>Mathematical notes</h2>
-        <details class="concept-details"><summary>Complex sine iteration</summary><div class="concept-details-content"><p>wxChaos iterates \(z_{n+1}=k\sin(z_n)\). For complex \(z=x+iy\), \(\sin(z)=\sin(x)\cosh(y)+i\cos(x)\sinh(y)\). The hyperbolic terms can grow rapidly in the imaginary direction, which is why escape channels appear even though ordinary real sine stays bounded.</p></div></details>
+        <details class="concept-details">
+            <summary>Complex sine iteration</summary>
+            <div class="concept-details-content">
+                <p>
+                    wxChaos iterates \(z_{n+1}=k\sin(z_n)\). For complex \(z=x+iy\), \(\sin(z)=\sin(x)\cosh(y)+i\cos(x)\sinh(y)\).
+                    The hyperbolic terms can grow rapidly in the imaginary direction, which is why escape channels
+                    appear even though ordinary real sine stays bounded.
+                </p>
+            </div>
+        </details>
     </section>
     <section>
         <h2>Coloring lenses</h2>
@@ -43,8 +66,8 @@
         <div class="view-grid">
             <article class="view-card">
                 <img
-                    src="sinusoidal/escape-time.png"
-                    alt="Sinusoidal rendered with Escape time">
+                        src="sinusoidal/escape-time.png"
+                        alt="Sinusoidal rendered with Escape time">
                 <div class="view-card-content">
                     <h3>Escape time</h3>
                     <p>The baseline map: color follows how long each orbit takes to escape.</p>
@@ -53,8 +76,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="sinusoidal/smooth-coloring.png"
-                    alt="Sinusoidal rendered with Smooth coloring">
+                        src="sinusoidal/smooth-coloring.png"
+                        alt="Sinusoidal rendered with Smooth coloring">
                 <div class="view-card-content">
                     <h3>Smooth coloring</h3>
                     <p>Softens iteration bands into continuous gradients.</p>
@@ -63,8 +86,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="sinusoidal/gaussian-integer.png"
-                    alt="Sinusoidal rendered with Gaussian integer">
+                        src="sinusoidal/gaussian-integer.png"
+                        alt="Sinusoidal rendered with Gaussian integer">
                 <div class="view-card-content">
                     <h3>Gaussian integer</h3>
                     <p>Measures how closely escaping orbits pass near the complex integer lattice.</p>
@@ -73,8 +96,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="sinusoidal/escape-angle.png"
-                    alt="Sinusoidal rendered with Escape angle">
+                        src="sinusoidal/escape-angle.png"
+                        alt="Sinusoidal rendered with Escape angle">
                 <div class="view-card-content">
                     <h3>Escape angle</h3>
                     <p>Uses the direction of escape to reveal flow through the exterior.</p>
@@ -83,8 +106,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="sinusoidal/triangle-inequality.png"
-                    alt="Sinusoidal rendered with Triangle inequality">
+                        src="sinusoidal/triangle-inequality.png"
+                        alt="Sinusoidal rendered with Triangle inequality">
                 <div class="view-card-content">
                     <h3>Triangle inequality</h3>
                     <p>Turns relationships inside the orbit into layered, topographic texture.</p>
@@ -93,8 +116,8 @@
             </article>
             <article class="view-card">
                 <img
-                    src="sinusoidal/orbit-trap.png"
-                    alt="Sinusoidal rendered with Orbit traps">
+                        src="sinusoidal/orbit-trap.png"
+                        alt="Sinusoidal rendered with Orbit traps">
                 <div class="view-card-content">
                     <h3>Orbit traps</h3>
                     <p>Colors points by how closely their orbits pass near the real and imaginary axes.</p>

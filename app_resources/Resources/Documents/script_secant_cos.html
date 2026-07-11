@@ -18,17 +18,48 @@
             <div class="formula hero-formula">
                 \(z_{n+1}=z_n-f(z_n)\frac{z_n-z_{n-1}}{f(z_n)-f(z_{n-1})},\quad f(z)=\cos(z)-1\)
             </div>
-            <p class="hero-introduction">The secant method estimates slope from two recent points instead of computing a derivative. In the complex plane, that extra memory gives the basin map a different rhythm from Newton's method.</p>
+            <p class="hero-introduction">
+                The secant method estimates slope from two recent points instead of computing a derivative. On the
+                complex plane, that extra memory gives the basin map a different rhythm from Newton's method.
+            </p>
         </div>
         <figure class="hero-figure">
             <img
-                src="script_secant_cos/overview.png"
-                alt="A secant cosine script fractal render">
+                    src="script_secant_cos/overview.png"
+                    alt="A secant cosine script fractal render">
             <figcaption><span class="figure-title">Two guesses at a time.</span></figcaption>
         </figure>
     </section>
-    <section><h2>What to try first</h2><div class="experiment"><div class="experiment-step"><p>Compare this with the Newton cosine script. Both chase trigonometric roots, but the secant method carries a previous point along.</p></div><div class="experiment-step"><p>Look for regions where convergence is slower; derivative-free methods can hesitate in their own way.</p></div><div class="experiment-step"><p>Zoom into repeated structures created by the periodic cosine function.</p></div></div></section>
-    <section><h2>Mathematical notes</h2><details class="concept-details"><summary>The secant idea</summary><div class="concept-details-content"><p>The secant method replaces \(f'(z_n)\) with a finite difference from two points: \(z_{n+1}=z_n-f(z_n)(z_n-z_{n-1})/(f(z_n)-f(z_{n-1}))\). This script applies that derivative-free idea to a cosine-based equation.</p></div></details></section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Compare this with the Newton cosine script. Both chase trigonometric roots, but the secant method
+                    carries a previous point along.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Look for regions where convergence is slower; derivative-free methods can hesitate in their own way.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Zoom into repeated structures created by the periodic cosine function.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <details class="concept-details">
+            <summary>The secant idea</summary>
+            <div class="concept-details-content">
+                <p>
+                    The secant method replaces \(f'(z_n)\) with a finite difference from two points:
+                    \(z_{n+1}=z_n-f(z_n)(z_n-z_{n-1})/(f(z_n)-f(z_{n-1}))\). This script applies that derivative-free
+                    idea to a cosine-based equation.
+                </p>
+            </div>
+        </details>
+    </section>
 </main>
 </body>
 </html>
