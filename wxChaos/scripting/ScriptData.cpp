@@ -12,5 +12,6 @@ ScriptData::ScriptData(ScriptDataType type)
     redrawAlways = false;
     extColor = false;
     noSetMap = false;
+    hasOrbit = false;
     isValid = type == ScriptDataType::Standard;
 }

@@ -29,7 +29,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     _path = scriptData.file;
     _myScriptData = scriptData;
     _type = FractalType::ScriptFractal;
-    _hasOrbit = true;
+    _hasOrbit = scriptData.hasOrbit;
     _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
     {
@@ -54,7 +54,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     }
 
     _type = FractalType::ScriptFractal;
-    _hasOrbit = true;
+    _hasOrbit = _myScriptData.hasOrbit;
     _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
         _myRender[i].SetPath(scriptPath);

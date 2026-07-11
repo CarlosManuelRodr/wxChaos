@@ -82,7 +82,8 @@ bool AngelscriptConfigurationEngine::Execute()
         return false;
     }
 
-    asIScriptFunction* renderFunc = engine->GetModule(nullptr)->GetFunctionByDecl("void Configure()");
+    asIScriptModule* module = engine->GetModule(nullptr);
+    asIScriptFunction* renderFunc = module->GetFunctionByDecl("void Configure()");
     if (renderFunc == nullptr)
     {
         errorInfo = "Couldn't find the Configure() function.";
@@ -104,10 +105,12 @@ bool AngelscriptConfigurationEngine::Execute()
     }
 
     ctx->Execute();
+    const bool hasOrbit = module->GetFunctionByDecl("void DrawOrbit()") != nullptr;
     ctx->Release();
     engine->Release();
     engine = nullptr;
     configuration = FetchScriptData(filePath);
+    configuration.hasOrbit = hasOrbit;
     return true;
 }
 

@@ -37,3 +37,20 @@ TEST_CASE("a complete bundled script executes its orbit entry point")
     CHECK(fractal.GetOrbitErrorInfo().empty());
     CHECK_FALSE(fractal.GetOrbitLines().empty());
 }
+
+TEST_CASE("script orbit capability follows the presence of DrawOrbit")
+{
+    std::filesystem::path scriptsDirectory = std::filesystem::current_path() / "bin" / "Scripts";
+    if (!std::filesystem::exists(scriptsDirectory))
+        scriptsDirectory = std::filesystem::current_path() / "cmake-build-debug" / "bin" / "Scripts";
+
+    ScriptFractal newton(32, 32, (scriptsDirectory / "Newton4.as").string());
+    CHECK(newton.HasOrbit());
+
+    for (const char* scriptName : {"Duffing.as", "CutBill.as", "Gauss.as"})
+    {
+        CAPTURE(scriptName);
+        ScriptFractal fractal(32, 32, (scriptsDirectory / scriptName).string());
+        CHECK_FALSE(fractal.HasOrbit());
+    }
+}

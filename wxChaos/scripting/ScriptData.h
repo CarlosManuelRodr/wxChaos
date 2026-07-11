@@ -16,6 +16,8 @@ struct ScriptData
     bool redrawAlways;
     bool extColor;
     bool noSetMap;
+    ///< Whether the compiled script declares a void DrawOrbit() entry point.
+    bool hasOrbit;
     bool isValid;
 
     explicit ScriptData(ScriptDataType type = ScriptDataType::Standard);
