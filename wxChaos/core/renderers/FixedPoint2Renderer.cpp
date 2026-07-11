@@ -15,7 +15,7 @@ void FixedPoint2Renderer::RenderConvergence()
         PrecisionComplex<Real> zPrev = z;
         unsigned n;
 
-        for (n = 0; n < _maxIter; n++)
+        for (n = 0; n < _maxIterations; n++)
         {
             z = ComplexCos(z);
 

@@ -61,7 +61,7 @@ void UserDefinedEscapeTime::DrawOrbit()
     {
         bool outOfSet = false;
         vector< complex<double> > zVector;
-        for (unsigned n=0; n<_maxIter; n++)
+        for (unsigned n=0; n<_maxIterations; n++)
         {
             zVector.emplace_back(zVal.GetFloat(),zVal.GetImag());
             if (zVal.GetFloat()*zVal.GetFloat() + zVal.GetImag()*zVal.GetImag() > bailout*bailout)

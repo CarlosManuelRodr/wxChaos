@@ -43,7 +43,7 @@ void LogisticMap::Render()
 
 wxString LogisticMap::InspectPoint(const double x, const double y, const std::optional<unsigned int> iterations) const
 {
-    const unsigned int maxIterations = std::max(1U, iterations.value_or(_maxIter));
+    const unsigned int maxIterations = std::max(1U, iterations.value_or(_maxIterations));
     const double a = x;
     double orbitValue = _logisticSeed;
 

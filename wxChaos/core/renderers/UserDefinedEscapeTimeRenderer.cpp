@@ -50,7 +50,7 @@ void UserDefinedEscapeTimeRenderer::Render()
                     zVal = mup::cmplx_type(_minX + _x*_xFactor, z_y);
 
                 insideSet = true;
-                for (n=0; n<_maxIter; n++)
+                for (n=0; n<_maxIterations; n++)
                 {
                     if (zVal.GetFloat()*zVal.GetFloat() + zVal.GetImag()*zVal.GetImag() > squaredBail)
                     {

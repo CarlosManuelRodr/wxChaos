@@ -4,7 +4,7 @@
 #include <vector>
 #include "../RenderWorker.h"
 
-class PerturbationRenderer : public RenderWorker
+class PerturbationRenderWorker : public RenderWorker
 {
 protected:
     struct PerturbationReference
@@ -41,7 +41,7 @@ protected:
     void PerturbationTriangleInequalityRender(RenderPointFn renderPointFn);
 };
 
-inline bool PerturbationRenderer::ShouldUsePerturbationRender() const
+inline bool PerturbationRenderWorker::ShouldUsePerturbationRender() const
 {
     if (_renderingPrecisionMode == RenderingPrecisionMode::Fast)
         return true;
@@ -49,7 +49,7 @@ inline bool PerturbationRenderer::ShouldUsePerturbationRender() const
     return _renderingPrecisionMode == RenderingPrecisionMode::Adaptative && _useHighPrecision;
 }
 
-inline bool PerturbationRenderer::HasPerturbationGlitchOrDiverged(const double referenceNorm, const double zNorm, const bool escaped,
+inline bool PerturbationRenderWorker::HasPerturbationGlitchOrDiverged(const double referenceNorm, const double zNorm, const bool escaped,
                                                                   const double boundedNorm, const double referenceDivergedNorm)
 {
     if (!std::isfinite(referenceNorm) || !std::isfinite(zNorm))
@@ -63,7 +63,7 @@ inline bool PerturbationRenderer::HasPerturbationGlitchOrDiverged(const double r
 }
 
 template<class PixelRenderer>
-void PerturbationRenderer::RenderPerturbationPixels(PixelRenderer pixelRenderer)
+void PerturbationRenderWorker::RenderPerturbationPixels(PixelRenderer pixelRenderer)
 {
     const unsigned int precisionBits = std::max(_highPrecisionBits, 128U);
     HighPrecisionReal::PrecisionScope precision(precisionBits);
@@ -86,7 +86,7 @@ void PerturbationRenderer::RenderPerturbationPixels(PixelRenderer pixelRenderer)
 }
 
 template<class BuildReference, class TracePerturbationPoint, class TracePrecisePoint, class ColorPoint, class MeasurePoint>
-void PerturbationRenderer::PerturbationRenderFromPoint(BuildReference buildReference, TracePerturbationPoint tracePerturbationPoint,
+void PerturbationRenderWorker::PerturbationRenderFromPoint(BuildReference buildReference, TracePerturbationPoint tracePerturbationPoint,
                                                        TracePrecisePoint tracePrecisePoint, ColorPoint colorPoint, MeasurePoint measure)
 {
     std::vector<decltype(buildReference(_preciseView.left, _preciseView.top))> references;
@@ -114,7 +114,7 @@ void PerturbationRenderer::PerturbationRenderFromPoint(BuildReference buildRefer
 }
 
 template<class RenderPointFn>
-void PerturbationRenderer::PerturbationEscapeTimeRender(RenderPointFn renderPointFn)
+void PerturbationRenderWorker::PerturbationEscapeTimeRender(RenderPointFn renderPointFn)
 {
     if (_myOpt.orbitTrapMode)
     {
@@ -133,7 +133,7 @@ void PerturbationRenderer::PerturbationEscapeTimeRender(RenderPointFn renderPoin
 }
 
 template<class RenderPointFn>
-void PerturbationRenderer::PerturbationGaussianIntRender(RenderPointFn renderPointFn)
+void PerturbationRenderWorker::PerturbationGaussianIntRender(RenderPointFn renderPointFn)
 {
     if (_myOpt.orbitTrapMode)
     {
@@ -160,7 +160,7 @@ void PerturbationRenderer::PerturbationGaussianIntRender(RenderPointFn renderPoi
 }
 
 template<class RenderPointFn>
-void PerturbationRenderer::PerturbationEscapeAngleRender(RenderPointFn renderPointFn)
+void PerturbationRenderWorker::PerturbationEscapeAngleRender(RenderPointFn renderPointFn)
 {
     const auto measure = [](Point&, PointTraceEvent, unsigned int, double, double, double, double, double, bool) {};
     const auto colorPoint = [this](const Point& point) { return EscapeAngleColor(point); };
@@ -168,7 +168,7 @@ void PerturbationRenderer::PerturbationEscapeAngleRender(RenderPointFn renderPoi
 }
 
 template<class RenderPointFn>
-void PerturbationRenderer::PerturbationTriangleInequalityRender(RenderPointFn renderPointFn)
+void PerturbationRenderWorker::PerturbationTriangleInequalityRender(RenderPointFn renderPointFn)
 {
     const auto measure = [](Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
                             const double zNorm, const double squaredRe, const double squaredIm, const bool wasInside)

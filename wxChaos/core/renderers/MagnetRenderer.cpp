@@ -17,14 +17,14 @@ RenderWorker::Point MagnetRenderer::TracePoint(const Real& pixelRe, const Real& 
     PrecisionComplex<Real> z(Real(0), Real(0));
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real currentNorm = ComplexNorm(z);
         point.zRe = ToDouble(z.re);
         point.zIm = ToDouble(z.im);
         point.zNorm = ToDouble(currentNorm);
 
-        if (!escaped && currentNorm > Real(_maxIter))
+        if (!escaped && currentNorm > Real(_maxIterations))
         {
             escaped = true;
             point.insideSet = false;

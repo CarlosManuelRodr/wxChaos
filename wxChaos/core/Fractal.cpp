@@ -71,7 +71,7 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
     _rendering = false;
     _paused = false;
     _pausing = false;
-    _maxIter = 100;
+    _maxIterations = 100;
     _defaultIter = 100;
     _iterationStep = 100;
     _varGradChange = false;
@@ -448,7 +448,7 @@ void Fractal::ConfigureIterationDefaults(const unsigned int defaultIterations, c
 {
     _defaultIter = std::max(1U, defaultIterations);
     _iterationStep = std::max(1U, iterationStep);
-    _maxIter = _defaultIter;
+    _maxIterations = _defaultIter;
 }
 std::vector<RenderRegion> Fractal::BuildRenderRegions() const
 {
@@ -828,7 +828,7 @@ void Fractal::PrepareDisplayColorLookup()
 double Fractal::NormalizeColorMapValue(const double value) const
 {
     const double minValue = _relativeColor ? _relativeColorMin : 0.0;
-    const double maxValue = _relativeColor ? _relativeColorMax : static_cast<double>(_maxIter);
+    const double maxValue = _relativeColor ? _relativeColorMax : static_cast<double>(_maxIterations);
     return PaletteMapping::Map(value, minValue, maxValue, _paletteSize, _colorCycleLength,
                                _paletteMappingMode, _paletteMappingExponent, _relativeColor);
 }
@@ -1167,7 +1167,7 @@ wxString Fractal::InspectPoint(const double x, const double y, const optional<un
     options.smoothRender = false;
     options.antiAliasingScale = 1;
     if (iterations.has_value())
-        options.maxIter = *iterations;
+        options.maxIterations = *iterations;
 
     probe->SetOptions(options);
     probe->SetFormula(_userFormula);
@@ -1182,10 +1182,10 @@ wxString Fractal::InspectPoint(const double x, const double y, const optional<un
     output << "Fractal: " << probe->GetName() << "\n"
            << "Coordinates: (" << FormatNumber(x) << ", " << FormatNumber(y) << ")\n"
            << "Algorithm: " << probe->GetRenderingAlgorithmName() << "\n"
-           << "Maximum iterations: " << options.maxIter << "\n";
+           << "Maximum iterations: " << options.maxIterations << "\n";
 
     if (sample.inSet)
-        output << "Result: inside after " << options.maxIter << " iterations";
+        output << "Result: inside after " << options.maxIterations << " iterations";
     else if (sample.hasValue && options.alg == RenderingAlgorithmType::EscapeTime)
         output << "Result: escaped at iteration " << sample.value;
     else if (sample.hasValue)
@@ -1309,7 +1309,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
             HighPrecisionReal(_screenHeight) / HighPrecisionReal(_screenWidth);
     }
 
-    _maxIter = opt.maxIter;
+    _maxIterations = opt.maxIterations;
     _panelOpt.CopyValuesFrom(opt.panelOpt);
     _changeGradient = opt.colorVariationOffset;
     _colorRotationSpeed = std::max(0.0, opt.colorRotationSpeed);
@@ -1354,7 +1354,7 @@ Options Fractal::GetOptions() const
     opt.maxY = _maxY;
     opt.xFactor = _xFactor;
     opt.yFactor = _yFactor;
-    opt.maxIter = _maxIter;
+    opt.maxIterations = _maxIterations;
     opt.colorVariationOffset = _changeGradient;
     opt.smoothRender = _smoothRender;
     opt.alg = _algorithm;
@@ -1858,13 +1858,13 @@ bool Fractal::SmoothRenderActivated() const
 void Fractal::SetIterations(const unsigned int iterations)
 {
     _redrawAll = true;
-    _maxIter = iterations;
+    _maxIterations = iterations;
     _rendered = false;
 }
 
 unsigned int Fractal::GetIterations() const
 {
-    return _maxIter;
+    return _maxIterations;
 }
 unsigned int Fractal::GetDefaultIterations() const
 {

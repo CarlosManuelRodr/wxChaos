@@ -24,7 +24,7 @@ void Render()
             z = complex(minX + x*xFactor, c_im);
             z_prev = z;
             z = cos(z)-z;
-            for(n=0; n<maxIter; n++)
+            for(n=0; n<maxIterations; n++)
             {
                 temp = z;
                 z = z - (z-z_prev)/((cos(z)-z)-(cos(z_prev)-z_prev));

@@ -35,7 +35,7 @@ void UserDefinedFixedPointRenderer::Render()
             for (_x = _widthOrigin; _x < _widthFinal; _x++)
             {
                 z_prevVal = zVal = mup::cmplx_type(_minX + _x * _xFactor, z_y);
-                for (n = 0; n < _maxIter; n++)
+                for (n = 0; n < _maxIterations; n++)
                 {
                     zVal = parser.Eval();
                     if ((z_prevVal.GetFloat() - _minStep < zVal.GetFloat() &&

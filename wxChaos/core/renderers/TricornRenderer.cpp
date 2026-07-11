@@ -15,7 +15,7 @@ RenderWorker::Point TricornRenderer::TracePoint(const Real& pixelRe, const Real&
     Real zIm = 0;
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real zRe2 = zRe * zRe;
         const Real zIm2 = zIm * zIm;

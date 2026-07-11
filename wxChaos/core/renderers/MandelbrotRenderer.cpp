@@ -21,7 +21,7 @@ RenderWorker::Point MandelbrotRenderer::TracePoint(const Real& pixelRe, const Re
     PrecisionComplex<Real> z{Real(0), Real(0)};
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const PrecisionComplex<Real> squaredZ = z * z;
         z = squaredZ + c;
@@ -70,7 +70,7 @@ MandelbrotRenderer::PerturbationReference MandelbrotRenderer::BuildPerturbationR
     reference.centerReDouble = ToDouble(reference.centerRe);
     reference.centerImDouble = ToDouble(reference.centerIm);
 
-    const auto orbitSize = static_cast<size_t>(_maxIter) + 1;
+    const auto orbitSize = static_cast<size_t>(_maxIterations) + 1;
     reference.orbit.resize(orbitSize);
 
     const PrecisionComplex c{reference.centerRe, reference.centerIm};
@@ -102,7 +102,7 @@ MandelbrotRenderer::PerturbationTraceResult MandelbrotRenderer::TracePerturbatio
     const PrecisionComplex delta{deltaRe, deltaIm};
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const PrecisionComplex<double> referenceZ = reference.orbit[n];
         const PrecisionComplex<double> z = referenceZ + epsilon;
@@ -156,10 +156,10 @@ void MandelbrotRenderer::BuddhabrotRender()
     std::uniform_real_distribution<> randomY(_minY, _maxY);
 
     std::complex<double> c;
-    std::vector<std::complex<double>> cmpArray(static_cast<unsigned int>(_maxIter));
+    std::vector<std::complex<double>> cmpArray(static_cast<unsigned int>(_maxIterations));
     int topIter = 0;
 
-    for (int i=0; i<_maxIter; i++)
+    for (int i=0; i<_maxIterations; i++)
         cmpArray[i] = std::complex<double>(0, 0);
 
     for (int bd=0; bd<_buddhaRandomP && !_stopped; bd++)
@@ -183,7 +183,7 @@ void MandelbrotRenderer::BuddhabrotRender()
             || (z.real() >  0.14 && z.real() <   0.29 && z.imag() >  0.07 && z.imag() < 0.42)
         ) continue; // "if" taken from Wikipedia description.
 
-        for (int i=0; i<_maxIter && !_stopped; i++)
+        for (int i=0; i<_maxIterations && !_stopped; i++)
         {
             if (z.real()*z.real() + z.imag()*z.imag() > 6)
             {
@@ -210,7 +210,7 @@ void MandelbrotRenderer::BuddhabrotRender()
 
             // Takes advantage of the simmetry.
             z = c = std::complex<double>(c.real(), -c.imag());
-            for (int i=0; i<_maxIter && !_stopped; i++)
+            for (int i=0; i<_maxIterations && !_stopped; i++)
             {
                 z = pow(z,2) + c;
                 const int indexI = static_cast<int>((z.real()-_minX)/_xFactor);

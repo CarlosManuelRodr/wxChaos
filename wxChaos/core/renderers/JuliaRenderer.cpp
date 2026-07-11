@@ -18,7 +18,7 @@ RenderWorker::Point JuliaRenderer::TracePoint(const Real& pixelRe, const Real& p
     PrecisionComplex<Real> z{pixelRe, pixelIm};
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real currentNorm = ComplexNorm(z);
         point.zNorm = ToDouble(currentNorm);
@@ -68,7 +68,7 @@ JuliaRenderer::PerturbationReference JuliaRenderer::BuildPerturbationReference(c
     reference.centerReDouble = ToDouble(reference.centerRe);
     reference.centerImDouble = ToDouble(reference.centerIm);
 
-    const auto orbitSize = static_cast<size_t>(_maxIter) + 1;
+    const auto orbitSize = static_cast<size_t>(_maxIterations) + 1;
     reference.orbit.resize(orbitSize);
 
     const PrecisionComplex c{HighPrecisionReal(_kReal), HighPrecisionReal(_kImaginary)};
@@ -102,7 +102,7 @@ JuliaRenderer::PerturbationTraceResult JuliaRenderer::TracePerturbationPoint(con
     PrecisionComplex<double> epsilon{deltaRe, deltaIm};
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const PrecisionComplex<double> referenceZ = reference.orbit[n];
         const PrecisionComplex<double> z = referenceZ + epsilon;

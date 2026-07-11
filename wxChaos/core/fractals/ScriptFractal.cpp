@@ -113,7 +113,7 @@ bool ScriptFractal::RegisterOrbitVariables(AngelscriptRenderEngine& engine)
     isEngineOk &= engine.RegisterGlobalVariable("double kImaginary", &_kImaginary);
     isEngineOk &= engine.RegisterGlobalVariable("double orbitX", &_orbitX);
     isEngineOk &= engine.RegisterGlobalVariable("double orbitY", &_orbitY);
-    isEngineOk &= engine.RegisterGlobalVariable("uint maxIter", &_maxIter);
+    isEngineOk &= engine.RegisterGlobalVariable("uint maxIterations", &_maxIterations);
     isEngineOk &= engine.RegisterGlobalVariable("uint screenWidth", &_screenWidth);
     isEngineOk &= engine.RegisterGlobalVariable("uint screenHeight", &_screenHeight);
     isEngineOk &= engine.RegisterGlobalVariable("uint paletteSize", &_paletteSize);

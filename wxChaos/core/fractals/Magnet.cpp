@@ -44,7 +44,7 @@ void Magnet::DrawOrbit()
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for (unsigned n=0; n<_maxIter; n++)
+    for (unsigned n=0; n<_maxIterations; n++)
     {
         zVector.push_back(z);
         if (z.real()*z.real() + z.imag()*z.imag() > 4)

@@ -23,7 +23,7 @@ void Render()
         for(int i=0; i<screenWidth; i++)
         {
             b = minX + i*xFactor;
-            for(int n=0; n<maxIter; n++)
+            for(int n=0; n<maxIterations; n++)
             {
                 x = exp_r(-a*pow_r(x,2)) + b;
                 coordX = ((b-minX)/xFactor);

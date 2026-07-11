@@ -20,7 +20,7 @@ RenderWorker::Point FractoryRenderer::TracePoint(const Real& pixelRe, const Real
     PrecisionComplex<Real> b = c - ComplexSin(c);
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real currentNorm = ComplexNorm(z);
         point.zNorm = ToDouble(currentNorm);

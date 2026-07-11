@@ -50,7 +50,7 @@ bool UserDefinedNewtonRenderer::IsFinite(const std::complex<double>& value)
 double UserDefinedNewtonRenderer::ColorValue(const unsigned int rootId, const IterationResult& result) const
 {
     constexpr double rootStride = 37.0;
-    const double maxIterations = std::max(1.0, _maxIter);
+    const double maxIterations = std::max(1.0, _maxIterations);
     const double iterationRatio = 1.0 - std::min(1.0, static_cast<double>(result.iterations) / maxIterations);
     const double residualRatio = 1.0 - std::min(1.0, result.finalResidual / std::max(_functionEpsilon, 1e-300));
     const double stepRatio = 1.0 - std::min(1.0, result.finalStep / std::max(_convergenceEpsilon, 1e-300));
@@ -101,7 +101,7 @@ void UserDefinedNewtonRenderer::Render()
             IterationResult result;
             std::complex<double> z(pixelRe, pixelIm);
 
-            for (unsigned int i = 0; i < static_cast<unsigned int>(_maxIter); i++)
+            for (unsigned int i = 0; i < static_cast<unsigned int>(_maxIterations); i++)
             {
                 zVal = mup::cmplx_type(z.real(), z.imag());
                 const mup::IValue& fValue = functionParser.Eval();

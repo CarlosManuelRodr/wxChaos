@@ -40,7 +40,7 @@ void Newton::DrawOrbit()
 
     if (_orbitX != 0 && _orbitY != 0)
     {
-        for (unsigned n=0; n<_maxIter; n++)
+        for (unsigned n=0; n<_maxIterations; n++)
         {
             complex<double> previous = z;
             z = z - (pow(z, 3) - complex<double>(1, 0))/(complex<double>(2, 0)*pow(z,2));

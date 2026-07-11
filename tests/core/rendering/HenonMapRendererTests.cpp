@@ -27,7 +27,7 @@ TEST_CASE("Henon map renderer plots the configured orbit")
     options.maxY = 0.4;
     options.xFactor = (options.maxX - options.minX) / (width - 1);
     options.yFactor = (options.maxY - options.minY) / (height - 1);
-    options.maxIter = 20000;
+    options.maxIterations = 20000;
     options.alg = RenderingAlgorithmType::ChaoticMap;
     options.type = FractalType::HenonMap;
     options.screenWidth = width;

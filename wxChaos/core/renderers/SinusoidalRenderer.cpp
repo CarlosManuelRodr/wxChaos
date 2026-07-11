@@ -16,11 +16,11 @@ RenderWorker::Point SinusoidalRenderer::TracePoint(const Real& pixelRe, const Re
     PrecisionComplex<Real> z(pixelRe, pixelIm);
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real currentNorm = ComplexNorm(z);
         point.zNorm = ToDouble(currentNorm);
-        if (!escaped && currentNorm > Real(_maxIter))
+        if (!escaped && currentNorm > Real(_maxIterations))
         {
             escaped = true;
             point.insideSet = false;
@@ -31,7 +31,7 @@ RenderWorker::Point SinusoidalRenderer::TracePoint(const Real& pixelRe, const Re
             measure(point, PointTraceEvent::Escaped, n, point.escapedZRe, point.escapedZIm, point.zNorm, 0.0, 0.0, true);
         }
 
-        if (escaped && currentNorm > Real(_maxIter) * Real(_maxIter) && !point.measureGaussianAfterEscape)
+        if (escaped && currentNorm > Real(_maxIterations) * Real(_maxIterations) && !point.measureGaussianAfterEscape)
             break;
 
         const PrecisionComplex<Real> transformedZ = constant * ComplexSin(z);

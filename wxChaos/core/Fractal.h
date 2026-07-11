@@ -66,7 +66,7 @@ protected:
     mutable HighPrecisionReal _preciseXFactor;
     mutable HighPrecisionReal _preciseYFactor;
     mutable bool _preciseViewInitialized;
-    unsigned _maxIter;               ///< Maximum number of iterations.
+    unsigned _maxIterations;               ///< Maximum number of iterations.
     unsigned _defaultIter;           ///< Default number of iterations for this fractal.
     unsigned _iterationStep;         ///< Iteration change used by menu and keyboard shortcuts.
     FormulaOptions _userFormula;     ///< Formula specified by the user.

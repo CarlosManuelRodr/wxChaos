@@ -15,7 +15,7 @@ RenderWorker::Point BurningShipRenderer::TracePoint(const Real& pixelRe, const R
     Real zIm = 0;
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real currentNorm = zRe * zRe + zIm * zIm;
         point.zNorm = ToDouble(currentNorm);

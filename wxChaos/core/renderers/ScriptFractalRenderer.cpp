@@ -47,7 +47,7 @@ void ScriptFractalRenderer::Render()
     isEngineOk &= renderEngine->RegisterGlobalVariable("int hf", &_heightFinal);
     isEngineOk &= renderEngine->RegisterGlobalVariable("int wo", &_widthOrigin);
     isEngineOk &= renderEngine->RegisterGlobalVariable("int wf", &_widthFinal);
-    isEngineOk &= renderEngine->RegisterGlobalVariable("double maxIter", &_maxIter);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double maxIterations", &_maxIterations);
     isEngineOk &= renderEngine->RegisterGlobalVariable("uint threadIndex", &_threadIndex);
     isEngineOk &= renderEngine->RegisterGlobalVariable("uint screenWidth", &_myOpt.screenWidth);
     isEngineOk &= renderEngine->RegisterGlobalVariable("uint screenHeight", &_myOpt.screenHeight);

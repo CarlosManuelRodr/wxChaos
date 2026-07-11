@@ -52,7 +52,7 @@ namespace
         options.maxY = 1.0;
         options.xFactor = (options.maxX - options.minX) / (width - 1);
         options.yFactor = (options.maxY - options.minY) / (height - 1);
-        options.maxIter = 200;
+        options.maxIterations = 200;
         options.alg = algorithm;
         options.type = FractalType::LogisticMap;
         options.screenWidth = width;

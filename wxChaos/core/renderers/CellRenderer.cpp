@@ -23,7 +23,7 @@ RenderWorker::Point CellRenderer::TracePoint(const Real& pixelRe, const Real& pi
     const Real squaredBailout = Real(_bailout) * Real(_bailout);
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real currentNorm = ComplexNorm(z);
         point.zNorm = ToDouble(currentNorm);

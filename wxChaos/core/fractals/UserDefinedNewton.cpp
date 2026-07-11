@@ -103,7 +103,7 @@ UserDefinedNewton::OrbitResult UserDefinedNewton::DrawNewtonOrbit()
     derivativeParser.DefineVar("Z", mup::Variable(&zVal));
 
     std::complex<double> z(_orbitX, _orbitY);
-    for (unsigned int i = 0; i < _maxIter; i++)
+    for (unsigned int i = 0; i < _maxIterations; i++)
     {
         const std::complex<double> previous = z;
         zVal = mup::cmplx_type(z.real(), z.imag());

@@ -49,7 +49,7 @@ RenderWorker::Point JuliaZMRenderer::TracePoint(const Real& pixelRe, const Real&
     const Real trapBailout = squaredBail * squaredBail;
     bool escaped = false;
 
-    for (unsigned i = 0; i < _maxIter; i++)
+    for (unsigned i = 0; i < _maxIterations; i++)
     {
         const PrecisionComplex<Real> poweredZ = Power(z);
         z = poweredZ + k;

@@ -45,7 +45,7 @@ void FixedPoint4::DrawOrbit()
     complex<double> z_ant;
     vector< complex<double> > zVector;
 
-    for (unsigned n=0; n<_maxIter; n++)
+    for (unsigned n=0; n<_maxIterations; n++)
     {
         zVector.push_back(z);
         z = pow(z,2);

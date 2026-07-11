@@ -20,7 +20,7 @@ void NewtonRenderer::RenderConvergenceTest()
         Real prevIm = im;
         unsigned n;
 
-        for (n = 0; n < _maxIter; n++)
+        for (n = 0; n < _maxIterations; n++)
         {
             const Real re2 = re * re;
             const Real im2 = im * im;
@@ -67,7 +67,7 @@ void NewtonRenderer::RenderConvergenceTestWithOrbitTrap()
         Real distY = RealAbs(pixelIm);
         unsigned n;
 
-        for (n = 0; n < _maxIter; n++)
+        for (n = 0; n < _maxIterations; n++)
         {
             z = z - (ComplexPow(z, 3) - one) / (two * ComplexPow(z, 2));
 

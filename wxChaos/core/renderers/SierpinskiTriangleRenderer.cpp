@@ -12,7 +12,7 @@ void SierpinskiTriangleRenderer::Render()
         bool insideSet = true;
         unsigned int iterations = 0;
 
-        for (unsigned n = 0; n < _maxIter; n++)
+        for (unsigned n = 0; n < _maxIterations; n++)
         {
             if (zRe * zRe + zIm * zIm > decltype(zRe)(4))
             {

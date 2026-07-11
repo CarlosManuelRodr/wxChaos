@@ -1,5 +1,5 @@
 #pragma once
-#include "PerturbationRenderer.h"
+#include "PerturbationRenderWorker.h"
 
 /**
 * @class JuliaRenderer
@@ -9,7 +9,7 @@
 * high-precision views, and dispatches compatible coloring algorithms through
 * the shared Renderer paths.
 */
-class JuliaRenderer : public PerturbationRenderer
+class JuliaRenderer : public PerturbationRenderWorker
 {
     template<class Real, class MeasurePoint>
     Point TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const;

@@ -50,7 +50,7 @@ void JuliaZM::DrawOrbit()
     vector< complex<double> > zVector;
     bool outOfSet = false;
 
-    for (unsigned i=0; i<_maxIter; i++)
+    for (unsigned i=0; i<_maxIterations; i++)
     {
         zVector.push_back(z);
         if (z.real()*z.real() + z.imag()*z.imag() > _bailout*_bailout)

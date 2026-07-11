@@ -220,7 +220,7 @@ simres simular()
 
 void Render()
 {
-    max_iter = maxIter;
+    max_iter = maxIterations;
     simres result;
 
     // W

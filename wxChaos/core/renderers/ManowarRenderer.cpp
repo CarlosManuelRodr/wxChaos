@@ -16,7 +16,7 @@ RenderWorker::Point ManowarRenderer::TracePoint(const Real& pixelRe, const Real&
     Real manIm = pixelIm;
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real currentNorm = zRe * zRe + zIm * zIm;
         point.zNorm = ToDouble(currentNorm);

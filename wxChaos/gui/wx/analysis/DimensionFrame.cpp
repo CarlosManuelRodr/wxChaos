@@ -391,7 +391,7 @@ Options DimensionFrame::ReadDimensionOptions()
     options.maxX = _maxXCtrl->GetValue();
     options.minY = _minYCtrl->GetValue();
     options.maxY = options.minY + (options.maxX - options.minX);
-    options.maxIter = _iterCtrl->GetValue();
+    options.maxIterations = _iterCtrl->GetValue();
     options.antiAliasingScale = 1;
     _size = _sizeCtrl->GetValue();
     _maxYCtrl->SetValue(options.maxY);
@@ -410,7 +410,7 @@ void DimensionFrame::SetControlsFromOptions(const Options& options)
     _minXCtrl->SetValue(options.minX);
     _maxXCtrl->SetValue(options.maxX);
     _minYCtrl->SetValue(options.minY);
-    _iterCtrl->SetValue(static_cast<int>(options.maxIter));
+    _iterCtrl->SetValue(static_cast<int>(options.maxIterations));
     UpdateDerivedMaxY();
     _suppressPreviewUpdate = false;
 }
@@ -625,7 +625,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
             const Options tempOpt = _target->GetOptions();
 
             if (tempOpt.minX != _myOpt.minX || tempOpt.maxX != _myOpt.maxX || tempOpt.minY != _myOpt.minY ||
-                tempOpt.maxY != _myOpt.maxY || tempOpt.maxIter != _myOpt.maxIter || tempOpt.screenWidth != _size ||
+                tempOpt.maxY != _myOpt.maxY || tempOpt.maxIterations != _myOpt.maxIterations || tempOpt.screenWidth != _size ||
                 _target->GetChangeFractalProp() || _firstRender)
             {
                 // If a change was made or the render fractal was just created.

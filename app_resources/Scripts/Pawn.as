@@ -24,7 +24,7 @@ void Render()
             z = c = complex(minX + x*xFactor, c_im);
             insideSet = true;
 
-            for(n=0; n<maxIter; n++)
+            for(n=0; n<maxIterations; n++)
             {
                 z = pow(z,n) + c;
                 
@@ -51,7 +51,7 @@ void DrawOrbit()
     complex z(orbitX, orbitY);
     const complex c = z;
 
-    for(uint n = 0; n < maxIter; n++)
+    for(uint n = 0; n < maxIterations; n++)
     {
         const complex previous = z;
         z = pow(z, int(n)) + c;

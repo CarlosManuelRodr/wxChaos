@@ -23,7 +23,7 @@ void Render()
         for(int x=wo; x<wf; x++)
         {
             z = complex(minX + x*xFactor, c_im);
-            for(n=0; n<maxIter; n++)
+            for(n=0; n<maxIterations; n++)
             {
                 z_prev = z;
                 z = z - (pow(z,4) - complex(1.0,0.0))/(complex(4,0)*pow(z,3));
@@ -56,7 +56,7 @@ void DrawOrbit()
     complex z(orbitX, orbitY);
     const double minStep = GetDoubleOption("minStep");
 
-    for(uint n = 0; n < maxIter; n++)
+    for(uint n = 0; n < maxIterations; n++)
     {
         const complex previous = z;
         z = z - (pow(z, 4) - complex(1.0, 0.0)) / (complex(4, 0) * pow(z, 3));

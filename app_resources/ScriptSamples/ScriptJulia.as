@@ -24,7 +24,7 @@ void Render()
 			z = complex(minX + x*xFactor, c_im);
 			insideSet = true;
 
-			for(n=0; n<maxIter; n++)
+			for(n=0; n<maxIterations; n++)
 			{
 				z = pow(z,2) + k;
 				

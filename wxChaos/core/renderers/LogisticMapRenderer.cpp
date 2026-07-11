@@ -14,7 +14,7 @@ void LogisticMapRenderer::Render()
 {
     _currentStep = 0;
 
-    const auto maxIterations = static_cast<unsigned int>(_maxIter);
+    const auto maxIterations = static_cast<unsigned int>(_maxIterations);
     _totalSteps = std::max(1U, maxIterations * _myOpt.screenWidth);
     if (_myOpt.alg == RenderingAlgorithmType::ChaoticMap && _stabilizePoint)
         _totalSteps *= 2;

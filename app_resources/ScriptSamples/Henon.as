@@ -21,7 +21,7 @@ void Render()
 		double beta = 0.3;
 		int coordX, coordY;
 		
-		for(int i=0; i<maxIter; i++)
+		for(int i=0; i<maxIterations; i++)
 		{
 			coordX = ((x-minX)/xFactor);
 			coordY = ((maxY-y)/yFactor);

@@ -1,5 +1,5 @@
 #pragma once
-#include "PerturbationRenderer.h"
+#include "PerturbationRenderWorker.h"
 
 /**
 * @class MandelbrotRenderer
@@ -9,7 +9,7 @@
 * path for high-precision views, and dispatches compatible coloring algorithms
 * through the shared Renderer paths.
 */
-class MandelbrotRenderer : public PerturbationRenderer
+class MandelbrotRenderer : public PerturbationRenderWorker
 {
     int _buddhaRandomP;
 

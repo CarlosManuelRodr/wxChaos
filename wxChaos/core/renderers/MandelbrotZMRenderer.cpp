@@ -48,7 +48,7 @@ RenderWorker::Point MandelbrotZMRenderer::TracePoint(const Real& pixelRe, const 
     const Real trapBailout = squaredBail * squaredBail;
     bool escaped = false;
 
-    for (unsigned i = 0; i < _maxIter; i++)
+    for (unsigned i = 0; i < _maxIterations; i++)
     {
         const PrecisionComplex<Real> poweredZ = Power(z);
         z = poweredZ + c;

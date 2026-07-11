@@ -15,7 +15,7 @@ RenderWorker::Point JellyfishRenderer::TracePoint(const Real& pixelRe, const Rea
     PrecisionComplex<Real> z(pixelRe, pixelIm);
     bool escaped = false;
 
-    for (unsigned n = 0; n < _maxIter; n++)
+    for (unsigned n = 0; n < _maxIterations; n++)
     {
         const Real currentNorm = ComplexNorm(z);
         point.zNorm = ToDouble(currentNorm);

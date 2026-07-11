@@ -24,7 +24,7 @@ void Render()
         for(int x=wo; x<wf; x++)
         {
             z = complex(minX + x*xFactor, c_im);
-            for(n=0; n<maxIter; n++)
+            for(n=0; n<maxIterations; n++)
             {
                 z_prev = z;
                 z = z - (sin(z)-z)/(cos(z)-one);
@@ -66,7 +66,7 @@ void DrawOrbit()
     const complex one(1, 0);
     const double minStep = GetDoubleOption("minStep");
 
-    for(uint n = 0; n < maxIter; n++)
+    for(uint n = 0; n < maxIterations; n++)
     {
         const complex previous = z;
         z = z - (sin(z) - z) / (cos(z) - one);

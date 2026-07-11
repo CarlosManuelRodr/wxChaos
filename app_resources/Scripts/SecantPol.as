@@ -24,7 +24,7 @@ void Render()
             z = complex(minX + x*xFactor, c_im);
             z_prev = z;
             z = pow(z,3)-z;
-            for(n=0; n<maxIter; n++)
+            for(n=0; n<maxIterations; n++)
             {
                 temp = z;
                 z = z - (z-z_prev)/((pow(z,3)-z)-(pow(z_prev,2)-z_prev));
@@ -53,7 +53,7 @@ void DrawOrbit()
     z = pow(z, 3) - z;
     const double tolerance = 0.001;
 
-    for(uint n = 0; n < maxIter; n++)
+    for(uint n = 0; n < maxIterations; n++)
     {
         const complex current = z;
         z = z - (z - previous) / ((pow(z, 3) - z) - (pow(previous, 2) - previous));

@@ -19,7 +19,7 @@ void HenonMapRenderer::Render()
     if (_myOpt.alg != RenderingAlgorithmType::ChaoticMap)
         return;
 
-    const auto maxIterations = static_cast<unsigned int>(_maxIter);
+    const auto maxIterations = static_cast<unsigned int>(_maxIterations);
     for (_currentIteration = 0; _currentIteration < maxIterations && !_stopped; _currentIteration++)
     {
         const auto coordX = static_cast<int>((x - _minX) / _xFactor);
@@ -44,7 +44,7 @@ void HenonMapRenderer::SetParams(const double alpha, const double beta, const do
 unsigned int HenonMapRenderer::GetProgress()
 {
     if (!_stopped)
-        _threadProgress = std::min(100U, static_cast<unsigned int>(100.0 * _currentIteration / std::max(1.0, _maxIter)));
+        _threadProgress = std::min(100U, static_cast<unsigned int>(100.0 * _currentIteration / std::max(1.0, _maxIterations)));
 
     return _threadProgress;
 }

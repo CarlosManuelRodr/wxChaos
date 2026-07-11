@@ -54,7 +54,7 @@ void DoublePendulumRenderer::EscapeTimeRender()
                 th2_init = th2;
 
                 insideSet = true;
-                for (n=0; n<_maxIter; n++)
+                for (n=0; n<_maxIterations; n++)
                 {
                     den = part5 - part6*cos(2*(th1-th2));
                     k11 = part1*sin(th1)-part3*sin(th1-2*th2)-part2*sin(th1-th2)*(_l*(pow(vth2,2)+pow(vth1,2)*cos(th1-th2)));
@@ -134,7 +134,7 @@ void DoublePendulumRenderer::EscapeTimeRender()
                 th2_init = th2;
 
                 insideSet = true;
-                for (n=0; n<_maxIter; n++)
+                for (n=0; n<_maxIterations; n++)
                 {
                     cosTh1MinTh2 = cos(th1-th2);
                     sinTh1MinTh2 = sin(th1-th2);
@@ -210,7 +210,7 @@ void DoublePendulumRenderer::EscapeAngleRender()
             const double th2_init = th2;
 
             bool insideSet = true;
-            for (unsigned n = 0; n<_maxIter; n++)
+            for (unsigned n = 0; n<_maxIterations; n++)
             {
                 const double den = part5 - part6 * cos(2 * (th1 - th2));
                 double movEq1 = part1 * sin(th1) - part3 * sin(th1 - 2 * th2) - part2 * sin(th1 - th2) * (_l * (pow(vth2, 2) +

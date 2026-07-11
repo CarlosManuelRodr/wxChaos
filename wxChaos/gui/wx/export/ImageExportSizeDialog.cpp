@@ -186,7 +186,7 @@ ImageExportSizeDialog::ImageExportSizeDialog(FractalCanvas* fractalCanvas, const
 
     _iterationsSpin = new wxSpinCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 20000000, 1);
     exportSizer->Add(_iterationsSpin, 1, wxEXPAND);
-    _iterationsSpin->SetValue(static_cast<int>(_options.maxIter));
+    _iterationsSpin->SetValue(static_cast<int>(_options.maxIterations));
 
     panelSizer->Add(exportSizer, 0, wxEXPAND | wxALL, 16);
 
@@ -297,7 +297,7 @@ void ImageExportSizeDialog::OnSave(wxCommandEvent&)
     _fractalFactory.SetFormula(_fractalCanvas->GetFormula());
 
     // Copy parameters.
-    _options.maxIter = _iterationsSpin->GetValue();
+    _options.maxIterations = _iterationsSpin->GetValue();
     _fractalFactory.GetFractal()->SetOptions(_options);
 
     // Saves image according to extension.

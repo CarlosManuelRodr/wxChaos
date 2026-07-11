@@ -85,7 +85,7 @@ void DoublePendulum::DrawOrbit()
     const double th1_init = th1;
     const double th2_init = th2;
 
-    for (unsigned n=0; n<_maxIter; n++)
+    for (unsigned n=0; n<_maxIterations; n++)
     {
         th1Vector.push_back(th1);
         th2Vector.push_back(th2);

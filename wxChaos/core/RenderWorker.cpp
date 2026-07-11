@@ -16,7 +16,7 @@ RenderWorker::RenderWorker()
     _type = FractalType::Undefined;
     _xFactor = 0.0;
     _yFactor = 0.0;
-    _minX = _maxX = _minY = _maxY = _maxIter = 0.0;
+    _minX = _maxX = _minY = _maxY = _maxIterations = 0.0;
     _preciseXFactor = 0;
     _preciseYFactor = 0;
     _useHighPrecision = false;
@@ -49,7 +49,7 @@ void RenderWorker::SetOptions(const Options& opt)
     _maxX = opt.maxX;
     _minY = opt.minY;
     _maxY = opt.maxY;
-    _maxIter = opt.maxIter;
+    _maxIterations = opt.maxIterations;
     _useHighPrecision = opt.useHighPrecision;
     _highPrecisionBits = opt.highPrecisionBits;
     if (_useHighPrecision)

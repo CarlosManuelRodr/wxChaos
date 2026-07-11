@@ -39,7 +39,7 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
     engine->RegisterGlobalProperty("int hf", &intVar);
     engine->RegisterGlobalProperty("int wo", &intVar);
     engine->RegisterGlobalProperty("int wf", &intVar);
-    engine->RegisterGlobalProperty("int maxIter", &intVar);
+    engine->RegisterGlobalProperty("int maxIterations", &intVar);
     engine->RegisterGlobalProperty("int threadIndex", &intVar);
     engine->RegisterGlobalProperty("int screenWidth", &intVar);
     engine->RegisterGlobalProperty("int screenHeight", &intVar);

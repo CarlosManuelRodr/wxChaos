@@ -77,7 +77,7 @@ protected:
     double _maxX;
     double _minY;
     double _maxY;
-    double _maxIter;
+    double _maxIterations;
     PreciseRect _preciseView;
     HighPrecisionReal _preciseXFactor;
     HighPrecisionReal _preciseYFactor;
