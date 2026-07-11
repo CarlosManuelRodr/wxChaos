@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -63,5 +63,62 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Mapa de Duffing</h1>
+            <p class="subtitle">Un oscilador no lineal reducido a una estela de puntos.</p>
+            <div class="formula hero-formula">
+                \(x_{n+1}=y_n,\quad y_{n+1}=-b x_n+a y_n-y_n^3\)
+            </div>
+            <p class="hero-introduction">
+                El mapa de Duffing es un eco discreto del movimiento forzado no lineal. Este script sigue una sola
+                órbita durante muchas iteraciones y permite que su trayectoria acumulada revele un atractor.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                    src="script_duffing_map/overview.png"
+                    alt="Renderizado fractal de un mapa de Duffing">
+            <figcaption><span class="figure-title">Una trayectoria no lineal forzada.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Aumenta el número de iteraciones y observa cómo se llena el atractor. Esta imagen se construye
+                    mediante las visitas de la órbita, no con pruebas de escape píxel por píxel.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Busca pliegues y bandas delgadas. Muestran cómo el mapa estira la órbita y la hace regresar.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Cambia <strong>a</strong> en las opciones del fractal para modificar la intensidad de la retroalimentación no lineal del mapa.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Compáralo con el mapa de Hénon; ambos producen atractores.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El mapa</summary>
+            <div class="concept-details-content">
+                <p>
+                    El renderizado comienza en \((x,y)=(0.5,0.2)\) e itera \(x_{n+1}=y_n\),
+                    \(y_{n+1}=-b x_n+a y_n-y_n^3\), con \(a=2.75\) y \(b=0.2\) de manera predeterminada.
+                    Cada punto visitado se dibuja en el lienzo.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

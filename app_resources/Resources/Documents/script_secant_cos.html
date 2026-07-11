@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -61,5 +61,60 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Secante \(\cos(z)-1=0\)</h1>
+            <p class="subtitle">Búsqueda de raíces sin una derivada explícita.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n-f(z_n)\frac{z_n-z_{n-1}}{f(z_n)-f(z_{n-1})},\quad f(z)=\cos(z)-1\)
+            </div>
+            <p class="hero-introduction">
+                El método de la secante estima la pendiente a partir de dos puntos recientes, en lugar de calcular una
+                derivada. En el plano complejo, esa memoria adicional da al mapa de cuencas un ritmo diferente al del
+                método de Newton.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                    src="script_secant_cos/overview.png"
+                    alt="Renderizado fractal del método de la secante para el coseno">
+            <figcaption><span class="figure-title">Dos aproximaciones a la vez.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Compáralo con el script de Newton para el coseno. Ambos buscan raíces trigonométricas, pero el
+                    método de la secante conserva también el punto anterior.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Busca regiones donde la convergencia sea más lenta; los métodos sin derivadas pueden titubear a su manera.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Acércate a las estructuras repetidas que produce la periodicidad de la función coseno.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>La idea del método de la secante</summary>
+            <div class="concept-details-content">
+                <p>
+                    El método de la secante sustituye \(f'(z_n)\) por una diferencia finita calculada a partir de dos
+                    puntos: \(z_{n+1}=z_n-f(z_n)(z_n-z_{n-1})/(f(z_n)-f(z_{n-1}))\). Este script aplica esa idea sin
+                    derivadas a una ecuación basada en el coseno.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

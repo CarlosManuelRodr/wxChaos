@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -54,5 +54,53 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Triángulo de Sierpinski</h1>
+            <p class="subtitle">Un triángulo formado, en su mayor parte, por ausencia.</p>
+            <div class="formula hero-formula">
+                \(T_i(p)=\frac{1}{2}(p+v_i)\)
+            </div>
+            <p class="hero-introduction">
+                Este fractal se construye mediante una repetición tan sencilla que parece un truco de magia: elimina
+                el triángulo central y después haz lo mismo con cada triángulo restante, una y otra vez, para siempre.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="sierpinski_triangle/overview.png" alt="Vista general del triángulo de Sierpinski">
+            <figcaption><span class="figure-title">Tres copias en cada escala.</span></figcaption>
+        </figure>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/sierpinski-triangle">Abrir en wxChaos</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Observa el triángulo vacío más grande y después encuentra el mismo vacío repetido dentro de cada esquina.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Acércate a cualquier esquina. La imagen debería parecer inalterada, porque cada parte contiene copias más pequeñas del conjunto completo.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Una dimensión entre una línea y una superficie</summary>
+            <div class="concept-details-content">
+                <p>
+                    El triángulo de Sierpinski contiene tres copias de sí mismo, cada una con la mitad del tamaño.
+                    Por lo tanto, su dimensión de semejanza es \(\log(3)/\log(2)\), aproximadamente \(1.585\).
+                    Es mayor que la dimensión de una línea, pero menor que la de una región llena, lo que concuerda
+                    con la forma en que se extiende por el plano mientras deja huecos en todas partes.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

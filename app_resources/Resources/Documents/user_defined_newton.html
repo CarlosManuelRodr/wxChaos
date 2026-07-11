@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -61,5 +61,61 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Newton definido por el usuario</h1>
+            <p class="subtitle">Convierte tu propia ecuación en un mapa de raíces.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n-\frac{f(z_n)}{f'(z_n)}\)
+            </div>
+            <p class="hero-introduction">
+                Elige una función y wxChaos construirá la iteración de Newton correspondiente. El resultado no es solo
+                un solucionador, sino un retrato de cómo se comportan las aproximaciones iniciales antes de encontrar
+                una solución.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <div class="user-defined-question-mark" aria-label="Imagen fractal creada por el usuario">?</div>
+            <figcaption><span class="figure-title">Las raíces como destinos.</span></figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/user-defined-newton">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://formula/user-defined-newton">Abrir diálogo de fórmula</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a>
+        </div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Comienza con <code>z^3 - 1</code>. Tres raíces suelen producir tres cuencas bien definidas.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Prueba a cambiar el grado o añadir un término pequeño. Un mayor número de raíces puede volver más intrincadas las fronteras entre cuencas.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Usa la visualización de la órbita cerca de una frontera para observar cómo el método de Newton titubea, salta y finalmente se estabiliza.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Iteración de Newton para tu función</summary>
+            <div class="concept-details-content">
+                <p>
+                    Para una función \(f\), el método de Newton usa
+                    \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). La derivada orienta hacia una aproximación lineal local de una raíz.
+                    Cuando la estimación es buena, la convergencia puede ser rápida; cerca de las fronteras entre cuencas
+                    o de puntos problemáticos para la derivada, la trayectoria puede volverse caótica.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

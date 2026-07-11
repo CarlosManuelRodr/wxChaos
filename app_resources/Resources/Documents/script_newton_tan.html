@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -66,5 +66,64 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Newton \(\tan(z)-z=0\)</h1>
+            <p class="subtitle">Un mapa de búsqueda de raíces cerca de los polos de la tangente.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n-\frac{\tan(z_n)-z_n}{\sec^2(z_n)-1}\)
+            </div>
+            <p class="hero-introduction">
+                La tangente es una onda con precipicios. Sus polos hacen que el método de Newton salte por el plano
+                complejo, lo que da a este script divisiones más abruptas que las variantes del seno y el coseno.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                src="script_newton_tan/overview.png"
+                alt="Renderizado fractal de Newton para la tangente">
+            <figcaption><span class="figure-title">Cuencas de raíces cerca de los polos.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <p>Usa <strong>Paso mínimo</strong> en las opciones del fractal para controlar cuándo dos aproximaciones sucesivas de Newton se consideran convergentes.</p>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Busca cambios verticales abruptos. A menudo reflejan la estructura de polos de la tangente.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Acércate a una frontera de color y compárala con el centro más suave de una cuenca.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Después visita la página del punto fijo de la tangente para verla aplicada mediante otro método numérico.</p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Activa la visualización de la órbita para ver hacia dónde converge cada punto.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El paso de Newton para la tangente</summary>
+            <div class="concept-details-content">
+                <p>
+                    El script resuelve \(f(z)=\tan(z)-z\). Como la derivada de \(\tan(z)\) es \(\sec^2(z)\), la
+                    corrección de Newton usa \(f'(z)=\sec^2(z)-1\) en la fórmula habitual. Los polos de la tangente
+                    influyen fuertemente en la geometría de las cuencas.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

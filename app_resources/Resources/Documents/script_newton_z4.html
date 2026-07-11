@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -66,5 +66,66 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Newton \(z^4-1=0\)</h1>
+            <p class="subtitle">Cuatro raíces, cuatro destinos y una frontera fractal entre ellos.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n-\frac{z_n^4-1}{4z_n^3}\)
+            </div>
+            <p class="hero-introduction">
+                Este mapa convierte el método de Newton en una brújula de cuatro direcciones. Cada píxel es una
+                aproximación inicial para \(z^4=1\); el color registra qué tan rápido se estabiliza y a qué región del
+                plano complejo se aproxima.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                src="script_newton_z4/overview.png"
+                alt="Renderizado fractal de Newton para z elevado a la cuarta">
+            <figcaption><span class="figure-title">Un mapa de cuencas con cuatro raíces.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <p>Usa <strong>Paso mínimo</strong> en las opciones del fractal para controlar cuándo dos aproximaciones sucesivas de Newton se consideran convergentes.</p>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Busca los lugares donde cuatro cuencas de colores casi se tocan. Esos son los puntos sensibles en
+                    los que un cambio diminuto en la aproximación inicial puede llevar a otra raíz.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Aumenta el número de iteraciones y observa cómo las regiones fronterizas se vuelven más definidas, en lugar de simplemente rellenarse.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Compáralo con el fractal de Newton para \(f(z)=z^3-1\) y con la sala de Newton definida por el usuario.</p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Activa la visualización de la órbita para ver hacia dónde converge cada punto.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El paso de Newton</summary>
+            <div class="concept-details-content">
+                <p>
+                    Para \(f(z)=z^4-1\), el método de Newton usa
+                    \(z_{n+1}=z_n-(z_n^4-1)/(4z_n^3)\). Las raíces son \(1\), \(-1\), \(i\) y \(-i\).
+                    El renderizado se detiene cuando dos iteraciones consecutivas quedan dentro de una tolerancia pequeña.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

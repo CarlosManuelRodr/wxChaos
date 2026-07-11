@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -72,5 +72,71 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Newton \(z^8+15z^4-16=0\)</h1>
+            <p class="subtitle">Un mapa de raíces de grado superior con simetría estratificada.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n-\frac{z_n^8+15z_n^4-16}{8z_n^7+60z_n^3}\)
+            </div>
+            <p class="hero-introduction">
+                Los polinomios de grado superior ofrecen al método de Newton más destinos posibles. Este mapa convierte
+                esos destinos en un complejo mapa de cuencas donde compiten la simetría y la sensibilidad.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                src="script_newton_polynomial/overview.png"
+                alt="Renderizado fractal de Newton para un polinomio de grado superior">
+            <figcaption><span class="figure-title">Muchas raíces, muchas cuencas.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <p>Usa <strong>Paso mínimo</strong> en las opciones del fractal para controlar cuándo dos aproximaciones sucesivas de Newton se consideran convergentes.</p>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Cuenta las principales familias de cuencas antes de acercarte. Las potencias del polinomio producen
+                    una fuerte organización rotacional.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Acércate a las regiones donde varias cuencas se entrelazan. Los mapas de Newton ocultan sus mejores
+                    detalles entre los distintos destinos.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Compara este mapa con \(z^4-1\): ambos son mapas de Newton polinómicos, pero este tiene una estructura
+                    de raíces más densa.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Activa la visualización de la órbita para ver hacia dónde converge cada punto.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El paso para el polinomio</summary>
+            <div class="concept-details-content">
+                <p>
+                    La función es \(f(z)=z^8+15z^4-16\), con derivada \(f'(z)=8z^7+60z^3\). El método de Newton aplica
+                    \(z_{n+1}=z_n-f(z_n)/f'(z_n)\). El mapa colorea según la velocidad de convergencia y utiliza una
+                    clasificación sencilla basada en la posición final.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

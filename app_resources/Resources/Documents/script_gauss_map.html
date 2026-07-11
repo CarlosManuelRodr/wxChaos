@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -62,5 +62,61 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Mapa de Gauss</h1>
+            <p class="subtitle">Una órbita unidimensional dibujada a lo largo del espacio de parámetros.</p>
+            <div class="formula hero-formula">
+                \(x_{n+1}=e^{-a x_n^2}+b\)
+            </div>
+            <p class="hero-introduction">
+                Este mapa sigue la recurrencia \(x_{n+1}=e^{-a x_n^2}+b\). Recorre distintos valores de \(b\)
+                y dibuja los puntos donde termina la órbita después de muchas iteraciones.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                src="script_gauss_map/overview.png"
+                alt="Renderizado fractal de un mapa de Gauss">
+            <figcaption><span class="figure-title">Un retrato al estilo de un diagrama de bifurcación.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Interpreta el eje horizontal como el parámetro \(b\), y la dirección vertical como los valores
+                    visitados por la órbita.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Aumenta el número de iteraciones para hacer más denso el atractor.</p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Observa qué ocurre cuando cambias \(a\) en las opciones del fractal.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>La recurrencia</summary>
+            <div class="concept-details-content">
+                <p>
+                    El renderizado usa \(a=4.90\) de manera predeterminada, comienza con \(x=0.25\) e itera
+                    \(x_{n+1}=e^{-a x_n^2}+b\). Para cada píxel horizontal, \(b\) cambia y los valores de \(x\)
+                    visitados se dibujan en la imagen.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

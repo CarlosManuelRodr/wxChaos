@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -72,5 +72,71 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Newton \(\cos(z)-z=0\)</h1>
+            <p class="subtitle">Un mapa de búsqueda de raíces para los puntos fijos complejos del coseno.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n-\frac{\cos(z_n)-z_n}{-\sin(z_n)-1}\)
+            </div>
+            <p class="hero-introduction">
+                En la recta real, \(\cos(x)=x\) tiene un conocido punto fijo. En el plano complejo, el método de Newton
+                revela una geografía más rica de aproximaciones iniciales, cuencas y complejos corredores fronterizos.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                src="script_newton_cos/overview.png"
+                alt="Renderizado fractal de Newton para el coseno">
+            <figcaption><span class="figure-title">Cuencas de atracción.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <p>Usa <strong>Paso mínimo</strong> en las opciones del fractal para controlar cuándo dos aproximaciones sucesivas de Newton se consideran convergentes.</p>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Comienza interpretando la imagen como un mapa de convergencia, no como un conjunto de tiempo de
+                    escape. Cada píxel representa una aproximación inicial diferente.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Aléjate y busca franjas o regiones repetidas. El coseno complejo conserva rastros de periodicidad
+                    incluso dentro de la iteración de Newton.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Acércate a la frontera de una cuenca y compara la órbita de las regiones interiores suaves con la
+                    de los bordes inestables.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Activa la visualización de la órbita para ver hacia dónde converge cada punto.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El método de Newton para los puntos fijos del coseno</summary>
+            <div class="concept-details-content">
+                <p>
+                    La ecuación es \(f(z)=\cos(z)-z\). Como \(f'(z)=-\sin(z)-1\), el paso de Newton es
+                    \(z_{n+1}=z_n+(\cos(z_n)-z_n)/(\sin(z_n)+1)\). Los colores se desplazan según la dirección final
+                    del punto al que converge la órbita.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

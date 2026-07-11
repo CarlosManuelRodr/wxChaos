@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -66,5 +66,66 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Newton \(\log(z)-z=0\)</h1>
+            <p class="subtitle">Búsqueda de raíces en una función con un corte de rama y un carácter difícil.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n-\frac{\log(z_n)-z_n}{1/z_n-1}\)
+            </div>
+            <p class="hero-introduction">
+                En teoría, el logaritmo complejo es multivaluado; en la práctica computacional, depende de la rama
+                elegida. Este mapa permite que el método de Newton recorra ese terreno y registra dónde parecen
+                estabilizarse las aproximaciones iniciales.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                src="script_newton_log/overview.png"
+                alt="Renderizado fractal de Newton para el logaritmo">
+            <figcaption><span class="figure-title">Cuencas logarítmicas.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Busca cambios abruptos de textura. Los logaritmos pueden introducir transiciones marcadas donde la
+                    rama elegida cambia de comportamiento.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Acércate a un lóbulo repetido y compáralo con sus vecinos.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Usa <strong>Paso mínimo</strong> en las opciones del fractal para controlar cuándo dos aproximaciones sucesivas de Newton se consideran convergentes.</p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Activa la visualización de la órbita para ver hacia dónde converge cada punto.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El paso de Newton logarítmico</summary>
+            <div class="concept-details-content">
+                <p>
+                    El mapa itera una corrección de tipo Newton para \(f(z)=\log(z)-z\). El logaritmo complejo tiene un
+                    comportamiento dependiente de la rama, por lo que el paisaje numérico está determinado tanto por la
+                    ecuación como por el logaritmo principal usado por la biblioteca matemática de scripting con la que
+                    se implementa.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

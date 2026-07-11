@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -75,5 +75,75 @@
         </p>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Pawn</h1>
+            <p class="subtitle">Un experimento complejo y compacto en el que el exponente cambia en cada paso.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n^n+c\)
+            </div>
+            <p class="hero-introduction">
+                Pawn es una pequeña rareza: cada píxel comienza siendo tanto \(z\) como \(c\), y después la iteración
+                eleva \(z\) al número de iteración actual antes de sumar \(c\). Se desconoce el autor de este fractal.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                    src="script_pawn/overview.png"
+                    alt="Renderizado del fractal Pawn">
+            <figcaption><span class="figure-title">Un exponente cambiante.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Comienza con la vista predeterminada. Ya corresponde a una región ampliada, elegida para mostrar la estructura fractal.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Aumenta el número de iteraciones y observa si la frontera se estabiliza o desarrolla nuevas texturas.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Úsalo como inspiración para el editor de scripts: cambiar la sucesión de exponentes puede producir comportamientos muy diferentes.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>La recurrencia con potencia cambiante</summary>
+            <div class="concept-details-content">
+                <p>
+                    El mapa establece \(z_0=c\) y después aplica \(z_{n+1}=z_n^n+c\). El exponente no es fijo, por lo que
+                    la regla se vuelve más agresiva a medida que aumenta \(n\). Un radio de escape de \(2\) separa los
+                    puntos considerados interiores de los puntos que escapan.
+                </p>
+            </div>
+        </details>
+    </section>
+    <section>
+        <h2>Nota sobre su procedencia</h2>
+        <p>
+            wxChaos comenzó alrededor de 2010, cuando internet todavía tenía muchos sitios personales pequeños,
+            páginas de aficionados, archivos al estilo de Geocities y colecciones dispersas de curiosidades matemáticas.
+            Algunas fórmulas de la aplicación, incluida Pawn, se encontraron en lugares como esos y se incorporaron a
+            wxChaos como experimentos.
+        </p>
+        <p>
+            En aquel momento, el programa no estaba pensado para publicarse. Era un proyecto personal llamado
+            GrufiFractalGen, en referencia a GruFi, el grupo de divulgación científica del autor. El objetivo era crear
+            una aplicación llamativa para mostrar fractales a otras personas, no elaborar un catálogo cuidadosamente
+            documentado. Por esa razón, las fuentes originales no se registraron de forma sistemática y muchas de
+            aquellas páginas web antiguas han desaparecido desde entonces.
+        </p>
+        <p>
+            Si eres el autor de este fractal o sabes algo sobre su origen, ponte en contacto con nosotros.
+        </p>
+    </section>
+</main>
+
 </body>
 </html>

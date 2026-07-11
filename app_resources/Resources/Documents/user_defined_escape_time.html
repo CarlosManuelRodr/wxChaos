@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -61,5 +61,59 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Tiempo de escape definido por el usuario</h1>
+            <p class="subtitle">Escribe la regla y deja que el plano responda.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=f(z_n,c)\)
+            </div>
+            <p class="hero-introduction">
+                Después de recorrer las galerías, este fractal te permite convertirte en curador. Elige una recurrencia
+                que use \(z\) y \(c\), y deja que wxChaos transforme la acotación y el escape en una imagen.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <div class="user-defined-question-mark" aria-label="Imagen fractal creada por el usuario">?</div>
+            <figcaption><span class="figure-title">Un muro en blanco para tu fórmula.</span></figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/user-defined-escape-time">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://formula/user-defined-escape-time">Abrir diálogo de fórmula</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a>
+        </div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Comienza con una regla conocida, como <code>z = z^2 + c</code>. Confirma que reconoces su comportamiento antes de modificarla.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Cambia un solo elemento a la vez: la potencia, un término seno, un conjugado o una constante pequeña.</p>
+            </div>
+            <div class="experiment-step">
+                <p>Usa la visualización de la órbita para comprobar tu intuición. Si la imagen te sorprende, la órbita suele explicar por qué.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Qué significa tiempo de escape</summary>
+            <div class="concept-details-content">
+                <p>
+                    Un renderizador de tiempo de escape repite una recurrencia hasta que la órbita supera un radio de
+                    escape o se alcanza el límite de iteraciones. Los píxeles que escapan se colorean según cuándo o
+                    cómo escaparon; los que no escapan se consideran interiores para ese renderizado.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

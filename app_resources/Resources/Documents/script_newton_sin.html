@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -72,5 +72,71 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Newton \(\sin(z)-z=0\)</h1>
+            <p class="subtitle">Una ecuación engañosamente simple con un amplio paisaje de cuencas complejas.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=z_n-\frac{\sin(z_n)-z_n}{\cos(z_n)-1}\)
+            </div>
+            <p class="hero-introduction">
+                La ecuación \(\sin(z)=z\) parece tranquila, pero la iteración de Newton en el plano complejo la convierte
+                en un extenso campo de estructuras repetidas y fronteras sensibles.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img
+                src="script_newton_sin/overview.png"
+                alt="Renderizado fractal de Newton para el seno">
+            <figcaption><span class="figure-title">Cuencas de atracción.</span></figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <p>Usa <strong>Paso mínimo</strong> en las opciones del fractal para controlar cuándo dos aproximaciones sucesivas de Newton se consideran convergentes.</p>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Busca bandas e islas repetidas. La naturaleza periódica de la función seno sigue siendo visible
+                    después de aplicar la corrección de Newton.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Acércate a una frontera donde el color cambie rápidamente. Allí, aproximaciones iniciales cercanas
+                    siguen historias numéricas diferentes.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Compáralo con los mapas de Newton del coseno y la tangente para observar cómo funciones relacionadas
+                    producen cuencas diferentes.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Activa la visualización de la órbita para ver hacia dónde converge cada punto.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>El paso de Newton para el seno</summary>
+            <div class="concept-details-content">
+                <p>
+                    Para \(f(z)=\sin(z)-z\), \(f'(z)=\cos(z)-1\). El mapa aplica
+                    \(z_{n+1}=z_n-(\sin(z_n)-z_n)/(\cos(z_n)-1)\) y se detiene cuando el paso se vuelve menor que la
+                    tolerancia establecida.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>

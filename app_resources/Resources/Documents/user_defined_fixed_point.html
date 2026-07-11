@@ -9,7 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
-<main class="museum-page">
+<main data-i18n-lang="en" class="museum-page">
     <section class="hero">
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
@@ -67,5 +67,65 @@
         </details>
     </section>
 </main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Punto fijo definido por el usuario</h1>
+            <p class="subtitle">Diseña tu propio experimento de convergencia.</p>
+            <div class="formula hero-formula">
+                \(z_{n+1}=g(z_n)\)
+            </div>
+            <p class="hero-introduction">
+                En lugar de preguntar si una órbita escapa, este fractal pregunta si la aplicación repetida de tu
+                función termina por estabilizarse. Es ideal para explorar atracción, cuencas y convergencia lenta.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <div class="user-defined-question-mark" aria-label="Imagen fractal creada por el usuario">?</div>
+            <figcaption><span class="figure-title">Tu mapa de convergencia.</span></figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/user-defined-fixed-point">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="wxchaos://formula/user-defined-fixed-point">Abrir diálogo de fórmula</a>
+            <a class="action-link secondary" href="wxchaos://tool/orbit">Alternar visualización de la órbita</a>
+        </div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Comienza con <code>z = sin(z)</code>, <code>z = cos(z)</code> o <code>z = z^2</code>. Estas fórmulas
+                    se relacionan directamente con la galería de puntos fijos.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Reduce el paso mínimo solo después de comprobar que el renderizado se comporta correctamente.
+                    Las pruebas de convergencia más estrictas pueden requerir más iteraciones.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>Busca las fronteras entre cuencas. Muestran dónde valores iniciales casi idénticos se estabilizan de formas diferentes.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <details class="concept-details">
+            <summary>Iteración de punto fijo</summary>
+            <div class="concept-details-content">
+                <p>
+                    Dada una función \(g\), la iteración de punto fijo calcula \(z_{n+1}=g(z_n)\). Un punto fijo satisface
+                    \(z=g(z)\). wxChaos considera que una órbita ha convergido cuando la distancia entre dos valores
+                    consecutivos cae por debajo del paso mínimo configurado.
+                </p>
+            </div>
+        </details>
+    </section>
+</main>
+
 </body>
 </html>
