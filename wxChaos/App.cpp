@@ -3,6 +3,7 @@
 #include "gui/wx/common/AppLocalization.h"
 #include "gui/wx/config/AppConfigStore.h"
 #include "utils/AppPaths.h"
+#include <angelscript.h>
 
 wxApp::Appearance ToWxAppearance(const AppAppearance appearance)
 {
@@ -87,6 +88,9 @@ public:
 #ifdef _WIN32
         EnableHighDpiSupport();
 #endif
+        if (asPrepareMultithread() < 0)
+            return false;
+
         const AppConfig config = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load();
         const AppAppearance appearance = config.appearance;
         if (SetAppearance(ToWxAppearance(appearance)) == AppearanceResult::Failure)
@@ -105,6 +109,8 @@ public:
     int OnExit() override
     {
         AppTheme::Uninstall();
+        asThreadCleanup();
+        asUnprepareMultithread();
         return wxApp::OnExit();
     }
 };

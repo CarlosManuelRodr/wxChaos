@@ -3,7 +3,6 @@
 #include <atomic>
 #include <angelscript.h>
 #include <wx/string.h>
-#include "AngelscriptRuntime.h"
 #include "types/EngineStatus.h"
 
 class Fractal;
@@ -18,8 +17,6 @@ class Fractal;
 */
 class AngelscriptRenderEngine
 {
-    ///< Process-wide AngelScript initialization guard shared by all engine types.
-    AngelscriptRuntime runtime;
     asIScriptEngine* engine;
     asIScriptContext* ctx;
     std::atomic_bool abortRequested;

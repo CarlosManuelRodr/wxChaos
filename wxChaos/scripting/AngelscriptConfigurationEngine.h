@@ -2,7 +2,6 @@
 
 #include <angelscript.h>
 #include <wx/string.h>
-#include "AngelscriptRuntime.h"
 #include "ScriptData.h"
 #include "types/EngineStatus.h"
 
@@ -15,8 +14,6 @@
 */
 class AngelscriptConfigurationEngine
 {
-    ///< Process-wide AngelScript initialization guard shared by all engine types.
-    AngelscriptRuntime runtime;
     ScriptData configuration;
     asIScriptEngine* engine;
     EngineStatus status;
@@ -29,6 +26,6 @@ public:
     bool CompileFromPath(const std::string& path);
     bool Execute();
     ScriptData GetScriptData();
-    EngineStatus GetStatus() const;
+    [[nodiscard]] EngineStatus GetStatus() const;
     wxString GetErrorInfo();
 };
