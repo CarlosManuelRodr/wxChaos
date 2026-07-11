@@ -78,8 +78,10 @@ TEST_CASE("fractals own their coordinate system labels")
     CHECK(ToString(complexFractal.GetCoordinateSystem().verticalAxis) == "Imaginary");
     CHECK(ToString(cartesianFractal.GetCoordinateSystem().horizontalAxis) == "x");
     CHECK(ToString(cartesianFractal.GetCoordinateSystem().verticalAxis) == "y");
-    CHECK(ToString(pendulum.GetCoordinateSystem().horizontalAxis) == "θ2");
-    CHECK(ToString(pendulum.GetCoordinateSystem().verticalAxis) == "θ1");
+    CHECK(pendulum.GetCoordinateSystem().horizontalAxis == wxString::FromUTF8(u8"\u03B82"));
+    CHECK(pendulum.GetCoordinateSystem().verticalAxis == wxString::FromUTF8(u8"\u03B81"));
+    CHECK(pendulum.GetOptionsPanel()->GetLabelValue(0) == wxString::FromUTF8(u8" \u03B81 Bailout"));
+    CHECK(pendulum.GetOptionsPanel()->GetLabelValue(2) == wxString::FromUTF8(u8" \u03B82 Bailout"));
 }
 
 TEST_CASE("script fractals can register coordinate system labels")

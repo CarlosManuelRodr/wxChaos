@@ -25,7 +25,10 @@ public:
     DoublePendulum(unsigned int width, unsigned int height);
     ~DoublePendulum() override;
     wxString GetName() const override { return "Double Pendulum"; }
-    CoordinateSystem GetCoordinateSystem() const override { return {_("θ2"), _("θ1")}; }
+    CoordinateSystem GetCoordinateSystem() const override
+    {
+        return {wxString::FromUTF8(u8"\u03B82"), wxString::FromUTF8(u8"\u03B81")};
+    }
 
     void Render() override;
     void DrawOrbit() override;
