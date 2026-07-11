@@ -19,6 +19,11 @@ int CompileScriptFromPath(asIScriptEngine* engine, const std::string& filePath);
 void RegisterScriptMathReal(asIScriptEngine* engine);
 void RegisterScriptMathComplex(asIScriptEngine* engine);
 void RegisterWxChaosInterface(asIScriptEngine* engine);
+/**
+ * @brief Registers the DrawLine() function used by scripted orbit entry points.
+ * @param engine AngelScript engine receiving the binding.
+ * @param fractal Fractal that records drawn lines, or nullptr for compile-only engines.
+ */
 void RegisterOrbitDrawingInterface(asIScriptEngine* engine, Fractal* fractal);
 void MessageCallback(const asSMessageInfo* msg, void* param);
 ScriptData FetchScriptData(const std::string& fileName);

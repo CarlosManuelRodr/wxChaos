@@ -18,6 +18,7 @@ class ScriptFractalRenderer : public RenderWorker
     std::string _path;
     wxString _errorInfo;
     unsigned int _threadIndex;
+    ///< Placeholder globals that let complete scripts containing DrawOrbit() compile for pixel rendering.
     double _orbitX;
     double _orbitY;
 public:

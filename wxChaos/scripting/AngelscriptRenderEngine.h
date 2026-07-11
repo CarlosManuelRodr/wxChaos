@@ -18,6 +18,7 @@ class Fractal;
 */
 class AngelscriptRenderEngine
 {
+    ///< Process-wide AngelScript initialization guard shared by all engine types.
     AngelscriptRuntime runtime;
     asIScriptEngine* engine;
     asIScriptContext* ctx;
@@ -29,11 +30,20 @@ class AngelscriptRenderEngine
     void ReleaseContext();
     void ReleaseEngine();
 public:
+    /**
+     * @brief Creates an engine with the complete wxChaos scripting interface.
+     * @param orbitFractal Fractal that receives DrawLine() calls, or nullptr when orbit drawing is inactive.
+     */
     explicit AngelscriptRenderEngine(Fractal* orbitFractal = nullptr);
     ~AngelscriptRenderEngine();
 
     bool RegisterGlobalVariable(const char* declaration, void* pointer);
     bool CompileFromPath(const std::string& path);
+    /**
+     * @brief Executes a parameterless void script entry point.
+     * @param entryPoint Function name without its return type or parentheses.
+     * @return True when execution finishes normally or is explicitly aborted.
+     */
     bool Execute(const char* entryPoint = "Render");
     void Abort();
     EngineStatus GetStatus() const;

@@ -15,6 +15,7 @@
 */
 class AngelscriptConfigurationEngine
 {
+    ///< Process-wide AngelScript initialization guard shared by all engine types.
     AngelscriptRuntime runtime;
     ScriptData configuration;
     asIScriptEngine* engine;
