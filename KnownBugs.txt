@@ -1,5 +1,4 @@
 Bugs:
-- θ1 and θ2 are not rendering correctly on the UI.
 - Sierpinski triangle cannot calculate its dimension in its current form.
 
 Improvements to get to a release version:
