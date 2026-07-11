@@ -1129,7 +1129,7 @@ void DimensionFrame::GetScriptFractals()
     // Gets script parameters.
     for (unsigned int i = 0; i < _loadedScripts.size(); i++)
     {
-        if (!_loadedScripts[i].noSetMap && _loadedScripts[i].scriptCategory != ScriptCategory::NumMet)
+        if (!_loadedScripts[i].disableSetMap && _loadedScripts[i].scriptCategory != ScriptCategory::NumMet)
         {
             _scriptList.push_back(i);
             _fractalChoice->Append(wxString(_loadedScripts[i].name.c_str(), wxConvUTF8));

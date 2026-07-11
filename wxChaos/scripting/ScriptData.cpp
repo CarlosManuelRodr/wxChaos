@@ -11,7 +11,7 @@ ScriptData::ScriptData(ScriptDataType type)
     juliaVariety = false;
     redrawAlways = false;
     extColor = false;
-    noSetMap = false;
+    disableSetMap = false;
     hasOrbit = false;
     isValid = type == ScriptDataType::Standard;
 }

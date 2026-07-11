@@ -28,7 +28,7 @@ static bool juliaVarietySet = false;
 bool thereIsConsoleText = false;
 bool asRedrawAlways = false;
 bool extColor = true;
-bool noSetMap = false;
+bool disableSetMap = false;
 string consoleText;
 
 std::vector<ScriptData> GetValidUserScripts()
@@ -179,9 +179,9 @@ static void asSetExtColorMode(bool mode)
     extColor = mode;
 }
 
-static void asNoSetMap(bool mode)
+static void asDisableSetMap(bool mode)
 {
-    noSetMap = mode;
+    disableSetMap = mode;
 }
 
 static void asSetPoint(int x, int y, bool setVal, int colorVal)
@@ -284,29 +284,29 @@ void asPrintComplex(const Complex& num)
 
 ScriptData FetchScriptData(const string& fileName)
 {
-    ScriptData dat;
-    dat.scriptCategory = scriptCategory;
-    dat.file = fileName;
-    dat.name = name;
-    dat.documentationPath = documentationPath;
-    dat.minX = minXSet ? minX : -2;
-    dat.maxX = maxXSet ? maxX : 2;
-    dat.minY = minYSet ? minY : -2;
-    dat.defaultIter = defaultIterSet ? defaultIter : 100;
-    dat.juliaVariety = juliaVarietySet;
-    dat.redrawAlways = asRedrawAlways;
-    dat.extColor = extColor;
-    dat.noSetMap = noSetMap;
+    ScriptData data;
+    data.scriptCategory = scriptCategory;
+    data.file = fileName;
+    data.name = name;
+    data.documentationPath = documentationPath;
+    data.minX = minXSet ? minX : -2;
+    data.maxX = maxXSet ? maxX : 2;
+    data.minY = minYSet ? minY : -2;
+    data.defaultIter = defaultIterSet ? defaultIter : 100;
+    data.juliaVariety = juliaVarietySet;
+    data.redrawAlways = asRedrawAlways;
+    data.extColor = extColor;
+    data.disableSetMap = disableSetMap;
 
     minXSet = maxXSet = minYSet = false;
     defaultIterSet = false;
     documentationPath.clear();
     juliaVarietySet = false;
     asRedrawAlways = false;
-    noSetMap = false;
+    disableSetMap = false;
     extColor = true;
 
-    return dat;
+    return data;
 }
 
 // ReSharper disable once CppParameterNeverUsed
@@ -439,7 +439,7 @@ void RegisterWxChaosInterface(asIScriptEngine* engine)
     r = engine->RegisterGlobalFunction("void SetJuliaVariety(bool)", asFUNCTION(asSetJuliaVariety), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetRedrawAlways(bool)", asFUNCTION(asSetRedrawAlways), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetExtColorMode(bool)", asFUNCTION(asSetExtColorMode), asCALL_CDECL); assert(r >= 0);
-    r = engine->RegisterGlobalFunction("void NoSetMap(bool)", asFUNCTION(asNoSetMap), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void DisableSetMap(bool)", asFUNCTION(asDisableSetMap), asCALL_CDECL); assert(r >= 0);
 }
 
 void RegisterOrbitDrawingInterface(asIScriptEngine* engine, Fractal* fractal)

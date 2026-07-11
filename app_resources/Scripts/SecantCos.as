@@ -6,7 +6,7 @@ void Configure()
     SetMinX(-25.2866);
     SetMaxX(11.6554);
     SetMinY(-11.0199);
-    NoSetMap(true);
+    DisableSetMap(true);
 }
 
 void Render()

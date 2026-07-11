@@ -16,7 +16,7 @@ struct ScriptData
     bool juliaVariety;
     bool redrawAlways;
     bool extColor;
-    bool noSetMap;
+    bool disableSetMap;
     ///< Whether the compiled script declares a void DrawOrbit() entry point.
     bool hasOrbit;
     bool isValid;
