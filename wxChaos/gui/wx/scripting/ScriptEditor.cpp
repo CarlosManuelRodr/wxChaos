@@ -66,7 +66,12 @@ void Render()
             for(int x=0; x<screenWidth; x++)
                 SetPoint(x, y, false, color);
         }
-    }
+}
+
+void DrawOrbit()
+{
+    // Draw the selected point's orbit with DrawLine(..., red, green, blue).
+}
 })"""";
 
 ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,

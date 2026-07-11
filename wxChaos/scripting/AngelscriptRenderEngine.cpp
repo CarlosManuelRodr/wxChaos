@@ -3,7 +3,7 @@
 #include "AngelscriptBindings.h"
 #include <scriptstdstring.h>
 
-AngelscriptRenderEngine::AngelscriptRenderEngine()
+AngelscriptRenderEngine::AngelscriptRenderEngine(Fractal* orbitFractal)
 {
     engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
     ctx = nullptr;
@@ -25,6 +25,7 @@ AngelscriptRenderEngine::AngelscriptRenderEngine()
     RegisterScriptMathReal(engine);
     RegisterScriptMathComplex(engine);
     RegisterWxChaosInterface(engine);
+    RegisterOrbitDrawingInterface(engine, orbitFractal);
 }
 
 AngelscriptRenderEngine::~AngelscriptRenderEngine()
@@ -88,7 +89,7 @@ bool AngelscriptRenderEngine::CompileFromPath(const std::string& path)
     return true;
 }
 
-bool AngelscriptRenderEngine::Execute()
+bool AngelscriptRenderEngine::Execute(const char* entryPoint)
 {
     if (engine == nullptr)
         return false;
@@ -102,10 +103,11 @@ bool AngelscriptRenderEngine::Execute()
         return false;
     }
 
-    asIScriptFunction* renderFunc = engine->GetModule(nullptr)->GetFunctionByDecl("void Render()");
+    const std::string declaration = std::string("void ") + entryPoint + "()";
+    asIScriptFunction* renderFunc = engine->GetModule(nullptr)->GetFunctionByDecl(declaration.c_str());
     if (renderFunc == nullptr)
     {
-        errorInfo = "The function 'Render' was not found.";
+        errorInfo = "The function '" + wxString::FromUTF8(entryPoint) + "' was not found.";
         ReleaseContext();
         ReleaseEngine();
         status = EngineStatus::Error;

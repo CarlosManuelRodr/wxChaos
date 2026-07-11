@@ -18,6 +18,8 @@ class ScriptFractalRenderer : public RenderWorker
     std::string _path;
     wxString _errorInfo;
     unsigned int _threadIndex;
+    double _orbitX;
+    double _orbitY;
 public:
     ScriptFractalRenderer();
     ~ScriptFractalRenderer() override;

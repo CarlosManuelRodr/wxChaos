@@ -5,6 +5,8 @@ ScriptFractalRenderer::ScriptFractalRenderer()
 {
     _renderEngine = nullptr;
     _threadIndex = 0;
+    _orbitX = 0.0;
+    _orbitY = 0.0;
 }
 ScriptFractalRenderer::~ScriptFractalRenderer() = default;
 
@@ -39,6 +41,8 @@ void ScriptFractalRenderer::Render()
     isEngineOk &= renderEngine->RegisterGlobalVariable("double yFactor", &_yFactor);
     isEngineOk &= renderEngine->RegisterGlobalVariable("double kReal", &_kReal);
     isEngineOk &= renderEngine->RegisterGlobalVariable("double kImaginary", &_kImaginary);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double orbitX", &_orbitX);
+    isEngineOk &= renderEngine->RegisterGlobalVariable("double orbitY", &_orbitY);
     isEngineOk &= renderEngine->RegisterGlobalVariable("int ho", &_heightOrigin);
     isEngineOk &= renderEngine->RegisterGlobalVariable("int hf", &_heightFinal);
     isEngineOk &= renderEngine->RegisterGlobalVariable("int wo", &_widthOrigin);

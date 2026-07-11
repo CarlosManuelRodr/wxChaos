@@ -16,6 +16,9 @@ class ScriptFractal : public Fractal
     std::string _path;
     ScriptData _myScriptData;
     ScriptFractalRenderer* _myRender;
+    wxString _orbitErrorInfo;
+
+    bool RegisterOrbitVariables(AngelscriptRenderEngine& engine);
 
 protected:
     void CreateInspectionFractal(FractalFactory& factory, unsigned int width, unsigned int height) const override;
@@ -27,10 +30,12 @@ public:
     wxString GetName() const override { return "Script Fractal"; }
 
     void Render() override;
+    void DrawOrbit() override;
     void PostRender() override;
     void PreRestartRender() override;
     bool IsThereError() const;
     wxString GetErrorInfo() const;
+    wxString GetOrbitErrorInfo() const;
     void ClearErrorInfo() const;
     std::string GetPath();
     const ScriptData& GetScriptData() const;

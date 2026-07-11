@@ -8,6 +8,7 @@
 #include "AppPaths.h"
 #include "TextUtils.h"
 #include "Complex.h"
+#include "Fractal.h"
 
 using namespace std;
 
@@ -185,6 +186,20 @@ static void asSetPoint(int x, int y, bool setVal, int colorVal)
 {
     asSetMap[x][y] = setVal;
     asColorMap[x][y] = colorVal < 0 ? InvalidColor : static_cast<double>(colorVal);
+}
+
+static void asDrawOrbitLine(asIScriptGeneric* generic)
+{
+    auto* fractal = static_cast<Fractal*>(generic->GetEngine()->GetUserData());
+    if (fractal == nullptr)
+        return;
+
+    const auto colorComponent = [generic](const asUINT argument) {
+        return static_cast<sf::Uint8>(std::min<asDWORD>(generic->GetArgDWord(argument), 255));
+    };
+
+    fractal->DrawLine(generic->GetArgDouble(0), generic->GetArgDouble(1), generic->GetArgDouble(2),
+                      generic->GetArgDouble(3), sf::Color(colorComponent(4), colorComponent(5), colorComponent(6)), true);
 }
 
 static void asPrintString(string& str)
@@ -374,4 +389,14 @@ void RegisterWxChaosInterface(asIScriptEngine* engine)
     r = engine->RegisterGlobalFunction("void SetRedrawAlways(bool)", asFUNCTION(asSetRedrawAlways), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetExtColorMode(bool)", asFUNCTION(asSetExtColorMode), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void NoSetMap(bool)", asFUNCTION(asNoSetMap), asCALL_CDECL); assert(r >= 0);
+}
+
+void RegisterOrbitDrawingInterface(asIScriptEngine* engine, Fractal* fractal)
+{
+    engine->SetUserData(fractal);
+
+    const int r = engine->RegisterGlobalFunction(
+        "void DrawLine(double, double, double, double, uint red = 0, uint green = 0, uint blue = 0)",
+        asFUNCTION(asDrawOrbitLine), asCALL_GENERIC);
+    assert(r >= 0);
 }

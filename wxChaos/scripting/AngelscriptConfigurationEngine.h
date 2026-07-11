@@ -2,6 +2,7 @@
 
 #include <angelscript.h>
 #include <wx/string.h>
+#include "AngelscriptRuntime.h"
 #include "ScriptData.h"
 #include "types/EngineStatus.h"
 
@@ -14,6 +15,7 @@
 */
 class AngelscriptConfigurationEngine
 {
+    AngelscriptRuntime runtime;
     ScriptData configuration;
     asIScriptEngine* engine;
     EngineStatus status;

@@ -3,7 +3,10 @@
 #include <atomic>
 #include <angelscript.h>
 #include <wx/string.h>
+#include "AngelscriptRuntime.h"
 #include "types/EngineStatus.h"
+
+class Fractal;
 
 /**
 * @class AngelscriptRenderEngine
@@ -15,6 +18,7 @@
 */
 class AngelscriptRenderEngine
 {
+    AngelscriptRuntime runtime;
     asIScriptEngine* engine;
     asIScriptContext* ctx;
     std::atomic_bool abortRequested;
@@ -25,12 +29,12 @@ class AngelscriptRenderEngine
     void ReleaseContext();
     void ReleaseEngine();
 public:
-    AngelscriptRenderEngine();
+    explicit AngelscriptRenderEngine(Fractal* orbitFractal = nullptr);
     ~AngelscriptRenderEngine();
 
     bool RegisterGlobalVariable(const char* declaration, void* pointer);
     bool CompileFromPath(const std::string& path);
-    bool Execute();
+    bool Execute(const char* entryPoint = "Render");
     void Abort();
     EngineStatus GetStatus() const;
     wxString GetErrorInfo();

@@ -9,8 +9,6 @@ using namespace std;
 ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData,
                              const int renderThreads) : Fractal(width, height)
 {
-    asPrepareMultithread();
-
     if (renderThreads != -1)
         _threadNumber = static_cast<unsigned>(renderThreads);
 
@@ -31,6 +29,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     _path = scriptData.file;
     _myScriptData = scriptData;
     _type = FractalType::ScriptFractal;
+    _hasOrbit = true;
     _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
     {
@@ -41,8 +40,6 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
 ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath)
                              : Fractal(width, height)
 {
-    asPrepareMultithread();
-
     _path = scriptPath;
     AngelscriptConfigurationEngine configEngine;
     if (configEngine.CompileFromPath(_path) && configEngine.Execute())
@@ -57,6 +54,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     }
 
     _type = FractalType::ScriptFractal;
+    _hasOrbit = true;
     _myRender = new ScriptFractalRenderer[_threadNumber];
     for (unsigned int i=0; i<_threadNumber; i++)
         _myRender[i].SetPath(scriptPath);
@@ -65,7 +63,6 @@ ScriptFractal::~ScriptFractal()
 {
     this->StopRender();
     delete[] _myRender;
-    asUnprepareMultithread();
 }
 const ScriptData& ScriptFractal::GetScriptData() const
 {
@@ -76,6 +73,45 @@ void ScriptFractal::Render()
     asSetMap = _setMap;
     asColorMap = _colorMap;
     this->SetRendererBounds<ScriptFractalRenderer>(_myRender);
+}
+bool ScriptFractal::RegisterOrbitVariables(AngelscriptRenderEngine& engine)
+{
+    bool isEngineOk = true;
+    isEngineOk &= engine.RegisterGlobalVariable("double minX", &_minX);
+    isEngineOk &= engine.RegisterGlobalVariable("double maxX", &_maxX);
+    isEngineOk &= engine.RegisterGlobalVariable("double minY", &_minY);
+    isEngineOk &= engine.RegisterGlobalVariable("double maxY", &_maxY);
+    isEngineOk &= engine.RegisterGlobalVariable("double xFactor", &_xFactor);
+    isEngineOk &= engine.RegisterGlobalVariable("double yFactor", &_yFactor);
+    isEngineOk &= engine.RegisterGlobalVariable("double kReal", &_kReal);
+    isEngineOk &= engine.RegisterGlobalVariable("double kImaginary", &_kImaginary);
+    isEngineOk &= engine.RegisterGlobalVariable("double orbitX", &_orbitX);
+    isEngineOk &= engine.RegisterGlobalVariable("double orbitY", &_orbitY);
+    isEngineOk &= engine.RegisterGlobalVariable("uint maxIter", &_maxIter);
+    isEngineOk &= engine.RegisterGlobalVariable("uint screenWidth", &_screenWidth);
+    isEngineOk &= engine.RegisterGlobalVariable("uint screenHeight", &_screenHeight);
+    isEngineOk &= engine.RegisterGlobalVariable("uint paletteSize", &_paletteSize);
+    return isEngineOk;
+}
+void ScriptFractal::DrawOrbit()
+{
+    AngelscriptRenderEngine orbitEngine(this);
+    int regionBoundary = 0;
+    unsigned int threadIndex = 0;
+    bool isEngineOk = orbitEngine.GetStatus() != EngineStatus::Error && RegisterOrbitVariables(orbitEngine);
+    isEngineOk &= orbitEngine.RegisterGlobalVariable("int ho", &regionBoundary);
+    isEngineOk &= orbitEngine.RegisterGlobalVariable("int hf", &regionBoundary);
+    isEngineOk &= orbitEngine.RegisterGlobalVariable("int wo", &regionBoundary);
+    isEngineOk &= orbitEngine.RegisterGlobalVariable("int wf", &regionBoundary);
+    isEngineOk &= orbitEngine.RegisterGlobalVariable("uint threadIndex", &threadIndex);
+    isEngineOk = isEngineOk && orbitEngine.CompileFromPath(_path) && orbitEngine.Execute("DrawOrbit");
+
+    if (!isEngineOk)
+        _orbitErrorInfo = orbitEngine.GetErrorInfo();
+    else
+        _orbitErrorInfo.clear();
+
+    _orbitDrawn = true;
 }
 void ScriptFractal::CreateInspectionFractal(FractalFactory& factory, unsigned int width, unsigned int height) const
 {
@@ -123,6 +159,10 @@ bool ScriptFractal::IsThereError() const
 wxString ScriptFractal::GetErrorInfo() const
 {
     return _myRender[0].GetErrorInfo();
+}
+wxString ScriptFractal::GetOrbitErrorInfo() const
+{
+    return _orbitErrorInfo;
 }
 void ScriptFractal::ClearErrorInfo() const
 {

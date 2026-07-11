@@ -45,3 +45,18 @@ void Render()
         }
     }
 }
+
+void DrawOrbit()
+{
+    complex z(orbitX, orbitY);
+    const complex c = z;
+
+    for(uint n = 0; n < maxIter; n++)
+    {
+        const complex previous = z;
+        z = pow(z, int(n)) + c;
+        DrawLine(previous.real(), previous.imag(), z.real(), z.imag(), 0, 255, 0);
+        if(z.real() * z.real() + z.imag() * z.imag() > 4)
+            break;
+    }
+}

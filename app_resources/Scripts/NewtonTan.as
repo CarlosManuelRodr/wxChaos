@@ -51,3 +51,19 @@ void Render()
         }
     }
 }
+
+void DrawOrbit()
+{
+    complex z(orbitX, orbitY);
+    const complex one(1, 0);
+    const double tolerance = 0.01;
+
+    for(uint n = 0; n < maxIter; n++)
+    {
+        const complex previous = z;
+        z = z - (tan(z) - z) / (pow(sec(z), 2) + one);
+        DrawLine(previous.real(), previous.imag(), z.real(), z.imag(), 0, 255, 0);
+        if(abs_r(previous.real() - z.real()) < tolerance && abs_r(previous.imag() - z.imag()) < tolerance)
+            break;
+    }
+}

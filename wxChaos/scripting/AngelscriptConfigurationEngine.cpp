@@ -20,6 +20,7 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
     RegisterScriptMathComplex(engine);
     RegisterScriptMathReal(engine);
     RegisterWxChaosInterface(engine);
+    RegisterOrbitDrawingInterface(engine, nullptr);
 
     int intVar;
     double dblVar;
@@ -31,6 +32,8 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
     engine->RegisterGlobalProperty("double yFactor", &dblVar);
     engine->RegisterGlobalProperty("double kReal", &dblVar);
     engine->RegisterGlobalProperty("double kImaginary", &dblVar);
+    engine->RegisterGlobalProperty("double orbitX", &dblVar);
+    engine->RegisterGlobalProperty("double orbitY", &dblVar);
     engine->RegisterGlobalProperty("int ho", &intVar);
     engine->RegisterGlobalProperty("int hf", &intVar);
     engine->RegisterGlobalProperty("int wo", &intVar);

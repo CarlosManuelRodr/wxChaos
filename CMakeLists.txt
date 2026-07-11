@@ -225,6 +225,7 @@ if(BUILD_TESTING)
             tests/core/CoreTestsMain.cpp
             tests/core/FractalUtilitiesTests.cpp
             tests/core/FractalInspectionTests.cpp
+            tests/core/ScriptOrbitTests.cpp
             tests/core/RenderingAlgorithmTests.cpp
             tests/core/geometry/GeometryTests.cpp
             tests/core/rendering/RenderingTests.cpp
