@@ -21,6 +21,7 @@ AngelscriptConfigurationEngine::AngelscriptConfigurationEngine()
     RegisterScriptMathReal(engine);
     RegisterWxChaosInterface(engine);
     RegisterOrbitDrawingInterface(engine, nullptr);
+    RegisterScriptOptionsInterface(engine, &configuration.options);
 
     int intVar;
     double dblVar;
@@ -109,7 +110,9 @@ bool AngelscriptConfigurationEngine::Execute()
     ctx->Release();
     engine->Release();
     engine = nullptr;
+    ScriptOptions options = std::move(configuration.options);
     configuration = FetchScriptData(filePath);
+    configuration.options = std::move(options);
     configuration.hasOrbit = hasOrbit;
     return true;
 }

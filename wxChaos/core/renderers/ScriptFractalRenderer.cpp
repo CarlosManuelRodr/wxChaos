@@ -17,7 +17,7 @@ void ScriptFractalRenderer::SetPath(const string& scriptPath)
 void ScriptFractalRenderer::Render()
 {
     // Creates script engine.
-    const auto renderEngine = std::make_shared<AngelscriptRenderEngine>();
+    const auto renderEngine = std::make_shared<AngelscriptRenderEngine>(nullptr, &_scriptOptions);
     {
         std::lock_guard lock(_renderEngineMutex);
         _renderEngine = renderEngine;
@@ -108,5 +108,10 @@ void ScriptFractalRenderer::PreTerminate()
 void ScriptFractalRenderer::SetParams(const unsigned int threadIndex)
 {
     _threadIndex = threadIndex;
+}
+
+void ScriptFractalRenderer::SetScriptOptions(const ScriptOptions& options)
+{
+    _scriptOptions = options;
 }
 

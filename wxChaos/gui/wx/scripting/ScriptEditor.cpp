@@ -52,10 +52,12 @@ const string newScriptTemplate = R""""(void Configure()
 {
     SetFractalName("New script");
     SetCategory("Other");
+    // AddDoubleOption("scale", "Scale: ", 1.0);
 }
 
 void Render()
 {
+    // const double scale = GetDoubleOption("scale");
     // Example: Draw color gradient
     int color;
     if(threadIndex == 0)

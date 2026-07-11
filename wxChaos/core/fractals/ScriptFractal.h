@@ -25,6 +25,8 @@ class ScriptFractal : public Fractal
      * @return True when every global was registered successfully.
      */
     bool RegisterOrbitVariables(AngelscriptRenderEngine& engine);
+    /** @brief Links script-declared option storage to the standard fractal options panel. */
+    void ConfigurePanelOptions();
 
 protected:
     void CreateInspectionFractal(FractalFactory& factory, unsigned int width, unsigned int height) const override;

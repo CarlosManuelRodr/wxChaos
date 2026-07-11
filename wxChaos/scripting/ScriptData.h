@@ -3,6 +3,7 @@
 #include <string>
 #include "types/ScriptCategory.h"
 #include "types/ScriptDataType.h"
+#include "ScriptOptions.h"
 
 struct ScriptData
 {
@@ -19,6 +20,7 @@ struct ScriptData
     ///< Whether the compiled script declares a void DrawOrbit() entry point.
     bool hasOrbit;
     bool isValid;
+    ScriptOptions options; ///< Arbitrary typed options declared by Configure().
 
     explicit ScriptData(ScriptDataType type = ScriptDataType::Standard);
 };

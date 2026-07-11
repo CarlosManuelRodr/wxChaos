@@ -3,7 +3,7 @@
 #include "AngelscriptBindings.h"
 #include <scriptstdstring.h>
 
-AngelscriptRenderEngine::AngelscriptRenderEngine(Fractal* orbitFractal)
+AngelscriptRenderEngine::AngelscriptRenderEngine(Fractal* orbitFractal, ScriptOptions* scriptOptions)
 {
     engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
     ctx = nullptr;
@@ -26,6 +26,7 @@ AngelscriptRenderEngine::AngelscriptRenderEngine(Fractal* orbitFractal)
     RegisterScriptMathComplex(engine);
     RegisterWxChaosInterface(engine);
     RegisterOrbitDrawingInterface(engine, orbitFractal);
+    RegisterScriptOptionsInterface(engine, scriptOptions);
 }
 
 AngelscriptRenderEngine::~AngelscriptRenderEngine()

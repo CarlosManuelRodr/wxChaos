@@ -15,6 +15,8 @@ using namespace std;
 bool** asSetMap;
 double** asColorMap;
 static constexpr double InvalidColor = std::numeric_limits<double>::max();
+static constexpr asPWORD OrbitFractalUserData = 2000;
+static constexpr asPWORD ScriptOptionsUserData = 2001;
 static string name;
 static string documentationPath;
 static ScriptCategory scriptCategory;
@@ -190,7 +192,7 @@ static void asSetPoint(int x, int y, bool setVal, int colorVal)
 
 static void asDrawOrbitLine(asIScriptGeneric* generic)
 {
-    auto* fractal = static_cast<Fractal*>(generic->GetEngine()->GetUserData());
+    auto* fractal = static_cast<Fractal*>(generic->GetEngine()->GetUserData(OrbitFractalUserData));
     if (fractal == nullptr)
         return;
 
@@ -200,6 +202,55 @@ static void asDrawOrbitLine(asIScriptGeneric* generic)
 
     fractal->DrawLine(generic->GetArgDouble(0), generic->GetArgDouble(1), generic->GetArgDouble(2),
                       generic->GetArgDouble(3), sf::Color(colorComponent(4), colorComponent(5), colorComponent(6)), true);
+}
+
+static ScriptOptions* GetScriptOptions(asIScriptGeneric* generic)
+{
+    return static_cast<ScriptOptions*>(generic->GetEngine()->GetUserData(ScriptOptionsUserData));
+}
+
+static const string& GetOptionStringArgument(asIScriptGeneric* generic, const asUINT index)
+{
+    return *static_cast<string*>(generic->GetArgObject(index));
+}
+
+static void asAddIntegerOption(asIScriptGeneric* generic)
+{
+    if (ScriptOptions* options = GetScriptOptions(generic))
+        options->AddInteger(GetOptionStringArgument(generic, 0), GetOptionStringArgument(generic, 1),
+                            static_cast<int>(generic->GetArgDWord(2)));
+}
+
+static void asAddDoubleOption(asIScriptGeneric* generic)
+{
+    if (ScriptOptions* options = GetScriptOptions(generic))
+        options->AddDouble(GetOptionStringArgument(generic, 0), GetOptionStringArgument(generic, 1),
+                           generic->GetArgDouble(2));
+}
+
+static void asAddBoolOption(asIScriptGeneric* generic)
+{
+    if (ScriptOptions* options = GetScriptOptions(generic))
+        options->AddBool(GetOptionStringArgument(generic, 0), GetOptionStringArgument(generic, 1),
+                         generic->GetArgByte(2) != 0);
+}
+
+static void asGetIntegerOption(asIScriptGeneric* generic)
+{
+    const ScriptOptions* options = GetScriptOptions(generic);
+    generic->SetReturnDWord(options == nullptr ? 0 : options->GetInteger(GetOptionStringArgument(generic, 0)));
+}
+
+static void asGetDoubleOption(asIScriptGeneric* generic)
+{
+    const ScriptOptions* options = GetScriptOptions(generic);
+    generic->SetReturnDouble(options == nullptr ? 0.0 : options->GetDouble(GetOptionStringArgument(generic, 0)));
+}
+
+static void asGetBoolOption(asIScriptGeneric* generic)
+{
+    const ScriptOptions* options = GetScriptOptions(generic);
+    generic->SetReturnByte(options != nullptr && options->GetBool(GetOptionStringArgument(generic, 0)));
 }
 
 static void asPrintString(string& str)
@@ -393,10 +444,28 @@ void RegisterWxChaosInterface(asIScriptEngine* engine)
 
 void RegisterOrbitDrawingInterface(asIScriptEngine* engine, Fractal* fractal)
 {
-    engine->SetUserData(fractal);
+    engine->SetUserData(fractal, OrbitFractalUserData);
 
     const int r = engine->RegisterGlobalFunction(
         "void DrawLine(double, double, double, double, uint red = 0, uint green = 0, uint blue = 0)",
         asFUNCTION(asDrawOrbitLine), asCALL_GENERIC);
     assert(r >= 0);
+}
+
+void RegisterScriptOptionsInterface(asIScriptEngine* engine, ScriptOptions* options)
+{
+    engine->SetUserData(options, ScriptOptionsUserData);
+
+    int r = engine->RegisterGlobalFunction("void AddIntegerOption(const string &in, const string &in, int)",
+                                           asFUNCTION(asAddIntegerOption), asCALL_GENERIC); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void AddDoubleOption(const string &in, const string &in, double)",
+                                       asFUNCTION(asAddDoubleOption), asCALL_GENERIC); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void AddBoolOption(const string &in, const string &in, bool)",
+                                       asFUNCTION(asAddBoolOption), asCALL_GENERIC); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("int GetIntegerOption(const string &in)",
+                                       asFUNCTION(asGetIntegerOption), asCALL_GENERIC); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("double GetDoubleOption(const string &in)",
+                                       asFUNCTION(asGetDoubleOption), asCALL_GENERIC); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("bool GetBoolOption(const string &in)",
+                                       asFUNCTION(asGetBoolOption), asCALL_GENERIC); assert(r >= 0);
 }

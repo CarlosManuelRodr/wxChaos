@@ -28,6 +28,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
 
     _path = scriptData.file;
     _myScriptData = scriptData;
+    ConfigurePanelOptions();
     _type = FractalType::ScriptFractal;
     _hasOrbit = scriptData.hasOrbit;
     _myRender = new ScriptFractalRenderer[_threadNumber];
@@ -46,6 +47,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     {
         const ScriptData params = configEngine.GetScriptData();
         _myScriptData = params;
+        ConfigurePanelOptions();
         _minX = params.minX;
         _maxX = params.maxX;
         _minY = params.minY;
@@ -72,7 +74,31 @@ void ScriptFractal::Render()
 {
     asSetMap = _setMap;
     asColorMap = _colorMap;
+    for (unsigned int i = 0; i < _threadNumber; ++i)
+        _myRender[i].SetScriptOptions(_myScriptData.options);
     this->SetRendererBounds<ScriptFractalRenderer>(_myRender);
+}
+void ScriptFractal::ConfigurePanelOptions()
+{
+    for (ScriptOption& option : _myScriptData.options.GetOptions())
+    {
+        const wxString label = wxString::FromUTF8(option.label);
+        switch (option.type)
+        {
+            case ScriptOptionType::Integer:
+                _panelOpt.LinkInteger(PanelOptionType::Spin, label, &option.integerValue,
+                                      TextUtils::ToWxString(option.integerValue));
+                break;
+            case ScriptOptionType::Double:
+                _panelOpt.LinkDouble(PanelOptionType::TextCtrl, label, &option.doubleValue,
+                                     TextUtils::ToWxString(option.doubleValue));
+                break;
+            case ScriptOptionType::Boolean:
+                _panelOpt.LinkBool(PanelOptionType::CheckBox, label, &option.boolValue,
+                                   option.boolValue ? "true" : "false");
+                break;
+        }
+    }
 }
 bool ScriptFractal::RegisterOrbitVariables(AngelscriptRenderEngine& engine)
 {
@@ -95,7 +121,7 @@ bool ScriptFractal::RegisterOrbitVariables(AngelscriptRenderEngine& engine)
 }
 void ScriptFractal::DrawOrbit()
 {
-    AngelscriptRenderEngine orbitEngine(this);
+    AngelscriptRenderEngine orbitEngine(this, &_myScriptData.options);
     int regionBoundary = 0;
     unsigned int threadIndex = 0;
     bool isEngineOk = orbitEngine.GetStatus() != EngineStatus::Error && RegisterOrbitVariables(orbitEngine);

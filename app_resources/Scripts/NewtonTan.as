@@ -7,6 +7,7 @@ void Configure()
     SetMaxX(4.27001);
     SetMinY(-2.69);
     NoSetMap(true);
+    AddDoubleOption("minStep", "Min step: ", 0.01);
 }
 
 void Render()
@@ -16,7 +17,7 @@ void Render()
     double c_im;
     int n;
     int slope;
-    double tolerance = 0.01;
+    const double minStep = GetDoubleOption("minStep");
     for(int y=ho; y<hf; y++)
     {
         c_im = maxY - y*yFactor;
@@ -27,7 +28,7 @@ void Render()
             {
                 z_prev = z;
                 z = z - (tan(z)-z)/(pow(sec(z),2)+one);
-                if((z_prev.real() - tolerance < z.real() && z_prev.real() + tolerance > z.real()) && (z_prev.imag() - tolerance < z.imag() && z_prev.imag() + tolerance > z.imag()))
+                if((z_prev.real() - minStep < z.real() && z_prev.real() + minStep > z.real()) && (z_prev.imag() - minStep < z.imag() && z_prev.imag() + minStep > z.imag()))
                 {
                     break;
                 }
@@ -56,14 +57,14 @@ void DrawOrbit()
 {
     complex z(orbitX, orbitY);
     const complex one(1, 0);
-    const double tolerance = 0.01;
+    const double minStep = GetDoubleOption("minStep");
 
     for(uint n = 0; n < maxIter; n++)
     {
         const complex previous = z;
         z = z - (tan(z) - z) / (pow(sec(z), 2) + one);
         DrawLine(previous.real(), previous.imag(), z.real(), z.imag(), 0, 255, 0);
-        if(abs_r(previous.real() - z.real()) < tolerance && abs_r(previous.imag() - z.imag()) < tolerance)
+        if(abs_r(previous.real() - z.real()) < minStep && abs_r(previous.imag() - z.imag()) < minStep)
             break;
     }
 }

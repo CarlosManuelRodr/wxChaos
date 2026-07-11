@@ -6,6 +6,7 @@
 #include "types/EngineStatus.h"
 
 class Fractal;
+class ScriptOptions;
 
 /**
 * @class AngelscriptRenderEngine
@@ -30,8 +31,9 @@ public:
     /**
      * @brief Creates an engine with the complete wxChaos scripting interface.
      * @param orbitFractal Fractal that receives DrawLine() calls, or nullptr when orbit drawing is inactive.
+     * @param scriptOptions Host-owned registry used by script-defined option functions.
      */
-    explicit AngelscriptRenderEngine(Fractal* orbitFractal = nullptr);
+    explicit AngelscriptRenderEngine(Fractal* orbitFractal = nullptr, ScriptOptions* scriptOptions = nullptr);
     ~AngelscriptRenderEngine();
 
     bool RegisterGlobalVariable(const char* declaration, void* pointer);

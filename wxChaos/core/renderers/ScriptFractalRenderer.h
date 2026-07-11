@@ -3,6 +3,7 @@
 #include <mutex>
 #include "../RenderWorker.h"
 #include "../scripting/AngelscriptRenderEngine.h"
+#include "../../scripting/ScriptOptions.h"
 
 /**
 * @class ScriptFractalRenderer
@@ -21,6 +22,7 @@ class ScriptFractalRenderer : public RenderWorker
     ///< Placeholder globals that let complete scripts containing DrawOrbit() compile for pixel rendering.
     double _orbitX;
     double _orbitY;
+    ScriptOptions _scriptOptions; ///< Snapshot of user-editable options used by this render worker.
 public:
     ScriptFractalRenderer();
     ~ScriptFractalRenderer() override;
@@ -32,4 +34,6 @@ public:
     void ClearErrorInfo();
     [[nodiscard]] bool IsThereError() const;
     void SetParams(unsigned int threadIndex);
+    /** @brief Copies the current script-defined options into this render worker. */
+    void SetScriptOptions(const ScriptOptions& options);
 };

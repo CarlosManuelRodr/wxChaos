@@ -9,6 +9,7 @@ void Configure()
     SetDefaultIter(20000);
     SetRedrawAlways(true);
     SetExtColorMode(false);
+    AddDoubleOption("a", "a: ", 2.75);
 }
 
 void Render()
@@ -18,7 +19,7 @@ void Render()
         double x = 0.5;
         double y = 0.2;
         double tempX;
-        double a = 2.75;
+        const double a = GetDoubleOption("a");
         double b = 0.2;
         int coordX, coordY;
         

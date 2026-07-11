@@ -25,6 +25,12 @@ void RegisterWxChaosInterface(asIScriptEngine* engine);
  * @param fractal Fractal that records drawn lines, or nullptr for compile-only engines.
  */
 void RegisterOrbitDrawingInterface(asIScriptEngine* engine, Fractal* fractal);
+/**
+ * @brief Registers functions for declaring and retrieving arbitrary typed script options.
+ * @param engine AngelScript engine receiving the option interface.
+ * @param options Host-owned option registry used by the engine.
+ */
+void RegisterScriptOptionsInterface(asIScriptEngine* engine, ScriptOptions* options);
 void MessageCallback(const asSMessageInfo* msg, void* param);
 ScriptData FetchScriptData(const std::string& fileName);
 
