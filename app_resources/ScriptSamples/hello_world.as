@@ -2,7 +2,7 @@ void Configure()
 {
 	SetFractalName("Hello world");
 	SetCategory("Other");
-	DisableSetMap(true);
+	SetEnableSetMap(false);
 }
 
 void Render()

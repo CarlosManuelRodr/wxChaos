@@ -6,7 +6,7 @@ void Configure()
     SetMinX(-25.2866);
     SetMaxX(11.6554);
     SetMinY(-11.0199);
-    DisableSetMap(true);
+    SetEnableSetMap(false);
 }
 
 void Render()
@@ -63,7 +63,7 @@ void DrawOrbit()
     z = cos(z) - z;
     const double tolerance = 0.001;
 
-    for(uint n = 0; n < maxIter; n++)
+    for(uint n = 0; n < maxIterations; n++)
     {
         const complex current = z;
         z = z - (z - previous) / ((cos(z) - z) - (cos(previous) - previous));

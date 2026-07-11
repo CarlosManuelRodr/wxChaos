@@ -179,9 +179,9 @@ static void asSetExtColorMode(bool mode)
     extColor = mode;
 }
 
-static void asDisableSetMap(bool mode)
+static void asSetEnableSetMap(bool mode)
 {
-    disableSetMap = mode;
+    disableSetMap = !mode;
 }
 
 static void asSetPoint(int x, int y, bool setVal, int colorVal)
@@ -439,7 +439,7 @@ void RegisterWxChaosInterface(asIScriptEngine* engine)
     r = engine->RegisterGlobalFunction("void SetJuliaVariety(bool)", asFUNCTION(asSetJuliaVariety), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetRedrawAlways(bool)", asFUNCTION(asSetRedrawAlways), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetExtColorMode(bool)", asFUNCTION(asSetExtColorMode), asCALL_CDECL); assert(r >= 0);
-    r = engine->RegisterGlobalFunction("void DisableSetMap(bool)", asFUNCTION(asDisableSetMap), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void SetEnableSetMap(bool)", asFUNCTION(asSetEnableSetMap), asCALL_CDECL); assert(r >= 0);
 }
 
 void RegisterOrbitDrawingInterface(asIScriptEngine* engine, Fractal* fractal)

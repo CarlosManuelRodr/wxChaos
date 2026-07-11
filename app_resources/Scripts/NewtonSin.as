@@ -6,7 +6,7 @@ void Configure()
     SetMinX(-19.3366);
     SetMaxX(18.5496);
     SetMinY(-12.1417);
-    DisableSetMap(true);
+    SetEnableSetMap(false);
     AddDoubleOption("minStep", "Min step: ", 0.01);
 }
 

@@ -88,7 +88,7 @@ void Render()
             bool inside = true;
             int n = 0;
 
-            for (n = 0; n &lt; maxIter; n++)
+            for (n = 0; n &lt; maxIterations; n++)
             {
                 z = z * z + c;
                 if (z.real() * z.real() + z.imag() * z.imag() &gt; bailout)
@@ -109,7 +109,7 @@ void DrawOrbit()
     const complex c(orbitX, orbitY);
     complex z(0.0, 0.0);
 
-    for (uint n = 0; n &lt; maxIter; n++)
+    for (uint n = 0; n &lt; maxIterations; n++)
     {
         const complex previous = z;
         z = z * z + c;
@@ -141,7 +141,7 @@ void DrawOrbit()
                 <tr><td><code>SetJuliaVariety(true)</code></td><td>Enables the editable Julia constant exposed as <code>kReal</code> and <code>kImaginary</code>.</td></tr>
                 <tr><td><code>SetRedrawAlways(true)</code></td><td>Requests a fresh render when the view changes. Useful for fractals that cannot be drawn partially such as the Gauss or Duffing maps.</td></tr>
                 <tr><td><code>SetExtColorMode(false)</code></td><td>Disables the normal exterior-color behavior when the script is plotting its own geometry.</td></tr>
-                <tr><td><code>DisableSetMap(true)</code></td><td>Opts out of the usual set-map coloring for specialized scripts.</td></tr>
+                <tr><td><code>SetEnableSetMap(false)</code></td><td>Disables the usual set-map coloring for specialized scripts.</td></tr>
                 <tr><td><code>SetDocumentationPath(file)</code></td><td>Connects the fractal to an HTML information page in <code>Resources/Documents</code>.</td></tr>
                 </tbody>
             </table>
@@ -250,7 +250,7 @@ double radius = sqrt_r(z.real() * z.real() + z.imag() * z.imag());</code></pre>
         <pre class="code-example"><code>void DrawOrbit()
 {
     complex z(orbitX, orbitY);
-    for (uint n = 0; n &lt; maxIter; n++)
+    for (uint n = 0; n &lt; maxIterations; n++)
     {
         const complex previous = z;
         z = cos(z);
