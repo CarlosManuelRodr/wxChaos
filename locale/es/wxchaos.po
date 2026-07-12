@@ -1046,3 +1046,24 @@ msgstr "Enlace"
 
 msgid "Licensed under GPLv3"
 msgstr "Licenciado bajo GPLv3"
+
+msgid "New from sample"
+msgstr "Nuevo desde ejemplo"
+
+msgid "Could not create the script from the selected sample."
+msgstr "No se pudo crear el script a partir del ejemplo seleccionado."
+
+msgid "Select a sample script"
+msgstr "Selecciona un script de ejemplo"
+
+msgid "Sample scripts"
+msgstr "Scripts de ejemplo"
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "No sample scripts are available."
+msgstr "No hay scripts de ejemplo disponibles."
+
+msgid "Script samples"
+msgstr "Ejemplos de scripts"

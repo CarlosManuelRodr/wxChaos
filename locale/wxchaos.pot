@@ -1627,3 +1627,24 @@ msgstr ""
 #: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:465
 msgid "' is not a boolean. Use true or false."
 msgstr ""
+
+msgid "New from sample"
+msgstr ""
+
+msgid "Could not create the script from the selected sample."
+msgstr ""
+
+msgid "Select a sample script"
+msgstr ""
+
+msgid "Sample scripts"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "No sample scripts are available."
+msgstr ""
+
+msgid "Script samples"
+msgstr ""

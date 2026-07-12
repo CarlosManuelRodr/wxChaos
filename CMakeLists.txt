@@ -141,6 +141,7 @@ if(GETTEXT_FOUND)
                         COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE}
                         --language=C++
                         --from-code=UTF-8
+                        --no-location
                         --keyword=_
                         --keyword=wxTRANSLATE
                         --keyword=WXCHAOS_TRANSLATE_NOOP
