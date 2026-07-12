@@ -20,6 +20,7 @@ namespace AppPaths
 
     wxString ScriptsDir();
     std::string ScriptsDirStd();
+    wxString ScriptSamplesDir();
     wxString ScriptFile(const wxString& filename);
     std::string ScriptFileStd(const wxString& filename);
     std::vector<std::string> ScriptFilenames();

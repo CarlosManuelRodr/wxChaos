@@ -2,10 +2,12 @@
 #include <fstream>
 #include <wx/bmpbndl.h>
 #include <wx/datetime.h>
+#include <wx/filefn.h>
 #include "common/AppTheme.h"
 #include "docs/DocumentViewer.h"
 #include "AppPaths.h"
 #include "scripting/ScriptEditor.h"
+#include "scripting/ScriptSamplePicker.h"
 #include "FractalTypes.h"
 #include "global.h"
 #include "TextUtils.h"
@@ -174,6 +176,11 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     SetButtonIcon(_newButton, "new_light.svg", "new_dark.svg");
     scriptListSizer->Add(_newButton, 0, wxALL | wxEXPAND, 5);
 
+    _newFromSampleButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("New from sample"),
+                                         wxDefaultPosition, wxDefaultSize, 0);
+    SetButtonIcon(_newFromSampleButton, "sample_light.svg", "sample_dark.svg");
+    scriptListSizer->Add(_newFromSampleButton, 0, wxALL | wxEXPAND, 5);
+
     _removeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Delete script"), wxDefaultPosition, wxDefaultSize, 0);
 
     SetButtonIcon(_removeButton, "delete_light.svg", "delete_dark.svg");
@@ -309,6 +316,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     _scriptsListBox->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &ScriptEditor::OnSelectScript, this);
     _saveChangesButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnSaveChanges, this);
     _newButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewScript, this);
+    _newFromSampleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewFromSample, this);
     _removeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnCloseButton, this);
     _documentationButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDocumentation, this);
@@ -325,6 +333,7 @@ ScriptEditor::~ScriptEditor()
     _scriptsListBox->Unbind(wxEVT_COMMAND_LISTBOX_SELECTED, &ScriptEditor::OnSelectScript, this);
     _saveChangesButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnSaveChanges, this);
     _newButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewScript, this);
+    _newFromSampleButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewFromSample, this);
     _removeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnCloseButton, this);
     _documentationButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDocumentation, this);
@@ -423,6 +432,31 @@ void ScriptEditor::OnNewScript(wxCommandEvent&)
         this->LoadScript(newScriptIndex);
         _scriptsListBox->SetSelection(newScriptIndex);
     }
+}
+void ScriptEditor::OnNewFromSample(wxCommandEvent&)
+{
+    ScriptSamplePicker samplePicker(this);
+    if (samplePicker.ShowModal() != wxID_OK)
+        return;
+
+    ScriptNameDialog nameDialog(this);
+    if (!nameDialog.ShowModal())
+        return;
+
+    const wxString scriptFileName = nameDialog.GetScriptName() + ".as";
+    AppPaths::EnsureDirectory(AppPaths::ScriptsDir());
+    if (!wxCopyFile(samplePicker.GetSelectedSample(), AppPaths::ScriptFile(scriptFileName), true))
+    {
+        wxMessageBox(_("Could not create the script from the selected sample."), wxMessageBoxCaptionStr,
+                     wxOK | wxICON_ERROR, this);
+        return;
+    }
+
+    this->FetchUserScripts();
+    this->SetBlackPreview();
+    const int newScriptIndex = this->GetScriptIndex(scriptFileName);
+    this->LoadScript(newScriptIndex);
+    _scriptsListBox->SetSelection(newScriptIndex);
 }
 void ScriptEditor::OnDeleteScript(wxCommandEvent&)
 {

@@ -96,6 +96,11 @@ namespace AppPaths
         return ToStdPath(ScriptsDir());
     }
 
+    wxString ScriptSamplesDir()
+    {
+        return AppDirectory({"ScriptSamples"});
+    }
+
     wxString ScriptFile(const wxString& filename)
     {
         return AppFile({"Scripts", filename});

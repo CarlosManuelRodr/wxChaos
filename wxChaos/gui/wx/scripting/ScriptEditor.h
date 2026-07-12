@@ -51,6 +51,7 @@ class ScriptEditor : public wxFrame
     wxListBox* _scriptsListBox;
     wxButton* _saveChangesButton;
     wxButton* _newButton;
+    wxButton* _newFromSampleButton;
     wxButton* _removeButton;
     wxButton* _closeButton;
     wxButton* _documentationButton; ///< Opens the bundled AngelScript scripting guide.
@@ -88,6 +89,7 @@ class ScriptEditor : public wxFrame
     void OnSelectScript(wxCommandEvent& event);
     void OnSaveChanges(wxCommandEvent& event);
     void OnNewScript(wxCommandEvent& event);
+    void OnNewFromSample(wxCommandEvent& event);
     void OnDeleteScript(wxCommandEvent& event);
     void OnCloseButton(wxCommandEvent& event);
     /// @brief Opens the scripting tutorial in a modeless documentation viewer.
