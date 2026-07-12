@@ -1,6 +1,5 @@
 #include "ScriptNameDialog.h"
 
-#include <algorithm>
 #include <wx/xrc/xmlres.h>
 #include <wx/string.h>
 #include <wx/gdicmn.h>
@@ -46,9 +45,6 @@ ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const 
                                    const wxSize& size, const long style)
     : wxDialog(parent, id, wxGetTranslation(title), pos, size, style)
 {
-    const wxSize minimumDialogSize(520, 270);
-    this->SetSizeHints(minimumDialogSize, wxDefaultSize);
-
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
     const auto mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto panelSizer = new wxBoxSizer(wxVERTICAL);
@@ -75,11 +71,10 @@ ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const 
     mainPanel->SetSizer(panelSizer);
     mainSizer->Add(mainPanel, 1, wxEXPAND | wxALL, 1);
     this->SetSizer(mainSizer);
-    mainSizer->Fit(this);
-    const wxSize initialSize(std::max(size.GetWidth(), minimumDialogSize.GetWidth()),
-                             std::max(size.GetHeight(), minimumDialogSize.GetHeight()));
-    this->SetSize(initialSize);
-    this->SetMinSize(initialSize);
+    const wxSize fittedSize = mainSizer->Fit(this);
+    this->wxTopLevelWindowBase::SetMinSize(mainSizer->GetMinSize());
+    const int requestedWidth = size.GetWidth() == wxDefaultCoord ? fittedSize.GetWidth() : size.GetWidth();
+    this->SetSize(requestedWidth, fittedSize.GetHeight());
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
