@@ -1,5 +1,6 @@
-#include <complex>
 #include "Cell.h"
+#include <complex>
+#include "Translation.h"
 using namespace std;
 
 Cell::Cell(const unsigned int width, const unsigned int height) : Fractal(width, height)

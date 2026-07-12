@@ -1,8 +1,9 @@
+#include "UserDefinedNewton.h"
 #include <algorithm>
 #include <complex>
 #include <cmath>
 #include <mpParser.h>
-#include "UserDefinedNewton.h"
+#include "Translation.h"
 
 bool UserDefinedNewton::IsFinite(const std::complex<double>& value)
 {

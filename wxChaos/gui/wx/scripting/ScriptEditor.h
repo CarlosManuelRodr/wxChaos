@@ -9,7 +9,6 @@
 #include <wx/statbmp.h>
 #include <wx/frame.h>
 #include <wx/dialog.h>
-#include <wx/textctrl.h>
 #include <vector>
 #include "AngelscriptBindings.h"
 

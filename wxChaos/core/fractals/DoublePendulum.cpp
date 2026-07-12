@@ -1,4 +1,5 @@
 #include "DoublePendulum.h"
+#include "Translation.h"
 using namespace std;
 
 DoublePendulum::DoublePendulum(const unsigned int width, const unsigned int height) : Fractal(width, height)

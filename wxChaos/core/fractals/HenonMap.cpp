@@ -1,4 +1,5 @@
 #include "HenonMap.h"
+#include "Translation.h"
 
 HenonMap::HenonMap(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {

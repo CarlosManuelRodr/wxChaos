@@ -1,5 +1,6 @@
 #include "LogisticMap.h"
 #include <limits>
+#include "Translation.h"
 
 LogisticMap::LogisticMap(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {

@@ -1,5 +1,6 @@
-#include <complex>
 #include "Mandelbrot.h"
+#include <complex>
+#include "Translation.h"
 using namespace std;
 
 Mandelbrot::Mandelbrot(const unsigned int width, const unsigned int height) : Fractal(width, height)

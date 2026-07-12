@@ -1,5 +1,6 @@
-#include <complex>
 #include "FixedPoint3.h"
+#include <complex>
+#include "Translation.h"
 using namespace std;
 
 FixedPoint3::FixedPoint3(const unsigned int width, const unsigned int height) : Fractal(width, height)
