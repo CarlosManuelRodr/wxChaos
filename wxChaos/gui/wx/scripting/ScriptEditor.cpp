@@ -75,7 +75,7 @@ void DrawOrbit()
 {
     // Draw the selected point's orbit with DrawLine(..., red, green, blue).
 }
-})"""";
+)"""";
 
 ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
                                    const wxSize& size, const long style) : wxDialog(parent, id, wxGetTranslation(title), pos, size, style)
