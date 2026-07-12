@@ -46,7 +46,7 @@ ScriptNameDialog::ScriptNameDialog(wxWindow* parent, const wxWindowID id, const 
                                    const wxSize& size, const long style)
     : wxDialog(parent, id, wxGetTranslation(title), pos, size, style)
 {
-    const wxSize minimumDialogSize(520, 300);
+    const wxSize minimumDialogSize(520, 270);
     this->SetSizeHints(minimumDialogSize, wxDefaultSize);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
