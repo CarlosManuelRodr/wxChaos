@@ -80,6 +80,8 @@ file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
 
 add_executable(wxChaos WIN32 ${SRC_FILES}
         wxChaos/App.cpp
+        wxChaos/gui/wx/scripting/ScriptNameDialog.cpp
+        wxChaos/gui/wx/scripting/ScriptNameDialog.h
 )
 
 # -------------------------------------------------------------------
