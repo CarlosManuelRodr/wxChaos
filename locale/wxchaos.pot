@@ -1648,3 +1648,6 @@ msgstr ""
 
 msgid "Script samples"
 msgstr ""
+
+msgid "Create a new script"
+msgstr ""

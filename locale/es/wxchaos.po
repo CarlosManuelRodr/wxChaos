@@ -1067,3 +1067,6 @@ msgstr "No hay scripts de ejemplo disponibles."
 
 msgid "Script samples"
 msgstr "Ejemplos de scripts"
+
+msgid "Create a new script"
+msgstr "Crear un nuevo script"
