@@ -53,9 +53,8 @@ public:
     };
 
 protected:
-    bool** _setMap;                  ///< Stores the points that belong to the fractal set.
-    double** _colorMap;              ///< Store continuous color values.
-    unsigned int** _auxMap;          ///< An additional map to perform some auxiliary operations.
+    bool** _setMap{};                ///< Stores the points that belong to the fractal set.
+    double** _colorMap{};            ///< Store continuous color values.
     RenderThreadPool _renderPool;    ///< Reusable pool for render jobs.
 
     // Fractal properties.
@@ -71,7 +70,7 @@ protected:
     mutable HighPrecisionReal _preciseXFactor;
     mutable HighPrecisionReal _preciseYFactor;
     mutable bool _preciseViewInitialized;
-    unsigned _maxIterations;               ///< Maximum number of iterations.
+    unsigned _maxIterations;         ///< Maximum number of iterations.
     unsigned _defaultIter;           ///< Default number of iterations for this fractal.
     unsigned _iterationStep;         ///< Iteration change used by menu and keyboard shortcuts.
     FormulaOptions _userFormula;     ///< Formula specified by the user.
@@ -85,8 +84,8 @@ protected:
 
     unsigned int _screenWidth;
     unsigned int _screenHeight;
-    unsigned int _renderWidth;
-    unsigned int _renderHeight;
+    unsigned int _renderWidth{};
+    unsigned int _renderHeight{};
     unsigned int _backRenderWidth;
     unsigned int _antiAliasingScale;
     unsigned int _changeGradient;
@@ -120,7 +119,7 @@ protected:
     bool _rendering;
     bool _paused;
     bool _pausing;
-    bool _colorRotation;                      ///< If this is activated (by the play button), the gradient variation mode starts.
+    bool _colorRotation;                    ///< If this is activated (by the play button), the gradient variation mode starts.
     bool _onSnapshot;
     bool _waitRoutine;
     bool _redrawAll;

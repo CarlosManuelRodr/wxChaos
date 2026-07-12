@@ -57,7 +57,6 @@ protected:
 
     bool** _setMap;
     double** _colorMap;
-    unsigned int** _auxMap;
     int _x;
     int _y;
     unsigned int _threadProgress;
@@ -136,7 +135,7 @@ public:
     void UpdateLimits(int heightOrigin);
     void SetOptions(const Options& opt);
     Options GetOptions();
-    void SetRenderOut(bool** outSetMap, double** outColorMap, unsigned int** outAux = nullptr);
+    void SetRenderOut(bool** outSetMap, double** outColorMap);
     void SetK(double re, double im);
     void Reset();
     virtual void PreTerminate();

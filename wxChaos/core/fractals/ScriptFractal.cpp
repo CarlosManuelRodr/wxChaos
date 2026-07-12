@@ -182,7 +182,6 @@ void ScriptFractal::PreRestartRender()
         {
             _setMap[i][j] = false;
             _colorMap[i][j] = 0;
-            _auxMap[i][j] = 0;
         }
     }
 }

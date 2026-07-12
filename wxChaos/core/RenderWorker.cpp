@@ -7,7 +7,6 @@ RenderWorker::RenderWorker()
 {
     _setMap = nullptr;
     _colorMap = nullptr;
-    _auxMap = nullptr;
     _x = _y = 0;
     _threadProgress = 0;
     _widthOrigin = _heightOrigin = _widthFinal = _heightFinal = _oldHeightOrigin = 0;
@@ -96,11 +95,10 @@ void RenderWorker::Stop()
         _y = _heightFinal - 1;
     }
 }
-void RenderWorker::SetRenderOut(bool** outSetMap, double** outColorMap, unsigned int** outAux)
+void RenderWorker::SetRenderOut(bool** outSetMap, double** outColorMap)
 {
     _setMap = outSetMap;
     _colorMap = outColorMap;
-    _auxMap = outAux;
 }
 void RenderWorker::SetK(const double re, const double im)
 {

@@ -168,34 +168,29 @@ void Fractal::AllocateRenderMaps()
 {
     _setMap = new bool* [_renderWidth];
     _colorMap = new double* [_renderWidth];
-    _auxMap = new unsigned int* [_renderWidth];
     for (unsigned int i = 0; i < _renderWidth; i++)
     {
         _setMap[i] = new bool[_renderHeight];
         _colorMap[i] = new double[_renderHeight];
-        _auxMap[i] = new unsigned int[_renderHeight];
     }
     _backRenderWidth = _renderWidth;
 }
 
 void Fractal::ReleaseRenderMaps()
 {
-    if (_setMap == nullptr || _colorMap == nullptr || _auxMap == nullptr)
+    if (_setMap == nullptr || _colorMap == nullptr)
         return;
 
     for (unsigned int i = 0; i < _backRenderWidth; i++)
     {
         delete[] _setMap[i];
         delete[] _colorMap[i];
-        delete[] _auxMap[i];
     }
 
     delete[] _setMap;
     delete[] _colorMap;
-    delete[] _auxMap;
     _setMap = nullptr;
     _colorMap = nullptr;
-    _auxMap = nullptr;
     _backRenderWidth = 0;
 }
 
@@ -207,7 +202,6 @@ void Fractal::ClearRenderMaps(const double initialColorValue)
         {
             _setMap[i][j] = false;
             _colorMap[i][j] = initialColorValue;
-            _auxMap[i][j] = 0;
         }
     }
 }
@@ -340,7 +334,7 @@ void Fractal::UpdateMaxColorMapValue()
 void Fractal::ConfigureRenderer(RenderWorker& renderer) const
 {
     renderer.SetOptions(this->GetRenderOptions());
-    renderer.SetRenderOut(_setMap, _colorMap, _auxMap);
+    renderer.SetRenderOut(_setMap, _colorMap);
     renderer.SetK(_kReal, _kImaginary);
 }
 void Fractal::EnsurePreciseViewInitialized() const
@@ -822,7 +816,6 @@ void Fractal::ReuseRenderedMaps(const Vector2Int reusedMapOffset)
     const Vector2Int renderOffset = DisplayOffsetToRenderOffset(reusedMapOffset);
     MoveMatrix<bool>(_setMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x);
     MoveMatrix<double>(_colorMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x, InvalidColor);
-    MoveMatrix<unsigned int>(_auxMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x);
 }
 
 void Fractal::PrepareDisplayColorLookup()
@@ -904,6 +897,7 @@ bool Fractal::IsSetColorEnabled() const
     return _colorSet;
 }
 
+// ReSharper disable once CppMemberFunctionMayBeStatic
 bool Fractal::SupportsAntiAliasing() const
 {
     return true;
