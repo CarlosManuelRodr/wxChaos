@@ -18,10 +18,6 @@
 #include "coloring/ColorPaletteTypes.h"
 #include "Options.h"
 #include "FormulaOptions.h"
-#include "RenderWorker.h"
-#include "rendering/RenderJob.h"
-#include "rendering/RenderRegion.h"
-#include "rendering/RenderThreadPool.h"
 #include "wx/common/PanelOptions.h"
 
 class FractalFactory;
@@ -53,15 +49,6 @@ public:
     };
 
 protected:
-    virtual bool**& SetMapStorage() = 0;
-    virtual bool** SetMapStorage() const = 0;
-    virtual double**& ColorMapStorage() = 0;
-    virtual double** ColorMapStorage() const = 0;
-    virtual RenderThreadPool& RenderPoolStorage() = 0;
-    virtual const RenderThreadPool& RenderPoolStorage() const = 0;
-    virtual std::vector<LineData>& OrbitLinesStorage() = 0;
-    virtual const std::vector<LineData>& OrbitLinesStorage() const = 0;
-
     // Fractal properties.
     PanelOptions _panelOpt;          ///< List of GUI elements to put into the option panel.
     FractalType _type;               ///< Type of fractal to render.
@@ -80,19 +67,12 @@ protected:
     unsigned _iterationStep;         ///< Iteration change used by menu and keyboard shortcuts.
     FormulaOptions _userFormula;     ///< Formula specified by the user.
 
-    // System.
-    unsigned int _threadNumber;      ///< Number of threads. By default, it is the same as the number of cores in the system.
-
     // Julia variables.
     double _kReal;
     double _kImaginary;
 
     unsigned int _screenWidth;
     unsigned int _screenHeight;
-    unsigned int _renderWidth{};
-    unsigned int _renderHeight{};
-    unsigned int _backRenderWidth;
-    unsigned int _antiAliasingScale;
     unsigned int _changeGradient;
 
     // Color properties.
@@ -119,7 +99,6 @@ protected:
     bool _refreshImage;
 
     // Status variables.
-    Vector2Int _pendingRenderOffset;        ///< Reused map offset used to render only newly exposed areas.
     bool _rendered;
     bool _rendering;
     bool _paused;
@@ -134,10 +113,6 @@ protected:
     bool _reportedHighPrecisionActive;
     unsigned int _reportedHighPrecisionBits;
     std::function<void(bool, unsigned int)> _precisionStatusChanged;
-    std::vector<Vector2Int> _endPoints;
-    std::vector<Vector2Int> _startPoints;
-    std::vector<Vector2Int> _pausePoints;
-
     // Julia Mode variables.
     bool _juliaMode;
     bool _juliaVariety;                    ///< Activate it in derived class if is a Julia variety. False by default.
@@ -166,33 +141,12 @@ protected:
     ///@param index Color parameter.
     ///@return A struct with the color.
     sf::Color GetColorFromPalette(double index) const;
-    double NormalizeColorMapValue(double value) const;
-    static bool IsValidColorMapValue(double value);
     static sf::Color InterpolatePaletteColors(const wxColour& first, const wxColour& second, double ratio);
-    static unsigned int NormalizeAntiAliasingScale(unsigned int scale);
 
     ///@brief Rebuilds the color palette
     void RebuildPalette();
 
-    void UpdateRenderDimensions();
-    void AllocateRenderMaps();
-    void ReleaseRenderMaps();
-    void ClearRenderMaps(double initialColorValue);
-    [[nodiscard]] Vector2Int DisplayOffsetToRenderOffset(Vector2Int displayOffset) const;
-    [[nodiscard]] HighPrecisionReal GetRenderPreciseXFactor() const;
-    [[nodiscard]] HighPrecisionReal GetRenderPreciseYFactor() const;
-    [[nodiscard]] Options GetRenderOptions() const;
-    [[nodiscard]] bool HasRenderMapPixelColor(unsigned int x, unsigned int y) const;
-    [[nodiscard]] sf::Color GetRenderMapPixelColor(unsigned int x, unsigned int y) const;
-
-    ///@brief If some minor change was made like a color adjustment, redraws the maps.
-    virtual void RedrawMaps();
-
-    ///@brief Recalculates the maximum rendered color-map value.
-    void UpdateMaxColorMapValue();
-
-    ///@brief Copies the current fractal state into a renderer before launch.
-    void ConfigureRenderer(RenderWorker& renderer) const;
+    virtual void RedrawMaps() = 0;
     void EnsurePreciseViewInitialized() const;
     void SyncDoubleViewFromPrecise();
     void UpdatePreciseFactors() const;
@@ -203,16 +157,6 @@ protected:
     [[nodiscard]] unsigned int EstimateRequiredPrecisionBits() const;
     [[nodiscard]] static bool OptionsPreciseViewMatchesDoubleView(const Options& opt) ;
     void ConfigureIterationDefaults(unsigned int defaultIterations, unsigned int iterationStep);
-
-    ///@brief Selects the pixel regions that need rendering for the current movement state.
-    std::vector<RenderRegion> BuildRenderRegions() const;
-
-    ///@brief Splits render regions into jobs used by the selected render backend.
-    std::vector<RenderJob> BuildRenderJobs(const std::vector<RenderRegion>& regions, int tileHeight) const;
-
-    ///@brief Moves matrix elements and fills the exposed area with a default value.
-    template<class M>
-    void MoveMatrix(M** matrix, unsigned int matrixWidth, unsigned int matrixHeight, int moveX, int moveY, M fillValue = M{});
 
     static wxString FormatNumber(double value);
     static wxString FormatComplex(double real, double imaginary);
@@ -244,10 +188,10 @@ public:
     ///@brief SetAreaOfView to a specified size.
     ///@param width New width.
     ///@param height New height.
-    virtual void Resize(unsigned int width, unsigned int height);
+    virtual void Resize(unsigned int width, unsigned int height) = 0;
 
     ///@brief Perform some adjustments needed before the rendering starts.
-    virtual void PrepareRender(Vector2Int reusedMapOffset = {0, 0});
+    virtual void PrepareRender(Vector2Int reusedMapOffset = {0, 0}) = 0;
 
     ///@brief Sets the fractal render viewport.
     ///@param worldCoordinates Viewport in world coordinates.
@@ -315,16 +259,16 @@ public:
     bool ConsumeImageRefreshRequest();
 
     ///@brief Shifts the rendered maps after panning settles.
-    virtual void ReuseRenderedMaps(Vector2Int reusedMapOffset);
+    virtual void ReuseRenderedMaps(Vector2Int reusedMapOffset) = 0;
 
     ///@brief Prepares color lookup values before drawing rendered pixels.
-    virtual void PrepareDisplayColorLookup();
+    virtual void PrepareDisplayColorLookup() = 0;
 
     ///@brief Returns true when the rendered maps have a display color at the pixel.
-    virtual bool HasDisplayPixelColor(unsigned int x, unsigned int y) const;
+    virtual bool HasDisplayPixelColor(unsigned int x, unsigned int y) const = 0;
 
     ///@brief Gets the display color for a rendered pixel.
-    virtual sf::Color GetRenderedPixelColor(unsigned int x, unsigned int y) const;
+    virtual sf::Color GetRenderedPixelColor(unsigned int x, unsigned int y) const = 0;
 
     ///@brief Gets the color used for missing rendered pixels.
     sf::Color GetInvalidPixelColor() const;
@@ -332,23 +276,23 @@ public:
     bool IsExteriorColorEnabled() const;
     bool IsRelativeColorEnabled() const;
     bool IsSetColorEnabled() const;
-    virtual bool SupportsAntiAliasing() const;
+    virtual bool SupportsAntiAliasing() const = 0;
     bool IsAntiAliasingEnabled() const;
-    virtual void SetAntiAliasingScale(unsigned int scale);
-    unsigned int GetAntiAliasingScale() const;
+    virtual void SetAntiAliasingScale(unsigned int scale) = 0;
+    virtual unsigned int GetAntiAliasingScale() const = 0;
     bool IsGradientAnimating() const;
     bool ConsumeGradientChangeRequest();
     void AdvanceGradientOffset(double elapsedSeconds);
-    virtual void RefreshAnimatedColors(sf::Image& image);
+    virtual void RefreshAnimatedColors(sf::Image& image) = 0;
 
     bool ShouldDrawOrbit() const;
     bool IsOrbitDrawn() const;
-    virtual void ClearOrbitLines();
+    virtual void ClearOrbitLines() = 0;
     void MarkOrbitDirty();
     bool HasGeometryFigures() const;
     bool IsSnapshotActive() const;
     const std::vector<LineData>& GetLines() const;
-    virtual const std::vector<LineData>& GetOrbitLines() const;
+    virtual const std::vector<LineData>& GetOrbitLines() const = 0;
     const std::vector<CircleData>& GetCircles() const;
 
     ///@brief Describes the measurements of the currently recorded orbit.
@@ -358,7 +302,7 @@ public:
     virtual void RenderBlocking();
 
     ///@brief Returns the stored result for a rendered pixel.
-    virtual PointSample GetPointSample(unsigned int x, unsigned int y) const;
+    virtual PointSample GetPointSample(unsigned int x, unsigned int y) const = 0;
 
     ///@brief Evaluates and describes one world-coordinate point using the current fractal settings.
     virtual wxString InspectPoint(double x, double y, std::optional<unsigned int> iterations) const;
@@ -367,17 +311,15 @@ public:
     ///@brief Calculate drawing limits of each worker and launches them.
     ///@param myRender Array of renderer instances.
     ///@param tileHeight Height of queued render tiles. Use 0 to render one job per exposed region.
-    template<class MT> void SetRendererBounds(MT* myRender, int tileHeight = 16);
-
     ///@brief Returns progress for the active render backend.
     ///@return A value from 0 to 100.
-    virtual int GetRenderProgress() const;
+    virtual int GetRenderProgress() const = 0;
 
     ///@brief Pauses or resumes the rendering.
-    virtual void PauseContinue();
+    virtual void PauseContinue() = 0;
 
     ///@brief If there are active threads stops them.
-    virtual bool StopRender();
+    virtual bool StopRender() = 0;
 
     ///@brief Get pause status.
     ///@return true if paused, false if not.
@@ -392,7 +334,7 @@ public:
 
     ///@brief Verifies watchdog status.
     ///@return true if there is an active thread. false if not.
-    virtual bool IsRendering();
+    virtual bool IsRendering() = 0;
     virtual void SetFormula(FormulaOptions formula);                   ///< Sets user formula.
     virtual void CopyOptionFromPanel();                               ///< Copy options from the option panel.
 
@@ -452,15 +394,15 @@ public:
     virtual wxString GetFractalInformationFile() const;
 
     ///@brief Returns a pointer to the set map.
-    virtual bool** GetSetMap() const;
+    virtual bool** GetSetMap() const = 0;
 
     void SetFractalPropChanged();
     bool GetChangeFractalProp();
 
     // Save image.
-    virtual sf::Image GetRenderedImage();
+    virtual sf::Image GetRenderedImage() = 0;
     wxBitmap GetRenderedWxBitmap();
-    virtual bool SaveBmp(const std::string& filename);
+    virtual bool SaveBmp(const std::string& filename) = 0;
     void PrepareSnapshot(bool mode);
 
     // Color styles.
@@ -535,80 +477,10 @@ public:
 
     // Geometry.
     ///@brief Draws a simple line. Used in orbit mode.
-    void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0), bool orbitLine = false);
+    virtual void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0),
+                          bool orbitLine = false);
     void DrawCircle(double xCenter, double yCenter, double radius, sf::Color color = sf::Color(0, 0, 0));
     void DrawCircle(double xCenter, double yCenter, double radius, sf::Color color, bool filled);
     void ClearGeometryFigures();
     virtual void DrawOrbit() {}
 };
-
-template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer* myRender, const int tileHeight)
-{
-    const std::vector<RenderRegion> regions = this->BuildRenderRegions();
-    const int renderTileHeight = tileHeight > 0 ? tileHeight * static_cast<int>(_antiAliasingScale) : tileHeight;
-    const std::vector<RenderJob> jobs = this->BuildRenderJobs(regions, renderTileHeight);
-    _pendingRenderOffset = {0, 0};
-
-    std::vector<RenderWorker*> renderers;
-    renderers.reserve(_threadNumber);
-
-    for (unsigned int i = 0; i < _threadNumber; i++)
-    {
-        this->ConfigureRenderer(myRender[i]);
-        renderers.push_back(&myRender[i]);
-    }
-
-    RenderPoolStorage().Render(renderers, jobs);
-
-    if (_waitRoutine)
-        RenderPoolStorage().Wait();
-}
-
-template<class M> void Fractal::MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,
-                                           const int moveX, const int moveY, const M fillValue)
-{
-    if (matrix == nullptr || matrixWidth == 0 || matrixHeight == 0)
-        return;
-
-    if (std::abs(moveX) >= static_cast<int>(matrixWidth) || std::abs(moveY) >= static_cast<int>(matrixHeight))
-    {
-        for (unsigned int i = 0; i < matrixHeight; i++)
-            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
-
-        return;
-    }
-
-    if (moveX > 0)
-    {
-        const auto displacement = static_cast<unsigned int>(moveX);
-        for (unsigned int i = 0; i < matrixHeight; i++)
-        {
-            std::move_backward(matrix[i], matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth);
-            std::fill(matrix[i], matrix[i] + displacement, fillValue);
-        }
-    }
-    else if (moveX < 0)
-    {
-        const auto displacement = static_cast<unsigned int>(-moveX);
-        for (unsigned int i = 0; i < matrixHeight; i++)
-        {
-            std::move(matrix[i] + displacement, matrix[i] + matrixWidth, matrix[i]);
-            std::fill(matrix[i] + matrixWidth - displacement, matrix[i] + matrixWidth, fillValue);
-        }
-    }
-
-    if (moveY > 0)
-    {
-        const auto displacement = static_cast<unsigned int>(moveY);
-        std::rotate(matrix, matrix + matrixHeight - displacement, matrix + matrixHeight);
-        for (unsigned int i = 0; i < displacement; i++)
-            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
-    }
-    else if (moveY < 0)
-    {
-        const auto displacement = static_cast<unsigned int>(-moveY);
-        std::rotate(matrix, matrix + displacement, matrix + matrixHeight);
-        for (unsigned int i = matrixHeight - displacement; i < matrixHeight; i++)
-            std::fill(matrix[i], matrix[i] + matrixWidth, fillValue);
-    }
-}

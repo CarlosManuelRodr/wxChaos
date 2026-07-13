@@ -2,60 +2,12 @@
 
 VectorFractal::VectorFractal(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
-    _antiAliasingScale = 1;
-}
-
-bool**& VectorFractal::SetMapStorage()
-{
-    static bool** unused = nullptr;
-    return unused;
-}
-
-bool** VectorFractal::SetMapStorage() const
-{
-    return nullptr;
-}
-
-double**& VectorFractal::ColorMapStorage()
-{
-    static double** unused = nullptr;
-    return unused;
-}
-
-double** VectorFractal::ColorMapStorage() const
-{
-    return nullptr;
-}
-
-RenderThreadPool& VectorFractal::RenderPoolStorage()
-{
-    static RenderThreadPool unused;
-    return unused;
-}
-
-const RenderThreadPool& VectorFractal::RenderPoolStorage() const
-{
-    static const RenderThreadPool unused;
-    return unused;
-}
-
-std::vector<LineData>& VectorFractal::OrbitLinesStorage()
-{
-    static std::vector<LineData> unused;
-    return unused;
-}
-
-const std::vector<LineData>& VectorFractal::OrbitLinesStorage() const
-{
-    static const std::vector<LineData> unused;
-    return unused;
 }
 
 void VectorFractal::Resize(const unsigned int width, const unsigned int height)
 {
     _screenWidth = width;
     _screenHeight = height;
-    UpdateRenderDimensions();
 
     EnsurePreciseViewInitialized();
     _preciseView.top = _preciseView.bottom + (_preciseView.right - _preciseView.left) *

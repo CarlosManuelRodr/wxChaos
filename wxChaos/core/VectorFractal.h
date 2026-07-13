@@ -8,15 +8,6 @@
  */
 class VectorFractal : public Fractal
 {
-    bool**& SetMapStorage() override;
-    bool** SetMapStorage() const override;
-    double**& ColorMapStorage() override;
-    double** ColorMapStorage() const override;
-    RenderThreadPool& RenderPoolStorage() override;
-    const RenderThreadPool& RenderPoolStorage() const override;
-    std::vector<LineData>& OrbitLinesStorage() override;
-    const std::vector<LineData>& OrbitLinesStorage() const override;
-
     void DrawPrimitives(sf::RenderTarget& target) const;
 
 protected:
@@ -34,6 +25,7 @@ public:
     sf::Color GetRenderedPixelColor(unsigned int x, unsigned int y) const override { return sf::Color::White; }
     bool SupportsAntiAliasing() const override { return false; }
     void SetAntiAliasingScale(unsigned int scale) override {}
+    unsigned int GetAntiAliasingScale() const override { return 1; }
     void RefreshAnimatedColors(sf::Image& image) override {}
     void ClearOrbitLines() override {}
     const std::vector<LineData>& GetOrbitLines() const override;
