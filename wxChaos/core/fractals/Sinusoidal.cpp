@@ -2,7 +2,7 @@
 #include "Sinusoidal.h"
 using namespace std;
 
-Sinusoidal::Sinusoidal(const unsigned int width, const unsigned int height) : Fractal(width, height)
+Sinusoidal::Sinusoidal(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     // Adjust the scale.
     _minX = -8;

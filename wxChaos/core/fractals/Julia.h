@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/JuliaRenderer.h"
 
 /**
@@ -9,7 +9,7 @@
  * Each pixel supplies z_0 and the UI Julia constant supplies k. The orbit
  * iterates z_{n+1} = z_n^2 + k. Points escape when |z|^2 exceeds 4.
  */
-class Julia: public Fractal
+class Julia: public RasterFractal
 {
     JuliaRenderer* myRender;
 public:

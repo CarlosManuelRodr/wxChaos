@@ -3,7 +3,7 @@
 #include "Translation.h"
 using namespace std;
 
-Cell::Cell(const unsigned int width, const unsigned int height) : Fractal(width, height)
+Cell::Cell(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _minX = -1.3;
     _maxX = 1.3;

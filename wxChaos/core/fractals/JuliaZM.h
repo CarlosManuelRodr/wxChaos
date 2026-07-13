@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/JuliaZMRenderer.h"
 
 /**
@@ -10,7 +10,7 @@
  * iterates z_{n+1} = z_n^m + k, where m is the panel exponent. Escape is
  * detected when |z|^2 exceeds bailout^2.
  */
-class JuliaZM: public Fractal
+class JuliaZM: public RasterFractal
 {
     JuliaZMRenderer* _myRender;
     double _m;

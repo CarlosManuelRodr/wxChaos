@@ -1,12 +1,12 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/HenonMapRenderer.h"
 
 /**
  * @class HenonMap
  * @brief Chaotic map plotting x_{n+1} = y_n + 1 - alpha*x_n^2, y_{n+1} = beta*x_n.
  */
-class HenonMap : public Fractal
+class HenonMap : public RasterFractal
 {
     double _alpha;
     double _beta;

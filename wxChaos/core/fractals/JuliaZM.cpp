@@ -3,7 +3,7 @@
 #include "Translation.h"
 using namespace std;
 
-JuliaZM::JuliaZM(const unsigned int width, const unsigned int height) : Fractal(width, height)
+JuliaZM::JuliaZM(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.77437;

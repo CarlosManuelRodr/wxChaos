@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/CellRenderer.h"
 
 /**
@@ -11,7 +11,7 @@
  * z_{n+1} = z_n c + b_{n+1} / z_n. The panel bailout is compared as |z|^2
  * > bailout^2.
  */
-class Cell : public Fractal
+class Cell : public RasterFractal
 {
     CellRenderer* myRender;
     double bailout;

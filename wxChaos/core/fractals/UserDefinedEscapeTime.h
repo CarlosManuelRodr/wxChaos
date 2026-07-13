@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/UserDefinedEscapeTimeRenderer.h"
 
 /**
@@ -11,7 +11,7 @@
  * each pixel supplies z_0 and the UI Julia constant supplies c. Escape is
  * detected when |z|^2 exceeds bailout^2 from the formula options.
  */
-class UserDefinedEscapeTime : public Fractal
+class UserDefinedEscapeTime : public RasterFractal
 {
     UserDefinedEscapeTimeRenderer* _myRender;
 public:

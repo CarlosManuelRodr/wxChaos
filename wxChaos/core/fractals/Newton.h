@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/NewtonRenderer.h"
 
 /**
@@ -12,7 +12,7 @@
  * z_{n+1} = z_n - (z_n^3 - 1) / (2 z_n^2). Coloring distinguishes the root
  * basin and convergence speed.
  */
-class Newton : public Fractal
+class Newton : public RasterFractal
 {
     NewtonRenderer* myRender;
     double minStep;

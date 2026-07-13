@@ -1,7 +1,7 @@
 #include "HenonMap.h"
 #include "Translation.h"
 
-HenonMap::HenonMap(const unsigned int width, const unsigned int height) : Fractal(width, height)
+HenonMap::HenonMap(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _type = FractalType::HenonMap;
     _algorithm = RenderingAlgorithmType::ChaoticMap;

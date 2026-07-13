@@ -407,7 +407,7 @@ void FractalPresenter::SetAutomaticIterationBaseForCurrentIterations(const unsig
 
 void FractalPresenter::ApplyAutomaticIterations()
 {
-    if (!_automaticIterations)
+    if (!_automaticIterations || _fractal->IsVectorFractal())
         return;
 
     const unsigned int iterations = CalculateAutomaticIterations();
@@ -1123,6 +1123,15 @@ void FractalPresenter::DrawMaps(sf::RenderWindow* window)
     _fractal->PreDrawMaps();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
 
+    if (_fractal->IsVectorFractal())
+    {
+        _image = _fractal->GetRenderedImage();
+        _texture.loadFromImage(_image);
+        _output.setPosition(0, 0);
+        window->draw(_output);
+        return;
+    }
+
     if (_zoomingBack || _dontDrawTempImage || !_fractal->IsExteriorColorEnabled() || _zoomAnimationActive)
         _image.create(screenSize.x, screenSize.y, sf::Color(255, 255, 255));
     else
@@ -1307,7 +1316,7 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
         }
         window->draw(_outGeom);
     }
-    if (_fractal->HasGeometryFigures() && !_fractal->IsRendering())
+    if (!_fractal->IsVectorFractal() && _fractal->HasGeometryFigures() && !_fractal->IsRendering())
         DrawGeometry(window);
 
 }

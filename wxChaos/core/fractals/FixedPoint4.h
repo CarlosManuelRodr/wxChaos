@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/FixedPoint4Renderer.h"
 
 /**
@@ -11,7 +11,7 @@
  * is reached. Coloring is based on the convergence iteration and final real
  * half-plane.
  */
-class FixedPoint4 : public Fractal
+class FixedPoint4 : public RasterFractal
 {
     FixedPoint4Renderer* myRender;
     double minStep;

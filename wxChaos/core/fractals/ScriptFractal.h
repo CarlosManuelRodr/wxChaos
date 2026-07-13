@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/ScriptFractalRenderer.h"
 #include "../scripting/ScriptData.h"
 
@@ -11,7 +11,7 @@
  * thread bounds, screen size, and palette size as globals, then writes into
  * the shared set and color maps through the scripting bindings.
  */
-class ScriptFractal : public Fractal
+class ScriptFractal : public RasterFractal
 {
     std::string _path;
     ScriptData _myScriptData;

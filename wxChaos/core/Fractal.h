@@ -53,9 +53,14 @@ public:
     };
 
 protected:
-    bool** _setMap{};                ///< Stores the points that belong to the fractal set.
-    double** _colorMap{};            ///< Store continuous color values.
-    RenderThreadPool _renderPool;    ///< Reusable pool for render jobs.
+    virtual bool**& SetMapStorage() = 0;
+    virtual bool** SetMapStorage() const = 0;
+    virtual double**& ColorMapStorage() = 0;
+    virtual double** ColorMapStorage() const = 0;
+    virtual RenderThreadPool& RenderPoolStorage() = 0;
+    virtual const RenderThreadPool& RenderPoolStorage() const = 0;
+    virtual std::vector<LineData>& OrbitLinesStorage() = 0;
+    virtual const std::vector<LineData>& OrbitLinesStorage() const = 0;
 
     // Fractal properties.
     PanelOptions _panelOpt;          ///< List of GUI elements to put into the option panel.
@@ -145,7 +150,7 @@ protected:
 
     // Geometry variables.
     std::vector<CircleData> _circles;
-    std::vector<LineData> _lines, _orbitLines;
+    std::vector<LineData> _lines;
     bool _geomFigure;
 
     // Effect variables.
@@ -181,7 +186,7 @@ protected:
     [[nodiscard]] sf::Color GetRenderMapPixelColor(unsigned int x, unsigned int y) const;
 
     ///@brief If some minor change was made like a color adjustment, redraws the maps.
-    void RedrawMaps();
+    virtual void RedrawMaps();
 
     ///@brief Recalculates the maximum rendered color-map value.
     void UpdateMaxColorMapValue();
@@ -227,6 +232,9 @@ public:
     ///@brief Returns the display name supplied by the concrete fractal.
     virtual wxString GetName() const = 0;
 
+    ///@brief Returns true when the fractal is rendered from SFML primitives instead of pixel maps.
+    virtual bool IsVectorFractal() const { return false; }
+
     ///@brief Returns the labels used to describe points in this fractal's plane.
     virtual CoordinateSystem GetCoordinateSystem() const;
 
@@ -236,10 +244,10 @@ public:
     ///@brief SetAreaOfView to a specified size.
     ///@param width New width.
     ///@param height New height.
-    void Resize(unsigned int width, unsigned int height);
+    virtual void Resize(unsigned int width, unsigned int height);
 
     ///@brief Perform some adjustments needed before the rendering starts.
-    void PrepareRender(Vector2Int reusedMapOffset = {0, 0});
+    virtual void PrepareRender(Vector2Int reusedMapOffset = {0, 0});
 
     ///@brief Sets the fractal render viewport.
     ///@param worldCoordinates Viewport in world coordinates.
@@ -307,16 +315,16 @@ public:
     bool ConsumeImageRefreshRequest();
 
     ///@brief Shifts the rendered maps after panning settles.
-    void ReuseRenderedMaps(Vector2Int reusedMapOffset);
+    virtual void ReuseRenderedMaps(Vector2Int reusedMapOffset);
 
     ///@brief Prepares color lookup values before drawing rendered pixels.
-    void PrepareDisplayColorLookup();
+    virtual void PrepareDisplayColorLookup();
 
     ///@brief Returns true when the rendered maps have a display color at the pixel.
-    bool HasDisplayPixelColor(unsigned int x, unsigned int y) const;
+    virtual bool HasDisplayPixelColor(unsigned int x, unsigned int y) const;
 
     ///@brief Gets the display color for a rendered pixel.
-    sf::Color GetRenderedPixelColor(unsigned int x, unsigned int y) const;
+    virtual sf::Color GetRenderedPixelColor(unsigned int x, unsigned int y) const;
 
     ///@brief Gets the color used for missing rendered pixels.
     sf::Color GetInvalidPixelColor() const;
@@ -324,33 +332,33 @@ public:
     bool IsExteriorColorEnabled() const;
     bool IsRelativeColorEnabled() const;
     bool IsSetColorEnabled() const;
-    bool SupportsAntiAliasing() const;
+    virtual bool SupportsAntiAliasing() const;
     bool IsAntiAliasingEnabled() const;
-    void SetAntiAliasingScale(unsigned int scale);
+    virtual void SetAntiAliasingScale(unsigned int scale);
     unsigned int GetAntiAliasingScale() const;
     bool IsGradientAnimating() const;
     bool ConsumeGradientChangeRequest();
     void AdvanceGradientOffset(double elapsedSeconds);
-    void RefreshAnimatedColors(sf::Image& image);
+    virtual void RefreshAnimatedColors(sf::Image& image);
 
     bool ShouldDrawOrbit() const;
     bool IsOrbitDrawn() const;
-    void ClearOrbitLines();
+    virtual void ClearOrbitLines();
     void MarkOrbitDirty();
     bool HasGeometryFigures() const;
     bool IsSnapshotActive() const;
     const std::vector<LineData>& GetLines() const;
-    const std::vector<LineData>& GetOrbitLines() const;
+    virtual const std::vector<LineData>& GetOrbitLines() const;
     const std::vector<CircleData>& GetCircles() const;
 
     ///@brief Describes the measurements of the currently recorded orbit.
     wxString DescribeOrbit(bool escaped) const;
 
     ///@brief Renders the current view synchronously without creating an image.
-    void RenderBlocking();
+    virtual void RenderBlocking();
 
     ///@brief Returns the stored result for a rendered pixel.
-    PointSample GetPointSample(unsigned int x, unsigned int y) const;
+    virtual PointSample GetPointSample(unsigned int x, unsigned int y) const;
 
     ///@brief Evaluates and describes one world-coordinate point using the current fractal settings.
     virtual wxString InspectPoint(double x, double y, std::optional<unsigned int> iterations) const;
@@ -363,13 +371,13 @@ public:
 
     ///@brief Returns progress for the active render backend.
     ///@return A value from 0 to 100.
-    int GetRenderProgress() const;
+    virtual int GetRenderProgress() const;
 
     ///@brief Pauses or resumes the rendering.
-    void PauseContinue();
+    virtual void PauseContinue();
 
     ///@brief If there are active threads stops them.
-    bool StopRender();
+    virtual bool StopRender();
 
     ///@brief Get pause status.
     ///@return true if paused, false if not.
@@ -444,15 +452,15 @@ public:
     virtual wxString GetFractalInformationFile() const;
 
     ///@brief Returns a pointer to the set map.
-    bool** GetSetMap() const;
+    virtual bool** GetSetMap() const;
 
     void SetFractalPropChanged();
     bool GetChangeFractalProp();
 
     // Save image.
-    sf::Image GetRenderedImage();
+    virtual sf::Image GetRenderedImage();
     wxBitmap GetRenderedWxBitmap();
-    bool SaveBmp(const std::string& filename);
+    virtual bool SaveBmp(const std::string& filename);
     void PrepareSnapshot(bool mode);
 
     // Color styles.
@@ -550,10 +558,10 @@ template<class DerivedRenderer> void Fractal::SetRendererBounds(DerivedRenderer*
         renderers.push_back(&myRender[i]);
     }
 
-    _renderPool.Render(renderers, jobs);
+    RenderPoolStorage().Render(renderers, jobs);
 
     if (_waitRoutine)
-        _renderPool.Wait();
+        RenderPoolStorage().Wait();
 }
 
 template<class M> void Fractal::MoveMatrix(M** matrix, const unsigned int matrixWidth, const unsigned int matrixHeight,

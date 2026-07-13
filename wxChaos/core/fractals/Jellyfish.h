@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/JellyfishRenderer.h"
 
 /**
@@ -10,7 +10,7 @@
  * iterates z_{n+1} = z_n^1.5 + k using the complex power implementation.
  * Points escape when |z|^2 exceeds 4.
  */
-class Jellyfish : public Fractal
+class Jellyfish : public RasterFractal
 {
     JellyfishRenderer* myRender;
 public:

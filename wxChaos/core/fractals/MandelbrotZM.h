@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/MandelbrotZMRenderer.h"
 
 /**
@@ -10,7 +10,7 @@
  * iterates z_{n+1} = z_n^m + c, where m is the panel exponent. Escape is
  * detected when |z|^2 exceeds bailout^2.
  */
-class MandelbrotZM : public Fractal
+class MandelbrotZM : public RasterFractal
 {
     double _m;
     double _bailout;

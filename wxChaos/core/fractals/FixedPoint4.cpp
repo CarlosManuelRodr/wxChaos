@@ -3,7 +3,7 @@
 #include "Translation.h"
 using namespace std;
 
-FixedPoint4::FixedPoint4(const unsigned int width, const unsigned int height) : Fractal(width, height)
+FixedPoint4::FixedPoint4(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     // Adjust the scale.
     _minX = -1.8713;

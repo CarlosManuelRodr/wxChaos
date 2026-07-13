@@ -30,9 +30,6 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
 
     _fSetColor = wxColour(0, 0, 0);
 
-    AllocateRenderMaps();
-    ClearRenderMaps(InvalidColor);
-
     _pendingRenderOffset = {0, 0};
 
     // Set fractal properties.
@@ -106,13 +103,11 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
 
     _palette.resize(_paletteSize);
     _colorRotationSpeed = 120.0;
-    this->RebuildPalette();
+    for (int i = 0; i < _paletteSize; i++)
+        _palette[i] = _gradient.GetColorAt(i);
 }
 
-Fractal::~Fractal()
-{
-    ReleaseRenderMaps();
-}
+Fractal::~Fractal() = default;
 
 Fractal::CoordinateSystem Fractal::GetCoordinateSystem() const
 {
@@ -166,31 +161,31 @@ void Fractal::UpdateRenderDimensions()
 
 void Fractal::AllocateRenderMaps()
 {
-    _setMap = new bool* [_renderWidth];
-    _colorMap = new double* [_renderWidth];
+    SetMapStorage() = new bool* [_renderWidth];
+    ColorMapStorage() = new double* [_renderWidth];
     for (unsigned int i = 0; i < _renderWidth; i++)
     {
-        _setMap[i] = new bool[_renderHeight];
-        _colorMap[i] = new double[_renderHeight];
+        SetMapStorage()[i] = new bool[_renderHeight];
+        ColorMapStorage()[i] = new double[_renderHeight];
     }
     _backRenderWidth = _renderWidth;
 }
 
 void Fractal::ReleaseRenderMaps()
 {
-    if (_setMap == nullptr || _colorMap == nullptr)
+    if (SetMapStorage() == nullptr || ColorMapStorage() == nullptr)
         return;
 
     for (unsigned int i = 0; i < _backRenderWidth; i++)
     {
-        delete[] _setMap[i];
-        delete[] _colorMap[i];
+        delete[] SetMapStorage()[i];
+        delete[] ColorMapStorage()[i];
     }
 
-    delete[] _setMap;
-    delete[] _colorMap;
-    _setMap = nullptr;
-    _colorMap = nullptr;
+    delete[] SetMapStorage();
+    delete[] ColorMapStorage();
+    SetMapStorage() = nullptr;
+    ColorMapStorage() = nullptr;
     _backRenderWidth = 0;
 }
 
@@ -200,8 +195,8 @@ void Fractal::ClearRenderMaps(const double initialColorValue)
     {
         for (unsigned int j = 0; j < _renderHeight; j++)
         {
-            _setMap[i][j] = false;
-            _colorMap[i][j] = initialColorValue;
+            SetMapStorage()[i][j] = false;
+            ColorMapStorage()[i][j] = initialColorValue;
         }
     }
 }
@@ -285,7 +280,7 @@ void Fractal::UpdateMaxColorMapValue()
     {
         for (unsigned int j = 0; j < _renderHeight; j++)
         {
-            const double value = _colorMap[i][j];
+            const double value = ColorMapStorage()[i][j];
             if (!IsValidColorMapValue(value))
                 continue;
 
@@ -334,7 +329,7 @@ void Fractal::UpdateMaxColorMapValue()
 void Fractal::ConfigureRenderer(RenderWorker& renderer) const
 {
     renderer.SetOptions(this->GetRenderOptions());
-    renderer.SetRenderOut(_setMap, _colorMap);
+    renderer.SetRenderOut(SetMapStorage(), ColorMapStorage());
     renderer.SetK(_kReal, _kImaginary);
 }
 void Fractal::EnsurePreciseViewInitialized() const
@@ -814,8 +809,8 @@ bool Fractal::ConsumeImageRefreshRequest()
 void Fractal::ReuseRenderedMaps(const Vector2Int reusedMapOffset)
 {
     const Vector2Int renderOffset = DisplayOffsetToRenderOffset(reusedMapOffset);
-    MoveMatrix<bool>(_setMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x);
-    MoveMatrix<double>(_colorMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x, InvalidColor);
+    MoveMatrix<bool>(SetMapStorage(), _renderHeight, _renderWidth, renderOffset.y, renderOffset.x);
+    MoveMatrix<double>(ColorMapStorage(), _renderHeight, _renderWidth, renderOffset.y, renderOffset.x, InvalidColor);
 }
 
 void Fractal::PrepareDisplayColorLookup()
@@ -860,21 +855,21 @@ bool Fractal::HasRenderMapPixelColor(const unsigned int x, const unsigned int y)
     if (x >= _renderWidth || y >= _renderHeight)
         return false;
 
-    if (_setMap[x][y] && _colorSet)
+    if (SetMapStorage()[x][y] && _colorSet)
         return true;
 
-    return _colorMode && IsValidColorMapValue(_colorMap[x][y]);
+    return _colorMode && IsValidColorMapValue(ColorMapStorage()[x][y]);
 }
 
 sf::Color Fractal::GetRenderMapPixelColor(const unsigned int x, const unsigned int y) const
 {
-    if (_setMap[x][y] && _colorSet)
+    if (SetMapStorage()[x][y] && _colorSet)
         return GetSetColor();
 
-    if (!_colorMode || !IsValidColorMapValue(_colorMap[x][y]))
+    if (!_colorMode || !IsValidColorMapValue(ColorMapStorage()[x][y]))
         return sf::Color::White;
 
-    return GetColorFromPalette(NormalizeColorMapValue(_colorMap[x][y]) + _changeGradient);
+    return GetColorFromPalette(NormalizeColorMapValue(ColorMapStorage()[x][y]) + _changeGradient);
 }
 
 sf::Color Fractal::GetInvalidPixelColor() const
@@ -1020,7 +1015,7 @@ bool Fractal::IsOrbitDrawn() const
 
 void Fractal::ClearOrbitLines()
 {
-    _orbitLines.clear();
+    OrbitLinesStorage().clear();
 }
 
 void Fractal::MarkOrbitDirty()
@@ -1045,7 +1040,7 @@ const std::vector<LineData>& Fractal::GetLines() const
 
 const std::vector<LineData>& Fractal::GetOrbitLines() const
 {
-    return _orbitLines;
+    return OrbitLinesStorage();
 }
 
 const std::vector<CircleData>& Fractal::GetCircles() const
@@ -1055,20 +1050,20 @@ const std::vector<CircleData>& Fractal::GetCircles() const
 
 wxString Fractal::DescribeOrbit(const bool escaped) const
 {
-    if (_orbitLines.empty())
+    if (OrbitLinesStorage().empty())
         return "Orbit: no transitions were recorded.";
 
-    const double startRe = _orbitLines.front().x1;
-    const double startIm = _orbitLines.front().y1;
-    const double finalRe = _orbitLines.back().x2;
-    const double finalIm = _orbitLines.back().y2;
+    const double startRe = OrbitLinesStorage().front().x1;
+    const double startIm = OrbitLinesStorage().front().y1;
+    const double finalRe = OrbitLinesStorage().back().x2;
+    const double finalIm = OrbitLinesStorage().back().y2;
 
     double totalDistance = 0.0;
     double largestStep = 0.0;
     double closestToOrigin = hypot(startRe, startIm);
     double farthestFromOrigin = closestToOrigin;
 
-    for (const LineData& line : _orbitLines)
+    for (const LineData& line : OrbitLinesStorage())
     {
         const double stepDistance = hypot(line.x2 - line.x1, line.y2 - line.y1);
         const double distanceToOrigin = hypot(line.x2, line.y2);
@@ -1079,14 +1074,14 @@ wxString Fractal::DescribeOrbit(const bool escaped) const
     }
 
     const double displacement = hypot(finalRe - startRe, finalIm - startIm);
-    const double averageStep = totalDistance / static_cast<double>(_orbitLines.size());
+    const double averageStep = totalDistance / static_cast<double>(OrbitLinesStorage().size());
     const double pathEfficiency = totalDistance > 0.0 ? 100.0 * displacement / totalDistance : 0.0;
     const double finalModulus = hypot(finalRe, finalIm);
     constexpr double radiansToDegrees = 180.0 / 3.14159265358979323846;
     const double finalAngle = atan2(finalIm, finalRe) * radiansToDegrees;
 
     wxString output;
-    output << "Orbit transitions: " << _orbitLines.size() << "\n"
+    output << "Orbit transitions: " << OrbitLinesStorage().size() << "\n"
            << "Orbit path length: " << FormatNumber(totalDistance) << "\n"
            << "Straight-line displacement: " << FormatNumber(displacement)
            << " (" << FormatNumber(pathEfficiency) << "% of path length)\n"
@@ -1142,7 +1137,7 @@ Fractal::PointSample Fractal::GetPointSample(const unsigned int x, const unsigne
     const unsigned int scale = _antiAliasingScale;
     const unsigned int renderX = x * scale + scale / 2;
     const unsigned int renderY = y * scale + scale / 2;
-    return {_setMap[renderX][renderY], _colorMap[renderX][renderY], IsValidColorMapValue(_colorMap[renderX][renderY])};
+    return {SetMapStorage()[renderX][renderY], ColorMapStorage()[renderX][renderY], IsValidColorMapValue(ColorMapStorage()[renderX][renderY])};
 }
 
 wxString Fractal::InspectPoint(const double x, const double y, const optional<unsigned int> iterations) const
@@ -1205,7 +1200,7 @@ wxString Fractal::InspectPoint(const double x, const double y, const optional<un
 // Thread control
 int Fractal::GetRenderProgress() const
 {
-    return _renderPool.GetProgress();
+    return RenderPoolStorage().GetProgress();
 }
 void Fractal::PauseContinue()
 {
@@ -1229,7 +1224,7 @@ bool Fractal::StopRender()
 {
     if (this->IsRendering())
     {
-        _renderPool.Stop();
+        RenderPoolStorage().Stop();
         _rendering = false;
         return true;
     }
@@ -1249,7 +1244,7 @@ bool Fractal::IsRendering()
 {
     if (_waitRoutine)
         return false;
-    return _renderPool.IsRunning();
+    return RenderPoolStorage().IsRunning();
 }
 void Fractal::SetFormula(FormulaOptions formula)
 {
@@ -1430,7 +1425,7 @@ wxString Fractal::GetFractalInformationFile() const
 }
 bool** Fractal::GetSetMap() const
 {
-    return _setMap;
+    return SetMapStorage();
 }
 void Fractal::SetFractalPropChanged()
 {
@@ -1803,7 +1798,7 @@ void Fractal::SetOrbitMode(const bool mode)
         _orbitDrawn = false;
         _orbitX = 0;
         _orbitY = 0;
-        _orbitLines.clear();
+        OrbitLinesStorage().clear();
     }
 }
 void Fractal::SetOrbitPoint(const double x, const double y)
@@ -1895,7 +1890,7 @@ void Fractal::DrawLine(const double x1, const double y1, const double x2, const 
     data.color = color;
 
     if (orbitLine)
-        _orbitLines.push_back(data);
+        OrbitLinesStorage().push_back(data);
     else
         _lines.push_back(data);
 
@@ -1924,5 +1919,5 @@ void Fractal::ClearGeometryFigures()
 {
     _circles.clear();
     _lines.clear();
-    _geomFigure = !_orbitLines.empty();
+    _geomFigure = !OrbitLinesStorage().empty();
 }

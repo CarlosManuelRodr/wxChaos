@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/TricornRenderer.h"
 
 /**
@@ -9,7 +9,7 @@
  * Each pixel is the complex parameter c. The orbit starts at z_0 = 0 and
  * iterates z_{n+1} = conjugate(z_n)^2 + c. Points escape when |z|^2 exceeds 4.
  */
-class Tricorn : public Fractal
+class Tricorn : public RasterFractal
 {
 private:
     TricornRenderer* myRender;

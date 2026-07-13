@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Koch Snowflake</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main data-i18n-lang="en" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Fractal gallery</p>
+            <h1>Koch Snowflake</h1>
+            <p class="subtitle">An infinite coastline grown from three straight sides.</p>
+            <div class="formula hero-formula">\(D=\frac{\log 4}{\log 3}\)</div>
+            <p class="hero-introduction">
+                Each step divides every segment into thirds and replaces the middle third with two sides of an
+                outward equilateral triangle. Repeating that rule turns a triangle into an endlessly detailed curve.
+            </p>
+        </div>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/koch-snowflake">Open in wxChaos</a></div>
+    </section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Increase the iteration count one step at a time and watch every edge produce four smaller edges.</p></div>
+            <div class="experiment-step"><p>Zoom into a corner to compare its shape with the complete boundary.</p></div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <p>After iteration \(n\), the snowflake has \(3\cdot4^n\) segments, each scaled by \(3^{-n}\).</p>
+    </section>
+</main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Copo de nieve de Koch</h1>
+            <p class="subtitle">Una costa infinita que crece a partir de tres lados rectos.</p>
+            <div class="formula hero-formula">\(D=\frac{\log 4}{\log 3}\)</div>
+            <p class="hero-introduction">
+                Cada paso divide todos los segmentos en tercios y sustituye el tercio central por dos lados de un
+                triángulo equilátero exterior. Al repetir la regla, el triángulo se convierte en una curva de detalle infinito.
+            </p>
+        </div>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/koch-snowflake">Abrir en wxChaos</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Aumenta las iteraciones paso a paso y observa cómo cada borde produce cuatro bordes menores.</p></div>
+            <div class="experiment-step"><p>Acércate a una esquina para comparar su forma con la frontera completa.</p></div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <p>Después de la iteración \(n\), el copo tiene \(3\cdot4^n\) segmentos, cada uno escalado por \(3^{-n}\).</p>
+    </section>
+</main>
+</body>
+</html>

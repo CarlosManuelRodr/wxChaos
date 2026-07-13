@@ -2,7 +2,7 @@
 #include "UserDefinedEscapeTime.h"
 using namespace std;
 
-UserDefinedEscapeTime::UserDefinedEscapeTime(const unsigned int width, const unsigned int height) : Fractal(width, height)
+UserDefinedEscapeTime::UserDefinedEscapeTime(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     // Adjust the scale.
     _minX = -2.5;

@@ -23,6 +23,7 @@ class FractalFactory
     Manowar* _manowar;
     ManowarJulia* _manowarJulia;
     SierpinskiTriangle* _sierpinskiTriangle;
+    KochSnowflake* _kochSnowflake;
     FixedPoint1* _fixedPoint1;
     FixedPoint2* _fixedPoint2;
     FixedPoint3* _fixedPoint3;

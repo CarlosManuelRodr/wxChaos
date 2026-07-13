@@ -1,6 +1,6 @@
 #pragma once
 #include <complex>
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../UserFormulaSymbolicCompiler.h"
 #include "../renderers/UserDefinedNewtonRenderer.h"
 
@@ -12,7 +12,7 @@
  * once when the formula changes, then passes muParserX-ready expressions to
  * the renderer for pixel iteration.
  */
-class UserDefinedNewton : public Fractal
+class UserDefinedNewton : public RasterFractal
 {
     UserDefinedNewtonRenderer* _myRender;
     CompiledUserFormula _compiledFormula;

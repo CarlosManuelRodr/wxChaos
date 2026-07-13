@@ -1,12 +1,12 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/LogisticMapRenderer.h"
 
 /**
 * @class LogisticMap
 * @brief Renders the logistic map bifurcation diagram.
 */
-class LogisticMap : public Fractal
+class LogisticMap : public RasterFractal
 {
     LogisticMapRenderer* _myRender;
     double _logisticSeed;

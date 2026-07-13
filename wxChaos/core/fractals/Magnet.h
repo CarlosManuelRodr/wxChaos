@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/MagnetRenderer.h"
 
 /**
@@ -11,7 +11,7 @@
  * treats the point as escaped when |z|^2 exceeds max iterations.
  */
 
-class Magnet : public Fractal
+class Magnet : public RasterFractal
 {
     MagnetRenderer* myRender;
 public:

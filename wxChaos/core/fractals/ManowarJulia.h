@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/ManowarJuliaRenderer.h"
 
 /**
@@ -10,7 +10,7 @@
  * starts with m_0 = z_0, then iterates z_{n+1} = z_n^2 + m_n + k and
  * m_{n+1} = z_n. Points escape when |z|^2 exceeds 4.
  */
-class ManowarJulia : public Fractal
+class ManowarJulia : public RasterFractal
 {
     ManowarJuliaRenderer* myRender;
 public:

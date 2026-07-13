@@ -2,7 +2,7 @@
 #include "Jellyfish.h"
 using namespace std;
 
-Jellyfish::Jellyfish(const unsigned int width, const unsigned int height) : Fractal(width, height)
+Jellyfish::Jellyfish(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _minX = -1.1342;
     _maxX = 1.7251;

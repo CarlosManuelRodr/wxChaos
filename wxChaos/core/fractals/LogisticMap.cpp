@@ -2,7 +2,7 @@
 #include <limits>
 #include "Translation.h"
 
-LogisticMap::LogisticMap(const unsigned int width, const unsigned int height) : Fractal(width, height)
+LogisticMap::LogisticMap(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _type = FractalType::LogisticMap;
     _algorithm = RenderingAlgorithmType::ChaoticMap;

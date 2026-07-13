@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/UserDefinedFixedPointRenderer.h"
 
 /**
@@ -11,7 +11,7 @@
  * change by less than the configured minimum step, or when max iterations is
  * reached.
  */
-class UserDefinedFixedPoint : public Fractal
+class UserDefinedFixedPoint : public RasterFractal
 {
     UserDefinedFixedPointRenderer* _myRender;
     double _minStep;

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/BurningShipRenderer.h"
 
 /**
@@ -10,7 +10,7 @@
  * iterates z_{n+1} = (abs(Re(z_n)) + i abs(Im(z_n)))^2 + c. Points escape
  * when |z|^2 exceeds 4.
  */
-class BurningShip : public Fractal
+class BurningShip : public RasterFractal
 {
     BurningShipRenderer* myRender;
 public:

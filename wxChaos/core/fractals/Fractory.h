@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/FractoryRenderer.h"
 
 /**
@@ -10,7 +10,7 @@
  * b_0 = c - sin(c), then iterates b_{n+1} = c + b_n / c - z_n and
  * z_{n+1} = z_n c + b_{n+1} / z_n. Points escape when |z|^2 exceeds 4.
  */
-class Fractory : public Fractal
+class Fractory : public RasterFractal
 {
     FractoryRenderer* myRender;
 public:

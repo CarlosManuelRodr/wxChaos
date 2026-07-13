@@ -21,6 +21,7 @@
 #include "fractals/Jellyfish.h"
 #include "renderers/SierpinskiTriangleRenderer.h"
 #include "fractals/SierpinskiTriangle.h"
+#include "fractals/KochSnowflake.h"
 #include "renderers/FixedPoint1Renderer.h"
 #include "fractals/FixedPoint1.h"
 #include "renderers/FixedPoint2Renderer.h"

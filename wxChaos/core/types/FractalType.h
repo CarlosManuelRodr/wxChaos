@@ -14,6 +14,7 @@ enum class FractalType
     Manowar,
     ManowarJulia,
     SierpinskiTriangle,
+    KochSnowflake,
     FixedPoint1,
     FixedPoint2,
     FixedPoint3,

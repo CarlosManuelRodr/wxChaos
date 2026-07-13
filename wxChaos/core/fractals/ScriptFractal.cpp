@@ -7,7 +7,7 @@
 using namespace std;
 
 ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const ScriptData& scriptData,
-                             const int renderThreads) : Fractal(width, height)
+                             const int renderThreads) : RasterFractal(width, height)
 {
     if (renderThreads != -1)
         _threadNumber = static_cast<unsigned>(renderThreads);
@@ -39,7 +39,7 @@ ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height
     }
 }
 ScriptFractal::ScriptFractal(const unsigned int width, const unsigned int height, const string& scriptPath)
-                             : Fractal(width, height)
+                             : RasterFractal(width, height)
 {
     _path = scriptPath;
     AngelscriptConfigurationEngine configEngine;

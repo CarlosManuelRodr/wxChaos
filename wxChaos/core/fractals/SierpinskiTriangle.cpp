@@ -1,7 +1,7 @@
 #include "SierpinskiTriangle.h"
 using namespace std;
 
-SierpinskiTriangle::SierpinskiTriangle(const unsigned int width, const unsigned int height) : Fractal(width, height)
+SierpinskiTriangle::SierpinskiTriangle(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _minX = -0.5;
     _maxX = 1.5;

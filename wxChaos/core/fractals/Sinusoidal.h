@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/SinusoidalRenderer.h"
 
 /**
@@ -10,7 +10,7 @@
  * iterates z_{n+1} = k sin(z_n). This renderer treats the point as escaped
  * when |z|^2 exceeds max iterations.
  */
-class Sinusoidal : public Fractal
+class Sinusoidal : public RasterFractal
 {
     SinusoidalRenderer* myRender;
 public:

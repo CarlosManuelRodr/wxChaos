@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/SierpinskiTriangleRenderer.h"
 
 /**
@@ -11,7 +11,7 @@
  * otherwise z <- 2z. Points that never escape within max iterations are marked
  * as inside.
  */
-class SierpinskiTriangle : public Fractal
+class SierpinskiTriangle : public RasterFractal
 {
     SierpinskiTriangleRenderer* myRender;
 public:

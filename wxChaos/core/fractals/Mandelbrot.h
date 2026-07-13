@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/MandelbrotRenderer.h"
 
 /**
@@ -12,7 +12,7 @@
  * samples c values and accumulates the escaped orbits instead of coloring each
  * pixel independently.
  */
-class Mandelbrot : public Fractal
+class Mandelbrot : public RasterFractal
 {
     MandelbrotRenderer* myRender;
     int buddhaRandomP;

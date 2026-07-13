@@ -2,7 +2,7 @@
 #include "Fractory.h"
 using namespace std;
 
-Fractory::Fractory(const unsigned int width, const unsigned int height) : Fractal(width, height)
+Fractory::Fractory(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _minX = 0.837154;
     _maxX = 1.14419;

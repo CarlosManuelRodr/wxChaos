@@ -2,7 +2,7 @@
 #include "BurningShip.h"
 using namespace std;
 
-BurningShip::BurningShip(const unsigned int width, const unsigned int height) : Fractal(width, height)
+BurningShip::BurningShip(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     // Adjust the scale.
     _minX = -2.36;

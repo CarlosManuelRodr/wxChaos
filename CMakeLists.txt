@@ -228,6 +228,7 @@ if(BUILD_TESTING)
             tests/core/CoreTestsMain.cpp
             tests/core/FractalUtilitiesTests.cpp
             tests/core/FractalInspectionTests.cpp
+            tests/core/KochSnowflakeTests.cpp
             tests/core/ScriptOrbitTests.cpp
             tests/core/RenderingAlgorithmTests.cpp
             tests/core/geometry/GeometryTests.cpp

@@ -3,7 +3,7 @@
 #include "Translation.h"
 using namespace std;
 
-Mandelbrot::Mandelbrot(const unsigned int width, const unsigned int height) : Fractal(width, height)
+Mandelbrot::Mandelbrot(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     // Adjust the scale.
     _minX = -2.45296;

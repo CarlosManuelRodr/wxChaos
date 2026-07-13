@@ -2,7 +2,7 @@
 #include "Tricorn.h"
 using namespace std;
 
-Tricorn::Tricorn(const unsigned int width, const unsigned int height) : Fractal(width, height)
+Tricorn::Tricorn(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _minX = -3;
     _maxX = 3;

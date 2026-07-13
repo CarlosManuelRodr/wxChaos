@@ -1,5 +1,5 @@
 #pragma once
-#include "../Fractal.h"
+#include "../RasterFractal.h"
 #include "../renderers/DoublePendulumRenderer.h"
 
 /**
@@ -12,7 +12,7 @@
  * A point is considered outside when theta1 or theta2 crosses the configured
  * absolute or initial-angle-relative bailout.
  */
-class DoublePendulum : public Fractal
+class DoublePendulum : public RasterFractal
 {
     bool th1Bailout, th2Bailout;
     double th1NumBailout, th2NumBailout;

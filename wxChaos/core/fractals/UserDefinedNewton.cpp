@@ -10,7 +10,7 @@ bool UserDefinedNewton::IsFinite(const std::complex<double>& value)
     return std::isfinite(value.real()) && std::isfinite(value.imag());
 }
 
-UserDefinedNewton::UserDefinedNewton(const unsigned int width, const unsigned int height) : Fractal(width, height)
+UserDefinedNewton::UserDefinedNewton(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _minX = -2.0;
     _maxX = 2.0;

@@ -2,7 +2,7 @@
 #include "ManowarJulia.h"
 using namespace std;
 
-ManowarJulia::ManowarJulia(const unsigned int width, const unsigned int height) : Fractal(width, height)
+ManowarJulia::ManowarJulia(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
 {
     _minX = -2.0;
     _maxX = 1.0;
