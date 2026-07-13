@@ -16,27 +16,6 @@ using namespace std;
 
 wxDEFINE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
 
-double GetMaxElement(const vector<double> &in)
-{
-    double max = -std::numeric_limits<double>::infinity();
-    for (const double i : in)
-    {
-        if (i > max)
-            max = i;
-    }
-    return max;
-}
-double GetMinElement(const vector<double> &in)
-{
-    double min = std::numeric_limits<double>::infinity();
-    for (const double i : in)
-    {
-        if (i < min)
-            min = i;
-    }
-    return min;
-}
-
 DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxString& title, const wxPoint& pos,
                                const wxSize& size, const long style)
                                : wxFrame(parent, id, wxGetTranslation(title), pos, size, style), _previewTimer(this)
@@ -793,7 +772,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                         // Do least squares fitting for m.
                         double sumX, sumY, sumXSquared;
                         double sumXY = sumX = sumY = sumXSquared = 0;
-                        const double n = static_cast<double>(_epsilon.size());
+                        const auto n = static_cast<double>(_epsilon.size());
                         for (int i = 0; i < n; i++)
                         {
                             sumXY += logEpsilon[i] * logCount[i];
