@@ -82,4 +82,8 @@ public:
 
     /// @brief Resets color rotation to the inactive play-icon state.
     void ResetColorRotationTool();
+
+    /// @brief Enables color rotation when the active fractal supports palette animation.
+    /// @param enabled true when color rotation is available.
+    void SetColorRotationEnabled(bool enabled);
 };

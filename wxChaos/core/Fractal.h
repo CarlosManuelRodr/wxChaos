@@ -180,6 +180,9 @@ public:
     ///@brief Returns true when the fractal is rendered from SFML primitives instead of pixel maps.
     virtual bool IsVectorFractal() const { return false; }
 
+    ///@brief Returns true when palette color rotation is meaningful for this fractal.
+    virtual bool SupportsColorRotation() const { return true; }
+
     ///@brief Returns the labels used to describe points in this fractal's plane.
     virtual CoordinateSystem GetCoordinateSystem() const;
 

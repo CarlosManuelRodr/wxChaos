@@ -28,6 +28,7 @@ public:
     ~VectorFractal() override;
 
     bool IsVectorFractal() const override { return true; }
+    bool SupportsColorRotation() const override { return false; }
     void Resize(unsigned int width, unsigned int height) override;
     void PrepareRender(Vector2Int reusedMapOffset) override;
     void ReuseRenderedMaps(Vector2Int reusedMapOffset) override {}

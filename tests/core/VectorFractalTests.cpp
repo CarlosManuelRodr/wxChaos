@@ -43,4 +43,5 @@ TEST_CASE("Fractal factory creates the vector Sierpinski triangle")
     factory.CreateFractal(FractalType::VectorSierpinskiTriangle, 320, 240);
     REQUIRE(factory.GetFractal() != nullptr);
     CHECK(factory.GetFractal()->IsVectorFractal());
+    CHECK_FALSE(factory.GetFractal()->SupportsColorRotation());
 }

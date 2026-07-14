@@ -186,7 +186,8 @@ void MainFrame::CreateInteractionToolbar()
     });
     _interactionToolbar->SetColorRotationHandler([this]
     {
-        if (_fractalCanvas == nullptr || _fractalCanvas->GetFractal()->IsRendering())
+        if (_fractalCanvas == nullptr || !_fractalCanvas->GetFractal()->SupportsColorRotation()
+            || _fractalCanvas->GetFractal()->IsRendering())
             return false;
 
         _fractalCanvas->GetFractalPresenter()->ToggleColorRotation();
@@ -1495,6 +1496,7 @@ void MainFrame::UpdateMenu()
     _moreIterations->Enable(true);
     _lessIterations->Enable(true);
     _automaticIterations->Check(_fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
+    _interactionToolbar->SetColorRotationEnabled(_fractalCanvas->GetFractal()->SupportsColorRotation());
 
     // Closes constant dialog.
     if (_manualJuliaConstantActive)

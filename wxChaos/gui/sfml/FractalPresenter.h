@@ -101,6 +101,9 @@ class FractalPresenter
     ///@brief Estimates viewport-driven iterations added on top of the user's manual baseline.
     unsigned int CalculateAutomaticIterationExtra() const;
 
+    ///@brief Returns the safe viewport-driven iteration increase for the active rendering model.
+    unsigned int GetMaximumAutomaticIterationExtra() const;
+
     ///@brief Updates the automatic baseline so the current viewport uses the requested count.
     void SetAutomaticIterationBaseForCurrentIterations(unsigned int iterations);
 
