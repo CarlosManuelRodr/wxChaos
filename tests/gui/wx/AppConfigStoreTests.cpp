@@ -60,13 +60,10 @@ TEST_CASE("AppConfigStore preserves vector fractal types")
     std::filesystem::remove(path);
     const AppConfigStore store(path.string());
 
-    for (const FractalType type : {FractalType::VectorSierpinskiTriangle, FractalType::ApollonianGasket})
-    {
-        AppConfig config;
-        config.type = type;
-        store.Save(config);
-        CHECK(store.Load().type == type);
-    }
+    AppConfig config;
+    config.type = FractalType::VectorSierpinskiTriangle;
+    store.Save(config);
+    CHECK(store.Load().type == FractalType::VectorSierpinskiTriangle);
 
     std::filesystem::remove(path);
 }

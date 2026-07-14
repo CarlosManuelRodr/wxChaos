@@ -12,7 +12,6 @@
 #include "fractals/raster/SierpinskiTriangle.h"
 #include "fractals/vector/KochSnowflake.h"
 #include "fractals/vector/VectorSierpinskiTriangle.h"
-#include "fractals/vector/ApollonianGasket.h"
 #include "fractals/raster/FixedPoint1.h"
 #include "fractals/raster/FixedPoint2.h"
 #include "fractals/raster/FixedPoint3.h"
@@ -54,7 +53,6 @@ class FractalFactory
     SierpinskiTriangle* _sierpinskiTriangle;
     KochSnowflake* _kochSnowflake;
     VectorSierpinskiTriangle* _vectorSierpinskiTriangle;
-    ApollonianGasket* _apollonianGasket;
     FixedPoint1* _fixedPoint1;
     FixedPoint2* _fixedPoint2;
     FixedPoint3* _fixedPoint3;
