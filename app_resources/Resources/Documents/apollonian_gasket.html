@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apollonian Gasket</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main data-i18n-lang="en" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Fractal gallery</p>
+            <h1>Apollonian Gasket</h1>
+            <p class="subtitle">Every curved gap is filled by another perfectly tangent circle.</p>
+            <div class="formula hero-formula">\((k_1+k_2+k_3+k_4)^2=2(k_1^2+k_2^2+k_3^2+k_4^2)\)</div>
+            <p class="hero-introduction">
+                Four mutually tangent circles form a Descartes configuration. Each curvilinear triangular gap has
+                one new circle tangent to all three boundaries; repeating the construction produces an intricate packing.
+            </p>
+        </div>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/apollonian-gasket">Open in wxChaos</a></div>
+    </section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Increase the iterations to fill each of the four initial gaps with successively smaller circles.</p></div>
+            <div class="experiment-step"><p>Zoom toward a tangency point to expose long chains of circles hidden below screen resolution.</p></div>
+        </div>
+    </section>
+    <section>
+        <h2>Mathematical notes</h2>
+        <p>The signed curvature is (k=1/r); the enclosing circle uses negative curvature. Descartes' theorem and
+            its complex-center counterpart determine each new circle. wxChaos skips off-screen gaps and circles
+            smaller than a pixel while retaining the mathematical recursion for closer views.</p>
+    </section>
+</main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Empaquetamiento de Apolonio</h1>
+            <p class="subtitle">Cada hueco curvo se llena con otro círculo perfectamente tangente.</p>
+            <div class="formula hero-formula">\((k_1+k_2+k_3+k_4)^2=2(k_1^2+k_2^2+k_3^2+k_4^2)\)</div>
+            <p class="hero-introduction">
+                Cuatro círculos mutuamente tangentes forman una configuración de Descartes. Cada hueco triangular
+                curvilíneo contiene un nuevo círculo tangente a sus tres bordes; repetir la construcción produce un empaquetamiento intrincado.
+            </p>
+        </div>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/apollonian-gasket">Abrir en wxChaos</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Aumenta las iteraciones para llenar los cuatro huecos iniciales con círculos cada vez menores.</p></div>
+            <div class="experiment-step"><p>Acércate a un punto de tangencia para descubrir largas cadenas de círculos ocultas bajo la resolución de la pantalla.</p></div>
+        </div>
+    </section>
+    <section>
+        <h2>Notas matemáticas</h2>
+        <p>La curvatura con signo es (k=1/r); el círculo exterior usa curvatura negativa. El teorema de Descartes
+            y su versión para centros complejos determinan cada círculo nuevo. wxChaos omite huecos fuera de la vista
+            y círculos menores que un píxel, conservando la recursión matemática al acercarse.</p>
+    </section>
+</main>
+</body>
+</html>

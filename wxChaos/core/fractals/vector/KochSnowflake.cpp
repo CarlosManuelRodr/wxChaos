@@ -4,9 +4,9 @@
 
 KochSnowflake::KochSnowflake(const unsigned int width, const unsigned int height) : VectorFractal(width, height)
 {
-    _minX = -2.56;
-    _maxX = 2.55;
-    _minY = -1.6;
+    _minX = -1.95;
+    _maxX = 1.95;
+    _minY = -1.23;
     _maxY = _minY + (_maxX - _minX) * static_cast<double>(_screenHeight) / _screenWidth;
     _xFactor = (_maxX - _minX) / (_screenWidth - 1);
     _yFactor = (_maxY - _minY) / (_screenHeight - 1);

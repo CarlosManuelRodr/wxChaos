@@ -15,6 +15,8 @@ std::optional<DocumentationLinkAction::FractalReference> DocumentationLinkAction
         {"manowar-julia", FractalType::ManowarJulia, false},
         {"sierpinski-triangle", FractalType::SierpinskiTriangle, false},
         {"koch-snowflake", FractalType::KochSnowflake, false},
+        {"vector-sierpinski-triangle", FractalType::VectorSierpinskiTriangle, false},
+        {"apollonian-gasket", FractalType::ApollonianGasket, false},
         {"fixed-point-sin", FractalType::FixedPoint1, false},
         {"fixed-point-cos", FractalType::FixedPoint2, false},
         {"fixed-point-tan", FractalType::FixedPoint3, false},

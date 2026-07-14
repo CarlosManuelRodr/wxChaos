@@ -51,6 +51,26 @@ TEST_CASE("AppConfigStore preserves Logistic Map fractal type")
     std::filesystem::remove(path);
 }
 
+TEST_CASE("AppConfigStore preserves vector fractal types")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path = std::filesystem::temp_directory_path() / "wxchaos_vector_config_store_test.ini";
+    std::filesystem::remove(path);
+    const AppConfigStore store(path.string());
+
+    for (const FractalType type : {FractalType::VectorSierpinskiTriangle, FractalType::ApollonianGasket})
+    {
+        AppConfig config;
+        config.type = type;
+        store.Save(config);
+        CHECK(store.Load().type == type);
+    }
+
+    std::filesystem::remove(path);
+}
+
 TEST_CASE("AppConfigStore persists application language")
 {
     wxInitializer wx;

@@ -22,6 +22,19 @@ TEST_CASE("DocumentationLinkAction parses Logistic Map actions")
     CHECK_FALSE(action.TargetFractalEnablesJulia());
 }
 
+TEST_CASE("DocumentationLinkAction parses vector fractal actions")
+{
+    const DocumentationLinkAction triangle =
+        DocumentationLinkAction::Parse("wxchaos://fractal/vector-sierpinski-triangle");
+    const DocumentationLinkAction gasket =
+        DocumentationLinkAction::Parse("wxchaos://fractal/apollonian-gasket");
+
+    CHECK(triangle.GetType() == DocumentationLinkAction::Type::OpenFractal);
+    CHECK(triangle.GetTargetFractalType() == FractalType::VectorSierpinskiTriangle);
+    CHECK(gasket.GetType() == DocumentationLinkAction::Type::OpenFractal);
+    CHECK(gasket.GetTargetFractalType() == FractalType::ApollonianGasket);
+}
+
 TEST_CASE("DocumentationLinkAction parses Julia mode actions for compatible fractals")
 {
     const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://julia/mandelbrot");

@@ -15,6 +15,8 @@ enum class FractalType
     ManowarJulia,
     SierpinskiTriangle,
     KochSnowflake,
+    VectorSierpinskiTriangle,
+    ApollonianGasket,
     FixedPoint1,
     FixedPoint2,
     FixedPoint3,
