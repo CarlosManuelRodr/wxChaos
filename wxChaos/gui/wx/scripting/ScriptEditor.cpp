@@ -4,7 +4,7 @@
 #include <wx/datetime.h>
 #include <wx/filefn.h>
 #include "common/AppTheme.h"
-#include "fractals/ScriptFractal.h"
+#include "../../../core/fractals/raster/ScriptFractal.h"
 #include "docs/DocumentViewer.h"
 #include "AppPaths.h"
 #include "scripting/ScriptEditor.h"

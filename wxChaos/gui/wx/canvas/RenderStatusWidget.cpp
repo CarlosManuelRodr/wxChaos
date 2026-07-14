@@ -68,11 +68,11 @@ void RenderStatusWidget::OnPaintEvent(wxPaintEvent&)
     if (rendering)
     {
         constexpr int dotCount = 8;
-        constexpr double pi = 3.14159265358979323846;
         const wxPoint center(16, size.GetHeight() / 2);
 
         for (int i = 0; i < dotCount; ++i)
         {
+            constexpr double pi = 3.14159265358979323846;
             const int age = (i + static_cast<int>(_spinnerFrame)) % dotCount;
             const auto channel = static_cast<unsigned char>(90 + age * 18);
             const double angle = 2.0 * pi * static_cast<double>(i) / static_cast<double>(dotCount);

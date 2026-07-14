@@ -2,7 +2,7 @@
 #include <cmath>
 #include "FractalPresenter.h"
 #include "FractalFactory.h"
-#include "fractals/ScriptFractal.h"
+#include "../../core/fractals/raster/ScriptFractal.h"
 
 constexpr double OldMovementFrameRate = 31.0;
 constexpr double MovementAcceleration = OldMovementFrameRate * OldMovementFrameRate;

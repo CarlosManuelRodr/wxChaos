@@ -1,11 +1,11 @@
 #include <doctest/doctest.h>
 #include <string>
 #include "FractalFactory.h"
-#include "fractals/LogisticMap.h"
-#include "fractals/Mandelbrot.h"
-#include "fractals/DoublePendulum.h"
-#include "fractals/SierpinskiTriangle.h"
-#include "fractals/ScriptFractal.h"
+#include "../../wxChaos/core/fractals/raster/LogisticMap.h"
+#include "../../wxChaos/core/fractals/raster/Mandelbrot.h"
+#include "../../wxChaos/core/fractals/raster/DoublePendulum.h"
+#include "../../wxChaos/core/fractals/raster/SierpinskiTriangle.h"
+#include "../../wxChaos/core/fractals/raster/ScriptFractal.h"
 
 namespace
 {

@@ -6,8 +6,8 @@
 #include "RenderWorker.h"
 #include "../../wxChaos/core/vector/VectorFractal.h"
 #include "VectorRenderWorker.h"
-#include "fractals/KochSnowflake.h"
-#include "fractals/Mandelbrot.h"
+#include "../../wxChaos/core/fractals/vector/KochSnowflake.h"
+#include "../../wxChaos/core/fractals/raster/Mandelbrot.h"
 
 static_assert(std::is_base_of_v<RasterFractal, Mandelbrot>);
 static_assert(std::is_base_of_v<VectorFractal, KochSnowflake>);

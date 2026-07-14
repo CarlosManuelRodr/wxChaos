@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
 #include <filesystem>
 #include "AngelscriptConfigurationEngine.h"
-#include "fractals/ScriptFractal.h"
+#include "../../wxChaos/core/fractals/raster/ScriptFractal.h"
 
 TEST_CASE("bundled scripts compile with the orbit drawing interface")
 {
