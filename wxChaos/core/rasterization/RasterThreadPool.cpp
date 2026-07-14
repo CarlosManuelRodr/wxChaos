@@ -42,7 +42,7 @@ void RasterThreadPool::SetThreadNumber(const unsigned int threadNumber)
         _workers.emplace_back(&RasterThreadPool::WorkerLoop, this, i);
 }
 
-void RasterThreadPool::Render(const std::vector<RenderWorker*>& renderers, const std::vector<RasterJob>& jobs)
+void RasterThreadPool::Render(const std::vector<RasterRenderWorker*>& renderers, const std::vector<RasterJob>& jobs)
 {
     this->Stop();
     this->SetThreadNumber(static_cast<unsigned int>(renderers.size()));
@@ -75,7 +75,7 @@ void RasterThreadPool::Render(const std::vector<RenderWorker*>& renderers, const
 
 void RasterThreadPool::Stop()
 {
-    std::vector<RenderWorker*> renderers;
+    std::vector<RasterRenderWorker*> renderers;
 
     {
         std::lock_guard<std::mutex> lock(_mutex);
@@ -94,7 +94,7 @@ void RasterThreadPool::Stop()
         }
     }
 
-    for (RenderWorker* renderer : renderers)
+    for (RasterRenderWorker* renderer : renderers)
     {
         if (renderer != nullptr)
         {
@@ -141,7 +141,7 @@ void RasterThreadPool::WorkerLoop(const unsigned int workerIndex)
     while (true)
     {
         RasterJob job;
-        RenderWorker* renderer = nullptr;
+        RasterRenderWorker* renderer = nullptr;
 
         {
             std::unique_lock<std::mutex> lock(_mutex);
@@ -162,7 +162,7 @@ void RasterThreadPool::WorkerLoop(const unsigned int workerIndex)
             const RasterRegion& region = job.GetRegion();
             renderer->SetLimits(region.GetLeft(), region.GetTop(), region.GetRight(), region.GetBottom());
             renderer->SetOldHeightOrigin(job.GetProgressOriginY());
-            renderer->run();
+            renderer->Start();
         }
 
         {

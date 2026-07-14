@@ -10,7 +10,7 @@ MandelbrotRenderer::MandelbrotRenderer()
 }
 
 template<class Real, class MeasurePoint>
-RenderWorker::Point MandelbrotRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RasterRenderWorker::Point MandelbrotRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);
@@ -301,7 +301,7 @@ void MandelbrotRenderer::SetBuddhaRandomP(const int n)
 {
     _buddhaRandomP = n;
 }
-unsigned int MandelbrotRenderer::GetProgress()
+unsigned int MandelbrotRenderer::GetProgress() const
 {
     if (_myOpt.alg == RenderingAlgorithmType::Buddhabrot)
         return _threadProgress;

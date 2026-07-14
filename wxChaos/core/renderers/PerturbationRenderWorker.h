@@ -2,9 +2,9 @@
 
 #include <algorithm>
 #include <vector>
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 
-class PerturbationRenderWorker : public RenderWorker
+class PerturbationRenderWorker : public RasterRenderWorker
 {
 protected:
     struct PerturbationReference

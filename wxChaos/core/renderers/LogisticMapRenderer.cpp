@@ -54,7 +54,7 @@ void LogisticMapRenderer::SetParams(const double seed, const bool stabilizePoint
     _stabilizePoint = stabilizePoint;
 }
 
-unsigned int LogisticMapRenderer::GetProgress()
+unsigned int LogisticMapRenderer::GetProgress() const
 {
     if (!_stopped)
         _threadProgress = std::min(100U, static_cast<unsigned int>(100.0 * _currentStep / _totalSteps));

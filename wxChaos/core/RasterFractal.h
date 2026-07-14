@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Fractal.h"
-#include "RenderWorker.h"
+#include "RasterRenderWorker.h"
 #include "rasterization/RasterJob.h"
 #include "rasterization/RasterRegion.h"
 #include "rasterization/RasterThreadPool.h"
@@ -39,7 +39,7 @@ protected:
     [[nodiscard]] sf::Color GetRenderMapPixelColor(unsigned int x, unsigned int y) const;
     void RedrawMaps() override;
     void UpdateMaxColorMapValue();
-    void ConfigureRenderer(RenderWorker& renderer) const;
+    void ConfigureRenderer(RasterRenderWorker& renderer) const;
     std::vector<RasterRegion> BuildRenderRegions() const;
     std::vector<RasterJob> BuildRenderJobs(const std::vector<RasterRegion>& regions, int tileHeight) const;
 
@@ -86,7 +86,7 @@ void RasterFractal::SetRendererBounds(DerivedRenderer* renderers, const int tile
     const std::vector<RasterJob> jobs = BuildRenderJobs(regions, renderTileHeight);
     _pendingRenderOffset = {0, 0};
 
-    std::vector<RenderWorker*> workers;
+    std::vector<RasterRenderWorker*> workers;
     workers.reserve(_threadNumber);
     for (unsigned int i = 0; i < _threadNumber; i++)
     {

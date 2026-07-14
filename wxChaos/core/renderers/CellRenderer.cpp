@@ -8,7 +8,7 @@ CellRenderer::CellRenderer()
 }
 
 template<class Real, class MeasurePoint>
-RenderWorker::Point CellRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RasterRenderWorker::Point CellRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);

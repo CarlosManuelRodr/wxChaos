@@ -1,5 +1,5 @@
 #pragma once
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 
 /**
 * @class CellRenderer
@@ -8,7 +8,7 @@
 * The renderer owns the formula trace for Cell and dispatches the selected
 * escape-time coloring algorithm through the shared Renderer paths.
 */
-class CellRenderer : public RenderWorker
+class CellRenderer : public RasterRenderWorker
 {
     double _bailout;
 

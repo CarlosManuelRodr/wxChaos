@@ -1,11 +1,11 @@
 #pragma once
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 
 /**
 * @class HenonMapRenderer
 * @brief Plots the orbit of the Henon map into the current viewport.
 */
-class HenonMapRenderer : public RenderWorker
+class HenonMapRenderer : public RasterRenderWorker
 {
     double _alpha;
     double _beta;
@@ -17,5 +17,5 @@ public:
     HenonMapRenderer();
     void Render() override;
     void SetParams(double alpha, double beta, double x0, double y0);
-    unsigned int GetProgress() override;
+    [[nodiscard]] unsigned int GetProgress() const override;
 };

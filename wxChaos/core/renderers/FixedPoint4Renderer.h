@@ -1,5 +1,5 @@
 #pragma once
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 
 /**
 * @class FixedPoint4Renderer
@@ -8,7 +8,7 @@
 * The renderer iterates each pixel as the initial complex value and colors the
 * result using the shared convergence-test output maps.
 */
-class FixedPoint4Renderer : public RenderWorker
+class FixedPoint4Renderer : public RasterRenderWorker
 {
     double _minStep;
 

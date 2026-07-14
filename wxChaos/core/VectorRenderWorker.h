@@ -5,6 +5,7 @@
 #include <mutex>
 #include <thread>
 #include <vector>
+#include "RenderWorker.h"
 #include "geometry/CircleData.h"
 #include "geometry/LineData.h"
 
@@ -12,7 +13,7 @@
  * @class VectorRenderWorker
  * @brief Cancellable background worker for vector-fractal geometry.
  */
-class VectorRenderWorker
+class VectorRenderWorker : public RenderWorker
 {
 public:
     struct Geometry
@@ -55,16 +56,16 @@ protected:
 
 public:
     VectorRenderWorker() = default;
-    virtual ~VectorRenderWorker();
+    ~VectorRenderWorker() override;
     VectorRenderWorker(const VectorRenderWorker&) = delete;
     VectorRenderWorker& operator=(const VectorRenderWorker&) = delete;
 
-    void Start();
-    void Stop();
+    void Start() override;
+    void Stop() override;
     void Wait();
     void SetPaused(bool paused);
     [[nodiscard]] bool IsPaused() const { return _paused; }
     [[nodiscard]] bool IsRunning() const { return _running; }
-    [[nodiscard]] int GetProgress() const { return _progress; }
+    [[nodiscard]] unsigned int GetProgress() const override { return _progress; }
     bool TakeCompletedGeometry(Geometry& geometry);
 };

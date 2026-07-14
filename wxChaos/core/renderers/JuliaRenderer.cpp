@@ -5,7 +5,7 @@ using namespace std;
 JuliaRenderer::JuliaRenderer() = default;
 
 template<class Real, class MeasurePoint>
-RenderWorker::Point JuliaRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RasterRenderWorker::Point JuliaRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);

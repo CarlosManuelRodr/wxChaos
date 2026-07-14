@@ -41,7 +41,7 @@ void HenonMapRenderer::SetParams(const double alpha, const double beta, const do
     _y0 = y0;
 }
 
-unsigned int HenonMapRenderer::GetProgress()
+unsigned int HenonMapRenderer::GetProgress() const
 {
     if (!_stopped)
         _threadProgress = std::min(100U, static_cast<unsigned int>(100.0 * _currentIteration / std::max(1.0, _maxIterations)));

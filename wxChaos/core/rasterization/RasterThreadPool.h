@@ -5,12 +5,12 @@
 #include <mutex>
 #include <thread>
 #include <vector>
-#include "RenderWorker.h"
+#include "RasterRenderWorker.h"
 #include "rasterization/RasterJob.h"
 
 /**
 * @class RasterThreadPool
-* @brief Reusable worker pool that renders queued RenderJob objects.
+* @brief Reusable worker pool that renders queued RasterJob objects.
 *
 * RasterThreadPool keeps a fixed set of worker threads alive and assigns each
 * worker one Renderer instance. Workers pull RasterJob objects from a
@@ -20,7 +20,7 @@
 class RasterThreadPool
 {
     std::vector<std::thread> _workers;
-    std::vector<RenderWorker*> _renderers;
+    std::vector<RasterRenderWorker*> _renderers;
     std::vector<char> _workerActive;
     std::deque<RasterJob> _jobs;
 
@@ -49,7 +49,7 @@ public:
     ///@brief Starts rendering the supplied jobs with the supplied renderers.
     ///@param renderers Renderer instances, one for each worker.
     ///@param jobs Jobs to render.
-    void Render(const std::vector<RenderWorker*>& renderers, const std::vector<RasterJob>& jobs);
+    void Render(const std::vector<RasterRenderWorker*>& renderers, const std::vector<RasterJob>& jobs);
 
     ///@brief Stops all active work and waits for workers to become idle.
     void Stop();

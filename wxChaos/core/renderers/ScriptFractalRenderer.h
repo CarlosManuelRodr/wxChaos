@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <mutex>
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 #include "../scripting/AngelscriptRenderEngine.h"
 #include "../../scripting/ScriptOptions.h"
 
@@ -12,7 +12,7 @@
 * The renderer exposes the active render variables to AngelscriptRenderEngine
 * and lets the script fill the shared set, color, and auxiliary maps.
 */
-class ScriptFractalRenderer : public RenderWorker
+class ScriptFractalRenderer : public RasterRenderWorker
 {
     std::shared_ptr<AngelscriptRenderEngine> _renderEngine;
     std::mutex _renderEngineMutex;

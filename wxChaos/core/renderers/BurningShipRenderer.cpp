@@ -4,7 +4,7 @@
 BurningShipRenderer::BurningShipRenderer() = default;
 
 template<class Real, class MeasurePoint>
-RenderWorker::Point BurningShipRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RasterRenderWorker::Point BurningShipRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);

@@ -1,6 +1,6 @@
 #pragma once
 #include "FormulaOptions.h"
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 
 /**
 * @class UserDefinedFixedPointRenderer
@@ -9,7 +9,7 @@
 * The renderer evaluates the configured muParserX expression for each orbit
 * step and records convergence state in the shared output maps.
 */
-class UserDefinedFixedPointRenderer : public RenderWorker
+class UserDefinedFixedPointRenderer : public RasterRenderWorker
 {
     int _bailout;
     bool _julia;

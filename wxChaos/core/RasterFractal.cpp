@@ -190,10 +190,10 @@ void RasterFractal::UpdateMaxColorMapValue()
         _maxColorMapVal = 1.0;
 }
 
-void RasterFractal::ConfigureRenderer(RenderWorker& renderer) const
+void RasterFractal::ConfigureRenderer(RasterRenderWorker& renderer) const
 {
     renderer.SetOptions(this->GetRenderOptions());
-    renderer.SetRenderOut(_setMap, _colorMap);
+    renderer.SetOutputRenderingMaps(_setMap, _colorMap);
     renderer.SetK(_kReal, _kImaginary);
 }
 

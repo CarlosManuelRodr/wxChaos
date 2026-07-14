@@ -35,7 +35,7 @@ PrecisionComplex<Real> MandelbrotZMRenderer::Power(const PrecisionComplex<Real>&
 }
 
 template<class Real, class MeasurePoint>
-RenderWorker::Point MandelbrotZMRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
+RasterRenderWorker::Point MandelbrotZMRenderer::TracePoint(const Real& pixelRe, const Real& pixelIm, MeasurePoint measure) const
 {
     Point point;
     point.startRe = ToDouble(pixelRe);

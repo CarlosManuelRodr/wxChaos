@@ -5,7 +5,6 @@
 #include <utility>
 #include "Fractal.h"
 #include "FractalFactory.h"
-#include "RenderWorker.h"
 #include "coloring/ColorPalette.h"
 #include "coloring/RenderingAlgorithm.h"
 #include "docs/FractalDocumentation.h"
@@ -105,7 +104,17 @@ Fractal::CoordinateSystem Fractal::GetCoordinateSystem() const
 
 wxString Fractal::GetRenderingAlgorithmName() const
 {
-    return RenderWorker::GetAlgorithmName(_algorithm);
+    switch (_algorithm)
+    {
+        case RenderingAlgorithmType::EscapeTime: return "escape time";
+        case RenderingAlgorithmType::GaussianInt: return "Gaussian integer";
+        case RenderingAlgorithmType::EscapeAngle: return "escape angle";
+        case RenderingAlgorithmType::TriangleInequality: return "triangle inequality";
+        case RenderingAlgorithmType::ChaoticMap: return "chaotic map";
+        case RenderingAlgorithmType::ConvergenceTest: return "convergence test";
+        case RenderingAlgorithmType::Buddhabrot: return "Buddhabrot";
+        default: return "renderer-specific";
+    }
 }
 
 sf::Color Fractal::InterpolatePaletteColors(const wxColour& first, const wxColour& second, const double ratio)

@@ -1,9 +1,9 @@
-#include "RenderWorker.h"
+#include "RasterRenderWorker.h"
 #include "FractalUtilities.h"
 #include <algorithm>
 #include <cmath>
 
-RenderWorker::RenderWorker()
+RasterRenderWorker::RasterRenderWorker()
 {
     _setMap = nullptr;
     _colorMap = nullptr;
@@ -24,22 +24,7 @@ RenderWorker::RenderWorker()
     _kReal = _kImaginary = 0.0;
 }
 
-wxString RenderWorker::GetAlgorithmName(const RenderingAlgorithmType algorithm)
-{
-    switch (algorithm)
-    {
-        case RenderingAlgorithmType::EscapeTime: return "escape time";
-        case RenderingAlgorithmType::GaussianInt: return "Gaussian integer";
-        case RenderingAlgorithmType::EscapeAngle: return "escape angle";
-        case RenderingAlgorithmType::TriangleInequality: return "triangle inequality";
-        case RenderingAlgorithmType::ChaoticMap: return "chaotic map";
-        case RenderingAlgorithmType::ConvergenceTest: return "convergence test";
-        case RenderingAlgorithmType::Buddhabrot: return "Buddhabrot";
-        default: return "renderer-specific";
-    }
-}
-
-void RenderWorker::SetOptions(const Options& opt)
+void RasterRenderWorker::SetOptions(const Options& opt)
 {
     _myOpt = opt;
     _xFactor = opt.xFactor;
@@ -60,29 +45,29 @@ void RenderWorker::SetOptions(const Options& opt)
     _renderingPrecisionMode = opt.renderingPrecisionMode;
     _type = opt.type;
 }
-void RenderWorker::SetLimits(const int widthOrigin, const int heightOrigin, const int widthFinal, const int heightFinal)
+void RasterRenderWorker::SetLimits(const int widthOrigin, const int heightOrigin, const int widthFinal, const int heightFinal)
 {
     _widthOrigin = widthOrigin;
     _oldHeightOrigin = _heightOrigin = heightOrigin;
     _heightFinal = heightFinal;
     _widthFinal = widthFinal;
 }
-void RenderWorker::UpdateLimits(const int heightOrigin)
+void RasterRenderWorker::UpdateLimits(const int heightOrigin)
 {
     _heightOrigin = heightOrigin;
 }
-void RenderWorker::SetOldHeightOrigin(const int oldHeightOrigin)
+void RasterRenderWorker::SetOldHeightOrigin(const int oldHeightOrigin)
 {
     _oldHeightOrigin = oldHeightOrigin;
 }
-void RenderWorker::run()
+void RasterRenderWorker::Start()
 {
     _y = _heightOrigin;
     _stopped = false;
 
     this->Render();
 }
-void RenderWorker::Stop()
+void RasterRenderWorker::Stop()
 {
     if (_type != FractalType::ScriptFractal)
     {
@@ -95,38 +80,38 @@ void RenderWorker::Stop()
         _y = _heightFinal - 1;
     }
 }
-void RenderWorker::SetRenderOut(bool** outSetMap, double** outColorMap)
+void RasterRenderWorker::SetOutputRenderingMaps(bool** outSetMap, double** outColorMap)
 {
     _setMap = outSetMap;
     _colorMap = outColorMap;
 }
-void RenderWorker::SetK(const double re, const double im)
+void RasterRenderWorker::SetK(const double re, const double im)
 {
     _kReal = re;
     _kImaginary = im;
 }
-double RenderWorker::ToColorMapValue(const double value)
+double RasterRenderWorker::ToColorMapValue(const double value)
 {
     return !std::isfinite(value) || value < 0.0 ? InvalidColor : value;
 }
-double RenderWorker::SafeDistance(const double distance)
+double RasterRenderWorker::SafeDistance(const double distance)
 {
     return distance == 0.0 ? 0.000001 : distance;
 }
-double RenderWorker::InitialMu()
+double RasterRenderWorker::InitialMu()
 {
     return 1.0;
 }
-double RenderWorker::MuFromNorm(const double norm)
+double RasterRenderWorker::MuFromNorm(const double norm)
 {
     return (log(log(2.0)) - log(log(sqrt(norm)))) / log(2.0) + 1;
 }
-void RenderWorker::MeasureEscapeMu(Point& point, const PointTraceEvent event, const double zNorm)
+void RasterRenderWorker::MeasureEscapeMu(Point& point, const PointTraceEvent event, const double zNorm)
 {
     if (event == PointTraceEvent::Escaped)
         point.mu = MuFromNorm(zNorm);
 }
-void RenderWorker::MeasureOrbitTrap(Point& point, const PointTraceEvent event, const double zRe, const double zIm)
+void RasterRenderWorker::MeasureOrbitTrap(Point& point, const PointTraceEvent event, const double zRe, const double zIm)
 {
     if (event == PointTraceEvent::Started)
     {
@@ -141,7 +126,7 @@ void RenderWorker::MeasureOrbitTrap(Point& point, const PointTraceEvent event, c
         point.orbitTrapDistanceY = minVal(point.orbitTrapDistanceY, abs(zIm));
     }
 }
-void RenderWorker::MeasureGaussianInteger(Point& point, const PointTraceEvent event, const double zRe, const double zIm, const bool wasInside)
+void RasterRenderWorker::MeasureGaussianInteger(Point& point, const PointTraceEvent event, const double zRe, const double zIm, const bool wasInside)
 {
     if (event == PointTraceEvent::Escaped)
     {
@@ -157,7 +142,7 @@ void RenderWorker::MeasureGaussianInteger(Point& point, const PointTraceEvent ev
     if (!wasInside)
         point.measureGaussianAfterEscape = false;
 }
-void RenderWorker::MeasureTriangleInequality(Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
+void RasterRenderWorker::MeasureTriangleInequality(Point& point, const PointTraceEvent event, const unsigned int iteration, const double zRe, const double zIm,
                                          const double squaredRe, const double squaredIm, const bool wasInside)
 {
     if (event != PointTraceEvent::Iterated || !wasInside)
@@ -170,15 +155,15 @@ void RenderWorker::MeasureTriangleInequality(Point& point, const PointTraceEvent
         point.triangleIterations++;
     }
 }
-double RenderWorker::SmoothEscapeValue(const Point& point)
+double RasterRenderWorker::SmoothEscapeValue(const Point& point)
 {
     return point.iterations + 1.0 - log(log(sqrt(point.escapedNorm))) / log(2.0);
 }
-double RenderWorker::OrbitTrapValue(const Point& point)
+double RasterRenderWorker::OrbitTrapValue(const Point& point)
 {
     return log(1 / SafeDistance(point.orbitTrapDistanceX)) + log(1 / SafeDistance(point.orbitTrapDistanceY));
 }
-double RenderWorker::EscapeTimeColor(const Point& point) const
+double RasterRenderWorker::EscapeTimeColor(const Point& point) const
 {
     if (_myOpt.orbitTrapMode)
     {
@@ -194,13 +179,13 @@ double RenderWorker::EscapeTimeColor(const Point& point) const
 
     return point.iterations;
 }
-double RenderWorker::GaussianIntegerColor(const Point& point) const
+double RasterRenderWorker::GaussianIntegerColor(const Point& point) const
 {
     const double gaussianValue = (point.mu * point.gaussianDistance + (1 - point.mu) * point.previousGaussianDistance) * _myOpt.paletteSize;
     const double orbitTrapValue = _myOpt.orbitTrapMode ? OrbitTrapValue(point) : 0.0;
     return ToColorMapValue(std::max(0.0, gaussianValue + orbitTrapValue));
 }
-double RenderWorker::EscapeAngleColor(const Point& point) const
+double RasterRenderWorker::EscapeAngleColor(const Point& point) const
 {
     constexpr int color1 = 1;
     const int color2 = static_cast<int>(0.25 * _myOpt.paletteSize);
@@ -216,7 +201,7 @@ double RenderWorker::EscapeAngleColor(const Point& point) const
     return point.iterations + color4;
 }
 // ReSharper disable once CppMemberFunctionMayBeStatic
-double RenderWorker::TriangleInequalityColor(const Point& point) const // NOLINT(*-convert-member-functions-to-static)
+double RasterRenderWorker::TriangleInequalityColor(const Point& point) const // NOLINT(*-convert-member-functions-to-static)
 {
     if (point.triangleIterations <= 1)
         return 0;
@@ -225,38 +210,38 @@ double RenderWorker::TriangleInequalityColor(const Point& point) const // NOLINT
     const double distance = point.triangleDistance / point.triangleIterations;
     return ToColorMapValue(std::abs((point.mu * distance + (1 - point.mu) * previousDistance) * 700));
 }
-void RenderWorker::Reset()
+void RasterRenderWorker::Reset()
 {
     _x = 0;
     _y = 0;
 }
-void RenderWorker::PreTerminate()
+void RasterRenderWorker::PreTerminate()
 {
     // Do nothing.
 }
-unsigned int RenderWorker::GetProgress()
+unsigned int RasterRenderWorker::GetProgress() const
 {
     if (!_stopped)
         _threadProgress = static_cast<int>(floor(100.0 * (static_cast<double>(_y + 1 - _oldHeightOrigin) / static_cast<double>(_heightFinal - _oldHeightOrigin))));
 
     return _threadProgress;
 }
-Vector2Int RenderWorker::GetCoords() const
+Vector2Int RasterRenderWorker::GetCoords() const
 {
     const Vector2Int pos{0, _heightOrigin};
     return pos;
 }
-Vector2Int RenderWorker::GetStartPoints() const
+Vector2Int RasterRenderWorker::GetStartPoints() const
 {
     const Vector2Int pos{_widthOrigin, _heightOrigin};
     return pos;
 }
-Vector2Int RenderWorker::GetEndPoints() const
+Vector2Int RasterRenderWorker::GetEndPoints() const
 {
     const Vector2Int pos{_widthFinal, _heightFinal};
     return pos;
 }
-Options RenderWorker::GetOptions()
+Options RasterRenderWorker::GetOptions()
 {
     return _myOpt;
 }

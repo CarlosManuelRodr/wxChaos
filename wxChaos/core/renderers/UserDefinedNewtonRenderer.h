@@ -4,7 +4,7 @@
 #include <string>
 #include <wx/string.h>
 #include "utils/NewtonRootRegistry.h"
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 
 /**
  * @brief Renders Newton-Raphson basins for a compiled user formula.
@@ -13,7 +13,7 @@
  * during iteration. It does not call SymEngine while rendering. Roots are
  * discovered numerically as pixels converge and are colored by registry id.
  */
-class UserDefinedNewtonRenderer : public RenderWorker
+class UserDefinedNewtonRenderer : public RasterRenderWorker
 {
     std::string _functionExpression;
     std::string _derivativeExpression;

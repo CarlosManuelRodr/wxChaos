@@ -1,5 +1,5 @@
 #pragma once
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 
 /**
 * @class SierpinskiTriangleRenderer
@@ -8,7 +8,7 @@
 * The renderer iterates each pixel through the triangle mapping and writes
 * escape/convergence values into the shared output maps.
 */
-class SierpinskiTriangleRenderer : public RenderWorker
+class SierpinskiTriangleRenderer : public RasterRenderWorker
 {
 public:
     SierpinskiTriangleRenderer();

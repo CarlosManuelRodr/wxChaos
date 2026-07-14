@@ -2,12 +2,18 @@
 #include <doctest/doctest.h>
 #include "FractalFactory.h"
 #include "RasterFractal.h"
+#include "RasterRenderWorker.h"
+#include "RenderWorker.h"
 #include "VectorFractal.h"
+#include "VectorRenderWorker.h"
 #include "fractals/KochSnowflake.h"
 #include "fractals/Mandelbrot.h"
 
 static_assert(std::is_base_of_v<RasterFractal, Mandelbrot>);
 static_assert(std::is_base_of_v<VectorFractal, KochSnowflake>);
+static_assert(std::is_base_of_v<RenderWorker, RasterRenderWorker>);
+static_assert(std::is_base_of_v<RenderWorker, VectorRenderWorker>);
+static_assert(!std::is_base_of_v<RasterRenderWorker, VectorRenderWorker>);
 
 TEST_CASE("Koch snowflake creates three sides at iteration zero")
 {

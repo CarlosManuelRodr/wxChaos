@@ -1,5 +1,5 @@
 #pragma once
-#include "../RenderWorker.h"
+#include "../RasterRenderWorker.h"
 
 /**
 * @class JuliaZMRenderer
@@ -8,7 +8,7 @@
 * The renderer owns the formula trace for JuliaZN and dispatches the selected
 * escape-time coloring algorithm through the shared Renderer paths.
 */
-class JuliaZMRenderer : public RenderWorker
+class JuliaZMRenderer : public RasterRenderWorker
 {
     double _m;
     int _integerM;
