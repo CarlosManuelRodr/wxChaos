@@ -4,8 +4,17 @@ VectorFractal::VectorFractal(const unsigned int width, const unsigned int height
 {
 }
 
+VectorFractal::~VectorFractal()
+{
+    if (_vectorRenderWorker != nullptr)
+        _vectorRenderWorker->Stop();
+}
+
 void VectorFractal::Resize(const unsigned int width, const unsigned int height)
 {
+    if (_vectorRenderWorker != nullptr)
+        _vectorRenderWorker->Stop();
+
     _screenWidth = width;
     _screenHeight = height;
 
@@ -19,8 +28,81 @@ void VectorFractal::Resize(const unsigned int width, const unsigned int height)
 
 void VectorFractal::PrepareRender(const Vector2Int)
 {
+    if (_vectorRenderWorker != nullptr)
+        _vectorRenderWorker->Stop();
+
     ClearGeometryFigures();
     PreRender();
+}
+
+void VectorFractal::SetVectorRenderWorker(std::unique_ptr<VectorRenderWorker> worker)
+{
+    if (_vectorRenderWorker != nullptr)
+        _vectorRenderWorker->Stop();
+
+    _vectorRenderWorker = std::move(worker);
+}
+
+void VectorFractal::StartVectorRender()
+{
+    if (_vectorRenderWorker == nullptr)
+        return;
+
+    _vectorRenderWorker->Start();
+    if (_waitRoutine)
+    {
+        _vectorRenderWorker->Wait();
+        PublishCompletedGeometry();
+    }
+}
+
+void VectorFractal::PublishCompletedGeometry()
+{
+    if (_vectorRenderWorker == nullptr)
+        return;
+
+    VectorRenderWorker::Geometry geometry;
+    if (!_vectorRenderWorker->TakeCompletedGeometry(geometry))
+        return;
+
+    _lines = std::move(geometry.lines);
+    _circles = std::move(geometry.circles);
+    _geomFigure = !_lines.empty() || !_circles.empty();
+    _refreshImage = true;
+}
+
+int VectorFractal::GetRenderProgress() const
+{
+    return _vectorRenderWorker != nullptr ? _vectorRenderWorker->GetProgress() : 100;
+}
+
+void VectorFractal::PauseContinue()
+{
+    if (_vectorRenderWorker == nullptr || !_vectorRenderWorker->IsRunning())
+        return;
+
+    _paused = !_vectorRenderWorker->IsPaused();
+    _vectorRenderWorker->SetPaused(_paused);
+}
+
+bool VectorFractal::StopRender()
+{
+    if (_vectorRenderWorker == nullptr || !_vectorRenderWorker->IsRunning())
+        return false;
+
+    _vectorRenderWorker->Stop();
+    _rendering = false;
+    _paused = false;
+    return true;
+}
+
+bool VectorFractal::IsRendering()
+{
+    if (_waitRoutine || _vectorRenderWorker == nullptr)
+        return false;
+
+    PublishCompletedGeometry();
+    return _vectorRenderWorker->IsRunning();
 }
 
 const std::vector<LineData>& VectorFractal::GetOrbitLines() const
@@ -56,11 +138,11 @@ void VectorFractal::DrawPrimitives(sf::RenderTarget& target) const
 
 sf::Image VectorFractal::GetRenderedImage()
 {
+    PublishCompletedGeometry();
+
     if (!_rendered && !_rendering)
     {
-        PrepareRender();
-        Render();
-        MarkRenderComplete();
+        RenderBlocking();
     }
 
     sf::RenderTexture target;

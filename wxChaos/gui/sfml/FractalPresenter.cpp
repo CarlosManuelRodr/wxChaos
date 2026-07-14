@@ -1247,7 +1247,7 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
 
             _committedPanOffset = {0, 0};
 
-            if (!_zoomAnimationActive)
+            if (!_zoomAnimationActive && !_fractal->IsVectorFractal())
                 DrawMaps(window);
 
             if (!_fractal->IsRendering())

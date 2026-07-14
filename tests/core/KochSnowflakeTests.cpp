@@ -13,8 +13,7 @@ TEST_CASE("Koch snowflake creates three sides at iteration zero")
 {
     KochSnowflake snowflake(640, 480);
     snowflake.SetIterations(0);
-    snowflake.PrepareRender();
-    snowflake.Render();
+    snowflake.RenderBlocking();
 
     CHECK(snowflake.GetLines().size() == 3);
     CHECK(snowflake.GetSetMap() == nullptr);
@@ -24,8 +23,8 @@ TEST_CASE("Koch snowflake replaces every segment with four segments")
 {
     KochSnowflake snowflake(640, 480);
     snowflake.SetIterations(3);
-    snowflake.PrepareRender();
-    snowflake.Render();
+    snowflake.SetView({-1.5, -1.5, 1.5, 1.5});
+    snowflake.RenderBlocking();
 
     CHECK(snowflake.GetLines().size() == 3 * 4 * 4 * 4);
 }
@@ -47,11 +46,46 @@ TEST_CASE("Koch snowflake uses the interior set color")
     const sf::Color expected(12, 34, 56);
     snowflake.SetFractalSetColor(expected);
     snowflake.SetIterations(0);
-    snowflake.PrepareRender();
-    snowflake.Render();
+    snowflake.RenderBlocking();
 
     REQUIRE_FALSE(snowflake.GetLines().empty());
     CHECK(snowflake.GetLines().front().color == expected);
+}
+
+TEST_CASE("Koch snowflake limits geometry to visible screen detail")
+{
+    KochSnowflake snowflake(640, 480);
+    snowflake.SetIterations(12);
+    snowflake.RenderBlocking();
+
+    CHECK_FALSE(snowflake.GetLines().empty());
+    CHECK(snowflake.GetLines().size() < 3 * 4 * 4 * 4 * 4 * 4 * 4 * 4 * 4);
+}
+
+TEST_CASE("Koch snowflake prunes recursive branches outside the viewport")
+{
+    KochSnowflake snowflake(640, 480);
+    snowflake.SetIterations(20);
+    snowflake.SetView({10.0, 10.0, 11.0, 11.0});
+    snowflake.RenderBlocking();
+
+    CHECK(snowflake.GetLines().empty());
+    CHECK(snowflake.GetRenderProgress() == 100);
+}
+
+TEST_CASE("Koch snowflake reports an asynchronous render")
+{
+    KochSnowflake snowflake(10000, 10000);
+    snowflake.SetIterations(20);
+    snowflake.MarkRenderStarted();
+    snowflake.PrepareRender();
+    snowflake.Render();
+
+    CHECK(snowflake.IsRenderStarted());
+    CHECK(snowflake.IsRendering());
+    CHECK(snowflake.GetRenderProgress() >= 0);
+    CHECK(snowflake.GetRenderProgress() <= 100);
+    CHECK(snowflake.StopRender());
 }
 
 TEST_CASE("Fractal factory creates a Koch snowflake")

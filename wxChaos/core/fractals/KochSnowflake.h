@@ -2,14 +2,15 @@
 
 #include "../VectorFractal.h"
 
+class KochSnowflakeRenderer;
+
 /**
  * @class KochSnowflake
  * @brief Vector rendering of the Koch snowflake boundary.
  */
 class KochSnowflake : public VectorFractal
 {
-    void AppendKochSegment(double x1, double y1, double x2, double y2, unsigned int iterations,
-                           const sf::Color& color);
+    KochSnowflakeRenderer* _renderer{};
 
 public:
     KochSnowflake(unsigned int width, unsigned int height);

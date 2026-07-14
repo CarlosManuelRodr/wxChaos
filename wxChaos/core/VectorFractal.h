@@ -1,6 +1,8 @@
 #pragma once
 
+#include <memory>
 #include "Fractal.h"
+#include "VectorRenderWorker.h"
 
 /**
  * @class VectorFractal
@@ -8,13 +10,20 @@
  */
 class VectorFractal : public Fractal
 {
+    std::unique_ptr<VectorRenderWorker> _vectorRenderWorker;
+
     void DrawPrimitives(sf::RenderTarget& target) const;
+    void PublishCompletedGeometry();
 
 protected:
     void RedrawMaps() override { _refreshImage = true; }
+    void SetVectorRenderWorker(std::unique_ptr<VectorRenderWorker> worker);
+    VectorRenderWorker* GetVectorRenderWorker() const { return _vectorRenderWorker.get(); }
+    void StartVectorRender();
 
 public:
     VectorFractal(unsigned int width, unsigned int height);
+    ~VectorFractal() override;
 
     bool IsVectorFractal() const override { return true; }
     void Resize(unsigned int width, unsigned int height) override;
@@ -30,10 +39,10 @@ public:
     void ClearOrbitLines() override {}
     const std::vector<LineData>& GetOrbitLines() const override;
     PointSample GetPointSample(unsigned int x, unsigned int y) const override { return {false, 0.0, false}; }
-    int GetRenderProgress() const override { return 100; }
-    void PauseContinue() override {}
-    bool StopRender() override { return false; }
-    bool IsRendering() override { return false; }
+    int GetRenderProgress() const override;
+    void PauseContinue() override;
+    bool StopRender() override;
+    bool IsRendering() override;
     bool** GetSetMap() const override { return nullptr; }
     sf::Image GetRenderedImage() override;
     bool SaveBmp(const std::string& filename) override;
