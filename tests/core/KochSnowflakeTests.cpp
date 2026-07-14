@@ -5,7 +5,7 @@
 #include "../../wxChaos/core/raster/RasterRenderWorker.h"
 #include "RenderWorker.h"
 #include "../../wxChaos/core/vector/VectorFractal.h"
-#include "VectorRenderWorker.h"
+#include "../../wxChaos/core/vector/VectorRenderWorker.h"
 #include "../../wxChaos/core/fractals/vector/KochSnowflake.h"
 #include "../../wxChaos/core/fractals/raster/Mandelbrot.h"
 
@@ -84,7 +84,7 @@ TEST_CASE("Koch snowflake reports an asynchronous render")
     KochSnowflake snowflake(10000, 10000);
     snowflake.SetIterations(20);
     snowflake.MarkRenderStarted();
-    snowflake.PrepareRender();
+    snowflake.PrepareRender({0, 0});
     snowflake.Render();
 
     CHECK(snowflake.IsRenderStarted());

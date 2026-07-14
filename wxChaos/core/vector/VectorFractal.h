@@ -18,7 +18,8 @@ class VectorFractal : public Fractal
 protected:
     void RedrawMaps() override { _refreshImage = true; }
     void SetVectorRenderWorker(std::unique_ptr<VectorRenderWorker> worker);
-    VectorRenderWorker* GetVectorRenderWorker() const { return _vectorRenderWorker.get(); }
+    template<class Worker>
+    Worker& GetVectorRenderWorker() { return static_cast<Worker&>(*_vectorRenderWorker); }
     void StartVectorRender();
 
 public:
