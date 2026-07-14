@@ -1,13 +1,13 @@
 #pragma once
 
 /**
-* @class RenderRegion
+* @class RasterRegion
 * @brief Represents a rectangular pixel area that needs to be rendered.
 *
-* RenderRegion stores the half-open bounds [left, right) and [top, bottom)
+* RasterRegion stores the half-open bounds [left, right) and [top, bottom)
 * passed to Renderer::SetLimits.
 */
-class RenderRegion
+class RasterRegion
 {
     int _left;
     int _top;
@@ -15,8 +15,8 @@ class RenderRegion
     int _bottom;
 
 public:
-    RenderRegion();
-    RenderRegion(int left, int top, int right, int bottom);
+    RasterRegion();
+    RasterRegion(int left, int top, int right, int bottom);
 
     [[nodiscard]] int GetLeft() const;
     [[nodiscard]] int GetTop() const;

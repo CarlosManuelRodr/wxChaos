@@ -197,9 +197,9 @@ void RasterFractal::ConfigureRenderer(RenderWorker& renderer) const
     renderer.SetK(_kReal, _kImaginary);
 }
 
-std::vector<RenderRegion> RasterFractal::BuildRenderRegions() const
+std::vector<RasterRegion> RasterFractal::BuildRenderRegions() const
 {
-    std::vector<RenderRegion> regions;
+    std::vector<RasterRegion> regions;
     const int screenWidth = static_cast<int>(_renderWidth);
     const int screenHeight = static_cast<int>(_renderHeight);
 
@@ -241,9 +241,9 @@ std::vector<RenderRegion> RasterFractal::BuildRenderRegions() const
     return regions;
 }
 
-std::vector<RenderJob> RasterFractal::BuildRenderJobs(const std::vector<RenderRegion>& regions, const int tileHeight) const
+std::vector<RasterJob> RasterFractal::BuildRenderJobs(const std::vector<RasterRegion>& regions, const int tileHeight) const
 {
-    std::vector<RenderJob> jobs;
+    std::vector<RasterJob> jobs;
 
     const unsigned int threadNumber = std::max(1U, _threadNumber);
     const int screenWidth = static_cast<int>(_renderWidth);
@@ -252,7 +252,7 @@ std::vector<RenderJob> RasterFractal::BuildRenderJobs(const std::vector<RenderRe
 
     if (tileHeight <= 0 && regions.size() > threadNumber)
     {
-        jobs.emplace_back(RenderRegion(0, 0, screenWidth, screenHeight));
+        jobs.emplace_back(RasterRegion(0, 0, screenWidth, screenHeight));
 
         while (jobs.size() < threadNumber)
             jobs.emplace_back();
@@ -260,7 +260,7 @@ std::vector<RenderJob> RasterFractal::BuildRenderJobs(const std::vector<RenderRe
         return jobs;
     }
 
-    for (const RenderRegion& region : regions)
+    for (const RasterRegion& region : regions)
         totalArea += region.GetArea();
 
     if (totalArea == 0)
@@ -273,12 +273,12 @@ std::vector<RenderJob> RasterFractal::BuildRenderJobs(const std::vector<RenderRe
 
     if (tileHeight > 0)
     {
-        for (const RenderRegion& region : regions)
+        for (const RasterRegion& region : regions)
         {
             for (int top = region.GetTop(); top < region.GetBottom(); top += tileHeight)
             {
                 const int bottom = std::min(top + tileHeight, region.GetBottom());
-                jobs.emplace_back(RenderRegion(region.GetLeft(), top, region.GetRight(), bottom));
+                jobs.emplace_back(RasterRegion(region.GetLeft(), top, region.GetRight(), bottom));
             }
         }
 
@@ -290,7 +290,7 @@ std::vector<RenderJob> RasterFractal::BuildRenderJobs(const std::vector<RenderRe
 
     for (unsigned int regionIndex = 0; regionIndex < regions.size(); regionIndex++)
     {
-        const RenderRegion& region = regions[regionIndex];
+        const RasterRegion& region = regions[regionIndex];
         const auto remainingRegions = static_cast<unsigned int>(regions.size() - regionIndex);
         unsigned int regionJobs = 1;
 
@@ -325,7 +325,7 @@ std::vector<RenderJob> RasterFractal::BuildRenderJobs(const std::vector<RenderRe
             }
             else
             {
-                jobs.emplace_back(RenderRegion(region.GetLeft(), currentTop, region.GetRight(), bottom));
+                jobs.emplace_back(RasterRegion(region.GetLeft(), currentTop, region.GetRight(), bottom));
                 currentTop = bottom;
             }
         }

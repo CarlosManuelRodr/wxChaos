@@ -6,23 +6,23 @@
 #include <thread>
 #include <vector>
 #include "RenderWorker.h"
-#include "rendering/RenderJob.h"
+#include "rasterization/RasterJob.h"
 
 /**
-* @class RenderThreadPool
+* @class RasterThreadPool
 * @brief Reusable worker pool that renders queued RenderJob objects.
 *
-* RenderThreadPool keeps a fixed set of worker threads alive and assigns each
-* worker one Renderer instance. Workers pull RenderJob objects from a
+* RasterThreadPool keeps a fixed set of worker threads alive and assigns each
+* worker one Renderer instance. Workers pull RasterJob objects from a
 * shared queue, so a worker that finishes early can immediately help with the
 * remaining render area.
 */
-class RenderThreadPool
+class RasterThreadPool
 {
     std::vector<std::thread> _workers;
     std::vector<RenderWorker*> _renderers;
     std::vector<char> _workerActive;
-    std::deque<RenderJob> _jobs;
+    std::deque<RasterJob> _jobs;
 
     mutable std::mutex _mutex;
     std::condition_variable _workAvailable;
@@ -38,9 +38,9 @@ class RenderThreadPool
     void ShutdownWorkers();
 
 public:
-    RenderThreadPool();
-    explicit RenderThreadPool(unsigned int threadNumber);
-    ~RenderThreadPool();
+    RasterThreadPool();
+    explicit RasterThreadPool(unsigned int threadNumber);
+    ~RasterThreadPool();
 
     ///@brief Sets the worker thread count.
     ///@param threadNumber New worker count.
@@ -49,7 +49,7 @@ public:
     ///@brief Starts rendering the supplied jobs with the supplied renderers.
     ///@param renderers Renderer instances, one for each worker.
     ///@param jobs Jobs to render.
-    void Render(const std::vector<RenderWorker*>& renderers, const std::vector<RenderJob>& jobs);
+    void Render(const std::vector<RenderWorker*>& renderers, const std::vector<RasterJob>& jobs);
 
     ///@brief Stops all active work and waits for workers to become idle.
     void Stop();

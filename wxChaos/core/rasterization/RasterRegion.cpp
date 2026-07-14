@@ -1,6 +1,6 @@
-#include "rendering/RenderRegion.h"
+#include "rasterization/RasterRegion.h"
 
-RenderRegion::RenderRegion()
+RasterRegion::RasterRegion()
 {
     _left = 0;
     _top = 0;
@@ -8,7 +8,7 @@ RenderRegion::RenderRegion()
     _bottom = 0;
 }
 
-RenderRegion::RenderRegion(const int left, const int top, const int right, const int bottom)
+RasterRegion::RasterRegion(const int left, const int top, const int right, const int bottom)
 {
     _left = left;
     _top = top;
@@ -16,37 +16,37 @@ RenderRegion::RenderRegion(const int left, const int top, const int right, const
     _bottom = bottom;
 }
 
-int RenderRegion::GetLeft() const
+int RasterRegion::GetLeft() const
 {
     return _left;
 }
 
-int RenderRegion::GetTop() const
+int RasterRegion::GetTop() const
 {
     return _top;
 }
 
-int RenderRegion::GetRight() const
+int RasterRegion::GetRight() const
 {
     return _right;
 }
 
-int RenderRegion::GetBottom() const
+int RasterRegion::GetBottom() const
 {
     return _bottom;
 }
 
-int RenderRegion::GetWidth() const
+int RasterRegion::GetWidth() const
 {
     return _right - _left;
 }
 
-int RenderRegion::GetHeight() const
+int RasterRegion::GetHeight() const
 {
     return _bottom - _top;
 }
 
-int RenderRegion::GetArea() const
+int RasterRegion::GetArea() const
 {
     if (this->IsEmpty())
         return 0;
@@ -54,7 +54,7 @@ int RenderRegion::GetArea() const
     return this->GetWidth() * this->GetHeight();
 }
 
-bool RenderRegion::IsEmpty() const
+bool RasterRegion::IsEmpty() const
 {
     return _right <= _left || _bottom <= _top;
 }

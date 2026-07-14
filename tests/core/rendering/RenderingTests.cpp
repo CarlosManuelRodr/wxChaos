@@ -3,12 +3,12 @@
 #include "coloring/PaletteMapping.h"
 #include "numeric/HighPrecision.h"
 #include "Options.h"
-#include "rendering/RenderJob.h"
-#include "rendering/RenderRegion.h"
+#include "rasterization/RasterJob.h"
+#include "rasterization/RasterRegion.h"
 
 TEST_CASE("RenderRegion default constructor creates an empty region")
 {
-    const RenderRegion region;
+    const RasterRegion region;
 
     CHECK(region.GetLeft() == 0);
     CHECK(region.GetTop() == 0);
@@ -22,7 +22,7 @@ TEST_CASE("RenderRegion default constructor creates an empty region")
 
 TEST_CASE("RenderRegion reports half-open dimensions")
 {
-    const RenderRegion region(2, 3, 12, 8);
+    const RasterRegion region(2, 3, 12, 8);
 
     CHECK(region.GetLeft() == 2);
     CHECK(region.GetTop() == 3);
@@ -36,18 +36,18 @@ TEST_CASE("RenderRegion reports half-open dimensions")
 
 TEST_CASE("RenderRegion treats inverted bounds as empty")
 {
-    CHECK(RenderRegion(5, 0, 5, 10).IsEmpty());
-    CHECK(RenderRegion(6, 0, 5, 10).IsEmpty());
-    CHECK(RenderRegion(0, 3, 10, 3).IsEmpty());
-    CHECK(RenderRegion(0, 4, 10, 3).IsEmpty());
+    CHECK(RasterRegion(5, 0, 5, 10).IsEmpty());
+    CHECK(RasterRegion(6, 0, 5, 10).IsEmpty());
+    CHECK(RasterRegion(0, 3, 10, 3).IsEmpty());
+    CHECK(RasterRegion(0, 4, 10, 3).IsEmpty());
 
-    CHECK(RenderRegion(6, 0, 5, 10).GetArea() == 0);
-    CHECK(RenderRegion(0, 4, 10, 3).GetArea() == 0);
+    CHECK(RasterRegion(6, 0, 5, 10).GetArea() == 0);
+    CHECK(RasterRegion(0, 4, 10, 3).GetArea() == 0);
 }
 
 TEST_CASE("RenderJob defaults to no work")
 {
-    const RenderJob job;
+    const RasterJob job;
 
     CHECK(job.IsEmpty());
     CHECK(job.GetProgressOriginY() == 0);
@@ -55,7 +55,7 @@ TEST_CASE("RenderJob defaults to no work")
 
 TEST_CASE("RenderJob uses region top as the default progress origin")
 {
-    const RenderJob job(RenderRegion(4, 9, 14, 13));
+    const RasterJob job(RasterRegion(4, 9, 14, 13));
 
     CHECK_FALSE(job.IsEmpty());
     CHECK(job.GetRegion().GetLeft() == 4);
@@ -67,7 +67,7 @@ TEST_CASE("RenderJob uses region top as the default progress origin")
 
 TEST_CASE("RenderJob can override progress origin")
 {
-    const RenderJob job(RenderRegion(4, 9, 14, 13), 2);
+    const RasterJob job(RasterRegion(4, 9, 14, 13), 2);
 
     CHECK_FALSE(job.IsEmpty());
     CHECK(job.GetProgressOriginY() == 2);

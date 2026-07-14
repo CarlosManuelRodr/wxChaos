@@ -1,7 +1,7 @@
-#include "rendering/RenderThreadPool.h"
+#include "rasterization/RasterThreadPool.h"
 #include <algorithm>
 
-RenderThreadPool::RenderThreadPool()
+RasterThreadPool::RasterThreadPool()
 {
     _shutdown = false;
     _running = false;
@@ -10,17 +10,17 @@ RenderThreadPool::RenderThreadPool()
     _completedJobs = 0;
 }
 
-RenderThreadPool::RenderThreadPool(const unsigned int threadNumber) : RenderThreadPool()
+RasterThreadPool::RasterThreadPool(const unsigned int threadNumber) : RasterThreadPool()
 {
     this->SetThreadNumber(threadNumber);
 }
 
-RenderThreadPool::~RenderThreadPool()
+RasterThreadPool::~RasterThreadPool()
 {
     this->ShutdownWorkers();
 }
 
-void RenderThreadPool::SetThreadNumber(const unsigned int threadNumber)
+void RasterThreadPool::SetThreadNumber(const unsigned int threadNumber)
 {
     if (_workers.size() == threadNumber)
         return;
@@ -39,10 +39,10 @@ void RenderThreadPool::SetThreadNumber(const unsigned int threadNumber)
     }
 
     for (unsigned int i = 0; i < threadNumber; i++)
-        _workers.emplace_back(&RenderThreadPool::WorkerLoop, this, i);
+        _workers.emplace_back(&RasterThreadPool::WorkerLoop, this, i);
 }
 
-void RenderThreadPool::Render(const std::vector<RenderWorker*>& renderers, const std::vector<RenderJob>& jobs)
+void RasterThreadPool::Render(const std::vector<RenderWorker*>& renderers, const std::vector<RasterJob>& jobs)
 {
     this->Stop();
     this->SetThreadNumber(static_cast<unsigned int>(renderers.size()));
@@ -56,7 +56,7 @@ void RenderThreadPool::Render(const std::vector<RenderWorker*>& renderers, const
     _completedJobs = 0;
     _workerActive.assign(_workers.size(), false);
 
-    for (const RenderJob& job : jobs)
+    for (const RasterJob& job : jobs)
     {
         if (!job.IsEmpty())
         {
@@ -73,7 +73,7 @@ void RenderThreadPool::Render(const std::vector<RenderWorker*>& renderers, const
         _workFinished.notify_all();
 }
 
-void RenderThreadPool::Stop()
+void RasterThreadPool::Stop()
 {
     std::vector<RenderWorker*> renderers;
 
@@ -106,19 +106,19 @@ void RenderThreadPool::Stop()
     this->Wait();
 }
 
-void RenderThreadPool::Wait()
+void RasterThreadPool::Wait()
 {
     std::unique_lock<std::mutex> lock(_mutex);
     _workFinished.wait(lock, [this] { return !_running && _activeWorkers == 0; });
 }
 
-bool RenderThreadPool::IsRunning() const
+bool RasterThreadPool::IsRunning() const
 {
     std::lock_guard<std::mutex> lock(_mutex);
     return _running || _activeWorkers > 0;
 }
 
-int RenderThreadPool::GetProgress() const
+int RasterThreadPool::GetProgress() const
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
@@ -136,11 +136,11 @@ int RenderThreadPool::GetProgress() const
     return std::min(100, std::max(0, static_cast<int>(progress / _totalJobs)));
 }
 
-void RenderThreadPool::WorkerLoop(const unsigned int workerIndex)
+void RasterThreadPool::WorkerLoop(const unsigned int workerIndex)
 {
     while (true)
     {
-        RenderJob job;
+        RasterJob job;
         RenderWorker* renderer = nullptr;
 
         {
@@ -159,7 +159,7 @@ void RenderThreadPool::WorkerLoop(const unsigned int workerIndex)
 
         if (renderer != nullptr && !job.IsEmpty())
         {
-            const RenderRegion& region = job.GetRegion();
+            const RasterRegion& region = job.GetRegion();
             renderer->SetLimits(region.GetLeft(), region.GetTop(), region.GetRight(), region.GetBottom());
             renderer->SetOldHeightOrigin(job.GetProgressOriginY());
             renderer->run();
@@ -180,7 +180,7 @@ void RenderThreadPool::WorkerLoop(const unsigned int workerIndex)
     }
 }
 
-void RenderThreadPool::ShutdownWorkers()
+void RasterThreadPool::ShutdownWorkers()
 {
     this->Stop();
 

@@ -2,9 +2,9 @@
 
 #include "Fractal.h"
 #include "RenderWorker.h"
-#include "rendering/RenderJob.h"
-#include "rendering/RenderRegion.h"
-#include "rendering/RenderThreadPool.h"
+#include "rasterization/RasterJob.h"
+#include "rasterization/RasterRegion.h"
+#include "rasterization/RasterThreadPool.h"
 
 /**
  * @class RasterFractal
@@ -15,7 +15,7 @@ class RasterFractal : public Fractal
 protected:
     bool** _setMap{};                ///< Points that belong to the fractal set.
     double** _colorMap{};            ///< Continuous values used by coloring algorithms.
-    RenderThreadPool _renderPool;    ///< Reusable pool for raster render jobs.
+    RasterThreadPool _renderPool;    ///< Reusable pool for raster render jobs.
     std::vector<LineData> _orbitLines;
     unsigned int _threadNumber;      ///< Number of raster render workers.
     unsigned int _renderWidth{};
@@ -40,8 +40,8 @@ protected:
     void RedrawMaps() override;
     void UpdateMaxColorMapValue();
     void ConfigureRenderer(RenderWorker& renderer) const;
-    std::vector<RenderRegion> BuildRenderRegions() const;
-    std::vector<RenderJob> BuildRenderJobs(const std::vector<RenderRegion>& regions, int tileHeight) const;
+    std::vector<RasterRegion> BuildRenderRegions() const;
+    std::vector<RasterJob> BuildRenderJobs(const std::vector<RasterRegion>& regions, int tileHeight) const;
 
     template<class M>
     void MoveMatrix(M** matrix, unsigned int matrixWidth, unsigned int matrixHeight, int moveX, int moveY,
@@ -81,9 +81,9 @@ public:
 template<class DerivedRenderer>
 void RasterFractal::SetRendererBounds(DerivedRenderer* renderers, const int tileHeight)
 {
-    const std::vector<RenderRegion> regions = BuildRenderRegions();
+    const std::vector<RasterRegion> regions = BuildRenderRegions();
     const int renderTileHeight = tileHeight > 0 ? tileHeight * static_cast<int>(_antiAliasingScale) : tileHeight;
-    const std::vector<RenderJob> jobs = BuildRenderJobs(regions, renderTileHeight);
+    const std::vector<RasterJob> jobs = BuildRenderJobs(regions, renderTileHeight);
     _pendingRenderOffset = {0, 0};
 
     std::vector<RenderWorker*> workers;
