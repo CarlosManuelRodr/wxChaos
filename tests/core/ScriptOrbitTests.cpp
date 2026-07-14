@@ -92,7 +92,7 @@ TEST_CASE("script-defined options are exposed through the fractal options panel"
         CAPTURE(scriptName);
         ScriptFractal newton(32, 32, (scriptsDirectory / scriptName).string());
         REQUIRE(newton.GetOptionsPanel()->GetElementsSize() == 1);
-        CHECK(newton.GetOptionsPanel()->GetLabelValue(0) == "Min step: ");
+        CHECK(newton.GetOptionsPanel()->GetLabelValue(0) == "Minimum step: ");
         CHECK(newton.GetScriptData().options.GetDouble("minStep") == doctest::Approx(0.01));
     }
 
