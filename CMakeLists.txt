@@ -268,6 +268,10 @@ if(BUILD_TESTING)
             Threads::Threads
     )
 
+    target_compile_definitions(wxChaosCoreTests PRIVATE
+            WXCHAOS_SOURCE_DIR="${CMAKE_SOURCE_DIR}"
+    )
+
     if(MSVC)
         target_compile_definitions(wxChaosCoreTests PRIVATE
                 WXCHAOS_BUILD_TYPE="$<CONFIG>"

@@ -3,11 +3,17 @@
 #include "AngelscriptConfigurationEngine.h"
 #include "../../wxChaos/core/fractals/raster/ScriptFractal.h"
 
+namespace
+{
+    std::filesystem::path BundledScriptsDirectory()
+    {
+        return std::filesystem::path(WXCHAOS_SOURCE_DIR) / "app_resources" / "Scripts";
+    }
+}
+
 TEST_CASE("bundled scripts compile with the orbit drawing interface")
 {
-    std::filesystem::path scriptsDirectory = std::filesystem::current_path() / "bin" / "Scripts";
-    if (!std::filesystem::exists(scriptsDirectory))
-        scriptsDirectory = std::filesystem::current_path() / "cmake-build-debug" / "bin" / "Scripts";
+    const std::filesystem::path scriptsDirectory = BundledScriptsDirectory();
     REQUIRE(std::filesystem::exists(scriptsDirectory));
 
     for (const std::filesystem::directory_entry& script : std::filesystem::directory_iterator(scriptsDirectory))

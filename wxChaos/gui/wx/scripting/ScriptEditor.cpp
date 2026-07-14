@@ -64,14 +64,15 @@ void Render()
     // const double scale = GetDoubleOption("scale");
     // Example: Draw color gradient
     int color;
-    if(threadIndex == 0)
+    if(threadIndex != 0)
+        return;
+
+    for(int y=0; y<screenHeight; y++)
     {
-        for(int y=0; y<screenHeight; y++)
-        {
-            color = (float(y)/screenHeight)*paletteSize;
-            for(int x=0; x<screenWidth; x++)
-                SetPoint(x, y, false, color);
-        }
+        color = (float(y)/screenHeight)*paletteSize;
+        for(int x=0; x<screenWidth; x++)
+            SetPoint(x, y, false, color);
+    }
 }
 
 void DrawOrbit()
