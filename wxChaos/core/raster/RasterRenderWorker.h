@@ -1,10 +1,10 @@
 #pragma once
 
 #include <limits>
-#include "RenderWorker.h"
-#include "types/FractalType.h"
-#include "geometry/Vector2Int.h"
-#include "Options.h"
+#include "../RenderWorker.h"
+#include "../types/FractalType.h"
+#include "../geometry/Vector2Int.h"
+#include "../Options.h"
 
 /**
 * @class RasterRenderWorker

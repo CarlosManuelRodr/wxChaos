@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <vector>
-#include "../RasterRenderWorker.h"
+#include "../raster/RasterRenderWorker.h"
 
 class PerturbationRenderWorker : public RasterRenderWorker
 {

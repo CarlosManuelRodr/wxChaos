@@ -1,5 +1,5 @@
 #pragma once
-#include "../RasterRenderWorker.h"
+#include "../raster/RasterRenderWorker.h"
 
 /**
 * @class TricornRenderer

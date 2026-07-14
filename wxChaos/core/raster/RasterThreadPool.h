@@ -6,7 +6,7 @@
 #include <thread>
 #include <vector>
 #include "RasterRenderWorker.h"
-#include "rasterization/RasterJob.h"
+#include "raster/RasterJob.h"
 
 /**
 * @class RasterThreadPool

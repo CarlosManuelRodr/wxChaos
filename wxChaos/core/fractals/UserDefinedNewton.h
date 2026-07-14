@@ -1,6 +1,6 @@
 #pragma once
 #include <complex>
-#include "../RasterFractal.h"
+#include "../raster/RasterFractal.h"
 #include "../UserFormulaSymbolicCompiler.h"
 #include "../renderers/UserDefinedNewtonRenderer.h"
 

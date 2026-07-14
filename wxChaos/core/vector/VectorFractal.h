@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "Fractal.h"
+#include "../Fractal.h"
 #include "VectorRenderWorker.h"
 
 /**

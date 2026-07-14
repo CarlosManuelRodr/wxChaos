@@ -1,10 +1,10 @@
 #include <type_traits>
 #include <doctest/doctest.h>
 #include "FractalFactory.h"
-#include "RasterFractal.h"
-#include "RasterRenderWorker.h"
+#include "../../wxChaos/core/raster/RasterFractal.h"
+#include "../../wxChaos/core/raster/RasterRenderWorker.h"
 #include "RenderWorker.h"
-#include "VectorFractal.h"
+#include "../../wxChaos/core/vector/VectorFractal.h"
 #include "VectorRenderWorker.h"
 #include "fractals/KochSnowflake.h"
 #include "fractals/Mandelbrot.h"

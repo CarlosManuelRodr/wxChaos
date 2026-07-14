@@ -4,7 +4,7 @@
 #include <string>
 #include <wx/string.h>
 #include "utils/NewtonRootRegistry.h"
-#include "../RasterRenderWorker.h"
+#include "../raster/RasterRenderWorker.h"
 
 /**
  * @brief Renders Newton-Raphson basins for a compiled user formula.

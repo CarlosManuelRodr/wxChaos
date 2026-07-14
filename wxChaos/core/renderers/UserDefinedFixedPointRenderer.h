@@ -1,6 +1,6 @@
 #pragma once
 #include "FormulaOptions.h"
-#include "../RasterRenderWorker.h"
+#include "../raster/RasterRenderWorker.h"
 
 /**
 * @class UserDefinedFixedPointRenderer

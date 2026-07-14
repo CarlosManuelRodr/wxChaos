@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../VectorFractal.h"
+#include "../vector/VectorFractal.h"
 
 class KochSnowflakeRenderer;
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Fractal.h"
+#include "../Fractal.h"
 #include "RasterRenderWorker.h"
-#include "rasterization/RasterJob.h"
-#include "rasterization/RasterRegion.h"
-#include "rasterization/RasterThreadPool.h"
+#include "RasterJob.h"
+#include "RasterRegion.h"
+#include "RasterThreadPool.h"
 
 /**
  * @class RasterFractal

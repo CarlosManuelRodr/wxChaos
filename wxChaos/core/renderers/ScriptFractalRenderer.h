@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <mutex>
-#include "../RasterRenderWorker.h"
+#include "../raster/RasterRenderWorker.h"
 #include "../scripting/AngelscriptRenderEngine.h"
 #include "../../scripting/ScriptOptions.h"
 

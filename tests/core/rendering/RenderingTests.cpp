@@ -3,8 +3,8 @@
 #include "coloring/PaletteMapping.h"
 #include "numeric/HighPrecision.h"
 #include "Options.h"
-#include "rasterization/RasterJob.h"
-#include "rasterization/RasterRegion.h"
+#include "raster/RasterJob.h"
+#include "raster/RasterRegion.h"
 
 TEST_CASE("RenderRegion default constructor creates an empty region")
 {

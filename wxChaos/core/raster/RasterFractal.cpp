@@ -4,8 +4,8 @@
 #include <thread>
 #include "RasterFractal.h"
 #include "BmpImageWriter.h"
-#include "coloring/PaletteMapping.h"
-#include "SystemUtilities.h"
+#include "../coloring/PaletteMapping.h"
+#include "../SystemUtilities.h"
 using namespace std;
 
 RasterFractal::RasterFractal(const unsigned int width, const unsigned int height) : Fractal(width, height)

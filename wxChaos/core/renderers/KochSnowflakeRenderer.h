@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VectorRenderWorker.h"
+#include "../vector/VectorRenderWorker.h"
 #include "geometry/Rect.h"
 
 /**

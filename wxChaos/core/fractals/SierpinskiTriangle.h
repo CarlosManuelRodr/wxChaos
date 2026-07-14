@@ -1,5 +1,5 @@
 #pragma once
-#include "../RasterFractal.h"
+#include "../raster/RasterFractal.h"
 #include "../renderers/SierpinskiTriangleRenderer.h"
 
 /**

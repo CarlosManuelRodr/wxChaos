@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rasterization/RasterRegion.h"
+#include "raster/RasterRegion.h"
 
 /**
 * @class RasterJob

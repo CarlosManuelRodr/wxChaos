@@ -5,9 +5,9 @@
 #include <mutex>
 #include <thread>
 #include <vector>
-#include "RenderWorker.h"
-#include "geometry/CircleData.h"
-#include "geometry/LineData.h"
+#include "../RenderWorker.h"
+#include "../geometry/CircleData.h"
+#include "../geometry/LineData.h"
 
 /**
  * @class VectorRenderWorker

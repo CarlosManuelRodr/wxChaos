@@ -1,7 +1,7 @@
 #include "RasterRenderWorker.h"
-#include "FractalUtilities.h"
+
+#include "../FractalUtilities.h"
 #include <algorithm>
-#include <cmath>
 
 RasterRenderWorker::RasterRenderWorker()
 {
