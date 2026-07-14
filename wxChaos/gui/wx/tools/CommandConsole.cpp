@@ -75,6 +75,7 @@ wxColour CommandConsole::PromptColor()
     return AppTheme::IsDark() ? wxColour(52, 211, 153) : wxColour(4, 120, 87);
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 wxColour CommandConsole::ErrorColor()
 {
     return AppTheme::IsDark() ? wxColour(248, 113, 113) : wxColour(185, 28, 28);
@@ -246,7 +247,7 @@ wxString CommandConsole::Execute(const ParsedCommand& command) const
         if (!y2.has_value()) return error;
         const sf::Color color = ReadColor(command, 4, error);
         if (!error.empty()) return error;
-        fractal->DrawLine(*x1, *y1, *x2, *y2, color);
+        fractal->DrawLine(*x1, *y1, *x2, *y2, color, false);
         return _("Line drawn.");
     }
     if (command.name == "focusview")

@@ -1,5 +1,4 @@
 #include "FractalFactory.h"
-#include "FractalTypes.h"
 using namespace std;
 
 FractalFactory::FractalFactory()

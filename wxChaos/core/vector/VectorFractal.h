@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "../Fractal.h"
 #include "VectorRenderWorker.h"
+#include "../Fractal.h"
 
 /**
  * @class VectorFractal
@@ -27,7 +27,7 @@ public:
 
     bool IsVectorFractal() const override { return true; }
     void Resize(unsigned int width, unsigned int height) override;
-    void PrepareRender(Vector2Int reusedMapOffset = {0, 0}) override;
+    void PrepareRender(Vector2Int reusedMapOffset) override;
     void ReuseRenderedMaps(Vector2Int reusedMapOffset) override {}
     void PrepareDisplayColorLookup() override {}
     bool HasDisplayPixelColor(unsigned int x, unsigned int y) const override { return false; }

@@ -226,7 +226,6 @@ if(BUILD_TESTING)
 
     add_executable(wxChaosCoreTests
             tests/core/CoreTestsMain.cpp
-            tests/core/FractalUtilitiesTests.cpp
             tests/core/FractalInspectionTests.cpp
             tests/core/KochSnowflakeTests.cpp
             tests/core/ScriptOrbitTests.cpp

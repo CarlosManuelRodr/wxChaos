@@ -419,7 +419,7 @@ void DimensionFrame::StartPreviewRender()
     _target->Resize(_previewSize, _previewSize);
     _myOpt = ReadDimensionOptions();
     _target->SetOptions(_myOpt);
-    _target->PrepareRender();
+    _target->PrepareRender({0, 0});
     _target->Render();
 
     _calcButton->Enable(false);
@@ -610,7 +610,7 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
                 // If a change was made or the render fractal was just created.
                 _target->Resize(_size, _size);
                 _target->SetOptions(_myOpt);
-                _target->PrepareRender();
+                _target->PrepareRender({0, 0});
                 _target->Render();
                 _firstRender = false;
             }
@@ -915,7 +915,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         _myOpt = ReadDimensionOptions();
         _target->Resize(_size, _size);
         _target->SetOptions(_myOpt);
-        _target->PrepareRender();
+        _target->PrepareRender({0, 0});
         _target->Render();
 
         auto* saveProgress = new ImageExportProgressDialog(_target, this, false);
@@ -924,7 +924,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         if (saveProgress->IsFinished())
         {
             // Allocate.
-            bool** setMap, ** tempSetMap, ** colorMap;
+            bool **setMap, **tempSetMap, **colorMap;
             setMap = _target->GetSetMap();
             int nDiv = _numberOfDivisionsSpinCtrl->GetValue();
 

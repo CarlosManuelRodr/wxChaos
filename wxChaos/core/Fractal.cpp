@@ -12,7 +12,7 @@ using namespace std;
 
 constexpr ColorPaletteTypes defaultGradientStyle = ClassicMandelbrot;
 
-Fractal::Fractal(const unsigned int width, const unsigned int height)
+Fractal::Fractal(const unsigned int width, const unsigned int height) : _userFormula()
 {
     // Copy window properties.
     _screenHeight = height;
@@ -616,7 +616,7 @@ void Fractal::RenderBlocking()
     _onSnapshot = true;
     _waitRoutine = true;
 
-    this->PrepareRender();
+    this->PrepareRender({0, 0});
     this->Render();
     this->PreDrawMaps();
 

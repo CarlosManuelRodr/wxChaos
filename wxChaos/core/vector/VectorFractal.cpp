@@ -1,8 +1,6 @@
 #include "VectorFractal.h"
 
-VectorFractal::VectorFractal(const unsigned int width, const unsigned int height) : Fractal(width, height)
-{
-}
+VectorFractal::VectorFractal(const unsigned int width, const unsigned int height) : Fractal(width, height) {}
 
 VectorFractal::~VectorFractal()
 {

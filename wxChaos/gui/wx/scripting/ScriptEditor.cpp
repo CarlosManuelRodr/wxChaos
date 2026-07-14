@@ -4,11 +4,11 @@
 #include <wx/datetime.h>
 #include <wx/filefn.h>
 #include "common/AppTheme.h"
+#include "fractals/ScriptFractal.h"
 #include "docs/DocumentViewer.h"
 #include "AppPaths.h"
 #include "scripting/ScriptEditor.h"
 #include "scripting/ScriptSamplePicker.h"
-#include "FractalTypes.h"
 #include "global.h"
 #include "TextUtils.h"
 #include "AngelscriptConfigurationEngine.h"

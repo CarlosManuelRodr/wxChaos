@@ -1,7 +1,7 @@
 #pragma once
 #include <complex>
+#include "symbolic/UserFormulaSymbolicCompiler.h"
 #include "../raster/RasterFractal.h"
-#include "../UserFormulaSymbolicCompiler.h"
 #include "../renderers/UserDefinedNewtonRenderer.h"
 
 /**

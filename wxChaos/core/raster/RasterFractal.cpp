@@ -660,8 +660,8 @@ bool RasterFractal::SaveBmp(const string& filename)
         this->PrepareRender();
         this->Render();
     }
-    this->PreDrawMaps();
 
+    this->PreDrawMaps();
     this->UpdateMaxColorMapValue();
 
     std::vector<BmpPixel> row(_screenWidth);
@@ -687,8 +687,8 @@ bool RasterFractal::SaveBmp(const string& filename)
     return success;
 }
 
-void RasterFractal::DrawLine(const double x1, const double y1, const double x2, const double y2,
-                             const sf::Color color, const bool orbitLine)
+void RasterFractal::DrawLine(const double x1, const double y1, const double x2, const double y2, const sf::Color color,
+                             const bool orbitLine)
 {
     if (!orbitLine)
     {

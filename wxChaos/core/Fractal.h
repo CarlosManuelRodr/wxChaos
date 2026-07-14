@@ -113,6 +113,7 @@ protected:
     bool _reportedHighPrecisionActive;
     unsigned int _reportedHighPrecisionBits;
     std::function<void(bool, unsigned int)> _precisionStatusChanged;
+
     // Julia Mode variables.
     bool _juliaMode;
     bool _juliaVariety;                    ///< Activate it in derived class if is a Julia variety. False by default.
@@ -191,7 +192,7 @@ public:
     virtual void Resize(unsigned int width, unsigned int height) = 0;
 
     ///@brief Perform some adjustments needed before the rendering starts.
-    virtual void PrepareRender(Vector2Int reusedMapOffset = {0, 0}) = 0;
+    virtual void PrepareRender(Vector2Int reusedMapOffset) = 0;
 
     ///@brief Sets the fractal render viewport.
     ///@param worldCoordinates Viewport in world coordinates.
@@ -307,10 +308,7 @@ public:
     ///@brief Evaluates and describes one world-coordinate point using the current fractal settings.
     virtual wxString InspectPoint(double x, double y, std::optional<unsigned int> iterations) const;
 
-    // Thread control.
-    ///@brief Calculate drawing limits of each worker and launches them.
-    ///@param myRender Array of renderer instances.
-    ///@param tileHeight Height of queued render tiles. Use 0 to render one job per exposed region.
+    ///@brief Get the current progress of a render.
     ///@brief Returns progress for the active render backend.
     ///@return A value from 0 to 100.
     virtual int GetRenderProgress() const = 0;
@@ -477,8 +475,7 @@ public:
 
     // Geometry.
     ///@brief Draws a simple line. Used in orbit mode.
-    virtual void DrawLine(double x1, double y1, double x2, double y2, sf::Color color = sf::Color(0, 0, 0),
-                          bool orbitLine = false);
+    virtual void DrawLine(double x1, double y1, double x2, double y2, sf::Color color, bool orbitLine);
     void DrawCircle(double xCenter, double yCenter, double radius, sf::Color color = sf::Color(0, 0, 0));
     void DrawCircle(double xCenter, double yCenter, double radius, sf::Color color, bool filled);
     void ClearGeometryFigures();

@@ -32,7 +32,7 @@ Cell::Cell(const unsigned int width, const unsigned int height) : RasterFractal(
 }
 Cell::~Cell()
 {
-    this->StopRender();
+    this->RasterFractal::StopRender();
     delete[] myRender;
 }
 void Cell::Render()

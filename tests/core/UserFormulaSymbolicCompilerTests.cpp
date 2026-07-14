@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 
-#include "UserFormulaSymbolicCompiler.h"
+#include "../../wxChaos/core/fractals/symbolic/UserFormulaSymbolicCompiler.h"
 
 namespace
 {
