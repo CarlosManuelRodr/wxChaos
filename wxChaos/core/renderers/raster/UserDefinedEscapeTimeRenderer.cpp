@@ -24,8 +24,8 @@ void UserDefinedEscapeTimeRenderer::Render()
     mup::Value cVal;
     mup::Value zero = mup::cmplx_type(0, 0);
     parser.DefineVar("z", mup::Variable(&zVal));
-    parser.DefineVar("c",  mup::Variable(&cVal));
     parser.DefineVar("Z", mup::Variable(&zVal));
+    parser.DefineVar("c",  mup::Variable(&cVal));
     parser.DefineVar("C",  mup::Variable(&cVal));
 
     if (julia)
@@ -97,4 +97,3 @@ bool UserDefinedEscapeTimeRenderer::IsThereError() const
 {
     return errorInfo.size() != 0;
 }
-
