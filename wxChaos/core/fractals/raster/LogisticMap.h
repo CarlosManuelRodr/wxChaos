@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/LogisticMapRenderer.h"
+#include "../../renderers/raster/LogisticMapRenderer.h"
 
 /**
 * @class LogisticMap

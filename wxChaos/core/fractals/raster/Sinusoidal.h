@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/SinusoidalRenderer.h"
+#include "../../renderers/raster/SinusoidalRenderer.h"
 
 /**
  * @class Sinusoidal

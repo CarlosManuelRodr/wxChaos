@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/CellRenderer.h"
+#include "../../renderers/raster/CellRenderer.h"
 
 /**
  * @class Cell

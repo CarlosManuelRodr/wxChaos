@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/FixedPoint3Renderer.h"
+#include "../../renderers/raster/FixedPoint3Renderer.h"
 
 /**
  * @class FixedPoint3

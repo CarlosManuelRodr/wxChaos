@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/ScriptFractalRenderer.h"
+#include "../../renderers/raster/ScriptFractalRenderer.h"
 #include "../scripting/ScriptData.h"
 
 /**

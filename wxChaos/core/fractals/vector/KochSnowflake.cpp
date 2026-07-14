@@ -1,6 +1,6 @@
 #include "KochSnowflake.h"
 #include <memory>
-#include "renderers/KochSnowflakeRenderer.h"
+#include "renderers/vector/KochSnowflakeRenderer.h"
 
 KochSnowflake::KochSnowflake(const unsigned int width, const unsigned int height) : VectorFractal(width, height)
 {

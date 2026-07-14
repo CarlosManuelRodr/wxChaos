@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/FractoryRenderer.h"
+#include "../../renderers/raster/FractoryRenderer.h"
 
 /**
  * @class Fractory

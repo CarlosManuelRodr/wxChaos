@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/BurningShipRenderer.h"
+#include "../../renderers/raster/BurningShipRenderer.h"
 
 /**
  * @class BurningShip

@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
 #include <memory>
 #include <vector>
-#include "renderers/HenonMapRenderer.h"
+#include "../../../wxChaos/core/renderers/raster/HenonMapRenderer.h"
 
 TEST_CASE("Henon map renderer plots the configured orbit")
 {

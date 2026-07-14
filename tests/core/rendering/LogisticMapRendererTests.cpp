@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
 #include <memory>
 #include <vector>
-#include "renderers/LogisticMapRenderer.h"
+#include "../../../wxChaos/core/renderers/raster/LogisticMapRenderer.h"
 
 namespace
 {

@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/JellyfishRenderer.h"
+#include "../../renderers/raster/JellyfishRenderer.h"
 
 /**
  * @class Jellyfish

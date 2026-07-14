@@ -2,7 +2,7 @@
 #include <complex>
 #include "symbolic/UserFormulaSymbolicCompiler.h"
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/UserDefinedNewtonRenderer.h"
+#include "../../renderers/raster/UserDefinedNewtonRenderer.h"
 
 /**
  * @brief Fractal definition for user-provided Newton-Raphson formulas.

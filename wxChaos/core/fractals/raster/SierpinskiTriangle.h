@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/SierpinskiTriangleRenderer.h"
+#include "../../renderers/raster/SierpinskiTriangleRenderer.h"
 
 /**
  * @class SierpinskiTriangle

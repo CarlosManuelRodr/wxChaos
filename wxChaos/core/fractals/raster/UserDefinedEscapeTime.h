@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/UserDefinedEscapeTimeRenderer.h"
+#include "../../renderers/raster/UserDefinedEscapeTimeRenderer.h"
 
 /**
  * @class UserDefinedEscapeTime

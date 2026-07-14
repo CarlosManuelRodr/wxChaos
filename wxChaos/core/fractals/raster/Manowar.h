@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/ManowarRenderer.h"
+#include "../../renderers/raster/ManowarRenderer.h"
 
 /**
  * @class Manowar

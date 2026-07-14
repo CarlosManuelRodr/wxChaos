@@ -1,6 +1,6 @@
 #include "ApollonianGasket.h"
 #include <memory>
-#include "renderers/ApollonianGasketRenderer.h"
+#include "../../renderers/vector/ApollonianGasketRenderer.h"
 
 ApollonianGasket::ApollonianGasket(const unsigned int width, const unsigned int height) : VectorFractal(width, height)
 {

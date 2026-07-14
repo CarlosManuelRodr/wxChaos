@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/HenonMapRenderer.h"
+#include "../../renderers/raster/HenonMapRenderer.h"
 
 /**
  * @class HenonMap

@@ -1,6 +1,6 @@
 #include "VectorSierpinskiTriangle.h"
 #include <memory>
-#include "renderers/VectorSierpinskiTriangleRenderer.h"
+#include "renderers/vector/VectorSierpinskiTriangleRenderer.h"
 
 VectorSierpinskiTriangle::VectorSierpinskiTriangle(const unsigned int width, const unsigned int height)
     : VectorFractal(width, height)

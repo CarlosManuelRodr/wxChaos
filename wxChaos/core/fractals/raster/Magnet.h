@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/MagnetRenderer.h"
+#include "../../renderers/raster/MagnetRenderer.h"
 
 /**
  * @class Magnet

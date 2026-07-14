@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/JuliaZMRenderer.h"
+#include "../../renderers/raster/JuliaZMRenderer.h"
 
 /**
  * @class JuliaZM

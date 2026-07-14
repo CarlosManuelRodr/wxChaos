@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/MandelbrotRenderer.h"
+#include "../../renderers/raster/MandelbrotRenderer.h"
 
 /**
  * @class Mandelbrot

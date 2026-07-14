@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/NewtonRenderer.h"
+#include "../../renderers/raster/NewtonRenderer.h"
 
 /**
  * @class Newton

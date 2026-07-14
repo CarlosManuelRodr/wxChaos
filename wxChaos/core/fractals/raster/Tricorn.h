@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/TricornRenderer.h"
+#include "../../renderers/raster/TricornRenderer.h"
 
 /**
  * @class Tricorn

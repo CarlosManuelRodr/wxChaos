@@ -1,6 +1,6 @@
 #pragma once
 #include "../../raster/RasterFractal.h"
-#include "../../renderers/DoublePendulumRenderer.h"
+#include "../../renderers/raster/DoublePendulumRenderer.h"
 
 /**
  * @class DoublePendulum
