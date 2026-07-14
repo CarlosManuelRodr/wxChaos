@@ -1,4 +1,6 @@
 #include "VectorFractal.h"
+#include <algorithm>
+#include <cmath>
 
 VectorFractal::VectorFractal(const unsigned int width, const unsigned int height) : Fractal(width, height) {}
 
@@ -124,14 +126,33 @@ void VectorFractal::DrawPrimitives(sf::RenderTarget& target) const
     {
         const auto centerX = static_cast<float>(GetPixelX(circleData.xCenter));
         const auto centerY = static_cast<float>(GetPixelY(circleData.yCenter));
-        const float radius = static_cast<float>(GetPixelX(circleData.xCenter + circleData.radius)) - centerX;
-        sf::CircleShape circle(radius);
+        const float radius = std::abs(static_cast<float>(GetPixelX(circleData.xCenter + circleData.radius)) - centerX);
+        sf::CircleShape circle(radius, CalculateCirclePointCount(radius));
         circle.setPosition(centerX - radius, centerY - radius);
         circle.setFillColor(circleData.filled ? circleData.color : sf::Color::Transparent);
         circle.setOutlineColor(circleData.color);
         circle.setOutlineThickness(2.0F);
         target.draw(circle);
     }
+}
+
+std::size_t VectorFractal::CalculateCirclePointCount(const float pixelRadius)
+{
+    constexpr std::size_t minimumPointCount = 32;
+    constexpr std::size_t maximumPointCount = 8192;
+    constexpr double maximumDeviationPixels = 0.2;
+    constexpr double pi = 3.14159265358979323846;
+
+    if (pixelRadius <= maximumDeviationPixels)
+        return minimumPointCount;
+
+    const double cosine = std::clamp(1.0 - maximumDeviationPixels / pixelRadius, -1.0, 1.0);
+    const double halfSegmentAngle = std::acos(cosine);
+    if (halfSegmentAngle <= 0.0)
+        return maximumPointCount;
+
+    const auto pointCount = static_cast<std::size_t>(std::ceil(pi / halfSegmentAngle));
+    return std::clamp(pointCount, minimumPointCount, maximumPointCount);
 }
 
 sf::Image VectorFractal::GetRenderedImage()

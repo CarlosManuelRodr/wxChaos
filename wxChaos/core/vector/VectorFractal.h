@@ -14,6 +14,7 @@ class VectorFractal : public Fractal
 
     void DrawPrimitives(sf::RenderTarget& target) const;
     void PublishCompletedGeometry();
+    [[nodiscard]] static std::size_t CalculateCirclePointCount(float pixelRadius);
 
 protected:
     void RedrawMaps() override { _refreshImage = true; }
