@@ -28,7 +28,14 @@
 #include "common/FractalOptionsPanel.h"
 #include "FractalFactory.h"
 
+/** @brief Event posted to the parent when the dimension-calculator window closes. */
 wxDECLARE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
+
+/**
+ * @brief Returns the desktop work-area dimensions.
+ * @param width Receives the desktop width in pixels.
+ * @param height Receives the desktop height in pixels.
+ */
 void GetDesktopResolution(int& width, int& height);
 
 #define DimensionFrameSize wxSize(1200, 1260)
@@ -78,70 +85,140 @@ class DimensionFrame : public wxFrame
     wxCheckBox* _dataFitCheck;
     wxBitmapButton* _helpButton;
 
-    wxDialog* _fractalOptionsDialog{};                      ///< Fractal options dialog.
-    FractalOptionsPanel* _fractalOptionsPanel{};            ///< Reusable fractal options panel.
-    Fractal* _target;                                       ///< The fractal target.
-    FractalFactory _fractalFactory;                         ///< The fractal factory.
-    ImagePanel* _previewImage;                              ///< Panel to show a preview of the dimension calculator.
-    Options _myOpt;                                         ///< Fractal options.
+    wxDialog* _fractalOptionsDialog{};                      ///< Dialog that hosts the selected fractal's options.
+    FractalOptionsPanel* _fractalOptionsPanel{};            ///< Reusable panel bound to the selected fractal.
+    Fractal* _target;                                       ///< Fractal currently rendered and measured by the calculator.
+    FractalFactory _fractalFactory;                         ///< Owns and creates the currently selected fractal.
+    ImagePanel* _previewImage;                              ///< Displays occupied pixels and the selected box grid.
+    Options _myOpt;                                         ///< Last options read from the dimension controls.
     FormulaOptions _userFormula;                            ///< User-defined escape-time formula used by this tool.
-    int _threadNumber;                                      ///< Number of dimension worker threads.
-    std::vector<BoxCountWorker> _dimensionCalculator;       ///< Dimension workers, one per thread.
+    int _threadNumber;                                      ///< Number of parallel box-counting workers.
+    std::vector<BoxCountWorker> _dimensionCalculator;       ///< One box-counting worker per thread.
     BoxCountMap _boxCountMap;                               ///< Unified occupancy map for raster and vector fractals.
-    std::vector<std::unique_ptr<sf::Thread>> _dimThreads;   ///< Owned dimension worker threads.
-    std::vector<int> _div;                                  ///< Vector to hold the number of divisions.
-    std::vector<double> _epsilon;                           ///< Vector to hold the epsilon values.
-    std::vector<int> _boxCount;                             ///< Vector to hold the box counting.
-    std::vector<ScriptData> _loadedScripts;                 ///< Parameters and location of user scripts.
-    std::vector<FractalType> _builtInFractalList;           ///< Built-in fractals shown before user scripts.
-    std::vector<unsigned int> _scriptList;                  ///< List of script fractals.
-    int _divIndex{};                                        ///< Division index.
-    bool _scriptSelected;
-    bool _firstRender;
+    std::vector<std::unique_ptr<sf::Thread>> _dimThreads;   ///< Threads executing the box-counting workers.
+    std::vector<int> _div;                                  ///< Grid-division counts requested for the current calculation.
+    std::vector<double> _epsilon;                           ///< Pixel widths of the sampled boxes.
+    std::vector<int> _boxCount;                             ///< Occupied-box count for each sampled epsilon.
+    std::vector<ScriptData> _loadedScripts;                 ///< Discovered user-script metadata.
+    std::vector<FractalType> _builtInFractalList;           ///< Built-in types in the same order as their choice entries.
+    std::vector<unsigned int> _scriptList;                  ///< Indices of scripts eligible for dimension calculation.
+    int _divIndex{};                                        ///< Index of the grid division currently being counted.
+    bool _scriptSelected;                                   ///< true when the active choice represents a user script.
+    bool _firstRender;                                      ///< true until the full-size target has rendered once.
 
-    int _previewSize;
-    int _size{};
+    int _previewSize;                                       ///< Fixed width and height of the interactive preview.
+    int _size{};                                            ///< Width and height used for the full dimension calculation.
 
-    bool _renderingPreview, _calculatingDimension;
-    bool _suppressPreviewUpdate{};
-    bool _previewRenderQueued{};
-    bool _hasPreviewMap{};
-    int _progress{};
-    sf::Clock _clock;
-    wxTimer _previewTimer;
+    bool _renderingPreview;                                 ///< true while the asynchronous preview render is active.
+    bool _calculatingDimension;                             ///< true from Calculate until counting and fitting finish.
+    bool _suppressPreviewUpdate{};                          ///< Prevents programmatic control changes from scheduling renders.
+    bool _previewRenderQueued{};                            ///< Requests a fresh preview after cancellation completes.
+    bool _hasPreviewMap{};                                  ///< true when _boxCountMap contains the current preview.
+    int _progress{};                                        ///< Last percentage displayed by the progress controls.
+    sf::Clock _clock;                                       ///< Limits polling and UI updates to a reasonable frequency.
+    wxTimer _previewTimer;                                  ///< Debounces rapid preview-parameter changes.
 
+    /** @brief Recreates the target when the fractal selector changes. */
     void OnChangeFractal(wxCommandEvent&);
+
+    /** @brief Starts or stops the complete render-and-box-count calculation. */
     void OnCalculate(wxCommandEvent&);
+
+    /** @brief Polls render and worker progress and advances the calculation state machine. */
     void OnUpdateUI(wxUpdateUIEvent&);
+
+    /** @brief Starts a preview after the debounce timer expires. */
     void OnPreviewTimer(wxTimerEvent&);
+
+    /** @brief Schedules a preview after an integer render parameter changes. */
     void OnPreviewParameterChanged(wxCommandEvent&);
+
+    /** @brief Schedules a preview after a viewport coordinate changes. */
     void OnPreviewDoubleParameterChanged(wxSpinDoubleEvent&);
+
+    /** @brief Repaints the existing preview with a different box grid. */
     void OnPreviewGridChanged(wxCommandEvent&);
+
+    /** @brief Closes the dimension-calculator window. */
     void OnClose(wxCommandEvent&);
+
+    /** @brief Cancels outstanding work and destroys the frame safely. */
     void OnDestroy(wxCloseEvent&);
+
+    /** @brief Opens the options dialog for the currently selected fractal. */
     void OnFractalOpt(wxCommandEvent&);
+
+    /** @brief Opens the formula editor for the user-defined escape-time fractal. */
     void OnFormula(wxCommandEvent& event);
-    void OnSavePreview(wxCommandEvent& );
+
+    /** @brief Renders and saves the preview with occupied-box highlighting. */
+    void OnSavePreview(wxCommandEvent&);
+
+    /** @brief Opens the box-counting dimension documentation. */
     void OnHelp(wxCommandEvent&);
+
+    /** @brief Appends one built-in fractal and records the type represented by its choice index. */
     void AddBuiltInFractalChoice(const wxString& label, FractalType type);
+
+    /** @brief Rebuilds the selector from supported built-in fractals and user scripts. */
     void PopulateFractalChoices();
+
+    /** @brief Returns true when the selector points to the editable user formula. */
     [[nodiscard]] bool IsUserDefinedEscapeTimeSelected() const;
+
+    /** @brief Shows the formula button only for the user-defined escape-time choice. */
     void UpdateFormulaButtonVisibility() const;
 
+    /**
+     * @brief Creates a themed heading row used by sections of the frame.
+     * @return Newly allocated panel owned by the supplied parent.
+     */
     static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
                                         const wxString& darkIcon);
+
+    /**
+     * @brief Loads the light- or dark-theme SVG icon at the requested size.
+     * @return Bitmap bundle suitable for a wxWidgets control.
+     */
     [[nodiscard]] static wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon, const wxSize& size);
+
+    /**
+     * @brief Creates a vertically labelled row for one fractal parameter control.
+     * @return Sizer owned by the caller's containing layout.
+     */
     wxSizer* CreateFractalParameterRow(const wxString& label, wxWindow* control) const;
+
+    /** @brief Creates a consistently configured floating-point coordinate control. */
     [[nodiscard]] wxSpinCtrlDouble* CreateCoordinateSpin(const wxString& value) const;
+
+    /** @brief Creates the selected built-in or script fractal at a square resolution. */
     void CreateFractal(int size);
+
+    /** @brief Reads viewport, iteration, and image-size controls into an Options value. */
     [[nodiscard]] Options ReadDimensionOptions();
+
+    /** @brief Derives the maximum Y coordinate so the measured viewport remains square. */
     void UpdateDerivedMaxY() const;
+
+    /** @brief Copies fractal options into the editable viewport and iteration controls. */
     void SetControlsFromOptions(const Options& options);
+
+    /** @brief Debounces or queues a preview render after an option changes. */
     void SchedulePreviewRender();
+
+    /** @brief Configures and launches the asynchronous square preview render. */
     void StartPreviewRender();
+
+    /** @brief Stops the active preview render and restores the preview controls. */
     void StopPreviewRender() const;
+
+    /** @brief Repaints only the box grid using the already-built occupancy map. */
     void RefreshPreviewOverlayOnly();
+
+    /** @brief Rebuilds the unified occupancy map from the completed target render. */
     void UpdateBoxCountMap();
+
+    /** @brief Assigns disjoint horizontal slices of the occupancy map to worker objects. */
     void ConfigureDimensionWorkers();
 
     /**
@@ -153,11 +230,26 @@ class DimensionFrame : public wxFrame
      * @brief Requests all dimension workers to stop, then joins and releases their threads.
      */
     void StopDimensionThreads();
-    void GetScriptFractals();                   ///< Creates the menu elements corresponding to the script fractals.
-    void WriteText(const wxString &txt) const;  ///< Writes text to the output panel.
+    /** @brief Discovers eligible script fractals and appends them to the selector. */
+    void GetScriptFractals();
+
+    /** @brief Appends text to the dimension-calculation log. */
+    void WriteText(const wxString& txt) const;
+
 public:
+    /**
+     * @brief Creates the interactive box-counting dimension calculator.
+     * @param parent Parent wxWidgets window.
+     * @param id Window identifier.
+     * @param title Localizable frame title.
+     * @param pos Initial window position.
+     * @param size Initial window size.
+     * @param style wxWidgets frame style flags.
+     */
     explicit DimensionFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxTRANSLATE("Calculate Dimension"),
                             const wxPoint& pos = wxDefaultPosition, const wxSize& size = DimensionFrameSize,
                             long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+
+    /** @brief Stops outstanding renders and workers before releasing the frame. */
     ~DimensionFrame() override;
 };

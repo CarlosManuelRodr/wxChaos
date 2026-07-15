@@ -164,6 +164,7 @@ void BoxCountMap::RasterizeCircle(const CircleData& circle, const Rect& view)
         const long double normalizedX = (static_cast<long double>(x) - centerX) / radiusX;
         if (std::abs(normalizedX) > 1.0L)
             continue;
+
         const double offsetY = radiusY * std::sqrt(static_cast<double>(1.0L - normalizedX * normalizedX));
         SetOccupied(x, ClampPixel(std::round(centerY - offsetY)));
         SetOccupied(x, ClampPixel(std::round(centerY + offsetY)));
