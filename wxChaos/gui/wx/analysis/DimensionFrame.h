@@ -10,6 +10,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <vector>
 
 #include <wx/wx.h>
@@ -83,6 +84,7 @@ class DimensionFrame : public wxFrame
     wxButton* _savePreviewButton;
     wxCheckBox* _dataCheck;
     wxCheckBox* _dataFitCheck;
+    wxStaticText* _resolutionWarning;
     wxBitmapButton* _helpButton;
 
     wxDialog* _fractalOptionsDialog{};                      ///< Dialog that hosts the selected fractal's options.
@@ -139,6 +141,12 @@ class DimensionFrame : public wxFrame
     /** @brief Repaints the existing preview with a different box grid. */
     void OnPreviewGridChanged(wxCommandEvent&);
 
+    /** @brief Refreshes the image-resolution warning after a division input changes. */
+    void OnDivisionDefinitionChanged(wxCommandEvent&);
+
+    /** @brief Refreshes the image-resolution warning after switching division modes. */
+    void OnDivisionModeChanged(wxBookCtrlEvent& event);
+
     /** @brief Closes the dimension-calculator window. */
     void OnClose(wxCommandEvent&);
 
@@ -146,7 +154,7 @@ class DimensionFrame : public wxFrame
     void OnDestroy(wxCloseEvent&);
 
     /** @brief Opens the options dialog for the currently selected fractal. */
-    void OnFractalOpt(wxCommandEvent&);
+    void OnFractalOptions(wxCommandEvent&);
 
     /** @brief Opens the formula editor for the user-defined escape-time fractal. */
     void OnFormula(wxCommandEvent& event);
@@ -168,6 +176,15 @@ class DimensionFrame : public wxFrame
 
     /** @brief Shows the formula button only for the user-defined escape-time choice. */
     void UpdateFormulaButtonVisibility() const;
+
+    /**
+     * @brief Returns the upper division count implied by the active function or list.
+     * @return Positive division count, or no value when the active input cannot be evaluated.
+     */
+    [[nodiscard]] std::optional<int> GetUpperDivisionCount() const;
+
+    /** @brief Shows or hides the warning that the finest boxes approach pixel resolution. */
+    void UpdateResolutionWarning();
 
     /**
      * @brief Creates a themed heading row used by sections of the frame.
@@ -221,15 +238,12 @@ class DimensionFrame : public wxFrame
     /** @brief Assigns disjoint horizontal slices of the occupancy map to worker objects. */
     void ConfigureDimensionWorkers();
 
-    /**
-     * @brief Waits for all dimension worker threads and releases their resources.
-     */
+    /** @brief Waits for all dimension worker threads and releases their resources. */
     void JoinDimensionThreads();
 
-    /**
-     * @brief Requests all dimension workers to stop, then joins and releases their threads.
-     */
+    /** @brief Requests all dimension workers to stop, then joins and releases their threads. */
     void StopDimensionThreads();
+
     /** @brief Discovers eligible script fractals and appends them to the selector. */
     void GetScriptFractals();
 

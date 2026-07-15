@@ -172,6 +172,12 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     plotBoxSizer->Add(_dataFitCheck, 0, wxALL, 5);
     dimBoxSizer->Add(plotBoxSizer, 0, wxEXPAND, 5);
 
+    _resolutionWarning = new wxStaticText(_mainPanel, wxID_ANY, wxEmptyString);
+    _resolutionWarning->Wrap(420);
+    _resolutionWarning->SetForegroundColour(AppTheme::IsDark() ? wxColour(242, 190, 95) : wxColour(128, 82, 0));
+    _resolutionWarning->Hide();
+    dimBoxSizer->Add(_resolutionWarning, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+
     const auto buttonBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _calcButton = new wxButton(_mainPanel, wxID_ANY, _("Calculate"), wxDefaultPosition, wxDefaultSize, 0);
@@ -262,7 +268,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     this->Bind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &DimensionFrame::OnClose, this, wxID_EXIT);
     _fractalChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
-    _fractalOptionsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
+    _fractalOptionsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOptions, this);
     _formulaButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
     _calcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
@@ -274,7 +280,12 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _iterCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
     _sizeCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
     _numberOfDivisionsSpinCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewGridChanged, this);
+    _funcCtrl->Bind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _xMaxSpin->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _listCtrl->Bind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _divNotebook->Bind(wxEVT_NOTEBOOK_PAGE_CHANGED, &DimensionFrame::OnDivisionModeChanged, this);
     _suppressPreviewUpdate = false;
+    UpdateResolutionWarning();
     SchedulePreviewRender();
 }
 DimensionFrame::~DimensionFrame()
@@ -284,7 +295,7 @@ DimensionFrame::~DimensionFrame()
     this->Unbind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
     this->Unbind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
     _fractalChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
-    _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
+    _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOptions, this);
     _formulaButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
     _calcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
@@ -296,6 +307,10 @@ DimensionFrame::~DimensionFrame()
     _iterCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
     _sizeCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
     _numberOfDivisionsSpinCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewGridChanged, this);
+    _funcCtrl->Unbind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _xMaxSpin->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _listCtrl->Unbind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _divNotebook->Unbind(wxEVT_NOTEBOOK_PAGE_CHANGED, &DimensionFrame::OnDivisionModeChanged, this);
 
     if (_calculatingDimension)
     {
@@ -544,6 +559,7 @@ void DimensionFrame::OnPreviewTimer(wxTimerEvent&)
 
 void DimensionFrame::OnPreviewParameterChanged(wxCommandEvent&)
 {
+    UpdateResolutionWarning();
     SchedulePreviewRender();
 }
 
@@ -555,6 +571,70 @@ void DimensionFrame::OnPreviewDoubleParameterChanged(wxSpinDoubleEvent&)
 void DimensionFrame::OnPreviewGridChanged(wxCommandEvent&)
 {
     RefreshPreviewOverlayOnly();
+}
+
+void DimensionFrame::OnDivisionDefinitionChanged(wxCommandEvent&)
+{
+    UpdateResolutionWarning();
+}
+
+void DimensionFrame::OnDivisionModeChanged(wxBookCtrlEvent& event)
+{
+    UpdateResolutionWarning();
+    event.Skip();
+}
+
+optional<int> DimensionFrame::GetUpperDivisionCount() const
+{
+    if (_divNotebook->GetSelection() == 0)
+    {
+        try
+        {
+            mup::ParserX parser;
+            parser.SetExpr(_funcCtrl->GetValue().utf8_string());
+            mup::Value xValue(static_cast<double>(_xMaxSpin->GetValue()));
+            parser.DefineVar("x", mup::Variable(&xValue));
+            const long long divisions = parser.Eval().GetInteger();
+            if (divisions <= 0 || divisions > numeric_limits<int>::max())
+                return nullopt;
+            return static_cast<int>(divisions);
+        }
+        catch (mup::ParserError&)
+        {
+            return nullopt;
+        }
+    }
+
+    const vector<int> divisions = TextUtils::ParseIntList(_listCtrl->GetValue());
+    if (divisions.empty() || divisions.back() <= 0)
+        return nullopt;
+    return divisions.back();
+}
+
+void DimensionFrame::UpdateResolutionWarning()
+{
+    constexpr double minimumReliableBoxSizePixels = 2.0;
+    const optional<int> upperDivisionCount = GetUpperDivisionCount();
+    const double boxSizePixels = upperDivisionCount.has_value()
+        ? static_cast<double>(_sizeCtrl->GetValue()) / *upperDivisionCount
+        : numeric_limits<double>::infinity();
+    const bool shouldShow = boxSizePixels <= minimumReliableBoxSizePixels;
+
+    if (shouldShow)
+    {
+        _resolutionWarning->SetLabel(wxString::Format(
+            _("The finest boxes are only %.2f pixels wide at the current image size. Increase the square image size "
+              "or reduce the upper division limit for a more reliable dimension estimate."),
+            boxSizePixels));
+        _resolutionWarning->Wrap(420);
+    }
+
+    if (_resolutionWarning->IsShown() == shouldShow)
+        return;
+
+    _resolutionWarning->Show(shouldShow);
+    _mainPanel->GetSizer()->Layout();
+    _mainPanel->FitInside();
 }
 void DimensionFrame::OnClose(wxCommandEvent&)
 {
@@ -859,7 +939,7 @@ void DimensionFrame::WriteText(const wxString &txt) const
     _logCtrl->WriteText(txt);
     _logCtrl->ShowPosition(_logCtrl->GetCaretPosition());
 }
-void DimensionFrame::OnFractalOpt(wxCommandEvent&)
+void DimensionFrame::OnFractalOptions(wxCommandEvent&)
 {
     if (_fractalOptionsDialog == nullptr)
     {
