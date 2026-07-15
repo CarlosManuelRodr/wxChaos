@@ -141,11 +141,19 @@ void DrawOrbit()
 <tr><td><code>SetRedrawAlways(true)</code></td><td>Requests a fresh render when the view changes. Useful for fractals that cannot be drawn partially such as the Gauss or Duffing maps.</td></tr>
 <tr><td><code>SetExtColorMode(false)</code></td><td>Disables the normal exterior-color behavior when the script is plotting its own geometry.</td></tr>
 <tr><td><code>SetEnableSetMap(false)</code></td><td>Disables the usual set-map coloring for specialized scripts.</td></tr>
+<tr><td><code>SetDimensionCalculatorEnabled(true)</code></td><td>Opts the script into the Dimension Calculator. Scripts are excluded unless they explicitly enable this capability and provide a preset.</td></tr>
+<tr><td><code>SetDimensionCalculatorPreset(minX, maxX, minY, iterations, function, xMin, xMax, imageSize)</code></td><td>Provides known-good square bounds, render detail, division function and image size for box-counting analysis.</td></tr>
 <tr><td><code>SetDocumentationPath(file)</code></td><td>Connects the fractal to an HTML information page in <code>Resources/Documents</code>.</td></tr>
 <tr><td><code>GetCurrentLocale()</code></td><td>Returns the active language code so names, labels, and other script text can follow the application language.</td></tr>
 </tbody>
 </table>
 </div>
+<p class="note">
+    Dimension calculation is opt-in because many rendered sets do not have a useful box-counting interpretation.
+    Call both dimension functions in <code>Configure()</code> only after testing the supplied preset. The function
+    expression uses muParserX and normally refers to <code>x</code>, for example <code>"5*x"</code> over
+    <code>1</code> through <code>100</code>.
+</p>
 </section>
 <section aria-labelledby="options-title">
 <h2 id="options-title">Give explorers a few knobs to turn</h2>
@@ -435,11 +443,19 @@ definir una vista inicial útil y establecer un comportamiento razonable.
 <tr><td><code>SetRedrawAlways(true)</code></td><td>Solicita un nuevo renderizado cuando cambia la vista. Es útil para fractales que no pueden dibujarse parcialmente, como los mapas de Gauss o Duffing.</td></tr>
 <tr><td><code>SetExtColorMode(false)</code></td><td>Desactiva el comportamiento normal de color exterior cuando el script dibuja su propia geometría.</td></tr>
 <tr><td><code>SetEnableSetMap(false)</code></td><td>Desactiva el coloreado habitual del mapa del conjunto para scripts especializados.</td></tr>
+<tr><td><code>SetDimensionCalculatorEnabled(true)</code></td><td>Incluye el script en la Calculadora de dimensión. Los scripts quedan excluidos a menos que activen explícitamente esta capacidad y proporcionen una configuración recomendada.</td></tr>
+<tr><td><code>SetDimensionCalculatorPreset(minX, maxX, minY, iterations, function, xMin, xMax, imageSize)</code></td><td>Proporciona límites cuadrados, detalle de renderizado, función de divisiones y tamaño de imagen comprobados para el conteo de cajas.</td></tr>
 <tr><td><code>SetDocumentationPath(file)</code></td><td>Conecta el fractal con una página HTML informativa dentro de <code>Resources/Documents</code>.</td></tr>
 <tr><td><code>GetCurrentLocale()</code></td><td>Devuelve el código del idioma activo para adaptar nombres, etiquetas y otros textos del script al idioma de la aplicación.</td></tr>
 </tbody>
 </table>
 </div>
+<p class="note">
+El cálculo de dimensión requiere activación explícita porque muchos conjuntos renderizados no tienen una
+interpretación útil mediante conteo de cajas. Llama a ambas funciones de dimensión en <code>Configure()</code>
+solo después de comprobar la configuración proporcionada. La expresión usa muParserX y normalmente hace
+referencia a <code>x</code>, por ejemplo <code>"5*x"</code> entre <code>1</code> y <code>100</code>.
+</p>
 </section>
 <section aria-labelledby="options-title-es">
 <h2 id="options-title-es">Ofrece a los exploradores algunos controles</h2>

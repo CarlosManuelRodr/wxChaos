@@ -29,6 +29,8 @@ static int defaultIter;
 static bool defaultIterSet = false;
 static bool minXSet = false, maxXSet = false, minYSet = false;
 static bool juliaVarietySet = false;
+static bool dimensionCalculatorEnabled = false;
+static optional<DimensionCalculatorPreset> dimensionCalculatorPreset;
 bool thereIsConsoleText = false;
 bool asRedrawAlways = false;
 bool extColor = true;
@@ -194,6 +196,22 @@ static void asSetEnableSetMap(bool mode)
     disableSetMap = !mode;
 }
 
+static void asSetDimensionCalculatorEnabled(const bool enabled)
+{
+    dimensionCalculatorEnabled = enabled;
+}
+
+static void asSetDimensionCalculatorPreset(const double presetMinX, const double presetMaxX,
+                                           const double presetMinY, const int iterations,
+                                           const string& divisionFunction, const int functionXMin,
+                                           const int functionXMax, const int imageSize)
+{
+    dimensionCalculatorPreset = DimensionCalculatorPreset{
+        presetMinX, presetMaxX, presetMinY, iterations > 0 ? static_cast<unsigned int>(iterations) : 0U, divisionFunction,
+        functionXMin, functionXMax, imageSize
+    };
+}
+
 static void asGetCurrentLocale(asIScriptGeneric* generic)
 {
     new (generic->GetAddressOfReturnLocation()) string(
@@ -315,6 +333,8 @@ ScriptData FetchScriptData(const string& fileName)
     data.redrawAlways = asRedrawAlways;
     data.extColor = extColor;
     data.disableSetMap = disableSetMap;
+    data.dimensionCalculatorEnabled = dimensionCalculatorEnabled;
+    data.dimensionCalculatorPreset = dimensionCalculatorPreset;
 
     minXSet = maxXSet = minYSet = false;
     defaultIterSet = false;
@@ -324,6 +344,8 @@ ScriptData FetchScriptData(const string& fileName)
     juliaVarietySet = false;
     asRedrawAlways = false;
     disableSetMap = false;
+    dimensionCalculatorEnabled = false;
+    dimensionCalculatorPreset.reset();
     extColor = true;
 
     return data;
@@ -462,6 +484,11 @@ void RegisterWxChaosInterface(asIScriptEngine* engine)
     r = engine->RegisterGlobalFunction("void SetRedrawAlways(bool)", asFUNCTION(asSetRedrawAlways), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetExtColorMode(bool)", asFUNCTION(asSetExtColorMode), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void SetEnableSetMap(bool)", asFUNCTION(asSetEnableSetMap), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void SetDimensionCalculatorEnabled(bool)",
+                                       asFUNCTION(asSetDimensionCalculatorEnabled), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction(
+        "void SetDimensionCalculatorPreset(double, double, double, int, const string &in, int, int, int)",
+        asFUNCTION(asSetDimensionCalculatorPreset), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("string GetCurrentLocale()", asFUNCTION(asGetCurrentLocale), asCALL_GENERIC); assert(r >= 0);
 }
 

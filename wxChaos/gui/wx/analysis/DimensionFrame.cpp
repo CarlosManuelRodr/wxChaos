@@ -1158,26 +1158,10 @@ void DimensionFrame::PopulateFractalChoices()
     _builtInFractalList.clear();
     _scriptList.clear();
 
-    AddBuiltInFractalChoice(_("Mandelbrot"), FractalType::Mandelbrot);
-    AddBuiltInFractalChoice(_("Mandelbrot Z^m"), FractalType::MandelbrotZM);
-    AddBuiltInFractalChoice(_("Mandelbrot (Julia)"), FractalType::Julia);
-    AddBuiltInFractalChoice(_("Julia Z^m"), FractalType::JuliaZM);
-    AddBuiltInFractalChoice(_("Sine (Julia)"), FractalType::Sinusoidal);
-    AddBuiltInFractalChoice(_("Magnet"), FractalType::Magnetic);
-    AddBuiltInFractalChoice(_("Jellyfish"), FractalType::Jellyfish);
-    AddBuiltInFractalChoice(_("Manowar"), FractalType::Manowar);
-    AddBuiltInFractalChoice(_("Manowar (Julia)"), FractalType::ManowarJulia);
-    AddBuiltInFractalChoice(_("Tricorn"), FractalType::Tricorn);
-    AddBuiltInFractalChoice(_("Burning Ship"), FractalType::BurningShip);
-    AddBuiltInFractalChoice(_("Burning Ship (Julia)"), FractalType::BurningShipJulia);
-    AddBuiltInFractalChoice(_("Fractory"), FractalType::Fractory);
-    AddBuiltInFractalChoice(_("Cell"), FractalType::Cell);
     AddBuiltInFractalChoice(_("Logistic map"), FractalType::LogisticMap);
     AddBuiltInFractalChoice(_("Henon map"), FractalType::HenonMap);
-    AddBuiltInFractalChoice(_("Double pendulum"), FractalType::DoublePendulum);
     AddBuiltInFractalChoice(_("Koch Snowflake"), FractalType::KochSnowflake);
     AddBuiltInFractalChoice(_("Sierpinski Triangle (Vector)"), FractalType::VectorSierpinskiTriangle);
-    AddBuiltInFractalChoice(_("User Formula (Complex)"), FractalType::UserDefinedEscapeTime);
 
     GetScriptFractals();
 }
@@ -1198,20 +1182,20 @@ void DimensionFrame::SelectDefaultFractal()
         _fractalChoice->SetSelection(0);
 }
 
-const DimensionFrame::DimensionPreset* DimensionFrame::FindDimensionPreset(const FractalType fractalType)
+const DimensionCalculatorPreset* DimensionFrame::FindDimensionPreset(const FractalType fractalType)
 {
     // Note to self: Add or edit known-good calculator presets here.
-    static constexpr DimensionPreset presets[] = {
-        {FractalType::VectorSierpinskiTriangle, -1.16, 1.16, -0.89, 28, "5*x", 1, 100, 5000},
-        {FractalType::LogisticMap, 2.80000000, 4.00000000, -0.04000000, 1000, "5*x", 1, 100, 5000},
-        {FractalType::HenonMap, -1.50000000, 1.50000000, -1.41000000, 50000, "5*x", 1, 100, 5000},
-        {FractalType::KochSnowflake, -1.30000000, 1.30000000, -1.31000000, 15, "5*x", 1, 100, 5000}
+    static const BuiltInDimensionPreset presets[] = {
+        {FractalType::VectorSierpinskiTriangle, {-1.16, 1.16, -0.89, 28, "5*x", 1, 100, 5000}},
+        {FractalType::LogisticMap, {2.80000000, 4.00000000, -0.04000000, 1000, "5*x", 1, 100, 5000}},
+        {FractalType::HenonMap, {-1.50000000, 1.50000000, -1.41000000, 50000, "5*x", 1, 100, 5000}},
+        {FractalType::KochSnowflake, {-1.30000000, 1.30000000, -1.31000000, 15, "5*x", 1, 100, 5000}}
     };
 
-    for (const DimensionPreset& preset : presets)
+    for (const BuiltInDimensionPreset& preset : presets)
     {
         if (preset.fractalType == fractalType)
-            return &preset;
+            return &preset.preset;
     }
     return nullptr;
 }
@@ -1222,18 +1206,34 @@ void DimensionFrame::ApplySelectedFractalPreset()
     if (_target == nullptr)
         return;
 
-    const DimensionPreset* preset = FindDimensionPreset(_target->GetType());
-    if (preset == nullptr)
-        return;
+    if (_scriptSelected)
+    {
+        const int scriptChoice = _fractalChoice->GetCurrentSelection()
+                               - static_cast<int>(_builtInFractalList.size());
+        if (scriptChoice < 0 || scriptChoice >= static_cast<int>(_scriptList.size()))
+            return;
 
-    _minXCtrl->SetValue(preset->minX);
-    _maxXCtrl->SetValue(preset->maxX);
-    _minYCtrl->SetValue(preset->minY);
-    _iterCtrl->SetValue(static_cast<int>(preset->iterations));
-    _funcCtrl->SetValue(wxString::FromUTF8(preset->divisionFunction));
-    _xMinSpin->SetValue(preset->functionXMin);
-    _xMaxSpin->SetValue(preset->functionXMax);
-    _sizeCtrl->SetValue(preset->imageSize);
+        const ScriptData& script = _loadedScripts[_scriptList[scriptChoice]];
+        if (script.dimensionCalculatorPreset.has_value())
+            ApplyDimensionPreset(*script.dimensionCalculatorPreset);
+        return;
+    }
+
+    const DimensionCalculatorPreset* preset = FindDimensionPreset(_target->GetType());
+    if (preset != nullptr)
+        ApplyDimensionPreset(*preset);
+}
+
+void DimensionFrame::ApplyDimensionPreset(const DimensionCalculatorPreset& preset)
+{
+    _minXCtrl->SetValue(preset.minX);
+    _maxXCtrl->SetValue(preset.maxX);
+    _minYCtrl->SetValue(preset.minY);
+    _iterCtrl->SetValue(static_cast<int>(preset.iterations));
+    _funcCtrl->SetValue(wxString::FromUTF8(preset.divisionFunction));
+    _xMinSpin->SetValue(preset.functionXMin);
+    _xMaxSpin->SetValue(preset.functionXMax);
+    _sizeCtrl->SetValue(preset.imageSize);
     _divNotebook->SetSelection(0);
     UpdateDerivedMaxY();
 }
@@ -1259,7 +1259,8 @@ void DimensionFrame::GetScriptFractals()
     // Gets script parameters.
     for (unsigned int i = 0; i < _loadedScripts.size(); i++)
     {
-        if (!_loadedScripts[i].disableSetMap && _loadedScripts[i].scriptCategory != ScriptCategory::NumMet)
+        if (!_loadedScripts[i].disableSetMap && _loadedScripts[i].dimensionCalculatorEnabled
+            && _loadedScripts[i].dimensionCalculatorPreset.has_value())
         {
             _scriptList.push_back(i);
             _fractalChoice->Append(wxString(_loadedScripts[i].name.c_str(), wxConvUTF8));

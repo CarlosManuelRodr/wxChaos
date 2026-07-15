@@ -57,6 +57,8 @@ const string newScriptTemplate = R""""(void Configure()
     SetFractalName("New script");
     SetCategory("Other");
     // AddDoubleOption("scale", "Scale: ", 1.0);
+    // SetDimensionCalculatorEnabled(true);
+    // SetDimensionCalculatorPreset(-2.0, 2.0, -2.0, 100, "5*x", 1, 100, 5000);
 }
 
 void Render()

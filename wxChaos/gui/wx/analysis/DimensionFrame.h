@@ -51,18 +51,11 @@ void GetDesktopResolution(int& width, int& height);
 */
 class DimensionFrame : public wxFrame
 {
-    /** @brief Editable defaults for a fractal known to produce a useful box-counting calculation. */
-    struct DimensionPreset
+    /** @brief Associates one built-in fractal with known-good box-counting inputs. */
+    struct BuiltInDimensionPreset
     {
-        FractalType fractalType;          ///< Fractal to which this preset applies.
-        double minX;                      ///< Left edge of the square measurement region.
-        double maxX;                      ///< Right edge of the square measurement region.
-        double minY;                      ///< Bottom edge of the square measurement region.
-        unsigned int iterations;          ///< Render iteration limit.
-        const char* divisionFunction;     ///< muParserX expression used to generate grid divisions.
-        int functionXMin;                 ///< First input evaluated by the division function.
-        int functionXMax;                 ///< Last input evaluated by the division function.
-        int imageSize;                    ///< Width and height of the full calculation image.
+        FractalType fractalType;              ///< Fractal to which this preset applies.
+        DimensionCalculatorPreset preset;     ///< Values copied into the calculator controls.
     };
 
     wxScrolledWindow* _mainPanel;
@@ -189,10 +182,13 @@ class DimensionFrame : public wxFrame
     void SelectDefaultFractal();
 
     /** @brief Returns the configured calculator preset for a fractal, when one exists. */
-    [[nodiscard]] static const DimensionPreset* FindDimensionPreset(FractalType fractalType);
+    [[nodiscard]] static const DimensionCalculatorPreset* FindDimensionPreset(FractalType fractalType);
 
     /** @brief Applies the selected fractal's known-good calculator values to the controls. */
     void ApplySelectedFractalPreset();
+
+    /** @brief Copies one built-in or scripted preset into every related calculator control. */
+    void ApplyDimensionPreset(const DimensionCalculatorPreset& preset);
 
     /** @brief Returns true when the selector points to the editable user formula. */
     [[nodiscard]] bool IsUserDefinedEscapeTimeSelected() const;
