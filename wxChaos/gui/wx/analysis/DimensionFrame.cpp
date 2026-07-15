@@ -172,11 +172,14 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     plotBoxSizer->Add(_dataFitCheck, 0, wxALL, 5);
     dimBoxSizer->Add(plotBoxSizer, 0, wxEXPAND, 5);
 
-    _resolutionWarning = new wxStaticText(_mainPanel, wxID_ANY, wxEmptyString);
+    dimBoxSizer->AddStretchSpacer(1);
+
+    _resolutionWarning = new wxStaticText(_mainPanel, wxID_ANY, wxEmptyString,
+                                          wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
     _resolutionWarning->Wrap(420);
     _resolutionWarning->SetForegroundColour(AppTheme::IsDark() ? wxColour(242, 190, 95) : wxColour(128, 82, 0));
     _resolutionWarning->Hide();
-    dimBoxSizer->Add(_resolutionWarning, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+    dimBoxSizer->Add(_resolutionWarning, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxBOTTOM, 10);
 
     const auto buttonBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -193,8 +196,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _helpButton->SetMinSize(actionButtonSize);
     buttonBoxSizer->Add(_helpButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    paramBoxSizer->Add(dimBoxSizer, 0, wxEXPAND, 5);
-    paramBoxSizer->AddStretchSpacer(1);
+    paramBoxSizer->Add(dimBoxSizer, 1, wxEXPAND, 5);
     paramBoxSizer->Add(buttonBoxSizer, 0, wxEXPAND, 5);
     subMainBoxSizer->Add(paramBoxSizer, 1, wxEXPAND, 5);
 
