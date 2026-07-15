@@ -14,7 +14,7 @@ JuliaZM::JuliaZM(const unsigned int width, const unsigned int height) : RasterFr
     _xFactor = (_maxX-_minX)/(_screenWidth-1);
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
-    _type = FractalType::JuliaZN;
+    _type = FractalType::JuliaZM;
     _hasHighPrecisionRender = true;
     _kReal = -0.754696;
     _kImaginary = -0.0524231;

@@ -50,7 +50,7 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
                 _fractal = _mandelbrot = new Mandelbrot(width, height);
                 break;
             }
-        case FractalType::MandelbrotZN:
+        case FractalType::MandelbrotZM:
             {
                 _fractal = _mandelbrotZN = new MandelbrotZM(width, height);
                 break;
@@ -60,7 +60,7 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
                 _fractal = _julia = new Julia(width, height);
                 break;
             }
-        case FractalType::JuliaZN:
+        case FractalType::JuliaZM:
             {
                 _fractal = _juliaZN = new JuliaZM(width, height);
                 break;

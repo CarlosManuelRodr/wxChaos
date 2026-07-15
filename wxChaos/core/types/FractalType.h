@@ -4,9 +4,9 @@ enum class FractalType
 {
     None,
     Mandelbrot,
-    MandelbrotZN,
+    MandelbrotZM,
     Julia,
-    JuliaZN,
+    JuliaZM,
     NewtonRaphsonMethod,
     Sinusoidal,
     Magnetic,

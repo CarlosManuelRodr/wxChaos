@@ -1210,7 +1210,7 @@ void MainFrame::ChangeMandelbrot(wxCommandEvent&)
 }
 void MainFrame::ChangeMandelbrotZN(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::MandelbrotZN, true);
+    this->ChangeFractal(FractalType::MandelbrotZM, true);
 }
 void MainFrame::ChangeJulia(wxCommandEvent&)
 {
@@ -1218,7 +1218,7 @@ void MainFrame::ChangeJulia(wxCommandEvent&)
 }
 void MainFrame::ChangeJuliaZN(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::JuliaZN, false);
+    this->ChangeFractal(FractalType::JuliaZM, false);
 }
 void MainFrame::ChangeNewton(wxCommandEvent&)
 {
@@ -1561,7 +1561,7 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
     switch (_fractalType)
     {
         case FractalType::Mandelbrot: juliaType = FractalType::Julia; break;
-        case FractalType::MandelbrotZN: juliaType = FractalType::JuliaZN; break;
+        case FractalType::MandelbrotZM: juliaType = FractalType::JuliaZM; break;
         case FractalType::Manowar: juliaType = FractalType::ManowarJulia; break;
         case FractalType::BurningShip: juliaType = FractalType::BurningShipJulia; break;
         case FractalType::UserDefinedEscapeTime: juliaType = FractalType::UserDefinedEscapeTime; break;

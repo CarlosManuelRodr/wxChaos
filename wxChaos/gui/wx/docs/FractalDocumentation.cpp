@@ -58,9 +58,9 @@ wxString FractalDocumentation::GetDocumentFilename(const FractalType type)
     switch (type)
     {
         case FractalType::Mandelbrot: return "mandelbrot.html";
-        case FractalType::MandelbrotZN: return "mandelbrot_zn.html";
+        case FractalType::MandelbrotZM: return "mandelbrot_zn.html";
         case FractalType::Julia: return "julia.html";
-        case FractalType::JuliaZN: return "julia_zn.html";
+        case FractalType::JuliaZM: return "julia_zn.html";
         case FractalType::NewtonRaphsonMethod: return "newton.html";
         case FractalType::Sinusoidal: return "sinusoidal.html";
         case FractalType::Magnetic: return "magnet.html";

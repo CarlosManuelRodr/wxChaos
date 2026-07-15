@@ -104,7 +104,7 @@ TEST_CASE("DocumentationLinkAction parses fractal option actions")
 
     CHECK(action.GetType() == DocumentationLinkAction::Type::OpenFractalOptions);
     CHECK(action.GetTarget() == "mandelbrot-zn");
-    CHECK(action.GetTargetFractalType() == FractalType::MandelbrotZN);
+    CHECK(action.GetTargetFractalType() == FractalType::MandelbrotZM);
     CHECK(action.TargetFractalEnablesJulia());
 }
 

@@ -258,11 +258,12 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     PopulateFractalChoices();
 
     // Set the default fractal.
-    _fractalChoice->SetSelection(0);
+    SelectDefaultFractal();
     this->CreateFractal(_previewSize);
     UpdateFormulaButtonVisibility();
     _myOpt = _target->GetOptions();
     SetControlsFromOptions(_myOpt);
+    ApplySelectedFractalPreset();
 
     // Connect Events.
     this->Bind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
@@ -547,10 +548,12 @@ void DimensionFrame::OnChangeFractal(wxCommandEvent&)
     UpdateFormulaButtonVisibility();
     _myOpt = _target->GetOptions();
     SetControlsFromOptions(_myOpt);
+    ApplySelectedFractalPreset();
     if (_fractalOptionsPanel != nullptr)
         _fractalOptionsPanel->SetTarget(_target);
     _hasPreviewMap = false;
     _suppressPreviewUpdate = false;
+    UpdateResolutionWarning();
     SchedulePreviewRender();
 }
 
@@ -1156,15 +1159,14 @@ void DimensionFrame::PopulateFractalChoices()
     _scriptList.clear();
 
     AddBuiltInFractalChoice(_("Mandelbrot"), FractalType::Mandelbrot);
-    AddBuiltInFractalChoice(_("Mandelbrot Z^m"), FractalType::MandelbrotZN);
+    AddBuiltInFractalChoice(_("Mandelbrot Z^m"), FractalType::MandelbrotZM);
     AddBuiltInFractalChoice(_("Mandelbrot (Julia)"), FractalType::Julia);
-    AddBuiltInFractalChoice(_("Julia Z^m"), FractalType::JuliaZN);
+    AddBuiltInFractalChoice(_("Julia Z^m"), FractalType::JuliaZM);
     AddBuiltInFractalChoice(_("Sine (Julia)"), FractalType::Sinusoidal);
     AddBuiltInFractalChoice(_("Magnet"), FractalType::Magnetic);
     AddBuiltInFractalChoice(_("Jellyfish"), FractalType::Jellyfish);
     AddBuiltInFractalChoice(_("Manowar"), FractalType::Manowar);
     AddBuiltInFractalChoice(_("Manowar (Julia)"), FractalType::ManowarJulia);
-    AddBuiltInFractalChoice(_("Sierpinski Triangle"), FractalType::SierpinskiTriangle);
     AddBuiltInFractalChoice(_("Tricorn"), FractalType::Tricorn);
     AddBuiltInFractalChoice(_("Burning Ship"), FractalType::BurningShip);
     AddBuiltInFractalChoice(_("Burning Ship (Julia)"), FractalType::BurningShipJulia);
@@ -1178,6 +1180,62 @@ void DimensionFrame::PopulateFractalChoices()
     AddBuiltInFractalChoice(_("User Formula (Complex)"), FractalType::UserDefinedEscapeTime);
 
     GetScriptFractals();
+}
+
+void DimensionFrame::SelectDefaultFractal()
+{
+    constexpr FractalType defaultFractal = FractalType::VectorSierpinskiTriangle;
+    for (std::size_t i = 0; i < _builtInFractalList.size(); i++)
+    {
+        if (_builtInFractalList[i] == defaultFractal)
+        {
+            _fractalChoice->SetSelection(static_cast<int>(i));
+            return;
+        }
+    }
+
+    if (!_builtInFractalList.empty())
+        _fractalChoice->SetSelection(0);
+}
+
+const DimensionFrame::DimensionPreset* DimensionFrame::FindDimensionPreset(const FractalType fractalType)
+{
+    // Note to self: Add or edit known-good calculator presets here.
+    static constexpr DimensionPreset presets[] = {
+        {FractalType::VectorSierpinskiTriangle, -1.16, 1.16, -0.89, 28, "5*x", 1, 100, 5000},
+        {FractalType::LogisticMap, 2.80000000, 4.00000000, -0.04000000, 1000, "5*x", 1, 100, 5000},
+        {FractalType::HenonMap, -1.50000000, 1.50000000, -1.41000000, 50000, "5*x", 1, 100, 5000},
+        {FractalType::KochSnowflake, -1.30000000, 1.30000000, -1.31000000, 15, "5*x", 1, 100, 5000}
+    };
+
+    for (const DimensionPreset& preset : presets)
+    {
+        if (preset.fractalType == fractalType)
+            return &preset;
+    }
+    return nullptr;
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void DimensionFrame::ApplySelectedFractalPreset()
+{
+    if (_target == nullptr)
+        return;
+
+    const DimensionPreset* preset = FindDimensionPreset(_target->GetType());
+    if (preset == nullptr)
+        return;
+
+    _minXCtrl->SetValue(preset->minX);
+    _maxXCtrl->SetValue(preset->maxX);
+    _minYCtrl->SetValue(preset->minY);
+    _iterCtrl->SetValue(static_cast<int>(preset->iterations));
+    _funcCtrl->SetValue(wxString::FromUTF8(preset->divisionFunction));
+    _xMinSpin->SetValue(preset->functionXMin);
+    _xMaxSpin->SetValue(preset->functionXMax);
+    _sizeCtrl->SetValue(preset->imageSize);
+    _divNotebook->SetSelection(0);
+    UpdateDerivedMaxY();
 }
 
 bool DimensionFrame::IsUserDefinedEscapeTimeSelected() const

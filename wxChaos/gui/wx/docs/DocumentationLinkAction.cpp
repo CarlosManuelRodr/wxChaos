@@ -4,9 +4,9 @@ std::optional<DocumentationLinkAction::FractalReference> DocumentationLinkAction
 {
     static const FractalReference fractals[] = {
         {"mandelbrot", FractalType::Mandelbrot, true},
-        {"mandelbrot-zn", FractalType::MandelbrotZN, true},
+        {"mandelbrot-zn", FractalType::MandelbrotZM, true},
         {"julia", FractalType::Julia, false},
-        {"julia-zn", FractalType::JuliaZN, false},
+        {"julia-zn", FractalType::JuliaZM, false},
         {"newton", FractalType::NewtonRaphsonMethod, false},
         {"sinusoidal", FractalType::Sinusoidal, false},
         {"magnet", FractalType::Magnetic, false},

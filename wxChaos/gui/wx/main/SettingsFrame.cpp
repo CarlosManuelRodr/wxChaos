@@ -109,7 +109,7 @@ wxPanel* SettingsFrame::CreatePresetsPage()
         _("User Defined"), _("User Defined Fixed Point"), _("User Defined Newton-Raphson")
     };
     _fractalTypes = {
-        FractalType::Mandelbrot, FractalType::MandelbrotZN, FractalType::Julia, FractalType::JuliaZN,
+        FractalType::Mandelbrot, FractalType::MandelbrotZM, FractalType::Julia, FractalType::JuliaZM,
         FractalType::NewtonRaphsonMethod, FractalType::Sinusoidal, FractalType::Magnetic, FractalType::Jellyfish,
         FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskiTriangle, FractalType::KochSnowflake,
         FractalType::VectorSierpinskiTriangle, FractalType::FixedPoint1,

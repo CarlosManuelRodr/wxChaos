@@ -153,9 +153,9 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
 {
     static const std::map<std::string, FractalType> fractalTypes = {
         { "Mandelbrot", FractalType::Mandelbrot },
-        { "MandelbrotZN", FractalType::MandelbrotZN },
+        { "MandelbrotZN", FractalType::MandelbrotZM },
         { "Julia", FractalType::Julia },
-        { "JuliaZN", FractalType::JuliaZN },
+        { "JuliaZN", FractalType::JuliaZM },
         { "Newton", FractalType::NewtonRaphsonMethod },
         { "Sinusoidal", FractalType::Sinusoidal },
         { "Sinoidal", FractalType::Sinusoidal },

@@ -15,7 +15,7 @@ MandelbrotZM::MandelbrotZM(const unsigned int width, const unsigned int height) 
     _yFactor = (_maxY-_minY)/(_screenHeight-1);
 
     // Adjust options.
-    _type = FractalType::MandelbrotZN;
+    _type = FractalType::MandelbrotZM;
     _hasHighPrecisionRender = true;
     _hasOrbit = true;
     _hasOrbitTrap = true;
