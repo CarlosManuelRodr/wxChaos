@@ -22,6 +22,7 @@
 #include <wx/timer.h>
 
 #include "analysis/BoxCountWorker.h"
+#include "analysis/BoxCountMap.h"
 #include "analysis/ImagePanel.h"
 #include "analysis/PlotWindow.h"
 #include "common/FractalOptionsPanel.h"
@@ -86,6 +87,7 @@ class DimensionFrame : public wxFrame
     FormulaOptions _userFormula;                            ///< User-defined escape-time formula used by this tool.
     int _threadNumber;                                      ///< Number of dimension worker threads.
     std::vector<BoxCountWorker> _dimensionCalculator;       ///< Dimension workers, one per thread.
+    BoxCountMap _boxCountMap;                               ///< Unified occupancy map for raster and vector fractals.
     std::vector<std::unique_ptr<sf::Thread>> _dimThreads;   ///< Owned dimension worker threads.
     std::vector<int> _div;                                  ///< Vector to hold the number of divisions.
     std::vector<double> _epsilon;                           ///< Vector to hold the epsilon values.
@@ -130,7 +132,7 @@ class DimensionFrame : public wxFrame
                                         const wxString& darkIcon);
     [[nodiscard]] static wxBitmapBundle CreateIconBundle(const wxString& lightIcon, const wxString& darkIcon, const wxSize& size);
     wxSizer* CreateFractalParameterRow(const wxString& label, wxWindow* control) const;
-    wxSpinCtrlDouble* CreateCoordinateSpin(const wxString& value) const;
+    [[nodiscard]] wxSpinCtrlDouble* CreateCoordinateSpin(const wxString& value) const;
     void CreateFractal(int size);
     [[nodiscard]] Options ReadDimensionOptions();
     void UpdateDerivedMaxY() const;
@@ -139,10 +141,14 @@ class DimensionFrame : public wxFrame
     void StartPreviewRender();
     void StopPreviewRender() const;
     void RefreshPreviewOverlayOnly();
+    void UpdateBoxCountMap();
+    void ConfigureDimensionWorkers();
+
     /**
      * @brief Waits for all dimension worker threads and releases their resources.
      */
     void JoinDimensionThreads();
+
     /**
      * @brief Requests all dimension workers to stop, then joins and releases their threads.
      */

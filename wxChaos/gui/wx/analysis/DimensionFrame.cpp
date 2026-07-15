@@ -453,8 +453,24 @@ void DimensionFrame::RefreshPreviewOverlayOnly()
         return;
     }
 
-    _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
+    _previewImage->SetMap(_boxCountMap, _numberOfDivisionsSpinCtrl->GetValue());
     _previewImage->Refresh();
+}
+
+void DimensionFrame::UpdateBoxCountMap()
+{
+    if (_target != nullptr)
+        _boxCountMap.Build(*_target);
+}
+
+void DimensionFrame::ConfigureDimensionWorkers()
+{
+    const int sizeDiv = _size / _threadNumber;
+    for (int i = 0; i < _threadNumber; i++)
+    {
+        const int end = i < _threadNumber - 1 ? (i + 1) * sizeDiv : _size;
+        _dimensionCalculator[i].SetMap(&_boxCountMap, i * sizeDiv, end);
+    }
 }
 
 void DimensionFrame::JoinDimensionThreads()
@@ -615,16 +631,6 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
                 _firstRender = false;
             }
 
-            // Divide thread assignment.
-            const int sizeDiv = _size / _threadNumber;
-            for (int i = 0; i < _threadNumber; i++)
-            {
-                if (i < _threadNumber - 1)
-                    _dimensionCalculator[i].SetMap(_target->GetSetMap(), _size, i * sizeDiv, (i + 1) * sizeDiv);
-                else
-                    _dimensionCalculator[i].SetMap(_target->GetSetMap(), _size, i * sizeDiv, _size);
-            }
-
             if (!_div.empty())
             {
                 _divIndex = -1;
@@ -681,7 +687,8 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                 }
 
                 // Set output image.
-                _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
+                UpdateBoxCountMap();
+                _previewImage->SetMap(_boxCountMap, _numberOfDivisionsSpinCtrl->GetValue());
                 _previewImage->Refresh();
                 _hasPreviewMap = true;
                 _progressBar->SetValue(0);
@@ -714,6 +721,8 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                     if (_divIndex == -1)
                     {
                         // Launch the first pack of threads.
+                        UpdateBoxCountMap();
+                        ConfigureDimensionWorkers();
                         this->WriteText(_("Starting box count.\n"));
                         this->WriteText(_("Epsilon   |   BoxCount.\n"));
                         this->WriteText("-------------------\n");
@@ -924,8 +933,8 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         if (saveProgress->IsFinished())
         {
             // Allocate.
-            bool **setMap, **tempSetMap, **colorMap;
-            setMap = _target->GetSetMap();
+            bool **tempSetMap, **colorMap;
+            UpdateBoxCountMap();
             int nDiv = _numberOfDivisionsSpinCtrl->GetValue();
 
             tempSetMap = new bool* [_size];
@@ -940,7 +949,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
             {
                 for (int j = 0; j < _size; j++)
                 {
-                    tempSetMap[i][j] = setMap[i][j];
+                    tempSetMap[i][j] = _boxCountMap.IsOccupied(i, j);
                     colorMap[i][j] = false;
                 }
             }
@@ -959,7 +968,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
                         {
                             if (w < _size && h < _size)
                             {
-                                if (setMap[w][h] == true)
+                                if (_boxCountMap.IsOccupied(w, h))
                                 {
                                     found = true;
                                     // Color square
@@ -1082,6 +1091,8 @@ void DimensionFrame::PopulateFractalChoices()
     AddBuiltInFractalChoice(_("Logistic map"), FractalType::LogisticMap);
     AddBuiltInFractalChoice(_("Henon map"), FractalType::HenonMap);
     AddBuiltInFractalChoice(_("Double pendulum"), FractalType::DoublePendulum);
+    AddBuiltInFractalChoice(_("Koch Snowflake"), FractalType::KochSnowflake);
+    AddBuiltInFractalChoice(_("Sierpinski Triangle (Vector)"), FractalType::VectorSierpinskiTriangle);
     AddBuiltInFractalChoice(_("User Formula (Complex)"), FractalType::UserDefinedEscapeTime);
 
     GetScriptFractals();

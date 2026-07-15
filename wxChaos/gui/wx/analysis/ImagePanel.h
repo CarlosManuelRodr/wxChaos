@@ -1,16 +1,16 @@
 #pragma once
 
 #include <wx/panel.h>
+#include "analysis/BoxCountMap.h"
 
 class ImagePanel : public wxPanel
 {
-    bool** _map;
+    BoxCountMap _map;
     int _size;
     int _div;
 
 public:
     ImagePanel(wxWindow* parent, int id, int size);
-    ~ImagePanel() override;
     void OnPaintEvent(wxPaintEvent&);
-    void SetMap(bool** map, int div);
+    void SetMap(const BoxCountMap& map, int div);
 };

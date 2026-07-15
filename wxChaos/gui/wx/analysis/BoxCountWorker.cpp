@@ -1,4 +1,5 @@
 #include "analysis/BoxCountWorker.h"
+#include "analysis/BoxCountMap.h"
 
 BoxCountWorker::BoxCountWorker() : _ho(0), _hf(0), _map(nullptr), _size(0), _div(0)
 {
@@ -6,10 +7,10 @@ BoxCountWorker::BoxCountWorker() : _ho(0), _hf(0), _map(nullptr), _size(0), _div
     _boxCountN = 0;
 }
 
-void BoxCountWorker::SetMap(bool** map, const int size, const int ho, const int hf)
+void BoxCountWorker::SetMap(const BoxCountMap* map, const int ho, const int hf)
 {
     _map = map;
-    _size = size;
+    _size = map != nullptr ? map->GetSize() : 0;
     _ho = ho;
     _hf = hf;
 }
@@ -41,7 +42,7 @@ void BoxCountWorker::Run()
                 {
                     if (w < _size && h < _size)
                     {
-                        if (_map[w][h] == true)
+                        if (_map != nullptr && _map->IsOccupied(w, h))
                         {
                             found = true;
                             _boxCountN++;

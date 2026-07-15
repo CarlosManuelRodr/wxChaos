@@ -2,6 +2,7 @@ Bugs:
 - Sierpinski triangle cannot calculate its dimension in its current form.
 
 Improvements to get to a release version:
+- Use forward declarations for classes to reduce build time.
 - Add a Windows installer.
 - Make it work on Linux again.
 

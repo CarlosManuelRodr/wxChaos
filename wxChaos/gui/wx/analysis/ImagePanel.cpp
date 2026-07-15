@@ -6,32 +6,12 @@
 ImagePanel::ImagePanel(wxWindow* parent, const int id, const int size)
                        : wxPanel(parent, id, wxDefaultPosition, wxSize(size, size))
 {
-    _map = nullptr;
     _size = size;
     _div = 20;
-
-    _map = new bool* [_size];
-    for (int i = 0; i < _size; i++)
-        _map[i] = new bool[_size];
-
-    for (int i = 0; i < _size; i++)
-    {
-        for (int j = 0; j < _size; j++)
-            _map[i][j] = false;
-    }
 
     this->wxWindowBase::SetMinSize(wxSize(_size, _size));
     this->SetInitialSize(wxSize(_size, _size));
     this->Bind(wxEVT_PAINT, &ImagePanel::OnPaintEvent, this);
-}
-
-ImagePanel::~ImagePanel()
-{
-    for (int i = 0; i < _size; i++)
-    {
-        delete[] _map[i];
-    }
-    delete[] _map;
 }
 
 void ImagePanel::OnPaintEvent(wxPaintEvent&)
@@ -41,7 +21,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
     dc.SetPen(wxPen(wxColour(255, 255, 255)));
     dc.DrawRectangle(0, 0, _size, _size);
 
-    if (_map != nullptr)
+    if (_map.GetSize() == _size)
     {
         const double epsilon = static_cast<double>(_size) / static_cast<double>(_div);
         int boxes = 0;
@@ -61,7 +41,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
                     {
                         if (w < _size && h < _size)
                         {
-                            if (_map[w][h] == true)
+                            if (_map.IsOccupied(w, h))
                             {
                                 found = true;
                                 boxes++;
@@ -96,7 +76,7 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
         {
             for (int j = 0; j < _size; j++)
             {
-                if (_map[i][j] == true)
+                if (_map.IsOccupied(i, j))
                 {
                     dc.DrawPoint(i, j);
                 }
@@ -121,14 +101,8 @@ void ImagePanel::OnPaintEvent(wxPaintEvent&)
     }
 }
 
-void ImagePanel::SetMap(bool** map, const int div)
+void ImagePanel::SetMap(const BoxCountMap& map, const int div)
 {
-    for (int i = 0; i < _size; i++)
-    {
-        for (int j = 0; j < _size; j++)
-        {
-            _map[i][j] = map[i][j];
-        }
-    }
+    _map = map;
     _div = div;
 }
