@@ -715,9 +715,9 @@ void MainFrame::SetUpGUI()
     _rendererMenu->Append(ID_PALETTE, _("Renderer options"));
 
     // Help menu.
+    _helpMenu->Append(ID_WELCOME_DIALOG, _("Open welcome guide"));
     _keyboardGuide = new wxMenuItem(_helpMenu, ID_KEYBOARD_GUIDE, _("Keyboard guide"), wxEmptyString, wxITEM_CHECK);
     _helpMenu->Append(_keyboardGuide);
-    _helpMenu->Append(ID_WELCOME_DIALOG, _("Open welcome guide"));
     _helpMenu->Append(ID_ABOUT, _("About"));
 
 
