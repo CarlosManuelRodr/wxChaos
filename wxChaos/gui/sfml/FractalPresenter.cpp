@@ -1308,6 +1308,16 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
         return;
     }
 
+    if (_fractal->IsVectorFractal() && !_fractal->IsRendered())
+    {
+        // Vector renderers publish their geometry atomically when the worker finishes, so _output still contains
+        // the previous viewport here. The transformed temporary sprite is the authoritative preview between the
+        // end of the zoom animation and completion of the new render.
+        if (!_dontDrawTempImage)
+            window->draw(_tempSprite);
+        return;
+    }
+
     if (!_dontDrawTempImage && _fractal->IsExteriorColorEnabled())
         window->draw(_tempSprite);
 
