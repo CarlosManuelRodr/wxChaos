@@ -16,6 +16,7 @@ enum class FractalType
     SierpinskiTriangle,
     KochSnowflake,
     VectorSierpinskiTriangle,
+    SierpinskiCarpet,
     FixedPoint1,
     FixedPoint2,
     FixedPoint3,

@@ -13,6 +13,7 @@ FractalFactory::FractalFactory()
     _sierpinskiTriangle = nullptr;
     _kochSnowflake = nullptr;
     _vectorSierpinskiTriangle = nullptr;
+    _sierpinskiCarpet = nullptr;
     _jellyfish = nullptr;
     _manowar = nullptr;
     _manowarJulia = nullptr;
@@ -108,6 +109,11 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
         case FractalType::VectorSierpinskiTriangle:
             {
                 _fractal = _vectorSierpinskiTriangle = new VectorSierpinskiTriangle(width, height);
+                break;
+            }
+        case FractalType::SierpinskiCarpet:
+            {
+                _fractal = _sierpinskiCarpet = new SierpinskiCarpet(width, height);
                 break;
             }
         case FractalType::FixedPoint1:
@@ -293,6 +299,11 @@ void FractalFactory::DeleteFractal()
     {
         delete _vectorSierpinskiTriangle;
         _vectorSierpinskiTriangle = nullptr;
+    }
+    if (_sierpinskiCarpet != nullptr)
+    {
+        delete _sierpinskiCarpet;
+        _sierpinskiCarpet = nullptr;
     }
     if (_fixedPoint1 != nullptr)
     {

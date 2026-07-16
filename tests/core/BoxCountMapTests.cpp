@@ -3,6 +3,7 @@
 #include "analysis/BoxCountWorker.h"
 #include "fractals/raster/Mandelbrot.h"
 #include "fractals/vector/KochSnowflake.h"
+#include "fractals/vector/SierpinskiCarpet.h"
 
 TEST_CASE("Box-count occupancy preserves raster set membership")
 {
@@ -46,4 +47,20 @@ TEST_CASE("Box-count worker detects boxes crossed by vector lines")
 
     CHECK(worker.GetBoxCount() > 0);
     CHECK(worker.GetBoxCount() <= 12 * 12);
+}
+
+TEST_CASE("Box-count occupancy clears Sierpinski carpet holes")
+{
+    SierpinskiCarpet carpet(90, 90);
+    carpet.SetView({-1.0, -1.0, 1.0, 1.0});
+    carpet.SetIterations(1);
+    carpet.RenderBlocking();
+
+    BoxCountMap map;
+    map.Build(carpet);
+
+    CHECK(map.IsOccupied(5, 5));
+    CHECK_FALSE(map.IsOccupied(45, 45));
+    CHECK(map.GetOccupiedPixelCount() > 0);
+    CHECK(map.GetOccupiedPixelCount() < 90 * 90);
 }

@@ -70,6 +70,7 @@ wxString FractalDocumentation::GetDocumentFilename(const FractalType type)
         case FractalType::SierpinskiTriangle: return "sierpinski_triangle.html";
         case FractalType::KochSnowflake: return "koch_snowflake.html";
         case FractalType::VectorSierpinskiTriangle: return "vector_sierpinski_triangle.html";
+        case FractalType::SierpinskiCarpet: return "sierpinski_carpet.html";
         case FractalType::FixedPoint1: return "fixed_point_sin.html";
         case FractalType::FixedPoint2: return "fixed_point_cos.html";
         case FractalType::FixedPoint3: return "fixed_point_tan.html";

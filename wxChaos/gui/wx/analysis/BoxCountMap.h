@@ -6,6 +6,7 @@
 class Fractal;
 struct CircleData;
 struct LineData;
+struct RectangleData;
 struct Rect;
 
 /**
@@ -21,8 +22,8 @@ class BoxCountMap
     int _size{};                            ///< Width and height of the square occupancy map in pixels.
     std::vector<std::uint8_t> _occupied;   ///< Row-major occupancy flags; nonzero values represent the fractal set.
 
-    /** @brief Marks a pixel as occupied when it lies inside the map bounds. */
-    void SetOccupied(int x, int y);
+    /** @brief Changes a pixel's occupancy when it lies inside the map bounds. */
+    void SetOccupied(int x, int y, bool occupied = true);
 
     /** @brief Copies set-membership pixels from a raster fractal map. */
     void CopyRasterMap(bool** map);
@@ -38,6 +39,9 @@ class BoxCountMap
 
     /** @brief Rasterizes the outline or filled area of one world-coordinate circle. */
     void RasterizeCircle(const CircleData& circle, const Rect& view);
+
+    /** @brief Fills or clears the pixels covered by one world-coordinate rectangle. */
+    void RasterizeRectangle(const RectangleData& rectangle, const Rect& view);
 
     /**
      * @brief Clips one coordinate axis of a line segment to an interval.

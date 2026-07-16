@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sierpinski Carpet</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main data-i18n-lang="en" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Fractal gallery</p>
+            <h1>Sierpinski Carpet</h1>
+            <p class="subtitle">A square repeatedly opened into eight smaller copies of itself.</p>
+            <div class="formula hero-formula">\(D=\frac{\log 8}{\log 3}\)</div>
+            <p class="hero-introduction">
+                Divide a square into a three-by-three grid and remove its center. Repeating that operation in each
+                of the eight retained squares produces a set whose area tends to zero while intricate structure remains.
+            </p>
+        </div>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/sierpinski-carpet">Open in wxChaos</a></div>
+    </section>
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Increase the iterations to remove another generation of central squares.</p></div>
+            <div class="experiment-step"><p>Zoom into any retained corner and compare it with the complete carpet.</p></div>
+        </div>
+    </section>
+    <section>
+        <h2>Vector construction</h2>
+        <p>wxChaos draws one occupied square and overlays the recursively removed holes with rectangle primitives.
+            Geometry is generated in the background, branches outside the viewport are pruned, and subdivisions
+            smaller than a screen pixel are skipped.</p>
+    </section>
+</main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Alfombra de Sierpinski</h1>
+            <p class="subtitle">Un cuadrado que se abre repetidamente en ocho copias más pequeñas de sí mismo.</p>
+            <div class="formula hero-formula">\(D=\frac{\log 8}{\log 3}\)</div>
+            <p class="hero-introduction">
+                Divide un cuadrado en una cuadrícula de tres por tres y elimina su centro. Repetir la operación en
+                cada uno de los ocho cuadrados conservados produce un conjunto cuya área tiende a cero mientras
+                permanece una estructura intrincada.
+            </p>
+        </div>
+        <div class="action-row"><a class="action-link" href="wxchaos://fractal/sierpinski-carpet">Abrir en wxChaos</a></div>
+    </section>
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step"><p>Aumenta las iteraciones para eliminar otra generación de cuadrados centrales.</p></div>
+            <div class="experiment-step"><p>Acércate a cualquier esquina conservada y compárala con la alfombra completa.</p></div>
+        </div>
+    </section>
+    <section>
+        <h2>Construcción vectorial</h2>
+        <p>wxChaos dibuja un cuadrado ocupado y superpone los huecos eliminados mediante primitivas rectangulares.
+            La geometría se genera en segundo plano, se descartan las ramas fuera de la vista y se omiten las
+            subdivisiones menores que un píxel de la pantalla.</p>
+    </section>
+</main>
+</body>
+</html>

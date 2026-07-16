@@ -139,6 +139,7 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_MENU, &MainFrame::ChangeSierpinskiTriangle, this, ID_SIERPINSKI_TRIANGLE);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeKochSnowflake, this, ID_KOCH_SNOWFLAKE);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeVectorSierpinskiTriangle, this, ID_VECTOR_SIERPINSKI_TRIANGLE);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeSierpinskiCarpet, this, ID_SIERPINSKI_CARPET);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeUserDefinedEscapeTime, this, ID_USER_DEFINED);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeUserDefinedFixedPoint, this, ID_FIXED_POINT_USER_DEFINED);
@@ -551,7 +552,7 @@ void MainFrame::SetUpGUI()
     // Formulas.
     wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinusoidal, *magnet;
     wxMenuItem* jellyfish, *manowar, *manowarJulia, *sierpinskiTriangle, *kochSnowflake, *fixedPoint1, *fixedPoint2;
-    wxMenuItem* vectorSierpinskiTriangle;
+    wxMenuItem* vectorSierpinskiTriangle, *sierpinskiCarpet;
     wxMenuItem* fixedPoint3, *fixedPoint4, *userDefined, *fpUserDefined, *newtonUserDefined;
     wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *logisticMap, *henonMap, *dPendulum;
 
@@ -575,6 +576,8 @@ void MainFrame::SetUpGUI()
     kochSnowflake = new wxMenuItem(_formula, ID_KOCH_SNOWFLAKE, _("Koch Snowflake"), wxEmptyString, wxITEM_NORMAL);
     vectorSierpinskiTriangle = new wxMenuItem(_formula, ID_VECTOR_SIERPINSKI_TRIANGLE,
                                               _("Sierpinski Triangle (Vector)"), wxEmptyString, wxITEM_NORMAL);
+    sierpinskiCarpet = new wxMenuItem(_formula, ID_SIERPINSKI_CARPET,
+                                      _("Sierpinski Carpet"), wxEmptyString, wxITEM_NORMAL);
     fixedPoint1 = new wxMenuItem(_formula, ID_FIXEDPOINT1, _("Fixed Point") + menuSeparator + "z = sin(z)", wxEmptyString, wxITEM_NORMAL);
     fixedPoint2 = new wxMenuItem(_formula, ID_FIXEDPOINT2, _("Fixed Point") + menuSeparator + "z = cos(z)", wxEmptyString, wxITEM_NORMAL);
     fixedPoint3 = new wxMenuItem(_formula, ID_FIXEDPOINT3, _("Fixed Point") + menuSeparator + "z = tan(z)", wxEmptyString, wxITEM_NORMAL);
@@ -621,6 +624,7 @@ void MainFrame::SetUpGUI()
     _typeOther->Append(henonMap);
     _typeOther->Append(kochSnowflake);
     _typeOther->Append(vectorSierpinskiTriangle);
+    _typeOther->Append(sierpinskiCarpet);
 
     _formula->Append(-1, _("Complex"), _typeComplex);
     _formula->Append(-1, _("Numerical method"), _typeNumericalMethod);
@@ -1255,6 +1259,10 @@ void MainFrame::ChangeKochSnowflake(wxCommandEvent&)
 void MainFrame::ChangeVectorSierpinskiTriangle(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::VectorSierpinskiTriangle, false);
+}
+void MainFrame::ChangeSierpinskiCarpet(wxCommandEvent&)
+{
+    this->ChangeFractal(FractalType::SierpinskiCarpet, false);
 }
 void MainFrame::ChangeFixedPoint1(wxCommandEvent&)
 {

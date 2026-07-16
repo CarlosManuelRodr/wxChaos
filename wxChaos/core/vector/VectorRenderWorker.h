@@ -8,6 +8,7 @@
 #include "../RenderWorker.h"
 #include "../geometry/CircleData.h"
 #include "../geometry/LineData.h"
+#include "../geometry/RectangleData.h"
 
 /**
  * @class VectorRenderWorker
@@ -18,8 +19,9 @@ class VectorRenderWorker : public RenderWorker
 public:
     struct Geometry
     {
-        std::vector<LineData> lines;
-        std::vector<CircleData> circles;
+        std::vector<LineData> lines;              ///< Completed line primitives.
+        std::vector<CircleData> circles;          ///< Completed circle primitives.
+        std::vector<RectangleData> rectangles;    ///< Completed filled or cleared rectangle primitives.
     };
 
     class Context
@@ -34,6 +36,9 @@ public:
         void SetProgress(int progress);
         void AddLine(double x1, double y1, double x2, double y2, const sf::Color& color);
         void AddCircle(double xCenter, double yCenter, double radius, const sf::Color& color, bool filled);
+        /** @brief Appends a filled rectangle that either adds to or removes from the represented set. */
+        void AddRectangle(double left, double right, double bottom, double top, const sf::Color& color,
+                          bool belongsToSet);
     };
 
 private:

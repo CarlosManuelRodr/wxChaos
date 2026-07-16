@@ -12,6 +12,7 @@
 #include "types/RenderingAlgorithmType.h"
 #include "geometry/LineData.h"
 #include "geometry/CircleData.h"
+#include "geometry/RectangleData.h"
 #include "geometry/Vector2Int.h"
 #include "geometry/Rect.h"
 #include "coloring/PaletteMapping.h"
@@ -35,12 +36,21 @@ class FractalFactory;
 class Fractal
 {
 public:
+    /**
+     * @class CoordinateSystem
+     * @brief Represents the named axes of a 2D coordinate system.
+     */
     struct CoordinateSystem
     {
         wxString horizontalAxis;
         wxString verticalAxis;
     };
 
+    /**
+     * @class PointSample
+     * @brief Represents the result iterating a single point. Typically used to get information about the result of
+     * iterating a single point.
+     */
     struct PointSample
     {
         bool inSet;
@@ -127,6 +137,7 @@ protected:
     // Geometry variables.
     std::vector<CircleData> _circles;
     std::vector<LineData> _lines;
+    std::vector<RectangleData> _rectangles;
     bool _geomFigure;
 
     // Effect variables.
@@ -166,7 +177,6 @@ protected:
 public:
     static constexpr double InvalidColor = std::numeric_limits<double>::max();
 
-    // Basic methods.
     ///@brief Construct a fractal for the given render dimensions.
     ///@param width Image width.
     ///@param height Image height.
@@ -202,7 +212,7 @@ public:
     void SetView(const Rect& worldCoordinates);
     void SetPreciseView(const PreciseRect& worldCoordinates);
 
-    void Redraw();                     ///< Redraws the fractal.
+    void Redraw();   ///< Redraws the fractal.
 
     ///@brief Gets the current render dimensions.
     sf::Vector2u GetScreenSize() const;
@@ -295,9 +305,12 @@ public:
     void MarkOrbitDirty();
     bool HasGeometryFigures() const;
     bool IsSnapshotActive() const;
+
+    // Geometry
     const std::vector<LineData>& GetLines() const;
     virtual const std::vector<LineData>& GetOrbitLines() const = 0;
     const std::vector<CircleData>& GetCircles() const;
+    const std::vector<RectangleData>& GetRectangles() const;
 
     ///@brief Describes the measurements of the currently recorded orbit.
     wxString DescribeOrbit(bool escaped) const;

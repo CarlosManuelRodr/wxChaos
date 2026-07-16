@@ -28,6 +28,13 @@ void VectorRenderWorker::Context::AddCircle(const double xCenter, const double y
     _geometry.circles.push_back({xCenter, yCenter, radius, color, filled});
 }
 
+void VectorRenderWorker::Context::AddRectangle(const double left, const double right, const double bottom,
+                                               const double top, const sf::Color& color,
+                                               const bool belongsToSet)
+{
+    _geometry.rectangles.push_back({left, right, bottom, top, color, belongsToSet});
+}
+
 VectorRenderWorker::~VectorRenderWorker()
 {
     Stop();

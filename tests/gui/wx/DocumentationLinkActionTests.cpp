@@ -31,6 +31,14 @@ TEST_CASE("DocumentationLinkAction parses vector Sierpinski triangle actions")
     CHECK(triangle.GetTargetFractalType() == FractalType::VectorSierpinskiTriangle);
 }
 
+TEST_CASE("DocumentationLinkAction parses Sierpinski carpet actions")
+{
+    const DocumentationLinkAction carpet = DocumentationLinkAction::Parse("wxchaos://fractal/sierpinski-carpet");
+
+    CHECK(carpet.GetType() == DocumentationLinkAction::Type::OpenFractal);
+    CHECK(carpet.GetTargetFractalType() == FractalType::SierpinskiCarpet);
+}
+
 TEST_CASE("DocumentationLinkAction parses Julia mode actions for compatible fractals")
 {
     const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://julia/mandelbrot");

@@ -2,9 +2,11 @@
 #include <doctest/doctest.h>
 #include "FractalFactory.h"
 #include "../../wxChaos/core/fractals/vector/VectorSierpinskiTriangle.h"
+#include "../../wxChaos/core/fractals/vector/SierpinskiCarpet.h"
 #include "../../wxChaos/core/vector/VectorFractal.h"
 
 static_assert(std::is_base_of_v<VectorFractal, VectorSierpinskiTriangle>);
+static_assert(std::is_base_of_v<VectorFractal, SierpinskiCarpet>);
 
 TEST_CASE("Vector Sierpinski triangle draws the outer boundary at iteration zero")
 {
@@ -44,4 +46,48 @@ TEST_CASE("Fractal factory creates the vector Sierpinski triangle")
     REQUIRE(factory.GetFractal() != nullptr);
     CHECK(factory.GetFractal()->IsVectorFractal());
     CHECK_FALSE(factory.GetFractal()->SupportsColorRotation());
+}
+
+TEST_CASE("Sierpinski carpet starts as one occupied square")
+{
+    SierpinskiCarpet carpet(640, 480);
+    carpet.SetIterations(0);
+    carpet.RenderBlocking();
+
+    REQUIRE(carpet.GetRectangles().size() == 1);
+    CHECK(carpet.GetRectangles().front().belongsToSet);
+    CHECK(carpet.GetSetMap() == nullptr);
+}
+
+TEST_CASE("Sierpinski carpet removes one center from every retained square")
+{
+    SierpinskiCarpet carpet(640, 480);
+    carpet.SetView({-1.2, -1.2, 1.2, 1.2});
+    carpet.SetIterations(2);
+    carpet.RenderBlocking();
+
+    REQUIRE(carpet.GetRectangles().size() == 10);
+    CHECK(carpet.GetRectangles().front().belongsToSet);
+    for (std::size_t i = 1; i < carpet.GetRectangles().size(); i++)
+        CHECK_FALSE(carpet.GetRectangles()[i].belongsToSet);
+}
+
+TEST_CASE("Sierpinski carpet prunes squares outside the viewport")
+{
+    SierpinskiCarpet carpet(640, 480);
+    carpet.SetIterations(20);
+    carpet.SetView({10.0, 10.0, 11.0, 11.0});
+    carpet.RenderBlocking();
+
+    CHECK(carpet.GetRectangles().empty());
+    CHECK(carpet.GetRenderProgress() == 100);
+}
+
+TEST_CASE("Fractal factory creates the Sierpinski carpet")
+{
+    FractalFactory factory;
+    factory.CreateFractal(FractalType::SierpinskiCarpet, 320, 240);
+    REQUIRE(factory.GetFractal() != nullptr);
+    CHECK(factory.GetFractal()->IsVectorFractal());
+    CHECK(factory.GetFractal()->GetType() == FractalType::SierpinskiCarpet);
 }

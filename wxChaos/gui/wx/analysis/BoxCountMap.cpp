@@ -30,10 +30,10 @@ std::size_t BoxCountMap::GetOccupiedPixelCount() const
     return static_cast<std::size_t>(std::count(_occupied.begin(), _occupied.end(), std::uint8_t{1}));
 }
 
-void BoxCountMap::SetOccupied(const int x, const int y)
+void BoxCountMap::SetOccupied(const int x, const int y, const bool occupied)
 {
     if (x >= 0 && y >= 0 && x < _size && y < _size)
-        _occupied[static_cast<std::size_t>(y) * _size + x] = 1;
+        _occupied[static_cast<std::size_t>(y) * _size + x] = occupied ? 1 : 0;
 }
 
 void BoxCountMap::CopyRasterMap(bool** map)
@@ -54,11 +54,40 @@ void BoxCountMap::CopyRasterMap(bool** map)
 void BoxCountMap::RasterizeVectorGeometry(const Fractal& fractal)
 {
     const Rect view = fractal.GetView();
+    for (const RectangleData& rectangle : fractal.GetRectangles())
+        RasterizeRectangle(rectangle, view);
+
     for (const LineData& line : fractal.GetLines())
         RasterizeLine(line, view);
 
     for (const CircleData& circle : fractal.GetCircles())
         RasterizeCircle(circle, view);
+}
+
+void BoxCountMap::RasterizeRectangle(const RectangleData& rectangle, const Rect& view)
+{
+    const double viewWidth = view._right - view._left;
+    const double viewHeight = view._top - view._bottom;
+    if (viewWidth <= 0.0 || viewHeight <= 0.0 || rectangle.left >= rectangle.right
+        || rectangle.bottom >= rectangle.top || rectangle.right < view._left || rectangle.left > view._right
+        || rectangle.top < view._bottom || rectangle.bottom > view._top)
+        return;
+
+    const auto pixelMaximum = static_cast<double>(_size - 1);
+    const double clippedLeft = std::max(rectangle.left, view._left);
+    const double clippedRight = std::min(rectangle.right, view._right);
+    const double clippedBottom = std::max(rectangle.bottom, view._bottom);
+    const double clippedTop = std::min(rectangle.top, view._top);
+    const int firstX = ClampPixel(std::ceil((clippedLeft - view._left) * pixelMaximum / viewWidth));
+    const int lastX = ClampPixel(std::floor((clippedRight - view._left) * pixelMaximum / viewWidth));
+    const int firstY = ClampPixel(std::ceil((view._top - clippedTop) * pixelMaximum / viewHeight));
+    const int lastY = ClampPixel(std::floor((view._top - clippedBottom) * pixelMaximum / viewHeight));
+
+    for (int y = firstY; y <= lastY; y++)
+    {
+        for (int x = firstX; x <= lastX; x++)
+            SetOccupied(x, y, rectangle.belongsToSet);
+    }
 }
 
 void BoxCountMap::RasterizeLine(const LineData& line, const Rect& view)

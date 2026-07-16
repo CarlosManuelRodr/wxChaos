@@ -168,6 +168,7 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
         { "Sierpinsky_Triangle", FractalType::SierpinskiTriangle },
         { "Koch_Snowflake", FractalType::KochSnowflake },
         { "Vector_Sierpinski_Triangle", FractalType::VectorSierpinskiTriangle },
+        { "Sierpinski_Carpet", FractalType::SierpinskiCarpet },
         { "FixedPoint1", FractalType::FixedPoint1 },
         { "FixedPoint2", FractalType::FixedPoint2 },
         { "FixedPoint3", FractalType::FixedPoint3 },
@@ -262,6 +263,8 @@ std::string AppConfigStore::FractalTypeToString(FractalType type)
         return "Koch_Snowflake";
     if (type == FractalType::VectorSierpinskiTriangle)
         return "Vector_Sierpinski_Triangle";
+    if (type == FractalType::SierpinskiCarpet)
+        return "Sierpinski_Carpet";
     if (type == FractalType::LogisticMap)
         return "Logistic_Map";
     if (type == FractalType::HenonMap)

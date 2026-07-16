@@ -22,6 +22,8 @@ TEST_CASE("vector fractal documentation is registered")
 {
     CHECK(FractalDocumentation::GetDocumentFile(FractalType::VectorSierpinskiTriangle)
         .EndsWith("vector_sierpinski_triangle.html"));
+    CHECK(FractalDocumentation::GetDocumentFile(FractalType::SierpinskiCarpet)
+        .EndsWith("sierpinski_carpet.html"));
 }
 
 TEST_CASE("localized fractal documentation keeps the canonical document file")

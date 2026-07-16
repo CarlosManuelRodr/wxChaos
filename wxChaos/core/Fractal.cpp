@@ -544,6 +544,11 @@ const std::vector<CircleData>& Fractal::GetCircles() const
     return _circles;
 }
 
+const std::vector<RectangleData>& Fractal::GetRectangles() const
+{
+    return _rectangles;
+}
+
 wxString Fractal::DescribeOrbit(const bool escaped) const
 {
     const std::vector<LineData>& orbitLines = GetOrbitLines();
@@ -657,19 +662,19 @@ wxString Fractal::InspectPoint(const double x, const double y, const optional<un
     probe->SetView({x - epsilon, y - epsilon, x + epsilon, y + epsilon});
     probe->RenderBlocking();
 
-    const PointSample sample = probe->GetPointSample(1, 1);
+    const auto [inSet, value, hasValue] = probe->GetPointSample(1, 1);
     wxString output;
     output << "Fractal: " << probe->GetName() << "\n"
            << "Coordinates: (" << FormatNumber(x) << ", " << FormatNumber(y) << ")\n"
            << "Algorithm: " << probe->GetRenderingAlgorithmName() << "\n"
            << "Maximum iterations: " << options.maxIterations << "\n";
 
-    if (sample.inSet)
+    if (inSet)
         output << "Result: inside after " << options.maxIterations << " iterations";
-    else if (sample.hasValue && options.alg == RenderingAlgorithmType::EscapeTime)
-        output << "Result: escaped at iteration " << sample.value;
-    else if (sample.hasValue)
-        output << "Renderer value: " << sample.value;
+    else if (hasValue && options.alg == RenderingAlgorithmType::EscapeTime)
+        output << "Result: escaped at iteration " << value;
+    else if (hasValue)
+        output << "Renderer value: " << value;
     else
         output << "Result: no value produced";
 
@@ -678,7 +683,7 @@ wxString Fractal::InspectPoint(const double x, const double y, const optional<un
         probe->SetOrbitMode(true);
         probe->SetOrbitPoint(x, y);
         probe->DrawOrbit();
-        output << "\n" << probe->DescribeOrbit(!sample.inSet);
+        output << "\n" << probe->DescribeOrbit(!inSet);
     }
 
     return output;
@@ -1248,5 +1253,6 @@ void Fractal::ClearGeometryFigures()
 {
     _circles.clear();
     _lines.clear();
+    _rectangles.clear();
     _geomFigure = !GetOrbitLines().empty();
 }

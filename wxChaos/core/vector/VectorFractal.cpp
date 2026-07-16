@@ -67,7 +67,8 @@ void VectorFractal::PublishCompletedGeometry()
 
     _lines = std::move(geometry.lines);
     _circles = std::move(geometry.circles);
-    _geomFigure = !_lines.empty() || !_circles.empty();
+    _rectangles = std::move(geometry.rectangles);
+    _geomFigure = !_lines.empty() || !_circles.empty() || !_rectangles.empty();
     _refreshImage = true;
 }
 
@@ -113,6 +114,28 @@ const std::vector<LineData>& VectorFractal::GetOrbitLines() const
 
 void VectorFractal::DrawPrimitives(sf::RenderTarget& target) const
 {
+    sf::VertexArray rectangles(sf::Quads);
+    for (const RectangleData& rectangle : _rectangles)
+    {
+        const double clippedLeft = std::max(rectangle.left, _minX);
+        const double clippedRight = std::min(rectangle.right, _maxX);
+        const double clippedBottom = std::max(rectangle.bottom, _minY);
+        const double clippedTop = std::min(rectangle.top, _maxY);
+        if (clippedLeft >= clippedRight || clippedBottom >= clippedTop)
+            continue;
+
+        const auto left = static_cast<float>(GetPixelX(clippedLeft));
+        const auto right = static_cast<float>(GetPixelX(clippedRight));
+        const auto top = static_cast<float>(GetPixelY(clippedTop));
+        const auto bottom = static_cast<float>(GetPixelY(clippedBottom));
+        rectangles.append(sf::Vertex({left, top}, rectangle.color));
+        rectangles.append(sf::Vertex({right, top}, rectangle.color));
+        rectangles.append(sf::Vertex({right, bottom}, rectangle.color));
+        rectangles.append(sf::Vertex({left, bottom}, rectangle.color));
+    }
+    if (rectangles.getVertexCount() != 0)
+        target.draw(rectangles);
+
     for (const LineData& line : _lines)
     {
         const sf::Vertex vertices[] = {

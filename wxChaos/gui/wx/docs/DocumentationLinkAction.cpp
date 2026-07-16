@@ -16,6 +16,7 @@ std::optional<DocumentationLinkAction::FractalReference> DocumentationLinkAction
         {"sierpinski-triangle", FractalType::SierpinskiTriangle, false},
         {"koch-snowflake", FractalType::KochSnowflake, false},
         {"vector-sierpinski-triangle", FractalType::VectorSierpinskiTriangle, false},
+        {"sierpinski-carpet", FractalType::SierpinskiCarpet, false},
         {"fixed-point-sin", FractalType::FixedPoint1, false},
         {"fixed-point-cos", FractalType::FixedPoint2, false},
         {"fixed-point-tan", FractalType::FixedPoint3, false},
