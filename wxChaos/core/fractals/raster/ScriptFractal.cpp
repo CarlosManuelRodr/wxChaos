@@ -197,7 +197,8 @@ wxString ScriptFractal::GetOrbitErrorInfo() const
 {
     return _orbitErrorInfo;
 }
-void ScriptFractal::ClearErrorInfo() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void ScriptFractal::ClearErrorInfo()
 {
     return _myRender[0].ClearErrorInfo();
 }

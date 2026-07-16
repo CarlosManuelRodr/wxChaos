@@ -233,7 +233,8 @@ void FractalFactory::CreateScriptFractal(const unsigned int width, const unsigne
 {
     _fractal = _scriptFractal = new ScriptFractal(width, height, scriptPath);
 }
-void FractalFactory::SetFormula(FormulaOptions formula) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void FractalFactory::SetFormula(FormulaOptions formula)
 {
     if (_fractalType == FractalType::UserDefinedEscapeTime)
     {

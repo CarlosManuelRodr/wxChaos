@@ -1018,7 +1018,8 @@ void FractalPresenter::SetColorCycleLength(const double cycleLength)
     _fractal->SetColorCycleLength(cycleLength);
 }
 
-void FractalPresenter::SetColorRotationSpeed(const double speed) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void FractalPresenter::SetColorRotationSpeed(const double speed)
 {
     _fractal->SetColorRotationSpeed(speed);
 }

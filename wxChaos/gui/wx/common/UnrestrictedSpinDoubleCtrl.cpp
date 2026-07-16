@@ -32,7 +32,8 @@ double UnrestrictedSpinDoubleCtrl::GetValue() const
     return TextUtils::ToDouble(_textCtrl->GetValue());
 }
 
-void UnrestrictedSpinDoubleCtrl::SetValue(const double value) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void UnrestrictedSpinDoubleCtrl::SetValue(const double value)
 {
     _textCtrl->SetValue(FormatValue(value));
 }
@@ -50,7 +51,8 @@ void UnrestrictedSpinDoubleCtrl::OnIncrement(wxCommandEvent&)
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
-void UnrestrictedSpinDoubleCtrl::AdjustValue(const double delta) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void UnrestrictedSpinDoubleCtrl::AdjustValue(const double delta)
 {
     SetValue(GetValue() + delta);
 }

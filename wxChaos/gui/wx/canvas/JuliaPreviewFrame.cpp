@@ -156,7 +156,8 @@ void JuliaPreviewFrame::CreateStatusBarControls()
     LayoutStatusBarControls();
 }
 
-void JuliaPreviewFrame::LayoutStatusBarControls() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::LayoutStatusBarControls()
 {
     if (_statusBar == nullptr || _renderStatusWidget == nullptr)
         return;
@@ -214,7 +215,8 @@ void JuliaPreviewFrame::OpenFractalInformation()
     viewer->Show(true);
 }
 
-void JuliaPreviewFrame::UpdateInformationTool() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::UpdateInformationTool()
 {
     if (_toolbar != nullptr && _previewFractalCanvas != nullptr)
     {
@@ -224,7 +226,8 @@ void JuliaPreviewFrame::UpdateInformationTool() const
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
-void JuliaPreviewFrame::ResetColorRotationTool() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::ResetColorRotationTool()
 {
     if (_toolbar != nullptr)
         _toolbar->ResetColorRotationTool();
@@ -272,24 +275,28 @@ bool JuliaPreviewFrame::SetDocumentationRenderingFromDocumentation(
     return mainFrame->SetDocumentationRenderingFromJuliaPreview(method);
 }
 
-void JuliaPreviewFrame::SetRendererOptions(const Options& options) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::SetRendererOptions(const Options& options)
 {
     ApplyRendererOptions(options);
 }
 
-void JuliaPreviewFrame::SetConstant(const double real, const double imaginary) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::SetConstant(const double real, const double imaginary)
 {
     if (_previewFractalCanvas != nullptr)
         _previewFractalCanvas->GetFractalPresenter()->SetK(real, imaginary);
 }
 
-void JuliaPreviewFrame::SetZoomOptions(const int zoomStepPercent, const int zoomInertiaMilliseconds) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::SetZoomOptions(const int zoomStepPercent, const int zoomInertiaMilliseconds)
 {
     if (_previewFractalCanvas != nullptr)
         _previewFractalCanvas->GetFractalPresenter()->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
 }
 
-void JuliaPreviewFrame::ApplyRendererOptions(const Options& options) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::ApplyRendererOptions(const Options& options)
 {
     if (_previewFractalCanvas == nullptr)
         return;
@@ -312,7 +319,8 @@ void JuliaPreviewFrame::ApplyRendererOptions(const Options& options) const
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall
-void JuliaPreviewFrame::SyncConstantFromTarget() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void JuliaPreviewFrame::SyncConstantFromTarget()
 {
     if (_parentFractalCanvas != nullptr && _parentFractalCanvas->ChangeInCoordinateSelector())
         SetConstant(_parentFractalCanvas->GetKReal(), _parentFractalCanvas->GetKImaginary());

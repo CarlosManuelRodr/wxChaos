@@ -87,7 +87,7 @@ public:
     void CreateFractal(FractalType type, unsigned int width, unsigned int height);
     void CreateScriptFractal(unsigned int width, unsigned int height, const ScriptData& scriptData);
     void CreateScriptFractal(unsigned int width, unsigned int height, const std::string& scriptPath);
-    void SetFormula(FormulaOptions formula) const;
+    void SetFormula(FormulaOptions formula);
     void DeleteFractal();
     [[nodiscard]] Fractal* GetFractal() const;
     [[nodiscard]] FractalType GetType() const;

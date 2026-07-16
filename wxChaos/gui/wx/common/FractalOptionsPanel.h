@@ -78,7 +78,7 @@ public:
     void ClearTarget();
 
     /// @brief Writes current control values back to the target fractal.
-    void Apply() const;
+    void Apply();
 
     /// @brief Sets a callback invoked after the Apply button applies panel values.
     void SetApplyHandler(std::function<void()> handler);

@@ -185,7 +185,8 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_MENU, &MainFrame::OnCommandConsole, this, ID_COMMAND_CONSOLE);
 }
 
-void MainFrame::ResetColorRotationTool() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void MainFrame::ResetColorRotationTool()
 {
     if (_interactionToolbar != nullptr)
         _interactionToolbar->ResetColorRotationTool();
@@ -230,7 +231,8 @@ void MainFrame::CreateStatusBarControls()
     LayoutStatusBarControls();
 }
 
-void MainFrame::LayoutStatusBarControls() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void MainFrame::LayoutStatusBarControls()
 {
     if (_statusBar == nullptr || _renderStatusWidget == nullptr)
         return;
@@ -317,7 +319,8 @@ void MainFrame::OpenRendererOptions()
         _rendererOptions->SetFocus();
 }
 
-void MainFrame::UpdateInformationTool() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void MainFrame::UpdateInformationTool()
 {
     if (_interactionToolbar != nullptr && _fractalCanvas != nullptr)
         _interactionToolbar->SetInformationEnabled(_fractalCanvas->GetFractal()->HasFractalInformation());
@@ -831,13 +834,15 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     if (_juliaPreviewFrame != nullptr)
         _juliaPreviewFrame->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
 }
-void MainFrame::SetAutomaticIterations(const bool mode) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void MainFrame::SetAutomaticIterations(const bool mode)
 {
     _fractalCanvas->GetFractalPresenter()->SetAutomaticIterations(mode);
     if (_automaticIterations != nullptr)
         _automaticIterations->Check(mode);
 }
-void MainFrame::ApplyAutomaticIterationsSetting() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void MainFrame::ApplyAutomaticIterationsSetting()
 {
     SetAutomaticIterations(_appConfig.automaticIterations);
 }
@@ -1619,7 +1624,8 @@ void MainFrame::ReloadScripts()
     // Get new scripts.
     this->GetScriptFractals();
 }
-void MainFrame::UpdateJuliaRendererOptions(const Options& options) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void MainFrame::UpdateJuliaRendererOptions(const Options& options)
 {
     if (_juliaPreviewFrame != nullptr)
         _juliaPreviewFrame->SetRendererOptions(options);

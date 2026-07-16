@@ -230,7 +230,8 @@ void FractalOptionsPanel::ClearDynamicControls()
     _applyButton = nullptr;
 }
 
-void FractalOptionsPanel::Apply() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void FractalOptionsPanel::Apply()
 {
     if (_target == nullptr)
         return;

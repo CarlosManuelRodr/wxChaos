@@ -47,7 +47,7 @@ public:
     wxString GetErrorInfo() const;
     /** @return The last error produced while compiling or executing DrawOrbit(). */
     wxString GetOrbitErrorInfo() const;
-    void ClearErrorInfo() const;
+    void ClearErrorInfo();
     std::string GetPath();
     const ScriptData& GetScriptData() const;
     bool HasFractalInformation() const override;

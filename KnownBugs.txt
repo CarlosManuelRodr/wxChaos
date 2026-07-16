@@ -1,5 +1,4 @@
 Improvements to get to a release version:
-- const functions are a mess because I applied clang tidy suggestions blindly. I need to fix that.
 - Add a Windows installer.
 - Make it work on Linux again.
 

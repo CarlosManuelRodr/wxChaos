@@ -89,7 +89,7 @@ public:
     [[nodiscard]] PanelOptionType GetPanelOptionType(unsigned int index) const;
 
     /// @brief Copies linked target values from another compatible options definition.
-    void CopyValuesFrom(const PanelOptions& source) const;
+    void CopyValuesFrom(const PanelOptions& source);
 
     /// @brief Sets whether the owning panel should be visible even when there are no entries.
     void SetForceShow(bool mode);

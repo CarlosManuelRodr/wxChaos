@@ -41,7 +41,8 @@ bool* PanelOptions::GetBoolValue(const unsigned int index) const { return _boolT
 double PanelOptions::GetIncrement(const unsigned int index) const { return _increments.at(index); }
 wxString PanelOptions::GetDefault(const unsigned int index) { return _defaults.at(index); }
 PanelOptionType PanelOptions::GetPanelOptionType(const unsigned int index) const { return _type.at(index); }
-void PanelOptions::CopyValuesFrom(const PanelOptions& source) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void PanelOptions::CopyValuesFrom(const PanelOptions& source)
 {
     if (_linkTo.size() != source._linkTo.size())
         return;

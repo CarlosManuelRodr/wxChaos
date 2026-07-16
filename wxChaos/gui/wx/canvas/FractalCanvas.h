@@ -92,19 +92,19 @@ class FractalCanvas : public wxSFMLCanvas
     void OnUpdate() override;               ///< Handles the SFML events and the drawing of the textures.
     void CreateFractal(FractalType type);
     void CreateScriptFractal(const ScriptData& scriptData);
-    void AttachFractalStatusHandler() const;
+    void AttachFractalStatusHandler();
     wxString BuildStatusText() const;
-    void EmitStatusText() const;
+    void EmitStatusText();
     sf::Vector2u GetCurrentRenderSize() const;
     void ResizePresentation(wxSize size);
-    void UpdateSelectionAspectRatio() const;
+    void UpdateSelectionAspectRatio();
     void UpdateCoordinateSelectorValue();
     void SeedCoordinateSelectorValue();
     void BeginMousePanAt(wxPoint position);
     void ContinueMousePanAt(wxPoint position);
     void EndMousePanGesture();
     double CalculateZoomToolScale(wxPoint position) const;
-    void CommitZoomToolDrag(wxPoint endPosition) const;
+    void CommitZoomToolDrag(wxPoint endPosition);
     wxString InspectPointAt(wxPoint position) const;
     void ShowPointInfo(wxPoint position, const wxString& text);
     void HidePointInfo();
@@ -182,7 +182,7 @@ public:
     bool CanAbortRender() const;
 
     ///@brief Aborts the active render, leaving the partial image visible.
-    void AbortRender() const;
+    void AbortRender();
 
     ///@brief Sets the keyboard guide mode.
     ///@param mode New mode.

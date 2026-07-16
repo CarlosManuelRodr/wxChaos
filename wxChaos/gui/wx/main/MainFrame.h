@@ -179,7 +179,7 @@ class MainFrame : public wxFrame
     void UpdateMenu();                    ///< Adjust menu items when a new fractal type is selected.
     void UpdateOptionsPanel();            ///< Adjust the option panel when a new fractal type is selected.
     void UpdateJuliaMode();               ///< Closes the Julia window when a new fractal is selected.
-    void UpdateJuliaRendererOptions(const Options& options) const;
+    void UpdateJuliaRendererOptions(const Options& options);
     ///@brief Changes the fractal type.
     ///@param type Type of the fractal.
     ///@param enableJulia Enables a Julia version of this type.
@@ -198,18 +198,18 @@ class MainFrame : public wxFrame
     /// @brief Applies saved settings that can safely change during the current session.
     /// @param config Newly saved application configuration.
     void ApplyAppConfig(const AppConfig& config);
-    void SetAutomaticIterations(bool mode) const;
-    void ApplyAutomaticIterationsSetting() const;
+    void SetAutomaticIterations(bool mode);
+    void ApplyAutomaticIterationsSetting();
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();
     void CreateStatusBarControls();
-    void LayoutStatusBarControls() const;
+    void LayoutStatusBarControls();
     void OpenIterationsDialog();
     void OpenFractalInformation();
     void OpenRendererOptions();
-    void UpdateInformationTool() const;
-    void ResetColorRotationTool() const;
+    void UpdateInformationTool();
+    void ResetColorRotationTool();
     bool HandleDocumentationLink(const wxString& url);
     bool ExecuteDocumentationAction(const DocumentationLinkAction& action);
     bool OpenDocumentationFractal(const DocumentationLinkAction& action);

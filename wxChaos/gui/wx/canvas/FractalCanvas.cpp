@@ -134,7 +134,8 @@ void FractalCanvas::CreateScriptFractal(const ScriptData& scriptData)
     _fractalFactory.CreateScriptFractal(size.x, size.y, scriptData);
 }
 
-void FractalCanvas::AttachFractalStatusHandler() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void FractalCanvas::AttachFractalStatusHandler()
 {
     if (_fractal == nullptr)
         return;
@@ -173,7 +174,8 @@ wxString FractalCanvas::BuildStatusText() const
     return text;
 }
 
-void FractalCanvas::EmitStatusText() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void FractalCanvas::EmitStatusText()
 {
     wxCommandEvent statusEvent(wxEVT_FRACTAL_CANVAS_STATUS_TEXT);
     statusEvent.SetEventObject(const_cast<FractalCanvas*>(this));
@@ -218,7 +220,8 @@ void FractalCanvas::ResizePresentation(const wxSize size)
         _coordinateSelector->Resize(this);
 }
 
-void FractalCanvas::UpdateSelectionAspectRatio() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void FractalCanvas::UpdateSelectionAspectRatio()
 {
     if (_selectionRect == nullptr || _fractal == nullptr)
         return;
@@ -323,7 +326,8 @@ double FractalCanvas::CalculateZoomToolScale(const wxPoint position) const
         maximumDragZoomScale);
 }
 
-void FractalCanvas::CommitZoomToolDrag(const wxPoint endPosition) const
+// ReSharper disable CppMemberFunctionMayBeConst
+void FractalCanvas::CommitZoomToolDrag(const wxPoint endPosition)
 {
     if (!_zoomToolDragging || _fractalPresenter->IsMoving())
         return;
@@ -646,7 +650,8 @@ bool FractalCanvas::CanAbortRender() const
 {
     return _fractal != nullptr && _fractal->IsRendering() && GetFractalType() != FractalType::SierpinskiTriangle;
 }
-void FractalCanvas::AbortRender() const
+// ReSharper disable CppMemberFunctionMayBeConst
+void FractalCanvas::AbortRender()
 {
     if (!this->CanAbortRender())
         return;

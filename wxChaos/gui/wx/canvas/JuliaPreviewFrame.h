@@ -69,18 +69,18 @@ class JuliaPreviewFrame : public wxFrame
     wxTimer _constantSyncTimer;
     bool _iterationsDialogIsActive{};
 
-    void ApplyRendererOptions(const Options& options) const;
+    void ApplyRendererOptions(const Options& options);
     void CreateMenuBar();
     void CreateStatusBarControls();
-    void LayoutStatusBarControls() const;
+    void LayoutStatusBarControls();
     void OpenIterationsDialog();
     void OpenFractalInformation();
-    void UpdateInformationTool() const;
-    void ResetColorRotationTool() const;
+    void UpdateInformationTool();
+    void ResetColorRotationTool();
     bool HandleDocumentationLink(const wxString& url);
     [[nodiscard]] bool FocusMainFrameFromDocumentation() const;
     [[nodiscard]] bool SetDocumentationRenderingFromDocumentation(const DocumentationLinkAction::RenderingMethod& method) const;
-    void SyncConstantFromTarget() const;
+    void SyncConstantFromTarget();
     void OnConstantSyncTimer(wxTimerEvent& event);
     void OnCanvasStatusText(wxCommandEvent& event);
 
@@ -155,15 +155,15 @@ public:
 
     /// @brief Applies renderer settings from the main fractal.
     /// @param options Renderer options to apply.
-    void SetRendererOptions(const Options& options) const;
+    void SetRendererOptions(const Options& options);
 
     /// @brief Applies a new Julia constant.
     /// @param real Real component.
     /// @param imaginary Imaginary component.
-    void SetConstant(double real, double imaginary) const;
+    void SetConstant(double real, double imaginary);
 
     /// @brief Applies mouse-wheel zoom settings.
     /// @param zoomStepPercent Mouse-wheel zoom step percentage.
     /// @param zoomInertiaMilliseconds Smooth zoom inertia duration.
-    void SetZoomOptions(int zoomStepPercent, int zoomInertiaMilliseconds) const;
+    void SetZoomOptions(int zoomStepPercent, int zoomInertiaMilliseconds);
 };

@@ -25,7 +25,7 @@ class UnrestrictedSpinDoubleCtrl : public wxPanel
     void OnIncrement(wxCommandEvent& event);
 
     /// @brief Adds a delta to the current text value and writes the formatted result back to the text control.
-    void AdjustValue(double delta) const;
+    void AdjustValue(double delta);
 
     /// @brief Formats a double for display in the text field without unnecessary trailing zeroes.
     static wxString FormatValue(double value);
@@ -43,5 +43,5 @@ public:
     [[nodiscard]] double GetValue() const;
 
     /// @brief Sets the displayed value using the control's display formatting.
-    void SetValue(double value) const;
+    void SetValue(double value);
 };
