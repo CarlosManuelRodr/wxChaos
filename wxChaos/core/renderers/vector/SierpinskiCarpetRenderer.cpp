@@ -121,6 +121,7 @@ void SierpinskiCarpetRenderer::RenderGeometry(Context& context)
         RenderTyped<double>(context);
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 void SierpinskiCarpetRenderer::CompleteWork(Context& context, const double workWeight, double& completedWork)
 {
     completedWork = std::min(1.0, completedWork + workWeight);

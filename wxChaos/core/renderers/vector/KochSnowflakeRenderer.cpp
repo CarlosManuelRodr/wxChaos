@@ -167,6 +167,7 @@ void KochSnowflakeRenderer::RenderGeometry(Context& context)
         RenderTyped<double>(context);
 }
 
+// ReSharper disable once CppDFAUnreachableFunctionCall
 void KochSnowflakeRenderer::CompleteWork(Context& context, const double workWeight, double& completedWork)
 {
     completedWork = std::min(1.0, completedWork + workWeight);

@@ -1,6 +1,5 @@
 #include "VectorFractal.h"
 #include <algorithm>
-#include <cmath>
 
 VectorFractal::VectorFractal(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
