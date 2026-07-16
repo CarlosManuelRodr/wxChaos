@@ -1,8 +1,10 @@
 #include "canvas/wxSFMLCanvas.h"
+#include "common/NativeWindowHandle.h"
 
 wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                            const long style) : wxControl(parent, id, position, size, style)
 {
+    SetName("wxChaosSfmlCanvas");
     wxWindowBase::SetBackgroundStyle(wxBG_STYLE_PAINT);
     wxWindow::SetDoubleBuffered(false);
 
@@ -27,7 +29,11 @@ bool wxSFMLCanvas::EnsureSfmlWindowCreated()
     if (size.GetWidth() <= 0 || size.GetHeight() <= 0)
         return false;
 
-    sf::RenderWindow::create(wxWindow::GetHandle());
+    const sf::WindowHandle nativeHandle = Platform::GetNativeWindowHandle(*this);
+    if (nativeHandle == 0)
+        return false;
+
+    sf::RenderWindow::create(nativeHandle);
     _sfmlWindowCreated = true;
     return true;
 }

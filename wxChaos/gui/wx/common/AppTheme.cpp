@@ -1,5 +1,4 @@
 #include "common/AppTheme.h"
-#include "canvas/wxSFMLCanvas.h"
 
 #include <wx/html/htmlwin.h>
 #include <wx/panel.h>
@@ -144,7 +143,7 @@ void AppTheme::ApplyToWindow(wxWindow* window)
     if (window == nullptr)
         return;
 
-    if (dynamic_cast<wxSFMLCanvas*>(window) != nullptr)
+    if (window->GetName() == "wxChaosSfmlCanvas")
         return;
 
     std::vector<wxWindow*> children;

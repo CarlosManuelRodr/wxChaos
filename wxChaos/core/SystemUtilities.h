@@ -1,3 +1,7 @@
 #pragma once
 
-int Get_Cores();
+namespace Platform
+{
+    int ProcessorCount();
+    void EnableHighDpiSupport();
+}

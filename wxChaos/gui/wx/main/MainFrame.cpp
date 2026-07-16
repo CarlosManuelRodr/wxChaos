@@ -23,23 +23,11 @@
 #include "docs/FractalDocumentation.h"
 #include "main/SettingsFrame.h"
 #include "common/AppTheme.h"
+#include "common/DisplayUtilities.h"
 
 using namespace std;
 
 constexpr unsigned int SCRIPT_ID_INDEX = 8510;
-
-/**
-* @brief Gets the desktop resolution. Used to adjust menu position.
-*/
-void GetDesktopResolution(int& width, int& height)
-{
-    RECT desktop;
-    // ReSharper disable once CppLocalVariableMayBeConst
-    HWND hDesktop = GetDesktopWindow();
-    GetWindowRect(hDesktop, &desktop);
-    width = desktop.right;
-    height = desktop.bottom;
-}
 
 // Fractal Frame
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition, wxSize(1180, 820))
@@ -309,10 +297,7 @@ void MainFrame::OpenRendererOptions()
         _rendererOptions->Show(true);
 
         // Adjust position.
-        int h, w;
-        GetDesktopResolution(h, w);
-        if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
-            _rendererOptions->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
+        DisplayUtilities::MoveToRightOf(*this, *_rendererOptions);
     }
     else
         _rendererOptions->SetFocus();
@@ -1013,10 +998,7 @@ void MainFrame::OnFormulaDialog(wxCommandEvent&)
         _formulaDialog->Show(true);
 
         // Adjust position.
-        int h, w;
-        GetDesktopResolution(h, w);
-        if (this->GetPosition().x+this->GetSize().GetWidth()+5 < w && this->GetPosition().y < h)
-            _formulaDialog->Move(this->GetPosition().x+this->GetSize().GetWidth()+5, this->GetPosition().y);
+        DisplayUtilities::MoveToRightOf(*this, *_formulaDialog);
 
         _fractalType = FractalType::UserDefinedEscapeTime;
     }

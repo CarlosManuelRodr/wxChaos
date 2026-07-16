@@ -36,13 +36,6 @@
 /** @brief Event posted to the parent when the dimension-calculator window closes. */
 wxDECLARE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
 
-/**
- * @brief Returns the desktop work-area dimensions.
- * @param width Receives the desktop width in pixels.
- * @param height Receives the desktop height in pixels.
- */
-void GetDesktopResolution(int& width, int& height);
-
 #define DimensionFrameSize wxSize(1200, 1260)
 
 /**

@@ -490,7 +490,8 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
         scriptFractal.ClearErrorInfo();
     }
     else
-        this->ConsoleAppendEntry(_("Run"), _("Rendered preview in ") + TextUtils::ToWxString(elapsed.count()) + _(" ms."), true);
+        this->ConsoleAppendEntry(_("Run"), _("Rendered preview in ") +
+            TextUtils::ToWxString(static_cast<long long>(elapsed.count())) + _(" ms."), true);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst

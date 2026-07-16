@@ -10,7 +10,7 @@ using namespace std;
 
 RasterFractal::RasterFractal(const unsigned int width, const unsigned int height) : Fractal(width, height)
 {
-    _threadNumber = max(Get_Cores() - 1, 1);
+    _threadNumber = max(Platform::ProcessorCount() - 1, 1);
     UpdateRenderDimensions();
     AllocateRenderMaps();
     ClearRenderMaps(InvalidColor);

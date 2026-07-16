@@ -1,8 +1,8 @@
 #include <limits>
-#include <mpParser.h>
 #include <wx/bmpbndl.h>
 #include <wx/spinctrl.h>
 #include "common/AppTheme.h"
+#include "common/DisplayUtilities.h"
 #include "AppPaths.h"
 #include "analysis/DimensionFrame.h"
 #include "Fractal.h"
@@ -13,6 +13,7 @@
 #include "AngelscriptBindings.h"
 #include "docs/DocumentViewer.h"
 #include "SystemUtilities.h"
+#include <mpParser.h>
 using namespace std;
 
 wxDEFINE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
@@ -21,7 +22,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
                                const wxSize& size, const long style)
                                : wxFrame(parent, id, wxGetTranslation(title), pos, size, style), _previewTimer(this)
 {
-    _threadNumber = Get_Cores();
+    _threadNumber = Platform::ProcessorCount();
     _dimensionCalculator.resize(_threadNumber);
     _dimThreads.resize(_threadNumber);
 
@@ -973,10 +974,7 @@ void DimensionFrame::OnFractalOptions(wxCommandEvent&)
         _fractalOptionsDialog->Show(true);
 
     // Adjust position.
-    int h, w;
-    GetDesktopResolution(h, w);
-    if (this->GetPosition().x + this->GetSize().GetWidth() + 5 < w && this->GetPosition().y < h)
-        _fractalOptionsDialog->Move(this->GetPosition().x + this->GetSize().GetWidth() + 5, this->GetPosition().y);
+    DisplayUtilities::MoveToRightOf(*this, *_fractalOptionsDialog);
 }
 
 void DimensionFrame::OnFormula(wxCommandEvent&)

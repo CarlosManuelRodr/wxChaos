@@ -12,6 +12,7 @@
 #include <wx/wx.h>
 #include <wx/bmpbndl.h>
 #include <wx/statline.h>
+#include <wx/spinctrl.h>
 #include <SFML/System.hpp>
 #include "FractalFactory.h"
 #include "Options.h"

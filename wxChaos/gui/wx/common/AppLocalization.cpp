@@ -51,6 +51,7 @@ void AppLocalization::Initialize(const AppLanguage language)
     if (!_locale->Init(ToWxLanguage(_currentLanguage), wxLOCALE_DONT_LOAD_DEFAULT))
     {
         _currentLanguage = AppLanguage::English;
+        _locale = std::make_unique<wxLocale>();
         _locale->Init(wxLANGUAGE_ENGLISH, wxLOCALE_DONT_LOAD_DEFAULT);
     }
 

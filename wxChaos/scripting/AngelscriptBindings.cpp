@@ -2,6 +2,7 @@
 // ReSharper disable CppParameterMayBeConstPtrOrRef
 // ReSharper disable CppDFAUnusedValue
 #include <cassert>
+#include <fstream>
 #include <limits>
 #include <new>
 #include "AngelscriptBindings.h"
@@ -94,25 +95,16 @@ std::vector<ScriptData> GetAllUserScripts()
 
 int CompileScriptFromPath(asIScriptEngine* engine, const string& filePath)
 {
-    FILE* f = nullptr;
-    const errno_t err = fopen_s(&f, filePath.c_str(), "rb");
-    if (err != 0 || f == nullptr)
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file)
         return -1;
 
-    fseek(f, 0, SEEK_END);
-    const int len = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    string script;
-    script.resize(len);
-    const size_t c = fread(&script[0], len, 1, f);
-    fclose(f);
-
-    if (c == 0)
+    const string script((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    if (script.empty())
         return -1;
 
     asIScriptModule* mod = engine->GetModule(nullptr, asGM_ALWAYS_CREATE);
-    int r = mod->AddScriptSection("script", &script[0], len);
+    int r = mod->AddScriptSection("script", script.data(), script.size());
     if (r < 0)
         return -1;
 

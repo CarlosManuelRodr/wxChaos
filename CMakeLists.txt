@@ -232,6 +232,7 @@ if(BUILD_TESTING)
             tests/core/BoxCountMapTests.cpp
             tests/core/ScriptOrbitTests.cpp
             tests/core/RenderingAlgorithmTests.cpp
+            tests/core/SystemUtilitiesTests.cpp
             tests/core/geometry/GeometryTests.cpp
             tests/core/rendering/RenderingTests.cpp
             tests/core/rendering/HenonMapRendererTests.cpp

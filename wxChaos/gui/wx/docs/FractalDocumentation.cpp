@@ -103,7 +103,7 @@ wxString FractalDocumentation::GetDocumentFile(const FractalType type)
 wxString FractalDocumentation::GetDocumentFile(const FractalType type, const AppLanguage language)
 {
     const wxString filename = GetDocumentFilename(type);
-    return filename.empty() ? wxEmptyString : ResolveBundledDocumentFile(filename, language);
+    return filename.empty() ? wxString() : ResolveBundledDocumentFile(filename, language);
 }
 
 bool FractalDocumentation::HasDocumentation(const ScriptData& scriptData)

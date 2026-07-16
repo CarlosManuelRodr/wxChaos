@@ -10,6 +10,7 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
 #include "Fractal.h"
 #include "sfml/FractalPresenter.h"
 

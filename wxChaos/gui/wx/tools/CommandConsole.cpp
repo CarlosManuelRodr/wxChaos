@@ -318,7 +318,7 @@ optional<CommandConsole::ParsedCommand> CommandConsole::Parse(const wxString& te
     {
         const int comma = arguments.Find(',');
         wxString argument = comma == wxNOT_FOUND ? arguments : arguments.Left(comma);
-        arguments = comma == wxNOT_FOUND ? wxEmptyString : arguments.Mid(comma + 1);
+        arguments = comma == wxNOT_FOUND ? wxString() : arguments.Mid(comma + 1);
         argument.Trim(true).Trim(false);
         arguments.Trim(true).Trim(false);
         if (argument.empty())
