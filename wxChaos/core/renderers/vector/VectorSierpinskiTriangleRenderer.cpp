@@ -1,110 +1,165 @@
 #include "renderers/vector/VectorSierpinskiTriangleRenderer.h"
 #include <algorithm>
-#include <limits>
 
-void VectorSierpinskiTriangleRenderer::Configure(const unsigned int iterations, const Rect& view,
-                                                 const unsigned int screenWidth, const unsigned int screenHeight,
+void VectorSierpinskiTriangleRenderer::Configure(const unsigned int iterations, const Options& options,
                                                  const sf::Color& color)
 {
     Stop();
     _iterations = iterations;
-    _view = view;
-    _screenWidth = screenWidth;
-    _screenHeight = screenHeight;
     _color = color;
+    ConfigureViewport(options);
 }
 
-void VectorSierpinskiTriangleRenderer::RenderGeometry(Context& context)
+template<class Real>
+void VectorSierpinskiTriangleRenderer::RenderTyped(Context& context)
 {
-    constexpr Vertex left{-1.0, -0.57735026918962576451};
-    constexpr Vertex top{0.0, 1.1547005383792515290};
-    constexpr Vertex right{1.0, -0.57735026918962576451};
+    const Viewport<Real> view = GetViewport<Real>();
+    const Real squareRootThree = sqrt(Real(3));
+    const Vertex<Real> left{Real(-1), -Real(1) / squareRootThree};
+    const Vertex<Real> top{Real(0), Real(2) / squareRootThree};
+    const Vertex<Real> right{Real(1), -Real(1) / squareRootThree};
     double completedWork = 0.0;
 
-    AppendLine(context, left, top);
-    AppendLine(context, top, right);
-    AppendLine(context, right, left);
+    AppendLine(context, view, left, top);
+    AppendLine(context, view, top, right);
+    AppendLine(context, view, right, left);
 
     if (_iterations == 0)
     {
         context.SetProgress(100);
         return;
     }
-
-    AppendHoles(context, left, top, right, _iterations, 1.0, completedWork);
+    AppendHoles(context, view, left, top, right, _iterations, 1.0, completedWork);
 }
 
-bool VectorSierpinskiTriangleRenderer::AppendHoles(Context& context, const Vertex& first, const Vertex& second,
-                                                   const Vertex& third, const unsigned int iterations,
+template<class Real>
+bool VectorSierpinskiTriangleRenderer::AppendHoles(Context& context, const Viewport<Real>& view,
+                                                   const Vertex<Real>& first, const Vertex<Real>& second,
+                                                   const Vertex<Real>& third, const unsigned int iterations,
                                                    const double workWeight, double& completedWork)
 {
     if (!context.Continue())
         return false;
-
-    if (iterations == 0 || !IsTriangleVisible(first, second, third)
-        || IsSubpixelTriangle(first, second, third))
+    if (iterations == 0 || !IsTriangleVisible(view, first, second, third)
+        || IsSubpixelTriangle(view, first, second, third))
     {
         CompleteWork(context, workWeight, completedWork);
         return true;
     }
 
-    const Vertex firstSecond = Midpoint(first, second);
-    const Vertex secondThird = Midpoint(second, third);
-    const Vertex thirdFirst = Midpoint(third, first);
-    AppendLine(context, firstSecond, secondThird);
-    AppendLine(context, secondThird, thirdFirst);
-    AppendLine(context, thirdFirst, firstSecond);
+    const Vertex<Real> firstSecond = Midpoint(first, second);
+    const Vertex<Real> secondThird = Midpoint(second, third);
+    const Vertex<Real> thirdFirst = Midpoint(third, first);
+    AppendLine(context, view, firstSecond, secondThird);
+    AppendLine(context, view, secondThird, thirdFirst);
+    AppendLine(context, view, thirdFirst, firstSecond);
 
     const unsigned int remainingIterations = iterations - 1;
     const double childWork = workWeight / 3.0;
-    return AppendHoles(context, first, firstSecond, thirdFirst, remainingIterations, childWork, completedWork)
-        && AppendHoles(context, firstSecond, second, secondThird, remainingIterations, childWork, completedWork)
-        && AppendHoles(context, thirdFirst, secondThird, third, remainingIterations, childWork, completedWork);
+    return AppendHoles(context, view, first, firstSecond, thirdFirst, remainingIterations, childWork, completedWork)
+        && AppendHoles(context, view, firstSecond, second, secondThird, remainingIterations, childWork, completedWork)
+        && AppendHoles(context, view, thirdFirst, secondThird, third, remainingIterations, childWork, completedWork);
 }
 
-void VectorSierpinskiTriangleRenderer::AppendLine(Context& context, const Vertex& first, const Vertex& second) const
+template<class Real>
+void VectorSierpinskiTriangleRenderer::AppendLine(Context& context, const Viewport<Real>& view,
+                                                  const Vertex<Real>& first, const Vertex<Real>& second) const
 {
-    if (IsLineVisible(first, second))
+    if (!IsLineVisible(view, first, second))
+        return;
+    if constexpr (std::is_same_v<Real, double>)
+    {
         context.AddLine(first.x, first.y, second.x, second.y, _color);
+    }
+    else
+    {
+        Real entry(0);
+        Real exit(1);
+        const Real deltaX = second.x - first.x;
+        const Real deltaY = second.y - first.y;
+        if (!ClipDirection(-deltaX, first.x - view.left, entry, exit)
+            || !ClipDirection(deltaX, view.right - first.x, entry, exit)
+            || !ClipDirection(-deltaY, first.y - view.bottom, entry, exit)
+            || !ClipDirection(deltaY, view.top - first.y, entry, exit))
+            return;
+        const Vertex<Real> clippedFirst{first.x + entry * deltaX, first.y + entry * deltaY};
+        const Vertex<Real> clippedSecond{first.x + exit * deltaX, first.y + exit * deltaY};
+        context.AddScreenLine(ToScreenX(clippedFirst.x, view), ToScreenY(clippedFirst.y, view),
+                              ToScreenX(clippedSecond.x, view), ToScreenY(clippedSecond.y, view), _color);
+    }
 }
 
-bool VectorSierpinskiTriangleRenderer::IsTriangleVisible(const Vertex& first, const Vertex& second,
-                                                         const Vertex& third) const
+template<class Real>
+bool VectorSierpinskiTriangleRenderer::IsTriangleVisible(const Viewport<Real>& view, const Vertex<Real>& first,
+                                                         const Vertex<Real>& second, const Vertex<Real>& third) const
 {
-    const double viewWidth = std::max(_view._right - _view._left, std::numeric_limits<double>::epsilon());
-    const double viewHeight = std::max(_view._top - _view._bottom, std::numeric_limits<double>::epsilon());
-    const double marginX = viewWidth / std::max(1u, _screenWidth);
-    const double marginY = viewHeight / std::max(1u, _screenHeight);
-    const double minimumX = std::min({first.x, second.x, third.x});
-    const double maximumX = std::max({first.x, second.x, third.x});
-    const double minimumY = std::min({first.y, second.y, third.y});
-    const double maximumY = std::max({first.y, second.y, third.y});
-    return maximumX >= _view._left - marginX && minimumX <= _view._right + marginX
-        && maximumY >= _view._bottom - marginY && minimumY <= _view._top + marginY;
+    const Real marginX = (view.right - view.left) / Real(std::max(1u, _screenWidth));
+    const Real marginY = (view.top - view.bottom) / Real(std::max(1u, _screenHeight));
+    const Real minimumX = std::min({first.x, second.x, third.x});
+    const Real maximumX = std::max({first.x, second.x, third.x});
+    const Real minimumY = std::min({first.y, second.y, third.y});
+    const Real maximumY = std::max({first.y, second.y, third.y});
+    return maximumX >= view.left - marginX && minimumX <= view.right + marginX
+        && maximumY >= view.bottom - marginY && minimumY <= view.top + marginY;
 }
 
-bool VectorSierpinskiTriangleRenderer::IsLineVisible(const Vertex& first, const Vertex& second) const
+template<class Real>
+bool VectorSierpinskiTriangleRenderer::IsLineVisible(const Viewport<Real>& view, const Vertex<Real>& first,
+                                                     const Vertex<Real>& second) const
 {
-    const Vertex midpoint = Midpoint(first, second);
-    return IsTriangleVisible(first, second, midpoint);
+    return IsTriangleVisible(view, first, second, Midpoint(first, second));
 }
 
-bool VectorSierpinskiTriangleRenderer::IsSubpixelTriangle(const Vertex& first, const Vertex& second,
-                                                          const Vertex& third) const
+template<class Real>
+bool VectorSierpinskiTriangleRenderer::IsSubpixelTriangle(const Viewport<Real>& view, const Vertex<Real>& first,
+                                                          const Vertex<Real>& second,
+                                                          const Vertex<Real>& third) const
 {
-    const double viewWidth = std::max(_view._right - _view._left, std::numeric_limits<double>::epsilon());
-    const double viewHeight = std::max(_view._top - _view._bottom, std::numeric_limits<double>::epsilon());
-    const double widthPixels = (std::max({first.x, second.x, third.x}) - std::min({first.x, second.x, third.x}))
-        * std::max(1u, _screenWidth) / viewWidth;
-    const double heightPixels = (std::max({first.y, second.y, third.y}) - std::min({first.y, second.y, third.y}))
-        * std::max(1u, _screenHeight) / viewHeight;
+    const Real width = std::max({first.x, second.x, third.x}) - std::min({first.x, second.x, third.x});
+    const Real height = std::max({first.y, second.y, third.y}) - std::min({first.y, second.y, third.y});
+    const double widthPixels = ToDouble(width * Real(std::max(1u, _screenWidth)) / (view.right - view.left));
+    const double heightPixels = ToDouble(height * Real(std::max(1u, _screenHeight)) / (view.top - view.bottom));
     return std::max(widthPixels, heightPixels) <= 1.0;
 }
 
-VectorSierpinskiTriangleRenderer::Vertex VectorSierpinskiTriangleRenderer::Midpoint(const Vertex& first,
-                                                                                    const Vertex& second)
+template<class Real>
+VectorSierpinskiTriangleRenderer::Vertex<Real> VectorSierpinskiTriangleRenderer::Midpoint(
+    const Vertex<Real>& first, const Vertex<Real>& second)
 {
-    return {(first.x + second.x) / 2.0, (first.y + second.y) / 2.0};
+    return {(first.x + second.x) / Real(2), (first.y + second.y) / Real(2)};
+}
+
+template<class Real>
+bool VectorSierpinskiTriangleRenderer::ClipDirection(const Real& direction, const Real& distance,
+                                                     Real& entry, Real& exit)
+{
+    if (direction == Real(0))
+        return distance >= Real(0);
+    const Real ratio = distance / direction;
+    if (direction < Real(0))
+    {
+        if (ratio > exit)
+            return false;
+        entry = std::max(entry, ratio);
+    }
+    else
+    {
+        if (ratio < entry)
+            return false;
+        exit = std::min(exit, ratio);
+    }
+    return true;
+}
+
+void VectorSierpinskiTriangleRenderer::RenderGeometry(Context& context)
+{
+    if (_useHighPrecision)
+    {
+        HighPrecisionReal::PrecisionScope precision(std::max(_highPrecisionBits, 64U));
+        RenderTyped<HighPrecisionReal>(context);
+    }
+    else
+        RenderTyped<double>(context);
 }
 
 void VectorSierpinskiTriangleRenderer::CompleteWork(Context& context, const double workWeight,

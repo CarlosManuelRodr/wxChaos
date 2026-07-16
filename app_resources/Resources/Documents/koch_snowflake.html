@@ -34,7 +34,8 @@
         <h2>Mathematical notes</h2>
         <p>After iteration \(n\), the snowflake has \(3\cdot4^n\) segments, each scaled by \(3^{-n}\).</p>
         <p>wxChaos generates the curve in the background and skips branches outside the current view. Detail smaller
-            than a screen pixel is combined until zooming makes it visible.</p>
+            than a screen pixel is combined until zooming makes it visible. At extreme zoom depths, rendering
+            automatically switches from ordinary floating-point arithmetic to arbitrary precision.</p>
     </section>
 </main>
 
@@ -63,7 +64,8 @@
         <h2>Notas matemáticas</h2>
         <p>Después de la iteración \(n\), el copo tiene \(3\cdot4^n\) segmentos, cada uno escalado por \(3^{-n}\).</p>
         <p>wxChaos genera la curva en segundo plano y omite las ramas fuera de la vista actual. El detalle menor que
-            un píxel se combina hasta que el acercamiento lo hace visible.</p>
+            un píxel se combina hasta que el acercamiento lo hace visible. En acercamientos extremos, el renderizado
+            cambia automáticamente de la aritmética de punto flotante normal a precisión arbitraria.</p>
     </section>
 </main>
 </body>

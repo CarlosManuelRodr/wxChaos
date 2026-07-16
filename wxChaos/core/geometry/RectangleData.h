@@ -11,4 +11,5 @@ struct RectangleData
     double top{};               ///< Maximum vertical coordinate.
     sf::Color color;            ///< Display color used to fill the rectangle.
     bool belongsToSet = true;   ///< Whether the rectangle fills or clears box-count occupancy.
+    bool screenSpace = false;   ///< Coordinates are pixels rather than world coordinates when true.
 };

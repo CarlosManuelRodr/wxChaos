@@ -1,31 +1,29 @@
 #include "renderers/vector/SierpinskiCarpetRenderer.h"
 #include <algorithm>
-#include <limits>
 
-void SierpinskiCarpetRenderer::Configure(const unsigned int iterations, const Rect& view,
-                                         const unsigned int screenWidth, const unsigned int screenHeight,
+void SierpinskiCarpetRenderer::Configure(const unsigned int iterations, const Options& options,
                                          const sf::Color& setColor)
 {
     Stop();
     _iterations = iterations;
-    _view = view;
-    _screenWidth = screenWidth;
-    _screenHeight = screenHeight;
     _setColor = setColor;
+    ConfigureViewport(options);
 }
 
-void SierpinskiCarpetRenderer::RenderGeometry(Context& context)
+template<class Real>
+void SierpinskiCarpetRenderer::RenderTyped(Context& context)
 {
-    constexpr double left = -1.0;
-    constexpr double bottom = -1.0;
-    constexpr double size = 2.0;
-    if (!IsSquareVisible(left, bottom, size))
+    const Viewport<Real> view = GetViewport<Real>();
+    const Real left(-1);
+    const Real bottom(-1);
+    const Real size(2);
+    if (!IsSquareVisible(view, left, bottom, size))
     {
         context.SetProgress(100);
         return;
     }
 
-    context.AddRectangle(left, left + size, bottom, bottom + size, _setColor, true);
+    AddRectangle(context, view, left, bottom, size, _setColor, true);
     if (_iterations == 0)
     {
         context.SetProgress(100);
@@ -33,28 +31,28 @@ void SierpinskiCarpetRenderer::RenderGeometry(Context& context)
     }
 
     double completedWork = 0.0;
-    AppendHoles(context, left, bottom, size, _iterations, 1.0, completedWork);
+    AppendHoles(context, view, left, bottom, size, _iterations, 1.0, completedWork);
 }
 
-bool SierpinskiCarpetRenderer::AppendHoles(Context& context, const double left, const double bottom,
-                                           const double size, const unsigned int iterations,
+template<class Real>
+bool SierpinskiCarpetRenderer::AppendHoles(Context& context, const Viewport<Real>& view, const Real& left,
+                                           const Real& bottom, const Real& size, const unsigned int iterations,
                                            const double workWeight, double& completedWork)
 {
     if (!context.Continue())
         return false;
 
-    if (iterations == 0 || !IsSquareVisible(left, bottom, size) || IsSubpixelSquare(size / 3.0))
+    const Real childSize = size / Real(3);
+    if (iterations == 0 || !IsSquareVisible(view, left, bottom, size) || IsSubpixelSquare(view, childSize))
     {
         CompleteWork(context, workWeight, completedWork);
         return true;
     }
 
-    const double childSize = size / 3.0;
-    const double holeLeft = left + childSize;
-    const double holeBottom = bottom + childSize;
-    if (IsSquareVisible(holeLeft, holeBottom, childSize))
-        context.AddRectangle(holeLeft, holeLeft + childSize, holeBottom, holeBottom + childSize,
-                             sf::Color::White, false);
+    const Real holeLeft = left + childSize;
+    const Real holeBottom = bottom + childSize;
+    if (IsSquareVisible(view, holeLeft, holeBottom, childSize))
+        AddRectangle(context, view, holeLeft, holeBottom, childSize, sf::Color::White, false);
 
     const unsigned int remainingIterations = iterations - 1;
     const double childWork = workWeight / 8.0;
@@ -64,31 +62,63 @@ bool SierpinskiCarpetRenderer::AppendHoles(Context& context, const double left, 
         {
             if (row == 1 && column == 1)
                 continue;
-            if (!AppendHoles(context, left + column * childSize, bottom + row * childSize, childSize,
-                             remainingIterations, childWork, completedWork))
+            if (!AppendHoles(context, view, left + Real(column) * childSize, bottom + Real(row) * childSize,
+                             childSize, remainingIterations, childWork, completedWork))
                 return false;
         }
     }
     return true;
 }
 
-bool SierpinskiCarpetRenderer::IsSquareVisible(const double left, const double bottom, const double size) const
+template<class Real>
+bool SierpinskiCarpetRenderer::IsSquareVisible(const Viewport<Real>& view, const Real& left, const Real& bottom,
+                                               const Real& size) const
 {
-    const double viewWidth = std::max(_view._right - _view._left, std::numeric_limits<double>::epsilon());
-    const double viewHeight = std::max(_view._top - _view._bottom, std::numeric_limits<double>::epsilon());
-    const double marginX = viewWidth / std::max(1u, _screenWidth);
-    const double marginY = viewHeight / std::max(1u, _screenHeight);
-    return left + size >= _view._left - marginX && left <= _view._right + marginX
-        && bottom + size >= _view._bottom - marginY && bottom <= _view._top + marginY;
+    const Real marginX = (view.right - view.left) / Real(std::max(1u, _screenWidth));
+    const Real marginY = (view.top - view.bottom) / Real(std::max(1u, _screenHeight));
+    return left + size >= view.left - marginX && left <= view.right + marginX
+        && bottom + size >= view.bottom - marginY && bottom <= view.top + marginY;
 }
 
-bool SierpinskiCarpetRenderer::IsSubpixelSquare(const double size) const
+template<class Real>
+bool SierpinskiCarpetRenderer::IsSubpixelSquare(const Viewport<Real>& view, const Real& size) const
 {
-    const double viewWidth = std::max(_view._right - _view._left, std::numeric_limits<double>::epsilon());
-    const double viewHeight = std::max(_view._top - _view._bottom, std::numeric_limits<double>::epsilon());
-    const double widthPixels = size * std::max(1u, _screenWidth) / viewWidth;
-    const double heightPixels = size * std::max(1u, _screenHeight) / viewHeight;
+    const double widthPixels = ToDouble(size * Real(std::max(1u, _screenWidth)) / (view.right - view.left));
+    const double heightPixels = ToDouble(size * Real(std::max(1u, _screenHeight)) / (view.top - view.bottom));
     return std::max(widthPixels, heightPixels) <= 0.75;
+}
+
+template<class Real>
+void SierpinskiCarpetRenderer::AddRectangle(Context& context, const Viewport<Real>& view, const Real& left,
+                                            const Real& bottom, const Real& size, const sf::Color& color,
+                                            const bool belongsToSet) const
+{
+    if constexpr (std::is_same_v<Real, double>)
+    {
+        context.AddRectangle(left, left + size, bottom, bottom + size, color, belongsToSet);
+    }
+    else
+    {
+        const Real clippedLeft = std::max(left, view.left);
+        const Real clippedRight = std::min(left + size, view.right);
+        const Real clippedBottom = std::max(bottom, view.bottom);
+        const Real clippedTop = std::min(bottom + size, view.top);
+        if (clippedLeft >= clippedRight || clippedBottom >= clippedTop)
+            return;
+        context.AddScreenRectangle(ToScreenX(clippedLeft, view), ToScreenX(clippedRight, view),
+                                   ToScreenY(clippedBottom, view), ToScreenY(clippedTop, view), color, belongsToSet);
+    }
+}
+
+void SierpinskiCarpetRenderer::RenderGeometry(Context& context)
+{
+    if (_useHighPrecision)
+    {
+        HighPrecisionReal::PrecisionScope precision(std::max(_highPrecisionBits, 64U));
+        RenderTyped<HighPrecisionReal>(context);
+    }
+    else
+        RenderTyped<double>(context);
 }
 
 void SierpinskiCarpetRenderer::CompleteWork(Context& context, const double workWeight, double& completedWork)

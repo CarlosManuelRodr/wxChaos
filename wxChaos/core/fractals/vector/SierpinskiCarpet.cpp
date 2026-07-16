@@ -19,9 +19,8 @@ SierpinskiCarpet::SierpinskiCarpet(const unsigned int width, const unsigned int 
 
 void SierpinskiCarpet::Render()
 {
-    const sf::Vector2u screenSize = GetScreenSize();
     auto& renderer = GetVectorRenderWorker<SierpinskiCarpetRenderer>();
-    renderer.Configure(_maxIterations, GetView(), screenSize.x, screenSize.y, GetSetColor());
+    renderer.Configure(_maxIterations, GetOptions(), GetSetColor());
     StartVectorRender();
 }
 

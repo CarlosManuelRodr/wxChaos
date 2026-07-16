@@ -22,6 +22,12 @@ void VectorRenderWorker::Context::AddLine(const double x1, const double y1, cons
     _geometry.lines.push_back({x1, y1, x2, y2, color});
 }
 
+void VectorRenderWorker::Context::AddScreenLine(const double x1, const double y1, const double x2, const double y2,
+                                                const sf::Color& color)
+{
+    _geometry.lines.push_back({x1, y1, x2, y2, color, true});
+}
+
 void VectorRenderWorker::Context::AddCircle(const double xCenter, const double yCenter, const double radius,
                                             const sf::Color& color, const bool filled)
 {
@@ -33,6 +39,23 @@ void VectorRenderWorker::Context::AddRectangle(const double left, const double r
                                                const bool belongsToSet)
 {
     _geometry.rectangles.push_back({left, right, bottom, top, color, belongsToSet});
+}
+
+void VectorRenderWorker::Context::AddScreenRectangle(const double left, const double right, const double bottom,
+                                                      const double top, const sf::Color& color,
+                                                      const bool belongsToSet)
+{
+    _geometry.rectangles.push_back({left, right, bottom, top, color, belongsToSet, true});
+}
+
+void VectorRenderWorker::ConfigureViewport(const Options& options)
+{
+    _doubleView = {options.minX, options.minY, options.maxX, options.maxY};
+    _preciseView = options.hasPreciseView ? options.preciseView : PreciseRect(_doubleView);
+    _screenWidth = options.screenWidth;
+    _screenHeight = options.screenHeight;
+    _useHighPrecision = options.useHighPrecision;
+    _highPrecisionBits = options.highPrecisionBits;
 }
 
 VectorRenderWorker::~VectorRenderWorker()

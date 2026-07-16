@@ -1,4 +1,5 @@
 #include <type_traits>
+#include <cmath>
 #include <doctest/doctest.h>
 #include "FractalFactory.h"
 #include "../../wxChaos/core/raster/RasterFractal.h"
@@ -8,6 +9,7 @@
 #include "../../wxChaos/core/vector/VectorRenderWorker.h"
 #include "../../wxChaos/core/fractals/vector/KochSnowflake.h"
 #include "../../wxChaos/core/fractals/raster/Mandelbrot.h"
+#include "../../wxChaos/core/numeric/HighPrecision.h"
 
 static_assert(std::is_base_of_v<RasterFractal, Mandelbrot>);
 static_assert(std::is_base_of_v<VectorFractal, KochSnowflake>);
@@ -21,7 +23,9 @@ TEST_CASE("Koch snowflake creates three sides at iteration zero")
     snowflake.SetIterations(0);
     snowflake.RenderBlocking();
 
+    CHECK_FALSE(snowflake.IsHighPrecisionRenderActive());
     CHECK(snowflake.GetLines().size() == 3);
+    CHECK_FALSE(snowflake.GetLines().front().screenSpace);
     CHECK(snowflake.GetSetMap() == nullptr);
 }
 
@@ -102,4 +106,29 @@ TEST_CASE("Fractal factory creates a Koch snowflake")
     REQUIRE(factory.GetFractal() != nullptr);
     CHECK(factory.GetFractal()->GetType() == FractalType::KochSnowflake);
     CHECK(factory.GetFractal()->IsVectorFractal());
+}
+
+TEST_CASE("Koch snowflake keeps distinct geometry beyond double precision")
+{
+    HighPrecisionReal::PrecisionScope precision(256);
+    HighPrecisionReal radius(1);
+    for (int i = 0; i < 120; i++)
+        radius /= HighPrecisionReal(2);
+    const HighPrecisionReal upperY = HighPrecisionReal(2) / sqrt(HighPrecisionReal(3));
+
+    KochSnowflake snowflake(320, 240);
+    snowflake.SetPreciseView({-radius, upperY - radius, radius, upperY + radius});
+    snowflake.SetIterations(150);
+
+    CHECK(snowflake.IsHighPrecisionRenderActive());
+    snowflake.RenderBlocking();
+    REQUIRE_FALSE(snowflake.GetLines().empty());
+    for (const LineData& line : snowflake.GetLines())
+    {
+        CHECK(line.screenSpace);
+        CHECK(std::isfinite(line.x1));
+        CHECK(std::isfinite(line.y1));
+        CHECK(std::isfinite(line.x2));
+        CHECK(std::isfinite(line.y2));
+    }
 }

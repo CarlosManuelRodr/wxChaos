@@ -18,9 +18,8 @@ KochSnowflake::KochSnowflake(const unsigned int width, const unsigned int height
 
 void KochSnowflake::Render()
 {
-    const sf::Vector2u screenSize = GetScreenSize();
     auto& renderer = GetVectorRenderWorker<KochSnowflakeRenderer>();
-    renderer.Configure(_maxIterations, GetView(), screenSize.x, screenSize.y, GetSetColor());
+    renderer.Configure(_maxIterations, GetOptions(), GetSetColor());
     StartVectorRender();
 }
 

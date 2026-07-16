@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../vector/VectorRenderWorker.h"
-#include "geometry/Rect.h"
 
 /**
  * @class KochSnowflakeRenderer
@@ -10,23 +9,33 @@
 class KochSnowflakeRenderer : public VectorRenderWorker
 {
     unsigned int _iterations{};
-    Rect _view;
-    unsigned int _screenWidth{};
-    unsigned int _screenHeight{};
     sf::Color _color;
 
-    bool AppendKochSegment(Context& context, double x1, double y1, double x2, double y2,
-                           unsigned int iterations, double workWeight, double& completedWork);
-    [[nodiscard]] bool IsCurveVisible(double x1, double y1, double x2, double y2) const;
-    [[nodiscard]] bool IsSegmentVisible(double x1, double y1, double x2, double y2) const;
-    [[nodiscard]] bool IsSubpixelSegment(double x1, double y1, double x2, double y2) const;
-    static bool ClipLine(double direction, double distance, double& entry, double& exit);
+    template<class Real>
+    bool AppendKochSegment(Context& context, const Viewport<Real>& view, const Real& x1, const Real& y1,
+                           const Real& x2, const Real& y2, unsigned int iterations, double workWeight,
+                           double& completedWork);
+    template<class Real>
+    [[nodiscard]] bool IsCurveVisible(const Viewport<Real>& view, const Real& x1, const Real& y1,
+                                      const Real& x2, const Real& y2) const;
+    template<class Real>
+    [[nodiscard]] bool IsSegmentVisible(const Viewport<Real>& view, const Real& x1, const Real& y1,
+                                        const Real& x2, const Real& y2) const;
+    template<class Real>
+    [[nodiscard]] bool IsSubpixelSegment(const Viewport<Real>& view, const Real& x1, const Real& y1,
+                                         const Real& x2, const Real& y2) const;
+    template<class Real>
+    static bool ClipLine(const Real& direction, const Real& distance, Real& entry, Real& exit);
+    template<class Real>
+    void AddLine(Context& context, const Viewport<Real>& view, const Real& x1, const Real& y1,
+                 const Real& x2, const Real& y2) const;
+    template<class Real>
+    void RenderTyped(Context& context);
     static void CompleteWork(Context& context, double workWeight, double& completedWork);
 
 protected:
     void RenderGeometry(Context& context) override;
 
 public:
-    void Configure(unsigned int iterations, const Rect& view, unsigned int screenWidth, unsigned int screenHeight,
-                   const sf::Color& color);
+    void Configure(unsigned int iterations, const Options& options, const sf::Color& color);
 };

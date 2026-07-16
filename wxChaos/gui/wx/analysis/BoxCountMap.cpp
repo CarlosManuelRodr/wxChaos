@@ -66,6 +66,20 @@ void BoxCountMap::RasterizeVectorGeometry(const Fractal& fractal)
 
 void BoxCountMap::RasterizeRectangle(const RectangleData& rectangle, const Rect& view)
 {
+    if (rectangle.screenSpace)
+    {
+        const int firstX = ClampPixel(std::ceil(std::min(rectangle.left, rectangle.right)));
+        const int lastX = ClampPixel(std::floor(std::max(rectangle.left, rectangle.right)));
+        const int firstY = ClampPixel(std::ceil(std::min(rectangle.top, rectangle.bottom)));
+        const int lastY = ClampPixel(std::floor(std::max(rectangle.top, rectangle.bottom)));
+        for (int y = firstY; y <= lastY; y++)
+        {
+            for (int x = firstX; x <= lastX; x++)
+                SetOccupied(x, y, rectangle.belongsToSet);
+        }
+        return;
+    }
+
     const double viewWidth = view._right - view._left;
     const double viewHeight = view._top - view._bottom;
     if (viewWidth <= 0.0 || viewHeight <= 0.0 || rectangle.left >= rectangle.right
@@ -92,6 +106,12 @@ void BoxCountMap::RasterizeRectangle(const RectangleData& rectangle, const Rect&
 
 void BoxCountMap::RasterizeLine(const LineData& line, const Rect& view)
 {
+    if (line.screenSpace)
+    {
+        RasterizeLinePixels(line.x1, line.y1, line.x2, line.y2);
+        return;
+    }
+
     double x1 = line.x1;
     double y1 = line.y1;
     double x2 = line.x2;

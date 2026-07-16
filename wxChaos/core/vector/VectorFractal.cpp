@@ -2,7 +2,10 @@
 #include <algorithm>
 #include <cmath>
 
-VectorFractal::VectorFractal(const unsigned int width, const unsigned int height) : Fractal(width, height) {}
+VectorFractal::VectorFractal(const unsigned int width, const unsigned int height) : Fractal(width, height)
+{
+    _hasHighPrecisionRender = true;
+}
 
 VectorFractal::~VectorFractal()
 {
@@ -117,6 +120,19 @@ void VectorFractal::DrawPrimitives(sf::RenderTarget& target) const
     sf::VertexArray rectangles(sf::Quads);
     for (const RectangleData& rectangle : _rectangles)
     {
+        if (rectangle.screenSpace)
+        {
+            rectangles.append(sf::Vertex({static_cast<float>(rectangle.left), static_cast<float>(rectangle.top)},
+                                         rectangle.color));
+            rectangles.append(sf::Vertex({static_cast<float>(rectangle.right), static_cast<float>(rectangle.top)},
+                                         rectangle.color));
+            rectangles.append(sf::Vertex({static_cast<float>(rectangle.right), static_cast<float>(rectangle.bottom)},
+                                         rectangle.color));
+            rectangles.append(sf::Vertex({static_cast<float>(rectangle.left), static_cast<float>(rectangle.bottom)},
+                                         rectangle.color));
+            continue;
+        }
+
         const double clippedLeft = std::max(rectangle.left, _minX);
         const double clippedRight = std::min(rectangle.right, _maxX);
         const double clippedBottom = std::max(rectangle.bottom, _minY);
@@ -138,6 +154,16 @@ void VectorFractal::DrawPrimitives(sf::RenderTarget& target) const
 
     for (const LineData& line : _lines)
     {
+        if (line.screenSpace)
+        {
+            const sf::Vertex vertices[] = {
+                sf::Vertex({static_cast<float>(line.x1), static_cast<float>(line.y1)}, line.color),
+                sf::Vertex({static_cast<float>(line.x2), static_cast<float>(line.y2)}, line.color)
+            };
+            target.draw(vertices, 2, sf::Lines);
+            continue;
+        }
+
         const sf::Vertex vertices[] = {
             sf::Vertex(sf::Vector2f(static_cast<float>(GetPixelX(line.x1)), static_cast<float>(GetPixelY(line.y1))), line.color),
             sf::Vertex(sf::Vector2f(static_cast<float>(GetPixelX(line.x2)), static_cast<float>(GetPixelY(line.y2))), line.color)

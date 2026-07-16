@@ -384,15 +384,16 @@ unsigned int FractalPresenter::CalculateAutomaticIterations() const
 unsigned int FractalPresenter::CalculateAutomaticIterationExtra() const
 {
     const PreciseRect view = CaptureCurrentView();
-    const double width = ToDouble(RealAbs(view.right - view.left));
-    if (!std::isfinite(width) || width <= 0.0)
-        return 0;
-
     constexpr double referenceWidth = 3.5;
     const double iterationsPerZoomDoubling = _fractal->IsVectorFractal() ? 1.0 : 18.0;
     const unsigned int maximumAutomaticIterationExtra = GetMaximumAutomaticIterationExtra();
+    const HighPrecisionReal width = RealAbs(view.right - view.left);
+    if (width <= HighPrecisionReal(0))
+        return maximumAutomaticIterationExtra;
 
-    const double zoomDepth = std::max(0.0, std::log2(referenceWidth / width));
+    const HighPrecisionReal preciseZoomDepth = log(HighPrecisionReal(referenceWidth) / width)
+        / log(HighPrecisionReal(2));
+    const double zoomDepth = std::max(0.0, ToDouble(preciseZoomDepth));
     const double wantedExtraIterations = std::ceil(zoomDepth * iterationsPerZoomDoubling);
     if (!std::isfinite(wantedExtraIterations))
         return maximumAutomaticIterationExtra;
@@ -404,7 +405,7 @@ unsigned int FractalPresenter::CalculateAutomaticIterationExtra() const
 unsigned int FractalPresenter::GetMaximumAutomaticIterationExtra() const
 {
     // Recursive geometry needs far fewer extra levels than an escape-time renderer needs iterations.
-    return _fractal->IsVectorFractal() ? 64 : 20000000;
+    return _fractal->IsVectorFractal() ? 1024 : 20000000;
 }
 
 void FractalPresenter::SetAutomaticIterationBaseForCurrentIterations(const unsigned int iterations)

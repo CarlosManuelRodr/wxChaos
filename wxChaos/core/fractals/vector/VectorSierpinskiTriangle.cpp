@@ -19,9 +19,8 @@ VectorSierpinskiTriangle::VectorSierpinskiTriangle(const unsigned int width, con
 
 void VectorSierpinskiTriangle::Render()
 {
-    const sf::Vector2u screenSize = GetScreenSize();
     auto& renderer = GetVectorRenderWorker<VectorSierpinskiTriangleRenderer>();
-    renderer.Configure(_maxIterations, GetView(), screenSize.x, screenSize.y, GetSetColor());
+    renderer.Configure(_maxIterations, GetOptions(), GetSetColor());
     StartVectorRender();
 }
 

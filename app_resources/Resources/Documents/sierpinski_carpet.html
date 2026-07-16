@@ -34,7 +34,8 @@
         <h2>Vector construction</h2>
         <p>wxChaos draws one occupied square and overlays the recursively removed holes with rectangle primitives.
             Geometry is generated in the background, branches outside the viewport are pruned, and subdivisions
-            smaller than a screen pixel are skipped.</p>
+            smaller than a screen pixel are skipped. Deep zooms automatically use arbitrary-precision coordinates
+            while ordinary views retain the faster double-precision path.</p>
     </section>
 </main>
 
@@ -64,7 +65,8 @@
         <h2>Construcción vectorial</h2>
         <p>wxChaos dibuja un cuadrado ocupado y superpone los huecos eliminados mediante primitivas rectangulares.
             La geometría se genera en segundo plano, se descartan las ramas fuera de la vista y se omiten las
-            subdivisiones menores que un píxel de la pantalla.</p>
+            subdivisiones menores que un píxel de la pantalla. Los acercamientos profundos usan automáticamente
+            coordenadas de precisión arbitraria y las vistas normales conservan la ruta rápida con double.</p>
     </section>
 </main>
 </body>
