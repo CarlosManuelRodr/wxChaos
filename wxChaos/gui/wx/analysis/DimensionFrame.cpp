@@ -1162,6 +1162,7 @@ void DimensionFrame::PopulateFractalChoices()
     AddBuiltInFractalChoice(_("Henon map"), FractalType::HenonMap);
     AddBuiltInFractalChoice(_("Koch Snowflake"), FractalType::KochSnowflake);
     AddBuiltInFractalChoice(_("Sierpinski Triangle (Vector)"), FractalType::VectorSierpinskiTriangle);
+    AddBuiltInFractalChoice(_("Sierpinski Carpet"), FractalType::SierpinskiCarpet);
 
     GetScriptFractals();
 }
@@ -1189,7 +1190,8 @@ const DimensionCalculatorPreset* DimensionFrame::FindDimensionPreset(const Fract
         {FractalType::VectorSierpinskiTriangle, {-1.16, 1.16, -0.89, 28, "5*x", 1, 100, 5000}},
         {FractalType::LogisticMap, {2.80000000, 4.00000000, -0.04000000, 1000, "5*x", 1, 100, 5000}},
         {FractalType::HenonMap, {-1.50000000, 1.50000000, -1.41000000, 50000, "5*x", 1, 100, 5000}},
-        {FractalType::KochSnowflake, {-1.30000000, 1.30000000, -1.31000000, 15, "5*x", 1, 100, 5000}}
+        {FractalType::KochSnowflake, {-1.30000000, 1.30000000, -1.31000000, 15, "5*x", 1, 100, 5000}},
+        {FractalType::SierpinskiCarpet, {-1.05000000, 1.05000000, -1.05000000, 10, "10*x", 10, 100, 5000}}
     };
 
     for (const BuiltInDimensionPreset& preset : presets)
