@@ -3,11 +3,16 @@
 #include <functional>
 #include <vector>
 #include <wx/checkbox.h>
+#include <wx/button.h>
 #include <wx/panel.h>
+#include <wx/sizer.h>
 #include <wx/spinctrl.h>
+#include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include "UnrestrictedSpinDoubleCtrl.h"
-#include "Fractal.h"
+
+class Fractal;
+class PanelOptions;
 
 /**
  * @class FractalOptionsPanel

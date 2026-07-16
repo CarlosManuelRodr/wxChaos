@@ -1,4 +1,7 @@
 #include "tools/CommandConsole.h"
+#include "canvas/FractalCanvas.h"
+#include "sfml/FractalPresenter.h"
+#include "Fractal.h"
 
 #include <algorithm>
 #include <limits>

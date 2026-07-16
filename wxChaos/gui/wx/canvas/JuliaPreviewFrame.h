@@ -5,12 +5,20 @@
 
 #pragma once
 
+#include <wx/frame.h>
 #include <wx/timer.h>
-#include "canvas/FractalCanvas.h"
-#include "canvas/FractalToolbar.h"
 #include "docs/DocumentationLinkAction.h"
-#include "fractal/IterationsDialog.h"
-#include "canvas/RenderStatusWidget.h"
+#include "types/FractalType.h"
+#include "Options.h"
+
+class FractalCanvas;
+class FractalToolbar;
+class IterationsDialog;
+class RenderStatusWidget;
+class wxMenuBar;
+class wxMenu;
+class wxMenuItem;
+class wxStatusBar;
 
 wxDECLARE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 

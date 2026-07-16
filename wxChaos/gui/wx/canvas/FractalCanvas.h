@@ -12,16 +12,21 @@
 
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include "canvas/wxSFMLCanvas.h"
-#include "sfml/SelectionRect.h"
-#include "sfml/FractalPresenter.h"
-#include "sfml/CoordinateSelector.h"
 #include "canvas/FractalInteractionTool.h"
 #include "numeric/HighPrecision.h"
 #include "FractalFactory.h"
+#include "FormulaOptions.h"
+#include "ScriptData.h"
+#include "types/FractalType.h"
 
 class wxPopupWindow;
 class wxStaticText;
+class Fractal;
+class FractalPresenter;
+class SelectionRect;
+class CoordinateSelector;
 
 wxDECLARE_EVENT(wxEVT_FRACTAL_CANVAS_STATUS_TEXT, wxCommandEvent);
 

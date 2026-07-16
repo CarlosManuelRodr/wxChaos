@@ -12,7 +12,13 @@
 #include <wx/wx.h>
 #include <wx/bmpbndl.h>
 #include <wx/statline.h>
-#include "canvas/FractalCanvas.h"
+#include <SFML/System.hpp>
+#include "FractalFactory.h"
+#include "Options.h"
+#include "types/FractalType.h"
+
+class Fractal;
+class FractalCanvas;
 
 /**
 * @class ImageExportProgressDialog

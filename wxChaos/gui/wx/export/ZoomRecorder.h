@@ -7,7 +7,10 @@
 #include <wx/panel.h>
 #include <wx/frame.h>
 #include <wx/bmpbndl.h>
-#include "canvas/FractalCanvas.h"
+#include "FractalFactory.h"
+#include "numeric/PreciseRect.h"
+
+class FractalCanvas;
 
 /**
 * @class ZoomRecorder

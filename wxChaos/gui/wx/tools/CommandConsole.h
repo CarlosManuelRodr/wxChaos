@@ -4,12 +4,14 @@
 #include <map>
 #include <optional>
 #include <vector>
+#include <SFML/Graphics/Color.hpp>
 #include <wx/button.h>
 #include <wx/frame.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include "canvas/FractalCanvas.h"
+
+class FractalCanvas;
 
 wxDECLARE_EVENT(wxEVT_COMMAND_CONSOLE_CLOSED, wxCommandEvent);
 

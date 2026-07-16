@@ -5,6 +5,7 @@
 #include "fractal/FormulaDialog.h"
 
 #include <utility>
+#include "canvas/FractalCanvas.h"
 #include "AppPaths.h"
 #include "common/AppTheme.h"
 #include "fractal/FunctionsHelpDialog.h"

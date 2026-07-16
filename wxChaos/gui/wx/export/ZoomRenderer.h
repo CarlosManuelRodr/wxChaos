@@ -3,7 +3,10 @@
 #include <atomic>
 #include <string>
 #include <wx/thread.h>
-#include "canvas/FractalCanvas.h"
+#include "FractalFactory.h"
+#include "numeric/PreciseRect.h"
+
+class FractalCanvas;
 
 /**
 * @class ZoomRenderer

@@ -10,6 +10,9 @@
 #include "AppPaths.h"
 #include "renderer/RendererOptionsFrame.h"
 #include "config/AppConfigStore.h"
+#include "renderer/wxGradientDialog.h"
+#include "sfml/FractalPresenter.h"
+#include "Fractal.h"
 
 wxDEFINE_EVENT(wxEVT_RENDERER_OPTIONS_CLOSED, wxCommandEvent);
 

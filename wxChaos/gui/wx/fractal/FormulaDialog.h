@@ -14,7 +14,8 @@
 #include <wx/bmpbndl.h>
 #include "FormulaOptions.h"
 #include "types/FormulaType.h"
-#include "canvas/FractalCanvas.h"
+
+class FractalCanvas;
 
 #define FormulaDialogSize wxSize(520, 320)
 

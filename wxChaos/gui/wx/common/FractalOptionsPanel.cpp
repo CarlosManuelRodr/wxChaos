@@ -1,4 +1,5 @@
 #include "common/FractalOptionsPanel.h"
+#include "Fractal.h"
 #include "common/AppTheme.h"
 #include "common/UnrestrictedSpinDoubleCtrl.h"
 #include <wx/translation.h>

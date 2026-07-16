@@ -2,6 +2,9 @@
 #include "AppPaths.h"
 #include "common/AppTheme.h"
 #include "export/ImageExportSizeDialog.h"
+#include "canvas/FractalCanvas.h"
+#include "Fractal.h"
+#include "fractals/raster/ScriptFractal.h"
 #include "TextUtils.h"
 using namespace std;
 

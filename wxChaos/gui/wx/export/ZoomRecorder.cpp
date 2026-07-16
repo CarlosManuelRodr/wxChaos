@@ -9,11 +9,16 @@
 #include <wx/slider.h>
 #include <wx/button.h>
 #include <wx/stattext.h>
+#include <wx/statbmp.h>
 #include "SFML/System.hpp"
 #include "AppPaths.h"
 #include "common/AppTheme.h"
 #include "export/ZoomRecorder.h"
 #include "export/ZoomRenderer.h"
+#include "canvas/FractalCanvas.h"
+#include "sfml/FractalPresenter.h"
+#include "Fractal.h"
+#include "fractals/raster/ScriptFractal.h"
 
 ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const wxWindowID id, const wxString& title,
                            const wxPoint& pos, const wxSize& size, const long style)

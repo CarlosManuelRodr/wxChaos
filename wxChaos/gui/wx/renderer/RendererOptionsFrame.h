@@ -16,9 +16,12 @@
 #include <wx/spinctrl.h>
 #include <SFML/Graphics/Color.hpp>
 #include "coloring/ColorPalette.h"
-#include "sfml/FractalPresenter.h"
-#include "renderer/wxGradientDialog.h"
-#include "Fractal.h"
+#include "Options.h"
+#include "types/RenderingAlgorithmType.h"
+#include "types/RenderingPrecisionMode.h"
+
+class FractalPresenter;
+class Fractal;
 
 #define RendererOptionsFrameSize wxSize(1000, 1020)
 

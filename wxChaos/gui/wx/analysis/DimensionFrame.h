@@ -12,6 +12,7 @@
 #include <memory>
 #include <optional>
 #include <vector>
+#include <SFML/System.hpp>
 
 #include <wx/wx.h>
 #include <wx/statline.h>
@@ -28,6 +29,9 @@
 #include "analysis/PlotWindow.h"
 #include "common/FractalOptionsPanel.h"
 #include "FractalFactory.h"
+#include "FormulaOptions.h"
+#include "Options.h"
+#include "ScriptData.h"
 
 /** @brief Event posted to the parent when the dimension-calculator window closes. */
 wxDECLARE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);

@@ -7,6 +7,9 @@
 #include <wx/stattext.h>
 #include "AppPaths.h"
 #include "canvas/FractalCanvas.h"
+#include "sfml/SelectionRect.h"
+#include "sfml/FractalPresenter.h"
+#include "sfml/CoordinateSelector.h"
 #include "export/ImageExportSizeDialog.h"
 using namespace std;
 

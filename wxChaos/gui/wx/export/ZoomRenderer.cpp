@@ -3,6 +3,8 @@
 #include <cmath>
 #include <utility>
 #include "export/NativeVideoWriter.h"
+#include "canvas/FractalCanvas.h"
+#include "sfml/FractalPresenter.h"
 #include "../../../core/fractals/raster/ScriptFractal.h"
 
 void ZoomRenderer::CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)

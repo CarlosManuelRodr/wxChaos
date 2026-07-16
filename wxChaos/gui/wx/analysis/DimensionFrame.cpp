@@ -5,6 +5,7 @@
 #include "common/AppTheme.h"
 #include "AppPaths.h"
 #include "analysis/DimensionFrame.h"
+#include "Fractal.h"
 #include "TextUtils.h"
 #include "export/ImageExportSizeDialog.h"
 #include "fractal/FormulaDialog.h"

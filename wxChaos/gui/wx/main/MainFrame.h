@@ -10,24 +10,35 @@
 #pragma once
 
 #include <optional>
+#include <vector>
+#include <wx/frame.h>
 #include "config/AppConfigStore.h"
-#include "renderer/RendererOptionsFrame.h"
-#include "fractal/JuliaConstantDialog.h"
-#include "fractal/IterationsDialog.h"
-#include "fractal/FormulaDialog.h"
-#include "canvas/FractalCanvas.h"
-#include "canvas/JuliaPreviewFrame.h"
-#include "canvas/FractalToolbar.h"
-#include "canvas/RenderStatusWidget.h"
-#include "common/FractalOptionsPanel.h"
 #include "docs/DocumentationLinkAction.h"
-#include "main/AboutDialog.h"
-#include "export/ZoomRecorder.h"
-#include "tools/CommandConsole.h"
-#include "analysis/DimensionFrame.h"
-#include "scripting/ScriptEditor.h"
+#include "coloring/ColorPaletteTypes.h"
+#include "geometry/Rect.h"
+#include "types/FractalType.h"
+#include "Options.h"
+#include "ScriptData.h"
 
 class DocumentViewer;
+class FractalCanvas;
+class FormulaDialog;
+class JuliaPreviewFrame;
+class JuliaConstantDialog;
+class IterationsDialog;
+class RendererOptionsFrame;
+class ScriptEditor;
+class DimensionFrame;
+class CommandConsole;
+class FractalToolbar;
+class RenderStatusWidget;
+class FractalOptionsPanel;
+class wxMenuBar;
+class wxMenu;
+class wxMenuItem;
+class wxScrolledWindow;
+class wxBoxSizer;
+class wxStatusBar;
 
 /**
 * @enum IDS

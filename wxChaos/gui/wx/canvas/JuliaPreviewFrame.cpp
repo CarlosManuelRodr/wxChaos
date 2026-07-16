@@ -1,8 +1,12 @@
 // ReSharper disable CppDFAMemoryLeak
 #include "canvas/JuliaPreviewFrame.h"
 #include "AppPaths.h"
+#include "canvas/FractalCanvas.h"
+#include "canvas/FractalToolbar.h"
+#include "canvas/RenderStatusWidget.h"
 #include "docs/DocumentViewer.h"
 #include "docs/FractalDocumentation.h"
+#include "fractal/IterationsDialog.h"
 #include "main/MainFrame.h"
 
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
