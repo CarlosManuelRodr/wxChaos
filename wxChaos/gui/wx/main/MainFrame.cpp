@@ -178,7 +178,6 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_MENU, &MainFrame::OnFormulaDialog, this, ID_FORMULA_DIALOG);
     this->Bind(wxEVT_MENU, &MainFrame::OnToolbarVisibility, this, ID_VIEW_TOOLBAR);
     this->Bind(wxEVT_MENU, &MainFrame::OnFractalOptions, this, ID_OPTION_PANEL);
-    this->Bind(wxEVT_MENU, &MainFrame::OnUserManual, this, ID_USER_MANUAL);
     this->Bind(wxEVT_MENU, &MainFrame::OnScriptEditor, this, ID_SCRIPT_EDITOR);
     this->Bind(wxEVT_MENU, &MainFrame::OnZoomRecorder, this, ID_ZOOM_RECORDER);
     this->Bind(wxEVT_MENU, &MainFrame::OnDimensionCalculator, this, ID_DIMENSION_CALCULATOR);
@@ -716,7 +715,6 @@ void MainFrame::SetUpGUI()
     _rendererMenu->Append(ID_PALETTE, _("Renderer options"));
 
     // Help menu.
-    _helpMenu->Append(ID_USER_MANUAL, _("User manual"));
     _keyboardGuide = new wxMenuItem(_helpMenu, ID_KEYBOARD_GUIDE, _("Keyboard guide"), wxEmptyString, wxITEM_CHECK);
     _helpMenu->Append(_keyboardGuide);
     _helpMenu->Append(ID_WELCOME_DIALOG, _("Open welcome guide"));
@@ -1177,11 +1175,6 @@ void MainFrame::OnApplyPanelOpt(wxCommandEvent&)
     _fractalOptionsPanel->Apply();
     _fractalCanvas->SetFocus();
     _fractalCanvas->GetFractalPresenter()->Redraw();
-}
-// ReSharper disable once CppMemberFunctionMayBeStatic
-void MainFrame::OnUserManual(wxCommandEvent&) // NOLINT(*-convert-member-functions-to-static)
-{
-    wxLaunchDefaultApplication(AppPaths::DocFile("User_Manual.pdf"));
 }
 void MainFrame::OnScriptEditor(wxCommandEvent&)
 {

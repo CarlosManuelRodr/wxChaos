@@ -91,7 +91,6 @@ enum IDS
     ID_IT_MANUAL,
     ID_FORMULA_DIALOG,
     ID_OPTION_PANEL,
-    ID_USER_MANUAL,
     ID_WELCOME_DIALOG,
     ID_SCRIPT_EDITOR,
     ID_ZOOM_RECORDER,
@@ -303,7 +302,6 @@ public :
     void OnToolbarVisibility(wxCommandEvent& event);        ///< Shows or hides the interaction toolbar.
     void OnFractalOptions(wxCommandEvent& event);
     void OnApplyPanelOpt(wxCommandEvent& event);
-    void OnUserManual(wxCommandEvent& event);
     void OnScriptEditor(wxCommandEvent& event);
     void OnZoomRecorder(wxCommandEvent& event);
     void OnDimensionCalculator(wxCommandEvent& event);
