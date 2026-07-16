@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../Translation.h"
 #include "../../vector/VectorFractal.h"
 
 /**
@@ -10,7 +11,7 @@ class VectorSierpinskiTriangle : public VectorFractal
 {
 public:
     VectorSierpinskiTriangle(unsigned int width, unsigned int height);
-    wxString GetName() const override { return "Sierpinski Triangle (Vector)"; }
+    wxString GetName() const override { return WXCHAOS_TRANSLATE_NOOP("Sierpinski Triangle (Vector)"); }
     CoordinateSystem GetCoordinateSystem() const override { return {_("x"), _("y")}; }
     void Render() override;
     void PreDrawMaps() override;

@@ -287,6 +287,15 @@ msgstr "Manowar (Julia)"
 msgid "Sierpinski Triangle"
 msgstr "Triángulo de Sierpinski"
 
+msgid "Koch Snowflake"
+msgstr "Copo de nieve de Koch"
+
+msgid "Sierpinski Triangle (Vector)"
+msgstr "Triángulo de Sierpinski (Vectorial)"
+
+msgid "Sierpinski Carpet"
+msgstr "Alfombra de Sierpinski"
+
 msgid "Fixed Point"
 msgstr "Punto fijo"
 
