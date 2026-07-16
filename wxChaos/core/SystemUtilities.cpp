@@ -11,7 +11,7 @@ namespace Platform
 {
     int ProcessorCount()
     {
-        return static_cast<int>(std::max(1U, std::thread::hardware_concurrency()));
+        return static_cast<int>(max(1U, std::thread::hardware_concurrency()));
     }
 
     void EnableHighDpiSupport()
