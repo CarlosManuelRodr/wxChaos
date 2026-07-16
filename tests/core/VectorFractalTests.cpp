@@ -143,3 +143,30 @@ TEST_CASE("Sierpinski carpet preserves recursive holes beyond double precision")
         CHECK(std::isfinite(rectangle.top));
     }
 }
+
+TEST_CASE("Resizing interrupts a precise vector render and allows a replacement render")
+{
+    HighPrecisionReal::PrecisionScope precision(256);
+    HighPrecisionReal radius(1);
+    for (int i = 0; i < 120; i++)
+        radius /= HighPrecisionReal(2);
+
+    SierpinskiCarpet carpet(10000, 10000);
+    carpet.SetPreciseView({HighPrecisionReal(-1) - radius, -radius,
+                           HighPrecisionReal(-1) + radius, radius});
+    carpet.SetIterations(150);
+    carpet.MarkRenderStarted();
+    carpet.PrepareRender({0, 0});
+    carpet.Render();
+
+    REQUIRE(carpet.IsRenderStarted());
+    REQUIRE(carpet.IsRendering());
+    carpet.Resize(640, 480);
+
+    CHECK_FALSE(carpet.IsRenderStarted());
+    CHECK_FALSE(carpet.IsRendering());
+    CHECK_FALSE(carpet.IsRendered());
+    carpet.RenderBlocking();
+    CHECK(carpet.IsRendered());
+    CHECK_FALSE(carpet.GetRectangles().empty());
+}

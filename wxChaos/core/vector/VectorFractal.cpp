@@ -17,6 +17,7 @@ void VectorFractal::Resize(const unsigned int width, const unsigned int height)
 {
     if (_vectorRenderWorker != nullptr)
         _vectorRenderWorker->Stop();
+    MarkRenderInterrupted();
 
     _screenWidth = width;
     _screenHeight = height;
