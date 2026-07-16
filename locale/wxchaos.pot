@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 13:08-0600\n"
+"POT-Creation-Date: 2026-07-16 00:29-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,1621 +17,1048 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/Cell.cpp:16
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/JuliaZM.cpp:37
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/MandelbrotZM.cpp:35
+msgid "Real"
+msgstr ""
+
+msgid "Imaginary"
+msgstr ""
+
 msgid "Bailout: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:18
 msgid " θ1 Bailout"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:19
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:21
 msgid "Value: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:20
 msgid " θ2 Bailout"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:22
 msgid "DeltaT: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:23
 msgid "m1: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:24
 msgid "m2: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:25
 msgid "Longitude: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:26
 msgid "Gravity: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:27
 msgid " Relative angles"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/DoublePendulum.cpp:28
 msgid " Runge-Kutta"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/FixedPoint1.cpp:23
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/FixedPoint2.cpp:23
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/FixedPoint3.cpp:23
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/FixedPoint4.cpp:23
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/Newton.cpp:25
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/UserDefinedFixedPoint.cpp:23
 msgid "Min step: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/HenonMap.cpp:22
 msgid "Alpha: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/HenonMap.cpp:23
 msgid "Beta: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/HenonMap.cpp:24
 msgid "X0: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/HenonMap.cpp:25
 msgid "Y0: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/JuliaZM.cpp:36
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/MandelbrotZM.cpp:34
 msgid "m: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/LogisticMap.cpp:23
 msgid "Seed: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/LogisticMap.cpp:24
 msgid "Stabilize point: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/Mandelbrot.cpp:27
 msgid ""
 "Number of buddhabrot\n"
 "random points:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/UserDefinedNewton.cpp:36
+msgid "x"
+msgstr ""
+
+msgid "y"
+msgstr ""
+
 msgid "Convergence epsilon: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/UserDefinedNewton.cpp:37
 msgid "Function epsilon: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/UserDefinedNewton.cpp:38
 msgid "Derivative epsilon: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/UserDefinedNewton.cpp:39
 msgid "Root tolerance: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/core/fractals/UserDefinedNewton.cpp:40
 msgid "Escape radius: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:77
+msgid "Koch Snowflake"
+msgstr ""
+
+msgid "Sierpinski Carpet"
+msgstr ""
+
+msgid "Sierpinski Triangle (Vector)"
+msgstr ""
+
 msgid "Fractal parameters"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:83
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:124
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:701
 msgid "Fractal"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:90
 msgid "Min X"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:93
 msgid "Max X"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:96
 msgid "Min Y"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:100
 msgid "Max Y"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:104
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:125
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:183
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/IterationsDialog.cpp:29
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:702
 msgid "Iterations"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:108
 msgid "Square image size (pixels)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:111
 msgid "Configure fractal options"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:114
 msgid "Edit user formula"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:121
 msgid "Box-counting parameters"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:125
 msgid "Divisions"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:136
 msgid "Function:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:150
 msgid "x goes from"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:158
 msgid "to"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:170
 msgid "By function"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:180
 msgid "By list"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:185
 msgid "Plotting"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:189
 msgid "Plot data"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:192
 msgid "Plot fitted data"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:198
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:325
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:665
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:839
 msgid "Calculate"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:201
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:97
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/docs/DocumentViewer.cpp:35
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FunctionsHelpDialog.cpp:64
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:163
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:153
 msgid "Close"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:217
 msgid "Box count preview"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:226
 msgid "Number of divisions"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:235
 msgid "Save preview"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:242
 msgid "Dimension count log"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:252
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:461
 msgid "Progress: Stopped"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:269
 msgid ""
 "Dimension calculator log.\n"
 "\n"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:605
+#, c-format
+msgid ""
+"The finest boxes are only %.2f pixels wide at the current image size. "
+"Increase the square image size or reduce the upper division limit for a more "
+"reliable dimension estimate."
+msgstr ""
+
 msgid "Parser error: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:652
 msgid "Stop"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:668
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:670
 msgid "Calculation stopped\n"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:686
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:27
 msgid "Rendering"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:690
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:757
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:856
 msgid "Progress: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:709
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:836
 msgid "Progress: Done"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:738
 msgid "Starting box count.\n"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:739
 msgid "Epsilon   |   BoxCount.\n"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:805
 msgid "Dimension = "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:820
 msgid "Data plot"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:830
 msgid "Fitted data plot"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:837
 msgid "Done\n"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:852
 msgid "Calculating dimension"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:878
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/common/FractalOptionsPanel.cpp:58
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:658
 msgid "Fractal options"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:928
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:274
 msgid "Select file name"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1061
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:315
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:321
 msgid "Failed to save image to file: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1061
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:315
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:321
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/IterationsDialog.cpp:143
 msgid "Error"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1088
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:562
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:103
-msgid "Mandelbrot"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1089
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:563
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:103
-msgid "Mandelbrot Z^m"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1090
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:564
-msgid "Mandelbrot (Julia)"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1091
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:565
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:103
-msgid "Julia Z^m"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1092
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:567
-msgid "Sine (Julia)"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1093
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:568
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:104
-msgid "Magnet"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1094
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:569
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:104
-msgid "Jellyfish"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1095
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:570
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:104
-msgid "Manowar"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1096
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:571
-msgid "Manowar (Julia)"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1097
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:572
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:105
-msgid "Sierpinski Triangle"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1098
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:577
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:106
-msgid "Tricorn"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1099
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:578
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:106
-msgid "Burning Ship"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1100
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:579
-msgid "Burning Ship (Julia)"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1101
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:580
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:107
-msgid "Fractory"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1102
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:581
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:107
-msgid "Cell"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1103
 msgid "Logistic map"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1104
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:583
 msgid "Henon map"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1105
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:584
-msgid "Double pendulum"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1106
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:585
-msgid "User Formula (Complex)"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.cpp:1142
 msgid "Calculate dimension help"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/DimensionFrame.h:153
 msgid "Calculate Dimension"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/ImagePanel.cpp:106
 msgid "N = "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/PlotWindow.cpp:16
 msgid "Epsilon"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/PlotWindow.cpp:17
 msgid "N"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/PlotWindow.cpp:26
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/PlotWindow.cpp:57
 msgid "Data"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/PlotWindow.cpp:47
 msgid "Log(1/Epsilon)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/analysis/PlotWindow.cpp:48
 msgid "Log(N)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/FractalCanvas.cpp:155
-msgid "θ2: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/FractalCanvas.cpp:157
-msgid "   θ1: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/FractalCanvas.cpp:162
-msgid "x: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/FractalCanvas.cpp:164
-msgid "   y: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/FractalCanvas.cpp:169
-msgid "Real: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/FractalCanvas.cpp:171
-msgid "   Imaginary: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/FractalCanvas.cpp:181
 msgid "Multiprecision: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/FractalCanvas.cpp:183
 msgid "-bit"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:13
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:640
 msgid "Julia mode"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:99
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:657
 msgid "Toolbar"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:103
 msgid "Open this in main window"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:105
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:685
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:1519
+msgid "Show orbit"
+msgstr ""
+
 msgid "Abort"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:107
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:687
 msgid "Redraw"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:108
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:688
 msgid "Reset"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:110
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:670
 msgid "Set iterations"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:111
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:672
 msgid "Increase iterations"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:112
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:675
 msgid "Decrease iterations"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:117
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:678
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:121
 msgid "Automatic iterations"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:122
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:699
 msgid "File"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp:123
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:700
 msgid "View"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/RenderStatusWidget.cpp:62
 msgid "Iterations: --"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/RenderStatusWidget.cpp:66
 msgid "Rendering..."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/canvas/RenderStatusWidget.cpp:66
 #, c-format
 msgid "Iterations: %u"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/common/FractalOptionsPanel.cpp:84
 msgid "K real"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/common/FractalOptionsPanel.cpp:92
 msgid "K imaginary"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/common/FractalOptionsPanel.cpp:193
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:77
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/IterationsDialog.cpp:72
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/JuliaConstantDialog.cpp:47
 msgid "Apply"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/docs/DocumentViewer.cpp:30
 msgid "Back"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/docs/DocumentViewer.cpp:31
 msgid "Forward"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:26
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.h:42
 msgid "Saving..."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:36
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:77
 msgid "Rendering: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:48
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:207
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:64
 msgid "Cancel"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:161
 msgid "Image export"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:167
 msgid "Width"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:175
 msgid "Height"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:194
 msgid ""
 "For very large images, the BMP format is recommended because the exporter is "
 "optimized for very large sizes."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.cpp:203
 msgid "Save"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ImageExportSizeDialog.h:94
 msgid "Select size"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:40
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:268
 msgid "Preview"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:49
 msgid "Frame:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:60
 msgid "Save video"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:72
 msgid "Zoom options"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:78
 msgid "Video duration:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:88
 msgid "Minutes"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:96
 msgid "Seconds"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:101
 msgid "Framerate:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:110
 msgid "Frames Per Second"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:115
 msgid "Rotate colors"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:119
 msgid "Color rotation speed:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:331
 msgid "Save zoom video"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:350
 msgid "Generating video..."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:350
 msgid "Please wait until the process is complete."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:357
 msgid "Couldn't create thread!"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:366
 msgid "Couldn't run thread!"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.cpp:390
 msgid "Could not save video"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/export/ZoomRecorder.h:71
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:666
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:1174
 msgid "Zoom recorder"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:35
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:625
 msgid "Formula"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:42
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:134
 msgid "Options"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:45
 msgid "Bailout value:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:55
 msgid "Fractal type:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:59
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:438
 msgid "Escape time"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:59
 msgid "Fixed point"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:59
 msgid "Newton-Raphson"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:65
 msgid "Julia type"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:74
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/IterationsDialog.cpp:68
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/JuliaConstantDialog.cpp:41
 msgid "Ok"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.cpp:80
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FunctionsHelpDialog.cpp:50
 msgid "Available functions"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.h:63
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/FormulaDialog.h:68
 msgid "User formula"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/IterationsDialog.cpp:40
 msgid "Max iter:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/IterationsDialog.cpp:60
 msgid ""
 "Higher values reveal more detail\n"
 "but increase render time."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/IterationsDialog.cpp:143
 msgid "Iterations must be greater than zero."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/JuliaConstantDialog.cpp:21
 msgid "Real value"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/JuliaConstantDialog.cpp:29
 msgid "Imaginary value"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/fractal/JuliaConstantDialog.h:40
 msgid "Enter constant"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:23
 msgid "About wxChaos"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:53
 msgid "Could not load the About banner"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:71
 msgid ""
 "An open-source playground for exploring fractals, dynamical systems, and "
 "generative mathematics."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:80
 msgid "Created by Carlos Manuel Rodriguez Martinez."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:89
 msgid "Source code"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:94
 msgid "Contact the author"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:121
 msgid "Application"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:123
 msgid "Version"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:124
 msgid "Build"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:125
 msgid "Compiler"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:133
 msgid "Built with"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:147
 msgid "Icons by Streamline — "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/About.cpp:160
+msgid "On screen icon guides by Brett Post Script — "
+msgstr ""
+
+msgid "Link"
+msgstr ""
+
 msgid "Licensed under GPLv3"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:92
 msgid "Welcome to wxChaos"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:317
 msgid "wxChaos does not know how to handle this documentation action:\n"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:318
 msgid "Documentation action"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:566
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:103
+msgid "Mandelbrot"
+msgstr ""
+
+msgid "Mandelbrot Z^m"
+msgstr ""
+
+msgid "Mandelbrot (Julia)"
+msgstr ""
+
+msgid "Julia Z^m"
+msgstr ""
+
 msgid "Newton"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:573
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:574
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:575
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:576
+msgid "Sine (Julia)"
+msgstr ""
+
+msgid "Magnet"
+msgstr ""
+
+msgid "Jellyfish"
+msgstr ""
+
+msgid "Manowar"
+msgstr ""
+
+msgid "Manowar (Julia)"
+msgstr ""
+
+msgid "Sierpinski Triangle"
+msgstr ""
+
 msgid "Fixed Point"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:582
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:107
+msgid "Tricorn"
+msgstr ""
+
+msgid "Burning Ship"
+msgstr ""
+
+msgid "Burning Ship (Julia)"
+msgstr ""
+
+msgid "Fractory"
+msgstr ""
+
+msgid "Cell"
+msgstr ""
+
 msgid "Logistic Map"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:586
+msgid "Double pendulum"
+msgstr ""
+
+msgid "User Formula (Complex)"
+msgstr ""
+
 msgid "User Formula (Fixed Point)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:587
 msgid "User Formula (Newton-Raphson)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:618
 msgid "Complex"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:619
 msgid "Numerical method"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:620
 msgid "Physics"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:621
 msgid "Other"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:629
 msgid "Manual"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:633
 msgid "Slider"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:637
 msgid "Enter Julia constant"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:641
-msgid "Show orbit"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:650
 msgid "Save image"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:652
 msgid "Settings..."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:654
 msgid "Quit"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:664
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.h:98
 msgid "Script editor"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:664
 msgid "Create new fractals with a scripting language."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:665
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.h:93
 msgid "Command console"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:665
 msgid "Control and inspect the current fractal with commands."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:666
 msgid "Record a video zoom."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:667
 msgid "Dimension calculator"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:667
 msgid "Calculate fractal dimension."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:682
 msgid "Enter user formula"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:689
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:66
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.h:120
 msgid "Renderer options"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:692
 msgid "User manual"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:693
 msgid "Keyboard guide"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:695
 msgid "Open welcome guide"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:696
 msgid "About"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:703
 msgid "Renderer"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:704
 msgid "Tools"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:705
 msgid "Help"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:791
 msgid ""
 "You need to restart wxChaos for appearance and language changes to take "
 "effect."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:792
 msgid "Restart required"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/MainFrame.cpp:1173
 msgid ""
 "To use the zoom recorder you need to first perform a zoom on the main window."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:14
 msgid "Settings"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:25
 msgid "General"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:26
 msgid "Presets"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:28
 msgid "Zoom"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:37
 msgid "Restore defaults"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:63
 msgid "Startup"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:65
 msgid "Open the Julia constant window"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:66
 msgid "Open the command console"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:67
 msgid "Open Julia mode"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:68
 msgid "Open renderer options"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:69
 msgid "Show the welcome guide on next launch"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:70
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:72
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:158
 msgid "System"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:70
 msgid "Light"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:70
 msgid "Dark"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:72
 msgid "English"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:72
 msgid "Spanish"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:83
 msgid "Appearance:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:87
 msgid "Language:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:91
 msgid ""
 "Startup window and language changes take effect the next time wxChaos starts."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:103
 msgid "Julia"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:104
 msgid "Sine"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:104
 msgid "Manowar Julia"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:105
 msgid "Fixed Point: sin(z)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:105
 msgid "Fixed Point: cos(z)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:106
 msgid "Fixed Point: tan(z)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:106
 msgid "Fixed Point: z^2"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:107
 msgid "Burning Ship Julia"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:107
 msgid "Henon Map"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:107
 msgid "Double Pendulum"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:108
 msgid "User Defined"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:108
 msgid "User Defined Fixed Point"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:108
 msgid "User Defined Newton-Raphson"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:122
 msgid "Default fractal:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:136
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:207
 msgid "Palette size:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:143
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:216
 msgid "Color cycle length:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:150
 msgid "Anti-aliasing:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:151
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:104
 msgid "Off"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:206
 msgid "Color style:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:211
 msgid "Gradient preview:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:214
 msgid "Edit..."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:219
 msgid "Color points outside the fractal set"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:220
 msgid "Color points inside the fractal set"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:241
 msgid "Wheel zoom step (%):"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/main/SettingsFrame.cpp:243
 msgid "Preview inertia (ms):"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:71
 msgid "Algorithm"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:75
 msgid "Color algorithm"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:92
 msgid "Rendering precision"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:100
 msgid "Anti-aliasing"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:111
 msgid "Increasing this value makes the image clearer, but slower to render."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:119
 msgid ""
 "Note: To make this change permanent, configure it on File -> Settings -> "
 "Rendering."
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:130
 msgid "Render features"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:138
 msgid "Relative colors"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:142
 msgid "Orbit traps"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:147
 msgid "Smooth render"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:161
 msgid "Color options"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:165
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/wxGradientDialog.cpp:42
 msgid "Gradient"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:168
 msgid "Color styles:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:204
 msgid "Change gradient"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:226
 msgid "Set and exterior colors"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:230
 msgid "Fractal color (external color)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:234
 msgid "Set color (internal color)"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:239
 msgid "Interior set color:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:252
 msgid "Variation and rotation"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:256
 msgid "Color variation"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:264
 msgid "Color rotation speed"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:274
 msgid "Advanced color options"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:278
 msgid "Palette mapping:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:283
 msgid "Linear"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:284
 msgid "Exponentially mapped"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:291
 msgid "Exponent:"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:359
 msgid "N/A"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:373
 msgid "Adaptative"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:376
 msgid "Precise"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:379
 msgid "Fast"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:444
 msgid "Gaussian integer"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:450
 msgid "Escape angle"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:456
 msgid "Triangle inequality"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:462
 msgid "Chaotic map"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:468
 msgid "Convergence test"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:474
 msgid "Buddhabrot"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp:487
 msgid "Special algorithm"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/wxGradientDialog.cpp:17
 msgid "Gradient editor"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/wxGradientDialog.cpp:54
 msgid "Stops"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/wxGradientDialog.cpp:60
 msgid "Color: "
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/renderer/wxGradientDialog.cpp:70
 msgid "Erase"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:79
-msgid "Set a name for the script"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:81
-msgid "Script name: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:144
 msgid "User script editor"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:151
 msgid "Scripts"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:157
 msgid "Save Changes"
 msgstr ""
 
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:164
 msgid "New script"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:169
-msgid "Delete script"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:174
-msgid "Close and reload"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:180
-msgid "Source"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:232
-msgid "Debugger"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:237
-msgid "Actions"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:239
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:444
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:451
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:457
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:461
-msgid "Validate"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:244
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:468
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:486
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:490
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:41
-msgid "Run"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:249
-msgid "Clear"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:254
-msgid "Console"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:414
-msgid "This operation cannot be undone. Are you sure you want to continue?"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:444
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:468
-msgid "No script selected."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:451
-msgid "Compile error: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:457
-msgid "Execution error: "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:461
-msgid "No errors found."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:490
-msgid "Rendered preview in "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:490
-msgid " ms."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:510
-msgid " script console\n"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:511
-msgid "Validate or run a script to inspect results.\n"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:512
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:121
-msgid "Ready.\n"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:525
-msgid "  OK     "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/scripting/ScriptEditor.cpp:525
-msgid "  ERROR  "
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:118
-msgid " command console\n"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:119
-msgid ""
-"Type Help() for commands. Named and positional arguments are supported.\n"
-"\n"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:155
-msgid "Error:"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:169
-msgid "Console cleared."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:174
-msgid "Scripts reloaded."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:179
-msgid "Redraw requested."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:184
-msgid "Nothing to abort."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:186
-msgid "Render aborted."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:191
-msgid "Figures deleted."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:194
-#, c-format
-msgid "Maximum iterations: %u"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:201
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:217
-msgid "Error: iterations must be greater than zero."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:203
-#, c-format
-msgid "Maximum iterations set to %u."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:229
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:260
-msgid "Error: radius must be greater than zero."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:235
-msgid "Filled circle drawn."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:235
-msgid "Circle drawn."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:250
-msgid "Line drawn."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:262
-msgid "View focused."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:271
-msgid "Error: Julia mode is unavailable for the current fractal."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:272
-msgid "Julia mode opened or updated at the requested point."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:285
-msgid "Error: minimum boundaries must be smaller than maximum boundaries."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:287
-msgid "View boundaries updated."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:290
-msgid "Error: unknown command. Type Help() for the command list."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:301
-msgid "Error: expected Command(argument=value, ...)."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:322
-msgid "Error: empty argument."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:337
-msgid "Error: invalid named argument."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:342
-msgid "Error: duplicate argument '"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:374
-msgid "Error: missing numeric argument."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:380
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:400
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:465
-msgid "Error: '"
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:380
-msgid "' is not a number."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:394
-msgid "Error: missing integer argument."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:400
-msgid "' is not a valid non-negative integer."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:420
-msgid "Error: positional colors require red, green, and blue values."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:438
-msgid "Error: color components must be integers between 0 and 255."
-msgstr ""
-
-#: C:/Users/fisca/OneDrive/Documents/Programacion/wxChaos/wxChaos/gui/wx/tools/CommandConsole.cpp:465
-msgid "' is not a boolean. Use true or false."
 msgstr ""
 
 msgid "New from sample"
 msgstr ""
 
+msgid "Delete script"
+msgstr ""
+
+msgid "Close and reload"
+msgstr ""
+
+msgid "Documentation"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Debugger"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Validate"
+msgstr ""
+
+msgid "Run"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Console"
+msgstr ""
+
 msgid "Could not create the script from the selected sample."
+msgstr ""
+
+msgid "This operation cannot be undone. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Scripting guide"
+msgstr ""
+
+msgid "No script selected."
+msgstr ""
+
+msgid "Compile error: "
+msgstr ""
+
+msgid "Execution error: "
+msgstr ""
+
+msgid "No errors found."
+msgstr ""
+
+msgid "Rendered preview in "
+msgstr ""
+
+msgid " ms."
+msgstr ""
+
+msgid " script console\n"
+msgstr ""
+
+msgid "Validate or run a script to inspect results.\n"
+msgstr ""
+
+msgid "Ready.\n"
+msgstr ""
+
+msgid "  OK     "
+msgstr ""
+
+msgid "  ERROR  "
+msgstr ""
+
+msgid "Create a new script"
+msgstr ""
+
+msgid "Set a name for the script"
+msgstr ""
+
+msgid "Script name: "
 msgstr ""
 
 msgid "Select a sample script"
@@ -1649,5 +1076,108 @@ msgstr ""
 msgid "Script samples"
 msgstr ""
 
-msgid "Create a new script"
+msgid " command console\n"
+msgstr ""
+
+msgid ""
+"Type Help() for commands. Named and positional arguments are supported.\n"
+"\n"
+msgstr ""
+
+msgid "Error:"
+msgstr ""
+
+msgid "Console cleared."
+msgstr ""
+
+msgid "Scripts reloaded."
+msgstr ""
+
+msgid "Redraw requested."
+msgstr ""
+
+msgid "Nothing to abort."
+msgstr ""
+
+msgid "Render aborted."
+msgstr ""
+
+msgid "Figures deleted."
+msgstr ""
+
+#, c-format
+msgid "Maximum iterations: %u"
+msgstr ""
+
+msgid "Error: iterations must be greater than zero."
+msgstr ""
+
+#, c-format
+msgid "Maximum iterations set to %u."
+msgstr ""
+
+msgid "Error: radius must be greater than zero."
+msgstr ""
+
+msgid "Filled circle drawn."
+msgstr ""
+
+msgid "Circle drawn."
+msgstr ""
+
+msgid "Line drawn."
+msgstr ""
+
+msgid "View focused."
+msgstr ""
+
+msgid "Error: Julia mode is unavailable for the current fractal."
+msgstr ""
+
+msgid "Julia mode opened or updated at the requested point."
+msgstr ""
+
+msgid "Error: minimum boundaries must be smaller than maximum boundaries."
+msgstr ""
+
+msgid "View boundaries updated."
+msgstr ""
+
+msgid "Error: unknown command. Type Help() for the command list."
+msgstr ""
+
+msgid "Error: expected Command(argument=value, ...)."
+msgstr ""
+
+msgid "Error: empty argument."
+msgstr ""
+
+msgid "Error: invalid named argument."
+msgstr ""
+
+msgid "Error: duplicate argument '"
+msgstr ""
+
+msgid "Error: missing numeric argument."
+msgstr ""
+
+msgid "Error: '"
+msgstr ""
+
+msgid "' is not a number."
+msgstr ""
+
+msgid "Error: missing integer argument."
+msgstr ""
+
+msgid "' is not a valid non-negative integer."
+msgstr ""
+
+msgid "Error: positional colors require red, green, and blue values."
+msgstr ""
+
+msgid "Error: color components must be integers between 0 and 255."
+msgstr ""
+
+msgid "' is not a boolean. Use true or false."
 msgstr ""

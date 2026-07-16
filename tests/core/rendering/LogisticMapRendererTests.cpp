@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
 #include <memory>
 #include <vector>
-#include "renderers/LogisticMapRenderer.h"
+#include "../../../wxChaos/core/renderers/raster/LogisticMapRenderer.h"
 
 namespace
 {
@@ -70,7 +70,7 @@ TEST_CASE("Logistic map renderer plots the bifurcation diagram")
     LogisticMapRenderer renderer;
     renderer.SetParams(0.25, true);
     renderer.SetOptions(LogisticOptions(RenderingAlgorithmType::ChaoticMap));
-    renderer.SetRenderOut(maps.setMap.data(), maps.colorMap.data());
+    renderer.SetOutputRenderingMaps(maps.setMap.data(), maps.colorMap.data());
     renderer.SetLimits(0, 0, width, height);
     renderer.Render();
 

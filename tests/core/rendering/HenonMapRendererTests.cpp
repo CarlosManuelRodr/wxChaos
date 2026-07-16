@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
 #include <memory>
 #include <vector>
-#include "renderers/HenonMapRenderer.h"
+#include "../../../wxChaos/core/renderers/raster/HenonMapRenderer.h"
 
 TEST_CASE("Henon map renderer plots the configured orbit")
 {
@@ -36,7 +36,7 @@ TEST_CASE("Henon map renderer plots the configured orbit")
     HenonMapRenderer renderer;
     renderer.SetParams(1.4, 0.3, 0.5, 0.2);
     renderer.SetOptions(options);
-    renderer.SetRenderOut(setMap.data(), colorMap.data());
+    renderer.SetOutputRenderingMaps(setMap.data(), colorMap.data());
     renderer.SetLimits(0, 0, width, height);
     renderer.Render();
 

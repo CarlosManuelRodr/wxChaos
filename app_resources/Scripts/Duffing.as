@@ -11,6 +11,14 @@ void Configure()
     SetRedrawAlways(true);
     SetExtColorMode(false);
     AddDoubleOption("a", "a: ", 2.75);
+    SetDimensionCalculatorEnabled(true);
+    SetDimensionCalculatorPreset(
+        -2.20, 2.20, -2.10,  // Min X, Max X, Min Y
+        50000,               // Iterations
+        "5*x",               // Division function
+        1, 100,              // Function range
+        5000                 // Image size
+    );
 }
 
 void Render()

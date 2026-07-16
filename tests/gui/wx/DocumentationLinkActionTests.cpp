@@ -22,6 +22,23 @@ TEST_CASE("DocumentationLinkAction parses Logistic Map actions")
     CHECK_FALSE(action.TargetFractalEnablesJulia());
 }
 
+TEST_CASE("DocumentationLinkAction parses vector Sierpinski triangle actions")
+{
+    const DocumentationLinkAction triangle =
+        DocumentationLinkAction::Parse("wxchaos://fractal/vector-sierpinski-triangle");
+
+    CHECK(triangle.GetType() == DocumentationLinkAction::Type::OpenFractal);
+    CHECK(triangle.GetTargetFractalType() == FractalType::VectorSierpinskiTriangle);
+}
+
+TEST_CASE("DocumentationLinkAction parses Sierpinski carpet actions")
+{
+    const DocumentationLinkAction carpet = DocumentationLinkAction::Parse("wxchaos://fractal/sierpinski-carpet");
+
+    CHECK(carpet.GetType() == DocumentationLinkAction::Type::OpenFractal);
+    CHECK(carpet.GetTargetFractalType() == FractalType::SierpinskiCarpet);
+}
+
 TEST_CASE("DocumentationLinkAction parses Julia mode actions for compatible fractals")
 {
     const DocumentationLinkAction action = DocumentationLinkAction::Parse("wxchaos://julia/mandelbrot");
@@ -95,7 +112,7 @@ TEST_CASE("DocumentationLinkAction parses fractal option actions")
 
     CHECK(action.GetType() == DocumentationLinkAction::Type::OpenFractalOptions);
     CHECK(action.GetTarget() == "mandelbrot-zn");
-    CHECK(action.GetTargetFractalType() == FractalType::MandelbrotZN);
+    CHECK(action.GetTargetFractalType() == FractalType::MandelbrotZM);
     CHECK(action.TargetFractalEnablesJulia());
 }
 

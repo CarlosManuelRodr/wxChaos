@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sierpinski Carpet</title>
+    <link rel="stylesheet" href="fractal_info.css">
+    <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] } };</script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main data-i18n-lang="en" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Fractal gallery</p>
+            <h1>Sierpinski Carpet</h1>
+            <p class="subtitle">A square that loses its centers and gains a world of windows.</p>
+            <p class="hero-introduction">
+                Divide a square into a three-by-three grid and remove the middle. Eight squares survive. Repeat the
+                same choice inside every survivor and a rigid checkerboard becomes an intricate hierarchy of passages,
+                frames, and rooms within rooms.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="sierpinski_carpet/overview.png" alt="A Sierpinski carpet with square holes repeated at many scales">
+            <figcaption><span class="figure-title">Eight remain, one disappears.</span> The same decision is visible in every retained square.</figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/sierpinski-carpet">Open in wxChaos</a>
+            <a class="action-link secondary" href="fractal_dimension.html">How dimension is measured</a>
+        </div>
+    </section>
+
+    <section>
+        <h2>What to try first</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>Begin at one iteration with a square with a single missing hole.</p></div>
+            <div class="experiment-step">
+                <p>
+                    Continue slowly. At every step, each surviving square makes the same choice and opens its own
+                    central window.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Zoom toward the edge of any hole. Increase the iterations and the apparent wall becomes another
+                    complete neighborhood of holes.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="two-column">
+            <div>
+                <h2>Almost a surface, but never filled</h2>
+                <p>
+                    Each iteration keeps only \(8/9\) of the previous area, so the remaining area tends to zero after
+                    infinitely many steps. Yet the carpet reaches through the plane much more densely than an ordinary
+                    curve. Fractal dimension gives that tension a number.
+                </p>
+                <p>
+                    Visit <strong>Tools &gt; Dimension calculator</strong>, select <strong>Sierpinski Carpet</strong>, and
+                    calculate its box-counting dimension. The calculator asks how many boxes are needed to touch the
+                    carpet as the measuring grid becomes finer.
+                </p>
+            </div>
+            <aside class="observation-panel">
+                <h3>A number to look for</h3>
+                <p>The estimate should approach about <strong>1.893</strong>: much closer to a surface than to a line, even though the ideal carpet has no area.</p>
+            </aside>
+        </div>
+        <details class="concept-details">
+            <summary>Eight copies at one-third scale</summary>
+            <div class="concept-details-content">
+                <p>
+                    The carpet contains eight copies of itself, each scaled by \(1/3\). Its similarity dimension obeys
+                    \(8(1/3)^D=1\), so \(D=\log(8)/\log(3)\approx1.893\). A finite image cannot contain infinitely
+                    many levels, so the box-counting result is an estimate; resolution, iteration depth, and chosen box
+                    sizes all influence how closely it approaches the theoretical value.
+                </p>
+            </div>
+        </details>
+    </section>
+
+    <section>
+        <h2>How wxChaos constructs it</h2>
+        <p>
+            This is a geometric renderer. It begins with one filled square and draws the recursively removed centers as
+            rectangle primitives. When you zoom deeply, wxChaos skips branches outside the viewport and continues the
+            construction only where it can contribute visible detail.
+        </p>
+    </section>
+</main>
+
+<main data-i18n-lang="es" class="museum-page">
+    <section class="hero">
+        <div class="hero-header">
+            <p class="eyebrow">Galería de fractales</p>
+            <h1>Alfombra de Sierpinski</h1>
+            <p class="subtitle">Un cuadrado que pierde sus centros y gana un mundo de ventanas.</p>
+            <p class="hero-introduction">
+                Divide un cuadrado en una cuadrícula de tres por tres y elimina el centro. Sobreviven ocho cuadrados.
+                Repite la misma elección dentro de cada superviviente y un tablero rígido se transforma en una jerarquía
+                intrincada de pasajes, marcos y habitaciones dentro de habitaciones.
+            </p>
+        </div>
+        <figure class="hero-figure">
+            <img src="sierpinski_carpet/overview.png" alt="Alfombra de Sierpinski con huecos cuadrados repetidos a muchas escalas">
+            <figcaption><span class="figure-title">Ocho permanecen, uno desaparece.</span> La misma decisión aparece dentro de cada cuadrado conservado.</figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/sierpinski-carpet">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="fractal_dimension.html">Cómo se mide la dimensión</a>
+        </div>
+    </section>
+
+    <section>
+        <h2>Qué probar primero</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Comienza con una iteración y un cuadrado con un hueco central.
+                    Añade una iteración e identifica el noveno que desapareció.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Continúa lentamente. En cada paso, todos los cuadrados supervivientes toman la misma decisión y
+                    abren su propia ventana central.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Acércate al borde de cualquier hueco. Aumenta las iteraciones y la pared aparente se convertirá en
+                    otro vecindario completo de huecos.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="two-column">
+            <div>
+                <h2>Casi una superficie, pero nunca llena</h2>
+                <p>
+                    Cada iteración conserva solo \(8/9\) del área anterior, así que el área restante tiende a cero
+                    después de infinitos pasos. Aun así, la alfombra se extiende por el plano con mucha mayor densidad
+                    que una curva ordinaria. La dimensión fractal convierte esa tensión en un número.
+                </p>
+                <p>
+                    Visita <strong>Herramientas &gt; Calculadora de dimensión</strong>, selecciona <strong>Alfombra de
+                    Sierpinski</strong> y calcula su dimensión por conteo de cajas. La calculadora pregunta cuántas cajas
+                    hacen falta para tocar la alfombra conforme la cuadrícula de medición se vuelve más fina.
+                </p>
+            </div>
+            <aside class="observation-panel">
+                <h3>Un número que debes buscar</h3>
+                <p>La estimación debería acercarse a <strong>1.893</strong>: mucho más cerca de una superficie que de una línea, aunque la alfombra ideal no tenga área.</p>
+            </aside>
+        </div>
+        <details class="concept-details">
+            <summary>Ocho copias a un tercio de escala</summary>
+            <div class="concept-details-content">
+                <p>
+                    La alfombra contiene ocho copias de sí misma, cada una escalada por \(1/3\). Su dimensión de
+                    semejanza cumple \(8(1/3)^D=1\), por lo que \(D=\log(8)/\log(3)\approx1.893\). Una imagen finita no
+                    puede contener infinitos niveles, así que el conteo de cajas es una estimación; la resolución, la
+                    profundidad de iteración y los tamaños de caja elegidos influyen en cuánto se acerca al valor teórico.
+                </p>
+            </div>
+        </details>
+    </section>
+
+    <section>
+        <h2>Cómo lo construye wxChaos</h2>
+        <p>
+            Este es un renderizador geométrico. Comienza con un cuadrado lleno y dibuja los centros eliminados
+            recursivamente mediante primitivas rectangulares. Cuando haces un acercamiento profundo, wxChaos descarta
+            las ramas fuera del área visible y continúa la construcción solo donde puede aportar detalle visible.
+        </p>
+    </section>
+</main>
+</body>
+</html>

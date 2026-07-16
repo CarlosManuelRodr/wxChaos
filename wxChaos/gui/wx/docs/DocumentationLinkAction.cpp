@@ -4,9 +4,9 @@ std::optional<DocumentationLinkAction::FractalReference> DocumentationLinkAction
 {
     static const FractalReference fractals[] = {
         {"mandelbrot", FractalType::Mandelbrot, true},
-        {"mandelbrot-zn", FractalType::MandelbrotZN, true},
+        {"mandelbrot-zn", FractalType::MandelbrotZM, true},
         {"julia", FractalType::Julia, false},
-        {"julia-zn", FractalType::JuliaZN, false},
+        {"julia-zn", FractalType::JuliaZM, false},
         {"newton", FractalType::NewtonRaphsonMethod, false},
         {"sinusoidal", FractalType::Sinusoidal, false},
         {"magnet", FractalType::Magnetic, false},
@@ -14,6 +14,9 @@ std::optional<DocumentationLinkAction::FractalReference> DocumentationLinkAction
         {"manowar", FractalType::Manowar, true},
         {"manowar-julia", FractalType::ManowarJulia, false},
         {"sierpinski-triangle", FractalType::SierpinskiTriangle, false},
+        {"koch-snowflake", FractalType::KochSnowflake, false},
+        {"vector-sierpinski-triangle", FractalType::VectorSierpinskiTriangle, false},
+        {"sierpinski-carpet", FractalType::SierpinskiCarpet, false},
         {"fixed-point-sin", FractalType::FixedPoint1, false},
         {"fixed-point-cos", FractalType::FixedPoint2, false},
         {"fixed-point-tan", FractalType::FixedPoint3, false},

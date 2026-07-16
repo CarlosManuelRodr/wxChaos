@@ -1,5 +1,4 @@
 #include "FractalFactory.h"
-#include "FractalTypes.h"
 using namespace std;
 
 FractalFactory::FractalFactory()
@@ -12,6 +11,9 @@ FractalFactory::FractalFactory()
     _sinusoidal = nullptr;
     _magnet = nullptr;
     _sierpinskiTriangle = nullptr;
+    _kochSnowflake = nullptr;
+    _vectorSierpinskiTriangle = nullptr;
+    _sierpinskiCarpet = nullptr;
     _jellyfish = nullptr;
     _manowar = nullptr;
     _manowarJulia = nullptr;
@@ -49,7 +51,7 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
                 _fractal = _mandelbrot = new Mandelbrot(width, height);
                 break;
             }
-        case FractalType::MandelbrotZN:
+        case FractalType::MandelbrotZM:
             {
                 _fractal = _mandelbrotZN = new MandelbrotZM(width, height);
                 break;
@@ -59,7 +61,7 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
                 _fractal = _julia = new Julia(width, height);
                 break;
             }
-        case FractalType::JuliaZN:
+        case FractalType::JuliaZM:
             {
                 _fractal = _juliaZN = new JuliaZM(width, height);
                 break;
@@ -97,6 +99,21 @@ void FractalFactory::CreateFractal(const FractalType type, const unsigned int wi
         case FractalType::SierpinskiTriangle:
             {
                 _fractal = _sierpinskiTriangle = new SierpinskiTriangle(width, height);
+                break;
+            }
+        case FractalType::KochSnowflake:
+            {
+                _fractal = _kochSnowflake = new KochSnowflake(width, height);
+                break;
+            }
+        case FractalType::VectorSierpinskiTriangle:
+            {
+                _fractal = _vectorSierpinskiTriangle = new VectorSierpinskiTriangle(width, height);
+                break;
+            }
+        case FractalType::SierpinskiCarpet:
+            {
+                _fractal = _sierpinskiCarpet = new SierpinskiCarpet(width, height);
                 break;
             }
         case FractalType::FixedPoint1:
@@ -272,6 +289,21 @@ void FractalFactory::DeleteFractal()
     {
         delete _sierpinskiTriangle;
         _sierpinskiTriangle = nullptr;
+    }
+    if (_kochSnowflake != nullptr)
+    {
+        delete _kochSnowflake;
+        _kochSnowflake = nullptr;
+    }
+    if (_vectorSierpinskiTriangle != nullptr)
+    {
+        delete _vectorSierpinskiTriangle;
+        _vectorSierpinskiTriangle = nullptr;
+    }
+    if (_sierpinskiCarpet != nullptr)
+    {
+        delete _sierpinskiCarpet;
+        _sierpinskiCarpet = nullptr;
     }
     if (_fixedPoint1 != nullptr)
     {

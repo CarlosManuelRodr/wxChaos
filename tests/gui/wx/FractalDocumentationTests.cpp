@@ -18,6 +18,14 @@ TEST_CASE("Logistic Map documentation is registered")
     CHECK(FractalDocumentation::GetDocumentFile(FractalType::LogisticMap).EndsWith("logistic_map.html"));
 }
 
+TEST_CASE("vector fractal documentation is registered")
+{
+    CHECK(FractalDocumentation::GetDocumentFile(FractalType::VectorSierpinskiTriangle)
+        .EndsWith("vector_sierpinski_triangle.html"));
+    CHECK(FractalDocumentation::GetDocumentFile(FractalType::SierpinskiCarpet)
+        .EndsWith("sierpinski_carpet.html"));
+}
+
 TEST_CASE("localized fractal documentation keeps the canonical document file")
 {
     const wxString documentFile = FractalDocumentation::GetDocumentFile(FractalType::Mandelbrot, AppLanguage::Spanish);

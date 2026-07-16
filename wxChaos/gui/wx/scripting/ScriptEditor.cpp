@@ -4,11 +4,11 @@
 #include <wx/datetime.h>
 #include <wx/filefn.h>
 #include "common/AppTheme.h"
+#include "../../../core/fractals/raster/ScriptFractal.h"
 #include "docs/DocumentViewer.h"
 #include "AppPaths.h"
 #include "scripting/ScriptEditor.h"
 #include "scripting/ScriptSamplePicker.h"
-#include "FractalTypes.h"
 #include "global.h"
 #include "TextUtils.h"
 #include "AngelscriptConfigurationEngine.h"
@@ -57,6 +57,8 @@ const string newScriptTemplate = R""""(void Configure()
     SetFractalName("New script");
     SetCategory("Other");
     // AddDoubleOption("scale", "Scale: ", 1.0);
+    // SetDimensionCalculatorEnabled(true);
+    // SetDimensionCalculatorPreset(-2.0, 2.0, -2.0, 100, "5*x", 1, 100, 5000);
 }
 
 void Render()
@@ -64,14 +66,15 @@ void Render()
     // const double scale = GetDoubleOption("scale");
     // Example: Draw color gradient
     int color;
-    if(threadIndex == 0)
+    if(threadIndex != 0)
+        return;
+
+    for(int y=0; y<screenHeight; y++)
     {
-        for(int y=0; y<screenHeight; y++)
-        {
-            color = (float(y)/screenHeight)*paletteSize;
-            for(int x=0; x<screenWidth; x++)
-                SetPoint(x, y, false, color);
-        }
+        color = (float(y)/screenHeight)*paletteSize;
+        for(int x=0; x<screenWidth; x++)
+            SetPoint(x, y, false, color);
+    }
 }
 
 void DrawOrbit()

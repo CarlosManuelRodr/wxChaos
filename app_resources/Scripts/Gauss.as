@@ -8,6 +8,14 @@ void Configure()
     SetMinY(-0.4);
     SetRedrawAlways(true);
     SetExtColorMode(false);
+    SetDimensionCalculatorEnabled(true);
+    SetDimensionCalculatorPreset(
+        -1.5, 1.5, -1.25,  // Min X, Max X, Min Y
+        500,               // Iterations
+        "5*x",             // Division function
+        1, 100,            // Function range
+        5000               // Image size
+    );
 }
 
 void Render()

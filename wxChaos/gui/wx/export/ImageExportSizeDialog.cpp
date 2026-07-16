@@ -5,7 +5,6 @@
 #include "TextUtils.h"
 using namespace std;
 
-// ImageExportProgressDialog
 ImageExportProgressDialog::ImageExportProgressDialog(Fractal* targetFractal, wxWindow* parent, bool saveProgressAvailable,
                                                      const wxWindowID id, const wxString& title, const wxPoint& pos,
                                                      const wxSize& size, const long style)
@@ -302,7 +301,7 @@ void ImageExportSizeDialog::OnSave(wxCommandEvent&)
 
     // Saves image according to extension.
     const auto diag = new ImageExportProgressDialog(_fractalFactory.GetFractal(), this);
-    _fractalFactory.GetFractal()->PrepareRender();
+    _fractalFactory.GetFractal()->PrepareRender({0, 0});
     _fractalFactory.GetFractal()->Render();
     diag->ShowModal();
     if (diag->IsFinished())

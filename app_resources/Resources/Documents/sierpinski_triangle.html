@@ -43,12 +43,13 @@
     <section>
         <h2>Mathematical notes</h2>
         <details class="concept-details">
-            <summary>Dimension between line and surface</summary>
+            <summary>The complex-plane construction</summary>
             <div class="concept-details-content">
                 <p>
-                    The Sierpinski triangle contains three half-size copies of itself. Its similarity dimension is
-                    therefore \(\log(3)/\log(2)\), about \(1.585\). That is larger than a line but smaller than a
-                    filled area, matching the way it spreads across the plane while leaving holes everywhere.
+                    Every pixel supplies a starting point \(z_0=x+iy\). wxChaos repeatedly expands that point by a
+                    factor of two, then chooses one of three translated branches according to its position. Points that
+                    remain bounded trace the familiar triangle. This is an inverse-map test, not the geometric line
+                    construction used by <a href="vector_sierpinski_triangle.html">Sierpinski Triangle (Vector)</a>.
                 </p>
             </div>
         </details>
@@ -89,13 +90,14 @@
     <section>
         <h2>Notas matemáticas</h2>
         <details class="concept-details">
-            <summary>Una dimensión entre una línea y una superficie</summary>
+            <summary>La construcción en el plano complejo</summary>
             <div class="concept-details-content">
                 <p>
-                    El triángulo de Sierpinski contiene tres copias de sí mismo, cada una con la mitad del tamaño.
-                    Por lo tanto, su dimensión de semejanza es \(\log(3)/\log(2)\), aproximadamente \(1.585\).
-                    Es mayor que la dimensión de una línea, pero menor que la de una región llena, lo que concuerda
-                    con la forma en que se extiende por el plano mientras deja huecos en todas partes.
+                    Cada píxel proporciona un punto inicial \(z_0=x+iy\). wxChaos expande repetidamente ese punto por
+                    un factor de dos y después elige una de tres ramas trasladadas según su posición. Los puntos que
+                    permanecen acotados trazan el triángulo familiar. Esta es una prueba mediante un mapa inverso, no
+                    la construcción geométrica con segmentos que usa el
+                    <a href="vector_sierpinski_triangle.html">Triángulo de Sierpinski (Vectorial)</a>.
                 </p>
             </div>
         </details>

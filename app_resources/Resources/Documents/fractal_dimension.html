@@ -145,6 +145,17 @@
                         bounds for the square area you want to measure. The
                         preview shows the region that will be rendered.
                     </p>
+                    <p>
+                        Fractals with a known-good calculator preset automatically
+                        load suitable bounds, iterations, division function, and
+                        image size when selected. These values remain editable if
+                        you want to experiment with a different measurement.
+                    </p>
+                    <p>
+                        Scripted fractals appear here only when their author explicitly
+                        enables dimension calculation and supplies a tested preset in
+                        the script's <code>Configure()</code> function.
+                    </p>
                 </div>
             </div>
             <div class="experiment-step">
@@ -154,6 +165,12 @@
                         Pick the image size and iteration count. Higher values
                         can reveal more structure, but they take longer to
                         render and count.
+                    </p>
+                    <p>
+                        If the finest requested boxes approach the size of individual
+                        pixels, wxChaos displays a warning. Increase the square image
+                        size or reduce the upper division limit before relying on the
+                        estimate.
                     </p>
                 </div>
             </div>
@@ -171,9 +188,10 @@
                 <div>
                     <h3>Calculate and read the result</h3>
                     <p>
-                        Press Calculate. wxChaos renders the set map, counts
-                        occupied boxes for each selected scale, logs progress,
-                        and reports an estimated box-counting dimension. If the
+                        Press Calculate. wxChaos builds an occupancy map from
+                        raster set points or vector primitives, counts occupied
+                        boxes for each selected scale, logs progress, and reports
+                        an estimated box-counting dimension. If the
                         value is 1.45, for example, the visible set is more
                         space-filling than a smooth curve but still far from
                         filling the whole square region.
@@ -317,6 +335,17 @@
                         y verticales del área cuadrada que quieres medir. La vista previa
                         muestra la región que se renderizará.
                     </p>
+                    <p>
+                        Los fractales que tienen una configuración recomendada para la
+                        calculadora cargan automáticamente límites, iteraciones, función
+                        de divisiones y tamaño de imagen adecuados. Estos valores siguen
+                        siendo editables si quieres experimentar con otra medición.
+                    </p>
+                    <p>
+                        Los fractales programados solo aparecen aquí cuando su autor
+                        activa explícitamente el cálculo de dimensión y proporciona una
+                        configuración comprobada en la función <code>Configure()</code>.
+                    </p>
                 </div>
             </div>
             <div class="experiment-step">
@@ -326,6 +355,12 @@
                         Elige el tamaño de la imagen y el número de iteraciones. Los valores
                         más altos pueden revelar más estructura, pero requieren más tiempo
                         para renderizar y realizar el conteo.
+                    </p>
+                    <p>
+                        Si las cajas más finas solicitadas se aproximan al tamaño de los
+                        píxeles individuales, wxChaos muestra una advertencia. Aumenta el
+                        tamaño de la imagen cuadrada o reduce el límite superior de
+                        divisiones antes de confiar en la estimación.
                     </p>
                 </div>
             </div>
@@ -343,9 +378,10 @@
                 <div>
                     <h3>Calcula e interpreta el resultado</h3>
                     <p>
-                        Presiona Calcular. wxChaos renderiza el mapa del conjunto, cuenta
-                        las cajas ocupadas para cada escala seleccionada, registra el
-                        progreso y reporta una estimación de la dimensión por conteo de
+                        Presiona Calcular. wxChaos construye un mapa de ocupación a partir
+                        de los puntos del conjunto ráster o de las primitivas vectoriales,
+                        cuenta las cajas ocupadas para cada escala seleccionada, registra
+                        el progreso y reporta una estimación de la dimensión por conteo de
                         cajas. Si el valor es 1.45, por ejemplo, el conjunto visible llena
                         más espacio que una curva suave, pero todavía está lejos de llenar
                         toda la región cuadrada.

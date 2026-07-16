@@ -172,6 +172,15 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     plotBoxSizer->Add(_dataFitCheck, 0, wxALL, 5);
     dimBoxSizer->Add(plotBoxSizer, 0, wxEXPAND, 5);
 
+    dimBoxSizer->AddStretchSpacer(1);
+
+    _resolutionWarning = new wxStaticText(_mainPanel, wxID_ANY, wxEmptyString,
+                                          wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
+    _resolutionWarning->Wrap(420);
+    _resolutionWarning->SetForegroundColour(AppTheme::IsDark() ? wxColour(242, 190, 95) : wxColour(128, 82, 0));
+    _resolutionWarning->Hide();
+    dimBoxSizer->Add(_resolutionWarning, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+
     const auto buttonBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _calcButton = new wxButton(_mainPanel, wxID_ANY, _("Calculate"), wxDefaultPosition, wxDefaultSize, 0);
@@ -187,8 +196,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _helpButton->SetMinSize(actionButtonSize);
     buttonBoxSizer->Add(_helpButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    paramBoxSizer->Add(dimBoxSizer, 0, wxEXPAND, 5);
-    paramBoxSizer->AddStretchSpacer(1);
+    paramBoxSizer->Add(dimBoxSizer, 1, wxEXPAND, 5);
     paramBoxSizer->Add(buttonBoxSizer, 0, wxEXPAND, 5);
     subMainBoxSizer->Add(paramBoxSizer, 1, wxEXPAND, 5);
 
@@ -250,11 +258,12 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     PopulateFractalChoices();
 
     // Set the default fractal.
-    _fractalChoice->SetSelection(0);
+    SelectDefaultFractal();
     this->CreateFractal(_previewSize);
     UpdateFormulaButtonVisibility();
     _myOpt = _target->GetOptions();
     SetControlsFromOptions(_myOpt);
+    ApplySelectedFractalPreset();
 
     // Connect Events.
     this->Bind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
@@ -262,7 +271,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     this->Bind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &DimensionFrame::OnClose, this, wxID_EXIT);
     _fractalChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
-    _fractalOptionsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
+    _fractalOptionsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOptions, this);
     _formulaButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
     _calcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
@@ -274,7 +283,12 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _iterCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
     _sizeCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
     _numberOfDivisionsSpinCtrl->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewGridChanged, this);
+    _funcCtrl->Bind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _xMaxSpin->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _listCtrl->Bind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _divNotebook->Bind(wxEVT_NOTEBOOK_PAGE_CHANGED, &DimensionFrame::OnDivisionModeChanged, this);
     _suppressPreviewUpdate = false;
+    UpdateResolutionWarning();
     SchedulePreviewRender();
 }
 DimensionFrame::~DimensionFrame()
@@ -284,7 +298,7 @@ DimensionFrame::~DimensionFrame()
     this->Unbind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
     this->Unbind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
     _fractalChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
-    _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOpt, this);
+    _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOptions, this);
     _formulaButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
     _calcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
@@ -296,6 +310,10 @@ DimensionFrame::~DimensionFrame()
     _iterCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
     _sizeCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewParameterChanged, this);
     _numberOfDivisionsSpinCtrl->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnPreviewGridChanged, this);
+    _funcCtrl->Unbind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _xMaxSpin->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _listCtrl->Unbind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
+    _divNotebook->Unbind(wxEVT_NOTEBOOK_PAGE_CHANGED, &DimensionFrame::OnDivisionModeChanged, this);
 
     if (_calculatingDimension)
     {
@@ -419,7 +437,7 @@ void DimensionFrame::StartPreviewRender()
     _target->Resize(_previewSize, _previewSize);
     _myOpt = ReadDimensionOptions();
     _target->SetOptions(_myOpt);
-    _target->PrepareRender();
+    _target->PrepareRender({0, 0});
     _target->Render();
 
     _calcButton->Enable(false);
@@ -453,8 +471,24 @@ void DimensionFrame::RefreshPreviewOverlayOnly()
         return;
     }
 
-    _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
+    _previewImage->SetMap(_boxCountMap, _numberOfDivisionsSpinCtrl->GetValue());
     _previewImage->Refresh();
+}
+
+void DimensionFrame::UpdateBoxCountMap()
+{
+    if (_target != nullptr)
+        _boxCountMap.Build(*_target);
+}
+
+void DimensionFrame::ConfigureDimensionWorkers()
+{
+    const int sizeDiv = _size / _threadNumber;
+    for (int i = 0; i < _threadNumber; i++)
+    {
+        const int end = i < _threadNumber - 1 ? (i + 1) * sizeDiv : _size;
+        _dimensionCalculator[i].SetMap(&_boxCountMap, i * sizeDiv, end);
+    }
 }
 
 void DimensionFrame::JoinDimensionThreads()
@@ -514,10 +548,12 @@ void DimensionFrame::OnChangeFractal(wxCommandEvent&)
     UpdateFormulaButtonVisibility();
     _myOpt = _target->GetOptions();
     SetControlsFromOptions(_myOpt);
+    ApplySelectedFractalPreset();
     if (_fractalOptionsPanel != nullptr)
         _fractalOptionsPanel->SetTarget(_target);
     _hasPreviewMap = false;
     _suppressPreviewUpdate = false;
+    UpdateResolutionWarning();
     SchedulePreviewRender();
 }
 
@@ -528,6 +564,7 @@ void DimensionFrame::OnPreviewTimer(wxTimerEvent&)
 
 void DimensionFrame::OnPreviewParameterChanged(wxCommandEvent&)
 {
+    UpdateResolutionWarning();
     SchedulePreviewRender();
 }
 
@@ -539,6 +576,70 @@ void DimensionFrame::OnPreviewDoubleParameterChanged(wxSpinDoubleEvent&)
 void DimensionFrame::OnPreviewGridChanged(wxCommandEvent&)
 {
     RefreshPreviewOverlayOnly();
+}
+
+void DimensionFrame::OnDivisionDefinitionChanged(wxCommandEvent&)
+{
+    UpdateResolutionWarning();
+}
+
+void DimensionFrame::OnDivisionModeChanged(wxBookCtrlEvent& event)
+{
+    UpdateResolutionWarning();
+    event.Skip();
+}
+
+optional<int> DimensionFrame::GetUpperDivisionCount() const
+{
+    if (_divNotebook->GetSelection() == 0)
+    {
+        try
+        {
+            mup::ParserX parser;
+            parser.SetExpr(_funcCtrl->GetValue().utf8_string());
+            mup::Value xValue(static_cast<double>(_xMaxSpin->GetValue()));
+            parser.DefineVar("x", mup::Variable(&xValue));
+            const long long divisions = parser.Eval().GetInteger();
+            if (divisions <= 0 || divisions > numeric_limits<int>::max())
+                return nullopt;
+            return static_cast<int>(divisions);
+        }
+        catch (mup::ParserError&)
+        {
+            return nullopt;
+        }
+    }
+
+    const vector<int> divisions = TextUtils::ParseIntList(_listCtrl->GetValue());
+    if (divisions.empty() || divisions.back() <= 0)
+        return nullopt;
+    return divisions.back();
+}
+
+void DimensionFrame::UpdateResolutionWarning()
+{
+    constexpr double minimumReliableBoxSizePixels = 2.0;
+    const optional<int> upperDivisionCount = GetUpperDivisionCount();
+    const double boxSizePixels = upperDivisionCount.has_value()
+        ? static_cast<double>(_sizeCtrl->GetValue()) / *upperDivisionCount
+        : numeric_limits<double>::infinity();
+    const bool shouldShow = boxSizePixels <= minimumReliableBoxSizePixels;
+
+    if (shouldShow)
+    {
+        _resolutionWarning->SetLabel(wxString::Format(
+            _("The finest boxes are only %.2f pixels wide at the current image size. Increase the square image size "
+              "or reduce the upper division limit for a more reliable dimension estimate."),
+            boxSizePixels));
+        _resolutionWarning->Wrap(420);
+    }
+
+    if (_resolutionWarning->IsShown() == shouldShow)
+        return;
+
+    _resolutionWarning->Show(shouldShow);
+    _mainPanel->GetSizer()->Layout();
+    _mainPanel->FitInside();
 }
 void DimensionFrame::OnClose(wxCommandEvent&)
 {
@@ -610,19 +711,9 @@ void DimensionFrame::OnCalculate(wxCommandEvent&)
                 // If a change was made or the render fractal was just created.
                 _target->Resize(_size, _size);
                 _target->SetOptions(_myOpt);
-                _target->PrepareRender();
+                _target->PrepareRender({0, 0});
                 _target->Render();
                 _firstRender = false;
-            }
-
-            // Divide thread assignment.
-            const int sizeDiv = _size / _threadNumber;
-            for (int i = 0; i < _threadNumber; i++)
-            {
-                if (i < _threadNumber - 1)
-                    _dimensionCalculator[i].SetMap(_target->GetSetMap(), _size, i * sizeDiv, (i + 1) * sizeDiv);
-                else
-                    _dimensionCalculator[i].SetMap(_target->GetSetMap(), _size, i * sizeDiv, _size);
             }
 
             if (!_div.empty())
@@ -681,7 +772,8 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                 }
 
                 // Set output image.
-                _previewImage->SetMap(_target->GetSetMap(), _numberOfDivisionsSpinCtrl->GetValue());
+                UpdateBoxCountMap();
+                _previewImage->SetMap(_boxCountMap, _numberOfDivisionsSpinCtrl->GetValue());
                 _previewImage->Refresh();
                 _hasPreviewMap = true;
                 _progressBar->SetValue(0);
@@ -714,6 +806,8 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
                     if (_divIndex == -1)
                     {
                         // Launch the first pack of threads.
+                        UpdateBoxCountMap();
+                        ConfigureDimensionWorkers();
                         this->WriteText(_("Starting box count.\n"));
                         this->WriteText(_("Epsilon   |   BoxCount.\n"));
                         this->WriteText("-------------------\n");
@@ -850,7 +944,7 @@ void DimensionFrame::WriteText(const wxString &txt) const
     _logCtrl->WriteText(txt);
     _logCtrl->ShowPosition(_logCtrl->GetCaretPosition());
 }
-void DimensionFrame::OnFractalOpt(wxCommandEvent&)
+void DimensionFrame::OnFractalOptions(wxCommandEvent&)
 {
     if (_fractalOptionsDialog == nullptr)
     {
@@ -915,7 +1009,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         _myOpt = ReadDimensionOptions();
         _target->Resize(_size, _size);
         _target->SetOptions(_myOpt);
-        _target->PrepareRender();
+        _target->PrepareRender({0, 0});
         _target->Render();
 
         auto* saveProgress = new ImageExportProgressDialog(_target, this, false);
@@ -924,8 +1018,8 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
         if (saveProgress->IsFinished())
         {
             // Allocate.
-            bool** setMap, ** tempSetMap, ** colorMap;
-            setMap = _target->GetSetMap();
+            bool **tempSetMap, **colorMap;
+            UpdateBoxCountMap();
             int nDiv = _numberOfDivisionsSpinCtrl->GetValue();
 
             tempSetMap = new bool* [_size];
@@ -940,7 +1034,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
             {
                 for (int j = 0; j < _size; j++)
                 {
-                    tempSetMap[i][j] = setMap[i][j];
+                    tempSetMap[i][j] = _boxCountMap.IsOccupied(i, j);
                     colorMap[i][j] = false;
                 }
             }
@@ -959,7 +1053,7 @@ void DimensionFrame::OnSavePreview(wxCommandEvent&)
                         {
                             if (w < _size && h < _size)
                             {
-                                if (setMap[w][h] == true)
+                                if (_boxCountMap.IsOccupied(w, h))
                                 {
                                     found = true;
                                     // Color square
@@ -1064,27 +1158,86 @@ void DimensionFrame::PopulateFractalChoices()
     _builtInFractalList.clear();
     _scriptList.clear();
 
-    AddBuiltInFractalChoice(_("Mandelbrot"), FractalType::Mandelbrot);
-    AddBuiltInFractalChoice(_("Mandelbrot Z^m"), FractalType::MandelbrotZN);
-    AddBuiltInFractalChoice(_("Mandelbrot (Julia)"), FractalType::Julia);
-    AddBuiltInFractalChoice(_("Julia Z^m"), FractalType::JuliaZN);
-    AddBuiltInFractalChoice(_("Sine (Julia)"), FractalType::Sinusoidal);
-    AddBuiltInFractalChoice(_("Magnet"), FractalType::Magnetic);
-    AddBuiltInFractalChoice(_("Jellyfish"), FractalType::Jellyfish);
-    AddBuiltInFractalChoice(_("Manowar"), FractalType::Manowar);
-    AddBuiltInFractalChoice(_("Manowar (Julia)"), FractalType::ManowarJulia);
-    AddBuiltInFractalChoice(_("Sierpinski Triangle"), FractalType::SierpinskiTriangle);
-    AddBuiltInFractalChoice(_("Tricorn"), FractalType::Tricorn);
-    AddBuiltInFractalChoice(_("Burning Ship"), FractalType::BurningShip);
-    AddBuiltInFractalChoice(_("Burning Ship (Julia)"), FractalType::BurningShipJulia);
-    AddBuiltInFractalChoice(_("Fractory"), FractalType::Fractory);
-    AddBuiltInFractalChoice(_("Cell"), FractalType::Cell);
     AddBuiltInFractalChoice(_("Logistic map"), FractalType::LogisticMap);
     AddBuiltInFractalChoice(_("Henon map"), FractalType::HenonMap);
-    AddBuiltInFractalChoice(_("Double pendulum"), FractalType::DoublePendulum);
-    AddBuiltInFractalChoice(_("User Formula (Complex)"), FractalType::UserDefinedEscapeTime);
+    AddBuiltInFractalChoice(_("Koch Snowflake"), FractalType::KochSnowflake);
+    AddBuiltInFractalChoice(_("Sierpinski Triangle (Vector)"), FractalType::VectorSierpinskiTriangle);
+    AddBuiltInFractalChoice(_("Sierpinski Carpet"), FractalType::SierpinskiCarpet);
 
     GetScriptFractals();
+}
+
+void DimensionFrame::SelectDefaultFractal()
+{
+    constexpr FractalType defaultFractal = FractalType::VectorSierpinskiTriangle;
+    for (std::size_t i = 0; i < _builtInFractalList.size(); i++)
+    {
+        if (_builtInFractalList[i] == defaultFractal)
+        {
+            _fractalChoice->SetSelection(static_cast<int>(i));
+            return;
+        }
+    }
+
+    if (!_builtInFractalList.empty())
+        _fractalChoice->SetSelection(0);
+}
+
+const DimensionCalculatorPreset* DimensionFrame::FindDimensionPreset(const FractalType fractalType)
+{
+    // Note to self: Add or edit known-good calculator presets here.
+    static const BuiltInDimensionPreset presets[] = {
+        {FractalType::VectorSierpinskiTriangle, {-1.16, 1.16, -0.89, 28, "5*x", 1, 100, 5000}},
+        {FractalType::LogisticMap, {2.80000000, 4.00000000, -0.04000000, 1000, "5*x", 1, 100, 5000}},
+        {FractalType::HenonMap, {-1.50000000, 1.50000000, -1.41000000, 50000, "5*x", 1, 100, 5000}},
+        {FractalType::KochSnowflake, {-1.30000000, 1.30000000, -1.31000000, 15, "5*x", 1, 100, 5000}},
+        {FractalType::SierpinskiCarpet, {-1.05000000, 1.05000000, -1.05000000, 10, "10*x", 10, 100, 5000}}
+    };
+
+    for (const BuiltInDimensionPreset& preset : presets)
+    {
+        if (preset.fractalType == fractalType)
+            return &preset.preset;
+    }
+    return nullptr;
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void DimensionFrame::ApplySelectedFractalPreset()
+{
+    if (_target == nullptr)
+        return;
+
+    if (_scriptSelected)
+    {
+        const int scriptChoice = _fractalChoice->GetCurrentSelection()
+                               - static_cast<int>(_builtInFractalList.size());
+        if (scriptChoice < 0 || scriptChoice >= static_cast<int>(_scriptList.size()))
+            return;
+
+        const ScriptData& script = _loadedScripts[_scriptList[scriptChoice]];
+        if (script.dimensionCalculatorPreset.has_value())
+            ApplyDimensionPreset(*script.dimensionCalculatorPreset);
+        return;
+    }
+
+    const DimensionCalculatorPreset* preset = FindDimensionPreset(_target->GetType());
+    if (preset != nullptr)
+        ApplyDimensionPreset(*preset);
+}
+
+void DimensionFrame::ApplyDimensionPreset(const DimensionCalculatorPreset& preset)
+{
+    _minXCtrl->SetValue(preset.minX);
+    _maxXCtrl->SetValue(preset.maxX);
+    _minYCtrl->SetValue(preset.minY);
+    _iterCtrl->SetValue(static_cast<int>(preset.iterations));
+    _funcCtrl->SetValue(wxString::FromUTF8(preset.divisionFunction));
+    _xMinSpin->SetValue(preset.functionXMin);
+    _xMaxSpin->SetValue(preset.functionXMax);
+    _sizeCtrl->SetValue(preset.imageSize);
+    _divNotebook->SetSelection(0);
+    UpdateDerivedMaxY();
 }
 
 bool DimensionFrame::IsUserDefinedEscapeTimeSelected() const
@@ -1108,7 +1261,8 @@ void DimensionFrame::GetScriptFractals()
     // Gets script parameters.
     for (unsigned int i = 0; i < _loadedScripts.size(); i++)
     {
-        if (!_loadedScripts[i].disableSetMap && _loadedScripts[i].scriptCategory != ScriptCategory::NumMet)
+        if (!_loadedScripts[i].disableSetMap && _loadedScripts[i].dimensionCalculatorEnabled
+            && _loadedScripts[i].dimensionCalculatorPreset.has_value())
         {
             _scriptList.push_back(i);
             _fractalChoice->Append(wxString(_loadedScripts[i].name.c_str(), wxConvUTF8));

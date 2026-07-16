@@ -26,7 +26,8 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     });
     _toolbar->SetColorRotationHandler([this]
     {
-        if (_previewFractalCanvas == nullptr || _previewFractalCanvas->GetFractal()->IsRendering())
+        if (_previewFractalCanvas == nullptr || !_previewFractalCanvas->GetFractal()->SupportsColorRotation()
+            || _previewFractalCanvas->GetFractal()->IsRendering())
             return false;
 
         _previewFractalCanvas->GetFractalPresenter()->ToggleColorRotation();
@@ -212,7 +213,10 @@ void JuliaPreviewFrame::OpenFractalInformation()
 void JuliaPreviewFrame::UpdateInformationTool() const
 {
     if (_toolbar != nullptr && _previewFractalCanvas != nullptr)
+    {
         _toolbar->SetInformationEnabled(_previewFractalCanvas->GetFractal()->HasFractalInformation());
+        _toolbar->SetColorRotationEnabled(_previewFractalCanvas->GetFractal()->SupportsColorRotation());
+    }
 }
 
 // ReSharper disable once CppDFAUnreachableFunctionCall

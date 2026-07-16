@@ -48,6 +48,9 @@ enum IDS
     ID_MANOWAR,
     ID_MANOWAR_JULIA,
     ID_SIERPINSKI_TRIANGLE,
+    ID_KOCH_SNOWFLAKE,
+    ID_VECTOR_SIERPINSKI_TRIANGLE,
+    ID_SIERPINSKI_CARPET,
     ID_FIXEDPOINT1,
     ID_FIXEDPOINT2,
     ID_FIXEDPOINT3,
@@ -249,6 +252,9 @@ public :
     void ChangeManowar(wxCommandEvent& event);
     void ChangeManowarJulia(wxCommandEvent& event);
     void ChangeSierpinskiTriangle(wxCommandEvent& event);
+    void ChangeKochSnowflake(wxCommandEvent& event);
+    void ChangeVectorSierpinskiTriangle(wxCommandEvent& event);
+    void ChangeSierpinskiCarpet(wxCommandEvent& event);
     void ChangeFixedPoint1(wxCommandEvent& event);
     void ChangeFixedPoint2(wxCommandEvent& event);
     void ChangeFixedPoint3(wxCommandEvent& event);

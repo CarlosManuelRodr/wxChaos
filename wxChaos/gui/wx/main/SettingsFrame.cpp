@@ -102,15 +102,17 @@ wxPanel* SettingsFrame::CreatePresetsPage()
     const wxString names[] = {
         _("Mandelbrot"), _("Mandelbrot Z^m"), _("Julia"), _("Julia Z^m"), _("Newton"),
         _("Sine"), _("Magnet"), _("Jellyfish"), _("Manowar"), _("Manowar Julia"),
-        _("Sierpinski Triangle"), _("Fixed Point: sin(z)"), _("Fixed Point: cos(z)"),
+        _("Sierpinski Triangle"), _("Koch Snowflake"), _("Sierpinski Triangle (Vector)"), _("Sierpinski Carpet"),
+        _("Fixed Point: sin(z)"), _("Fixed Point: cos(z)"),
         _("Fixed Point: tan(z)"), _("Fixed Point: z^2"), _("Tricorn"), _("Burning Ship"),
         _("Burning Ship Julia"), _("Fractory"), _("Cell"), _("Logistic Map"), _("Henon Map"), _("Double Pendulum"),
         _("User Defined"), _("User Defined Fixed Point"), _("User Defined Newton-Raphson")
     };
     _fractalTypes = {
-        FractalType::Mandelbrot, FractalType::MandelbrotZN, FractalType::Julia, FractalType::JuliaZN,
+        FractalType::Mandelbrot, FractalType::MandelbrotZM, FractalType::Julia, FractalType::JuliaZM,
         FractalType::NewtonRaphsonMethod, FractalType::Sinusoidal, FractalType::Magnetic, FractalType::Jellyfish,
-        FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskiTriangle, FractalType::FixedPoint1,
+        FractalType::Manowar, FractalType::ManowarJulia, FractalType::SierpinskiTriangle, FractalType::KochSnowflake,
+        FractalType::VectorSierpinskiTriangle, FractalType::SierpinskiCarpet, FractalType::FixedPoint1,
         FractalType::FixedPoint2, FractalType::FixedPoint3, FractalType::FixedPoint4, FractalType::Tricorn,
         FractalType::BurningShip, FractalType::BurningShipJulia, FractalType::Fractory, FractalType::Cell,
         FractalType::LogisticMap, FractalType::HenonMap, FractalType::DoublePendulum, FractalType::UserDefinedEscapeTime,

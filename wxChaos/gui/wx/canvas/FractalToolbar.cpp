@@ -113,6 +113,14 @@ void FractalToolbar::ResetColorRotationTool()
     UpdateColorRotationTool();
 }
 
+void FractalToolbar::SetColorRotationEnabled(const bool enabled)
+{
+    if (!enabled)
+        _colorRotationActive = false;
+    EnableTool(ID_COLOR_ROTATION, enabled);
+    UpdateColorRotationTool();
+}
+
 wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteractionTool tool)
 {
     const string handIcon = AppTheme::IsDark() ? "hand_dark.svg" : "hand_light.svg";

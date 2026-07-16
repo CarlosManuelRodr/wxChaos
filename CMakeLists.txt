@@ -226,8 +226,10 @@ if(BUILD_TESTING)
 
     add_executable(wxChaosCoreTests
             tests/core/CoreTestsMain.cpp
-            tests/core/FractalUtilitiesTests.cpp
             tests/core/FractalInspectionTests.cpp
+            tests/core/KochSnowflakeTests.cpp
+            tests/core/VectorFractalTests.cpp
+            tests/core/BoxCountMapTests.cpp
             tests/core/ScriptOrbitTests.cpp
             tests/core/RenderingAlgorithmTests.cpp
             tests/core/geometry/GeometryTests.cpp
@@ -241,6 +243,8 @@ if(BUILD_TESTING)
             wxChaos/gui/wx/common/PanelOptions.cpp
             wxChaos/gui/wx/common/wxGradient.cpp
             wxChaos/gui/wx/docs/FractalDocumentation.cpp
+            wxChaos/gui/wx/analysis/BoxCountMap.cpp
+            wxChaos/gui/wx/analysis/BoxCountWorker.cpp
     )
 
     target_include_directories(wxChaosCoreTests PRIVATE
@@ -266,6 +270,10 @@ if(BUILD_TESTING)
             sfml-window
             sfml-system
             Threads::Threads
+    )
+
+    target_compile_definitions(wxChaosCoreTests PRIVATE
+            WXCHAOS_SOURCE_DIR="${CMAKE_SOURCE_DIR}"
     )
 
     if(MSVC)

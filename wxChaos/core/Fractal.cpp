@@ -2,38 +2,23 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <thread>
 #include <utility>
 #include "Fractal.h"
 #include "FractalFactory.h"
-#include "BmpImageWriter.h"
 #include "coloring/ColorPalette.h"
-#include "coloring/PaletteMapping.h"
 #include "coloring/RenderingAlgorithm.h"
 #include "docs/FractalDocumentation.h"
-#include "SystemUtilities.h"
 using namespace std;
 
 constexpr ColorPaletteTypes defaultGradientStyle = ClassicMandelbrot;
 
-Fractal::Fractal(const unsigned int width, const unsigned int height) : _pendingRenderOffset(Vector2Int::Zero())
+Fractal::Fractal(const unsigned int width, const unsigned int height) : _userFormula()
 {
-    // System.
-    _threadNumber = max(Get_Cores() - 1, 1);
-
     // Copy window properties.
     _screenHeight = height;
     _screenWidth = width;
-    _antiAliasingScale = 1;
-    UpdateRenderDimensions();
-    _backRenderWidth = _renderWidth;
 
     _fSetColor = wxColour(0, 0, 0);
-
-    AllocateRenderMaps();
-    ClearRenderMaps(InvalidColor);
-
-    _pendingRenderOffset = {0, 0};
 
     // Set fractal properties.
     _type = FractalType::None;
@@ -106,13 +91,11 @@ Fractal::Fractal(const unsigned int width, const unsigned int height) : _pending
 
     _palette.resize(_paletteSize);
     _colorRotationSpeed = 120.0;
-    this->RebuildPalette();
+    for (int i = 0; i < _paletteSize; i++)
+        _palette[i] = _gradient.GetColorAt(i);
 }
 
-Fractal::~Fractal()
-{
-    ReleaseRenderMaps();
-}
+Fractal::~Fractal() = default;
 
 Fractal::CoordinateSystem Fractal::GetCoordinateSystem() const
 {
@@ -121,7 +104,17 @@ Fractal::CoordinateSystem Fractal::GetCoordinateSystem() const
 
 wxString Fractal::GetRenderingAlgorithmName() const
 {
-    return RenderWorker::GetAlgorithmName(_algorithm);
+    switch (_algorithm)
+    {
+        case RenderingAlgorithmType::EscapeTime: return "escape time";
+        case RenderingAlgorithmType::GaussianInt: return "Gaussian integer";
+        case RenderingAlgorithmType::EscapeAngle: return "escape angle";
+        case RenderingAlgorithmType::TriangleInequality: return "triangle inequality";
+        case RenderingAlgorithmType::ChaoticMap: return "chaotic map";
+        case RenderingAlgorithmType::ConvergenceTest: return "convergence test";
+        case RenderingAlgorithmType::Buddhabrot: return "Buddhabrot";
+        default: return "renderer-specific";
+    }
 }
 
 sf::Color Fractal::InterpolatePaletteColors(const wxColour& first, const wxColour& second, const double ratio)
@@ -135,113 +128,6 @@ sf::Color Fractal::InterpolatePaletteColors(const wxColour& first, const wxColou
             channel(first.Green(), second.Green()),
             channel(first.Blue(), second.Blue()),
             channel(first.Alpha(), second.Alpha())};
-}
-
-bool Fractal::IsValidColorMapValue(const double value)
-{
-    return value != InvalidColor && std::isfinite(value);
-}
-
-unsigned int Fractal::NormalizeAntiAliasingScale(const unsigned int scale)
-{
-    switch (scale)
-    {
-        case 2:
-        case 4:
-            return scale;
-        default:
-            return 1;
-    }
-}
-
-void Fractal::UpdateRenderDimensions()
-{
-    const auto scaledWidth = static_cast<unsigned long long>(_screenWidth) * _antiAliasingScale;
-    const auto scaledHeight = static_cast<unsigned long long>(_screenHeight) * _antiAliasingScale;
-    _renderWidth = static_cast<unsigned int>(
-        std::min<unsigned long long>(std::numeric_limits<unsigned int>::max(), std::max(1ULL, scaledWidth)));
-    _renderHeight = static_cast<unsigned int>(
-        std::min<unsigned long long>(std::numeric_limits<unsigned int>::max(), std::max(1ULL, scaledHeight)));
-}
-
-void Fractal::AllocateRenderMaps()
-{
-    _setMap = new bool* [_renderWidth];
-    _colorMap = new double* [_renderWidth];
-    for (unsigned int i = 0; i < _renderWidth; i++)
-    {
-        _setMap[i] = new bool[_renderHeight];
-        _colorMap[i] = new double[_renderHeight];
-    }
-    _backRenderWidth = _renderWidth;
-}
-
-void Fractal::ReleaseRenderMaps()
-{
-    if (_setMap == nullptr || _colorMap == nullptr)
-        return;
-
-    for (unsigned int i = 0; i < _backRenderWidth; i++)
-    {
-        delete[] _setMap[i];
-        delete[] _colorMap[i];
-    }
-
-    delete[] _setMap;
-    delete[] _colorMap;
-    _setMap = nullptr;
-    _colorMap = nullptr;
-    _backRenderWidth = 0;
-}
-
-void Fractal::ClearRenderMaps(const double initialColorValue)
-{
-    for (unsigned int i = 0; i < _renderWidth; i++)
-    {
-        for (unsigned int j = 0; j < _renderHeight; j++)
-        {
-            _setMap[i][j] = false;
-            _colorMap[i][j] = initialColorValue;
-        }
-    }
-}
-
-Vector2Int Fractal::DisplayOffsetToRenderOffset(const Vector2Int displayOffset) const
-{
-    const auto scale = static_cast<int>(_antiAliasingScale);
-    return {displayOffset.x * scale, displayOffset.y * scale};
-}
-
-HighPrecisionReal Fractal::GetRenderPreciseXFactor() const
-{
-    EnsurePreciseViewInitialized();
-    if (_antiAliasingScale > 1)
-        return (_preciseView.right - _preciseView.left) / HighPrecisionReal(_renderWidth);
-
-    const HighPrecisionReal widthDivisor = _renderWidth > 1 ? HighPrecisionReal(_renderWidth - 1) : HighPrecisionReal(1);
-    return (_preciseView.right - _preciseView.left) / widthDivisor;
-}
-
-HighPrecisionReal Fractal::GetRenderPreciseYFactor() const
-{
-    EnsurePreciseViewInitialized();
-    if (_antiAliasingScale > 1)
-        return (_preciseView.top - _preciseView.bottom) / HighPrecisionReal(_renderHeight);
-
-    const HighPrecisionReal heightDivisor = _renderHeight > 1 ? HighPrecisionReal(_renderHeight - 1) : HighPrecisionReal(1);
-    return (_preciseView.top - _preciseView.bottom) / heightDivisor;
-}
-
-Options Fractal::GetRenderOptions() const
-{
-    Options opt = GetOptions();
-    opt.screenWidth = _renderWidth;
-    opt.screenHeight = _renderHeight;
-    opt.xFactor = ToDouble(GetRenderPreciseXFactor());
-    opt.yFactor = ToDouble(GetRenderPreciseYFactor());
-    opt.preciseXFactor = GetRenderPreciseXFactor();
-    opt.preciseYFactor = GetRenderPreciseYFactor();
-    return opt;
 }
 
 sf::Color Fractal::GetColorFromPalette(const double index) const
@@ -269,74 +155,6 @@ void Fractal::RebuildPalette()
 }
 
 // Color operations.
-void Fractal::RedrawMaps()
-{
-    this->UpdateMaxColorMapValue();
-    _refreshImage = true;
-}
-
-void Fractal::UpdateMaxColorMapValue()
-{
-    _maxColorMapVal = 0.0;
-    double minColorMapVal = std::numeric_limits<double>::max();
-    std::vector<double> relativeValues;
-
-    for (unsigned int i = 0; i < _renderWidth; i++)
-    {
-        for (unsigned int j = 0; j < _renderHeight; j++)
-        {
-            const double value = _colorMap[i][j];
-            if (!IsValidColorMapValue(value))
-                continue;
-
-            minColorMapVal = std::min(minColorMapVal, value);
-            _maxColorMapVal = std::max(_maxColorMapVal, value);
-            if (_relativeColor)
-                relativeValues.push_back(value);
-        }
-    }
-
-    if (minColorMapVal == std::numeric_limits<double>::max())
-    {
-        _relativeColorMin = 0.0;
-        _relativeColorMax = 1.0;
-        _maxColorMapVal = 1.0;
-        return;
-    }
-
-    _relativeColorMin = minColorMapVal;
-    _relativeColorMax = _maxColorMapVal;
-
-    if (_relativeColor && relativeValues.size() > 8)
-    {
-        const auto percentileValue = [&relativeValues](const double percentile)
-        {
-            const auto index = static_cast<std::size_t>(std::round(percentile * static_cast<double>(relativeValues.size() - 1)));
-            auto nth = relativeValues.begin() + static_cast<std::ptrdiff_t>(std::min(index, relativeValues.size() - 1));
-            std::nth_element(relativeValues.begin(), nth, relativeValues.end());
-            return *nth;
-        };
-
-        _relativeColorMin = percentileValue(0.02);
-        _relativeColorMax = percentileValue(0.98);
-        if (_relativeColorMax <= _relativeColorMin)
-        {
-            _relativeColorMin = minColorMapVal;
-            _relativeColorMax = _maxColorMapVal;
-        }
-    }
-
-    if (_relativeColorMax <= _relativeColorMin)
-        _relativeColorMax = _relativeColorMin + 1.0;
-    if (_maxColorMapVal <= 0.0)
-        _maxColorMapVal = 1.0;
-}
-void Fractal::ConfigureRenderer(RenderWorker& renderer) const
-{
-    renderer.SetOptions(this->GetRenderOptions());
-    renderer.SetRenderOut(_setMap, _colorMap);
-    renderer.SetK(_kReal, _kImaginary);
-}
 void Fractal::EnsurePreciseViewInitialized() const
 {
     if (_preciseViewInitialized)
@@ -401,8 +219,19 @@ unsigned int Fractal::EstimateRequiredPrecisionBits() const
     using std::log;
     using std::max;
 
-    const HighPrecisionReal minStep = std::min(HighPrecisionReal(RealAbs(GetRenderPreciseXFactor())),
-                                               HighPrecisionReal(RealAbs(GetRenderPreciseYFactor())));
+    const auto antiAliasingScale = GetAntiAliasingScale();
+    const auto renderWidth = std::max(1u, _screenWidth * antiAliasingScale);
+    const auto renderHeight = std::max(1u, _screenHeight * antiAliasingScale);
+    const HighPrecisionReal widthDivisor = antiAliasingScale > 1 || renderWidth <= 1
+                                               ? HighPrecisionReal(renderWidth)
+                                               : HighPrecisionReal(renderWidth - 1);
+    const HighPrecisionReal heightDivisor = antiAliasingScale > 1 || renderHeight <= 1
+                                                ? HighPrecisionReal(renderHeight)
+                                                : HighPrecisionReal(renderHeight - 1);
+    const HighPrecisionReal xFactor = (_preciseView.right - _preciseView.left) / widthDivisor;
+    const HighPrecisionReal yFactor = (_preciseView.top - _preciseView.bottom) / heightDivisor;
+    const HighPrecisionReal minStep = std::min(HighPrecisionReal(RealAbs(xFactor)),
+                                               HighPrecisionReal(RealAbs(yFactor)));
     if (minStep <= 0)
         return 1024;
 
@@ -449,187 +278,6 @@ void Fractal::ConfigureIterationDefaults(const unsigned int defaultIterations, c
     _iterationStep = std::max(1U, iterationStep);
     _maxIterations = _defaultIter;
 }
-std::vector<RenderRegion> Fractal::BuildRenderRegions() const
-{
-    std::vector<RenderRegion> regions;
-    const int screenWidth = static_cast<int>(_renderWidth);
-    const int screenHeight = static_cast<int>(_renderHeight);
-
-    if (_pendingRenderOffset.x == 0 && _pendingRenderOffset.y == 0)
-    {
-        regions.emplace_back(0, 0, screenWidth, screenHeight);
-        return regions;
-    }
-
-    if ((abs(_pendingRenderOffset.x) >= screenWidth) || (abs(_pendingRenderOffset.y) >= screenHeight))
-    {
-        regions.emplace_back(0, 0, screenWidth, screenHeight);
-        return regions;
-    }
-
-    int yStart = 0;
-    int yEnd = screenHeight;
-
-    if (_pendingRenderOffset.y > 0)
-    {
-        regions.emplace_back(0, 0, screenWidth, _pendingRenderOffset.y);
-        yStart = _pendingRenderOffset.y;
-    }
-    else if (_pendingRenderOffset.y < 0)
-    {
-        yEnd = screenHeight + _pendingRenderOffset.y;
-        regions.emplace_back(0, yEnd, screenWidth, screenHeight);
-    }
-
-    if (_pendingRenderOffset.x > 0)
-    {
-        regions.emplace_back(0, yStart, _pendingRenderOffset.x, yEnd);
-    }
-    else if (_pendingRenderOffset.x < 0)
-    {
-        regions.emplace_back(screenWidth + _pendingRenderOffset.x, yStart, screenWidth, yEnd);
-    }
-
-    return regions;
-}
-
-std::vector<RenderJob> Fractal::BuildRenderJobs(const std::vector<RenderRegion>& regions, const int tileHeight) const
-{
-    std::vector<RenderJob> jobs;
-
-    const unsigned int threadNumber = std::max(1U, _threadNumber);
-    const int screenWidth = static_cast<int>(_renderWidth);
-    const int screenHeight = static_cast<int>(_renderHeight);
-    int totalArea = 0;
-
-    if (tileHeight <= 0 && regions.size() > threadNumber)
-    {
-        jobs.emplace_back(RenderRegion(0, 0, screenWidth, screenHeight));
-
-        while (jobs.size() < threadNumber)
-            jobs.emplace_back();
-
-        return jobs;
-    }
-
-    for (const RenderRegion& region : regions)
-        totalArea += region.GetArea();
-
-    if (totalArea == 0)
-    {
-        while (jobs.size() < threadNumber)
-            jobs.emplace_back();
-
-        return jobs;
-    }
-
-    if (tileHeight > 0)
-    {
-        for (const RenderRegion& region : regions)
-        {
-            for (int top = region.GetTop(); top < region.GetBottom(); top += tileHeight)
-            {
-                const int bottom = std::min(top + tileHeight, region.GetBottom());
-                jobs.emplace_back(RenderRegion(region.GetLeft(), top, region.GetRight(), bottom));
-            }
-        }
-
-        return jobs;
-    }
-
-    unsigned int remainingJobs = threadNumber;
-    int remainingArea = totalArea;
-
-    for (unsigned int regionIndex = 0; regionIndex < regions.size(); regionIndex++)
-    {
-        const RenderRegion& region = regions[regionIndex];
-        const auto remainingRegions = static_cast<unsigned int>(regions.size() - regionIndex);
-        unsigned int regionJobs = 1;
-
-        if (remainingRegions == 1)
-        {
-            regionJobs = remainingJobs;
-        }
-        else if (region.GetArea() > 0)
-        {
-            regionJobs = static_cast<unsigned int>(std::max(1.0,
-                                                            std::round(static_cast<double>(remainingJobs) * region.GetArea() / remainingArea)));
-            regionJobs = std::min(regionJobs, remainingJobs - remainingRegions + 1);
-        }
-
-        remainingJobs -= regionJobs;
-        remainingArea -= region.GetArea();
-
-        int currentTop = region.GetTop();
-        const int height = region.GetHeight();
-
-        for (unsigned int jobIndex = 0; jobIndex < regionJobs; jobIndex++)
-        {
-            const unsigned int remainingRegionJobs = regionJobs - jobIndex;
-            const int rows = remainingRegionJobs > 0
-                                 ? (region.GetBottom() - currentTop) / static_cast<int>(remainingRegionJobs)
-                                 : 0;
-            const int bottom = jobIndex + 1 == regionJobs ? region.GetBottom() : currentTop + rows;
-
-            if (height <= 0 || rows <= 0)
-            {
-                jobs.emplace_back();
-            }
-            else
-            {
-                jobs.emplace_back(RenderRegion(region.GetLeft(), currentTop, region.GetRight(), bottom));
-                currentTop = bottom;
-            }
-        }
-    }
-
-    while (jobs.size() < threadNumber)
-        jobs.emplace_back();
-
-    return jobs;
-}
-
-void Fractal::Resize(const unsigned int width, const unsigned int height)
-{
-    // Stop threads if they are still rendering.
-    this->StopRender();
-    _paused = false;
-
-    ReleaseRenderMaps();
-
-    // Copy window properties.
-    _screenHeight = height;
-    _screenWidth = width;
-    UpdateRenderDimensions();
-    AllocateRenderMaps();
-    ClearRenderMaps(InvalidColor);
-
-    EnsurePreciseViewInitialized();
-    _preciseView.top = _preciseView.bottom + (_preciseView.right - _preciseView.left) *
-        HighPrecisionReal(_screenHeight) / HighPrecisionReal(_screenWidth);
-    UpdatePreciseFactors();
-    SyncDoubleViewFromPrecise();
-
-}
-void Fractal::PrepareRender(const Vector2Int reusedMapOffset)
-{
-    this->PreRender();
-    _pendingRenderOffset = DisplayOffsetToRenderOffset(reusedMapOffset);
-    NotifyPrecisionStatusIfChanged();
-
-    // Checks if the movement is valid.
-    if ((abs(_pendingRenderOffset.x) >= _renderWidth) || (abs(_pendingRenderOffset.y) >= _renderHeight))
-        _redrawAll = true;
-
-    // Clear maps.
-    if ((!_pendingRenderOffset.x && !_pendingRenderOffset.y) || _redrawAll || _redrawAlways)
-    {
-        const double initialColorValue = _algorithm == RenderingAlgorithmType::Buddhabrot ? 0.0 : InvalidColor;
-        ClearRenderMaps(initialColorValue);
-        _pendingRenderOffset = {0, 0};
-        _redrawAll = false;
-    }
-}
 void Fractal::SetView(const Rect& worldCoordinates)
 {
     SetPreciseView(PreciseRect(worldCoordinates));
@@ -643,7 +291,6 @@ void Fractal::SetPreciseView(const PreciseRect& worldCoordinates)
     _rendered = false;
     _rendering = false;
 
-    _pendingRenderOffset = {0, 0};
 }
 void Fractal::Redraw()
 {
@@ -772,7 +419,6 @@ void Fractal::MarkRenderAborted()
     _rendering = false;
     _paused = false;
     _redrawAll = true;
-    _pendingRenderOffset = {0, 0};
 }
 
 void Fractal::ResumeFromPausedPan()
@@ -811,72 +457,6 @@ bool Fractal::ConsumeImageRefreshRequest()
     return true;
 }
 
-void Fractal::ReuseRenderedMaps(const Vector2Int reusedMapOffset)
-{
-    const Vector2Int renderOffset = DisplayOffsetToRenderOffset(reusedMapOffset);
-    MoveMatrix<bool>(_setMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x);
-    MoveMatrix<double>(_colorMap, _renderHeight, _renderWidth, renderOffset.y, renderOffset.x, InvalidColor);
-}
-
-void Fractal::PrepareDisplayColorLookup()
-{
-    UpdateMaxColorMapValue();
-}
-
-double Fractal::NormalizeColorMapValue(const double value) const
-{
-    const double minValue = _relativeColor ? _relativeColorMin : 0.0;
-    const double maxValue = _relativeColor ? _relativeColorMax : static_cast<double>(_maxIterations);
-    return PaletteMapping::Map(value, minValue, maxValue, _paletteSize, _colorCycleLength,
-                               _paletteMappingMode, _paletteMappingExponent, _relativeColor);
-}
-
-bool Fractal::HasDisplayPixelColor(const unsigned int x, const unsigned int y) const
-{
-    if (x >= _screenWidth || y >= _screenHeight)
-        return false;
-
-    if (_antiAliasingScale > 1)
-    {
-        const unsigned int renderX = x * _antiAliasingScale;
-        const unsigned int renderY = y * _antiAliasingScale;
-        for (unsigned int offsetX = 0; offsetX < _antiAliasingScale; offsetX++)
-        {
-            for (unsigned int offsetY = 0; offsetY < _antiAliasingScale; offsetY++)
-            {
-                if (HasRenderMapPixelColor(renderX + offsetX, renderY + offsetY))
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
-    return HasRenderMapPixelColor(x, y);
-}
-
-bool Fractal::HasRenderMapPixelColor(const unsigned int x, const unsigned int y) const
-{
-    if (x >= _renderWidth || y >= _renderHeight)
-        return false;
-
-    if (_setMap[x][y] && _colorSet)
-        return true;
-
-    return _colorMode && IsValidColorMapValue(_colorMap[x][y]);
-}
-
-sf::Color Fractal::GetRenderMapPixelColor(const unsigned int x, const unsigned int y) const
-{
-    if (_setMap[x][y] && _colorSet)
-        return GetSetColor();
-
-    if (!_colorMode || !IsValidColorMapValue(_colorMap[x][y]))
-        return sf::Color::White;
-
-    return GetColorFromPalette(NormalizeColorMapValue(_colorMap[x][y]) + _changeGradient);
-}
-
 sf::Color Fractal::GetInvalidPixelColor() const
 {
     return GetColorFromPalette(_changeGradient);
@@ -897,41 +477,9 @@ bool Fractal::IsSetColorEnabled() const
     return _colorSet;
 }
 
-// ReSharper disable once CppMemberFunctionMayBeStatic
-bool Fractal::SupportsAntiAliasing() const
-{
-    return true;
-}
-
 bool Fractal::IsAntiAliasingEnabled() const
 {
-    return _antiAliasingScale > 1;
-}
-
-void Fractal::SetAntiAliasingScale(const unsigned int scale)
-{
-    const unsigned int normalizedScale = NormalizeAntiAliasingScale(scale);
-    if (_antiAliasingScale == normalizedScale)
-        return;
-
-    this->StopRender();
-    ReleaseRenderMaps();
-    _antiAliasingScale = normalizedScale;
-    UpdateRenderDimensions();
-    AllocateRenderMaps();
-    const double initialColorValue = _algorithm == RenderingAlgorithmType::Buddhabrot ? 0.0 : InvalidColor;
-    ClearRenderMaps(initialColorValue);
-    _pendingRenderOffset = {0, 0};
-    _redrawAll = true;
-    _rendered = false;
-    _rendering = false;
-    _paused = false;
-    _refreshImage = true;
-}
-
-unsigned int Fractal::GetAntiAliasingScale() const
-{
-    return _antiAliasingScale;
+    return GetAntiAliasingScale() > 1;
 }
 
 bool Fractal::IsGradientAnimating() const
@@ -961,53 +509,6 @@ void Fractal::AdvanceGradientOffset(const double elapsedSeconds)
     _changeGradient = (_changeGradient + offset) % _paletteSize;
 }
 
-void Fractal::RefreshAnimatedColors(sf::Image& image)
-{
-    /* This is admittedly an awful and inefficient algorithm, but the alternative is to use a GPU shader and redesign
-     * from scratch the rendering pipeline. So I'm keeping this unless anyone complains. */
-
-    UpdateMaxColorMapValue();
-
-    const unsigned int workerCount = std::min(_threadNumber, _screenWidth);
-    constexpr unsigned int minPixelsForParallelRefresh = 120000;
-    const bool useParallelRefresh = workerCount > 1 && _screenWidth * _screenHeight >= minPixelsForParallelRefresh;
-
-    const auto refreshColumns = [this, &image](const unsigned int beginX, const unsigned int endX)
-    {
-        for (unsigned int i = beginX; i < endX; i++)
-        {
-            for (unsigned int j = 0; j < _screenHeight; j++)
-            {
-                if (HasDisplayPixelColor(i, j))
-                    image.setPixel(i, j, GetRenderedPixelColor(i, j));
-            }
-        }
-    };
-
-    if (!useParallelRefresh)
-    {
-        refreshColumns(0, _screenWidth);
-        return;
-    }
-
-    std::vector<std::thread> workers;
-    workers.reserve(workerCount - 1);
-    const unsigned int columnsPerWorker = _screenWidth / workerCount;
-    unsigned int beginX = 0;
-
-    for (unsigned int workerIndex = 1; workerIndex < workerCount; workerIndex++)
-    {
-        const unsigned int endX = beginX + columnsPerWorker;
-        workers.emplace_back(refreshColumns, beginX, endX);
-        beginX = endX;
-    }
-
-    refreshColumns(beginX, _screenWidth);
-
-    for (std::thread& worker : workers)
-        worker.join();
-}
-
 bool Fractal::ShouldDrawOrbit() const
 {
     return _orbitMode;
@@ -1016,11 +517,6 @@ bool Fractal::ShouldDrawOrbit() const
 bool Fractal::IsOrbitDrawn() const
 {
     return _orbitDrawn;
-}
-
-void Fractal::ClearOrbitLines()
-{
-    _orbitLines.clear();
 }
 
 void Fractal::MarkOrbitDirty()
@@ -1043,32 +539,33 @@ const std::vector<LineData>& Fractal::GetLines() const
     return _lines;
 }
 
-const std::vector<LineData>& Fractal::GetOrbitLines() const
-{
-    return _orbitLines;
-}
-
 const std::vector<CircleData>& Fractal::GetCircles() const
 {
     return _circles;
 }
 
+const std::vector<RectangleData>& Fractal::GetRectangles() const
+{
+    return _rectangles;
+}
+
 wxString Fractal::DescribeOrbit(const bool escaped) const
 {
-    if (_orbitLines.empty())
+    const std::vector<LineData>& orbitLines = GetOrbitLines();
+    if (orbitLines.empty())
         return "Orbit: no transitions were recorded.";
 
-    const double startRe = _orbitLines.front().x1;
-    const double startIm = _orbitLines.front().y1;
-    const double finalRe = _orbitLines.back().x2;
-    const double finalIm = _orbitLines.back().y2;
+    const double startRe = orbitLines.front().x1;
+    const double startIm = orbitLines.front().y1;
+    const double finalRe = orbitLines.back().x2;
+    const double finalIm = orbitLines.back().y2;
 
     double totalDistance = 0.0;
     double largestStep = 0.0;
     double closestToOrigin = hypot(startRe, startIm);
     double farthestFromOrigin = closestToOrigin;
 
-    for (const LineData& line : _orbitLines)
+    for (const LineData& line : orbitLines)
     {
         const double stepDistance = hypot(line.x2 - line.x1, line.y2 - line.y1);
         const double distanceToOrigin = hypot(line.x2, line.y2);
@@ -1079,14 +576,14 @@ wxString Fractal::DescribeOrbit(const bool escaped) const
     }
 
     const double displacement = hypot(finalRe - startRe, finalIm - startIm);
-    const double averageStep = totalDistance / static_cast<double>(_orbitLines.size());
+    const double averageStep = totalDistance / static_cast<double>(orbitLines.size());
     const double pathEfficiency = totalDistance > 0.0 ? 100.0 * displacement / totalDistance : 0.0;
     const double finalModulus = hypot(finalRe, finalIm);
     constexpr double radiansToDegrees = 180.0 / 3.14159265358979323846;
     const double finalAngle = atan2(finalIm, finalRe) * radiansToDegrees;
 
     wxString output;
-    output << "Orbit transitions: " << _orbitLines.size() << "\n"
+    output << "Orbit transitions: " << orbitLines.size() << "\n"
            << "Orbit path length: " << FormatNumber(totalDistance) << "\n"
            << "Straight-line displacement: " << FormatNumber(displacement)
            << " (" << FormatNumber(pathEfficiency) << "% of path length)\n"
@@ -1124,7 +621,7 @@ void Fractal::RenderBlocking()
     _onSnapshot = true;
     _waitRoutine = true;
 
-    this->PrepareRender();
+    this->PrepareRender({0, 0});
     this->Render();
     this->PreDrawMaps();
 
@@ -1132,17 +629,6 @@ void Fractal::RenderBlocking()
     _rendering = false;
     _onSnapshot = previousSnapshot;
     _waitRoutine = previousWaitRoutine;
-}
-
-Fractal::PointSample Fractal::GetPointSample(const unsigned int x, const unsigned int y) const
-{
-    if (x >= _screenWidth || y >= _screenHeight)
-        return {false, 0, false};
-
-    const unsigned int scale = _antiAliasingScale;
-    const unsigned int renderX = x * scale + scale / 2;
-    const unsigned int renderY = y * scale + scale / 2;
-    return {_setMap[renderX][renderY], _colorMap[renderX][renderY], IsValidColorMapValue(_colorMap[renderX][renderY])};
 }
 
 wxString Fractal::InspectPoint(const double x, const double y, const optional<unsigned int> iterations) const
@@ -1176,19 +662,19 @@ wxString Fractal::InspectPoint(const double x, const double y, const optional<un
     probe->SetView({x - epsilon, y - epsilon, x + epsilon, y + epsilon});
     probe->RenderBlocking();
 
-    const PointSample sample = probe->GetPointSample(1, 1);
+    const auto [inSet, value, hasValue] = probe->GetPointSample(1, 1);
     wxString output;
     output << "Fractal: " << probe->GetName() << "\n"
            << "Coordinates: (" << FormatNumber(x) << ", " << FormatNumber(y) << ")\n"
            << "Algorithm: " << probe->GetRenderingAlgorithmName() << "\n"
            << "Maximum iterations: " << options.maxIterations << "\n";
 
-    if (sample.inSet)
+    if (inSet)
         output << "Result: inside after " << options.maxIterations << " iterations";
-    else if (sample.hasValue && options.alg == RenderingAlgorithmType::EscapeTime)
-        output << "Result: escaped at iteration " << sample.value;
-    else if (sample.hasValue)
-        output << "Renderer value: " << sample.value;
+    else if (hasValue && options.alg == RenderingAlgorithmType::EscapeTime)
+        output << "Result: escaped at iteration " << value;
+    else if (hasValue)
+        output << "Renderer value: " << value;
     else
         output << "Result: no value produced";
 
@@ -1197,45 +683,12 @@ wxString Fractal::InspectPoint(const double x, const double y, const optional<un
         probe->SetOrbitMode(true);
         probe->SetOrbitPoint(x, y);
         probe->DrawOrbit();
-        output << "\n" << probe->DescribeOrbit(!sample.inSet);
+        output << "\n" << probe->DescribeOrbit(!inSet);
     }
 
     return output;
 }
 // Thread control
-int Fractal::GetRenderProgress() const
-{
-    return _renderPool.GetProgress();
-}
-void Fractal::PauseContinue()
-{
-    if (_paused)
-    {
-        this->PreRestartRender();
-        _rendered = false;
-        _rendering = true;
-        this->Render();
-        _paused = false;
-    }
-    else
-    {
-        this->StopRender();
-        _rendered = true;
-        _paused = true;
-        _pausing = true;
-    }
-}
-bool Fractal::StopRender()
-{
-    if (this->IsRendering())
-    {
-        _renderPool.Stop();
-        _rendering = false;
-        return true;
-    }
-    return false;
-}
-
 bool Fractal::IsPaused() const
 {
     return _paused;
@@ -1245,12 +698,6 @@ void Fractal::PreRender() {}
 void Fractal::PreDrawMaps() {}
 void Fractal::PostRender() {}
 void Fractal::PreRestartRender() {}
-bool Fractal::IsRendering()
-{
-    if (_waitRoutine)
-        return false;
-    return _renderPool.IsRunning();
-}
 void Fractal::SetFormula(FormulaOptions formula)
 {
     _userFormula = std::move(formula);
@@ -1289,7 +736,7 @@ int Fractal::GetPixelY(const double yNum) const
 void Fractal::SetOptions(const Options& opt, const bool keepSize)
 {
     const bool usePreciseOptions = OptionsPreciseViewMatchesDoubleView(opt);
-    const unsigned int antiAliasingScale = NormalizeAntiAliasingScale(opt.antiAliasingScale);
+    const unsigned int antiAliasingScale = opt.antiAliasingScale;
 
     if (!keepSize)
     {
@@ -1317,7 +764,7 @@ void Fractal::SetOptions(const Options& opt, const bool keepSize)
     _colorCycleLength = opt.colorCycleLength > 0.0 ? opt.colorCycleLength : 72.0;
     _paletteMappingMode = opt.paletteMappingMode;
     _paletteMappingExponent = opt.paletteMappingExponent > 0.0 ? opt.paletteMappingExponent : 1.5;
-    if (_antiAliasingScale != antiAliasingScale)
+    if (GetAntiAliasingScale() != antiAliasingScale)
         SetAntiAliasingScale(antiAliasingScale);
     _algorithm = opt.alg;
     _renderingPrecisionMode = opt.renderingPrecisionMode;
@@ -1366,7 +813,7 @@ Options Fractal::GetOptions() const
     opt.colorRotationSpeed = _colorRotationSpeed;
     opt.paletteMappingMode = _paletteMappingMode;
     opt.paletteMappingExponent = _paletteMappingExponent;
-    opt.antiAliasingScale = _antiAliasingScale;
+    opt.antiAliasingScale = GetAntiAliasingScale();
     opt.panelOpt = _panelOpt;
     opt.type = _type;
 
@@ -1428,10 +875,6 @@ wxString Fractal::GetFractalInformationFile() const
 {
     return FractalDocumentation::GetDocumentFile(_type);
 }
-bool** Fractal::GetSetMap() const
-{
-    return _setMap;
-}
 void Fractal::SetFractalPropChanged()
 {
     _changeFractalProp = true;
@@ -1443,75 +886,6 @@ bool Fractal::GetChangeFractalProp()
     return temp;
 }
 // Save image.
-sf::Color Fractal::GetRenderedPixelColor(const unsigned int x, const unsigned int y) const
-{
-    if (x >= _screenWidth || y >= _screenHeight)
-        return sf::Color::White;
-
-    if (_antiAliasingScale == 1)
-        return GetRenderMapPixelColor(x, y);
-
-    unsigned int red = 0;
-    unsigned int green = 0;
-    unsigned int blue = 0;
-    unsigned int alpha = 0;
-    unsigned int samples = 0;
-    const unsigned int renderX = x * _antiAliasingScale;
-    const unsigned int renderY = y * _antiAliasingScale;
-
-    for (unsigned int offsetX = 0; offsetX < _antiAliasingScale; offsetX++)
-    {
-        for (unsigned int offsetY = 0; offsetY < _antiAliasingScale; offsetY++)
-        {
-            const unsigned int sampleX = renderX + offsetX;
-            const unsigned int sampleY = renderY + offsetY;
-            if (!HasRenderMapPixelColor(sampleX, sampleY))
-                continue;
-
-            const sf::Color color = GetRenderMapPixelColor(sampleX, sampleY);
-            red += color.r;
-            green += color.g;
-            blue += color.b;
-            alpha += color.a;
-            samples++;
-        }
-    }
-
-    if (samples == 0)
-        return sf::Color::White;
-
-    return {static_cast<sf::Uint8>(red / samples),
-            static_cast<sf::Uint8>(green / samples),
-            static_cast<sf::Uint8>(blue / samples),
-            static_cast<sf::Uint8>(alpha / samples)};
-}
-
-sf::Image Fractal::GetRenderedImage()
-{
-    _onSnapshot = true;
-    _waitRoutine = true;
-    if (!_rendered)
-    {
-        this->PrepareRender();
-        this->Render();
-    }
-    this->PreDrawMaps();
-
-    sf::Image image;
-    image.create(_screenWidth, _screenHeight, sf::Color(255, 255, 255));
-
-    this->UpdateMaxColorMapValue();
-
-    for (unsigned int i = 0; i < _screenWidth; i++)
-    {
-        for (unsigned int j = 0; j < _screenHeight; j++)
-            image.setPixel(i, j, GetRenderedPixelColor(i, j));
-    }
-
-    _onSnapshot = false;
-    _waitRoutine = false;
-    return image;
-}
 wxBitmap Fractal::GetRenderedWxBitmap()
 {
     const sf::Image renderedImage = this->GetRenderedImage();
@@ -1531,51 +905,6 @@ wxBitmap Fractal::GetRenderedWxBitmap()
     wxBitmap output(wxImage);
     return output;
 }
-bool Fractal::SaveBmp(const string& filename)
-{
-    _waitRoutine = true;
-    _onSnapshot = true;
-
-    BmpImageWriter writer(filename, _screenWidth, _screenHeight);
-    if (!writer.IsOpen())
-    {
-        _onSnapshot = false;
-        _waitRoutine = false;
-        return false;
-    }
-
-    if (!_rendered)
-    {
-        this->PrepareRender();
-        this->Render();
-    }
-    this->PreDrawMaps();
-
-    this->UpdateMaxColorMapValue();
-
-    std::vector<BmpPixel> row(_screenWidth);
-    bool success = true;
-    for (unsigned int y = 0; y < _screenHeight; y++)
-    {
-        for (unsigned int x = 0; x < _screenWidth; x++)
-        {
-            const sf::Color color = GetRenderedPixelColor(x, y);
-            row[x] = {color.r, color.g, color.b};
-        }
-
-        if (!writer.WriteRow(row))
-        {
-            success = false;
-            break;
-        }
-    }
-
-    success = writer.Close() && success;
-    _onSnapshot = false;
-    _waitRoutine = false;
-    return success;
-}
-
 void Fractal::PrepareSnapshot(const bool mode)
 {
     _onSnapshot = mode;
@@ -1803,7 +1132,7 @@ void Fractal::SetOrbitMode(const bool mode)
         _orbitDrawn = false;
         _orbitX = 0;
         _orbitY = 0;
-        _orbitLines.clear();
+        ClearOrbitLines();
     }
 }
 void Fractal::SetOrbitPoint(const double x, const double y)
@@ -1895,9 +1224,9 @@ void Fractal::DrawLine(const double x1, const double y1, const double x2, const 
     data.color = color;
 
     if (orbitLine)
-        _orbitLines.push_back(data);
-    else
-        _lines.push_back(data);
+        return;
+
+    _lines.push_back(data);
 
     _geomFigure = true;
 }
@@ -1924,5 +1253,6 @@ void Fractal::ClearGeometryFigures()
 {
     _circles.clear();
     _lines.clear();
-    _geomFigure = !_orbitLines.empty();
+    _rectangles.clear();
+    _geomFigure = !GetOrbitLines().empty();
 }

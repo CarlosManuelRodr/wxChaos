@@ -153,9 +153,9 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
 {
     static const std::map<std::string, FractalType> fractalTypes = {
         { "Mandelbrot", FractalType::Mandelbrot },
-        { "MandelbrotZN", FractalType::MandelbrotZN },
+        { "MandelbrotZN", FractalType::MandelbrotZM },
         { "Julia", FractalType::Julia },
-        { "JuliaZN", FractalType::JuliaZN },
+        { "JuliaZN", FractalType::JuliaZM },
         { "Newton", FractalType::NewtonRaphsonMethod },
         { "Sinusoidal", FractalType::Sinusoidal },
         { "Sinoidal", FractalType::Sinusoidal },
@@ -166,6 +166,9 @@ const std::map<std::string, FractalType>& AppConfigStore::FractalTypes()
         { "JManowar", FractalType::ManowarJulia },
         { "Sierpinski_Triangle", FractalType::SierpinskiTriangle },
         { "Sierpinsky_Triangle", FractalType::SierpinskiTriangle },
+        { "Koch_Snowflake", FractalType::KochSnowflake },
+        { "Vector_Sierpinski_Triangle", FractalType::VectorSierpinskiTriangle },
+        { "Sierpinski_Carpet", FractalType::SierpinskiCarpet },
         { "FixedPoint1", FractalType::FixedPoint1 },
         { "FixedPoint2", FractalType::FixedPoint2 },
         { "FixedPoint3", FractalType::FixedPoint3 },
@@ -256,6 +259,12 @@ std::string AppConfigStore::FractalTypeToString(FractalType type)
         return "Jellyfish";
     if (type == FractalType::SierpinskiTriangle)
         return "Sierpinski_Triangle";
+    if (type == FractalType::KochSnowflake)
+        return "Koch_Snowflake";
+    if (type == FractalType::VectorSierpinskiTriangle)
+        return "Vector_Sierpinski_Triangle";
+    if (type == FractalType::SierpinskiCarpet)
+        return "Sierpinski_Carpet";
     if (type == FractalType::LogisticMap)
         return "Logistic_Map";
     if (type == FractalType::HenonMap)

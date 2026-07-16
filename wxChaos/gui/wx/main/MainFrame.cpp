@@ -137,6 +137,9 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_MENU, &MainFrame::ChangeLogisticMap, this, ID_LOGISTIC_MAP);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeHenonMap, this, ID_HENON_MAP);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeSierpinskiTriangle, this, ID_SIERPINSKI_TRIANGLE);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeKochSnowflake, this, ID_KOCH_SNOWFLAKE);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeVectorSierpinskiTriangle, this, ID_VECTOR_SIERPINSKI_TRIANGLE);
+    this->Bind(wxEVT_MENU, &MainFrame::ChangeSierpinskiCarpet, this, ID_SIERPINSKI_CARPET);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeDPendulum, this, ID_DOUBLE_PENDULUM);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeUserDefinedEscapeTime, this, ID_USER_DEFINED);
     this->Bind(wxEVT_MENU, &MainFrame::ChangeUserDefinedFixedPoint, this, ID_FIXED_POINT_USER_DEFINED);
@@ -184,7 +187,8 @@ void MainFrame::CreateInteractionToolbar()
     });
     _interactionToolbar->SetColorRotationHandler([this]
     {
-        if (_fractalCanvas == nullptr || _fractalCanvas->GetFractal()->IsRendering())
+        if (_fractalCanvas == nullptr || !_fractalCanvas->GetFractal()->SupportsColorRotation()
+            || _fractalCanvas->GetFractal()->IsRendering())
             return false;
 
         _fractalCanvas->GetFractalPresenter()->ToggleColorRotation();
@@ -547,7 +551,8 @@ void MainFrame::SetUpGUI()
 
     // Formulas.
     wxMenuItem* mandelbrot, *mandelbrotZN, *julia, *juliaZN, *newton, *sinusoidal, *magnet;
-    wxMenuItem* jellyfish, *manowar, *manowarJulia, *sierpinskiTriangle, *fixedPoint1, *fixedPoint2;
+    wxMenuItem* jellyfish, *manowar, *manowarJulia, *sierpinskiTriangle, *kochSnowflake, *fixedPoint1, *fixedPoint2;
+    wxMenuItem* vectorSierpinskiTriangle, *sierpinskiCarpet;
     wxMenuItem* fixedPoint3, *fixedPoint4, *userDefined, *fpUserDefined, *newtonUserDefined;
     wxMenuItem* tricorn, *burningShip, *burningShipJulia, *fractory, *cell, *logisticMap, *henonMap, *dPendulum;
 
@@ -568,6 +573,11 @@ void MainFrame::SetUpGUI()
     manowar = new wxMenuItem(_formula, ID_MANOWAR, _("Manowar"), wxEmptyString, wxITEM_NORMAL);
     manowarJulia = new wxMenuItem(_formula, ID_MANOWAR_JULIA, _("Manowar (Julia)"), wxEmptyString, wxITEM_NORMAL);
     sierpinskiTriangle = new wxMenuItem(_formula, ID_SIERPINSKI_TRIANGLE, _("Sierpinski Triangle"), wxEmptyString, wxITEM_NORMAL);
+    kochSnowflake = new wxMenuItem(_formula, ID_KOCH_SNOWFLAKE, _("Koch Snowflake"), wxEmptyString, wxITEM_NORMAL);
+    vectorSierpinskiTriangle = new wxMenuItem(_formula, ID_VECTOR_SIERPINSKI_TRIANGLE,
+                                              _("Sierpinski Triangle (Vector)"), wxEmptyString, wxITEM_NORMAL);
+    sierpinskiCarpet = new wxMenuItem(_formula, ID_SIERPINSKI_CARPET,
+                                      _("Sierpinski Carpet"), wxEmptyString, wxITEM_NORMAL);
     fixedPoint1 = new wxMenuItem(_formula, ID_FIXEDPOINT1, _("Fixed Point") + menuSeparator + "z = sin(z)", wxEmptyString, wxITEM_NORMAL);
     fixedPoint2 = new wxMenuItem(_formula, ID_FIXEDPOINT2, _("Fixed Point") + menuSeparator + "z = cos(z)", wxEmptyString, wxITEM_NORMAL);
     fixedPoint3 = new wxMenuItem(_formula, ID_FIXEDPOINT3, _("Fixed Point") + menuSeparator + "z = tan(z)", wxEmptyString, wxITEM_NORMAL);
@@ -602,6 +612,7 @@ void MainFrame::SetUpGUI()
     _typeComplex->Append(burningShipJulia);
     _typeComplex->Append(fractory);
     _typeComplex->Append(cell);
+    _typeComplex->Append(sierpinskiTriangle);
     _typeNumericalMethod->Append(newton);
     _typeNumericalMethod->Append(fixedPoint1);
     _typeNumericalMethod->Append(fixedPoint2);
@@ -611,7 +622,9 @@ void MainFrame::SetUpGUI()
     _typePhysics->Append(dPendulum);
     _typeOther->Append(logisticMap);
     _typeOther->Append(henonMap);
-    _typeOther->Append(sierpinskiTriangle);
+    _typeOther->Append(kochSnowflake);
+    _typeOther->Append(vectorSierpinskiTriangle);
+    _typeOther->Append(sierpinskiCarpet);
 
     _formula->Append(-1, _("Complex"), _typeComplex);
     _formula->Append(-1, _("Numerical method"), _typeNumericalMethod);
@@ -1201,7 +1214,7 @@ void MainFrame::ChangeMandelbrot(wxCommandEvent&)
 }
 void MainFrame::ChangeMandelbrotZN(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::MandelbrotZN, true);
+    this->ChangeFractal(FractalType::MandelbrotZM, true);
 }
 void MainFrame::ChangeJulia(wxCommandEvent&)
 {
@@ -1209,7 +1222,7 @@ void MainFrame::ChangeJulia(wxCommandEvent&)
 }
 void MainFrame::ChangeJuliaZN(wxCommandEvent&)
 {
-    this->ChangeFractal(FractalType::JuliaZN, false);
+    this->ChangeFractal(FractalType::JuliaZM, false);
 }
 void MainFrame::ChangeNewton(wxCommandEvent&)
 {
@@ -1238,6 +1251,18 @@ void MainFrame::ChangeManowarJulia(wxCommandEvent&)
 void MainFrame::ChangeSierpinskiTriangle(wxCommandEvent&)
 {
     this->ChangeFractal(FractalType::SierpinskiTriangle, false);
+}
+void MainFrame::ChangeKochSnowflake(wxCommandEvent&)
+{
+    this->ChangeFractal(FractalType::KochSnowflake, false);
+}
+void MainFrame::ChangeVectorSierpinskiTriangle(wxCommandEvent&)
+{
+    this->ChangeFractal(FractalType::VectorSierpinskiTriangle, false);
+}
+void MainFrame::ChangeSierpinskiCarpet(wxCommandEvent&)
+{
+    this->ChangeFractal(FractalType::SierpinskiCarpet, false);
 }
 void MainFrame::ChangeFixedPoint1(wxCommandEvent&)
 {
@@ -1479,6 +1504,7 @@ void MainFrame::UpdateMenu()
     _moreIterations->Enable(true);
     _lessIterations->Enable(true);
     _automaticIterations->Check(_fractalCanvas->GetFractalPresenter()->AutomaticIterationsEnabled());
+    _interactionToolbar->SetColorRotationEnabled(_fractalCanvas->GetFractal()->SupportsColorRotation());
 
     // Closes constant dialog.
     if (_manualJuliaConstantActive)
@@ -1543,7 +1569,7 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
     switch (_fractalType)
     {
         case FractalType::Mandelbrot: juliaType = FractalType::Julia; break;
-        case FractalType::MandelbrotZN: juliaType = FractalType::JuliaZN; break;
+        case FractalType::MandelbrotZM: juliaType = FractalType::JuliaZM; break;
         case FractalType::Manowar: juliaType = FractalType::ManowarJulia; break;
         case FractalType::BurningShip: juliaType = FractalType::BurningShipJulia; break;
         case FractalType::UserDefinedEscapeTime: juliaType = FractalType::UserDefinedEscapeTime; break;

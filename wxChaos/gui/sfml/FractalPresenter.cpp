@@ -2,7 +2,7 @@
 #include <cmath>
 #include "FractalPresenter.h"
 #include "FractalFactory.h"
-#include "fractals/ScriptFractal.h"
+#include "../../core/fractals/raster/ScriptFractal.h"
 
 constexpr double OldMovementFrameRate = 31.0;
 constexpr double MovementAcceleration = OldMovementFrameRate * OldMovementFrameRate;
@@ -384,19 +384,28 @@ unsigned int FractalPresenter::CalculateAutomaticIterations() const
 unsigned int FractalPresenter::CalculateAutomaticIterationExtra() const
 {
     const PreciseRect view = CaptureCurrentView();
-    const double width = ToDouble(RealAbs(view.right - view.left));
-    if (!std::isfinite(width) || width <= 0.0)
-        return 0;
-
     constexpr double referenceWidth = 3.5;
-    constexpr double iterationsPerZoomDoubling = 18.0;
+    const double iterationsPerZoomDoubling = _fractal->IsVectorFractal() ? 1.0 : 18.0;
+    const unsigned int maximumAutomaticIterationExtra = GetMaximumAutomaticIterationExtra();
+    const HighPrecisionReal width = RealAbs(view.right - view.left);
+    if (width <= HighPrecisionReal(0))
+        return maximumAutomaticIterationExtra;
 
-    const double zoomDepth = std::max(0.0, std::log2(referenceWidth / width));
+    const HighPrecisionReal preciseZoomDepth = log(HighPrecisionReal(referenceWidth) / width)
+        / log(HighPrecisionReal(2));
+    const double zoomDepth = std::max(0.0, ToDouble(preciseZoomDepth));
     const double wantedExtraIterations = std::ceil(zoomDepth * iterationsPerZoomDoubling);
     if (!std::isfinite(wantedExtraIterations))
-        return 20000000;
+        return maximumAutomaticIterationExtra;
 
-    return static_cast<unsigned int>(std::clamp(wantedExtraIterations, 0.0, 20000000.0));
+    return static_cast<unsigned int>(std::clamp(wantedExtraIterations, 0.0,
+                                                static_cast<double>(maximumAutomaticIterationExtra)));
+}
+
+unsigned int FractalPresenter::GetMaximumAutomaticIterationExtra() const
+{
+    // Recursive geometry needs far fewer extra levels than an escape-time renderer needs iterations.
+    return _fractal->IsVectorFractal() ? 1024 : 20000000;
 }
 
 void FractalPresenter::SetAutomaticIterationBaseForCurrentIterations(const unsigned int iterations)
@@ -1123,6 +1132,15 @@ void FractalPresenter::DrawMaps(sf::RenderWindow* window)
     _fractal->PreDrawMaps();
     const sf::Vector2u screenSize = _fractal->GetScreenSize();
 
+    if (_fractal->IsVectorFractal())
+    {
+        _image = _fractal->GetRenderedImage();
+        _texture.loadFromImage(_image);
+        _output.setPosition(0, 0);
+        window->draw(_output);
+        return;
+    }
+
     if (_zoomingBack || _dontDrawTempImage || !_fractal->IsExteriorColorEnabled() || _zoomAnimationActive)
         _image.create(screenSize.x, screenSize.y, sf::Color(255, 255, 255));
     else
@@ -1238,7 +1256,7 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
 
             _committedPanOffset = {0, 0};
 
-            if (!_zoomAnimationActive)
+            if (!_zoomAnimationActive && !_fractal->IsVectorFractal())
                 DrawMaps(window);
 
             if (!_fractal->IsRendering())
@@ -1290,6 +1308,16 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
         return;
     }
 
+    if (_fractal->IsVectorFractal() && !_fractal->IsRendered())
+    {
+        // Vector renderers publish their geometry atomically when the worker finishes, so _output still contains
+        // the previous viewport here. The transformed temporary sprite is the authoritative preview between the
+        // end of the zoom animation and completion of the new render.
+        if (!_dontDrawTempImage)
+            window->draw(_tempSprite);
+        return;
+    }
+
     if (!_dontDrawTempImage && _fractal->IsExteriorColorEnabled())
         window->draw(_tempSprite);
 
@@ -1307,7 +1335,7 @@ void FractalPresenter::Show(sf::RenderWindow* window, const double elapsedSecond
         }
         window->draw(_outGeom);
     }
-    if (_fractal->HasGeometryFigures() && !_fractal->IsRendering())
+    if (!_fractal->IsVectorFractal() && _fractal->HasGeometryFigures() && !_fractal->IsRendering())
         DrawGeometry(window);
 
 }

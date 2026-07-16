@@ -58,9 +58,9 @@ wxString FractalDocumentation::GetDocumentFilename(const FractalType type)
     switch (type)
     {
         case FractalType::Mandelbrot: return "mandelbrot.html";
-        case FractalType::MandelbrotZN: return "mandelbrot_zn.html";
+        case FractalType::MandelbrotZM: return "mandelbrot_zn.html";
         case FractalType::Julia: return "julia.html";
-        case FractalType::JuliaZN: return "julia_zn.html";
+        case FractalType::JuliaZM: return "julia_zn.html";
         case FractalType::NewtonRaphsonMethod: return "newton.html";
         case FractalType::Sinusoidal: return "sinusoidal.html";
         case FractalType::Magnetic: return "magnet.html";
@@ -68,6 +68,9 @@ wxString FractalDocumentation::GetDocumentFilename(const FractalType type)
         case FractalType::Manowar: return "manowar.html";
         case FractalType::ManowarJulia: return "manowar_julia.html";
         case FractalType::SierpinskiTriangle: return "sierpinski_triangle.html";
+        case FractalType::KochSnowflake: return "koch_snowflake.html";
+        case FractalType::VectorSierpinskiTriangle: return "vector_sierpinski_triangle.html";
+        case FractalType::SierpinskiCarpet: return "sierpinski_carpet.html";
         case FractalType::FixedPoint1: return "fixed_point_sin.html";
         case FractalType::FixedPoint2: return "fixed_point_cos.html";
         case FractalType::FixedPoint3: return "fixed_point_tan.html";

@@ -1,13 +1,20 @@
 #include <doctest/doctest.h>
 #include <filesystem>
+#include <fstream>
 #include "AngelscriptConfigurationEngine.h"
-#include "fractals/ScriptFractal.h"
+#include "../../wxChaos/core/fractals/raster/ScriptFractal.h"
+
+namespace
+{
+    std::filesystem::path BundledScriptsDirectory()
+    {
+        return std::filesystem::path(WXCHAOS_SOURCE_DIR) / "app_resources" / "Scripts";
+    }
+}
 
 TEST_CASE("bundled scripts compile with the orbit drawing interface")
 {
-    std::filesystem::path scriptsDirectory = std::filesystem::current_path() / "bin" / "Scripts";
-    if (!std::filesystem::exists(scriptsDirectory))
-        scriptsDirectory = std::filesystem::current_path() / "cmake-build-debug" / "bin" / "Scripts";
+    const std::filesystem::path scriptsDirectory = BundledScriptsDirectory();
     REQUIRE(std::filesystem::exists(scriptsDirectory));
 
     for (const std::filesystem::directory_entry& script : std::filesystem::directory_iterator(scriptsDirectory))
@@ -35,6 +42,58 @@ TEST_CASE("script configuration registers its coordinate system")
     const ScriptData data = engine.GetScriptData();
     CHECK(data.horizontalCoordinate == "x");
     CHECK(data.verticalCoordinate == "y");
+}
+
+TEST_CASE("scripts explicitly opt into the dimension calculator with a preset")
+{
+    const std::filesystem::path scriptPath = std::filesystem::temp_directory_path()
+                                           / "wxchaos_dimension_calculator_preset_test.as";
+    {
+        std::ofstream script(scriptPath);
+        script << R"(
+void Configure()
+{
+    SetFractalName("Dimension test");
+    SetCategory("Other");
+    SetDimensionCalculatorEnabled(true);
+    SetDimensionCalculatorPreset(-1.25, 1.5, -0.75, 42, "7*x", 2, 80, 4096);
+}
+
+void Render() {}
+)";
+    }
+
+    AngelscriptConfigurationEngine engine;
+    REQUIRE(engine.CompileFromPath(scriptPath.string()));
+    REQUIRE(engine.Execute());
+    std::filesystem::remove(scriptPath);
+
+    const ScriptData data = engine.GetScriptData();
+    CHECK(data.dimensionCalculatorEnabled);
+    REQUIRE(data.dimensionCalculatorPreset.has_value());
+    CHECK(data.dimensionCalculatorPreset->minX == doctest::Approx(-1.25));
+    CHECK(data.dimensionCalculatorPreset->maxX == doctest::Approx(1.5));
+    CHECK(data.dimensionCalculatorPreset->minY == doctest::Approx(-0.75));
+    CHECK(data.dimensionCalculatorPreset->iterations == 42);
+    CHECK(data.dimensionCalculatorPreset->divisionFunction == "7*x");
+    CHECK(data.dimensionCalculatorPreset->functionXMin == 2);
+    CHECK(data.dimensionCalculatorPreset->functionXMax == 80);
+    CHECK(data.dimensionCalculatorPreset->imageSize == 4096);
+}
+
+TEST_CASE("bundled scripts do not enter the dimension calculator implicitly")
+{
+    for (const char* scriptName : {"Pawn.as", "CutBill.as"})
+    {
+        AngelscriptConfigurationEngine engine;
+        CAPTURE(scriptName);
+        REQUIRE(engine.CompileFromPath((BundledScriptsDirectory() / scriptName).string()));
+        REQUIRE(engine.Execute());
+
+        const ScriptData data = engine.GetScriptData();
+        CHECK_FALSE(data.dimensionCalculatorEnabled);
+        CHECK_FALSE(data.dimensionCalculatorPreset.has_value());
+    }
 }
 
 TEST_CASE("a complete bundled script executes its orbit entry point")
@@ -92,7 +151,7 @@ TEST_CASE("script-defined options are exposed through the fractal options panel"
         CAPTURE(scriptName);
         ScriptFractal newton(32, 32, (scriptsDirectory / scriptName).string());
         REQUIRE(newton.GetOptionsPanel()->GetElementsSize() == 1);
-        CHECK(newton.GetOptionsPanel()->GetLabelValue(0) == "Min step: ");
+        CHECK(newton.GetOptionsPanel()->GetLabelValue(0) == "Minimum step: ");
         CHECK(newton.GetScriptData().options.GetDouble("minStep") == doctest::Approx(0.01));
     }
 
