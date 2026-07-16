@@ -1,6 +1,3 @@
-Bugs:
-- Sierpinski triangle cannot calculate its dimension in its current form.
-
 Improvements to get to a release version:
 - Use forward declarations for classes to reduce build time.
 - const functions are a mess because I applied clang tidy suggestions blindly. I need to fix that.
