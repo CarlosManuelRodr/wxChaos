@@ -14,28 +14,93 @@
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
             <h1>Koch Snowflake</h1>
-            <p class="subtitle">An infinite coastline grown from three straight sides.</p>
-            <div class="formula hero-formula">\(D=\frac{\log 4}{\log 3}\)</div>
+            <p class="subtitle">A boundary that grows forever while enclosing a finite patch of space.</p>
             <p class="hero-introduction">
-                Each step divides every segment into thirds and replaces the middle third with two sides of an
-                outward equilateral triangle. Repeating that rule turns a triangle into an endlessly detailed curve.
+                Begin with an equilateral triangle. Divide each side into thirds, lift the middle third into a pointed
+                tent, and repeat the operation on every new segment. The outline becomes more elaborate at every step,
+                but the snowflake never outgrows a finite region.
             </p>
         </div>
-        <div class="action-row"><a class="action-link" href="wxchaos://fractal/koch-snowflake">Open in wxChaos</a></div>
-    </section>
-    <section>
-        <h2>What to try first</h2>
-        <div class="experiment">
-            <div class="experiment-step"><p>Increase the iteration count one step at a time and watch every edge produce four smaller edges.</p></div>
-            <div class="experiment-step"><p>Zoom into a corner to compare its shape with the complete boundary.</p></div>
+        <figure class="hero-figure">
+            <img src="koch_snowflake/overview.png" alt="A Koch snowflake with a boundary made of recursively repeated triangular bumps">
+            <figcaption>
+                <span class="figure-title">Finite inside, endless around the edge.</span>
+                Every straight segment is waiting to become four smaller segments.
+            </figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/koch-snowflake">Open in wxChaos</a>
+            <a class="action-link secondary" href="fractal_dimension.html">How dimension is measured</a>
         </div>
     </section>
+
     <section>
-        <h2>Mathematical notes</h2>
-        <p>After iteration \(n\), the snowflake has \(3\cdot4^n\) segments, each scaled by \(3^{-n}\).</p>
-        <p>wxChaos generates the curve in the background and skips branches outside the current view. Detail smaller
-            than a screen pixel is combined until zooming makes it visible. At extreme zoom depths, rendering
-            automatically switches from ordinary floating-point arithmetic to arbitrary precision.</p>
+        <h2>Grow a coastline</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Set iterations to one and find the three original sides. At two iterations, each side becomes a
+                    new four-segment zigzag.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Advance step by step and watch the previous smallest segments become places for new segments.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Zoom into one point of the boundary. Add enough iterations and the local edge begins to resemble
+                    the complete snowflake's roughness.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="two-column">
+            <div>
+                <h2>Longer than any finite ruler</h2>
+                <p>
+                    Each step makes the boundary \(4/3\) as long as before. Repeated without end, its perimeter becomes
+                    infinite even though the enclosed area approaches a finite limit. The boundary is too intricate to
+                    behave like an ordinary one-dimensional curve, but it does not fill a two-dimensional region.
+                </p>
+                <p>
+                    Open <strong>Tools &gt; Dimension calculator</strong>, select <strong>Koch Snowflake</strong>, and let
+                    box counting measure the boundary at several scales. The result describes the outline; the filled
+                    interior, if it were included, would simply have dimension 2.
+                </p>
+            </div>
+            <aside class="observation-panel">
+                <h3>A number to look for</h3>
+                <p>
+                    The boundary's estimate should approach about <strong>1.262</strong>. It is more space-filling
+                    than a smooth curve, but much less than a surface.
+                </p>
+            </aside>
+        </div>
+        <details class="concept-details">
+            <summary>Four segments replace one</summary>
+            <div class="concept-details-content">
+                <p>
+                    Every segment produces four copies scaled to \(1/3\) of its length. The similarity dimension
+                    satisfies \(4(1/3)^D=1\), giving \(D=\log(4)/\log(3)\approx1.262\). After iteration \(n\), the
+                    boundary contains \(3\cdot4^n\) segments, each of length \(3^{-n}\) relative to an original side.
+                    A box-counting estimate from a finite render should move toward the theoretical dimension as useful
+                    scales and visible iterations are added.
+                </p>
+            </div>
+        </details>
+    </section>
+
+    <section>
+        <h2>How wxChaos constructs it</h2>
+        <p>
+            wxChaos renders the snowflake as line primitives. Each visible segment is recursively replaced with its
+            four-part Koch pattern. Geometry outside the viewport is ignored, while deeper precision is brought in when
+            zooming makes ordinary coordinates too coarse for neighboring pixels.
+        </p>
     </section>
 </main>
 
@@ -44,28 +109,91 @@
         <div class="hero-header">
             <p class="eyebrow">Galería de fractales</p>
             <h1>Copo de nieve de Koch</h1>
-            <p class="subtitle">Una costa infinita que crece a partir de tres lados rectos.</p>
-            <div class="formula hero-formula">\(D=\frac{\log 4}{\log 3}\)</div>
+            <p class="subtitle">Una frontera que crece para siempre mientras encierra una región finita.</p>
             <p class="hero-introduction">
-                Cada paso divide todos los segmentos en tercios y sustituye el tercio central por dos lados de un
-                triángulo equilátero exterior. Al repetir la regla, el triángulo se convierte en una curva de detalle infinito.
+                Comienza con un triángulo equilátero. Divide cada lado en tercios, levanta el tercio central como una
+                tienda puntiaguda y repite la operación sobre cada segmento nuevo. El contorno se vuelve más elaborado
+                en cada paso, pero el copo nunca sale de una región finita.
             </p>
         </div>
-        <div class="action-row"><a class="action-link" href="wxchaos://fractal/koch-snowflake">Abrir en wxChaos</a></div>
-    </section>
-    <section>
-        <h2>Qué probar primero</h2>
-        <div class="experiment">
-            <div class="experiment-step"><p>Aumenta las iteraciones paso a paso y observa cómo cada borde produce cuatro bordes menores.</p></div>
-            <div class="experiment-step"><p>Acércate a una esquina para comparar su forma con la frontera completa.</p></div>
+        <figure class="hero-figure">
+            <img src="koch_snowflake/overview.png" alt="Copo de nieve de Koch con una frontera formada por picos triangulares repetidos recursivamente">
+            <figcaption>
+                <span class="figure-title">Interior finito, borde interminable.</span>
+                Cada segmento recto está esperando convertirse en cuatro segmentos menores.
+            </figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/koch-snowflake">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="fractal_dimension.html">Cómo se mide la dimensión</a>
         </div>
     </section>
+
     <section>
-        <h2>Notas matemáticas</h2>
-        <p>Después de la iteración \(n\), el copo tiene \(3\cdot4^n\) segmentos, cada uno escalado por \(3^{-n}\).</p>
-        <p>wxChaos genera la curva en segundo plano y omite las ramas fuera de la vista actual. El detalle menor que
-            un píxel se combina hasta que el acercamiento lo hace visible. En acercamientos extremos, el renderizado
-            cambia automáticamente de la aritmética de punto flotante normal a precisión arbitraria.</p>
+        <h2>Haz crecer una costa</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Establece las iteraciones en uno y encuentra los lados originales. Con dos iteraciones, cada lado
+                    se convierte en un zigzag de cuatro segmentos más.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Avanza paso a paso y observa cómo los segmentos más pequeños de ayer se convierten en los sitios
+                    de construcción de hoy.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Acércate a una punta de la frontera. Añade suficientes iteraciones y el borde local comenzará a
+                    asemejarse a la rugosidad del copo completo.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="two-column">
+            <div>
+                <h2>Más largo que cualquier regla finita</h2>
+                <p>
+                    Cada paso hace que la frontera mida \(4/3\) de su longitud anterior. Repetida sin fin, su perímetro
+                    se vuelve infinito aunque el área encerrada se aproxime a un límite finito. La frontera es demasiado
+                    intrincada para comportarse como una curva unidimensional ordinaria, pero no llena una región de dos dimensiones.
+                </p>
+                <p>
+                    Abre <strong>Herramientas &gt; Calculadora de dimensión</strong>, selecciona <strong>Copo de nieve de
+                    Koch</strong> y deja que el conteo de cajas mida la frontera a varias escalas. El resultado describe
+                    el contorno; el interior lleno, si se incluyera, tendría simplemente dimensión 2.
+                </p>
+            </div>
+            <aside class="observation-panel">
+                <h3>Un número que debes buscar</h3>
+                <p>La estimación de la frontera debería acercarse a <strong>1.262</strong>. Llena más espacio que una curva suave, pero mucho menos que una superficie.</p>
+            </aside>
+        </div>
+        <details class="concept-details">
+            <summary>Cuatro segmentos sustituyen a uno</summary>
+            <div class="concept-details-content">
+                <p>
+                    Cada segmento produce cuatro copias escaladas a \(1/3\) de su longitud. La dimensión de semejanza
+                    satisface \(4(1/3)^D=1\), lo que da \(D=\log(4)/\log(3)\approx1.262\). Después de la iteración \(n\),
+                    la frontera contiene \(3\cdot4^n\) segmentos, cada uno de longitud \(3^{-n}\) respecto a un lado
+                    original. La estimación por conteo de cajas de un render finito debería acercarse a la dimensión
+                    teórica conforme se añaden escalas útiles e iteraciones visibles.
+                </p>
+            </div>
+        </details>
+    </section>
+
+    <section>
+        <h2>Cómo lo construye wxChaos</h2>
+        <p>
+            wxChaos renderiza el copo mediante segmentos. Cada segmento visible se reemplaza recursivamente por su
+            patrón de Koch de cuatro partes. La geometría fuera del área visible se ignora, mientras que se incorpora
+            mayor precisión cuando el acercamiento vuelve demasiado gruesas las coordenadas ordinarias.
+        </p>
     </section>
 </main>
 </body>

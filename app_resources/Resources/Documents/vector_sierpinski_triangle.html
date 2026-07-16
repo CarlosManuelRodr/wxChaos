@@ -14,28 +14,89 @@
         <div class="hero-header">
             <p class="eyebrow">Fractal gallery</p>
             <h1>Sierpinski Triangle (Vector)</h1>
-            <p class="subtitle">A geometric construction made from endlessly repeated triangular holes.</p>
-            <div class="formula hero-formula">\(D=\frac{\log 3}{\log 2}\)</div>
+            <p class="subtitle">Begin with one triangle. Open a hole in its heart, then repeat.</p>
             <p class="hero-introduction">
-                Begin with an equilateral triangle, join the midpoints of its sides, and remove the central triangle.
-                Repeating the same operation in each of the three remaining corners creates the gasket.
+                This version is drawn directly from geometric primitives. wxChaos outlines an equilateral triangle,
+                joins the midpoints of its sides, and leaves the upside-down triangle in the center empty. The same
+                gesture is repeated inside each of the three surviving corners.
             </p>
         </div>
-        <div class="action-row"><a class="action-link" href="wxchaos://fractal/vector-sierpinski-triangle">Open in wxChaos</a></div>
-    </section>
-    <section>
-        <h2>What to try first</h2>
-        <div class="experiment">
-            <div class="experiment-step"><p>Increase the iterations and watch every surviving triangle acquire a smaller central hole.</p></div>
-            <div class="experiment-step"><p>Zoom into one corner to reveal detail that was previously smaller than a pixel.</p></div>
+        <figure class="hero-figure">
+            <img src="vector_sierpinski_triangle/overview.png" alt="The vector Sierpinski triangle with recursively repeated triangular holes">
+            <figcaption>
+                <span class="figure-title">A shape built from holes.</span>
+                Every visible corner contains three smaller corners arranged like the whole.
+            </figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/vector-sierpinski-triangle">Open in wxChaos</a>
+            <a class="action-link secondary" href="fractal_dimension.html">How dimension is measured</a>
         </div>
     </section>
+
     <section>
-        <h2>Vector construction</h2>
-        <p>This variant draws the outer boundary and the boundaries of the removed triangles with line primitives.
-            wxChaos generates them in the background, prunes triangles outside the viewport, and stops subdividing
-            when their projected size is below one screen pixel. Arbitrary-precision coordinates are selected
-            automatically once an ordinary double can no longer distinguish neighboring pixels.</p>
+        <h2>Watch the triangle learn its shape</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Set the iteration count to one. There is no fractal yet, only a triangle with a single central hole.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Advance one iteration at a time. Successive generations add one central hole, then three smaller
+                    holes, then nine, then twenty-seven.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Zoom into a corner after several steps. More iterations reveal the same construction at scales that
+                    were previously too small to see.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="two-column">
+            <div>
+                <h2>What does its dimension mean?</h2>
+                <p>
+                    A smooth line has dimension 1 and a filled region has dimension 2. The Sierpinski triangle sits
+                    between them: it branches through the plane more richly than a line, but its missing centers keep
+                    it from becoming a surface.
+                </p>
+                <p>
+                    Open <strong>Tools &gt; Dimension calculator</strong>, choose <strong>Sierpinski Triangle (Vector)</strong>,
+                    and press Calculate. wxChaos covers the rendered set with boxes at several scales and estimates how
+                    quickly the number of occupied boxes grows as those boxes become smaller.
+                </p>
+            </div>
+            <aside class="observation-panel">
+                <h3>A number to look for</h3>
+                <p>The estimate should approach about <strong>1.585</strong>. Try changing the image size, iteration count, or box divisions and watch how a numerical measurement settles around the theoretical value.</p>
+            </aside>
+        </div>
+        <details class="concept-details">
+            <summary>Why the dimension is log(3) / log(2)</summary>
+            <div class="concept-details-content">
+                <p>
+                    Each stage contains three copies of the whole, and each copy is scaled to one half of the original.
+                    A self-similar dimension \(D\) therefore satisfies \(3(1/2)^D=1\), giving
+                    \(D=\log(3)/\log(2)\approx1.585\). For this ideal self-similar set, that value agrees with the
+                    box-counting dimension estimated by the Dimension calculator.
+                </p>
+            </div>
+        </details>
+    </section>
+
+    <section>
+        <h2>Two ways to meet the same silhouette</h2>
+        <p>
+            The alternative <a href="sierpinski_triangle.html">Sierpinski Triangle</a> page describes a different wxChaos
+            renderer. It tests points with a complex-plane iteration. This vector version constructs the geometry
+            explicitly with line segments. They arrive at a familiar triangular set by very different routes.
+        </p>
     </section>
 </main>
 
@@ -44,28 +105,91 @@
         <div class="hero-header">
             <p class="eyebrow">Galería de fractales</p>
             <h1>Triángulo de Sierpinski (Vectorial)</h1>
-            <p class="subtitle">Una construcción geométrica formada por huecos triangulares que se repiten sin fin.</p>
-            <div class="formula hero-formula">\(D=\frac{\log 3}{\log 2}\)</div>
+            <p class="subtitle">Comienza con un triángulo. Abre un hueco en su corazón y después repite.</p>
             <p class="hero-introduction">
-                Comienza con un triángulo equilátero, une los puntos medios de sus lados y elimina el triángulo
-                central. Repetir la misma operación en las tres esquinas restantes produce el fractal.
+                Esta versión se dibuja directamente mediante primitivas geométricas. wxChaos traza un triángulo
+                equilátero, une los puntos medios de sus lados y deja vacío el triángulo invertido del centro. El mismo
+                gesto se repite dentro de cada una de las tres esquinas restantes.
             </p>
         </div>
-        <div class="action-row"><a class="action-link" href="wxchaos://fractal/vector-sierpinski-triangle">Abrir en wxChaos</a></div>
-    </section>
-    <section>
-        <h2>Qué probar primero</h2>
-        <div class="experiment">
-            <div class="experiment-step"><p>Aumenta las iteraciones y observa cómo cada triángulo conservado recibe un hueco central más pequeño.</p></div>
-            <div class="experiment-step"><p>Acércate a una esquina para revelar detalles que antes medían menos de un píxel.</p></div>
+        <figure class="hero-figure">
+            <img src="vector_sierpinski_triangle/overview.png" alt="Triángulo de Sierpinski vectorial con huecos triangulares repetidos recursivamente">
+            <figcaption>
+                <span class="figure-title">Una figura construida con huecos.</span>
+                Cada esquina visible contiene tres esquinas menores dispuestas como el conjunto completo.
+            </figcaption>
+        </figure>
+        <div class="action-row">
+            <a class="action-link" href="wxchaos://fractal/vector-sierpinski-triangle">Abrir en wxChaos</a>
+            <a class="action-link secondary" href="fractal_dimension.html">Cómo se mide la dimensión</a>
         </div>
     </section>
+
     <section>
-        <h2>Construcción vectorial</h2>
-        <p>Esta variante dibuja el contorno exterior y los bordes de los triángulos eliminados mediante líneas.
-            wxChaos los genera en segundo plano, descarta triángulos fuera de la vista y detiene la subdivisión
-            cuando su tamaño proyectado es menor que un píxel. Las coordenadas de precisión arbitraria se activan
-            automáticamente cuando un double ya no puede distinguir píxeles vecinos.</p>
+        <h2>Observa cómo el triángulo aprende su forma</h2>
+        <div class="experiment">
+            <div class="experiment-step">
+                <p>
+                    Establece el número de iteraciones en uno. Todavía no hay un fractal, solo un triángulo con un
+                    único hueco central.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Avanza una iteración a la vez. Las generaciones sucesivas añaden un hueco central, después tres
+                    huecos menores, luego nueve y finalmente veintisiete.
+                </p>
+            </div>
+            <div class="experiment-step">
+                <p>
+                    Acércate a una esquina después de varios pasos. Más iteraciones revelan la misma construcción a
+                    escalas que antes eran demasiado pequeñas para verse.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="two-column">
+            <div>
+                <h2>¿Qué significa su dimensión?</h2>
+                <p>
+                    Una línea suave tiene dimensión 1 y una región llena tiene dimensión 2. El triángulo de Sierpinski
+                    se encuentra entre ambas: se ramifica por el plano con mayor riqueza que una línea, pero sus centros
+                    ausentes impiden que se convierta en una superficie.
+                </p>
+                <p>
+                    Abre <strong>Herramientas &gt; Calculadora de dimensión</strong>, elige <strong>Triángulo de Sierpinski
+                    (Vectorial)</strong> y pulsa Calcular. wxChaos cubre el conjunto renderizado con cajas de varios tamaños
+                    y estima qué tan rápido crece el número de cajas ocupadas cuando estas se hacen más pequeñas.
+                </p>
+            </div>
+            <aside class="observation-panel">
+                <h3>Un número que debes buscar</h3>
+                <p>La estimación debería acercarse a <strong>1.585</strong>. Cambia el tamaño de imagen, las iteraciones o las divisiones y observa cómo la medición numérica se estabiliza alrededor del valor teórico.</p>
+            </aside>
+        </div>
+        <details class="concept-details">
+            <summary>Por qué la dimensión es log(3) / log(2)</summary>
+            <div class="concept-details-content">
+                <p>
+                    Cada etapa contiene tres copias del conjunto completo y cada copia mide la mitad del original.
+                    Por ello, una dimensión de semejanza \(D\) satisface \(3(1/2)^D=1\), lo que da
+                    \(D=\log(3)/\log(2)\approx1.585\). Para este conjunto ideal y autosimilar, el valor coincide con la
+                    dimensión por conteo de cajas que estima la Calculadora de dimensión.
+                </p>
+            </div>
+        </details>
+    </section>
+
+    <section>
+        <h2>Dos caminos hacia la misma silueta</h2>
+        <p>
+            La página alternativa del <a href="sierpinski_triangle.html">Triángulo de Sierpinski</a> describe otro
+            renderizador de wxChaos. Este prueba puntos mediante una iteración en el plano complejo. La versión
+            vectorial construye la geometría explícitamente con segmentos. Ambas llegan a un conjunto triangular
+            familiar por rutas muy distintas.
+        </p>
     </section>
 </main>
 </body>

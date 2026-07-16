@@ -3,7 +3,7 @@
 #include "renderers/vector/VectorSierpinskiTriangleRenderer.h"
 
 VectorSierpinskiTriangle::VectorSierpinskiTriangle(const unsigned int width, const unsigned int height)
-    : VectorFractal(width, height)
+                                                   : VectorFractal(width, height)
 {
     _minX = -1.76;
     _maxX = 1.76;
