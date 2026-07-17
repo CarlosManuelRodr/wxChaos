@@ -43,6 +43,19 @@ bool wxSFMLCanvas::IsSfmlWindowCreated() const
     return _sfmlWindowCreated;
 }
 
+wxPoint wxSFMLCanvas::GetRenderMousePosition(const wxMouseEvent& event) const
+{
+#ifdef __WXGTK__
+    if (_sfmlWindowCreated)
+    {
+        const sf::Vector2i position = sf::Mouse::getPosition(*this);
+        return {position.x, position.y};
+    }
+#endif
+
+    return event.GetPosition();
+}
+
 void wxSFMLCanvas::OnUpdate() {}
 
 // ReSharper disable once CppMemberFunctionMayBeStatic

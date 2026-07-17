@@ -39,6 +39,9 @@ protected:
     /// @return true after EnsureSfmlWindowCreated succeeds.
     [[nodiscard]] bool IsSfmlWindowCreated() const;
 
+    /// @brief Converts a wx mouse event position to the embedded SFML window's pixel coordinates.
+    [[nodiscard]] wxPoint GetRenderMousePosition(const wxMouseEvent& event) const;
+
 private:
     bool _sfmlWindowCreated{};
     bool _sfmlRefreshEnabled{true};

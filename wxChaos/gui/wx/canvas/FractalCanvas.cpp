@@ -146,6 +146,13 @@ void FractalCanvas::AttachFractalStatusHandler()
     });
 }
 
+wxMouseEvent FractalCanvas::ToRenderMouseEvent(const wxMouseEvent& event) const
+{
+    wxMouseEvent renderEvent(event);
+    renderEvent.SetPosition(GetRenderMousePosition(event));
+    return renderEvent;
+}
+
 wxString FractalCanvas::BuildStatusText() const
 {
     wxString text;
@@ -819,9 +826,11 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     if (_zoomToolDragging)
         return;
 
+    wxMouseEvent renderEvent = ToRenderMouseEvent(event);
+
     if (event.ButtonDown(wxMOUSE_BTN_MIDDLE))
     {
-        BeginMousePanAt(event.GetPosition());
+        BeginMousePanAt(renderEvent.GetPosition());
         return;
     }
 
@@ -830,7 +839,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         if (event.ButtonDown(wxMOUSE_BTN_LEFT))
         {
             _toolPanning = true;
-            BeginMousePanAt(event.GetPosition());
+            BeginMousePanAt(renderEvent.GetPosition());
         }
         return;
     }
@@ -839,7 +848,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     {
         if (event.ButtonDown(wxMOUSE_BTN_LEFT) && !_fractal->IsRendering() && !_fractalPresenter->IsMoving())
         {
-            _zoomToolStartPosition = event.GetPosition();
+            _zoomToolStartPosition = renderEvent.GetPosition();
             _zoomToolDragging = _fractalPresenter->BeginInteractiveZoomAtPixel(_zoomToolStartPosition.x, _zoomToolStartPosition.y);
 
             if (_zoomToolDragging && !HasCapture())
@@ -856,7 +865,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     // Pointer event.
     if (_juliaMode || _orbitMode || _sliderMode)
     {
-        if (_coordinateSelector->ClickEvent(event))
+        if (_coordinateSelector->ClickEvent(renderEvent))
         {
             _prevKReal = _kReal;
             _prevKImag = _kImaginary;
@@ -874,7 +883,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
     }
     // Selection event.
     else if (!_fractal->IsRendering() && !_fractalPresenter->IsMoving())
-        _selectionRect->ClickEvent(event);
+        _selectionRect->ClickEvent(renderEvent);
 
     // Mouse event.
     if (_guideImagesMode)
@@ -897,7 +906,7 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 
     if (event.ButtonUp(wxMOUSE_BTN_LEFT) && _zoomToolDragging)
     {
-        CommitZoomToolDrag(event.GetPosition());
+        CommitZoomToolDrag(GetRenderMousePosition(event));
         _zoomToolDragging = false;
 
         if (HasCapture())
@@ -906,13 +915,14 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
     }
 
     // Selection event.
+    wxMouseEvent renderEvent = ToRenderMouseEvent(event);
     if (_juliaMode || _orbitMode || _sliderMode)
-        _coordinateSelector->ReleaseClickEvent(event);
+        _coordinateSelector->ReleaseClickEvent(renderEvent);
     else
     {
         if (!_fractal->IsRendering() && !_fractalPresenter->IsMoving())
         {
-            if (_selectionRect->UnClickEvent(event))
+            if (_selectionRect->UnClickEvent(renderEvent))
                 _fractalPresenter->SetAreaOfView(_selectionRect->GetSelection());
         }
     }
@@ -932,7 +942,7 @@ void FractalCanvas::OnMouseWheel(wxMouseEvent& event)
 
     if (const int rotation = event.GetWheelRotation(); rotation > 0)
     {
-        const wxPoint position = event.GetPosition();
+        const wxPoint position = GetRenderMousePosition(event);
         _fractalPresenter->ZoomAtPixel(position.x, position.y);
         UpdateCoordinateSelectorValue();
     }
@@ -954,9 +964,12 @@ void FractalCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
 
 void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 {
+    wxMouseEvent renderEvent = ToRenderMouseEvent(event);
+    const wxPoint renderPosition = renderEvent.GetPosition();
+
     if (_mouseWheelPanning)
     {
-        const wxPoint currentPosition = event.GetPosition();
+        const wxPoint currentPosition = renderPosition;
         ContinueMousePanAt(currentPosition);
 
         _lastMousePosition = currentPosition;
@@ -967,7 +980,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 
     if (_zoomToolDragging)
     {
-        const wxPoint currentPosition = event.GetPosition();
+        const wxPoint currentPosition = renderPosition;
         _fractalPresenter->UpdateInteractiveZoom(CalculateZoomToolScale(currentPosition));
         Refresh(false);
         Update();
@@ -979,9 +992,8 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 
     if (_interactionTool == FractalInteractionTool::PointPicker)
     {
-        const wxPoint currentPosition = event.GetPosition();
-        ShowPointInfo(currentPosition, InspectPointAt(currentPosition));
-        _lastMousePosition = currentPosition;
+        ShowPointInfo(event.GetPosition(), InspectPointAt(renderPosition));
+        _lastMousePosition = renderPosition;
         _hasLastMousePosition = true;
         EmitStatusText();
         return;
@@ -990,7 +1002,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     // Selection event.
     if (_juliaMode || _orbitMode || _sliderMode)
     {
-        if (_coordinateSelector->MoveEvent(event))
+        if (_coordinateSelector->MoveEvent(renderEvent))
         {
             _prevKReal = _kReal;
             _prevKImag = _kImaginary;
@@ -1010,7 +1022,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     {
         if (!_fractal->IsRendering() && !_fractalPresenter->IsMoving())
         {
-            if (_selectionRect->MoveEvent(event))
+            if (_selectionRect->MoveEvent(renderEvent))
             {
                 // We do this to make the selection rectangle feel responsive.
                 Refresh(false);
@@ -1020,7 +1032,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     }
 
     // Updates status bar of the MainFrame when the mouse is moved over the fractal canvas.
-    _lastMousePosition = event.GetPosition();
+    _lastMousePosition = renderPosition;
     _hasLastMousePosition = true;
     EmitStatusText();
 }

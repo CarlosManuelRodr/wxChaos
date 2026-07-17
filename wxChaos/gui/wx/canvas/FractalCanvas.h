@@ -93,6 +93,7 @@ class FractalCanvas : public wxSFMLCanvas
     void CreateFractal(FractalType type);
     void CreateScriptFractal(const ScriptData& scriptData);
     void AttachFractalStatusHandler();
+    wxMouseEvent ToRenderMouseEvent(const wxMouseEvent& event) const;
     wxString BuildStatusText() const;
     void EmitStatusText();
     sf::Vector2u GetCurrentRenderSize() const;
