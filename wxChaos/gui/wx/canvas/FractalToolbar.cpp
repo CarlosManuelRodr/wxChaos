@@ -9,7 +9,7 @@ using namespace std;
 FractalToolbar::FractalToolbar(wxWindow* parent)
     : wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_FLAT | wxTB_NODIVIDER)
 {
-    wxToolBarBase::SetToolBitmapSize(wxSize(48, 48));
+    wxToolBarBase::SetToolBitmapSize(GetPlatformToolBitmapSize());
     AddRadioTool(
         ID_CURSOR,
         wxEmptyString,
@@ -121,8 +121,18 @@ void FractalToolbar::SetColorRotationEnabled(const bool enabled)
     UpdateColorRotationTool();
 }
 
+wxSize FractalToolbar::GetPlatformToolBitmapSize()
+{
+#ifdef __WXGTK__
+    return {32, 32};
+#else
+    return {48, 48};
+#endif
+}
+
 wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteractionTool tool)
 {
+    const wxSize bitmapSize = GetPlatformToolBitmapSize();
     const string handIcon = AppTheme::IsDark() ? "hand_dark.svg" : "hand_light.svg";
     const string zoomIcon = AppTheme::IsDark() ? "zoom_dark.svg" : "zoom_light.svg";
     const string pickerIcon = AppTheme::IsDark() ? "picker_dark.svg" : "picker_light.svg";
@@ -131,21 +141,21 @@ wxBitmapBundle FractalToolbar::CreateInteractionToolBitmap(const FractalInteract
     switch (tool)
     {
         case FractalInteractionTool::Hand:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", handIcon}), wxSize(48, 48));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", handIcon}), bitmapSize);
         case FractalInteractionTool::Zoom:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", zoomIcon}), wxSize(48, 48));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", zoomIcon}), bitmapSize);
         case FractalInteractionTool::PointPicker:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", pickerIcon}), wxSize(48, 48));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", pickerIcon}), bitmapSize);
         case FractalInteractionTool::Cursor:
         default:
-            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", cursorIcon}), wxSize(48, 48));
+            return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", cursorIcon}), bitmapSize);
     }
 }
 
 wxBitmapBundle FractalToolbar::CreateInformationToolBitmap()
 {
     const string icon = AppTheme::IsDark() ? "help_dark.svg" : "help_light.svg";
-    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), wxSize(48, 48));
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), GetPlatformToolBitmapSize());
 }
 
 wxBitmapBundle FractalToolbar::CreateColorRotationToolBitmap(const bool active)
@@ -154,7 +164,7 @@ wxBitmapBundle FractalToolbar::CreateColorRotationToolBitmap(const bool active)
         ? (AppTheme::IsDark() ? "stop_dark.svg" : "stop_light.svg")
         : (AppTheme::IsDark() ? "play_dark.svg" : "play_light.svg");
 
-    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), wxSize(48, 48));
+    return wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), GetPlatformToolBitmapSize());
 }
 
 void FractalToolbar::UpdateColorRotationTool()
