@@ -4,6 +4,12 @@
 #include <string>
 #include <SFML/Graphics/Image.hpp>
 
+struct NativeVideoEncodingOptions
+{
+    unsigned int bitRate{};
+    unsigned int quality{50};
+};
+
 /**
 * @class NativeVideoWriter
 * @brief Platform-neutral wrapper around the operating system's video encoder.
@@ -17,8 +23,10 @@ public:
     NativeVideoWriter();
     ~NativeVideoWriter();
 
-    [[nodiscard]] bool Open(const std::string& outputPath, unsigned int width, unsigned int height, unsigned int fps) const;
+    [[nodiscard]] bool Open(const std::string& outputPath, unsigned int width, unsigned int height, unsigned int fps,
+                            const NativeVideoEncodingOptions& options) const;
     [[nodiscard]] bool WriteFrame(const sf::Image& frame) const;
     [[nodiscard]] bool Close() const;
     [[nodiscard]] std::string GetError() const;
+    [[nodiscard]] static unsigned int GetRecommendedBitRate(unsigned int width, unsigned int height, unsigned int fps);
 };

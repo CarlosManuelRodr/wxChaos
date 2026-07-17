@@ -198,7 +198,7 @@ if(WIN32)
         target_link_libraries(wxChaos PRIVATE
                 sfml-main
                 winmm comctl32 rpcrt4 wsock32 opengl32
-                mfplat mfreadwrite mfuuid ole32
+                mfplat mfreadwrite mfuuid ole32 strmiids
         )
 elseif(UNIX AND NOT APPLE)
         target_link_libraries(wxChaos PRIVATE PkgConfig::GSTREAMER PkgConfig::GTK3)
@@ -308,6 +308,7 @@ if(BUILD_TESTING)
             tests/gui/sfml/SelectionRectTests.cpp
             tests/gui/wx/DocumentationLinkActionTests.cpp
             tests/gui/wx/FractalDocumentationTests.cpp
+            tests/gui/wx/NativeVideoWriterTests.cpp
             tests/gui/wx/AppConfigStoreTests.cpp
             tests/gui/wx/AppLocalizationTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
@@ -319,6 +320,7 @@ if(BUILD_TESTING)
             wxChaos/gui/wx/common/AppLocalization.cpp
             wxChaos/gui/wx/docs/DocumentationLinkAction.cpp
             wxChaos/gui/wx/docs/FractalDocumentation.cpp
+            wxChaos/gui/wx/export/NativeVideoWriter.cpp
             wxChaos/gui/wx/common/PanelOptions.cpp
             wxChaos/gui/wx/common/wxGradient.cpp
             wxChaos/scripting/ScriptData.cpp
@@ -348,6 +350,9 @@ if(BUILD_TESTING)
 
     if(WIN32)
         target_compile_definitions(wxChaosGuiTests PRIVATE WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_)
+        target_link_libraries(wxChaosGuiTests PRIVATE mfplat mfreadwrite mfuuid ole32 strmiids)
+    elseif(UNIX AND NOT APPLE)
+        target_link_libraries(wxChaosGuiTests PRIVATE PkgConfig::GSTREAMER)
     endif()
 
     if(MSVC)

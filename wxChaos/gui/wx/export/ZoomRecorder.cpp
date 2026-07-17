@@ -13,6 +13,7 @@
 #include "SFML/System.hpp"
 #include "AppPaths.h"
 #include "common/AppTheme.h"
+#include "export/NativeVideoWriter.h"
 #include "export/ZoomRecorder.h"
 #include "export/ZoomRenderer.h"
 #include "canvas/FractalCanvas.h"
@@ -87,7 +88,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     const auto videoDurationSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _minutesSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 60, 1);
-    _minutesSpinCtrl->SetMaxSize(wxSize(70, -1));
+    SetSpinControlWidth(_minutesSpinCtrl);
     videoDurationSizer->Add(_minutesSpinCtrl, 0, wxRIGHT, 5);
 
     _minutesText = new wxStaticText(_panel, wxID_ANY, _("Minutes"), wxDefaultPosition, wxDefaultSize, 0);
@@ -95,7 +96,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     videoDurationSizer->Add(_minutesText, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
 
     _secondsSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 60, 0);
-    _secondsSpinCtrl->SetMaxSize(wxSize(70, -1));
+    SetSpinControlWidth(_secondsSpinCtrl);
     videoDurationSizer->Add(_secondsSpinCtrl, 0, wxRIGHT, 5);
 
     _secondsText = new wxStaticText(_panel, wxID_ANY, _("Seconds"), wxDefaultPosition, wxDefaultSize, 0);
@@ -110,12 +111,58 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     const auto framerateSize = new wxBoxSizer(wxHORIZONTAL);
 
     _framerateSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 120, 30);
+    SetSpinControlWidth(_framerateSpinCtrl);
     framerateSize->Add(_framerateSpinCtrl, 0, wxRIGHT, 5);
 
     _framesPerSecondText = new wxStaticText(_panel, wxID_ANY, _("Frames Per Second"), wxDefaultPosition, wxDefaultSize, 0);
     _framesPerSecondText->Wrap(-1);
     framerateSize->Add(_framesPerSecondText, 0, wxALIGN_CENTER_VERTICAL);
     optionGridSizer->Add(framerateSize, 1, wxEXPAND);
+
+    optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Resolution:")),
+                         0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
+    const auto resolutionSizer = new wxBoxSizer(wxHORIZONTAL);
+    _widthSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                    wxSP_ARROW_KEYS, 2, 16384, _recordingWidth);
+    SetSpinControlWidth(_widthSpinCtrl);
+    _widthSpinCtrl->SetToolTip(_("Output video width in pixels"));
+    resolutionSizer->Add(_widthSpinCtrl, 0, wxRIGHT, 5);
+    resolutionSizer->Add(new wxStaticText(_panel, wxID_ANY, wxString::FromUTF8("×")),
+                         0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 5);
+    _heightSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                     wxSP_ARROW_KEYS, 2, 16384, _recordingHeight);
+    SetSpinControlWidth(_heightSpinCtrl);
+    _heightSpinCtrl->SetToolTip(_("Output video height in pixels"));
+    resolutionSizer->Add(_heightSpinCtrl, 0, wxRIGHT, 5);
+    resolutionSizer->Add(new wxStaticText(_panel, wxID_ANY, _("pixels")), 0, wxALIGN_CENTER_VERTICAL);
+    optionGridSizer->Add(resolutionSizer, 1, wxEXPAND);
+
+    optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Bitrate:")),
+                         0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
+    const auto bitRateSizer = new wxBoxSizer(wxHORIZONTAL);
+    const unsigned int recommendedBitRate = NativeVideoWriter::GetRecommendedBitRate(
+        static_cast<unsigned int>(_recordingWidth), static_cast<unsigned int>(_recordingHeight),
+        static_cast<unsigned int>(_framerateSpinCtrl->GetValue()));
+    const int recommendedMegabits = static_cast<int>(
+        recommendedBitRate / 1000000U + (recommendedBitRate % 1000000U != 0));
+    _bitRateSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                      wxSP_ARROW_KEYS, 1, 2000, recommendedMegabits);
+    SetSpinControlWidth(_bitRateSpinCtrl);
+    _bitRateSpinCtrl->SetToolTip(_("Higher bitrates preserve more detail but produce larger files"));
+    bitRateSizer->Add(_bitRateSpinCtrl, 0, wxRIGHT, 5);
+    bitRateSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Mbps")), 0, wxALIGN_CENTER_VERTICAL);
+    optionGridSizer->Add(bitRateSizer, 1, wxEXPAND);
+
+    optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Encoding quality:")),
+                         0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
+    const auto qualitySizer = new wxBoxSizer(wxHORIZONTAL);
+    _qualitySpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                      wxSP_ARROW_KEYS, 0, 100, 50);
+    SetSpinControlWidth(_qualitySpinCtrl);
+    _qualitySpinCtrl->SetToolTip(_("Higher quality improves compression but takes longer to encode"));
+    qualitySizer->Add(_qualitySpinCtrl, 0, wxRIGHT, 5);
+    qualitySizer->Add(new wxStaticText(_panel, wxID_ANY, _("%")), 0, wxALIGN_CENTER_VERTICAL);
+    optionGridSizer->Add(qualitySizer, 1, wxEXPAND);
 
     _rotateCheckbox = new wxCheckBox(_panel, wxID_ANY, _("Rotate colors"), wxDefaultPosition, wxDefaultSize, 0);
     optionGridSizer->AddSpacer(1);
@@ -127,6 +174,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
 
     _colorSpeedCtrl = new wxSpinCtrlDouble(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 5, 0.1, 0.1);
     _colorSpeedCtrl->SetDigits(2);
+    SetSpinControlWidth(_colorSpeedCtrl);
     optionGridSizer->Add(_colorSpeedCtrl, 0, wxEXPAND);
 
     optionsSizer->Add(optionGridSizer, 0, wxEXPAND | wxALL, 12);
@@ -139,9 +187,9 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
 
     this->SetSizer(mainSizer);
     mainSizer->Fit(this);
-    const int fittedHeight = this->GetSize().GetHeight();
-    this->wxTopLevelWindowBase::SetMinSize(wxSize(820, fittedHeight));
-    this->SetSize(wxSize(900, fittedHeight));
+    const wxSize fittedSize = this->GetSize();
+    this->wxTopLevelWindowBase::SetMinSize(wxSize(std::max(820, fittedSize.GetWidth()), fittedSize.GetHeight()));
+    this->SetSize(wxSize(std::max(900, fittedSize.GetWidth()), fittedSize.GetHeight()));
     this->wxTopLevelWindowBase::Layout();
     this->Centre(wxBOTH);
 
@@ -160,6 +208,8 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _minutesSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _secondsSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _framerateSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
+    _widthSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnWidthChanged, this);
+    _heightSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnHeightChanged, this);
     _rotateCheckbox->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &ZoomRecorder::OnColorRotate, this);
     _colorSpeedCtrl->Bind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
@@ -181,6 +231,8 @@ ZoomRecorder::~ZoomRecorder()
     _minutesSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _secondsSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _framerateSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
+    _widthSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnWidthChanged, this);
+    _heightSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnHeightChanged, this);
     _rotateCheckbox->Unbind(wxEVT_COMMAND_CHECKBOX_CLICKED, &ZoomRecorder::OnColorRotate, this);
     _colorSpeedCtrl->Unbind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
@@ -268,6 +320,7 @@ void ZoomRecorder::InitializeRenderSizes()
     const sf::Vector2u renderSize = _fractalCanvasPtr->GetRenderSize();
     _recordingWidth = std::max(1, static_cast<int>(renderSize.x));
     _recordingHeight = std::max(1, static_cast<int>(renderSize.y));
+    _recordingAspectRatio = static_cast<double>(_recordingWidth) / _recordingHeight;
 
     const double previewScale = std::min({
         1.0,
@@ -277,6 +330,11 @@ void ZoomRecorder::InitializeRenderSizes()
 
     _previewWidth = std::max(1, static_cast<int>(std::round(_recordingWidth * previewScale)));
     _previewHeight = std::max(1, static_cast<int>(std::round(_recordingHeight * previewScale)));
+}
+
+void ZoomRecorder::SetSpinControlWidth(wxWindow* control) const
+{
+    control->SetMinSize(wxSize(FromDIP(110), -1));
 }
 
 void ZoomRecorder::RenderPreview(const int zoom, const double colorSpeed) const
@@ -349,11 +407,18 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
     // Create ZoomRenderer and execute it.
     const int totalFrames = this->GetTotalFrames();
     const int framerate = _framerateSpinCtrl->GetValue();
+    const int width = _widthSpinCtrl->GetValue();
+    const int height = _heightSpinCtrl->GetValue();
+    const NativeVideoEncodingOptions encodingOptions{
+        static_cast<unsigned int>(_bitRateSpinCtrl->GetValue()) * 1000000U,
+        static_cast<unsigned int>(_qualitySpinCtrl->GetValue())
+    };
     const double colorSpeed = _colorSpeedCtrl->GetValue();
     const std::string outputPath = AppPaths::ToStdPath(outputFile.GetFullPath());
 
     wxProgressDialog progressDialog(_("Generating video..."), _("Please wait until the process is complete."), totalFrames, this);
-    auto* renderer = new ZoomRenderer(outputPath, _fractalCanvasPtr, _recordingWidth, _recordingHeight, totalFrames, framerate, colorSpeed);
+    auto* renderer = new ZoomRenderer(outputPath, _fractalCanvasPtr, width, height, totalFrames, framerate,
+                                      encodingOptions, colorSpeed);
     wxThreadError err = renderer->Create();
 
     if (err != wxTHREAD_NO_ERROR)
@@ -414,4 +479,32 @@ void ZoomRecorder::OnColorRotate(wxCommandEvent&)
 void ZoomRecorder::OnChangeSpeedDbl(wxSpinDoubleEvent&)
 {
     this->RenderPreview();
+}
+
+void ZoomRecorder::OnWidthChanged(wxSpinEvent&)
+{
+    if (_updatingResolution)
+        return;
+
+    _updatingResolution = true;
+    const int requestedHeight = static_cast<int>(std::round(_widthSpinCtrl->GetValue() / _recordingAspectRatio));
+    const int height = std::clamp(requestedHeight, _heightSpinCtrl->GetMin(), _heightSpinCtrl->GetMax());
+    _heightSpinCtrl->SetValue(height);
+    if (height != requestedHeight)
+        _widthSpinCtrl->SetValue(static_cast<int>(std::round(height * _recordingAspectRatio)));
+    _updatingResolution = false;
+}
+
+void ZoomRecorder::OnHeightChanged(wxSpinEvent&)
+{
+    if (_updatingResolution)
+        return;
+
+    _updatingResolution = true;
+    const int requestedWidth = static_cast<int>(std::round(_heightSpinCtrl->GetValue() * _recordingAspectRatio));
+    const int width = std::clamp(requestedWidth, _widthSpinCtrl->GetMin(), _widthSpinCtrl->GetMax());
+    _widthSpinCtrl->SetValue(width);
+    if (width != requestedWidth)
+        _heightSpinCtrl->SetValue(static_cast<int>(std::round(width / _recordingAspectRatio)));
+    _updatingResolution = false;
 }

@@ -36,6 +36,10 @@ class ZoomRecorder : public wxDialog
     wxStaticText* _framerateText;
     wxSpinCtrl* _framerateSpinCtrl;
     wxStaticText* _framesPerSecondText;
+    wxSpinCtrl* _widthSpinCtrl;
+    wxSpinCtrl* _heightSpinCtrl;
+    wxSpinCtrl* _bitRateSpinCtrl;
+    wxSpinCtrl* _qualitySpinCtrl;
     wxCheckBox* _rotateCheckbox;
     wxStaticText* _colorRotateSpeedText;
     wxSpinCtrlDouble* _colorSpeedCtrl;
@@ -46,6 +50,8 @@ class ZoomRecorder : public wxDialog
     int _previewHeight;
     int _recordingWidth;
     int _recordingHeight;
+    double _recordingAspectRatio;
+    bool _updatingResolution{};
 
     PreciseRect _outermostZoom, _innermostZoom;
 
@@ -55,9 +61,12 @@ class ZoomRecorder : public wxDialog
     void OnUpdateTotalFrames(wxSpinEvent&);
     void OnColorRotate(wxCommandEvent&);
     void OnChangeSpeedDbl(wxSpinDoubleEvent&);
+    void OnWidthChanged(wxSpinEvent&);
+    void OnHeightChanged(wxSpinEvent&);
 
     void CreateFractalFactory();
     void InitializeRenderSizes();
+    void SetSpinControlWidth(wxWindow* control) const;
     void RenderPreview(int zoom, double colorSpeed = -1.0) const;
     void RenderPreview();
     void UpdateTotalFrames();
