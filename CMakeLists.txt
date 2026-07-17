@@ -252,6 +252,7 @@ if(BUILD_TESTING)
             tests/core/rendering/HenonMapRendererTests.cpp
             tests/core/rendering/LogisticMapRendererTests.cpp
             tests/core/UserFormulaSymbolicCompilerTests.cpp
+            tests/core/UserFormulaParserTests.cpp
             tests/core/NewtonRootRegistryTests.cpp
             ${WXCHAOS_CORE_TEST_SOURCES}
             wxChaos/gui/wx/common/AppLocalization.cpp

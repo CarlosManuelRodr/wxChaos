@@ -2,6 +2,7 @@
 #include <complex>
 #include <mpParser.h>
 #include "Translation.h"
+#include "UserFormulaParser.h"
 using namespace std;
 
 UserDefinedFixedPoint::UserDefinedFixedPoint(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
@@ -35,6 +36,7 @@ UserDefinedFixedPoint::~UserDefinedFixedPoint()
 }
 void UserDefinedFixedPoint::Render()
 {
+    UserFormulaParser::EnsureInitialized();
     for (unsigned int i=0; i<_threadNumber; i++)
         _myRender[i].SetParams(_minStep);
 
