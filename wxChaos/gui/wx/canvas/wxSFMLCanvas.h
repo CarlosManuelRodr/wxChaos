@@ -10,6 +10,7 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/timer.h>
 #include <SFML/Graphics.hpp>
 
 /**
@@ -45,9 +46,10 @@ protected:
 private:
     bool _sfmlWindowCreated{};
     bool _sfmlRefreshEnabled{true};
+    wxTimer _frameTimer;
 
     virtual void OnUpdate();
-    void OnIdle(wxIdleEvent&);
+    void OnFrameTimer(wxTimerEvent&);
     void OnPaintEvent(wxPaintEvent&);
     void OnEraseBackground(wxEraseEvent&);
 };

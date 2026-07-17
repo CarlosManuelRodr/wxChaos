@@ -4,13 +4,17 @@
 wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                            const long style) : wxControl(parent, id, position, size, style)
 {
+    constexpr int frameIntervalMilliseconds = 1000 / 60;
+
     SetName("wxChaosSfmlCanvas");
     wxWindowBase::SetBackgroundStyle(wxBG_STYLE_PAINT);
     wxWindow::SetDoubleBuffered(false);
 
-    Bind(wxEVT_IDLE, &wxSFMLCanvas::OnIdle, this);
+    _frameTimer.SetOwner(this);
+    Bind(wxEVT_TIMER, &wxSFMLCanvas::OnFrameTimer, this, _frameTimer.GetId());
     Bind(wxEVT_PAINT, &wxSFMLCanvas::OnPaintEvent, this);
     Bind(wxEVT_ERASE_BACKGROUND, &wxSFMLCanvas::OnEraseBackground, this);
+    _frameTimer.Start(frameIntervalMilliseconds);
 }
 
 wxSFMLCanvas::~wxSFMLCanvas() = default;
@@ -18,6 +22,7 @@ wxSFMLCanvas::~wxSFMLCanvas() = default;
 void wxSFMLCanvas::StopSfmlRefresh()
 {
     _sfmlRefreshEnabled = false;
+    _frameTimer.Stop();
 }
 
 bool wxSFMLCanvas::EnsureSfmlWindowCreated()
@@ -61,7 +66,7 @@ void wxSFMLCanvas::OnUpdate() {}
 // ReSharper disable once CppMemberFunctionMayBeStatic
 void wxSFMLCanvas::OnEraseBackground(wxEraseEvent&) {}
 
-void wxSFMLCanvas::OnIdle(wxIdleEvent&)
+void wxSFMLCanvas::OnFrameTimer(wxTimerEvent&)
 {
     if (!_sfmlRefreshEnabled)
         return;
@@ -73,8 +78,7 @@ void wxSFMLCanvas::OnIdle(wxIdleEvent&)
     if (!EnsureSfmlWindowCreated())
         return;
 
-    // Send a paint message when the control is idle, to ensure maximum framerate
-    Refresh();
+    Refresh(false);
 }
 
 void wxSFMLCanvas::OnPaintEvent(wxPaintEvent&)
