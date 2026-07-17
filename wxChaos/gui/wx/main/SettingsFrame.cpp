@@ -76,7 +76,7 @@ wxPanel* SettingsFrame::CreateGeneralPage()
                              std::size(languageChoices), languageChoices);
     _targetFrameRate = new wxSpinCtrl(
         page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS,
-        AppConfig::MinimumTargetFrameRate, std::numeric_limits<int>::max(), 60);
+        AppConfig::MinimumTargetFrameRate, std::numeric_limits<int>::max(), AppConfig::DefaultTargetFrameRate);
 
     sizer->Add(_constantWindow, 0, wxBOTTOM, 8);
     sizer->Add(_commandConsole, 0, wxBOTTOM, 8);

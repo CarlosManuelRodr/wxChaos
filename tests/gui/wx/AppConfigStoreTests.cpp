@@ -117,6 +117,7 @@ TEST_CASE("AppConfigStore persists and clamps target frame rate")
     const AppConfigStore store(path.string());
 
     AppConfig config;
+    CHECK(config.targetFrameRate == 120);
     config.targetFrameRate = 144;
     store.Save(config);
     CHECK(store.Load().targetFrameRate == 144);

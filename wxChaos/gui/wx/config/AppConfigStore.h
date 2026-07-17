@@ -18,6 +18,7 @@
 struct AppConfig
 {
     static constexpr int MinimumTargetFrameRate = 30;
+    static constexpr int DefaultTargetFrameRate = 120;
 
     AppConfig();
 
@@ -42,7 +43,7 @@ struct AppConfig
     bool firstUse = false;
     AppAppearance appearance = AppAppearance::System; ///< Application appearance preference.
     AppLanguage language = AppLanguage::System;       ///< Application language preference.
-    int targetFrameRate = 60;                         ///< Target SFML canvas presentation frequency in hertz.
+    int targetFrameRate = DefaultTargetFrameRate;     ///< Target SFML canvas presentation frequency in hertz.
     int zoomStepPercent = 50;                         ///< Percent zoomed in by one mouse-wheel notch.
     int zoomInertiaMilliseconds = 685;                ///< Temporary zoom preview easing duration.
 };

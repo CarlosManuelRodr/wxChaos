@@ -16,7 +16,7 @@ wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint&
     Bind(wxEVT_TIMER, &wxSFMLCanvas::OnFrameTimer, this, _frameTimer.GetId());
     Bind(wxEVT_PAINT, &wxSFMLCanvas::OnPaintEvent, this);
     Bind(wxEVT_ERASE_BACKGROUND, &wxSFMLCanvas::OnEraseBackground, this);
-    SetTargetFrameRate(60);
+    SetTargetFrameRate(AppConfig::DefaultTargetFrameRate);
 }
 
 wxSFMLCanvas::~wxSFMLCanvas() = default;
