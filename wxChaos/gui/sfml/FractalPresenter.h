@@ -92,9 +92,6 @@ class FractalPresenter
     ///@brief Applies a world-coordinate view to the fractal.
     void ApplyView(const PreciseRect& view);
 
-    ///@brief Returns the default world-coordinate view for the current fractal type at the given size.
-    PreciseRect GetDefaultViewForSize(unsigned int width, unsigned int height) const;
-
     ///@brief Estimates the iteration count that fits the current viewport.
     unsigned int CalculateAutomaticIterations() const;
 
