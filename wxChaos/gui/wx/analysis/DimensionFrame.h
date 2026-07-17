@@ -145,6 +145,9 @@ class DimensionFrame : public wxFrame
     /** @brief Repaints the existing preview with a different box grid. */
     void OnPreviewGridChanged(wxCommandEvent&);
 
+    /** @brief Presents the current occupancy map and paints it immediately. */
+    void DisplayPreviewMap() const;
+
     /** @brief Refreshes the image-resolution warning after a division input changes. */
     void OnDivisionDefinitionChanged(wxCommandEvent&);
 

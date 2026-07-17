@@ -1,5 +1,9 @@
 #include "canvas/wxSFMLCanvas.h"
 #include "common/NativeWindowHandle.h"
+#include "config/AppConfigStore.h"
+
+#include <algorithm>
+#include <cmath>
 
 wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                            const long style) : wxControl(parent, id, position, size, style)
@@ -8,16 +12,27 @@ wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint&
     wxWindowBase::SetBackgroundStyle(wxBG_STYLE_PAINT);
     wxWindow::SetDoubleBuffered(false);
 
-    Bind(wxEVT_IDLE, &wxSFMLCanvas::OnIdle, this);
+    _frameTimer.SetOwner(this);
+    Bind(wxEVT_TIMER, &wxSFMLCanvas::OnFrameTimer, this, _frameTimer.GetId());
     Bind(wxEVT_PAINT, &wxSFMLCanvas::OnPaintEvent, this);
     Bind(wxEVT_ERASE_BACKGROUND, &wxSFMLCanvas::OnEraseBackground, this);
+    SetTargetFrameRate(AppConfig::DefaultTargetFrameRate);
 }
 
 wxSFMLCanvas::~wxSFMLCanvas() = default;
 
+void wxSFMLCanvas::SetTargetFrameRate(const int frameRate)
+{
+    const int normalizedFrameRate = std::max(AppConfig::MinimumTargetFrameRate, frameRate);
+    const int frameIntervalMilliseconds = std::max(
+        1, static_cast<int>(std::round(1000.0 / normalizedFrameRate)));
+    _frameTimer.Start(frameIntervalMilliseconds);
+}
+
 void wxSFMLCanvas::StopSfmlRefresh()
 {
     _sfmlRefreshEnabled = false;
+    _frameTimer.Stop();
 }
 
 bool wxSFMLCanvas::EnsureSfmlWindowCreated()
@@ -43,12 +58,25 @@ bool wxSFMLCanvas::IsSfmlWindowCreated() const
     return _sfmlWindowCreated;
 }
 
+wxPoint wxSFMLCanvas::GetRenderMousePosition(const wxMouseEvent& event) const
+{
+#ifdef __WXGTK__
+    if (_sfmlWindowCreated)
+    {
+        const sf::Vector2i position = sf::Mouse::getPosition(*this);
+        return {position.x, position.y};
+    }
+#endif
+
+    return event.GetPosition();
+}
+
 void wxSFMLCanvas::OnUpdate() {}
 
 // ReSharper disable once CppMemberFunctionMayBeStatic
 void wxSFMLCanvas::OnEraseBackground(wxEraseEvent&) {}
 
-void wxSFMLCanvas::OnIdle(wxIdleEvent&)
+void wxSFMLCanvas::OnFrameTimer(wxTimerEvent&)
 {
     if (!_sfmlRefreshEnabled)
         return;
@@ -60,8 +88,7 @@ void wxSFMLCanvas::OnIdle(wxIdleEvent&)
     if (!EnsureSfmlWindowCreated())
         return;
 
-    // Send a paint message when the control is idle, to ensure maximum framerate
-    Refresh();
+    Refresh(false);
 }
 
 void wxSFMLCanvas::OnPaintEvent(wxPaintEvent&)

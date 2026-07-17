@@ -120,3 +120,24 @@ TEST_CASE("SelectionRect ignores non-left mouse button presses")
     CHECK_FALSE(selection.HandleEvents(MouseMove(50, 60)));
     CHECK_FALSE(selection.HandleEvents(LeftMouseRelease(50, 60)));
 }
+
+TEST_CASE("SelectionRect uses normalized wx event coordinates without applying another offset")
+{
+    SelectionRect selection;
+    wxMouseEvent press(wxEVT_LEFT_DOWN);
+    press.SetPosition(wxPoint(120, 75));
+    wxMouseEvent move(wxEVT_MOTION);
+    move.SetPosition(wxPoint(180, 115));
+    wxMouseEvent release(wxEVT_LEFT_UP);
+    release.SetPosition(wxPoint(180, 115));
+
+    selection.ClickEvent(press);
+    CHECK(selection.MoveEvent(move));
+    CHECK(selection.UnClickEvent(release));
+
+    const sf::IntRect result = selection.GetSelection();
+    CHECK(result.left == 120);
+    CHECK(result.top == 75);
+    CHECK(result.width == 60);
+    CHECK(result.height == 40);
+}

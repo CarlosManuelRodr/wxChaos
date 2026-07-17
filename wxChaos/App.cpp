@@ -6,6 +6,7 @@
 #include "utils/AppPaths.h"
 #include <angelscript.h>
 
+#if wxCHECK_VERSION(3, 3, 0)
 wxApp::Appearance ToWxAppearance(const AppAppearance appearance)
 {
     switch (appearance)
@@ -20,6 +21,7 @@ wxApp::Appearance ToWxAppearance(const AppAppearance appearance)
 
     return wxApp::Appearance::System;
 }
+#endif
 
 /**
 * @class App
@@ -40,8 +42,10 @@ public:
 
         const AppConfig config = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load();
         const AppAppearance appearance = config.appearance;
+#if wxCHECK_VERSION(3, 3, 0)
         if (SetAppearance(ToWxAppearance(appearance)) == AppearanceResult::Failure)
             wxLogWarning("The requested application appearance is not available.");
+#endif
 
         AppLocalization::Initialize(config.language);
         AppTheme::SetAppearance(appearance);
@@ -62,5 +66,15 @@ public:
     }
 };
 
-// wxWidgets entry point.
+// wxWidgets entry point. Linux must select the GUI backend before GTK initializes.
+#if defined(__linux__)
+wxIMPLEMENT_APP_NO_MAIN(App); // NOLINT(*-pro-type-static-cast-downcast)
+
+int main(int argc, char** argv)
+{
+    Platform::ConfigureGuiBackend();
+    return wxEntry(argc, argv);
+}
+#else
 wxIMPLEMENT_APP(App); // NOLINT(*-pro-type-static-cast-downcast)
+#endif

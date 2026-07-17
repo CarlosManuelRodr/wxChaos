@@ -4,6 +4,7 @@
 #include <string>
 #include <wx/thread.h>
 #include "FractalFactory.h"
+#include "export/NativeVideoWriter.h"
 #include "numeric/PreciseRect.h"
 
 class FractalCanvas;
@@ -20,6 +21,7 @@ class ZoomRenderer : public wxThread
     int _framerate;
     int _width;
     int _height;
+    NativeVideoEncodingOptions _encodingOptions;
     double _colorSpeed;
     std::string _outputPath;
     std::string _error;
@@ -32,7 +34,7 @@ protected:
 
 public:
     ZoomRenderer(std::string outputPath, FractalCanvas* fractalCanvas, int width, int height, int totalFrames,
-                 int framerate, double colorSpeed);
+                 int framerate, NativeVideoEncodingOptions encodingOptions, double colorSpeed);
 
     static double GetFrameProgress(int frame, int totalFrames);
     static PreciseRect GetZoomViewport(const PreciseRect& outermostZoom, const PreciseRect& innermostZoom, double progress);

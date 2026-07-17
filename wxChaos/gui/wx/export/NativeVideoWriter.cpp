@@ -3,11 +3,14 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <limits>
 #include <sstream>
 #include <utility>
 
 #ifdef _WIN32
 #include <windows.h>
+#include <codecapi.h>
+#include <icodecapi.h>
 #include <mfapi.h>
 #include <mferror.h>
 #include <mfidl.h>
@@ -19,6 +22,8 @@
 
 class NativeVideoWriter::Impl
 {
+    friend class NativeVideoWriter;
+
     std::string _error;
     unsigned int _sourceWidth{};
     unsigned int _sourceHeight{};
@@ -28,6 +33,7 @@ class NativeVideoWriter::Impl
     uint64_t _frameIndex{};
 
     static unsigned int MakeEvenDimension(unsigned int value);
+    static unsigned int CalculateBitRate(unsigned int width, unsigned int height, unsigned int fps);
 
 #ifdef _WIN32
     IMFSinkWriter* _writer{};
@@ -60,7 +66,8 @@ class NativeVideoWriter::Impl
 #endif
 
 public:
-    bool Open(const std::string& outputPath, unsigned int width, unsigned int height, unsigned int fps);
+    bool Open(const std::string& outputPath, unsigned int width, unsigned int height, unsigned int fps,
+              const NativeVideoEncodingOptions& options);
     bool WriteFrame(const sf::Image& frame);
     bool Close();
     [[nodiscard]] std::string GetError() const { return _error; }
@@ -69,6 +76,14 @@ public:
 unsigned int NativeVideoWriter::Impl::MakeEvenDimension(const unsigned int value)
 {
     return std::max(2U, value - value % 2U);
+}
+
+unsigned int NativeVideoWriter::Impl::CalculateBitRate(const unsigned int width, const unsigned int height,
+                                                       const unsigned int fps)
+{
+    const uint64_t scaledBitRate = static_cast<uint64_t>(width) * height * fps / 2U;
+    return static_cast<unsigned int>(std::clamp<uint64_t>(
+        scaledBitRate, 1000000U, std::numeric_limits<unsigned int>::max()));
 }
 
 #ifdef _WIN32
@@ -115,7 +130,7 @@ void NativeVideoWriter::Impl::ReleaseResources()
 }
 
 bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned int width, const unsigned int height,
-                                  const unsigned int fps)
+                                  const unsigned int fps, const NativeVideoEncodingOptions& options)
 {
     Close();
     _error.clear();
@@ -157,7 +172,7 @@ bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned
     if (SUCCEEDED(result))
         result = outputType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_H264);
     if (SUCCEEDED(result))
-        result = outputType->SetUINT32(MF_MT_AVG_BITRATE, std::max(1000000U, _width * _height * _fps / 2U));
+        result = outputType->SetUINT32(MF_MT_AVG_BITRATE, options.bitRate);
     if (SUCCEEDED(result))
         result = outputType->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
     if (SUCCEEDED(result))
@@ -194,6 +209,20 @@ bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned
     releaseInputType();
     if (FAILED(result))
         return SetError("Configuring input media type", result);
+
+    ICodecAPI* codecApi = nullptr;
+    result = _writer->GetServiceForStream(_streamIndex, GUID_NULL, IID_PPV_ARGS(&codecApi));
+    if (FAILED(result))
+        return SetError("Accessing video encoder settings", result);
+
+    VARIANT quality;
+    VariantInit(&quality);
+    quality.vt = VT_UI4;
+    quality.ulVal = std::min(options.quality, 100U);
+    result = codecApi->SetValue(&CODECAPI_AVEncCommonQualityVsSpeed, &quality);
+    SafeRelease(codecApi);
+    if (FAILED(result))
+        return SetError("Configuring video encoder quality", result);
 
     result = _writer->BeginWriting();
     if (FAILED(result))
@@ -314,7 +343,7 @@ void NativeVideoWriter::Impl::ReleaseResources()
 }
 
 bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned int width, const unsigned int height,
-                                  const unsigned int fps)
+                                  const unsigned int fps, const NativeVideoEncodingOptions& options)
 {
     Close();
     _error.clear();
@@ -357,7 +386,13 @@ bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned
                  "stream-type", GST_APP_STREAM_TYPE_STREAM,
                  nullptr);
     gst_caps_unref(caps);
-    g_object_set(encoder, "tune", 0x00000004, "speed-preset", 1, nullptr);
+    const unsigned int bitRateKbps = options.bitRate / 1000U + (options.bitRate % 1000U != 0);
+    const unsigned int speedPreset = 1U + std::min(options.quality, 100U) * 8U / 100U;
+    g_object_set(encoder,
+                 "bitrate", bitRateKbps,
+                 "tune", 0x00000004,
+                 "speed-preset", speedPreset,
+                 nullptr);
     g_object_set(fileSink, "location", outputPath.c_str(), nullptr);
 
     gst_bin_add_many(GST_BIN(_pipeline), _appSource, videoConvert, encoder, parser, muxer, fileSink, nullptr);
@@ -457,7 +492,8 @@ bool NativeVideoWriter::Impl::SetError(std::string error)
     return false;
 }
 
-bool NativeVideoWriter::Impl::Open(const std::string&, unsigned int, unsigned int, unsigned int)
+bool NativeVideoWriter::Impl::Open(const std::string&, unsigned int, unsigned int, unsigned int,
+                                   const NativeVideoEncodingOptions&)
 {
     return SetError("Zoom video export is not supported on this platform.");
 }
@@ -483,9 +519,13 @@ NativeVideoWriter::~NativeVideoWriter()
 }
 
 bool NativeVideoWriter::Open(const std::string& outputPath, const unsigned int width, const unsigned int height,
-                             const unsigned int fps) const
+                             const unsigned int fps, const NativeVideoEncodingOptions& options) const
 {
-    return _impl->Open(outputPath, width, height, fps);
+    NativeVideoEncodingOptions normalizedOptions = options;
+    if (normalizedOptions.bitRate == 0)
+        normalizedOptions.bitRate = GetRecommendedBitRate(width, height, fps);
+    normalizedOptions.quality = std::min(normalizedOptions.quality, 100U);
+    return _impl->Open(outputPath, width, height, fps, normalizedOptions);
 }
 
 bool NativeVideoWriter::WriteFrame(const sf::Image& frame) const
@@ -501,4 +541,10 @@ bool NativeVideoWriter::Close() const
 std::string NativeVideoWriter::GetError() const
 {
     return _impl->GetError();
+}
+
+unsigned int NativeVideoWriter::GetRecommendedBitRate(const unsigned int width, const unsigned int height,
+                                                      const unsigned int fps)
+{
+    return Impl::CalculateBitRate(Impl::MakeEvenDimension(width), Impl::MakeEvenDimension(height), std::max(1U, fps));
 }

@@ -530,6 +530,36 @@ msgstr "Tasa de fotogramas:"
 msgid "Frames Per Second"
 msgstr "Fotogramas por segundo"
 
+msgid "Resolution:"
+msgstr "Resolución:"
+
+msgid "Output video width in pixels"
+msgstr "Ancho del video de salida en píxeles"
+
+msgid "Output video height in pixels"
+msgstr "Alto del video de salida en píxeles"
+
+msgid "pixels"
+msgstr "píxeles"
+
+msgid "Bitrate:"
+msgstr "Tasa de bits:"
+
+msgid "Higher bitrates preserve more detail but produce larger files"
+msgstr "Las tasas de bits más altas conservan más detalle, pero producen archivos más grandes"
+
+msgid "Mbps"
+msgstr "Mbps"
+
+msgid "Encoding quality:"
+msgstr "Calidad de codificación:"
+
+msgid "Higher quality improves compression but takes longer to encode"
+msgstr "Una calidad más alta mejora la compresión, pero tarda más en codificar"
+
+msgid "%"
+msgstr "%"
+
 msgid "Rotate colors"
 msgstr "Rotar colores"
 

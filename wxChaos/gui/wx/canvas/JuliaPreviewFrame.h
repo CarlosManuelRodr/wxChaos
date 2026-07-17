@@ -147,11 +147,13 @@ public:
     /// @param target Main fractal canvas used as the source of Julia constants.
     /// @param fractalType Julia fractal type to preview.
     /// @param juliaOpt Initial renderer and fractal options.
+    /// @param targetFrameRate Canvas presentation frequency in hertz.
     /// @param zoomStepPercent Mouse-wheel zoom step percentage.
     /// @param zoomInertiaMilliseconds Smooth zoom inertia duration.
     /// @param size Initial preview canvas size.
     JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, FractalType fractalType, const Options& juliaOpt,
-                      int zoomStepPercent, int zoomInertiaMilliseconds, const wxSize& size = wxSize(640, 480));
+                      int targetFrameRate, int zoomStepPercent, int zoomInertiaMilliseconds,
+                      const wxSize& size = wxSize(640, 480));
 
     /// @brief Applies renderer settings from the main fractal.
     /// @param options Renderer options to apply.
@@ -166,4 +168,7 @@ public:
     /// @param zoomStepPercent Mouse-wheel zoom step percentage.
     /// @param zoomInertiaMilliseconds Smooth zoom inertia duration.
     void SetZoomOptions(int zoomStepPercent, int zoomInertiaMilliseconds);
+
+    /** @brief Sets the preview canvas presentation frequency in hertz. */
+    void SetTargetFrameRate(int frameRate);
 };

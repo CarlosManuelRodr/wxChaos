@@ -415,6 +415,36 @@ msgstr ""
 msgid "Frames Per Second"
 msgstr ""
 
+msgid "Resolution:"
+msgstr ""
+
+msgid "Output video width in pixels"
+msgstr ""
+
+msgid "Output video height in pixels"
+msgstr ""
+
+msgid "pixels"
+msgstr ""
+
+msgid "Bitrate:"
+msgstr ""
+
+msgid "Higher bitrates preserve more detail but produce larger files"
+msgstr ""
+
+msgid "Mbps"
+msgstr ""
+
+msgid "Encoding quality:"
+msgstr ""
+
+msgid "Higher quality improves compression but takes longer to encode"
+msgstr ""
+
+msgid "%"
+msgstr ""
+
 msgid "Rotate colors"
 msgstr ""
 

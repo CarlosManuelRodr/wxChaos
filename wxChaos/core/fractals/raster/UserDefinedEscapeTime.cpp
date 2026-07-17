@@ -1,5 +1,6 @@
 #include <mpParser.h>
 #include "UserDefinedEscapeTime.h"
+#include "UserFormulaParser.h"
 using namespace std;
 
 UserDefinedEscapeTime::UserDefinedEscapeTime(const unsigned int width, const unsigned int height) : RasterFractal(width, height)
@@ -28,6 +29,7 @@ UserDefinedEscapeTime::~UserDefinedEscapeTime()
 }
 void UserDefinedEscapeTime::Render()
 {
+    UserFormulaParser::EnsureInitialized();
     this->SetRendererBounds<UserDefinedEscapeTimeRenderer>(_myRender);
 }
 void UserDefinedEscapeTime::SetFormula(FormulaOptions formula)

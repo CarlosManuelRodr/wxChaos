@@ -473,8 +473,14 @@ void DimensionFrame::RefreshPreviewOverlayOnly()
         return;
     }
 
+    DisplayPreviewMap();
+}
+
+void DimensionFrame::DisplayPreviewMap() const
+{
     _previewImage->SetMap(_boxCountMap, _numberOfDivisionsSpinCtrl->GetValue());
-    _previewImage->Refresh();
+    _previewImage->Refresh(false);
+    _previewImage->Update();
 }
 
 void DimensionFrame::UpdateBoxCountMap()
@@ -775,8 +781,7 @@ void DimensionFrame::OnUpdateUI(wxUpdateUIEvent&)
 
                 // Set output image.
                 UpdateBoxCountMap();
-                _previewImage->SetMap(_boxCountMap, _numberOfDivisionsSpinCtrl->GetValue());
-                _previewImage->Refresh();
+                DisplayPreviewMap();
                 _hasPreviewMap = true;
                 _progressBar->SetValue(0);
                 _progressTxt->SetLabel(_("Progress: Done"));

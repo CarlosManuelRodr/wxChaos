@@ -10,6 +10,7 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/timer.h>
 #include <SFML/Graphics.hpp>
 
 /**
@@ -27,6 +28,9 @@ public:
                           const wxSize& size = wxDefaultSize, long style = 0);
     ~wxSFMLCanvas() override;
 
+    /** @brief Sets the target canvas presentation frequency in hertz. */
+    void SetTargetFrameRate(int frameRate);
+
 protected:
     /// @brief Stops idle paint scheduling while the owning window is closing.
     void StopSfmlRefresh();
@@ -39,12 +43,16 @@ protected:
     /// @return true after EnsureSfmlWindowCreated succeeds.
     [[nodiscard]] bool IsSfmlWindowCreated() const;
 
+    /// @brief Converts a wx mouse event position to the embedded SFML window's pixel coordinates.
+    [[nodiscard]] wxPoint GetRenderMousePosition(const wxMouseEvent& event) const;
+
 private:
     bool _sfmlWindowCreated{};
     bool _sfmlRefreshEnabled{true};
+    wxTimer _frameTimer;
 
     virtual void OnUpdate();
-    void OnIdle(wxIdleEvent&);
+    void OnFrameTimer(wxTimerEvent&);
     void OnPaintEvent(wxPaintEvent&);
     void OnEraseBackground(wxEraseEvent&);
 };

@@ -13,17 +13,30 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 # -----------
 # wxWidgets -
 # -----------
-find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base adv html stc richtext webview xml)
-set(WXCHAOS_WX_LIBRARIES
-        wx::core
-        wx::base
-        wx::adv
-        wx::html
-        wx::stc
-        wx::richtext
-        wx::webview
-        wx::xml
-)
+if(WIN32)
+        find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base adv html stc richtext webview xml)
+        set(WXCHAOS_WX_LIBRARIES
+                wx::core
+                wx::base
+                wx::adv
+                wx::html
+                wx::stc
+                wx::richtext
+                wx::webview
+                wx::xml
+        )
+else()
+        find_program(WXCHAOS_WX_CONFIG_EXECUTABLE
+                NAMES wx-config
+                NO_CMAKE_FIND_ROOT_PATH
+                REQUIRED
+        )
+        set(wxWidgets_CONFIG_EXECUTABLE "${WXCHAOS_WX_CONFIG_EXECUTABLE}" CACHE FILEPATH
+                "System wxWidgets configuration executable" FORCE)
+        find_package(wxWidgets REQUIRED COMPONENTS core base adv html stc richtext webview xml)
+        include(${wxWidgets_USE_FILE})
+        set(WXCHAOS_WX_LIBRARIES ${wxWidgets_LIBRARIES})
+endif()
 
 find_package(doctest CONFIG REQUIRED)
 if(WIN32)
@@ -64,6 +77,7 @@ find_package(Threads REQUIRED)
 if(UNIX AND NOT APPLE)
         find_package(PkgConfig REQUIRED)
         pkg_check_modules(GSTREAMER REQUIRED IMPORTED_TARGET gstreamer-1.0 gstreamer-app-1.0)
+        pkg_check_modules(GTK3 REQUIRED IMPORTED_TARGET gtk+-3.0)
 endif()
 
 # -------------------------------------------------------------------
@@ -106,7 +120,7 @@ target_include_directories(wxChaos PRIVATE
 # -------------------------------------------------------------------
 target_compile_definitions(wxChaos PRIVATE
         WXCHAOS_BUILD_TYPE="$<CONFIG>"
-        $<$<CONFIG:Debug>:__WXDEBUG__>
+        $<$<AND:$<BOOL:${WIN32}>,$<CONFIG:Debug>>:__WXDEBUG__>
 )
 
 if(WIN32)
@@ -184,10 +198,10 @@ if(WIN32)
         target_link_libraries(wxChaos PRIVATE
                 sfml-main
                 winmm comctl32 rpcrt4 wsock32 opengl32
-                mfplat mfreadwrite mfuuid ole32
+                mfplat mfreadwrite mfuuid ole32 strmiids
         )
 elseif(UNIX AND NOT APPLE)
-        target_link_libraries(wxChaos PRIVATE PkgConfig::GSTREAMER)
+        target_link_libraries(wxChaos PRIVATE PkgConfig::GSTREAMER PkgConfig::GTK3)
 endif()
 
 # -------------------------------------------------------------------
@@ -238,6 +252,7 @@ if(BUILD_TESTING)
             tests/core/rendering/HenonMapRendererTests.cpp
             tests/core/rendering/LogisticMapRendererTests.cpp
             tests/core/UserFormulaSymbolicCompilerTests.cpp
+            tests/core/UserFormulaParserTests.cpp
             tests/core/NewtonRootRegistryTests.cpp
             ${WXCHAOS_CORE_TEST_SOURCES}
             wxChaos/gui/wx/common/AppLocalization.cpp
@@ -293,6 +308,7 @@ if(BUILD_TESTING)
             tests/gui/sfml/SelectionRectTests.cpp
             tests/gui/wx/DocumentationLinkActionTests.cpp
             tests/gui/wx/FractalDocumentationTests.cpp
+            tests/gui/wx/NativeVideoWriterTests.cpp
             tests/gui/wx/AppConfigStoreTests.cpp
             tests/gui/wx/AppLocalizationTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
@@ -304,6 +320,7 @@ if(BUILD_TESTING)
             wxChaos/gui/wx/common/AppLocalization.cpp
             wxChaos/gui/wx/docs/DocumentationLinkAction.cpp
             wxChaos/gui/wx/docs/FractalDocumentation.cpp
+            wxChaos/gui/wx/export/NativeVideoWriter.cpp
             wxChaos/gui/wx/common/PanelOptions.cpp
             wxChaos/gui/wx/common/wxGradient.cpp
             wxChaos/scripting/ScriptData.cpp
@@ -327,10 +344,15 @@ if(BUILD_TESTING)
             sfml-system
     )
 
-    target_compile_definitions(wxChaosGuiTests PRIVATE $<$<CONFIG:Debug>:__WXDEBUG__>)
+    target_compile_definitions(wxChaosGuiTests PRIVATE
+            $<$<AND:$<BOOL:${WIN32}>,$<CONFIG:Debug>>:__WXDEBUG__>
+    )
 
     if(WIN32)
         target_compile_definitions(wxChaosGuiTests PRIVATE WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_)
+        target_link_libraries(wxChaosGuiTests PRIVATE mfplat mfreadwrite mfuuid ole32 strmiids)
+    elseif(UNIX AND NOT APPLE)
+        target_link_libraries(wxChaosGuiTests PRIVATE PkgConfig::GSTREAMER)
     endif()
 
     if(MSVC)

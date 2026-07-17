@@ -1,6 +1,5 @@
 Improvements to get to a release version:
 - Add a Windows installer.
-- Make it work on Linux again.
 
 Future improvements:
 - Decouple wxWidgets from PanelOptions.

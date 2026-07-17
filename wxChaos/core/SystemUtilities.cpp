@@ -1,6 +1,7 @@
 #include "SystemUtilities.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <thread>
 
 #ifdef _WIN32
@@ -14,6 +15,14 @@ namespace Platform
     int ProcessorCount()
     {
         return static_cast<int>(max_def(1U, std::thread::hardware_concurrency()));
+    }
+
+    void ConfigureGuiBackend()
+    {
+#if defined(__linux__)
+        // SFML 2.6 embeds into an X11 window and cannot consume a Wayland handle.
+        setenv("GDK_BACKEND", "x11", 1);
+#endif
     }
 
     void EnableHighDpiSupport()

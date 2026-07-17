@@ -83,7 +83,7 @@ wxThread::ExitCode ZoomRenderer::Entry()
 
     NativeVideoWriter videoWriter;
     if (!videoWriter.Open(_outputPath, static_cast<unsigned int>(_width), static_cast<unsigned int>(_height),
-                          static_cast<unsigned int>(_framerate)))
+                          static_cast<unsigned int>(_framerate), _encodingOptions))
     {
         _error = videoWriter.GetError();
         return nullptr;
@@ -119,7 +119,8 @@ wxThread::ExitCode ZoomRenderer::Entry()
 }
 
 ZoomRenderer::ZoomRenderer(std::string outputPath, FractalCanvas* fractalCanvas, const int width, const int height,
-                           const int totalFrames, const int framerate, const double colorSpeed) : wxThread(wxTHREAD_JOINABLE)
+                           const int totalFrames, const int framerate, NativeVideoEncodingOptions encodingOptions,
+                           const double colorSpeed) : wxThread(wxTHREAD_JOINABLE)
 {
     _outputPath = std::move(outputPath);
     _fractalCanvasPtr = fractalCanvas;
@@ -128,6 +129,7 @@ ZoomRenderer::ZoomRenderer(std::string outputPath, FractalCanvas* fractalCanvas,
     _framerate = framerate;
     _width = width;
     _height = height;
+    _encodingOptions = encodingOptions;
     _colorSpeed = colorSpeed;
 }
 
