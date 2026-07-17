@@ -46,11 +46,11 @@ class ZoomRecorder : public wxDialog
 
     FractalCanvas* _fractalCanvasPtr;
     FractalFactory _fractalFactory;
-    int _previewWidth;
-    int _previewHeight;
-    int _recordingWidth;
-    int _recordingHeight;
-    double _recordingAspectRatio;
+    int _previewWidth{};
+    int _previewHeight{};
+    int _recordingWidth{};
+    int _recordingHeight{};
+    double _recordingAspectRatio{};
     bool _updatingResolution{};
 
     PreciseRect _outermostZoom, _innermostZoom;
