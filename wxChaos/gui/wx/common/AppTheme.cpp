@@ -56,7 +56,11 @@ bool AppTheme::ResolveDark(const AppAppearance appearance)
         case AppAppearance::Light:
             return false;
         case AppAppearance::System:
+#if wxCHECK_VERSION(3, 3, 0)
             return wxSystemSettings::GetAppearance().AreAppsDark();
+#else
+            return wxSystemSettings::GetAppearance().IsDark();
+#endif
     }
 
     return false;

@@ -13,17 +13,30 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 # -----------
 # wxWidgets -
 # -----------
-find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base adv html stc richtext webview xml)
-set(WXCHAOS_WX_LIBRARIES
-        wx::core
-        wx::base
-        wx::adv
-        wx::html
-        wx::stc
-        wx::richtext
-        wx::webview
-        wx::xml
-)
+if(WIN32)
+        find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base adv html stc richtext webview xml)
+        set(WXCHAOS_WX_LIBRARIES
+                wx::core
+                wx::base
+                wx::adv
+                wx::html
+                wx::stc
+                wx::richtext
+                wx::webview
+                wx::xml
+        )
+else()
+        find_program(WXCHAOS_WX_CONFIG_EXECUTABLE
+                NAMES wx-config
+                NO_CMAKE_FIND_ROOT_PATH
+                REQUIRED
+        )
+        set(wxWidgets_CONFIG_EXECUTABLE "${WXCHAOS_WX_CONFIG_EXECUTABLE}" CACHE FILEPATH
+                "System wxWidgets configuration executable" FORCE)
+        find_package(wxWidgets REQUIRED COMPONENTS core base adv html stc richtext webview xml)
+        include(${wxWidgets_USE_FILE})
+        set(WXCHAOS_WX_LIBRARIES ${wxWidgets_LIBRARIES})
+endif()
 
 find_package(doctest CONFIG REQUIRED)
 if(WIN32)
@@ -64,6 +77,7 @@ find_package(Threads REQUIRED)
 if(UNIX AND NOT APPLE)
         find_package(PkgConfig REQUIRED)
         pkg_check_modules(GSTREAMER REQUIRED IMPORTED_TARGET gstreamer-1.0 gstreamer-app-1.0)
+        pkg_check_modules(GTK3 REQUIRED IMPORTED_TARGET gtk+-3.0)
 endif()
 
 # -------------------------------------------------------------------
@@ -106,7 +120,7 @@ target_include_directories(wxChaos PRIVATE
 # -------------------------------------------------------------------
 target_compile_definitions(wxChaos PRIVATE
         WXCHAOS_BUILD_TYPE="$<CONFIG>"
-        $<$<CONFIG:Debug>:__WXDEBUG__>
+        $<$<AND:$<BOOL:${WIN32}>,$<CONFIG:Debug>>:__WXDEBUG__>
 )
 
 if(WIN32)
@@ -187,7 +201,7 @@ if(WIN32)
                 mfplat mfreadwrite mfuuid ole32
         )
 elseif(UNIX AND NOT APPLE)
-        target_link_libraries(wxChaos PRIVATE PkgConfig::GSTREAMER)
+        target_link_libraries(wxChaos PRIVATE PkgConfig::GSTREAMER PkgConfig::GTK3)
 endif()
 
 # -------------------------------------------------------------------
@@ -327,7 +341,9 @@ if(BUILD_TESTING)
             sfml-system
     )
 
-    target_compile_definitions(wxChaosGuiTests PRIVATE $<$<CONFIG:Debug>:__WXDEBUG__>)
+    target_compile_definitions(wxChaosGuiTests PRIVATE
+            $<$<AND:$<BOOL:${WIN32}>,$<CONFIG:Debug>>:__WXDEBUG__>
+    )
 
     if(WIN32)
         target_compile_definitions(wxChaosGuiTests PRIVATE WIN32 _WINDOWS UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WINSOCKAPI_)

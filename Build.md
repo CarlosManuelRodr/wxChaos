@@ -1,8 +1,9 @@
 # Build
 
 wxChaos builds on Windows and Linux with CMake, Ninja, and vcpkg-managed
-dependencies including wxWidgets and SFML 2.6.2. Linux video export uses the
-system GStreamer development libraries and runtime plugins.
+dependencies including SFML 2.6.2. Linux uses the system wxWidgets, GTK,
+WebKitGTK, and GStreamer libraries so desktop themes and runtime modules remain
+compatible with the host distribution.
 
 These notes describe the known-good setup used by the current development tree.
 
@@ -17,7 +18,7 @@ wxWidgets, and GStreamer:
 sudo apt install \
   build-essential cmake ninja-build pkg-config git curl zip unzip tar \
   autoconf automake autoconf-archive libtool bison flex nasm gettext \
-  libgtk-3-dev libwebkit2gtk-4.1-dev \
+  libwxgtk3.2-dev libwxgtk-webview3.2-dev libgtk-3-dev libwebkit2gtk-4.1-dev \
   libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
   gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
   gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly
