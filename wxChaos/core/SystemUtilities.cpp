@@ -7,11 +7,13 @@
 #include <windows.h>
 #endif
 
+#define max_def(a,b) (((a) > (b)) ? (a) : (b))
+
 namespace Platform
 {
     int ProcessorCount()
     {
-        return static_cast<int>(max(1U, std::thread::hardware_concurrency()));
+        return static_cast<int>(max_def(1U, std::thread::hardware_concurrency()));
     }
 
     void EnableHighDpiSupport()
