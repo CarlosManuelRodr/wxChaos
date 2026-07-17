@@ -1,11 +1,13 @@
 #include "canvas/wxSFMLCanvas.h"
 #include "common/NativeWindowHandle.h"
+#include "config/AppConfigStore.h"
+
+#include <algorithm>
+#include <cmath>
 
 wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint& position, const wxSize& size,
                            const long style) : wxControl(parent, id, position, size, style)
 {
-    constexpr int frameIntervalMilliseconds = 1000 / 60;
-
     SetName("wxChaosSfmlCanvas");
     wxWindowBase::SetBackgroundStyle(wxBG_STYLE_PAINT);
     wxWindow::SetDoubleBuffered(false);
@@ -14,10 +16,18 @@ wxSFMLCanvas::wxSFMLCanvas(wxWindow* parent, const wxWindowID id, const wxPoint&
     Bind(wxEVT_TIMER, &wxSFMLCanvas::OnFrameTimer, this, _frameTimer.GetId());
     Bind(wxEVT_PAINT, &wxSFMLCanvas::OnPaintEvent, this);
     Bind(wxEVT_ERASE_BACKGROUND, &wxSFMLCanvas::OnEraseBackground, this);
-    _frameTimer.Start(frameIntervalMilliseconds);
+    SetTargetFrameRate(60);
 }
 
 wxSFMLCanvas::~wxSFMLCanvas() = default;
+
+void wxSFMLCanvas::SetTargetFrameRate(const int frameRate)
+{
+    const int normalizedFrameRate = std::max(AppConfig::MinimumTargetFrameRate, frameRate);
+    const int frameIntervalMilliseconds = std::max(
+        1, static_cast<int>(std::round(1000.0 / normalizedFrameRate)));
+    _frameTimer.Start(frameIntervalMilliseconds);
+}
 
 void wxSFMLCanvas::StopSfmlRefresh()
 {

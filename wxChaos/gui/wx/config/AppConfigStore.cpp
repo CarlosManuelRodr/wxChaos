@@ -370,6 +370,8 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     config.colorFractal = ReadBool(values, "COLOR_FRACTAL", config.colorFractal);
     config.colorSet = ReadBool(values, "COLOR_SET", config.colorSet);
     config.firstUse = ReadBool(values, "FIRST_USE", config.firstUse);
+    config.targetFrameRate = std::max(
+        AppConfig::MinimumTargetFrameRate, ReadInt(values, "TARGET_FRAME_RATE", config.targetFrameRate));
     config.zoomStepPercent = std::clamp(ReadInt(values, "ZOOM_STEP_PERCENT", config.zoomStepPercent), 1, 95);
     config.zoomInertiaMilliseconds = std::clamp(ReadInt(values, "ZOOM_INERTIA_MS", config.zoomInertiaMilliseconds), 0, 1000);
     if (values.find("APPEARANCE") != values.end())
@@ -452,6 +454,10 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/Color/fractal", &config.colorFractal, config.colorFractal);
     fileConfig.Read("/Color/set", &config.colorSet, config.colorSet);
 
+    intValue = config.targetFrameRate;
+    fileConfig.Read("/General/target_frame_rate", &intValue, config.targetFrameRate);
+    config.targetFrameRate = std::max(AppConfig::MinimumTargetFrameRate, static_cast<int>(intValue));
+
     intValue = config.zoomStepPercent;
     fileConfig.Read("/Zoom/step_percent", &intValue, config.zoomStepPercent);
     config.zoomStepPercent = std::clamp(static_cast<int>(intValue), 1, 95);
@@ -499,6 +505,8 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Color/palette_window", config.colorPaletteWindow);
     fileConfig.Write("/Color/fractal", config.colorFractal);
     fileConfig.Write("/Color/set", config.colorSet);
+    fileConfig.Write("/General/target_frame_rate",
+                     static_cast<long>(std::max(AppConfig::MinimumTargetFrameRate, config.targetFrameRate)));
     fileConfig.Write("/Zoom/step_percent", static_cast<long>(config.zoomStepPercent));
     fileConfig.Write("/Zoom/inertia_ms", static_cast<long>(config.zoomInertiaMilliseconds));
     fileConfig.Write("/General/appearance", ToWxString(AppearanceToString(config.appearance)));

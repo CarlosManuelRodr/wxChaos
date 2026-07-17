@@ -3,6 +3,7 @@
 #include <wx/dcbuffer.h>
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
+#include <limits>
 #include <utility>
 #include "main/SettingsFrame.h"
 #include "AppPaths.h"
@@ -73,6 +74,9 @@ wxPanel* SettingsFrame::CreateGeneralPage()
     _languages = {AppLanguage::System, AppLanguage::English, AppLanguage::Spanish};
     _language = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                              std::size(languageChoices), languageChoices);
+    _targetFrameRate = new wxSpinCtrl(
+        page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS,
+        AppConfig::MinimumTargetFrameRate, std::numeric_limits<int>::max(), 60);
 
     sizer->Add(_constantWindow, 0, wxBOTTOM, 8);
     sizer->Add(_commandConsole, 0, wxBOTTOM, 8);
@@ -87,6 +91,11 @@ wxPanel* SettingsFrame::CreateGeneralPage()
     languageRow->Add(new wxStaticText(page, wxID_ANY, _("Language:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
     languageRow->Add(_language, 0);
     sizer->Add(languageRow, 0, wxBOTTOM, 12);
+    const auto frameRateRow = new wxBoxSizer(wxHORIZONTAL);
+    frameRateRow->Add(new wxStaticText(page, wxID_ANY, _("Target frame rate (Hz):")),
+                      0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
+    frameRateRow->Add(_targetFrameRate, 0);
+    sizer->Add(frameRateRow, 0, wxBOTTOM, 12);
     sizer->Add(new wxStaticText(page, wxID_ANY,
         _("Startup window and language changes take effect the next time wxChaos starts.")), 0, wxTOP, 12);
     page->SetSizer(sizer);
@@ -255,6 +264,7 @@ void SettingsFrame::LoadControls(const AppConfig& config)
     _juliaMode->SetValue(config.juliaMode);
     _colorPaletteWindow->SetValue(config.colorPaletteWindow);
     _firstUse->SetValue(config.firstUse);
+    _targetFrameRate->SetValue(config.targetFrameRate);
     switch (config.appearance)
     {
         case AppAppearance::Light:
@@ -354,6 +364,7 @@ AppConfig SettingsFrame::ReadControls()
     config.colorFractal = _colorFractal->GetValue();
     config.colorSet = _colorSet->GetValue();
     config.firstUse = _firstUse->GetValue();
+    config.targetFrameRate = _targetFrameRate->GetValue();
     config.zoomStepPercent = _zoomStepPercent->GetValue();
     config.zoomInertiaMilliseconds = _zoomInertiaMilliseconds->GetValue();
     switch (_theme->GetSelection())

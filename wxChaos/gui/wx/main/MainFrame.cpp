@@ -768,6 +768,7 @@ void MainFrame::SetUpGUI()
     SetAutomaticIterations(_appConfig.automaticIterations);
     _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(_appConfig.colorFractal);
     _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(_appConfig.colorSet);
+    _fractalCanvas->SetTargetFrameRate(_appConfig.targetFrameRate);
     _fractalCanvas->GetFractalPresenter()->SetZoomOptions(_appConfig.zoomStepPercent, _appConfig.zoomInertiaMilliseconds);
     _fractalSizer->Add(_fractalCanvas, 1, wxEXPAND | wxALL, 0);
     CreateStatusBarControls();
@@ -813,9 +814,13 @@ void MainFrame::ApplyAppConfig(const AppConfig& config)
     SetAutomaticIterations(config.automaticIterations);
     _fractalCanvas->GetFractalPresenter()->SetExteriorColorMode(config.colorFractal);
     _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(config.colorSet);
+    _fractalCanvas->SetTargetFrameRate(config.targetFrameRate);
     _fractalCanvas->GetFractalPresenter()->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
     if (_juliaPreviewFrame != nullptr)
+    {
+        _juliaPreviewFrame->SetTargetFrameRate(config.targetFrameRate);
         _juliaPreviewFrame->SetZoomOptions(config.zoomStepPercent, config.zoomInertiaMilliseconds);
+    }
 }
 // ReSharper disable CppMemberFunctionMayBeConst
 void MainFrame::SetAutomaticIterations(const bool mode)
@@ -1585,6 +1590,7 @@ bool MainFrame::OpenJuliaModeAt(const double real, const double imaginary)
         _fractalCanvas,
         juliaType,
         options,
+        _appConfig.targetFrameRate,
         _appConfig.zoomStepPercent,
         _appConfig.zoomInertiaMilliseconds);
     _juliaPreviewFrame->Show(true);

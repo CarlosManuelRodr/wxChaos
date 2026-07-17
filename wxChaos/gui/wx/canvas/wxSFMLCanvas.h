@@ -28,6 +28,9 @@ public:
                           const wxSize& size = wxDefaultSize, long style = 0);
     ~wxSFMLCanvas() override;
 
+    /** @brief Sets the target canvas presentation frequency in hertz. */
+    void SetTargetFrameRate(int frameRate);
+
 protected:
     /// @brief Stops idle paint scheduling while the owning window is closing.
     void StopSfmlRefresh();

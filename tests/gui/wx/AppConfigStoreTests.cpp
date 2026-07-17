@@ -106,6 +106,28 @@ TEST_CASE("AppConfigStore persists application language")
     std::filesystem::remove(path);
 }
 
+TEST_CASE("AppConfigStore persists and clamps target frame rate")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path =
+        std::filesystem::temp_directory_path() / "wxchaos_frame_rate_config_store_test.ini";
+    std::filesystem::remove(path);
+    const AppConfigStore store(path.string());
+
+    AppConfig config;
+    config.targetFrameRate = 144;
+    store.Save(config);
+    CHECK(store.Load().targetFrameRate == 144);
+
+    config.targetFrameRate = 10;
+    store.Save(config);
+    CHECK(store.Load().targetFrameRate == AppConfig::MinimumTargetFrameRate);
+
+    std::filesystem::remove(path);
+}
+
 TEST_CASE("AppConfigStore falls back to system language for invalid values")
 {
     wxInitializer wx;

@@ -12,7 +12,8 @@
 wxDEFINE_EVENT(wxEVT_JULIA_MODE_CLOSED, wxCommandEvent);
 
 JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, const FractalType fractalType,
-                                     const Options& juliaOpt, const int zoomStepPercent, const int zoomInertiaMilliseconds,
+                                     const Options& juliaOpt, const int targetFrameRate, const int zoomStepPercent,
+                                     const int zoomInertiaMilliseconds,
                                      const wxSize& size)
                                      : wxFrame(parent, wxID_ANY, _("Julia mode"), wxDefaultPosition, wxDefaultSize),
                                        _parentFractalCanvas(target),
@@ -50,6 +51,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
     _previewFractalCanvas->SetMainCanvasOverlaysVisible(false);
     _previewFractalCanvas->GetFractal()->SetOptions(juliaOpt, true);
     _previewFractalCanvas->GetFractal()->SetJuliaMode(true);
+    _previewFractalCanvas->SetTargetFrameRate(targetFrameRate);
     _previewFractalCanvas->GetFractalPresenter()->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
     ApplyRendererOptions(juliaOpt);
 
@@ -293,6 +295,12 @@ void JuliaPreviewFrame::SetZoomOptions(const int zoomStepPercent, const int zoom
 {
     if (_previewFractalCanvas != nullptr)
         _previewFractalCanvas->GetFractalPresenter()->SetZoomOptions(zoomStepPercent, zoomInertiaMilliseconds);
+}
+
+void JuliaPreviewFrame::SetTargetFrameRate(const int frameRate)
+{
+    if (_previewFractalCanvas != nullptr)
+        _previewFractalCanvas->SetTargetFrameRate(frameRate);
 }
 
 // ReSharper disable CppMemberFunctionMayBeConst
