@@ -56,47 +56,47 @@ class DimensionFrame : public wxFrame
     };
 
     wxScrolledWindow* _mainPanel;
-    wxChoice* _fractalChoice;
-    wxSpinCtrlDouble* _minXCtrl;
-    wxSpinCtrlDouble* _maxXCtrl;
-    wxSpinCtrlDouble* _minYCtrl;
-    wxSpinCtrlDouble* _maxYCtrl;
-    wxSpinCtrl* _iterCtrl;
-    wxSpinCtrl* _sizeCtrl;
-    wxButton* _fractalOptionsButton;
-    wxButton* _formulaButton;
-    wxStaticText* _nDivTxt;
-    wxSpinCtrl* _numberOfDivisionsSpinCtrl;
-    wxStaticText* _divTxt;
-    wxNotebook* _divNotebook;
-    wxPanel* _byFunctionPanel;
-    wxStaticText* _funcTxt;
-    wxStaticText* _fDeclTxt;
-    wxTextCtrl* _funcCtrl;
-    wxStaticText* _goesFromTxt;
-    wxSpinCtrl* _xMinSpin;
-    wxStaticText* _goesToTxt;
-    wxSpinCtrl* _xMaxSpin;
-    wxPanel* _byListPanel;
-    wxTextCtrl* _listCtrl;
-    wxButton* _calcButton;
-    wxButton* _closeButton;
-    wxButton* _clearButton;
-    wxStaticLine* _outLine;
-    wxRichTextCtrl* _logCtrl;
-    wxGauge* _progressBar;
-    wxStaticText* _progressTxt;
-    wxButton* _savePreviewButton;
-    wxCheckBox* _dataCheck;
-    wxCheckBox* _dataFitCheck;
-    wxStaticText* _resolutionWarning;
-    wxBitmapButton* _helpButton;
+    wxChoice* _fractalChoice{};
+    wxSpinCtrlDouble* _minXCtrl{};
+    wxSpinCtrlDouble* _maxXCtrl{};
+    wxSpinCtrlDouble* _minYCtrl{};
+    wxSpinCtrlDouble* _maxYCtrl{};
+    wxSpinCtrl* _iterCtrl{};
+    wxSpinCtrl* _sizeCtrl{};
+    wxButton* _fractalOptionsButton{};
+    wxButton* _formulaButton{};
+    wxStaticText* _nDivTxt{};
+    wxSpinCtrl* _numberOfDivisionsSpinCtrl{};
+    wxStaticText* _divTxt{};
+    wxNotebook* _divNotebook{};
+    wxPanel* _byFunctionPanel{};
+    wxStaticText* _funcTxt{};
+    wxStaticText* _fDeclTxt{};
+    wxTextCtrl* _funcCtrl{};
+    wxStaticText* _goesFromTxt{};
+    wxSpinCtrl* _xMinSpin{};
+    wxStaticText* _goesToTxt{};
+    wxSpinCtrl* _xMaxSpin{};
+    wxPanel* _byListPanel{};
+    wxTextCtrl* _listCtrl{};
+    wxButton* _calcButton{};
+    wxButton* _closeButton{};
+    wxButton* _clearButton{};
+    wxStaticLine* _outLine{};
+    wxRichTextCtrl* _logCtrl{};
+    wxGauge* _progressBar{};
+    wxStaticText* _progressTxt{};
+    wxButton* _savePreviewButton{};
+    wxCheckBox* _dataCheck{};
+    wxCheckBox* _dataFitCheck{};
+    wxStaticText* _resolutionWarning{};
+    wxBitmapButton* _helpButton{};
 
     wxDialog* _fractalOptionsDialog{};                      ///< Dialog that hosts the selected fractal's options.
     FractalOptionsPanel* _fractalOptionsPanel{};            ///< Reusable panel bound to the selected fractal.
     Fractal* _target;                                       ///< Fractal currently rendered and measured by the calculator.
     FractalFactory _fractalFactory;                         ///< Owns and creates the currently selected fractal.
-    ImagePanel* _previewImage;                              ///< Displays occupied pixels and the selected box grid.
+    ImagePanel* _previewImage{};                              ///< Displays occupied pixels and the selected box grid.
     Options _myOpt;                                         ///< Last options read from the dimension controls.
     FormulaOptions _userFormula;                            ///< User-defined escape-time formula used by this tool.
     int _threadNumber;                                      ///< Number of parallel box-counting workers.
