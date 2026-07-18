@@ -11,7 +11,7 @@
 #include "AppPaths.h"
 #include "scripting/ScriptEditor.h"
 #include "scripting/ScriptSamplePicker.h"
-#include "global.h"
+#include "Version.h"
 #include "TextUtils.h"
 #include "AngelscriptConfigurationEngine.h"
 #include "ScriptNameDialog.h"

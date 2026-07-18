@@ -10,7 +10,7 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include "AppPaths.h"
-#include "global.h"
+#include "Version.h"
 #include "common/AppTheme.h"
 
 wxDEFINE_EVENT(wxEVT_COMMAND_CONSOLE_CLOSED, wxCommandEvent);

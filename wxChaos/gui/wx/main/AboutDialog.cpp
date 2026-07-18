@@ -17,7 +17,7 @@
 #include <wx/version.h>
 
 #include "AppPaths.h"
-#include "global.h"
+#include "Version.h"
 
 AboutDialog::AboutDialog(wxWindow* parent)
     : wxDialog(parent, wxID_ANY, _("About wxChaos"), wxDefaultPosition, wxDefaultSize,
