@@ -18,41 +18,6 @@ using namespace std;
 
 wxDEFINE_EVENT(wxEVT_SCRIPT_EDITOR_CLOSED, wxCommandEvent);
 
-wxPanel* ScriptEditor::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
-                                           const wxString& darkIcon)
-{
-    const auto header = new wxPanel(parent, wxID_ANY);
-    header->SetBackgroundColour(AppTheme::ControlBackground());
-
-    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
-    const wxSize iconSize(24, 24);
-    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
-    const wxBitmapBundle iconBundle = wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), iconSize);
-    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, iconBundle.GetBitmap(iconSize));
-    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
-    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 12);
-
-    const auto title = new wxStaticText(header, wxID_ANY, text);
-    wxFont titleFont = title->GetFont();
-    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
-    titleFont.SetPointSize(titleFont.GetPointSize() + 1);
-    title->SetFont(titleFont);
-    title->SetBackgroundColour(AppTheme::ControlBackground());
-    title->SetForegroundColour(AppTheme::Foreground());
-    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
-
-    header->SetSizer(headerSizer);
-    header->SetMinSize(wxSize(-1, 52));
-    return header;
-}
-
-void ScriptEditor::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon)
-{
-    const wxSize iconSize(20, 20);
-    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
-    button->SetBitmap(wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), iconSize));
-}
-
 const string newScriptTemplate = R""""(void Configure()
 {
     SetFractalName("New script");
@@ -296,6 +261,41 @@ ScriptEditor::~ScriptEditor()
     _validateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
     _runButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
     _clearConsoleButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClearConsole, this);
+}
+
+wxPanel* ScriptEditor::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
+                                           const wxString& darkIcon)
+{
+    const auto header = new wxPanel(parent, wxID_ANY);
+    header->SetBackgroundColour(AppTheme::ControlBackground());
+
+    const auto headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    const wxSize iconSize(24, 24);
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    const wxBitmapBundle iconBundle = wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), iconSize);
+    const auto iconBitmap = new wxStaticBitmap(header, wxID_ANY, iconBundle.GetBitmap(iconSize));
+    iconBitmap->SetBackgroundColour(AppTheme::ControlBackground());
+    headerSizer->Add(iconBitmap, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM, 12);
+
+    const auto title = new wxStaticText(header, wxID_ANY, text);
+    wxFont titleFont = title->GetFont();
+    titleFont.SetWeight(wxFONTWEIGHT_BOLD);
+    titleFont.SetPointSize(titleFont.GetPointSize() + 1);
+    title->SetFont(titleFont);
+    title->SetBackgroundColour(AppTheme::ControlBackground());
+    title->SetForegroundColour(AppTheme::Foreground());
+    headerSizer->Add(title, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 10);
+
+    header->SetSizer(headerSizer);
+    header->SetMinSize(wxSize(-1, 52));
+    return header;
+}
+
+void ScriptEditor::SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon)
+{
+    const wxSize iconSize(20, 20);
+    const wxString icon = AppTheme::IsDark() ? darkIcon : lightIcon;
+    button->SetBitmap(wxBitmapBundle::FromSVGFile(AppPaths::ResourceFile({"Icons", icon}), iconSize));
 }
 
 void ScriptEditor::SetUpLexer() const
