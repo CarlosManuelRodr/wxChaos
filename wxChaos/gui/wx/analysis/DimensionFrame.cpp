@@ -191,6 +191,10 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _closeButton = new wxButton(_mainPanel, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0);
     buttonBoxSizer->Add(_closeButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
+    _clearButton = new wxButton(_mainPanel, wxID_ANY, _("Clear"), wxDefaultPosition, wxDefaultSize, 0);
+    _clearButton->SetBitmap(CreateIconBundle("erase_light.svg", "erase_dark.svg", wxSize(20, 20)));
+    buttonBoxSizer->Add(_clearButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
     const wxSize actionButtonSize(_calcButton->GetBestSize().GetHeight(), _calcButton->GetBestSize().GetHeight());
     _helpButton = new wxBitmapButton(_mainPanel, wxID_ANY,
                                      CreateIconBundle("help_light.svg", "help_dark.svg", wxSize(18, 18)),
@@ -277,6 +281,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _formulaButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
     _calcButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
+    _clearButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClear, this);
     _savePreviewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnSavePreview, this);
     _helpButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnHelp, this);
     _minXCtrl->Bind(wxEVT_SPINCTRLDOUBLE, &DimensionFrame::OnPreviewDoubleParameterChanged, this);
@@ -304,6 +309,7 @@ DimensionFrame::~DimensionFrame()
     _formulaButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
     _calcButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnCalculate, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClose, this);
+    _clearButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnClear, this);
     _savePreviewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnSavePreview, this);
     _helpButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnHelp, this);
     _minXCtrl->Unbind(wxEVT_SPINCTRLDOUBLE, &DimensionFrame::OnPreviewDoubleParameterChanged, this);
@@ -652,6 +658,10 @@ void DimensionFrame::UpdateResolutionWarning()
 void DimensionFrame::OnClose(wxCommandEvent&)
 {
     this->Close(true);
+}
+void DimensionFrame::OnClear(wxCommandEvent&)
+{
+    _logCtrl->Clear();
 }
 void DimensionFrame::OnCalculate(wxCommandEvent&)
 {

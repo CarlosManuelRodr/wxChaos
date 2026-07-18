@@ -36,7 +36,7 @@
 /** @brief Event posted to the parent when the dimension-calculator window closes. */
 wxDECLARE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
 
-#define DimensionFrameSize wxSize(1200, 1260)
+#define DimensionFrameSize wxSize(1300, 1260)
 
 /**
 * @class DimensionFrame
@@ -51,7 +51,7 @@ class DimensionFrame : public wxFrame
     /** @brief Associates one built-in fractal with known-good box-counting inputs. */
     struct BuiltInDimensionPreset
     {
-        FractalType fractalType;              ///< Fractal to which this preset applies.
+        FractalType fractalType{};            ///< Fractal to which this preset applies.
         DimensionCalculatorPreset preset;     ///< Values copied into the calculator controls.
     };
 
@@ -81,6 +81,7 @@ class DimensionFrame : public wxFrame
     wxTextCtrl* _listCtrl;
     wxButton* _calcButton;
     wxButton* _closeButton;
+    wxButton* _clearButton;
     wxStaticLine* _outLine;
     wxRichTextCtrl* _logCtrl;
     wxGauge* _progressBar;
@@ -156,6 +157,9 @@ class DimensionFrame : public wxFrame
 
     /** @brief Closes the dimension-calculator window. */
     void OnClose(wxCommandEvent&);
+
+    /** @brief Clears the dimension-calculation log. */
+    void OnClear(wxCommandEvent&);
 
     /** @brief Cancels outstanding work and destroys the frame safely. */
     void OnDestroy(wxCloseEvent&);
