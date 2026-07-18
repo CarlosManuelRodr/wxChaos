@@ -1,6 +1,3 @@
-Improvements to get to a release version:
-- Add a Windows installer.
-
 Future improvements:
 - Decouple wxWidgets from PanelOptions.
 - WebASM port.
