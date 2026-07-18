@@ -18,6 +18,8 @@ wxChaos Changelog
     - Added perturbation rendering for Mandelbrot and Julia sets, significantly improving deep-zoom performance.
     - Added supersampling anti-aliasing.
     - Fixed various crashes and stability issues.
+    - Added vector fractals.
+    - Created documentation pages for each fractal.
 
 - Version 1.1.0
 	- Linux: Modified the installing directories according to the Ubuntu store guidelines.
