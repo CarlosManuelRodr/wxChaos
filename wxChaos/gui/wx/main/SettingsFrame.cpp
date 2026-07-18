@@ -70,8 +70,8 @@ wxPanel* SettingsFrame::CreateGeneralPage()
     _firstUse = new wxCheckBox(page, wxID_ANY, _("Show the welcome guide on next launch"));
     const wxString themeChoices[] = {_("System"), _("Light"), _("Dark")};
     _theme = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(themeChoices), themeChoices);
-    const wxString languageChoices[] = {_("System"), _("English"), _("Spanish")};
-    _languages = {AppLanguage::System, AppLanguage::English, AppLanguage::Spanish};
+    const wxString languageChoices[] = {_("System"), _("English"), _("Spanish"), _("Japanese")};
+    _languages = {AppLanguage::System, AppLanguage::English, AppLanguage::Spanish, AppLanguage::Japanese};
     _language = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                              std::size(languageChoices), languageChoices);
     _targetFrameRate = new wxSpinCtrl(

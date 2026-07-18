@@ -8,5 +8,6 @@ enum class AppLanguage
 {
     System,
     English,
-    Spanish
+    Spanish,
+    Japanese
 };

@@ -86,7 +86,7 @@ class SettingsFrame final : public wxDialog
     wxCheckBox* _colorPaletteWindow{};                    ///< Opens renderer options at startup.
     wxCheckBox* _firstUse{};                              ///< Shows the welcome guide on the next launch.
     wxChoice* _theme{};                                   ///< Selects the system, light, or dark application appearance.
-    wxChoice* _language{};                                ///< Selects the system, English, or Spanish application language.
+    wxChoice* _language{};                                ///< Selects the system, English, Spanish, or Japanese application language.
     wxSpinCtrl* _targetFrameRate{};                       ///< Selects the canvas presentation frequency in hertz.
     wxChoice* _fractalType{};                             ///< Selects the default fractal type.
     wxChoice* _colorStyle{};                              ///< Selects the default gradient color style.

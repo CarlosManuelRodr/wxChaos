@@ -95,13 +95,13 @@ TEST_CASE("AppConfigStore persists application language")
 
     AppConfig config;
     CHECK(config.language == AppLanguage::System);
-    config.language = AppLanguage::Spanish;
+    config.language = AppLanguage::Japanese;
 
     const AppConfigStore store(path.string());
     store.Save(config);
 
     const AppConfig loaded = store.Load();
-    CHECK(loaded.language == AppLanguage::Spanish);
+    CHECK(loaded.language == AppLanguage::Japanese);
 
     std::filesystem::remove(path);
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 00:29-0600\n"
+"POT-Creation-Date: 2026-07-18 01:24-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -115,6 +115,14 @@ msgstr ""
 msgid "Sierpinski Triangle (Vector)"
 msgstr ""
 
+msgid ""
+"Dimension calculator log.\n"
+"\n"
+msgstr ""
+
+msgid "Calculate"
+msgstr ""
+
 msgid "Fractal parameters"
 msgstr ""
 
@@ -175,10 +183,10 @@ msgstr ""
 msgid "Plot fitted data"
 msgstr ""
 
-msgid "Calculate"
+msgid "Close"
 msgstr ""
 
-msgid "Close"
+msgid "Clear"
 msgstr ""
 
 msgid "Box count preview"
@@ -194,11 +202,6 @@ msgid "Dimension count log"
 msgstr ""
 
 msgid "Progress: Stopped"
-msgstr ""
-
-msgid ""
-"Dimension calculator log.\n"
-"\n"
 msgstr ""
 
 #, c-format
@@ -704,13 +707,10 @@ msgstr ""
 msgid "Renderer options"
 msgstr ""
 
-msgid "User manual"
+msgid "Open welcome guide"
 msgstr ""
 
 msgid "Keyboard guide"
-msgstr ""
-
-msgid "Open welcome guide"
 msgstr ""
 
 msgid "About"
@@ -785,10 +785,16 @@ msgstr ""
 msgid "Spanish"
 msgstr ""
 
+msgid "Japanese"
+msgstr ""
+
 msgid "Appearance:"
 msgstr ""
 
 msgid "Language:"
+msgstr ""
+
+msgid "Target frame rate (Hz):"
 msgstr ""
 
 msgid ""
@@ -1013,16 +1019,13 @@ msgstr ""
 msgid "Delete script"
 msgstr ""
 
-msgid "Close and reload"
-msgstr ""
-
 msgid "Open scripts directory"
 msgstr ""
 
-msgid "Could not open the scripts directory."
+msgid "Documentation"
 msgstr ""
 
-msgid "Documentation"
+msgid "Close and reload"
 msgstr ""
 
 msgid "Source"
@@ -1040,9 +1043,6 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
-msgid "Clear"
-msgstr ""
-
 msgid "Console"
 msgstr ""
 
@@ -1050,6 +1050,9 @@ msgid "Could not create the script from the selected sample."
 msgstr ""
 
 msgid "This operation cannot be undone. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Could not open the scripts directory."
 msgstr ""
 
 msgid "Scripting guide"
@@ -1070,13 +1073,13 @@ msgstr ""
 msgid "Rendered preview in "
 msgstr ""
 
+msgid " ms."
+msgstr ""
+
 msgid "Could not open the selected script in the main window."
 msgstr ""
 
 msgid "Script opened in the main window."
-msgstr ""
-
-msgid " ms."
 msgstr ""
 
 msgid " script console\n"

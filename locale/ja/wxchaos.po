@@ -1,0 +1,1229 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wxChaos\n"
+"Language: ja\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Real"
+msgstr "実数"
+
+msgid "Imaginary"
+msgstr "虚数"
+
+msgid "Bailout: "
+msgstr "脱出半径: "
+
+msgid " θ1 Bailout"
+msgstr " θ1 脱出判定"
+
+msgid "Value: "
+msgstr "値: "
+
+msgid " θ2 Bailout"
+msgstr " θ2 脱出判定"
+
+msgid "DeltaT: "
+msgstr "DeltaT: "
+
+msgid "m1: "
+msgstr "m1: "
+
+msgid "m2: "
+msgstr "m2: "
+
+msgid "Longitude: "
+msgstr "長さ: "
+
+msgid "Gravity: "
+msgstr "重力: "
+
+msgid " Relative angles"
+msgstr " 相対角度"
+
+msgid " Runge-Kutta"
+msgstr " ルンゲ＝クッタ"
+
+msgid "Min step: "
+msgstr "最小ステップ: "
+
+msgid "Alpha: "
+msgstr "アルファ: "
+
+msgid "Beta: "
+msgstr "ベータ: "
+
+msgid "X0: "
+msgstr "X0: "
+
+msgid "Y0: "
+msgstr "Y0: "
+
+msgid "m: "
+msgstr "m: "
+
+msgid "Seed: "
+msgstr "シード: "
+
+msgid "Stabilize point: "
+msgstr "点を安定化: "
+
+msgid ""
+"Number of buddhabrot\n"
+"random points:"
+msgstr ""
+"Buddhabrot の\n"
+"ランダム点数:"
+
+msgid "x"
+msgstr "x"
+
+msgid "y"
+msgstr "y"
+
+msgid "Convergence epsilon: "
+msgstr "収束イプシロン: "
+
+msgid "Function epsilon: "
+msgstr "関数イプシロン: "
+
+msgid "Derivative epsilon: "
+msgstr "導関数イプシロン: "
+
+msgid "Root tolerance: "
+msgstr "根の許容誤差: "
+
+msgid "Escape radius: "
+msgstr "脱出半径: "
+
+msgid "Koch Snowflake"
+msgstr "コッホ雪片"
+
+msgid "Sierpinski Carpet"
+msgstr "シェルピンスキー・カーペット"
+
+msgid "Sierpinski Triangle (Vector)"
+msgstr "シェルピンスキーの三角形（ベクター）"
+
+msgid ""
+"Dimension calculator log.\n"
+"\n"
+msgstr ""
+"次元計算機のログ。\n"
+"\n"
+
+msgid "Calculate"
+msgstr "計算"
+
+msgid "Fractal parameters"
+msgstr "フラクタルのパラメータ"
+
+msgid "Fractal"
+msgstr "フラクタル"
+
+msgid "Min X"
+msgstr "最小 X"
+
+msgid "Max X"
+msgstr "最大 X"
+
+msgid "Min Y"
+msgstr "最小 Y"
+
+msgid "Max Y"
+msgstr "最大 Y"
+
+msgid "Iterations"
+msgstr "反復回数"
+
+msgid "Square image size (pixels)"
+msgstr "正方形画像サイズ（ピクセル）"
+
+msgid "Configure fractal options"
+msgstr "フラクタルのオプションを設定"
+
+msgid "Edit user formula"
+msgstr "ユーザー式を編集"
+
+msgid "Box-counting parameters"
+msgstr "ボックスカウントのパラメータ"
+
+msgid "Divisions"
+msgstr "分割数"
+
+msgid "Function:"
+msgstr "関数:"
+
+msgid "x goes from"
+msgstr "x の範囲"
+
+msgid "to"
+msgstr "から"
+
+msgid "By function"
+msgstr "関数で指定"
+
+msgid "By list"
+msgstr "リストで指定"
+
+msgid "Plotting"
+msgstr "プロット"
+
+msgid "Plot data"
+msgstr "データをプロット"
+
+msgid "Plot fitted data"
+msgstr "近似データをプロット"
+
+msgid "Close"
+msgstr "閉じる"
+
+msgid "Clear"
+msgstr "クリア"
+
+msgid "Box count preview"
+msgstr "ボックスカウントのプレビュー"
+
+msgid "Number of divisions"
+msgstr "分割数"
+
+msgid "Save preview"
+msgstr "プレビューを保存"
+
+msgid "Dimension count log"
+msgstr "次元計算ログ"
+
+msgid "Progress: Stopped"
+msgstr "進行状況: 停止"
+
+#, c-format
+msgid "The finest boxes are only %.2f pixels wide at the current image size. Increase the square image size or reduce the upper division limit for a more reliable dimension estimate."
+msgstr "現在の画像サイズでは、最小のボックス幅が %.2f ピクセルしかありません。より信頼できる次元推定には、正方形画像サイズを大きくするか、分割数の上限を下げてください。"
+
+msgid "Parser error: "
+msgstr "パーサーエラー: "
+
+msgid "Stop"
+msgstr "停止"
+
+msgid ""
+"Calculation stopped\n"
+msgstr ""
+"計算を停止しました\n"
+
+msgid "Rendering"
+msgstr "レンダリング"
+
+msgid "Progress: "
+msgstr "進行状況: "
+
+msgid "Progress: Done"
+msgstr "進行状況: 完了"
+
+msgid ""
+"Starting box count.\n"
+msgstr ""
+"ボックスカウントを開始します。\n"
+
+msgid ""
+"Epsilon   |   BoxCount.\n"
+msgstr ""
+"イプシロン   |   ボックス数。\n"
+
+msgid "Dimension = "
+msgstr "次元 = "
+
+msgid "Data plot"
+msgstr "データプロット"
+
+msgid "Fitted data plot"
+msgstr "近似データプロット"
+
+msgid ""
+"Done\n"
+msgstr ""
+"完了\n"
+
+msgid "Calculating dimension"
+msgstr "次元を計算中"
+
+msgid "Fractal options"
+msgstr "フラクタルのオプション"
+
+msgid "Select file name"
+msgstr "ファイル名を選択"
+
+msgid "Failed to save image to file: "
+msgstr "画像をファイルに保存できませんでした: "
+
+msgid "Error"
+msgstr "エラー"
+
+msgid "Logistic map"
+msgstr "ロジスティック写像"
+
+msgid "Henon map"
+msgstr "エノン写像"
+
+msgid "Calculate dimension help"
+msgstr "次元計算のヘルプ"
+
+msgid "Calculate Dimension"
+msgstr "次元を計算"
+
+msgid "N = "
+msgstr "N = "
+
+msgid "Epsilon"
+msgstr "イプシロン"
+
+msgid "N"
+msgstr "N"
+
+msgid "Data"
+msgstr "データ"
+
+msgid "Log(1/Epsilon)"
+msgstr "Log(1/Epsilon)"
+
+msgid "Log(N)"
+msgstr "Log(N)"
+
+msgid "Multiprecision: "
+msgstr "多倍精度: "
+
+msgid "-bit"
+msgstr " ビット"
+
+msgid "Julia mode"
+msgstr "Julia モード"
+
+msgid "Toolbar"
+msgstr "ツールバー"
+
+msgid "Open this in main window"
+msgstr "メインウィンドウで開く"
+
+msgid "Show orbit"
+msgstr "軌道を表示"
+
+msgid "Abort"
+msgstr "中止"
+
+msgid "Redraw"
+msgstr "再描画"
+
+msgid "Reset"
+msgstr "リセット"
+
+msgid "Set iterations"
+msgstr "反復回数を設定"
+
+msgid "Increase iterations"
+msgstr "反復回数を増やす"
+
+msgid "Decrease iterations"
+msgstr "反復回数を減らす"
+
+msgid "Automatic iterations"
+msgstr "自動反復回数"
+
+msgid "File"
+msgstr "ファイル"
+
+msgid "View"
+msgstr "表示"
+
+msgid "Iterations: --"
+msgstr "反復回数: --"
+
+msgid "Rendering..."
+msgstr "レンダリング中..."
+
+#, c-format
+msgid "Iterations: %u"
+msgstr "反復回数: %u"
+
+msgid "K real"
+msgstr "K の実部"
+
+msgid "K imaginary"
+msgstr "K の虚部"
+
+msgid "Apply"
+msgstr "適用"
+
+msgid "Back"
+msgstr "戻る"
+
+msgid "Forward"
+msgstr "進む"
+
+msgid "Saving..."
+msgstr "保存中..."
+
+msgid "Rendering: "
+msgstr "レンダリング中: "
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Image export"
+msgstr "画像エクスポート"
+
+msgid "Width"
+msgstr "幅"
+
+msgid "Height"
+msgstr "高さ"
+
+msgid "For very large images, the BMP format is recommended because the exporter is optimized for very large sizes."
+msgstr "非常に大きい画像では、エクスポーターが大サイズ向けに最適化されているため BMP 形式をおすすめします。"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Select size"
+msgstr "サイズを選択"
+
+msgid "Preview"
+msgstr "プレビュー"
+
+msgid "Frame:"
+msgstr "フレーム:"
+
+msgid "Save video"
+msgstr "動画を保存"
+
+msgid "Zoom options"
+msgstr "ズームオプション"
+
+msgid "Video duration:"
+msgstr "動画の長さ:"
+
+msgid "Minutes"
+msgstr "分"
+
+msgid "Seconds"
+msgstr "秒"
+
+msgid "Framerate:"
+msgstr "フレームレート:"
+
+msgid "Frames Per Second"
+msgstr "フレーム/秒"
+
+msgid "Resolution:"
+msgstr "解像度:"
+
+msgid "Output video width in pixels"
+msgstr "出力動画の幅（ピクセル）"
+
+msgid "Output video height in pixels"
+msgstr "出力動画の高さ（ピクセル）"
+
+msgid "pixels"
+msgstr "ピクセル"
+
+msgid "Bitrate:"
+msgstr "ビットレート:"
+
+msgid "Higher bitrates preserve more detail but produce larger files"
+msgstr "ビットレートを高くすると細部を保てますが、ファイルサイズは大きくなります"
+
+msgid "Mbps"
+msgstr "Mbps"
+
+msgid "Encoding quality:"
+msgstr "エンコード品質:"
+
+msgid "Higher quality improves compression but takes longer to encode"
+msgstr "品質を高くすると圧縮は改善しますが、エンコードに時間がかかります"
+
+msgid "%"
+msgstr "%"
+
+msgid "Rotate colors"
+msgstr "色を回転"
+
+msgid "Color rotation speed:"
+msgstr "色回転速度:"
+
+msgid "Save zoom video"
+msgstr "ズーム動画を保存"
+
+msgid "Generating video..."
+msgstr "動画を生成中..."
+
+msgid "Please wait until the process is complete."
+msgstr "処理が完了するまでお待ちください。"
+
+msgid "Couldn't create thread!"
+msgstr "スレッドを作成できませんでした！"
+
+msgid "Couldn't run thread!"
+msgstr "スレッドを実行できませんでした！"
+
+msgid "Could not save video"
+msgstr "動画を保存できませんでした"
+
+msgid "Zoom recorder"
+msgstr "ズームレコーダー"
+
+msgid "Formula"
+msgstr "式"
+
+msgid "Options"
+msgstr "オプション"
+
+msgid "Bailout value:"
+msgstr "脱出値:"
+
+msgid "Fractal type:"
+msgstr "フラクタルの種類:"
+
+msgid "Escape time"
+msgstr "脱出時間"
+
+msgid "Fixed point"
+msgstr "不動点"
+
+msgid "Newton-Raphson"
+msgstr "ニュートン＝ラフソン"
+
+msgid "Julia type"
+msgstr "Julia の種類"
+
+msgid "Ok"
+msgstr "OK"
+
+msgid "Available functions"
+msgstr "使用可能な関数"
+
+msgid "User formula"
+msgstr "ユーザー式"
+
+msgid "Max iter:"
+msgstr "最大反復:"
+
+msgid ""
+"Higher values reveal more detail\n"
+"but increase render time."
+msgstr ""
+"値を大きくすると細部が増えますが、\n"
+"レンダリング時間も長くなります。"
+
+msgid "Iterations must be greater than zero."
+msgstr "反復回数は 0 より大きくする必要があります。"
+
+msgid "Real value"
+msgstr "実数値"
+
+msgid "Imaginary value"
+msgstr "虚数値"
+
+msgid "Enter constant"
+msgstr "定数を入力"
+
+msgid "About wxChaos"
+msgstr "wxChaos について"
+
+msgid "Could not load the About banner"
+msgstr "About バナーを読み込めませんでした"
+
+msgid "An open-source playground for exploring fractals, dynamical systems, and generative mathematics."
+msgstr "フラクタル、力学系、生成的な数学を探索するためのオープンソースの遊び場です。"
+
+msgid "Created by Carlos Manuel Rodriguez Martinez."
+msgstr "Carlos Manuel Rodriguez Martinez によって作成されました。"
+
+msgid "Source code"
+msgstr "ソースコード"
+
+msgid "Contact the author"
+msgstr "作者に連絡"
+
+msgid "Application"
+msgstr "アプリケーション"
+
+msgid "Version"
+msgstr "バージョン"
+
+msgid "Build"
+msgstr "ビルド"
+
+msgid "Compiler"
+msgstr "コンパイラ"
+
+msgid "Built with"
+msgstr "使用ライブラリ"
+
+msgid "Icons by Streamline — "
+msgstr "アイコン: Streamline — "
+
+msgid "On screen icon guides by Brett Post Script — "
+msgstr "画面上のアイコンガイド: Brett Post Script — "
+
+msgid "Link"
+msgstr "リンク"
+
+msgid "Licensed under GPLv3"
+msgstr "GPLv3 ライセンス"
+
+msgid "Welcome to wxChaos"
+msgstr "wxChaos へようこそ"
+
+msgid ""
+"wxChaos does not know how to handle this documentation action:\n"
+msgstr ""
+"wxChaos はこのドキュメント操作を処理できません:\n"
+
+msgid "Documentation action"
+msgstr "ドキュメント操作"
+
+msgid "Mandelbrot"
+msgstr "マンデルブロ集合"
+
+msgid "Mandelbrot Z^m"
+msgstr "マンデルブロ Z^m"
+
+msgid "Mandelbrot (Julia)"
+msgstr "マンデルブロ（Julia）"
+
+msgid "Julia Z^m"
+msgstr "Julia Z^m"
+
+msgid "Newton"
+msgstr "ニュートン"
+
+msgid "Sine (Julia)"
+msgstr "正弦（Julia）"
+
+msgid "Magnet"
+msgstr "マグネット"
+
+msgid "Jellyfish"
+msgstr "クラゲ"
+
+msgid "Manowar"
+msgstr "Manowar"
+
+msgid "Manowar (Julia)"
+msgstr "Manowar（Julia）"
+
+msgid "Sierpinski Triangle"
+msgstr "シェルピンスキーの三角形"
+
+msgid "Fixed Point"
+msgstr "不動点"
+
+msgid "Tricorn"
+msgstr "トリコーン"
+
+msgid "Burning Ship"
+msgstr "Burning Ship"
+
+msgid "Burning Ship (Julia)"
+msgstr "Burning Ship（Julia）"
+
+msgid "Fractory"
+msgstr "Fractory"
+
+msgid "Cell"
+msgstr "セル"
+
+msgid "Logistic Map"
+msgstr "ロジスティック写像"
+
+msgid "Double pendulum"
+msgstr "二重振り子"
+
+msgid "User Formula (Complex)"
+msgstr "ユーザー式（複素数）"
+
+msgid "User Formula (Fixed Point)"
+msgstr "ユーザー式（不動点）"
+
+msgid "User Formula (Newton-Raphson)"
+msgstr "ユーザー式（ニュートン＝ラフソン）"
+
+msgid "Complex"
+msgstr "複素数"
+
+msgid "Numerical method"
+msgstr "数値法"
+
+msgid "Physics"
+msgstr "物理"
+
+msgid "Other"
+msgstr "その他"
+
+msgid "Manual"
+msgstr "手動"
+
+msgid "Slider"
+msgstr "スライダー"
+
+msgid "Enter Julia constant"
+msgstr "Julia 定数を入力"
+
+msgid "Save image"
+msgstr "画像を保存"
+
+msgid "Settings..."
+msgstr "設定..."
+
+msgid "Quit"
+msgstr "終了"
+
+msgid "Script editor"
+msgstr "スクリプトエディター"
+
+msgid "Create new fractals with a scripting language."
+msgstr "スクリプト言語で新しいフラクタルを作成します。"
+
+msgid "Command console"
+msgstr "コマンドコンソール"
+
+msgid "Control and inspect the current fractal with commands."
+msgstr "コマンドで現在のフラクタルを制御・確認します。"
+
+msgid "Record a video zoom."
+msgstr "ズーム動画を録画します。"
+
+msgid "Dimension calculator"
+msgstr "次元計算機"
+
+msgid "Calculate fractal dimension."
+msgstr "フラクタル次元を計算します。"
+
+msgid "Enter user formula"
+msgstr "ユーザー式を入力"
+
+msgid "Renderer options"
+msgstr "レンダラーオプション"
+
+msgid "Open welcome guide"
+msgstr "ようこそガイドを開く"
+
+msgid "Keyboard guide"
+msgstr "キーボードガイド"
+
+msgid "About"
+msgstr "バージョン情報"
+
+msgid "Renderer"
+msgstr "レンダラー"
+
+msgid "Tools"
+msgstr "ツール"
+
+msgid "Help"
+msgstr "ヘルプ"
+
+msgid "You need to restart wxChaos for appearance and language changes to take effect."
+msgstr "外観と言語の変更を有効にするには wxChaos を再起動する必要があります。"
+
+msgid "Restart required"
+msgstr "再起動が必要です"
+
+msgid "To use the zoom recorder you need to first perform a zoom on the main window."
+msgstr "ズームレコーダーを使うには、先にメインウィンドウでズームを実行してください。"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "General"
+msgstr "一般"
+
+msgid "Presets"
+msgstr "プリセット"
+
+msgid "Zoom"
+msgstr "ズーム"
+
+msgid "Restore defaults"
+msgstr "既定値に戻す"
+
+msgid "Startup"
+msgstr "起動"
+
+msgid "Open the Julia constant window"
+msgstr "Julia 定数ウィンドウを開く"
+
+msgid "Open the command console"
+msgstr "コマンドコンソールを開く"
+
+msgid "Open Julia mode"
+msgstr "Julia モードを開く"
+
+msgid "Open renderer options"
+msgstr "レンダラーオプションを開く"
+
+msgid "Show the welcome guide on next launch"
+msgstr "次回起動時にようこそガイドを表示"
+
+msgid "System"
+msgstr "システム"
+
+msgid "Light"
+msgstr "ライト"
+
+msgid "Dark"
+msgstr "ダーク"
+
+msgid "English"
+msgstr "英語"
+
+msgid "Spanish"
+msgstr "スペイン語"
+
+msgid "Japanese"
+msgstr "日本語"
+
+msgid "Appearance:"
+msgstr "外観:"
+
+msgid "Language:"
+msgstr "言語:"
+
+msgid "Target frame rate (Hz):"
+msgstr "目標フレームレート（Hz）:"
+
+msgid "Startup window and language changes take effect the next time wxChaos starts."
+msgstr "起動時ウィンドウと言語の変更は、次に wxChaos を起動したときに有効になります。"
+
+msgid "Julia"
+msgstr "Julia"
+
+msgid "Sine"
+msgstr "正弦"
+
+msgid "Manowar Julia"
+msgstr "Manowar Julia"
+
+msgid "Fixed Point: sin(z)"
+msgstr "不動点: sin(z)"
+
+msgid "Fixed Point: cos(z)"
+msgstr "不動点: cos(z)"
+
+msgid "Fixed Point: tan(z)"
+msgstr "不動点: tan(z)"
+
+msgid "Fixed Point: z^2"
+msgstr "不動点: z^2"
+
+msgid "Burning Ship Julia"
+msgstr "Burning Ship Julia"
+
+msgid "Henon Map"
+msgstr "エノン写像"
+
+msgid "Double Pendulum"
+msgstr "二重振り子"
+
+msgid "User Defined"
+msgstr "ユーザー定義"
+
+msgid "User Defined Fixed Point"
+msgstr "ユーザー定義の不動点"
+
+msgid "User Defined Newton-Raphson"
+msgstr "ユーザー定義のニュートン＝ラフソン"
+
+msgid "Default fractal:"
+msgstr "既定のフラクタル:"
+
+msgid "Palette size:"
+msgstr "パレットサイズ:"
+
+msgid "Color cycle length:"
+msgstr "色周期の長さ:"
+
+msgid "Anti-aliasing:"
+msgstr "アンチエイリアス:"
+
+msgid "Off"
+msgstr "オフ"
+
+msgid "Color style:"
+msgstr "配色スタイル:"
+
+msgid "Gradient preview:"
+msgstr "グラデーションのプレビュー:"
+
+msgid "Edit..."
+msgstr "編集..."
+
+msgid "Color points outside the fractal set"
+msgstr "フラクタル集合の外側の点を着色"
+
+msgid "Color points inside the fractal set"
+msgstr "フラクタル集合の内側の点を着色"
+
+msgid "Wheel zoom step (%):"
+msgstr "ホイールズーム幅（%）:"
+
+msgid "Preview inertia (ms):"
+msgstr "プレビュー慣性（ms）:"
+
+msgid "Algorithm"
+msgstr "アルゴリズム"
+
+msgid "Color algorithm"
+msgstr "カラーアルゴリズム"
+
+msgid "Rendering precision"
+msgstr "レンダリング精度"
+
+msgid "Anti-aliasing"
+msgstr "アンチエイリアス"
+
+msgid "Increasing this value makes the image clearer, but slower to render."
+msgstr "この値を上げると画像は鮮明になりますが、レンダリングは遅くなります。"
+
+msgid "Note: To make this change permanent, configure it on File -> Settings -> Rendering."
+msgstr "注: この変更を恒久的にするには、ファイル -> 設定 -> レンダリングで設定してください。"
+
+msgid "Render features"
+msgstr "レンダリング機能"
+
+msgid "Relative colors"
+msgstr "相対カラー"
+
+msgid "Orbit traps"
+msgstr "軌道トラップ"
+
+msgid "Smooth render"
+msgstr "スムーズレンダリング"
+
+msgid "Color options"
+msgstr "カラーオプション"
+
+msgid "Gradient"
+msgstr "グラデーション"
+
+msgid "Color styles:"
+msgstr "配色スタイル:"
+
+msgid "Change gradient"
+msgstr "グラデーションを変更"
+
+msgid "Set and exterior colors"
+msgstr "集合と外部の色"
+
+msgid "Fractal color (external color)"
+msgstr "フラクタルの色（外部色）"
+
+msgid "Set color (internal color)"
+msgstr "集合の色（内部色）"
+
+msgid "Interior set color:"
+msgstr "集合内部の色:"
+
+msgid "Variation and rotation"
+msgstr "変化と回転"
+
+msgid "Color variation"
+msgstr "色の変化"
+
+msgid "Color rotation speed"
+msgstr "色回転速度"
+
+msgid "Advanced color options"
+msgstr "詳細カラーオプション"
+
+msgid "Palette mapping:"
+msgstr "パレットマッピング:"
+
+msgid "Linear"
+msgstr "線形"
+
+msgid "Exponentially mapped"
+msgstr "指数マッピング"
+
+msgid "Exponent:"
+msgstr "指数:"
+
+msgid "N/A"
+msgstr "該当なし"
+
+msgid "Adaptative"
+msgstr "適応"
+
+msgid "Precise"
+msgstr "高精度"
+
+msgid "Fast"
+msgstr "高速"
+
+msgid "Gaussian integer"
+msgstr "ガウス整数"
+
+msgid "Escape angle"
+msgstr "脱出角"
+
+msgid "Triangle inequality"
+msgstr "三角不等式"
+
+msgid "Chaotic map"
+msgstr "カオス写像"
+
+msgid "Convergence test"
+msgstr "収束テスト"
+
+msgid "Buddhabrot"
+msgstr "Buddhabrot"
+
+msgid "Special algorithm"
+msgstr "特殊アルゴリズム"
+
+msgid "Gradient editor"
+msgstr "グラデーションエディター"
+
+msgid "Stops"
+msgstr "停止点"
+
+msgid "Color: "
+msgstr "色: "
+
+msgid "Erase"
+msgstr "消去"
+
+msgid "User script editor"
+msgstr "ユーザースクリプトエディター"
+
+msgid "Scripts"
+msgstr "スクリプト"
+
+msgid "Save Changes"
+msgstr "変更を保存"
+
+msgid "New script"
+msgstr "新規スクリプト"
+
+msgid "New from sample"
+msgstr "サンプルから新規作成"
+
+msgid "Delete script"
+msgstr "スクリプトを削除"
+
+msgid "Open scripts directory"
+msgstr "スクリプトディレクトリを開く"
+
+msgid "Documentation"
+msgstr "ドキュメント"
+
+msgid "Close and reload"
+msgstr "閉じて再読み込み"
+
+msgid "Source"
+msgstr "ソース"
+
+msgid "Debugger"
+msgstr "デバッガー"
+
+msgid "Actions"
+msgstr "アクション"
+
+msgid "Validate"
+msgstr "検証"
+
+msgid "Run"
+msgstr "実行"
+
+msgid "Console"
+msgstr "コンソール"
+
+msgid "Could not create the script from the selected sample."
+msgstr "選択したサンプルからスクリプトを作成できませんでした。"
+
+msgid "This operation cannot be undone. Are you sure you want to continue?"
+msgstr "この操作は元に戻せません。続行してもよろしいですか？"
+
+msgid "Could not open the scripts directory."
+msgstr "スクリプトディレクトリを開けませんでした。"
+
+msgid "Scripting guide"
+msgstr "スクリプトガイド"
+
+msgid "No script selected."
+msgstr "スクリプトが選択されていません。"
+
+msgid "Compile error: "
+msgstr "コンパイルエラー: "
+
+msgid "Execution error: "
+msgstr "実行エラー: "
+
+msgid "No errors found."
+msgstr "エラーは見つかりませんでした。"
+
+msgid "Rendered preview in "
+msgstr "プレビューをレンダリングしました: "
+
+msgid " ms."
+msgstr " ms。"
+
+msgid "Could not open the selected script in the main window."
+msgstr "選択したスクリプトをメインウィンドウで開けませんでした。"
+
+msgid "Script opened in the main window."
+msgstr "スクリプトをメインウィンドウで開きました。"
+
+msgid ""
+" script console\n"
+msgstr ""
+" スクリプトコンソール\n"
+
+msgid ""
+"Validate, preview, or run a script to inspect results.\n"
+msgstr ""
+"検証、プレビュー、または実行して結果を確認してください。\n"
+
+msgid ""
+"Ready.\n"
+msgstr ""
+"準備完了。\n"
+
+msgid "  OK     "
+msgstr "  OK     "
+
+msgid "  ERROR  "
+msgstr "  エラー  "
+
+msgid "Create a new script"
+msgstr "新しいスクリプトを作成"
+
+msgid "Set a name for the script"
+msgstr "スクリプト名を設定"
+
+msgid "Script name: "
+msgstr "スクリプト名: "
+
+msgid "Select a sample script"
+msgstr "サンプルスクリプトを選択"
+
+msgid "Sample scripts"
+msgstr "サンプルスクリプト"
+
+msgid "Select"
+msgstr "選択"
+
+msgid "No sample scripts are available."
+msgstr "利用可能なサンプルスクリプトはありません。"
+
+msgid "Script samples"
+msgstr "スクリプトサンプル"
+
+msgid ""
+" command console\n"
+msgstr ""
+" コマンドコンソール\n"
+
+msgid ""
+"Type Help() for commands. Named and positional arguments are supported.\n"
+"\n"
+msgstr ""
+"コマンド一覧を見るには Help() と入力してください。名前付き引数と位置引数に対応しています。\n"
+"\n"
+
+msgid "Error:"
+msgstr "エラー:"
+
+msgid "Console cleared."
+msgstr "コンソールをクリアしました。"
+
+msgid "Scripts reloaded."
+msgstr "スクリプトを再読み込みしました。"
+
+msgid "Redraw requested."
+msgstr "再描画を要求しました。"
+
+msgid "Nothing to abort."
+msgstr "中止するものはありません。"
+
+msgid "Render aborted."
+msgstr "レンダリングを中止しました。"
+
+msgid "Figures deleted."
+msgstr "図形を削除しました。"
+
+#, c-format
+msgid "Maximum iterations: %u"
+msgstr "最大反復回数: %u"
+
+msgid "Error: iterations must be greater than zero."
+msgstr "エラー: 反復回数は 0 より大きくする必要があります。"
+
+#, c-format
+msgid "Maximum iterations set to %u."
+msgstr "最大反復回数を %u に設定しました。"
+
+msgid "Error: radius must be greater than zero."
+msgstr "エラー: 半径は 0 より大きくする必要があります。"
+
+msgid "Filled circle drawn."
+msgstr "塗りつぶし円を描画しました。"
+
+msgid "Circle drawn."
+msgstr "円を描画しました。"
+
+msgid "Line drawn."
+msgstr "線を描画しました。"
+
+msgid "View focused."
+msgstr "ビューにフォーカスしました。"
+
+msgid "Error: Julia mode is unavailable for the current fractal."
+msgstr "エラー: 現在のフラクタルでは Julia モードを使用できません。"
+
+msgid "Julia mode opened or updated at the requested point."
+msgstr "指定した点で Julia モードを開くか更新しました。"
+
+msgid "Error: minimum boundaries must be smaller than maximum boundaries."
+msgstr "エラー: 最小境界は最大境界より小さくする必要があります。"
+
+msgid "View boundaries updated."
+msgstr "ビュー境界を更新しました。"
+
+msgid "Error: unknown command. Type Help() for the command list."
+msgstr "エラー: 不明なコマンドです。コマンド一覧を見るには Help() と入力してください。"
+
+msgid "Error: expected Command(argument=value, ...)."
+msgstr "エラー: Command(argument=value, ...) の形式が必要です。"
+
+msgid "Error: empty argument."
+msgstr "エラー: 空の引数です。"
+
+msgid "Error: invalid named argument."
+msgstr "エラー: 無効な名前付き引数です。"
+
+msgid "Error: duplicate argument '"
+msgstr "エラー: 重複した引数 '"
+
+msgid "Error: missing numeric argument."
+msgstr "エラー: 数値引数がありません。"
+
+msgid "Error: '"
+msgstr "エラー: '"
+
+msgid "' is not a number."
+msgstr "' は数値ではありません。"
+
+msgid "Error: missing integer argument."
+msgstr "エラー: 整数引数がありません。"
+
+msgid "' is not a valid non-negative integer."
+msgstr "' は有効な非負整数ではありません。"
+
+msgid "Error: positional colors require red, green, and blue values."
+msgstr "エラー: 位置指定の色には赤、緑、青の値が必要です。"
+
+msgid "Error: color components must be integers between 0 and 255."
+msgstr "エラー: 色成分は 0 から 255 までの整数である必要があります。"
+
+msgid "' is not a boolean. Use true or false."
+msgstr "' は真偽値ではありません。true または false を使用してください。"

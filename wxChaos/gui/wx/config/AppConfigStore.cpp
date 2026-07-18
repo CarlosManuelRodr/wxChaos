@@ -238,7 +238,8 @@ const std::map<std::string, AppLanguage>& AppConfigStore::Languages()
     static const std::map<std::string, AppLanguage> languages = {
         { "System", AppLanguage::System },
         { "English", AppLanguage::English },
-        { "Spanish", AppLanguage::Spanish }
+        { "Spanish", AppLanguage::Spanish },
+        { "Japanese", AppLanguage::Japanese }
     };
 
     return languages;

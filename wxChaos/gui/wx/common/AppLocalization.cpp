@@ -13,6 +13,8 @@ AppLanguage AppLocalization::ResolveLanguage(const AppLanguage language)
     const wxLanguageInfo* info = wxLocale::GetLanguageInfo(systemLanguage);
     if (info != nullptr && info->CanonicalName.StartsWith("es"))
         return AppLanguage::Spanish;
+    if (info != nullptr && info->CanonicalName.StartsWith("ja"))
+        return AppLanguage::Japanese;
 
     return AppLanguage::English;
 }
@@ -21,6 +23,8 @@ int AppLocalization::ToWxLanguage(const AppLanguage language)
 {
     switch (ResolveLanguage(language))
     {
+        case AppLanguage::Japanese:
+            return wxLANGUAGE_JAPANESE;
         case AppLanguage::Spanish:
             return wxLANGUAGE_SPANISH;
         case AppLanguage::English:
@@ -36,6 +40,7 @@ wxString AppLocalization::DocumentationLanguageCode(const AppLanguage language)
     {
         case AppLanguage::Spanish:
             return "es";
+        case AppLanguage::Japanese:
         case AppLanguage::English:
         case AppLanguage::System:
         default:
