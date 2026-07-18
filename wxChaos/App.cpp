@@ -36,9 +36,13 @@ class App : public wxApp
 public:
     bool OnInit() override
     {
+        SetAppName("wxChaos");
         Platform::EnableHighDpiSupport();
         if (asPrepareMultithread() < 0)
             return false;
+
+        if (!AppPaths::InitializeUserData())
+            wxLogWarning("Could not initialize the wxChaos user data directory.");
 
         const AppConfig config = AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).Load();
         const AppAppearance appearance = config.appearance;

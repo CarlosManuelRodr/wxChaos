@@ -9,4 +9,4 @@
 
 #pragma once
 
-constexpr char APP_VERSION[] = "2.0.0";
+#include "Version.h"

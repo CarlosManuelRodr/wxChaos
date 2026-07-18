@@ -6,7 +6,29 @@
 
 namespace AppPaths
 {
+    class UserDataInitializer
+    {
+    public:
+        UserDataInitializer(wxString installedDataDir, wxString userDataDir, wxString localDataDir);
+
+        bool Initialize() const;
+
+    private:
+        bool CopyLegacyConfig() const;
+        bool SeedScripts() const;
+        bool CopyScriptsFrom(const wxString& sourceDirectory, const wxString& destinationDirectory) const;
+
+        wxString _installedDataDir;
+        wxString _userDataDir;
+        wxString _localDataDir;
+    };
+
     wxString ExecutableDir();
+    wxString UserDataDir();
+    wxString LocalUserDataDir();
+    bool IsPortable();
+    bool InitializeUserData();
+
     wxString AppFile(const std::vector<wxString>& pathParts);
     std::string AppFileStd(const std::vector<wxString>& pathParts);
     wxString AppDirectory(const std::vector<wxString>& pathParts);

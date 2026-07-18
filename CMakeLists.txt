@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.28)
-project(wxChaos LANGUAGES CXX)
+project(wxChaos VERSION 2.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(WXCHAOS_GENERATED_DIR "${CMAKE_BINARY_DIR}/generated")
+file(MAKE_DIRECTORY "${WXCHAOS_GENERATED_DIR}")
+configure_file(wxChaos/utils/Version.h.in "${WXCHAOS_GENERATED_DIR}/Version.h" @ONLY)
 
 # Use static linking if needed
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
@@ -98,10 +101,16 @@ add_executable(wxChaos WIN32 ${SRC_FILES}
         wxChaos/gui/wx/scripting/ScriptNameDialog.h
 )
 
+if(WIN32)
+        configure_file(wxChaos/windows/wxChaos.rc.in "${WXCHAOS_GENERATED_DIR}/wxChaos.rc" @ONLY)
+        target_sources(wxChaos PRIVATE "${WXCHAOS_GENERATED_DIR}/wxChaos.rc")
+endif()
+
 # -------------------------------------------------------------------
 # Include Directories (use target-based)
 # -------------------------------------------------------------------
 target_include_directories(wxChaos PRIVATE
+        "${WXCHAOS_GENERATED_DIR}"
         ${SYMENGINE_INCLUDE_DIRS}
         ${MPFR_INCLUDE_DIR}
         ${SFML_INCLUDE_DIRS}
@@ -222,11 +231,61 @@ endif()
 # -------------------------------------------------------------------
 add_custom_command(
         TARGET wxChaos POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E rm -f "$<TARGET_FILE_DIR:wxChaos>/portable.flag"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/app_resources/"
         "$<TARGET_FILE_DIR:wxChaos>/"
         COMMENT "Copying application resources..."
 )
+
+option(WXCHAOS_PORTABLE_BUILD "Store mutable user data next to the executable" OFF)
+if(WXCHAOS_PORTABLE_BUILD)
+        add_custom_command(
+                TARGET wxChaos POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E touch "$<TARGET_FILE_DIR:wxChaos>/portable.flag"
+                COMMENT "Enabling portable user-data mode..."
+        )
+endif()
+
+# -------------------------------------------------------------------
+# Windows installer staging manifest
+# -------------------------------------------------------------------
+if(WIN32)
+        set(WXCHAOS_RUNTIME_DEPENDENCY_DIRS)
+        if(DEFINED VCPKG_INSTALLED_DIR AND DEFINED VCPKG_TARGET_TRIPLET)
+                list(APPEND WXCHAOS_RUNTIME_DEPENDENCY_DIRS
+                        "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin"
+                )
+        endif()
+
+        install(TARGETS wxChaos
+                RUNTIME_DEPENDENCIES
+                DIRECTORIES ${WXCHAOS_RUNTIME_DEPENDENCY_DIRS}
+                PRE_EXCLUDE_REGEXES
+                        "api-ms-.*"
+                        "ext-ms-.*"
+                POST_EXCLUDE_REGEXES
+                        ".*[Ww][Ii][Nn][Dd][Oo][Ww][Ss][/\\\\][Ss][Yy][Ss][Tt][Ee][Mm]32.*"
+                RUNTIME DESTINATION .
+        )
+        install(DIRECTORY
+                "${CMAKE_SOURCE_DIR}/app_resources/Resources"
+                "${CMAKE_SOURCE_DIR}/app_resources/Scripts"
+                "${CMAKE_SOURCE_DIR}/app_resources/ScriptSamples"
+                DESTINATION .
+        )
+        install(FILES "${CMAKE_SOURCE_DIR}/app_resources/license.txt" DESTINATION .)
+
+        set(WXCHAOS_STAGE_DIR "${CMAKE_BINARY_DIR}/package/wxChaos")
+        add_custom_target(wxChaosStage
+                COMMAND ${CMAKE_COMMAND} -E rm -rf "${WXCHAOS_STAGE_DIR}"
+                COMMAND ${CMAKE_COMMAND} --install "${CMAKE_BINARY_DIR}" --prefix "${WXCHAOS_STAGE_DIR}"
+                        --config $<CONFIG>
+                DEPENDS wxChaos
+                COMMENT "Staging wxChaos installer payload..."
+                VERBATIM
+        )
+endif()
 
 include(CTest)
 
@@ -264,6 +323,7 @@ if(BUILD_TESTING)
     )
 
     target_include_directories(wxChaosCoreTests PRIVATE
+            "${WXCHAOS_GENERATED_DIR}"
             ${SYMENGINE_INCLUDE_DIRS}
             ${SFML_INCLUDE_DIRS}
             wxChaos/core
@@ -310,6 +370,7 @@ if(BUILD_TESTING)
             tests/gui/wx/FractalDocumentationTests.cpp
             tests/gui/wx/NativeVideoWriterTests.cpp
             tests/gui/wx/AppConfigStoreTests.cpp
+            tests/gui/wx/AppPathsTests.cpp
             tests/gui/wx/AppLocalizationTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
             tests/gui/wx/WxGradientTests.cpp
@@ -328,6 +389,7 @@ if(BUILD_TESTING)
     )
 
     target_include_directories(wxChaosGuiTests PRIVATE
+            "${WXCHAOS_GENERATED_DIR}"
             ${SFML_INCLUDE_DIRS}
             wxChaos/core
             wxChaos/gui
