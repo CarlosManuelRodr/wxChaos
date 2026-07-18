@@ -102,6 +102,10 @@ add_executable(wxChaos WIN32 ${SRC_FILES}
 )
 
 if(WIN32)
+        file(RELATIVE_PATH WXCHAOS_ICON_PATH
+                "${WXCHAOS_GENERATED_DIR}"
+                "${CMAKE_SOURCE_DIR}/app_resources/Resources/Icons/icon.ico"
+        )
         configure_file(wxChaos/windows/wxChaos.rc.in "${WXCHAOS_GENERATED_DIR}/wxChaos.rc" @ONLY)
         target_sources(wxChaos PRIVATE "${WXCHAOS_GENERATED_DIR}/wxChaos.rc")
 endif()
