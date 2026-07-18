@@ -209,6 +209,18 @@ class DimensionFrame : public wxFrame
     /** @brief Shows or hides the warning that the finest boxes approach pixel resolution. */
     void UpdateResolutionWarning();
 
+    /** @brief Creates the left column containing parameters and action buttons. */
+    [[nodiscard]] wxSizer* CreateParameterColumn();
+
+    /** @brief Creates the right column containing the preview, log, and progress controls. */
+    [[nodiscard]] wxSizer* CreateOutputColumn();
+
+    /** @brief Connects control and frame events after the complete layout exists. */
+    void BindEvents();
+
+    /** @brief Disconnects control and frame events before destruction. */
+    void UnbindEvents();
+
     /**
      * @brief Creates a themed heading row used by sections of the frame.
      * @return Newly allocated panel owned by the supplied parent.

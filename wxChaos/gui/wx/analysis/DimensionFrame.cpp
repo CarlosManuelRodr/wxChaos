@@ -52,8 +52,61 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _mainPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
     _mainPanel->SetScrollRate(5, 5);
 
-    const auto subMainBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    const auto paramBoxSizer = new wxBoxSizer(wxVERTICAL);
+    const auto contentSizer = new wxBoxSizer(wxHORIZONTAL);
+    contentSizer->Add(CreateParameterColumn(), 1, wxEXPAND, 5);
+    contentSizer->Add(CreateOutputColumn(), 1, wxEXPAND, 5);
+
+    _mainPanel->SetSizer(contentSizer);
+    _mainPanel->Layout();
+    contentSizer->Fit(_mainPanel);
+    mainBoxSizer->Add(_mainPanel, 1, wxEXPAND | wxALL, 1);
+
+    this->SetSizer(mainBoxSizer);
+    this->wxTopLevelWindowBase::Layout();
+
+    this->Centre(wxBOTH);
+
+    // Set welcome log text.
+    _logCtrl->WriteText(_("Dimension calculator log.\n\n"));
+
+    PopulateFractalChoices();
+
+    // Set the default fractal.
+    SelectDefaultFractal();
+    this->CreateFractal(_previewSize);
+    UpdateFormulaButtonVisibility();
+    _myOpt = _target->GetOptions();
+    SetControlsFromOptions(_myOpt);
+    ApplySelectedFractalPreset();
+
+    BindEvents();
+    _suppressPreviewUpdate = false;
+    UpdateResolutionWarning();
+    SchedulePreviewRender();
+}
+DimensionFrame::~DimensionFrame()
+{
+    UnbindEvents();
+
+    if (_calculatingDimension)
+    {
+        // Stop render.
+        _target->StopRender();
+        _calcButton->SetLabel(_("Calculate"));
+        _calculatingDimension = false;
+    }
+    StopDimensionThreads();
+
+    if (_renderingPreview)
+        _target->StopRender();
+
+    _fractalFactory.DeleteFractal();
+    delete _fractalOptionsDialog;
+}
+
+wxSizer* DimensionFrame::CreateParameterColumn()
+{
+    const auto parameterColumnSizer = new wxBoxSizer(wxVERTICAL);
     const auto fractalSectionSizer = new wxBoxSizer(wxVERTICAL);
     fractalSectionSizer->Add(CreateSectionHeader(_mainPanel, _("Fractal parameters"),
                                                  "fractal_light.svg", "fractal_dark.svg"),
@@ -61,7 +114,8 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     const auto fractalBoxSizer = new wxBoxSizer(wxVERTICAL);
 
     _fractalChoice = new wxChoice(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, 0);
-    fractalBoxSizer->Add(CreateFractalParameterRow(_("Fractal"), _fractalChoice), 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+    fractalBoxSizer->Add(CreateFractalParameterRow(_("Fractal"), _fractalChoice),
+                         0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     const auto parameterGridSizer = new wxFlexGridSizer(0, 2, 0, 8);
     parameterGridSizer->AddGrowableCol(0, 1);
@@ -86,62 +140,70 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
 
     _sizeCtrl = new wxSpinCtrl(_mainPanel, wxID_ANY, "3000", wxDefaultPosition, wxDefaultSize,
                                wxSP_ARROW_KEYS, 32, 100000, 3000);
-    parameterGridSizer->Add(CreateFractalParameterRow(_("Square image size (pixels)"), _sizeCtrl), 1, wxEXPAND | wxALL, 5);
+    parameterGridSizer->Add(CreateFractalParameterRow(_("Square image size (pixels)"), _sizeCtrl),
+                            1, wxEXPAND | wxALL, 5);
     fractalBoxSizer->Add(parameterGridSizer, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 
-    _fractalOptionsButton = new wxButton(_mainPanel, wxID_ANY, _("Configure fractal options"), wxDefaultPosition, wxDefaultSize, 0);
+    _fractalOptionsButton = new wxButton(_mainPanel, wxID_ANY, _("Configure fractal options"),
+                                         wxDefaultPosition, wxDefaultSize, 0);
     fractalBoxSizer->Add(_fractalOptionsButton, 0, wxALL | wxEXPAND, 10);
 
-    _formulaButton = new wxButton(_mainPanel, wxID_ANY, _("Edit user formula"), wxDefaultPosition, wxDefaultSize, 0);
+    _formulaButton = new wxButton(_mainPanel, wxID_ANY, _("Edit user formula"),
+                                  wxDefaultPosition, wxDefaultSize, 0);
     _formulaButton->Hide();
     fractalBoxSizer->Add(_formulaButton, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 10);
     fractalSectionSizer->Add(fractalBoxSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
-    paramBoxSizer->Add(fractalSectionSizer, 0, wxEXPAND, 5);
+    parameterColumnSizer->Add(fractalSectionSizer, 0, wxEXPAND, 5);
 
-    const auto dimBoxSizer = new wxBoxSizer(wxVERTICAL);
-    dimBoxSizer->Add(CreateSectionHeader(_mainPanel, _("Box-counting parameters"),
-                                         "box_count_light.svg", "box_count_dark.svg"),
-                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+    const auto boxCountingSizer = new wxBoxSizer(wxVERTICAL);
+    boxCountingSizer->Add(CreateSectionHeader(_mainPanel, _("Box-counting parameters"),
+                                              "box_count_light.svg", "box_count_dark.svg"),
+                          0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _divTxt = new wxStaticText(_mainPanel, wxID_ANY, _("Divisions"), wxDefaultPosition, wxDefaultSize, 0);
     _divTxt->Wrap(-1);
-    dimBoxSizer->Add(_divTxt, 0, wxALL, 5);
+    boxCountingSizer->Add(_divTxt, 0, wxALL, 5);
 
-    const auto divBoxSizer = new wxBoxSizer(wxVERTICAL);
+    const auto divisionSizer = new wxBoxSizer(wxVERTICAL);
 
     _divNotebook = new wxNotebook(_mainPanel, wxID_ANY, wxDefaultPosition, wxSize(-1, 150), 0);
     _byFunctionPanel = new wxPanel(_divNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto byFunctionBoxSizer = new wxBoxSizer(wxVERTICAL);
     const auto functionRowSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _funcTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, _("Function:"), wxDefaultPosition, wxDefaultSize, 0);
+    _funcTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, _("Function:"),
+                                wxDefaultPosition, wxDefaultSize, 0);
     _funcTxt->Wrap(-1);
     functionRowSizer->Add(_funcTxt, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    _fDeclTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, "f(x) = ", wxDefaultPosition, wxDefaultSize, 0);
+    _fDeclTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, "f(x) = ",
+                                 wxDefaultPosition, wxDefaultSize, 0);
     _fDeclTxt->Wrap(-1);
     functionRowSizer->Add(_fDeclTxt, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    _funcCtrl = new wxTextCtrl(_byFunctionPanel, wxID_ANY, "2*x", wxDefaultPosition, wxDefaultSize, 0);
+    _funcCtrl = new wxTextCtrl(_byFunctionPanel, wxID_ANY, "2*x",
+                               wxDefaultPosition, wxDefaultSize, 0);
     functionRowSizer->Add(_funcCtrl, 1, wxALIGN_CENTER_VERTICAL | wxALL, 5);
     byFunctionBoxSizer->Add(functionRowSizer, 0, wxEXPAND);
 
     const auto rangeSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _goesFromTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, _("x goes from"), wxDefaultPosition, wxDefaultSize, 0);
+    _goesFromTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, _("x goes from"),
+                                    wxDefaultPosition, wxDefaultSize, 0);
     _goesFromTxt->Wrap(-1);
     rangeSizer->Add(_goesFromTxt, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    _xMinSpin = new wxSpinCtrl(_byFunctionPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(110, -1),
-                               wxSP_ARROW_KEYS, 1, 1000000, 1);
+    _xMinSpin = new wxSpinCtrl(_byFunctionPanel, wxID_ANY, wxEmptyString,
+                               wxDefaultPosition, wxSize(110, -1), wxSP_ARROW_KEYS, 1, 1000000, 1);
     rangeSizer->Add(_xMinSpin, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    _goesToTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, _("to"), wxDefaultPosition, wxDefaultSize, 0);
+    _goesToTxt = new wxStaticText(_byFunctionPanel, wxID_ANY, _("to"),
+                                  wxDefaultPosition, wxDefaultSize, 0);
     _goesToTxt->Wrap(-1);
     rangeSizer->Add(_goesToTxt, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    _xMaxSpin = new wxSpinCtrl(_byFunctionPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(110, -1),
-                               wxSP_ARROW_KEYS, 1, 1000000, 50);
+    _xMaxSpin = new wxSpinCtrl(_byFunctionPanel, wxID_ANY, wxEmptyString,
+                               wxDefaultPosition, wxSize(110, -1), wxSP_ARROW_KEYS, 1, 1000000, 50);
     rangeSizer->Add(_xMaxSpin, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
     byFunctionBoxSizer->Add(rangeSizer, 0, wxEXPAND);
 
@@ -149,10 +211,12 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _byFunctionPanel->Layout();
     byFunctionBoxSizer->Fit(_byFunctionPanel);
     _divNotebook->AddPage(_byFunctionPanel, _("By function"), true);
+
     _byListPanel = new wxPanel(_divNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     const auto byListBoxSizer = new wxBoxSizer(wxVERTICAL);
 
-    _listCtrl = new wxTextCtrl(_byListPanel, wxID_ANY, "2,4,5,6,9,100,200", wxDefaultPosition, wxSize(-1, 80), wxTE_MULTILINE);
+    _listCtrl = new wxTextCtrl(_byListPanel, wxID_ANY, "2,4,5,6,9,100,200",
+                               wxDefaultPosition, wxSize(-1, 80), wxTE_MULTILINE);
     byListBoxSizer->Add(_listCtrl, 1, wxALL | wxEXPAND, 5);
 
     _byListPanel->SetSizer(byListBoxSizer);
@@ -160,118 +224,114 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     byListBoxSizer->Fit(_byListPanel);
     _divNotebook->AddPage(_byListPanel, _("By list"), false);
 
-    divBoxSizer->Add(_divNotebook, 0, wxEXPAND | wxALL, 5);
-    dimBoxSizer->Add(divBoxSizer, 0, wxEXPAND, 5);
+    divisionSizer->Add(_divNotebook, 0, wxEXPAND | wxALL, 5);
+    boxCountingSizer->Add(divisionSizer, 0, wxEXPAND, 5);
 
-    dimBoxSizer->Add(CreateSectionHeader(_mainPanel, _("Plotting"), "plot_light.svg", "plot_dark.svg"),
-                     0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
-    const auto plotBoxSizer = new wxBoxSizer(wxHORIZONTAL);
+    boxCountingSizer->Add(CreateSectionHeader(_mainPanel, _("Plotting"),
+                                              "plot_light.svg", "plot_dark.svg"),
+                          0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+    const auto plottingOptionsSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    _dataCheck = new wxCheckBox(_mainPanel, wxID_ANY, _("Plot data"), wxDefaultPosition, wxDefaultSize, 0);
-    plotBoxSizer->Add(_dataCheck, 0, wxALL, 5);
+    _dataCheck = new wxCheckBox(_mainPanel, wxID_ANY, _("Plot data"),
+                                wxDefaultPosition, wxDefaultSize, 0);
+    plottingOptionsSizer->Add(_dataCheck, 0, wxALL, 5);
 
-    _dataFitCheck = new wxCheckBox(_mainPanel, wxID_ANY, _("Plot fitted data"), wxDefaultPosition, wxDefaultSize, 0);
-    plotBoxSizer->Add(_dataFitCheck, 0, wxALL, 5);
-    dimBoxSizer->Add(plotBoxSizer, 0, wxEXPAND, 5);
+    _dataFitCheck = new wxCheckBox(_mainPanel, wxID_ANY, _("Plot fitted data"),
+                                   wxDefaultPosition, wxDefaultSize, 0);
+    plottingOptionsSizer->Add(_dataFitCheck, 0, wxALL, 5);
+    boxCountingSizer->Add(plottingOptionsSizer, 0, wxEXPAND, 5);
 
-    dimBoxSizer->AddStretchSpacer(1);
+    boxCountingSizer->AddStretchSpacer(1);
 
     _resolutionWarning = new wxStaticText(_mainPanel, wxID_ANY, wxEmptyString,
                                           wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
     _resolutionWarning->Wrap(420);
-    _resolutionWarning->SetForegroundColour(AppTheme::IsDark() ? wxColour(242, 190, 95) : wxColour(128, 82, 0));
+    _resolutionWarning->SetForegroundColour(
+        AppTheme::IsDark() ? wxColour(242, 190, 95) : wxColour(128, 82, 0));
     _resolutionWarning->Hide();
-    dimBoxSizer->Add(_resolutionWarning, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+    boxCountingSizer->Add(_resolutionWarning,
+                          0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxBOTTOM, 10);
 
-    const auto buttonBoxSizer = new wxBoxSizer(wxHORIZONTAL);
+    const auto actionButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 
     _calcButton = new wxButton(_mainPanel, wxID_ANY, _("Calculate"), wxDefaultPosition, wxDefaultSize, 0);
-    buttonBoxSizer->Add(_calcButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+    actionButtonSizer->Add(_calcButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
     _closeButton = new wxButton(_mainPanel, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0);
-    buttonBoxSizer->Add(_closeButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+    actionButtonSizer->Add(_closeButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
     _clearButton = new wxButton(_mainPanel, wxID_ANY, _("Clear"), wxDefaultPosition, wxDefaultSize, 0);
     _clearButton->SetBitmap(CreateIconBundle("erase_light.svg", "erase_dark.svg", wxSize(20, 20)));
-    buttonBoxSizer->Add(_clearButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+    actionButtonSizer->Add(_clearButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-    const wxSize actionButtonSize(_calcButton->GetBestSize().GetHeight(), _calcButton->GetBestSize().GetHeight());
+    const wxSize actionButtonSize(_calcButton->GetBestSize().GetHeight(),
+                                  _calcButton->GetBestSize().GetHeight());
     _helpButton = new wxBitmapButton(_mainPanel, wxID_ANY,
                                      CreateIconBundle("help_light.svg", "help_dark.svg", wxSize(18, 18)),
                                      wxDefaultPosition, actionButtonSize, wxBU_AUTODRAW);
     _helpButton->SetMinSize(actionButtonSize);
-    buttonBoxSizer->Add(_helpButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+    actionButtonSizer->Add(_helpButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    paramBoxSizer->Add(dimBoxSizer, 1, wxEXPAND, 5);
-    paramBoxSizer->Add(buttonBoxSizer, 0, wxEXPAND, 5);
-    subMainBoxSizer->Add(paramBoxSizer, 1, wxEXPAND, 5);
+    parameterColumnSizer->Add(boxCountingSizer, 1, wxEXPAND, 5);
+    parameterColumnSizer->Add(actionButtonSizer, 0, wxEXPAND, 5);
+    return parameterColumnSizer;
+}
 
-    const auto outputBoxSizer = new wxBoxSizer(wxVERTICAL);
-    outputBoxSizer->Add(CreateSectionHeader(_mainPanel, _("Box count preview"), "box_light.svg", "box_dark.svg"),
-                        0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+wxSizer* DimensionFrame::CreateOutputColumn()
+{
+    const auto outputColumnSizer = new wxBoxSizer(wxVERTICAL);
+    outputColumnSizer->Add(CreateSectionHeader(_mainPanel, _("Box count preview"),
+                                               "box_light.svg", "box_dark.svg"),
+                           0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
     _previewImage = new ImagePanel(_mainPanel, wxID_ANY, _previewSize);
     _previewImage->SetMinSize(wxSize(_previewSize, _previewSize));
-    outputBoxSizer->Add(_previewImage, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 8);
+    outputColumnSizer->Add(_previewImage,
+                           0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 8);
 
     const auto previewOptionsSizer = new wxBoxSizer(wxVERTICAL);
     const auto numberOfDivisionsSizer = new wxBoxSizer(wxHORIZONTAL);
-    _nDivTxt = new wxStaticText(_mainPanel, wxID_ANY, _("Number of divisions"), wxDefaultPosition, wxDefaultSize, 0);
+    _nDivTxt = new wxStaticText(_mainPanel, wxID_ANY, _("Number of divisions"),
+                                wxDefaultPosition, wxDefaultSize, 0);
     _nDivTxt->Wrap(-1);
     numberOfDivisionsSizer->Add(_nDivTxt, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
 
-    _numberOfDivisionsSpinCtrl = new wxSpinCtrl(_mainPanel, wxID_ANY, "20", wxDefaultPosition, wxSize(110, -1),
+    _numberOfDivisionsSpinCtrl = new wxSpinCtrl(_mainPanel, wxID_ANY, "20",
+                                                wxDefaultPosition, wxSize(110, -1),
                                                 wxSP_ARROW_KEYS, 1, 200, 0);
     numberOfDivisionsSizer->Add(_numberOfDivisionsSpinCtrl, 0, wxALIGN_CENTER_VERTICAL);
     previewOptionsSizer->Add(numberOfDivisionsSizer, 0, wxALL, 5);
 
-    _savePreviewButton = new wxButton(_mainPanel, wxID_ANY, _("Save preview"), wxDefaultPosition, wxDefaultSize, 0);
+    _savePreviewButton = new wxButton(_mainPanel, wxID_ANY, _("Save preview"),
+                                      wxDefaultPosition, wxDefaultSize, 0);
     previewOptionsSizer->Add(_savePreviewButton, 0, wxALL | wxEXPAND, 5);
-    outputBoxSizer->Add(previewOptionsSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
+    outputColumnSizer->Add(previewOptionsSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
 
     _outLine = new wxStaticLine(_mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
-    outputBoxSizer->Add(_outLine, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+    outputColumnSizer->Add(_outLine, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    outputBoxSizer->Add(CreateSectionHeader(_mainPanel, _("Dimension count log"), "log_light.svg", "log_dark.svg"),
-                        0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+    outputColumnSizer->Add(CreateSectionHeader(_mainPanel, _("Dimension count log"),
+                                               "log_light.svg", "log_dark.svg"),
+                           0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
 
-    _logCtrl = new wxRichTextCtrl(_mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-        wxTE_READONLY | wxVSCROLL | wxHSCROLL | wxNO_BORDER | wxWANTS_CHARS);
-    outputBoxSizer->Add(_logCtrl, 1, wxALL | wxEXPAND, 5);
+    _logCtrl = new wxRichTextCtrl(_mainPanel, wxID_ANY, wxEmptyString,
+                                  wxDefaultPosition, wxDefaultSize,
+                                  wxTE_READONLY | wxVSCROLL | wxHSCROLL | wxNO_BORDER | wxWANTS_CHARS);
+    outputColumnSizer->Add(_logCtrl, 1, wxALL | wxEXPAND, 5);
 
-    _progressBar = new wxGauge(_mainPanel, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
-    outputBoxSizer->Add(_progressBar, 0, wxALL | wxEXPAND, 5);
+    _progressBar = new wxGauge(_mainPanel, wxID_ANY, 100,
+                               wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
+    outputColumnSizer->Add(_progressBar, 0, wxALL | wxEXPAND, 5);
 
-    _progressTxt = new wxStaticText(_mainPanel, wxID_ANY, _("Progress: Stopped"), wxDefaultPosition, wxDefaultSize, 0);
+    _progressTxt = new wxStaticText(_mainPanel, wxID_ANY, _("Progress: Stopped"),
+                                    wxDefaultPosition, wxDefaultSize, 0);
     _progressTxt->Wrap(-1);
-    outputBoxSizer->Add(_progressTxt, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+    outputColumnSizer->Add(_progressTxt, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+    return outputColumnSizer;
+}
 
-    subMainBoxSizer->Add(outputBoxSizer, 1, wxEXPAND, 5);
-
-    _mainPanel->SetSizer(subMainBoxSizer);
-    _mainPanel->Layout();
-    subMainBoxSizer->Fit(_mainPanel);
-    mainBoxSizer->Add(_mainPanel, 1, wxEXPAND | wxALL, 1);
-
-    this->SetSizer(mainBoxSizer);
-    this->wxTopLevelWindowBase::Layout();
-
-    this->Centre(wxBOTH);
-
-    // Set welcome log text.
-    _logCtrl->WriteText(_("Dimension calculator log.\n\n"));
-
-    PopulateFractalChoices();
-
-    // Set the default fractal.
-    SelectDefaultFractal();
-    this->CreateFractal(_previewSize);
-    UpdateFormulaButtonVisibility();
-    _myOpt = _target->GetOptions();
-    SetControlsFromOptions(_myOpt);
-    ApplySelectedFractalPreset();
-
-    // Connect Events.
+void DimensionFrame::BindEvents()
+{
     this->Bind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
     this->Bind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
     this->Bind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
@@ -294,16 +354,14 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
     _xMaxSpin->Bind(wxEVT_SPINCTRL, &DimensionFrame::OnDivisionDefinitionChanged, this);
     _listCtrl->Bind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
     _divNotebook->Bind(wxEVT_NOTEBOOK_PAGE_CHANGED, &DimensionFrame::OnDivisionModeChanged, this);
-    _suppressPreviewUpdate = false;
-    UpdateResolutionWarning();
-    SchedulePreviewRender();
 }
-DimensionFrame::~DimensionFrame()
+
+void DimensionFrame::UnbindEvents()
 {
-    // Disconnect Events.
     this->Unbind(wxEVT_CLOSE_WINDOW, &DimensionFrame::OnDestroy, this);
     this->Unbind(wxEVT_UPDATE_UI, &DimensionFrame::OnUpdateUI, this);
     this->Unbind(wxEVT_TIMER, &DimensionFrame::OnPreviewTimer, this, _previewTimer.GetId());
+    this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &DimensionFrame::OnClose, this, wxID_EXIT);
     _fractalChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &DimensionFrame::OnChangeFractal, this);
     _fractalOptionsButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFractalOptions, this);
     _formulaButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DimensionFrame::OnFormula, this);
@@ -322,21 +380,6 @@ DimensionFrame::~DimensionFrame()
     _xMaxSpin->Unbind(wxEVT_SPINCTRL, &DimensionFrame::OnDivisionDefinitionChanged, this);
     _listCtrl->Unbind(wxEVT_TEXT, &DimensionFrame::OnDivisionDefinitionChanged, this);
     _divNotebook->Unbind(wxEVT_NOTEBOOK_PAGE_CHANGED, &DimensionFrame::OnDivisionModeChanged, this);
-
-    if (_calculatingDimension)
-    {
-        // Stop render.
-        _target->StopRender();
-        _calcButton->SetLabel(_("Calculate"));
-        _calculatingDimension = false;
-    }
-    StopDimensionThreads();
-
-    if (_renderingPreview)
-        _target->StopRender();
-
-    _fractalFactory.DeleteFractal();
-    delete _fractalOptionsDialog;
 }
 
 wxPanel* DimensionFrame::CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
