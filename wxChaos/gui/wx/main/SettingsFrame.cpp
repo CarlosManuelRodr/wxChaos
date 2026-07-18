@@ -18,7 +18,7 @@ SettingsFrame::SettingsFrame(wxWindow* parent, const AppConfig& config, std::fun
 {
     wxTopLevelWindowBase::SetMinSize(wxSize(620, 440));
 
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);

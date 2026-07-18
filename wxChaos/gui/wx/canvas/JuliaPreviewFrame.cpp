@@ -19,7 +19,7 @@ JuliaPreviewFrame::JuliaPreviewFrame(wxWindow* parent, FractalCanvas* target, co
                                        _parentFractalCanvas(target),
                                        _constantSyncTimer(this)
 {
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
     SetIcon(icon);
     CreateMenuBar();
 

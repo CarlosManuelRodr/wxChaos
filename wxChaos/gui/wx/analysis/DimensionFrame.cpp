@@ -45,7 +45,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
 
     this->SetSizeHints(wxSize(960, 700), wxDefaultSize);
 
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainBoxSizer = new wxBoxSizer(wxVERTICAL);

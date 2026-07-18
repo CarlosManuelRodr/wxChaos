@@ -34,7 +34,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     // UI initialization
     this->SetSizeHints(wxSize(820, 360), wxSize(1400, 900));
 
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);

@@ -58,7 +58,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
 
     this->SetSizeHints(wxSize(1200, 760), wxDefaultSize);
 
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);

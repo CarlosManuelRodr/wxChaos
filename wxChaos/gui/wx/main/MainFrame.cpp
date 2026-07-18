@@ -36,7 +36,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     wxImage::AddHandler(new wxPNGHandler);
     this->SetSizeHints(wxSize(900, 650), wxDefaultSize);
 
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.png"}), wxBITMAP_TYPE_PNG);
+    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
     this->SetIcon(icon);
     this->GetParserOpt();    // Gets configuration from config.ini.
     AppTheme::SetAppearance(_appConfig.appearance);
