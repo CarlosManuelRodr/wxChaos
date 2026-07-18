@@ -134,11 +134,6 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     SetButtonIcon(_removeButton, "delete_light.svg", "delete_dark.svg");
     scriptListSizer->Add(_removeButton, 0, wxALL | wxEXPAND, 5);
 
-    _closeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Close and reload"), wxDefaultPosition, wxDefaultSize, 0);
-
-    SetButtonIcon(_closeButton, "close_light.svg", "close_dark.svg");
-    scriptListSizer->Add(_closeButton, 0, wxALL | wxEXPAND, 5);
-
     _openScriptsDirectoryButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Open scripts directory"),
                                                wxDefaultPosition, wxDefaultSize, 0);
     SetButtonIcon(_openScriptsDirectoryButton, "open_light.svg", "open_dark.svg");
@@ -148,6 +143,11 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
                                         wxDefaultPosition, wxDefaultSize, 0);
     SetButtonIcon(_documentationButton, "help_light.svg", "help_dark.svg");
     scriptListSizer->Add(_documentationButton, 0, wxALL | wxEXPAND, 5);
+
+    _closeButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Close and reload"), wxDefaultPosition, wxDefaultSize, 0);
+    SetButtonIcon(_closeButton, "close_light.svg", "close_dark.svg");
+    scriptListSizer->Add(_closeButton, 0, wxALL | wxEXPAND, 5);
+
     panelSizer->Add(scriptListSizer, 0, wxEXPAND, 5);
 
     const auto codeSizer = new wxStaticBoxSizer(new wxStaticBox(_scriptPanel, wxID_ANY, _("Source")), wxVERTICAL);
