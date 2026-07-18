@@ -1016,6 +1016,12 @@ msgstr ""
 msgid "Close and reload"
 msgstr ""
 
+msgid "Open scripts directory"
+msgstr ""
+
+msgid "Could not open the scripts directory."
+msgstr ""
+
 msgid "Documentation"
 msgstr ""
 

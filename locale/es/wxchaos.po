@@ -647,6 +647,12 @@ msgstr "Eliminar script"
 msgid "Close and reload"
 msgstr "Cerrar y recargar"
 
+msgid "Open scripts directory"
+msgstr "Abrir directorio de scripts"
+
+msgid "Could not open the scripts directory."
+msgstr "No se pudo abrir el directorio de scripts."
+
 msgid "Source"
 msgstr "Código fuente"
 

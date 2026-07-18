@@ -3,6 +3,7 @@
 #include <wx/bmpbndl.h>
 #include <wx/datetime.h>
 #include <wx/filefn.h>
+#include <wx/utils.h>
 #include "common/AppTheme.h"
 #include "../../../core/fractals/raster/ScriptFractal.h"
 #include "docs/DocumentViewer.h"
@@ -138,6 +139,11 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     SetButtonIcon(_closeButton, "close_light.svg", "close_dark.svg");
     scriptListSizer->Add(_closeButton, 0, wxALL | wxEXPAND, 5);
 
+    _openScriptsDirectoryButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Open scripts directory"),
+                                               wxDefaultPosition, wxDefaultSize, 0);
+    SetButtonIcon(_openScriptsDirectoryButton, "open_light.svg", "open_dark.svg");
+    scriptListSizer->Add(_openScriptsDirectoryButton, 0, wxALL | wxEXPAND, 5);
+
     _documentationButton = new wxButton(scriptListSizer->GetStaticBox(), wxID_ANY, _("Documentation"),
                                         wxDefaultPosition, wxDefaultSize, 0);
     SetButtonIcon(_documentationButton, "help_light.svg", "help_dark.svg");
@@ -266,6 +272,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     _newFromSampleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewFromSample, this);
     _removeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnCloseButton, this);
+    _openScriptsDirectoryButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnOpenScriptsDirectory, this);
     _documentationButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDocumentation, this);
     this->Bind(wxEVT_CLOSE_WINDOW, &ScriptEditor::OnClose, this);
     _codeEditor->Bind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
@@ -283,6 +290,7 @@ ScriptEditor::~ScriptEditor()
     _newFromSampleButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnNewFromSample, this);
     _removeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDeleteScript, this);
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnCloseButton, this);
+    _openScriptsDirectoryButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnOpenScriptsDirectory, this);
     _documentationButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDocumentation, this);
     _codeEditor->Unbind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
@@ -419,6 +427,13 @@ void ScriptEditor::OnDeleteScript(wxCommandEvent&)
 void ScriptEditor::OnCloseButton(wxCommandEvent&)
 {
     this->Close(true);
+}
+void ScriptEditor::OnOpenScriptsDirectory(wxCommandEvent&)
+{
+    const wxString scriptsDirectory = AppPaths::ScriptsDir();
+    if (!AppPaths::EnsureDirectory(scriptsDirectory) || !wxLaunchDefaultApplication(scriptsDirectory))
+        wxMessageBox(_("Could not open the scripts directory."), wxMessageBoxCaptionStr,
+                     wxOK | wxICON_ERROR, this);
 }
 void ScriptEditor::OnDocumentation(wxCommandEvent&)
 {

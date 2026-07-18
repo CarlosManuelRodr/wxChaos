@@ -30,6 +30,7 @@ class ScriptEditor : public wxFrame
     wxButton* _newFromSampleButton;
     wxButton* _removeButton;
     wxButton* _closeButton;
+    wxButton* _openScriptsDirectoryButton;
     wxButton* _documentationButton; ///< Opens the bundled AngelScript scripting guide.
     wxStyledTextCtrl* _codeEditor;
     wxPanel* _debugPanel;
@@ -68,8 +69,8 @@ class ScriptEditor : public wxFrame
     void OnNewFromSample(wxCommandEvent& event);
     void OnDeleteScript(wxCommandEvent& event);
     void OnCloseButton(wxCommandEvent& event);
-    /// @brief Opens the scripting tutorial in a modeless documentation viewer.
-    void OnDocumentation(wxCommandEvent& event);
+    void OnOpenScriptsDirectory(wxCommandEvent& event); ///< Opens the user scripts directory in the system file manager.
+    void OnDocumentation(wxCommandEvent& event);        ///< Opens the scripting tutorial in a modeless documentation viewer.
     void OnClose(wxCloseEvent& event);
     void OnCodeChange(wxKeyEvent& event);
     void OnValidateScript(wxCommandEvent& event);
@@ -77,7 +78,7 @@ class ScriptEditor : public wxFrame
     void OnClearConsole(wxCommandEvent& event);
 public:
     explicit ScriptEditor(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxTRANSLATE("Script editor"),
-                          const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 900),
+                          const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 1100),
                           long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ScriptEditor() override;
 };
