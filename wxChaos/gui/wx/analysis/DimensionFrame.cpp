@@ -673,6 +673,7 @@ optional<int> DimensionFrame::GetUpperDivisionCount() const
     return divisions.back();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void DimensionFrame::UpdateResolutionWarning()
 {
     constexpr double minimumReliableBoxSizePixels = 2.0;
@@ -702,6 +703,7 @@ void DimensionFrame::OnClose(wxCommandEvent&)
 {
     this->Close(true);
 }
+// ReSharper disable once CppMemberFunctionMayBeConst
 void DimensionFrame::OnClear(wxCommandEvent&)
 {
     _logCtrl->Clear();
@@ -1224,6 +1226,7 @@ void DimensionFrame::PopulateFractalChoices()
     GetScriptFractals();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void DimensionFrame::SelectDefaultFractal()
 {
     constexpr FractalType defaultFractal = FractalType::VectorSierpinskiTriangle;
@@ -1283,6 +1286,7 @@ void DimensionFrame::ApplySelectedFractalPreset()
         ApplyDimensionPreset(*preset);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void DimensionFrame::ApplyDimensionPreset(const DimensionCalculatorPreset& preset)
 {
     _minXCtrl->SetValue(preset.minX);
