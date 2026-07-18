@@ -1,6 +1,7 @@
 // ReSharper disable CppEnumeratorNeverUsed
 #include "main/MainFrame.h"
 #include <algorithm>
+#include <iterator>
 #include <wx/panel.h>
 #include "renderer/RendererOptionsFrame.h"
 #include "fractal/JuliaConstantDialog.h"
@@ -1348,14 +1349,19 @@ void MainFrame::ChangeFractal(const FractalType type, const bool enableJulia)
 void MainFrame::ChangeScriptItem(wxCommandEvent& event)
 {
     const unsigned int id = event.GetId() - SCRIPT_ID_INDEX;
-    _selectedScriptIndex = id;
+    ChangeToScript(id);
+}
+
+void MainFrame::ChangeToScript(const unsigned int index)
+{
+    _selectedScriptIndex = index;
 
     if (_fractalCanvas->GetFractal()->IsRendering())
         _fractalCanvas->GetFractal()->StopRender();
 
     const Options fractOpt = _fractalCanvas->GetFractal()->GetOptions();
     const ColorPaletteTypes colorPalette = _fractalCanvas->GetFractal()->GetColorPalette();
-    _fractalCanvas->ChangeToScript(_loadedScripts[id]);
+    _fractalCanvas->ChangeToScript(_loadedScripts[index]);
     _fractalCanvas->GetFractalPresenter()->SetColorPalette(colorPalette);
     _fractalCanvas->GetFractalPresenter()->SetGradient(fractOpt.gradient);
     _fractalCanvas->GetFractalPresenter()->SetColorCycleLength(fractOpt.colorCycleLength);
@@ -1367,6 +1373,22 @@ void MainFrame::ChangeScriptItem(wxCommandEvent& event)
     ResetColorRotationTool();
     this->UpdateMenu();
     _juliaMode->Enable(false);
+}
+
+bool MainFrame::OpenScriptFractal(const std::string& scriptPath)
+{
+    ReloadScripts();
+
+    const auto script = std::find_if(_loadedScripts.begin(), _loadedScripts.end(),
+                                     [&scriptPath](const ScriptData& scriptData)
+                                     {
+                                         return scriptData.file == scriptPath;
+                                     });
+    if (script == _loadedScripts.end())
+        return false;
+
+    ChangeToScript(static_cast<unsigned int>(std::distance(_loadedScripts.begin(), script)));
+    return true;
 }
 
 // Methods to adjust the menu.

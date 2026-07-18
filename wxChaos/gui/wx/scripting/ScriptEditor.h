@@ -35,6 +35,7 @@ class ScriptEditor : public wxFrame
     wxStyledTextCtrl* _codeEditor;
     wxPanel* _debugPanel;
     wxButton* _validateButton;
+    wxButton* _previewButton;
     wxButton* _runButton;
     wxButton* _clearConsoleButton;
     wxRichTextCtrl* _console;
@@ -74,6 +75,7 @@ class ScriptEditor : public wxFrame
     void OnClose(wxCloseEvent& event);
     void OnCodeChange(wxKeyEvent& event);
     void OnValidateScript(wxCommandEvent& event);
+    void OnPreviewScript(wxCommandEvent& event);
     void OnRunScript(wxCommandEvent& event);
     void OnClearConsole(wxCommandEvent& event);
 public:

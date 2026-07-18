@@ -10,6 +10,7 @@
 #pragma once
 
 #include <optional>
+#include <string>
 #include <vector>
 #include <wx/frame.h>
 #include "config/AppConfigStore.h"
@@ -199,6 +200,7 @@ class MainFrame : public wxFrame
     void ApplyAppConfig(const AppConfig& config);
     void SetAutomaticIterations(bool mode);
     void ApplyAutomaticIterationsSetting();
+    void ChangeToScript(unsigned int index);
     void AddScriptMenuElement(const ScriptData& scriptData, unsigned int index);
     void RemoveScriptMenuElements();
     void CreateInteractionToolbar();
@@ -236,6 +238,9 @@ public :
     /// @param method Rendering method parsed from a documentation link.
     /// @return true when the current main fractal can accept the rendering method.
     bool SetDocumentationRenderingFromJuliaPreview(const DocumentationLinkAction::RenderingMethod& method);
+    /// @brief Reloads user scripts and opens the script at the given path in the main fractal canvas.
+    /// @return true when the script was valid, found, and opened.
+    bool OpenScriptFractal(const std::string& scriptPath);
 
     void OnSave(wxCommandEvent& event);                    ///< Saves a picture of the viewing area.
     void OnJuliaMode(wxCommandEvent& event);               ///< Opens a window with the Julia version of the selected fractal.

@@ -692,14 +692,20 @@ msgstr "No se encontraron errores."
 msgid "Rendered preview in "
 msgstr "Vista previa renderizada en "
 
+msgid "Could not open the selected script in the main window."
+msgstr "No se pudo abrir el script seleccionado en la ventana principal."
+
+msgid "Script opened in the main window."
+msgstr "Script abierto en la ventana principal."
+
 msgid " ms."
 msgstr " ms."
 
 msgid " script console\n"
 msgstr " consola de scripts\n"
 
-msgid "Validate or run a script to inspect results.\n"
-msgstr "Valida o ejecuta un script para inspeccionar los resultados.\n"
+msgid "Validate, preview, or run a script to inspect results.\n"
+msgstr "Valida, previsualiza o ejecuta un script para inspeccionar los resultados.\n"
 
 msgid "Ready.\n"
 msgstr "Listo.\n"

@@ -7,6 +7,7 @@
 #include "common/AppTheme.h"
 #include "../../../core/fractals/raster/ScriptFractal.h"
 #include "docs/DocumentViewer.h"
+#include "main/MainFrame.h"
 #include "AppPaths.h"
 #include "scripting/ScriptEditor.h"
 #include "scripting/ScriptSamplePicker.h"
@@ -179,6 +180,11 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     SetButtonIcon(_validateButton, "validate_light.svg", "validate_dark.svg");
     debugButtonsSizer->Add(_validateButton, 0, wxALL | wxEXPAND, 5);
 
+    _previewButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, _("Preview"),
+                                  wxDefaultPosition, wxDefaultSize, 0);
+    SetButtonIcon(_previewButton, "preview_light.svg", "preview_dark.svg");
+    debugButtonsSizer->Add(_previewButton, 0, wxALL | wxEXPAND, 5);
+
     _runButton = new wxButton(debugButtonsSizer->GetStaticBox(), wxID_ANY, _("Run"), wxDefaultPosition, wxDefaultSize, 0);
 
     SetButtonIcon(_runButton, "run_light.svg", "run_dark.svg");
@@ -242,6 +248,7 @@ ScriptEditor::ScriptEditor(wxWindow* parent, const wxWindowID id, const wxString
     this->Bind(wxEVT_CLOSE_WINDOW, &ScriptEditor::OnClose, this);
     _codeEditor->Bind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
+    _previewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnPreviewScript, this);
     _runButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
     _clearConsoleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClearConsole, this);
 }
@@ -259,6 +266,7 @@ ScriptEditor::~ScriptEditor()
     _documentationButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnDocumentation, this);
     _codeEditor->Unbind(wxEVT_KEY_DOWN, &ScriptEditor::OnCodeChange, this);
     _validateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnValidateScript, this);
+    _previewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnPreviewScript, this);
     _runButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnRunScript, this);
     _clearConsoleButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &ScriptEditor::OnClearConsole, this);
 }
@@ -479,11 +487,11 @@ void ScriptEditor::OnValidateScript(wxCommandEvent&)
     this->ConsoleAppendEntry(_("Validate"), _("No errors found."), configEngine.GetStatus() == EngineStatus::Ok);
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
-void ScriptEditor::OnRunScript(wxCommandEvent&)
+void ScriptEditor::OnPreviewScript(wxCommandEvent&)
 {
     if (_currentScriptIndex < 0 || _currentScriptIndex >= static_cast<int>(_loadedScripts.size()))
     {
-        this->ConsoleAppendEntry(_("Run"), _("No script selected."), false);
+        this->ConsoleAppendEntry(_("Preview"), _("No script selected."), false);
         return;
     }
 
@@ -501,12 +509,30 @@ void ScriptEditor::OnRunScript(wxCommandEvent&)
 
     if (scriptFractal.IsThereError())
     {
-        this->ConsoleAppendEntry(_("Run"), scriptFractal.GetErrorInfo(), false);
+        this->ConsoleAppendEntry(_("Preview"), scriptFractal.GetErrorInfo(), false);
         scriptFractal.ClearErrorInfo();
     }
     else
-        this->ConsoleAppendEntry(_("Run"), _("Rendered preview in ") +
+        this->ConsoleAppendEntry(_("Preview"), _("Rendered preview in ") +
             TextUtils::ToWxString(static_cast<long long>(elapsed.count())) + _(" ms."), true);
+}
+
+void ScriptEditor::OnRunScript(wxCommandEvent&)
+{
+    if (_currentScriptIndex < 0 || _currentScriptIndex >= static_cast<int>(_loadedScripts.size()))
+    {
+        this->ConsoleAppendEntry(_("Run"), _("No script selected."), false);
+        return;
+    }
+
+    const auto mainFrame = dynamic_cast<MainFrame*>(GetParent());
+    if (mainFrame == nullptr || !mainFrame->OpenScriptFractal(_loadedScripts[_currentScriptIndex].file))
+    {
+        this->ConsoleAppendEntry(_("Run"), _("Could not open the selected script in the main window."), false);
+        return;
+    }
+
+    this->ConsoleAppendEntry(_("Run"), _("Script opened in the main window."), true);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -527,7 +553,7 @@ void ScriptEditor::ConsoleWriteText(const wxString& text, const wxColour& color)
 void ScriptEditor::ConsoleSetWelcomeText() const
 {
     ConsoleWriteText("wxChaos " + wxString::FromUTF8(APP_VERSION) + _(" script console\n"), ConsoleActionColor());
-    ConsoleWriteText(_("Validate or run a script to inspect results.\n"), ConsoleMutedColor());
+    ConsoleWriteText(_("Validate, preview, or run a script to inspect results.\n"), ConsoleMutedColor());
     ConsoleWriteText(_("Ready.\n"), ConsoleTextColor());
 }
 

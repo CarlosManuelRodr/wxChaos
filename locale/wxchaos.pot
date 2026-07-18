@@ -1070,13 +1070,19 @@ msgstr ""
 msgid "Rendered preview in "
 msgstr ""
 
+msgid "Could not open the selected script in the main window."
+msgstr ""
+
+msgid "Script opened in the main window."
+msgstr ""
+
 msgid " ms."
 msgstr ""
 
 msgid " script console\n"
 msgstr ""
 
-msgid "Validate or run a script to inspect results.\n"
+msgid "Validate, preview, or run a script to inspect results.\n"
 msgstr ""
 
 msgid "Ready.\n"
