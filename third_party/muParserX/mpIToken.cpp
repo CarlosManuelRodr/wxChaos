@@ -45,6 +45,12 @@ MUP_NAMESPACE_START
 
 #ifdef MUP_LEAKAGE_REPORT
   std::list<IToken*> IToken::s_Tokens;
+
+  std::mutex& IToken::LeakageMutex()
+  {
+    static std::mutex mutex;
+    return mutex;
+  }
 #endif
 
 #ifndef MUP_USE_WIDE_STRING
@@ -83,8 +89,9 @@ MUP_NAMESPACE_START
   void IToken::LeakageReport()
   {
     using namespace std;
+    const lock_guard lock(LeakageMutex());
 
-    console() << "\n";     
+    console() << "\n";
     console() << "Memory leakage report:\n\n";     
     if (IToken::s_Tokens.size())
     {
@@ -120,6 +127,7 @@ MUP_NAMESPACE_START
     ,m_flags(0)
   {
 #ifdef MUP_LEAKAGE_REPORT
+    const std::lock_guard lock(LeakageMutex());
     IToken::s_Tokens.push_back(this);
 #endif
   }
@@ -133,6 +141,7 @@ MUP_NAMESPACE_START
     ,m_flags(0)
   {
 #ifdef MUP_LEAKAGE_REPORT
+    const std::lock_guard lock(LeakageMutex());
     IToken::s_Tokens.push_back(this);
 #endif
   }
@@ -141,7 +150,7 @@ MUP_NAMESPACE_START
   IToken::~IToken()
   {
 #ifdef MUP_LEAKAGE_REPORT
-    std::list<IToken*>::iterator it = std::find(IToken::s_Tokens.begin(), IToken::s_Tokens.end(), this);
+    const std::lock_guard lock(LeakageMutex());
     IToken::s_Tokens.remove(this);
 #endif
   }

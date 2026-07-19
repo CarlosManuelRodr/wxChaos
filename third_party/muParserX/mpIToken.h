@@ -38,6 +38,7 @@
 #define MUP_ITOKEN_H
 
 #include <list>
+#include <mutex>
 #include "mpTypes.h"
 #include "mpFwdDecl.h"
 
@@ -125,6 +126,7 @@ MUP_NAMESPACE_START
 
 #ifdef MUP_LEAKAGE_REPORT
     static std::list<IToken*> s_Tokens;
+    static std::mutex& LeakageMutex();
 
   public:
     static void LeakageReport();
