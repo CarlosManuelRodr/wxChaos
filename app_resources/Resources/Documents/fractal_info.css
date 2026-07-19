@@ -867,6 +867,22 @@ figcaption {
     width: 24px;
 }
 
+.welcome-fractal-primer {
+    border-left: 3px solid var(--accent-color);
+    margin-top: 22px;
+    max-width: 720px;
+    padding-left: 16px;
+}
+
+.welcome-fractal-primer h2 {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+}
+
+.welcome-fractal-primer p {
+    margin: 0;
+}
+
 .welcome-hero {
     padding-bottom: 6px;
 }
