@@ -65,23 +65,10 @@ layout: default
       </div>
 
       <div class="hero-visual">
-        <div class="window-glow" aria-hidden="true"></div>
-        <figure class="app-window">
-          <div class="window-bar" aria-hidden="true">
-            <div class="window-dots"><i></i><i></i><i></i></div>
-            <span>wxChaos</span>
-          </div>
-          <img src="{{ locale_images | append: 'screenshots.webp' | relative_url }}"
-               width="1600" height="1200" alt="{{ t.hero.image_alt }}">
-        </figure>
-        <div class="floating-note floating-note-render">
-          <span class="note-icon" aria-hidden="true">✦</span>
-          <span>{{ t.hero.render_note }}</span>
-        </div>
-        <div class="floating-note floating-note-theme">
-          <span class="theme-pair" aria-hidden="true"><i></i><i></i></span>
-          <span>{{ t.hero.theme_note }}</span>
-        </div>
+        <img class="app-screenshot"
+             src="{{ locale_images | append: 'screenshots.webp' | relative_url }}"
+             width="{{ t.hero.image_width }}" height="{{ t.hero.image_height }}"
+             alt="{{ t.hero.image_alt }}">
       </div>
     </div>
     <a class="scroll-cue" href="#intro">
@@ -192,7 +179,6 @@ layout: default
           <figure class="gallery-item gallery-item-{{ forloop.index }}">
             <img src="{{ '/assets/images/gallery/' | append: image.file | relative_url }}"
                  loading="lazy" alt="{{ image.alt }}">
-            <figcaption><span>{{ image.label }}</span><i aria-hidden="true">↗</i></figcaption>
           </figure>
         {% endfor %}
       </div>
@@ -244,7 +230,6 @@ layout: default
     </div>
     <div class="footer-bottom">
       <p>{{ t.footer.copyright }}</p>
-      <p>{{ t.footer.made }}</p>
     </div>
   </div>
 </footer>

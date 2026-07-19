@@ -25,8 +25,8 @@ en:
       - Rich rendering
       - Scriptable
     image_alt: wxChaos running in its light and dark themes
-    render_note: Multiple rendering algorithms
-    theme_note: Light + dark themes
+    image_width: 2630
+    image_height: 1973
     scroll: Discover wxChaos
   intro:
     kicker: Fractals within reach
@@ -94,17 +94,13 @@ en:
     lead: Every formula, parameter, and palette opens another path through the boundary between order and chaos.
     images:
       - file: fractal-1.webp
-        label: Complex plane
-        alt: A purple and blue fractal generated with wxChaos
+        alt: Fractal generated with wxChaos
       - file: fractal-2.webp
-        label: Branching detail
-        alt: A branching blue fractal generated with wxChaos
+        alt: Fractal generated with wxChaos
       - file: fractal-3.webp
-        label: Escape time
-        alt: A vivid red and yellow fractal generated with wxChaos
+        alt: Fractal generated with wxChaos
       - file: fractal-4.webp
-        label: Infinite forms
-        alt: A blue spiral fractal generated with wxChaos
+        alt: Fractal generated with wxChaos
   cta:
     kicker: Begin exploring
     title: Ready to enter the fractal?
@@ -122,7 +118,6 @@ en:
     issues: Report an issue
     license: GPL v3 license
     copyright: "© 2026 wxChaos contributors."
-    made: Built for curious minds.
 
 es:
   routes:
@@ -151,8 +146,8 @@ es:
       - Renderizado avanzado
       - Programable
     image_alt: wxChaos ejecutándose en sus temas claro y oscuro
-    render_note: Múltiples algoritmos de renderizado
-    theme_note: Temas claro y oscuro
+    image_width: 2629
+    image_height: 1936
     scroll: Descubre wxChaos
   intro:
     kicker: Fractales a tu alcance
@@ -220,17 +215,13 @@ es:
     lead: Cada fórmula, parámetro y paleta abre otro camino por la frontera entre el orden y el caos.
     images:
       - file: fractal-1.webp
-        label: Plano complejo
-        alt: Fractal morado y azul generado con wxChaos
+        alt: Fractal generado con wxChaos
       - file: fractal-2.webp
-        label: Detalle ramificado
-        alt: Fractal azul ramificado generado con wxChaos
+        alt: Fractal generado con wxChaos
       - file: fractal-3.webp
-        label: Tiempo de escape
-        alt: Fractal rojo y amarillo generado con wxChaos
+        alt: Fractal generado con wxChaos
       - file: fractal-4.webp
-        label: Formas infinitas
-        alt: Fractal espiral azul generado con wxChaos
+        alt: Fractal generado con wxChaos
   cta:
     kicker: Comienza a explorar
     title: ¿Listo para entrar en el fractal?
@@ -248,7 +239,6 @@ es:
     issues: Reportar un problema
     license: Licencia GPL v3
     copyright: "© 2026 Colaboradores de wxChaos."
-    made: Creado para mentes curiosas.
 
 ja:
   routes:
@@ -277,8 +267,8 @@ ja:
       - 多彩な描画方式
       - スクリプト対応
     image_alt: ライトテーマとダークテーマで動作するwxChaos
-    render_note: 多彩な描画アルゴリズム
-    theme_note: ライト・ダークテーマ
+    image_width: 2582
+    image_height: 1899
     scroll: wxChaosを詳しく見る
   intro:
     kicker: フラクタルを身近に
@@ -346,17 +336,13 @@ ja:
     lead: 数式、パラメータ、パレットを変えるたびに、秩序とカオスの境界を巡る新しい道が開きます。
     images:
       - file: fractal-1.webp
-        label: 複素平面
-        alt: wxChaosで生成した紫と青のフラクタル
+        alt: wxChaosで生成したフラクタル
       - file: fractal-2.webp
-        label: 枝分かれの細部
-        alt: wxChaosで生成した枝分かれする青いフラクタル
+        alt: wxChaosで生成したフラクタル
       - file: fractal-3.webp
-        label: 発散時間
-        alt: wxChaosで生成した赤と黄色のフラクタル
+        alt: wxChaosで生成したフラクタル
       - file: fractal-4.webp
-        label: 無限の形
-        alt: wxChaosで生成した青い渦巻き状のフラクタル
+        alt: wxChaosで生成したフラクタル
   cta:
     kicker: 探索を始めよう
     title: フラクタルの世界へ入りませんか？
@@ -374,4 +360,3 @@ ja:
     issues: 問題を報告
     license: GPL v3 ライセンス
     copyright: "© 2026 wxChaos contributors."
-    made: 好奇心を持つすべての人へ。

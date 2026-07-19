@@ -532,135 +532,13 @@ button {
 .hero-visual {
   position: relative;
   margin-right: -10vw;
-  perspective: 1200px;
 }
 
-.window-glow {
-  position: absolute;
-  inset: 10% 2% 0 8%;
-  border-radius: 50%;
-  background: rgba(108, 34, 177, 0.38);
-  filter: blur(70px);
-}
-
-.app-window {
+.app-screenshot {
   position: relative;
-  z-index: 2;
   width: min(760px, 100%);
+  height: auto;
   margin: 0;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 18px;
-  background: #17141b;
-  box-shadow: var(--shadow-lg);
-  transform: rotateY(-5deg) rotateX(1.5deg);
-  transform-origin: center left;
-}
-
-.window-bar {
-  display: flex;
-  height: 40px;
-  align-items: center;
-  padding: 0 14px;
-  color: rgba(255, 255, 255, 0.48);
-  background: #211d25;
-  font-size: 0.68rem;
-}
-
-.window-dots {
-  display: flex;
-  gap: 6px;
-  margin-right: auto;
-}
-
-.window-dots i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #655e69;
-}
-
-.window-dots i:first-child {
-  background: #e87979;
-}
-
-.window-dots i:nth-child(2) {
-  background: #e5b865;
-}
-
-.window-dots i:nth-child(3) {
-  background: #65c489;
-}
-
-.window-bar > span {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.app-window img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  object-position: center;
-}
-
-.floating-note {
-  position: absolute;
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 13px;
-  border: 1px solid rgba(255, 255, 255, 0.19);
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.78);
-  background: rgba(25, 11, 44, 0.82);
-  box-shadow: 0 14px 30px rgba(7, 2, 15, 0.3);
-  backdrop-filter: blur(12px);
-  font-size: 0.7rem;
-  font-weight: 700;
-}
-
-.floating-note-render {
-  right: 5%;
-  bottom: -22px;
-}
-
-.floating-note-theme {
-  bottom: 56px;
-  left: -42px;
-}
-
-.note-icon {
-  display: grid;
-  width: 25px;
-  height: 25px;
-  border-radius: 7px;
-  color: #220d37;
-  background: var(--cyan);
-  place-items: center;
-}
-
-.theme-pair {
-  display: flex;
-}
-
-.theme-pair i {
-  display: block;
-  width: 18px;
-  height: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: #f1edf3;
-}
-
-.theme-pair i:first-child {
-  border-radius: 7px 0 0 7px;
-}
-
-.theme-pair i:last-child {
-  border-radius: 0 7px 7px 0;
-  background: #2a2330;
 }
 
 .scroll-cue {
@@ -1041,40 +919,6 @@ button {
   transform: scale(1.045);
 }
 
-.gallery-item::after {
-  content: "";
-  position: absolute;
-  inset: 55% 0 0;
-  background: linear-gradient(transparent, rgba(9, 3, 16, 0.76));
-  pointer-events: none;
-}
-
-.gallery-item figcaption {
-  position: absolute;
-  z-index: 2;
-  right: 18px;
-  bottom: 16px;
-  left: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.73rem;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.gallery-item figcaption i {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  border-radius: 50%;
-  font-style: normal;
-  place-items: center;
-}
-
 .cta {
   padding-block: 92px;
 }
@@ -1196,8 +1040,6 @@ button {
 }
 
 .footer-bottom {
-  display: flex;
-  justify-content: space-between;
   padding-top: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.09);
   font-size: 0.72rem;
@@ -1264,9 +1106,6 @@ button {
     margin-right: -18vw;
   }
 
-  .floating-note-theme {
-    left: -20px;
-  }
 }
 
 @media (max-width: 900px) {
@@ -1340,10 +1179,6 @@ button {
   .hero-visual {
     width: 94%;
     margin: 0 0 0 auto;
-  }
-
-  .app-window {
-    transform: rotateY(-3deg);
   }
 
   .scroll-cue {
@@ -1459,19 +1294,6 @@ button {
     margin-left: 0;
   }
 
-  .floating-note {
-    display: none;
-  }
-
-  .app-window {
-    border-radius: 12px;
-    transform: none;
-  }
-
-  .window-bar {
-    height: 32px;
-  }
-
   .section h2 {
     font-size: clamp(2.35rem, 12vw, 3.4rem);
   }
@@ -1537,8 +1359,7 @@ button {
   }
 
   .footer-bottom {
-    gap: 8px;
-    flex-direction: column;
+    display: block;
   }
 }
 
