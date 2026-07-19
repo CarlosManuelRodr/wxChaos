@@ -46,8 +46,7 @@ DimensionFrame::DimensionFrame(wxWindow* parent, const wxWindowID id, const wxSt
 
     this->SetSizeHints(wxSize(960, 700), wxDefaultSize);
 
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
-    this->SetIcon(icon);
+    SetIcon(AppPaths::ApplicationIcon());
 
     const auto mainBoxSizer = new wxBoxSizer(wxVERTICAL);
     _mainPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);

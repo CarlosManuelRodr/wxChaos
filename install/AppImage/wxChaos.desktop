@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=wxChaos
+Comment=Explore and render fractals
+Exec=wxChaos
+Icon=wxChaos
+Categories=Graphics;
+Keywords=fractal;graphics;mathematics;
+Terminal=false
+StartupNotify=true

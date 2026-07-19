@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <wx/icon.h>
 #include <wx/string.h>
 
 namespace AppPaths
@@ -36,6 +37,7 @@ namespace AppPaths
 
     wxString ResourceFile(const std::vector<wxString>& pathParts);
     std::string ResourceFileStd(const std::vector<wxString>& pathParts);
+    wxIcon ApplicationIcon();
     wxString DocFile(const wxString& filename);
     std::string DocFileStd(const wxString& filename);
     wxString ConfigFile();
