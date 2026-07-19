@@ -22,7 +22,7 @@
   <a href="https://github.com/CarlosManuelRodr/wxChaos/issues">Report an issue</a>
 </p>
 
-![wxChaos running in light and dark mode](images/Screenshots.png)
+![wxChaos running in light and dark mode](images/en/Screenshots.png)
 
 wxChaos is an open-source application for exploring fractals through direct
 interaction. Move through familiar sets, follow the orbit behind a point,
@@ -68,12 +68,12 @@ equations can be watched step by step rather than treated as static notation.
 | Script editor | Dimension calculator |
 |:--:|:--:|
 | Write and run scripted fractals without rebuilding wxChaos. | Estimate fractal dimension with the box-counting method. |
-| ![The wxChaos script editor](images/ScriptEditor.png) | ![The wxChaos fractal dimension calculator](images/Dimension.png) |
+| ![The wxChaos script editor](images/en/ScriptEditor.png) | ![The wxChaos fractal dimension calculator](images/en/Dimension.png) |
 
 | Renderer options | Zoom recorder |
 |:--:|:--:|
 | Choose the coloring algorithm, palette, precision, smoothing, orbit traps, and other rendering controls. | Export a video from a sequence of selected zoom views. |
-| ![The wxChaos renderer options](images/RendererOptions.png) | ![The wxChaos zoom recorder](images/ZoomRecorder.png) |
+| ![The wxChaos renderer options](images/en/RendererOptions.png) | ![The wxChaos zoom recorder](images/en/ZoomRecorder.png) |
 
 ## Gallery
 

@@ -22,7 +22,7 @@
   <a href="https://github.com/CarlosManuelRodr/wxChaos/issues">問題を報告</a>
 </p>
 
-![ライトテーマとダークテーマで動作するwxChaos](images/Screenshots.png)
+![ライトテーマとダークテーマで動作するwxChaos](images/ja/Screenshots.png)
 
 wxChaosは、直接操作しながらフラクタルを探索できるオープンソースの
 アプリケーションです。よく知られた集合の中を移動し、点の軌道をたどり、
@@ -68,12 +68,12 @@ Mandelbrot反復、Newton-Raphson法、二重振り子の方程式などを、�
 | スクリプトエディター | 次元計算 |
 |:--:|:--:|
 | wxChaosを再ビルドせずに、スクリプトによるフラクタルを記述して実行できます。 | ボックスカウント法でフラクタル次元を推定します。 |
-| ![wxChaosのスクリプトエディター](images/ScriptEditor.png) | ![wxChaosのフラクタル次元計算ツール](images/Dimension.png) |
+| ![wxChaosのスクリプトエディター](images/ja/ScriptEditor.png) | ![wxChaosのフラクタル次元計算ツール](images/ja/Dimension.png) |
 
 | レンダラー設定 | ズームレコーダー |
 |:--:|:--:|
 | カラーリングアルゴリズム、パレット、精度、スムージング、軌道トラップなどの描画設定を変更できます。 | 選択した複数のズーム表示から動画をエクスポートします。 |
-| ![wxChaosのレンダラー設定](images/RendererOptions.png) | ![wxChaosのズームレコーダー](images/ZoomRecorder.png) |
+| ![wxChaosのレンダラー設定](images/ja/RendererOptions.png) | ![wxChaosのズームレコーダー](images/ja/ZoomRecorder.png) |
 
 ## ギャラリー
 

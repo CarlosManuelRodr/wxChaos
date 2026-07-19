@@ -22,7 +22,7 @@
   <a href="https://github.com/CarlosManuelRodr/wxChaos/issues">Reportar un problema</a>
 </p>
 
-![wxChaos ejecutándose en los temas claro y oscuro](images/Screenshots.png)
+![wxChaos ejecutándose en los temas claro y oscuro](images/es/Screenshots.png)
 
 wxChaos es una aplicación de código abierto para explorar fractales mediante
 la interacción directa. Recorre conjuntos conocidos, sigue la órbita detrás de
@@ -74,12 +74,12 @@ en lugar de tratarse como notación estática.
 | Editor de scripts | Calculadora de dimensión |
 |:--:|:--:|
 | Escribe y ejecuta fractales programados sin volver a compilar wxChaos. | Estima la dimensión fractal mediante el método de conteo de cajas. |
-| ![El editor de scripts de wxChaos](images/ScriptEditor.png) | ![La calculadora de dimensión fractal de wxChaos](images/Dimension.png) |
+| ![El editor de scripts de wxChaos](images/es/ScriptEditor.png) | ![La calculadora de dimensión fractal de wxChaos](images/es/Dimension.png) |
 
 | Opciones del renderizador | Grabador de zoom |
 |:--:|:--:|
 | Elige el algoritmo de coloreado, la paleta, la precisión, el suavizado, las trampas de órbita y otros controles de renderizado. | Exporta un vídeo a partir de una secuencia de vistas seleccionadas. |
-| ![Las opciones del renderizador de wxChaos](images/RendererOptions.png) | ![El grabador de zoom de wxChaos](images/ZoomRecorder.png) |
+| ![Las opciones del renderizador de wxChaos](images/es/RendererOptions.png) | ![El grabador de zoom de wxChaos](images/es/ZoomRecorder.png) |
 
 ## Galería
 
