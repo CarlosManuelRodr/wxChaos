@@ -62,10 +62,10 @@ equations can be watched step by step rather than treated as static notation.
 | Write and run scripted fractals without rebuilding wxChaos. | Estimate fractal dimension with the box-counting method. |
 | ![The wxChaos script editor](images/ScriptEditor.png) | ![The wxChaos fractal dimension calculator](images/Dimension.png) |
 
-| Zoom recorder |
-|:--:|
-| Export a video from a sequence of selected zoom views. |
-| ![The wxChaos zoom recorder](images/ZoomRecorder.png) |
+| Renderer options | Zoom recorder |
+|:--:|:--:|
+| Choose the coloring algorithm, palette, precision, smoothing, orbit traps, and other rendering controls. | Export a video from a sequence of selected zoom views. |
+| ![The wxChaos renderer options](images/RendererOptions.png) | ![The wxChaos zoom recorder](images/ZoomRecorder.png) |
 
 ## Gallery
 
