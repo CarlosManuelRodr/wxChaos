@@ -435,6 +435,16 @@ button {
   font-size: 0.88rem;
 }
 
+.download-row .download-note {
+  margin-top: 7px;
+  color: var(--quiet);
+  font-size: 0.78rem;
+}
+
+.download-note a {
+  white-space: nowrap;
+}
+
 .download-row code {
   overflow: hidden;
   color: var(--quiet);

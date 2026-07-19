@@ -135,6 +135,14 @@ layout: default
             <div>
               <h3>{{ download.title }}</h3>
               <p>{{ download.detail }}</p>
+              {% if download.note %}
+                <p class="download-note">
+                  {{ download.note }}
+                  {% if download.note_url %}
+                    <a href="{{ download.note_url }}">{{ download.note_link }}</a>
+                  {% endif %}
+                </p>
+              {% endif %}
             </div>
             <code>{{ download.filename }}</code>
             <a class="download-link" href="{{ download_url }}">{{ t.downloads.action }}</a>

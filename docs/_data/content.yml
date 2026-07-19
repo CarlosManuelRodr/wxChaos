@@ -14,7 +14,7 @@ en:
   hero:
     tagline: An interactive fractal explorer for discovering, understanding, and creating complex patterns.
     first: wxChaos is an open-source application for exploring fractals through direct interaction. Move through familiar sets, follow the orbit behind a point, compare rendering methods, open a Julia preview, or examine the mathematics without leaving the application.
-    second: It includes classic complex-plane fractals, chaotic maps, numerical systems, and vector constructions—from Mandelbrot and Julia sets to Newton basins, the Burning Ship, the Henon and Logistic maps, the double pendulum, Sierpinski constructions, and the Koch snowflake.
+    second: It includes classic complex-plane fractals, chaotic maps, numerical systems, and vector constructions. Examples include Mandelbrot and Julia sets, Newton basins, the Burning Ship, the Henon and Logistic maps, the double pendulum, Sierpinski constructions, and the Koch snowflake.
     download: Download v2.0.0
     source: View source
     image_alt: wxChaos running in light and dark mode
@@ -83,14 +83,19 @@ en:
       - key: windows_installer
         title: Windows installer
         detail: 64-bit setup executable
+        note: Use this one if unsure.
         filename: wxChaos-2.0.0-windows-x64-setup.exe
       - key: windows_portable
         title: Windows portable
         detail: 64-bit portable ZIP archive
+        note: Requires the Microsoft Visual C++ Redistributable (x64).
+        note_link: Download it from Microsoft.
+        note_url: https://aka.ms/vs/17/release/vc_redist.x64.exe
         filename: wxChaos-2.0.0-windows-x64-portable.zip
       - key: linux_appimage
         title: Linux AppImage
         detail: x86_64 AppImage
+        note: Install the libfuse2 package before running the AppImage.
         filename: wxChaos-2.0.0-x86_64.AppImage
   project:
     title: Project information
@@ -125,7 +130,7 @@ es:
   hero:
     tagline: Un explorador de fractales interactivo para descubrir, comprender y crear patrones complejos.
     first: wxChaos es una aplicación de código abierto para explorar fractales mediante la interacción directa. Recorre conjuntos conocidos, sigue la órbita detrás de un punto, compara métodos de renderizado, abre una vista previa de Julia o examina las matemáticas sin salir de la aplicación.
-    second: Incluye fractales clásicos del plano complejo, mapas caóticos, sistemas numéricos y construcciones vectoriales, desde los conjuntos de Mandelbrot y Julia hasta las cuencas de Newton, Burning Ship, los mapas de Henon y Logístico, el péndulo doble, las construcciones de Sierpinski y el copo de nieve de Koch.
+    second: Incluye fractales clásicos del plano complejo, mapas caóticos, sistemas numéricos y construcciones vectoriales. Entre ellos se encuentran los conjuntos de Mandelbrot y Julia, las cuencas de Newton, Burning Ship, los mapas de Henon y Logístico, el péndulo doble, las construcciones de Sierpinski y el copo de nieve de Koch.
     download: Descargar v2.0.0
     source: Ver código fuente
     image_alt: wxChaos ejecutándose en los temas claro y oscuro
@@ -194,14 +199,19 @@ es:
       - key: windows_installer
         title: Instalador para Windows
         detail: Ejecutable de instalación de 64 bits
+        note: Elige esta opción si no estás seguro.
         filename: wxChaos-2.0.0-windows-x64-setup.exe
       - key: windows_portable
         title: Windows portátil
         detail: Archivo ZIP portátil de 64 bits
+        note: Requiere Microsoft Visual C++ Redistributable (x64).
+        note_link: Descargar desde Microsoft.
+        note_url: https://aka.ms/vs/17/release/vc_redist.x64.exe
         filename: wxChaos-2.0.0-windows-x64-portable.zip
       - key: linux_appimage
         title: AppImage para Linux
         detail: AppImage para x86_64
+        note: Instala el paquete libfuse2 antes de ejecutar la AppImage.
         filename: wxChaos-2.0.0-x86_64.AppImage
   project:
     title: Información del proyecto
@@ -236,7 +246,7 @@ ja:
   hero:
     tagline: 複雑なパターンを探索し、その仕組みを理解し、自分で作るためのインタラクティブなフラクタル探索アプリケーションです。
     first: wxChaosは、直接操作しながらフラクタルを探索できるオープンソースのアプリケーションです。よく知られた集合の中を移動し、点の軌道をたどり、描画方法を比較し、Juliaプレビューを開き、アプリケーションを離れることなく数学的な仕組みを確認できます。
-    second: 複素平面上の古典的なフラクタルだけでなく、カオス写像、数値計算によるシステム、ベクター図形による構成も収録しています。Mandelbrot集合やJulia集合、Newton法の吸引域、Burning Ship、Henon写像とLogistic写像、二重振り子、Sierpinski図形、Koch雪片まで幅広く探索できます。
+    second: 複素平面上の古典的なフラクタルだけでなく、カオス写像、数値計算によるシステム、ベクター図形による構成も収録しています。Mandelbrot集合、Julia集合、Newton法の吸引域、Burning Ship、Henon写像、Logistic写像、二重振り子、Sierpinski図形、Koch雪片などを探索できます。
     download: v2.0.0をダウンロード
     source: ソースコードを見る
     image_alt: ライトテーマとダークテーマで動作するwxChaos
@@ -305,14 +315,19 @@ ja:
       - key: windows_installer
         title: Windows インストーラー
         detail: 64ビット版セットアップ実行ファイル
+        note: どれを選べばよいかわからない場合は、こちらを使用してください。
         filename: wxChaos-2.0.0-windows-x64-setup.exe
       - key: windows_portable
         title: Windows ポータブル
         detail: 64ビット版ポータブルZIP
+        note: Microsoft Visual C++ Redistributable (x64) が必要です。
+        note_link: Microsoftからダウンロードしてください。
+        note_url: https://aka.ms/vs/17/release/vc_redist.x64.exe
         filename: wxChaos-2.0.0-windows-x64-portable.zip
       - key: linux_appimage
         title: Linux AppImage
         detail: x86_64 AppImage
+        note: AppImageを実行する前にlibfuse2パッケージをインストールしてください。
         filename: wxChaos-2.0.0-x86_64.AppImage
   project:
     title: プロジェクト情報
