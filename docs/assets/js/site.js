@@ -6,46 +6,6 @@
   var menuButton = document.querySelector(".menu-toggle");
   var navigation = document.querySelector("#site-nav");
   var themeButton = document.querySelector("[data-theme-toggle]");
-  var downloadButtons = document.querySelectorAll("[data-platform-download]");
-
-  function detectDownloadPlatform() {
-    var userAgentDataPlatform = navigator.userAgentData && navigator.userAgentData.platform;
-    var platform = (userAgentDataPlatform || navigator.platform || "").toLowerCase();
-    var userAgent = (navigator.userAgent || "").toLowerCase();
-
-    if (platform.indexOf("win") !== -1) {
-      return "windows";
-    }
-
-    if ((platform.indexOf("linux") !== -1 || platform.indexOf("x11") !== -1) &&
-        userAgent.indexOf("android") === -1 && userAgent.indexOf("cros") === -1) {
-      return "linux";
-    }
-
-    return "";
-  }
-
-  function updateDownloadButtons() {
-    var platform = detectDownloadPlatform();
-
-    if (!platform) {
-      return;
-    }
-
-    downloadButtons.forEach(function (button) {
-      var label = button.querySelector("[data-download-label]");
-      var url = platform === "windows" ? button.dataset.windowsUrl : button.dataset.linuxUrl;
-      var platformLabel = platform === "windows" ? button.dataset.windowsLabel : button.dataset.linuxLabel;
-
-      if (url) {
-        button.href = url;
-      }
-
-      if (label && platformLabel) {
-        label.textContent = platformLabel;
-      }
-    });
-  }
 
   function updateHeader() {
     if (header) {
@@ -63,7 +23,6 @@
   }
 
   updateHeader();
-  updateDownloadButtons();
   window.addEventListener("scroll", updateHeader, { passive: true });
 
   if (menuButton && header) {

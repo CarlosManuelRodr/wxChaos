@@ -11,13 +11,13 @@ en:
     language: Choose a language
     theme: Change color theme
   downloads:
-    windows: Download for Windows
-    linux: Download AppImage
+    windows_installer: Windows installer
+    windows_portable: Windows portable (.zip)
+    linux_appimage: Linux AppImage
   hero:
     kicker: Open-source fractal explorer
     title: Explore the beauty of chaos.
     lead: Discover familiar sets, follow the mathematics behind every point, and create complex worlds of your own.
-    download: Download latest release
     source: View on GitHub
     meta_label: Project highlights
     meta:
@@ -105,7 +105,6 @@ en:
     kicker: Begin exploring
     title: Ready to enter the fractal?
     text: Download the latest release, choose a starting point, and see where curiosity takes you.
-    download: Download wxChaos
     build: Build from source
   footer:
     tagline: An interactive, open-source fractal explorer.
@@ -132,13 +131,13 @@ es:
     language: Elegir idioma
     theme: Cambiar tema de color
   downloads:
-    windows: Descargar para Windows
-    linux: Descargar AppImage
+    windows_installer: Instalador para Windows
+    windows_portable: Windows portátil (.zip)
+    linux_appimage: AppImage para Linux
   hero:
     kicker: Explorador de fractales de código abierto
     title: Explora la belleza del caos.
     lead: Descubre conjuntos conocidos, sigue las matemáticas detrás de cada punto y crea tus propios mundos complejos.
-    download: Descargar la última versión
     source: Ver en GitHub
     meta_label: Características del proyecto
     meta:
@@ -226,7 +225,6 @@ es:
     kicker: Comienza a explorar
     title: ¿Listo para entrar en el fractal?
     text: Descarga la versión más reciente, elige un punto de partida y descubre hasta dónde te lleva la curiosidad.
-    download: Descargar wxChaos
     build: Compilar desde el código
   footer:
     tagline: Un explorador de fractales interactivo y de código abierto.
@@ -253,13 +251,13 @@ ja:
     language: 言語を選択
     theme: カラーテーマを変更
   downloads:
-    windows: Windows版をダウンロード
-    linux: AppImageをダウンロード
+    windows_installer: Windows インストーラー
+    windows_portable: Windows ポータブル (.zip)
+    linux_appimage: Linux AppImage
   hero:
     kicker: オープンソースのフラクタル探索アプリ
     title: カオスの美しさを探索しよう。
     lead: よく知られた集合を巡り、各点の背後にある数学をたどり、自分だけの複雑な世界を作り出せます。
-    download: 最新版をダウンロード
     source: GitHubで見る
     meta_label: プロジェクトの特長
     meta:
@@ -347,7 +345,6 @@ ja:
     kicker: 探索を始めよう
     title: フラクタルの世界へ入りませんか？
     text: 最新版をダウンロードして出発点を選び、好奇心の向かう先を探してみましょう。
-    download: wxChaosをダウンロード
     build: ソースからビルド
   footer:
     tagline: インタラクティブなオープンソースのフラクタル探索アプリ。

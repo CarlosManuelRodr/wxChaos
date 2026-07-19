@@ -42,14 +42,17 @@ layout: default
         <img class="hero-logo" src="{{ '/assets/images/title.webp' | relative_url }}" width="820" height="175" alt="wxChaos">
         <h1>{{ t.hero.title }}</h1>
         <p class="hero-lead">{{ t.hero.lead }}</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="{{ site.release_url }}"
-             data-platform-download
-             data-windows-url="{{ site.windows_installer_url }}"
-             data-linux-url="{{ site.linux_appimage_url }}"
-             data-windows-label="{{ t.downloads.windows }}"
-             data-linux-label="{{ t.downloads.linux }}">
-            <span data-download-label>{{ t.hero.download }}</span>
+        <div class="hero-actions" id="downloads">
+          <a class="button button-primary" href="{{ site.windows_installer_url }}">
+            <span>{{ t.downloads.windows_installer }}</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a class="button button-secondary" href="{{ site.windows_portable_url }}">
+            <span>{{ t.downloads.windows_portable }}</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a class="button button-secondary" href="{{ site.linux_appimage_url }}">
+            <span>{{ t.downloads.linux_appimage }}</span>
             <span aria-hidden="true">↓</span>
           </a>
           <a class="button button-secondary" href="{{ site.github_url }}">
@@ -196,13 +199,16 @@ layout: default
           <p>{{ t.cta.text }}</p>
         </div>
         <div class="cta-actions">
-          <a class="button button-light" href="{{ site.release_url }}"
-             data-platform-download
-             data-windows-url="{{ site.windows_installer_url }}"
-             data-linux-url="{{ site.linux_appimage_url }}"
-             data-windows-label="{{ t.downloads.windows }}"
-             data-linux-label="{{ t.downloads.linux }}">
-            <span data-download-label>{{ t.cta.download }}</span>
+          <a class="button button-light" href="{{ site.windows_installer_url }}">
+            <span>{{ t.downloads.windows_installer }}</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a class="button button-secondary" href="{{ site.windows_portable_url }}">
+            <span>{{ t.downloads.windows_portable }}</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a class="button button-secondary" href="{{ site.linux_appimage_url }}">
+            <span>{{ t.downloads.linux_appimage }}</span>
             <span aria-hidden="true">↓</span>
           </a>
           <a class="text-link" href="{{ site.build_url }}">{{ t.cta.build }} <span aria-hidden="true">→</span></a>
@@ -221,7 +227,7 @@ layout: default
       <div class="footer-links">
         <div>
           <h2>{{ t.footer.project }}</h2>
-          <a href="{{ site.release_url }}">{{ t.footer.download }}</a>
+          <a href="#downloads">{{ t.footer.download }}</a>
           <a href="{{ site.build_url }}">{{ t.footer.build }}</a>
           <a href="{{ site.releases_url }}">{{ t.footer.releases }}</a>
         </div>
