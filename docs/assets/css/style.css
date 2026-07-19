@@ -151,42 +151,8 @@ button {
   width: var(--shell);
   min-height: 76px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-inline: auto;
-}
-
-.wordmark {
-  display: inline-flex;
-  align-items: center;
-  gap: 11px;
-  color: #fff;
-  font-size: 1.12rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.wordmark-mark {
-  position: relative;
-  display: inline-block;
-  width: 28px;
-  height: 28px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  background:
-    radial-gradient(circle at 65% 35%, var(--cyan) 0 4%, transparent 5%),
-    radial-gradient(circle at 42% 62%, var(--gold) 0 5%, transparent 6%),
-    conic-gradient(from 225deg, #42106c, #9a36e5, #1dcce9, #42106c);
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.24), 0 0 22px rgba(97, 51, 183, 0.35);
-}
-
-.wordmark-mark::after {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 50% 35% 55% 40%;
-  transform: rotate(34deg);
 }
 
 .site-nav {

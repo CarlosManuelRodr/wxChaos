@@ -1,9 +1,6 @@
 en:
-  routes:
-    home: /
   nav:
     skip: Skip to content
-    home_label: wxChaos home
     menu: Open menu
     primary: Primary navigation
     features: Features
@@ -120,11 +117,8 @@ en:
     copyright: "© 2026 wxChaos contributors."
 
 es:
-  routes:
-    home: /es/
   nav:
     skip: Ir al contenido
-    home_label: Inicio de wxChaos
     menu: Abrir menú
     primary: Navegación principal
     features: Funciones
@@ -241,11 +235,8 @@ es:
     copyright: "© 2026 Colaboradores de wxChaos."
 
 ja:
-  routes:
-    home: /ja/
   nav:
     skip: コンテンツへ移動
-    home_label: wxChaos ホーム
     menu: メニューを開く
     primary: メインナビゲーション
     features: 機能
