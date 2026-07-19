@@ -3,6 +3,7 @@
 #include <utility>
 #include <wx/filename.h>
 #include <wx/filesys.h>
+#include <wx/log.h>
 #include "AppPaths.h"
 #include "common/AppLocalization.h"
 #include "common/AppTheme.h"
@@ -12,6 +13,7 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
                                WxChaosLinkHandler wxChaosLinkHandler)
                                : wxFrame(nullptr, id, title, pos, size, style),
                                  _lifetimeOwner(parent),
+                                 _documentUrl(wxFileSystem::FileNameToURL(wxFileName(htmlFile).GetFullPath())),
                                  _wxChaosLinkHandler(std::move(wxChaosLinkHandler))
 {
     SetSizeHints(wxSize(900, 620), wxDefaultSize);
@@ -20,18 +22,46 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
     SetIcon(icon);
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
+#ifdef __WXMSW__
+    if (wxWebView::IsBackendAvailable(wxWebViewBackendEdge))
+    {
+        _webView = wxWebView::New(this, wxID_ANY, wxWebViewDefaultURLStr, wxDefaultPosition, wxDefaultSize,
+                                  wxWebViewBackendEdge);
+
+        const wxVersionInfo backendVersion = wxWebView::GetBackendVersionInfo(wxWebViewBackendEdge);
+        wxLogVerbose("Using Microsoft Edge WebView2 %s for documentation",
+                     backendVersion.GetNumericVersionString());
+    }
+#else
     _webView = wxWebView::New(this, wxID_ANY);
-    mainSizer->Add(_webView, 1, wxALL | wxEXPAND, 5);
+#endif
+
+    if (_webView != nullptr)
+    {
+        mainSizer->Add(_webView, 1, wxALL | wxEXPAND, 5);
+    }
+    else
+    {
+#ifdef __WXMSW__
+        wxLogWarning("Microsoft Edge WebView2 is unavailable; documentation will open in the system browser");
+#else
+        wxLogWarning("The platform web view is unavailable; documentation will open in the system browser");
+#endif
+        CreateWebViewUnavailablePanel(mainSizer);
+    }
 
     const auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-    _backButton = new wxButton(this, wxID_ANY, "", wxDefaultPosition, wxSize(36, 32), 0);
-    _forwardButton = new wxButton(this, wxID_ANY, "", wxDefaultPosition, wxSize(36, 32), 0);
-    _backButton->SetBitmap(CreateNavigationButtonBitmap(true));
-    _forwardButton->SetBitmap(CreateNavigationButtonBitmap(false));
-    _backButton->SetToolTip(_("Back"));
-    _forwardButton->SetToolTip(_("Forward"));
-    buttonSizer->Add(_backButton, 0, wxALL, 5);
-    buttonSizer->Add(_forwardButton, 0, wxALL, 5);
+    if (_webView != nullptr)
+    {
+        _backButton = new wxButton(this, wxID_ANY, "", wxDefaultPosition, wxSize(36, 32), 0);
+        _forwardButton = new wxButton(this, wxID_ANY, "", wxDefaultPosition, wxSize(36, 32), 0);
+        _backButton->SetBitmap(CreateNavigationButtonBitmap(true));
+        _forwardButton->SetBitmap(CreateNavigationButtonBitmap(false));
+        _backButton->SetToolTip(_("Back"));
+        _forwardButton->SetToolTip(_("Forward"));
+        buttonSizer->Add(_backButton, 0, wxALL, 5);
+        buttonSizer->Add(_forwardButton, 0, wxALL, 5);
+    }
     buttonSizer->AddStretchSpacer();
     _closeButton = new wxButton(this, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_closeButton, 0, wxALL, 5);
@@ -47,13 +77,16 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
     if (_lifetimeOwner != nullptr)
         _lifetimeOwner->Bind(wxEVT_DESTROY, &DocumentViewer::OnOwnerDestroyed, this);
 
-    _backButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnBack, this);
-    _forwardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnForward, this);
-    _webView->Bind(wxEVT_WEBVIEW_NAVIGATING, &DocumentViewer::OnNavigating, this);
-    _webView->Bind(wxEVT_WEBVIEW_NAVIGATED, &DocumentViewer::OnNavigated, this);
-    _webView->Bind(wxEVT_WEBVIEW_LOADED, &DocumentViewer::OnLoaded, this);
+    if (_webView != nullptr)
+    {
+        _backButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnBack, this);
+        _forwardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnForward, this);
+        _webView->Bind(wxEVT_WEBVIEW_NAVIGATING, &DocumentViewer::OnNavigating, this);
+        _webView->Bind(wxEVT_WEBVIEW_NAVIGATED, &DocumentViewer::OnNavigated, this);
+        _webView->Bind(wxEVT_WEBVIEW_LOADED, &DocumentViewer::OnLoaded, this);
+        _webView->LoadURL(_documentUrl);
+    }
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnClose, this);
-    _webView->LoadURL(wxFileSystem::FileNameToURL(wxFileName(htmlFile).GetFullPath()));
     UpdateNavigationButtons();
 }
 
@@ -62,11 +95,21 @@ DocumentViewer::~DocumentViewer()
     if (_lifetimeOwner != nullptr)
         _lifetimeOwner->Unbind(wxEVT_DESTROY, &DocumentViewer::OnOwnerDestroyed, this);
 
-    _backButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnBack, this);
-    _forwardButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnForward, this);
-    _webView->Unbind(wxEVT_WEBVIEW_NAVIGATING, &DocumentViewer::OnNavigating, this);
-    _webView->Unbind(wxEVT_WEBVIEW_NAVIGATED, &DocumentViewer::OnNavigated, this);
-    _webView->Unbind(wxEVT_WEBVIEW_LOADED, &DocumentViewer::OnLoaded, this);
+    if (_webView != nullptr)
+    {
+        _backButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnBack, this);
+        _forwardButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnForward, this);
+        _webView->Unbind(wxEVT_WEBVIEW_NAVIGATING, &DocumentViewer::OnNavigating, this);
+        _webView->Unbind(wxEVT_WEBVIEW_NAVIGATED, &DocumentViewer::OnNavigated, this);
+        _webView->Unbind(wxEVT_WEBVIEW_LOADED, &DocumentViewer::OnLoaded, this);
+    }
+    else
+    {
+        _openInBrowserButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnOpenInBrowser, this);
+#ifdef __WXMSW__
+        _downloadWebViewButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnDownloadWebView, this);
+#endif
+    }
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnClose, this);
 
     std::vector<DocumentViewer*>& openViewers = GetOpenViewers();
@@ -76,6 +119,9 @@ DocumentViewer::~DocumentViewer()
 // ReSharper disable once CppDFAUnreachableFunctionCall
 void DocumentViewer::ApplyDocumentPresentation() const
 {
+    if (_webView == nullptr)
+        return;
+
     const wxString theme = AppTheme::IsDark() ? "dark" : "light";
     const wxString language = AppLocalization::DocumentationLanguageCode(AppLocalization::CurrentLanguage());
     const wxString script = wxString::Format(
@@ -121,6 +167,52 @@ std::vector<DocumentViewer*>& DocumentViewer::GetOpenViewers()
     return openViewers;
 }
 
+void DocumentViewer::CreateWebViewUnavailablePanel(wxBoxSizer* mainSizer)
+{
+    const auto panel = new wxPanel(this);
+    const auto panelSizer = new wxBoxSizer(wxVERTICAL);
+    panelSizer->AddStretchSpacer();
+
+    const auto title = new wxStaticText(panel, wxID_ANY, _("Documentation viewer unavailable"));
+    wxFont titleFont = title->GetFont();
+    titleFont.MakeBold();
+    titleFont.Scale(1.35);
+    title->SetFont(titleFont);
+    panelSizer->Add(title, 0, wxALIGN_CENTER_HORIZONTAL | wxBOTTOM, 12);
+
+#ifdef __WXMSW__
+    const wxString explanationText =
+        _("The Microsoft Edge WebView2 Runtime is required to display documentation inside wxChaos. "
+          "You can open this page in your browser or install WebView2 and try again.");
+#else
+    const wxString explanationText =
+        _("The system web view is unavailable. You can open this documentation page in your browser.");
+#endif
+    const auto explanation = new wxStaticText(panel, wxID_ANY, explanationText);
+    explanation->Wrap(650);
+    panelSizer->Add(explanation, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxBOTTOM, 24);
+
+    const auto actionSizer = new wxBoxSizer(wxHORIZONTAL);
+    _openInBrowserButton = new wxButton(panel, wxID_ANY, _("Open in browser"));
+#ifdef __WXMSW__
+    _downloadWebViewButton = new wxButton(panel, wxID_ANY, _("Download WebView2"));
+    actionSizer->Add(_openInBrowserButton, 0, wxRIGHT, 8);
+    actionSizer->Add(_downloadWebViewButton);
+#else
+    actionSizer->Add(_openInBrowserButton);
+#endif
+    panelSizer->Add(actionSizer, 0, wxALIGN_CENTER_HORIZONTAL);
+    panelSizer->AddStretchSpacer();
+
+    panel->SetSizer(panelSizer);
+    mainSizer->Add(panel, 1, wxEXPAND | wxALL, 24);
+
+    _openInBrowserButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnOpenInBrowser, this);
+#ifdef __WXMSW__
+    _downloadWebViewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnDownloadWebView, this);
+#endif
+}
+
 void DocumentViewer::CloseOpenViewers()
 {
     const std::vector<DocumentViewer*> openViewers = GetOpenViewers();
@@ -149,13 +241,16 @@ void DocumentViewer::AddNavigationHistoryEntry(const wxString& url)
 
 void DocumentViewer::UpdateNavigationButtons() const
 {
+    if (_webView == nullptr)
+        return;
+
     _backButton->Enable(_navigationHistoryIndex > 0);
     _forwardButton->Enable(_navigationHistoryIndex + 1 < static_cast<int>(_navigationHistory.size()));
 }
 
 void DocumentViewer::OnBack(wxCommandEvent&)
 {
-    if (_navigationHistoryIndex <= 0)
+    if (_webView == nullptr || _navigationHistoryIndex <= 0)
         return;
 
     --_navigationHistoryIndex;
@@ -166,7 +261,7 @@ void DocumentViewer::OnBack(wxCommandEvent&)
 
 void DocumentViewer::OnForward(wxCommandEvent&)
 {
-    if (_navigationHistoryIndex + 1 >= static_cast<int>(_navigationHistory.size()))
+    if (_webView == nullptr || _navigationHistoryIndex + 1 >= static_cast<int>(_navigationHistory.size()))
         return;
 
     ++_navigationHistoryIndex;
@@ -219,6 +314,21 @@ void DocumentViewer::OnLoaded(wxWebViewEvent&)
     ApplyDocumentPresentation();
     UpdateNavigationButtons();
 }
+
+void DocumentViewer::OnOpenInBrowser(wxCommandEvent&)
+{
+    if (!wxLaunchDefaultBrowser(_documentUrl))
+        wxLogError("Failed to open documentation in the system browser: %s", _documentUrl);
+}
+
+#ifdef __WXMSW__
+void DocumentViewer::OnDownloadWebView(wxCommandEvent&)
+{
+    constexpr auto downloadUrl = "https://developer.microsoft.com/microsoft-edge/webview2/";
+    if (!wxLaunchDefaultBrowser(downloadUrl))
+        wxLogError("Failed to open the Microsoft Edge WebView2 download page");
+}
+#endif
 
 void DocumentViewer::OnClose(wxCommandEvent&)
 {

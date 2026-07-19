@@ -30,7 +30,12 @@ private:
     wxButton* _backButton{};
     wxButton* _forwardButton{};
     wxButton* _closeButton{};
+    wxButton* _openInBrowserButton{};
+#ifdef __WXMSW__
+    wxButton* _downloadWebViewButton{};
+#endif
     wxWindow* _lifetimeOwner{};
+    wxString _documentUrl;
     std::vector<wxString> _navigationHistory;
     WxChaosLinkHandler _wxChaosLinkHandler;
     int _navigationHistoryIndex{-1};
@@ -45,6 +50,10 @@ private:
     /// @brief Returns the currently open documentation viewers.
     /// @return Shared list of open documentation viewers.
     static std::vector<DocumentViewer*>& GetOpenViewers();
+
+    /// @brief Adds the WebView2-unavailable explanation and browser actions.
+    /// @param mainSizer Frame sizer that receives the fallback panel.
+    void CreateWebViewUnavailablePanel(wxBoxSizer* mainSizer);
 
     /// @brief Adds a normal link navigation to the local document history.
     /// @param url URL that navigation is moving to.
@@ -79,6 +88,16 @@ private:
     /// @brief Applies theme and navigation state after a page finishes loading.
     /// @param event Web view loaded event.
     void OnLoaded(wxWebViewEvent& event);
+
+    /// @brief Opens the requested documentation page in the system browser.
+    /// @param event Button click event.
+    void OnOpenInBrowser(wxCommandEvent& event);
+
+#ifdef __WXMSW__
+    /// @brief Opens the official WebView2 Runtime download page.
+    /// @param event Button click event.
+    void OnDownloadWebView(wxCommandEvent& event);
+#endif
 
     /// @brief Closes the document viewer.
     /// @param event Button click event.

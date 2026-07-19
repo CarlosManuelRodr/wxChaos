@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-18 01:24-0600\n"
+"POT-Creation-Date: 2026-07-18 21:33-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -360,6 +360,26 @@ msgid "Back"
 msgstr ""
 
 msgid "Forward"
+msgstr ""
+
+msgid "Documentation viewer unavailable"
+msgstr ""
+
+msgid ""
+"The Microsoft Edge WebView2 Runtime is required to display documentation "
+"inside wxChaos. You can open this page in your browser or install WebView2 "
+"and try again."
+msgstr ""
+
+msgid ""
+"The system web view is unavailable. You can open this documentation page in "
+"your browser."
+msgstr ""
+
+msgid "Open in browser"
+msgstr ""
+
+msgid "Download WebView2"
 msgstr ""
 
 msgid "Saving..."

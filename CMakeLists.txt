@@ -262,6 +262,20 @@ if(WIN32)
                 )
         endif()
 
+        find_file(WXCHAOS_WEBVIEW2_LOADER
+                NAMES WebView2Loader.dll
+                HINTS ${WXCHAOS_RUNTIME_DEPENDENCY_DIRS}
+                REQUIRED
+        )
+
+        add_custom_command(
+                TARGET wxChaos POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                        "${WXCHAOS_WEBVIEW2_LOADER}"
+                        "$<TARGET_FILE_DIR:wxChaos>/WebView2Loader.dll"
+                COMMENT "Copying the Microsoft Edge WebView2 loader..."
+        )
+
         install(TARGETS wxChaos
                 RUNTIME_DEPENDENCIES
                 DIRECTORIES ${WXCHAOS_RUNTIME_DEPENDENCY_DIRS}
@@ -272,6 +286,9 @@ if(WIN32)
                         ".*[Ww][Ii][Nn][Dd][Oo][Ww][Ss][/\\\\][Ss][Yy][Ss][Tt][Ee][Mm]32.*"
                 RUNTIME DESTINATION .
         )
+        # wxWidgets loads this DLL with LoadLibrary(), so CMake's runtime
+        # dependency scanner cannot discover it from the executable.
+        install(FILES "${WXCHAOS_WEBVIEW2_LOADER}" DESTINATION .)
         install(DIRECTORY
                 "${CMAKE_SOURCE_DIR}/app_resources/Resources"
                 "${CMAKE_SOURCE_DIR}/app_resources/Scripts"

@@ -4,6 +4,9 @@
 #ifndef VCRedistPath
   #error VCRedistPath must point to vc_redist.x64.exe
 #endif
+#ifndef WebView2BootstrapperPath
+  #error WebView2BootstrapperPath must point to MicrosoftEdgeWebview2Setup.exe
+#endif
 #ifndef OutputDir
   #define OutputDir "Output"
 #endif
@@ -14,6 +17,9 @@
 #endif
 #ifnexist VCRedistPath
   #error The Visual C++ x64 Redistributable was not found
+#endif
+#ifnexist WebView2BootstrapperPath
+  #error The Microsoft Edge WebView2 Runtime bootstrapper was not found
 #endif
 
 #define AppVersion GetFileProductVersionString(AppExe)
@@ -71,6 +77,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#StageDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#VCRedistPath}"; DestDir: "{tmp}"; DestName: "vc_redist.x64.exe"; Flags: ignoreversion; \
     Check: VCRedistNeedsInstall
+Source: "{#WebView2BootstrapperPath}"; DestDir: "{tmp}"; DestName: "MicrosoftEdgeWebview2Setup.exe"; \
+    Flags: ignoreversion; Check: WebView2NeedsInstall
 
 [Icons]
 Name: "{autoprograms}\wxChaos"; Filename: "{app}\wxChaos.exe"; WorkingDir: "{app}"
@@ -79,14 +87,40 @@ Name: "{autodesktop}\wxChaos"; Filename: "{app}\wxChaos.exe"; WorkingDir: "{app}
 [Run]
 Filename: "{tmp}\vc_redist.x64.exe"; Parameters: "/install /quiet /norestart"; \
     StatusMsg: "{cm:InstallingVCRedist}"; Flags: waituntilterminated; Check: VCRedistNeedsInstall
+Filename: "{tmp}\MicrosoftEdgeWebview2Setup.exe"; Parameters: "/silent /install"; \
+    StatusMsg: "{cm:InstallingWebView2}"; Flags: waituntilterminated; Check: WebView2NeedsInstall
 Filename: "{app}\wxChaos.exe"; Description: "{cm:LaunchProgram,wxChaos}"; WorkingDir: "{app}"; \
     Flags: nowait postinstall skipifsilent
 
 [CustomMessages]
 en.InstallingVCRedist=Installing the Microsoft Visual C++ Runtime...
 es.InstallingVCRedist=Instalando Microsoft Visual C++ Runtime...
+en.InstallingWebView2=Installing the Microsoft Edge WebView2 Runtime...
+es.InstallingWebView2=Instalando Microsoft Edge WebView2 Runtime...
 
 [Code]
+const
+  WebView2ClientKey =
+    'Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}';
+
+function WebView2VersionIsInstalled(RootKey: Integer): Boolean;
+var
+  Version: String;
+begin
+  Result :=
+    RegQueryStringValue(RootKey, WebView2ClientKey, 'pv', Version) and
+    (Trim(Version) <> '') and
+    (CompareText(Trim(Version), '0.0.0.0') <> 0);
+end;
+
+function WebView2NeedsInstall: Boolean;
+begin
+  { Microsoft registers per-machine WebView2 in the 32-bit registry view. }
+  Result :=
+    not WebView2VersionIsInstalled(HKLM32) and
+    not WebView2VersionIsInstalled(HKCU);
+end;
+
 function VCRedistNeedsInstall: Boolean;
 var
   Installed: Cardinal;
