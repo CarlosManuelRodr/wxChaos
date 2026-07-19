@@ -72,7 +72,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
 
     if (_appConfig.firstUse)
     {
-        this->ShowFirstUseDialog();
+        CallAfter([this] { ShowFirstUseDialog(); });
         _appConfig.firstUse = false;
     }
 
