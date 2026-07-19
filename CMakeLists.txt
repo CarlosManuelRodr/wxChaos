@@ -84,20 +84,164 @@ if(UNIX AND NOT APPLE)
 endif()
 
 # -------------------------------------------------------------------
-# Source Files (trimmed here for readability)
+# Source Files
 # -------------------------------------------------------------------
-file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
-        wxChaos/core/*.cpp
-        wxChaos/gui/*.cpp
-        wxChaos/utils/*.cpp
-        wxChaos/scripting/*.cpp
+set(WXCHAOS_CORE_SOURCES
+        wxChaos/core/coloring/ColorPalette.cpp
+        wxChaos/core/coloring/PaletteMapping.cpp
+        wxChaos/core/coloring/RenderingAlgorithm.cpp
+        wxChaos/core/Fractal.cpp
+        wxChaos/core/FractalFactory.cpp
+        wxChaos/core/fractals/raster/BurningShip.cpp
+        wxChaos/core/fractals/raster/BurningShipJulia.cpp
+        wxChaos/core/fractals/raster/Cell.cpp
+        wxChaos/core/fractals/raster/DoublePendulum.cpp
+        wxChaos/core/fractals/raster/FixedPoint1.cpp
+        wxChaos/core/fractals/raster/FixedPoint2.cpp
+        wxChaos/core/fractals/raster/FixedPoint3.cpp
+        wxChaos/core/fractals/raster/FixedPoint4.cpp
+        wxChaos/core/fractals/raster/Fractory.cpp
+        wxChaos/core/fractals/raster/HenonMap.cpp
+        wxChaos/core/fractals/raster/Jellyfish.cpp
+        wxChaos/core/fractals/raster/Julia.cpp
+        wxChaos/core/fractals/raster/JuliaZM.cpp
+        wxChaos/core/fractals/raster/LogisticMap.cpp
+        wxChaos/core/fractals/raster/Magnet.cpp
+        wxChaos/core/fractals/raster/Mandelbrot.cpp
+        wxChaos/core/fractals/raster/MandelbrotZM.cpp
+        wxChaos/core/fractals/raster/Manowar.cpp
+        wxChaos/core/fractals/raster/ManowarJulia.cpp
+        wxChaos/core/fractals/raster/Newton.cpp
+        wxChaos/core/fractals/raster/ScriptFractal.cpp
+        wxChaos/core/fractals/raster/SierpinskiTriangle.cpp
+        wxChaos/core/fractals/raster/Sinusoidal.cpp
+        wxChaos/core/fractals/raster/symbolic/UserFormulaSymbolicCompiler.cpp
+        wxChaos/core/fractals/raster/Tricorn.cpp
+        wxChaos/core/fractals/raster/UserDefinedEscapeTime.cpp
+        wxChaos/core/fractals/raster/UserDefinedFixedPoint.cpp
+        wxChaos/core/fractals/raster/UserDefinedNewton.cpp
+        wxChaos/core/fractals/vector/KochSnowflake.cpp
+        wxChaos/core/fractals/vector/SierpinskiCarpet.cpp
+        wxChaos/core/fractals/vector/VectorSierpinskiTriangle.cpp
+        wxChaos/core/geometry/Rect.cpp
+        wxChaos/core/geometry/Vector2Double.cpp
+        wxChaos/core/raster/RasterFractal.cpp
+        wxChaos/core/raster/RasterJob.cpp
+        wxChaos/core/raster/RasterRegion.cpp
+        wxChaos/core/raster/RasterRenderWorker.cpp
+        wxChaos/core/raster/RasterThreadPool.cpp
+        wxChaos/core/renderers/raster/BurningShipJuliaRenderer.cpp
+        wxChaos/core/renderers/raster/BurningShipRenderer.cpp
+        wxChaos/core/renderers/raster/CellRenderer.cpp
+        wxChaos/core/renderers/raster/DoublePendulumRenderer.cpp
+        wxChaos/core/renderers/raster/FixedPoint1Renderer.cpp
+        wxChaos/core/renderers/raster/FixedPoint2Renderer.cpp
+        wxChaos/core/renderers/raster/FixedPoint3Renderer.cpp
+        wxChaos/core/renderers/raster/FixedPoint4Renderer.cpp
+        wxChaos/core/renderers/raster/FractoryRenderer.cpp
+        wxChaos/core/renderers/raster/HenonMapRenderer.cpp
+        wxChaos/core/renderers/raster/JellyfishRenderer.cpp
+        wxChaos/core/renderers/raster/JuliaRenderer.cpp
+        wxChaos/core/renderers/raster/JuliaZMRenderer.cpp
+        wxChaos/core/renderers/raster/LogisticMapRenderer.cpp
+        wxChaos/core/renderers/raster/MagnetRenderer.cpp
+        wxChaos/core/renderers/raster/MandelbrotRenderer.cpp
+        wxChaos/core/renderers/raster/MandelbrotZMRenderer.cpp
+        wxChaos/core/renderers/raster/ManowarJuliaRenderer.cpp
+        wxChaos/core/renderers/raster/ManowarRenderer.cpp
+        wxChaos/core/renderers/raster/NewtonRenderer.cpp
+        wxChaos/core/renderers/raster/ScriptFractalRenderer.cpp
+        wxChaos/core/renderers/raster/SierpinskiTriangleRenderer.cpp
+        wxChaos/core/renderers/raster/SinusoidalRenderer.cpp
+        wxChaos/core/renderers/raster/TricornRenderer.cpp
+        wxChaos/core/renderers/raster/UserDefinedEscapeTimeRenderer.cpp
+        wxChaos/core/renderers/raster/UserDefinedFixedPointRenderer.cpp
+        wxChaos/core/renderers/raster/UserDefinedNewtonRenderer.cpp
+        wxChaos/core/renderers/raster/utils/NewtonRootRegistry.cpp
+        wxChaos/core/renderers/vector/KochSnowflakeRenderer.cpp
+        wxChaos/core/renderers/vector/SierpinskiCarpetRenderer.cpp
+        wxChaos/core/renderers/vector/VectorSierpinskiTriangleRenderer.cpp
+        wxChaos/core/SystemUtilities.cpp
+        wxChaos/core/UserFormulaParser.cpp
+        wxChaos/core/vector/VectorFractal.cpp
+        wxChaos/core/vector/VectorRenderWorker.cpp
+)
+
+set(WXCHAOS_GUI_SOURCES
+        wxChaos/gui/sfml/Button.cpp
+        wxChaos/gui/sfml/CoordinateSelector.cpp
+        wxChaos/gui/sfml/FractalPresenter.cpp
+        wxChaos/gui/sfml/SelectionRect.cpp
+        wxChaos/gui/wx/analysis/BoxCountMap.cpp
+        wxChaos/gui/wx/analysis/BoxCountWorker.cpp
+        wxChaos/gui/wx/analysis/DimensionFrame.cpp
+        wxChaos/gui/wx/analysis/ImagePanel.cpp
+        wxChaos/gui/wx/analysis/LinePlotter.cpp
+        wxChaos/gui/wx/analysis/PlotWindow.cpp
+        wxChaos/gui/wx/canvas/FractalCanvas.cpp
+        wxChaos/gui/wx/canvas/FractalToolbar.cpp
+        wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp
+        wxChaos/gui/wx/canvas/RenderStatusWidget.cpp
+        wxChaos/gui/wx/canvas/wxSFMLCanvas.cpp
+        wxChaos/gui/wx/common/AppLocalization.cpp
+        wxChaos/gui/wx/common/AppTheme.cpp
+        wxChaos/gui/wx/common/DisplayUtilities.cpp
+        wxChaos/gui/wx/common/FractalOptionsPanel.cpp
+        wxChaos/gui/wx/common/NativeWindowHandle.cpp
+        wxChaos/gui/wx/common/PanelOptions.cpp
+        wxChaos/gui/wx/common/UnrestrictedSpinDoubleCtrl.cpp
+        wxChaos/gui/wx/common/wxGradient.cpp
+        wxChaos/gui/wx/config/AppConfigStore.cpp
+        wxChaos/gui/wx/docs/DocumentationLinkAction.cpp
+        wxChaos/gui/wx/docs/DocumentViewer.cpp
+        wxChaos/gui/wx/docs/FractalDocumentation.cpp
+        wxChaos/gui/wx/export/ImageExportSizeDialog.cpp
+        wxChaos/gui/wx/export/NativeVideoWriter.cpp
+        wxChaos/gui/wx/export/ZoomRecorder.cpp
+        wxChaos/gui/wx/export/ZoomRenderer.cpp
+        wxChaos/gui/wx/fractal/FormulaDialog.cpp
+        wxChaos/gui/wx/fractal/FunctionsHelpDialog.cpp
+        wxChaos/gui/wx/fractal/IterationsDialog.cpp
+        wxChaos/gui/wx/fractal/JuliaConstantDialog.cpp
+        wxChaos/gui/wx/main/AboutDialog.cpp
+        wxChaos/gui/wx/main/MainFrame.cpp
+        wxChaos/gui/wx/main/SettingsFrame.cpp
+        wxChaos/gui/wx/renderer/RendererOptionsFrame.cpp
+        wxChaos/gui/wx/renderer/wxGradientDialog.cpp
+        wxChaos/gui/wx/scripting/ScriptEditor.cpp
+        wxChaos/gui/wx/scripting/ScriptNameDialog.cpp
+        wxChaos/gui/wx/scripting/ScriptSamplePicker.cpp
+        wxChaos/gui/wx/tools/CommandConsole.cpp
+)
+
+set(WXCHAOS_UTILS_SOURCES
+        wxChaos/utils/AppPaths.cpp
+        wxChaos/utils/BmpImageWriter.cpp
+        wxChaos/utils/TextUtils.cpp
+)
+
+set(WXCHAOS_SCRIPTING_SOURCES
+        wxChaos/scripting/angelscript/scriptstdstring.cpp
+        wxChaos/scripting/AngelscriptBindings.cpp
+        wxChaos/scripting/AngelscriptConfigurationEngine.cpp
+        wxChaos/scripting/AngelscriptRenderEngine.cpp
+        wxChaos/scripting/Complex.cpp
+        wxChaos/scripting/ScriptData.cpp
+        wxChaos/scripting/ScriptOptions.cpp
+)
+
+file(GLOB_RECURSE WXCHAOS_THIRD_PARTY_SOURCES CONFIGURE_DEPENDS
         third_party/muParserX/*.cpp
         third_party/wxMathPlot/*.cpp
 )
 
-add_executable(wxChaos WIN32 ${SRC_FILES}
+add_executable(wxChaos WIN32
+        ${WXCHAOS_CORE_SOURCES}
+        ${WXCHAOS_GUI_SOURCES}
+        ${WXCHAOS_UTILS_SOURCES}
+        ${WXCHAOS_SCRIPTING_SOURCES}
+        ${WXCHAOS_THIRD_PARTY_SOURCES}
         wxChaos/App.cpp
-        wxChaos/gui/wx/scripting/ScriptNameDialog.cpp
         wxChaos/gui/wx/scripting/ScriptNameDialog.h
 )
 
@@ -311,10 +455,7 @@ endif()
 include(CTest)
 
 if(BUILD_TESTING)
-    file(GLOB_RECURSE WXCHAOS_CORE_TEST_SOURCES CONFIGURE_DEPENDS
-            wxChaos/core/*.cpp
-            wxChaos/scripting/*.cpp
-            wxChaos/utils/*.cpp
+    file(GLOB_RECURSE WXCHAOS_CORE_TEST_THIRD_PARTY_SOURCES CONFIGURE_DEPENDS
             third_party/muParserX/*.cpp
     )
 
@@ -334,7 +475,10 @@ if(BUILD_TESTING)
             tests/core/UserFormulaSymbolicCompilerTests.cpp
             tests/core/UserFormulaParserTests.cpp
             tests/core/NewtonRootRegistryTests.cpp
-            ${WXCHAOS_CORE_TEST_SOURCES}
+            ${WXCHAOS_CORE_SOURCES}
+            ${WXCHAOS_SCRIPTING_SOURCES}
+            ${WXCHAOS_UTILS_SOURCES}
+            ${WXCHAOS_CORE_TEST_THIRD_PARTY_SOURCES}
             wxChaos/gui/wx/common/AppLocalization.cpp
             wxChaos/gui/wx/common/PanelOptions.cpp
             wxChaos/gui/wx/common/wxGradient.cpp
