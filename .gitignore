@@ -106,3 +106,7 @@ Temporary Items
 
 # Vcpkg
 vcpkg_installed/
+
+# Linux packaging output
+/dist/
+/build-appimage/

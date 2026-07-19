@@ -450,6 +450,28 @@ if(WIN32)
                 COMMENT "Staging wxChaos installer payload..."
                 VERBATIM
         )
+elseif(UNIX AND NOT APPLE)
+        include(GNUInstallDirs)
+
+        install(TARGETS wxChaos
+                RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        )
+        # wxChaos resolves its bundled resources relative to the executable.
+        install(DIRECTORY
+                "${CMAKE_SOURCE_DIR}/app_resources/Resources"
+                "${CMAKE_SOURCE_DIR}/app_resources/Scripts"
+                "${CMAKE_SOURCE_DIR}/app_resources/ScriptSamples"
+                DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        )
+        install(FILES "${CMAKE_SOURCE_DIR}/app_resources/license.txt"
+                DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+        )
+        install(FILES "${CMAKE_SOURCE_DIR}/install/AppImage/wxChaos.desktop"
+                DESTINATION "${CMAKE_INSTALL_DATADIR}/applications"
+        )
+        install(FILES "${CMAKE_SOURCE_DIR}/install/AppImage/wxChaos.png"
+                DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps"
+        )
 endif()
 
 include(CTest)

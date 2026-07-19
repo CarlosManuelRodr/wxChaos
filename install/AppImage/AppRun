@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+
+HERE="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+
+export PATH="${HERE}/usr/bin${PATH:+:${PATH}}"
+export LD_LIBRARY_PATH="${HERE}/usr/lib:${HERE}/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+
+# WebKitGTK launches these helper processes at runtime rather than linking them
+# directly, so linuxdeploy cannot discover them from the main executable.
+if [ -d "${HERE}/usr/lib/x86_64-linux-gnu/webkit2gtk-4.1" ]; then
+    export WEBKIT_EXEC_PATH="${HERE}/usr/lib/x86_64-linux-gnu/webkit2gtk-4.1"
+fi
+
+exec "${HERE}/usr/bin/wxChaos" "$@"

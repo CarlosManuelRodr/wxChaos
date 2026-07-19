@@ -19,7 +19,8 @@
   }, {
     "name" : "gettext",
     "features" : [ "runtime-tools", "tools" ],
-    "version>=" : "0.22.5#4"
+    "version>=" : "0.22.5#4",
+    "platform" : "windows"
   } ],
   "overrides" : [ {
     "name" : "sfml",
