@@ -1,0 +1,250 @@
+---
+layout: default
+---
+{% assign t = site.data.content[page.lang] %}
+{% assign locale_images = '/assets/images/' | append: page.lang | append: '/' %}
+
+<header class="site-header" data-header>
+  <div class="nav-shell">
+    <a class="wordmark" href="{{ t.routes.home | relative_url }}" aria-label="{{ t.nav.home_label }}">
+      <span class="wordmark-mark" aria-hidden="true"></span>
+      <span>wxChaos</span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="menu-toggle-lines" aria-hidden="true"></span>
+      <span class="sr-only">{{ t.nav.menu }}</span>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="{{ t.nav.primary }}">
+      <a href="#features">{{ t.nav.features }}</a>
+      <a href="#tools">{{ t.nav.tools }}</a>
+      <a href="#gallery">{{ t.nav.gallery }}</a>
+      <a href="{{ site.build_url }}">{{ t.nav.build }}</a>
+      <a href="{{ site.github_url }}">{{ t.nav.github }}</a>
+
+      <div class="nav-actions">
+        <div class="language-switcher" aria-label="{{ t.nav.language }}">
+          <a href="{{ '/' | relative_url }}" lang="en"{% if page.lang == "en" %} aria-current="page"{% endif %}>EN</a>
+          <a href="{{ '/es/' | relative_url }}" lang="es"{% if page.lang == "es" %} aria-current="page"{% endif %}>ES</a>
+          <a href="{{ '/ja/' | relative_url }}" lang="ja"{% if page.lang == "ja" %} aria-current="page"{% endif %}>日本語</a>
+        </div>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="{{ t.nav.theme }}">
+          <span class="theme-toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="hero">
+    <div class="hero-orbit hero-orbit-one" aria-hidden="true"></div>
+    <div class="hero-orbit hero-orbit-two" aria-hidden="true"></div>
+    <div class="section-shell hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span>{{ t.hero.kicker }}</p>
+        <img class="hero-logo" src="{{ '/assets/images/title.webp' | relative_url }}" width="820" height="175" alt="wxChaos">
+        <h1>{{ t.hero.title }}</h1>
+        <p class="hero-lead">{{ t.hero.lead }}</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="{{ site.release_url }}">
+            <span>{{ t.hero.download }}</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a class="button button-secondary" href="{{ site.github_url }}">
+            <span>{{ t.hero.source }}</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <div class="hero-meta" aria-label="{{ t.hero.meta_label }}">
+          {% for item in t.hero.meta %}
+            <span>{{ item }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="window-glow" aria-hidden="true"></div>
+        <figure class="app-window">
+          <div class="window-bar" aria-hidden="true">
+            <div class="window-dots"><i></i><i></i><i></i></div>
+            <span>wxChaos</span>
+          </div>
+          <img src="{{ locale_images | append: 'screenshots.webp' | relative_url }}"
+               width="1600" height="1200" alt="{{ t.hero.image_alt }}">
+        </figure>
+        <div class="floating-note floating-note-render">
+          <span class="note-icon" aria-hidden="true">✦</span>
+          <span>{{ t.hero.render_note }}</span>
+        </div>
+        <div class="floating-note floating-note-theme">
+          <span class="theme-pair" aria-hidden="true"><i></i><i></i></span>
+          <span>{{ t.hero.theme_note }}</span>
+        </div>
+      </div>
+    </div>
+    <a class="scroll-cue" href="#intro">
+      <span>{{ t.hero.scroll }}</span>
+      <span aria-hidden="true">↓</span>
+    </a>
+  </section>
+
+  <section class="intro section" id="intro">
+    <div class="section-shell intro-grid">
+      <div>
+        <p class="eyebrow dark"><span></span>{{ t.intro.kicker }}</p>
+        <h2>{{ t.intro.title }}</h2>
+      </div>
+      <div class="intro-copy">
+        <p>{{ t.intro.first }}</p>
+        <p>{{ t.intro.second }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="features section" id="features">
+    <div class="section-shell">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow dark"><span></span>{{ t.features.kicker }}</p>
+          <h2>{{ t.features.title }}</h2>
+        </div>
+        <p>{{ t.features.lead }}</p>
+      </div>
+
+      <div class="feature-grid">
+        {% for feature in t.features.items %}
+          <article class="feature-card">
+            <span class="feature-number">0{{ forloop.index }}</span>
+            <div class="feature-symbol" aria-hidden="true">{{ feature.symbol }}</div>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.text }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="explore section">
+    <div class="section-shell explore-grid">
+      <div class="zoom-panel">
+        <div class="zoom-frame">
+          <img src="{{ '/assets/images/zoom.webp' | relative_url }}" width="426" height="426"
+               loading="lazy" alt="{{ t.explore.image_alt }}">
+        </div>
+        <p><span aria-hidden="true">＋</span>{{ t.explore.caption }}</p>
+      </div>
+      <div class="explore-copy">
+        <p class="eyebrow"><span></span>{{ t.explore.kicker }}</p>
+        <h2>{{ t.explore.title }}</h2>
+        <p>{{ t.explore.first }}</p>
+        <p>{{ t.explore.second }}</p>
+        <ul class="check-list">
+          {% for item in t.explore.points %}
+            <li><span aria-hidden="true">✓</span>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="tools section" id="tools">
+    <div class="section-shell">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow dark"><span></span>{{ t.tools.kicker }}</p>
+          <h2>{{ t.tools.title }}</h2>
+        </div>
+        <p>{{ t.tools.lead }}</p>
+      </div>
+
+      <div class="tool-grid">
+        {% for tool in t.tools.items %}
+          <article class="tool-card">
+            <div class="tool-image">
+              <img src="{{ locale_images | append: tool.image | relative_url }}"
+                   loading="lazy" alt="{{ tool.alt }}">
+            </div>
+            <div class="tool-copy">
+              <span>{{ forloop.index | prepend: "0" }}</span>
+              <h3>{{ tool.title }}</h3>
+              <p>{{ tool.text }}</p>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="gallery section" id="gallery">
+    <div class="section-shell">
+      <div class="gallery-heading">
+        <div>
+          <p class="eyebrow"><span></span>{{ t.gallery.kicker }}</p>
+          <h2>{{ t.gallery.title }}</h2>
+        </div>
+        <p>{{ t.gallery.lead }}</p>
+      </div>
+
+      <div class="gallery-grid">
+        {% for image in t.gallery.images %}
+          <figure class="gallery-item gallery-item-{{ forloop.index }}">
+            <img src="{{ '/assets/images/gallery/' | append: image.file | relative_url }}"
+                 loading="lazy" alt="{{ image.alt }}">
+            <figcaption><span>{{ image.label }}</span><i aria-hidden="true">↗</i></figcaption>
+          </figure>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="cta section">
+    <div class="section-shell">
+      <div class="cta-card">
+        <div class="cta-fractal" aria-hidden="true"></div>
+        <div>
+          <p class="eyebrow"><span></span>{{ t.cta.kicker }}</p>
+          <h2>{{ t.cta.title }}</h2>
+          <p>{{ t.cta.text }}</p>
+        </div>
+        <div class="cta-actions">
+          <a class="button button-light" href="{{ site.release_url }}">{{ t.cta.download }} <span aria-hidden="true">↓</span></a>
+          <a class="text-link" href="{{ site.build_url }}">{{ t.cta.build }} <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="section-shell">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="wordmark" href="{{ t.routes.home | relative_url }}">
+          <span class="wordmark-mark" aria-hidden="true"></span>
+          <span>wxChaos</span>
+        </a>
+        <p>{{ t.footer.tagline }}</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h2>{{ t.footer.project }}</h2>
+          <a href="{{ site.release_url }}">{{ t.footer.download }}</a>
+          <a href="{{ site.build_url }}">{{ t.footer.build }}</a>
+          <a href="{{ site.releases_url }}">{{ t.footer.releases }}</a>
+        </div>
+        <div>
+          <h2>{{ t.footer.community }}</h2>
+          <a href="{{ site.github_url }}">{{ t.footer.source }}</a>
+          <a href="{{ site.issues_url }}">{{ t.footer.issues }}</a>
+          <a href="{{ site.license_url }}">{{ t.footer.license }}</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>{{ t.footer.copyright }}</p>
+      <p>{{ t.footer.made }}</p>
+    </div>
+  </div>
+</footer>

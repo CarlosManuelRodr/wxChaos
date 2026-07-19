@@ -1,0 +1,17 @@
+title: wxChaos
+description: An interactive fractal explorer for discovering, understanding, and creating complex patterns.
+url: https://carlosmanuelrodr.github.io
+baseurl: /wxChaos
+repository: CarlosManuelRodr/wxChaos
+lang: en
+timezone: America/Mexico_City
+
+github_url: https://github.com/CarlosManuelRodr/wxChaos
+release_url: https://github.com/CarlosManuelRodr/wxChaos/releases/latest
+releases_url: https://github.com/CarlosManuelRodr/wxChaos/releases
+issues_url: https://github.com/CarlosManuelRodr/wxChaos/issues
+build_url: https://github.com/CarlosManuelRodr/wxChaos/blob/master/Build.md
+license_url: https://github.com/CarlosManuelRodr/wxChaos/blob/master/License
+
+exclude:
+  - README.md
