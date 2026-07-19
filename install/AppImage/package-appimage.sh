@@ -30,6 +30,12 @@ if [[ -d "${webkit_dir}" ]]; then
     cp -a "${webkit_dir}/." "${app_dir}${webkit_dir}/"
 fi
 
+gio_modules_dir=/usr/lib/x86_64-linux-gnu/gio/modules
+if [[ -d "${gio_modules_dir}" ]]; then
+    mkdir -p "${app_dir}${gio_modules_dir}"
+    cp -a "${gio_modules_dir}/." "${app_dir}${gio_modules_dir}/"
+fi
+
 desktop-file-validate "${app_dir}/usr/share/applications/wxChaos.desktop"
 
 /opt/linuxdeploy/AppRun \

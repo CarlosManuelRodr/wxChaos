@@ -18,8 +18,7 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
 {
     SetSizeHints(wxSize(900, 620), wxDefaultSize);
 
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
-    SetIcon(icon);
+    SetIcon(AppPaths::ApplicationIcon());
 
     const auto mainSizer = new wxBoxSizer(wxVERTICAL);
 #ifdef __WXMSW__

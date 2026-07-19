@@ -3,7 +3,7 @@
 Build the x86-64 AppImage from the repository root:
 
 ```bash
-./install/AppImage/build-appimage.sh
+./scripts/build-appimage.sh
 ```
 
 The script builds in an Ubuntu 24.04 container and writes the artifact to

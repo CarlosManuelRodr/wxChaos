@@ -469,7 +469,7 @@ elseif(UNIX AND NOT APPLE)
         install(FILES "${CMAKE_SOURCE_DIR}/install/AppImage/wxChaos.desktop"
                 DESTINATION "${CMAKE_INSTALL_DATADIR}/applications"
         )
-        install(FILES "${CMAKE_SOURCE_DIR}/install/AppImage/wxChaos.png"
+        install(FILES "${CMAKE_SOURCE_DIR}/app_resources/Resources/Icons/wxChaos.png"
                 DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps"
         )
 endif()

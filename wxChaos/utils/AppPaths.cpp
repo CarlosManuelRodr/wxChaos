@@ -155,6 +155,15 @@ namespace AppPaths
         return ToStdPath(ResourceFile(pathParts));
     }
 
+    wxIcon ApplicationIcon()
+    {
+#ifdef _WIN32
+        return wxIcon(ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
+#else
+        return wxIcon(ResourceFile({"Icons", "wxChaos.png"}), wxBITMAP_TYPE_PNG);
+#endif
+    }
+
     wxString DocFile(const wxString& filename)
     {
         return AppFile({"Doc", filename});

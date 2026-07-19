@@ -8,8 +8,7 @@ PlotWindow::PlotWindow(const vector<double> &xList, const vector<double> &yList,
                        const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                        : wxFrame(parent, id, title, pos, size, style)
 {
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
-    this->SetIcon(icon);
+    SetIcon(AppPaths::ApplicationIcon());
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     _plot = new mpWindow(this, -1, wxPoint(0, 0), wxSize(500, 500), wxBORDER_NONE);
@@ -39,8 +38,7 @@ PlotWindow::PlotWindow(const LineParams params, const vector<double> &xList, con
                        const wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, const long style)
                        : wxFrame(parent, id, title, pos, size, style), _id(id)
 {
-    const wxIcon icon(AppPaths::ResourceFile({"Icons", "icon.ico"}), wxBITMAP_TYPE_ICO);
-    this->SetIcon(icon);
+    SetIcon(AppPaths::ApplicationIcon());
 
     wxFont graphFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     _plot = new mpWindow(this, -1, wxPoint(0, 0), wxSize(500, 500), wxBORDER_NONE);
