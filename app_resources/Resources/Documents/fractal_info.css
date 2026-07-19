@@ -851,6 +851,22 @@ figcaption {
     max-width: 820px;
 }
 
+.welcome-documentation-hint {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.welcome-documentation-hint .theme-icon {
+    border: 0;
+    border-radius: 0;
+    flex: 0 0 auto;
+    height: 24px;
+    padding: 0;
+    width: 24px;
+}
+
 .welcome-hero {
     padding-bottom: 6px;
 }
