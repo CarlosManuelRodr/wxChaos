@@ -47,7 +47,7 @@ private:
     InformationHandler _informationHandler;
     bool _colorRotationActive{};
 
-    [[nodiscard]] static wxSize GetPlatformToolBitmapSize();
+    [[nodiscard]] static wxSize GetToolBitmapSizeAtDefaultDpi();
     [[nodiscard]] static wxBitmapBundle CreateInteractionToolBitmap(FractalInteractionTool tool);
     [[nodiscard]] static wxBitmapBundle CreateInformationToolBitmap();
     [[nodiscard]] static wxBitmapBundle CreateColorRotationToolBitmap(bool active);
