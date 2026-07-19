@@ -3,6 +3,14 @@
 </p>
 
 <p align="center">
+  <strong>English</strong>
+  &nbsp;|&nbsp;
+  <a href="README.es.md">Español</a>
+  &nbsp;|&nbsp;
+  <a href="README.ja.md">日本語</a>
+</p>
+
+<p align="center">
   <strong>An interactive fractal explorer for discovering, understanding, and creating complex patterns.</strong>
 </p>
 
