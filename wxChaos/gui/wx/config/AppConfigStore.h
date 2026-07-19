@@ -40,7 +40,7 @@ struct AppConfig
     bool colorPaletteWindow = false;
     bool colorFractal = true;
     bool colorSet = true;
-    bool firstUse = false;
+    bool firstUse = true;
     AppAppearance appearance = AppAppearance::System; ///< Application appearance preference.
     AppLanguage language = AppLanguage::System;       ///< Application language preference.
     int targetFrameRate = DefaultTargetFrameRate;     ///< Target SFML canvas presentation frequency in hertz.
