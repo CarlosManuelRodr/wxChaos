@@ -11,6 +11,7 @@
 #include "fractal/FormulaDialog.h"
 #include "BmpImageWriter.h"
 #include "AngelscriptBindings.h"
+#include "docs/DocumentationLinkAction.h"
 #include "docs/DocumentViewer.h"
 #include "SystemUtilities.h"
 #include <mpParser.h>
@@ -1334,6 +1335,21 @@ void DimensionFrame::OnHelp(wxCommandEvent&)
 {
     const auto diag = new DocumentViewer(AppPaths::ResourceFile({"Documents", "fractal_dimension.html"}),
                                          this, wxID_ANY, _("Calculate dimension help"),
-                                         wxDefaultPosition, wxSize(1500, 960));
+                                         wxDefaultPosition, wxSize(1500, 960), wxDEFAULT_FRAME_STYLE,
+                                         [this](const wxString& url)
+                                         {
+                                             const DocumentationLinkAction action =
+                                                 DocumentationLinkAction::Parse(url);
+                                             if (action.GetType() != DocumentationLinkAction::Type::ToggleTool
+                                                 || action.GetTarget() != "dimension-calculator")
+                                             {
+                                                 return false;
+                                             }
+
+                                             Show(true);
+                                             Raise();
+                                             SetFocus();
+                                             return true;
+                                         });
     diag->Show(true);
 }

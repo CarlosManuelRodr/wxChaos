@@ -497,6 +497,12 @@ bool MainFrame::ToggleDocumentationTool(const wxString& tool)
         return true;
     }
 
+    if (tool == "dimension-calculator")
+    {
+        OpenDimensionCalculator();
+        return true;
+    }
+
     if (tool == "julia-constant-slider")
         return ToggleDocumentationJuliaConstantSlider();
 
@@ -1191,13 +1197,22 @@ void MainFrame::OnZoomRecorder(wxCommandEvent&)
 }
 void MainFrame::OnDimensionCalculator(wxCommandEvent&)
 {
+    OpenDimensionCalculator();
+}
+
+void MainFrame::OpenDimensionCalculator()
+{
     if (_dimensionCalculator == nullptr)
     {
         _dimensionCalculator = new DimensionFrame(this);
         _dimensionCalculator->Show(true);
     }
     else
+    {
+        _dimensionCalculator->Show(true);
+        _dimensionCalculator->Raise();
         _dimensionCalculator->SetFocus();
+    }
 }
 
 void MainFrame::OnCommandConsole(wxCommandEvent&)

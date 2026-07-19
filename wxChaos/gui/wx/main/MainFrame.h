@@ -209,6 +209,7 @@ class MainFrame : public wxFrame
     void OpenIterationsDialog();
     void OpenFractalInformation();
     void OpenRendererOptions();
+    void OpenDimensionCalculator();
     void UpdateInformationTool();
     void ResetColorRotationTool();
     bool HandleDocumentationLink(const wxString& url);
