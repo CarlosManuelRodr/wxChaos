@@ -36,6 +36,10 @@ pendulum, Sierpinski constructions, and the Koch snowflake.
 
 ## What You Can Do
 
+<p align="center">
+  <img src="images/Zoom.gif" width="426" alt="">
+</p>
+
 - **Explore freely.** Pan, zoom, revisit earlier views, inspect coordinates, and
   move between related parameter and dynamical spaces.
 - **See how the image is built.** Display point orbits, select Julia constants,

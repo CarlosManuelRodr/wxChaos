@@ -36,6 +36,10 @@ Julia集合から、Newton法の吸引域、Burning Ship、Henon写像とLogisti
 
 ## 主な機能
 
+<p align="center">
+  <img src="images/Zoom.gif" width="426" alt="">
+</p>
+
 - **自由に探索。** パンやズーム、以前の表示への復帰、座標の確認ができ、
   関連するパラメータ空間と力学系平面の間を行き来できます。
 - **画像が作られる過程を観察。** 点の軌道を表示し、Julia定数を選択し、

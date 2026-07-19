@@ -37,6 +37,10 @@ de nieve de Koch.
 
 ## Qué Puedes Hacer
 
+<p align="center">
+  <img src="images/Zoom.gif" width="426" alt="">
+</p>
+
 - **Explorar con libertad.** Desplázate, haz zoom, vuelve a vistas anteriores,
   inspecciona coordenadas y muévete entre espacios de parámetros y espacios
   dinámicos relacionados.
