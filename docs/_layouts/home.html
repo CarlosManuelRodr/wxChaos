@@ -68,6 +68,7 @@ layout: default
         <img class="app-screenshot"
              src="{{ locale_images | append: 'screenshots.webp' | relative_url }}"
              width="{{ t.hero.image_width }}" height="{{ t.hero.image_height }}"
+             style="--screenshot-ratio: {{ t.hero.image_width }} / {{ t.hero.image_height }};"
              alt="{{ t.hero.image_alt }}">
       </div>
     </div>

@@ -531,14 +531,21 @@ button {
 
 .hero-visual {
   position: relative;
+  display: flex;
+  align-items: center;
   margin-right: -10vw;
 }
 
 .app-screenshot {
-  position: relative;
-  width: min(760px, 100%);
-  height: auto;
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  height: auto !important;
+  max-height: none;
   margin: 0;
+  aspect-ratio: var(--screenshot-ratio);
+  object-fit: contain;
+  flex: 0 1 auto;
 }
 
 .scroll-cue {
