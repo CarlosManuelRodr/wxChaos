@@ -29,7 +29,7 @@ namespace TextUtils
 
     wxString ToWxString(const long long value)
     {
-        return wxString::Format("%d", value);
+        return wxString::Format("%lld", value);
     }
 
     wxString ToWxString(const double value)
