@@ -1,6 +1,7 @@
 // ReSharper disable CppDFAUnreachableFunctionCall
 #include <algorithm>
 #include <cmath>
+#include <iterator>
 #include <wx/progdlg.h>
 #include <wx/bitmap.h>
 #include <wx/filedlg.h>
@@ -136,32 +137,30 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     resolutionSizer->Add(new wxStaticText(_panel, wxID_ANY, _("pixels")), 0, wxALIGN_CENTER_VERTICAL);
     optionGridSizer->Add(resolutionSizer, 1, wxEXPAND);
 
-    optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Bitrate:")),
-                         0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
-    const auto bitRateSizer = new wxBoxSizer(wxHORIZONTAL);
-    const unsigned int recommendedBitRate = NativeVideoWriter::GetRecommendedBitRate(
-        static_cast<unsigned int>(_recordingWidth), static_cast<unsigned int>(_recordingHeight),
-        static_cast<unsigned int>(_framerateSpinCtrl->GetValue()));
-    const int recommendedMegabits = static_cast<int>(
-        recommendedBitRate / 1000000U + (recommendedBitRate % 1000000U != 0));
-    _bitRateSpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                                      wxSP_ARROW_KEYS, 1, 2000, recommendedMegabits);
-    SetSpinControlWidth(_bitRateSpinCtrl);
-    _bitRateSpinCtrl->SetToolTip(_("Higher bitrates preserve more detail but produce larger files"));
-    bitRateSizer->Add(_bitRateSpinCtrl, 0, wxRIGHT, 5);
-    bitRateSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Mbps")), 0, wxALIGN_CENTER_VERTICAL);
-    optionGridSizer->Add(bitRateSizer, 1, wxEXPAND);
-
-    optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Encoding quality:")),
+    optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Visual quality:")),
                          0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
     const auto qualitySizer = new wxBoxSizer(wxHORIZONTAL);
     _qualitySpinCtrl = new wxSpinCtrl(_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                                      wxSP_ARROW_KEYS, 0, 100, 50);
+                                      wxSP_ARROW_KEYS, 1, 100, 80);
     SetSpinControlWidth(_qualitySpinCtrl);
-    _qualitySpinCtrl->SetToolTip(_("Higher quality improves compression but takes longer to encode"));
+    _qualitySpinCtrl->SetToolTip(_("Higher visual quality preserves more detail but produces larger files"));
     qualitySizer->Add(_qualitySpinCtrl, 0, wxRIGHT, 5);
     qualitySizer->Add(new wxStaticText(_panel, wxID_ANY, _("%")), 0, wxALIGN_CENTER_VERTICAL);
     optionGridSizer->Add(qualitySizer, 1, wxEXPAND);
+
+    optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Encoding speed:")),
+                         0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
+    const wxString encodingSpeedChoices[] = {
+        _("Fast"),
+        _("Balanced"),
+        _("Slow (smaller files)")
+    };
+    _encodingSpeedChoice = new wxChoice(_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        std::size(encodingSpeedChoices), encodingSpeedChoices);
+    _encodingSpeedChoice->SetSelection(static_cast<int>(NativeVideoEncodingSpeed::Balanced));
+    _encodingSpeedChoice->SetToolTip(
+        _("Slower encoding improves compression efficiency without reducing visual quality"));
+    optionGridSizer->Add(_encodingSpeedChoice, 1, wxEXPAND);
 
     _rotateCheckbox = new wxCheckBox(_panel, wxID_ANY, _("Rotate colors"), wxDefaultPosition, wxDefaultSize, 0);
     optionGridSizer->AddSpacer(1);
@@ -409,8 +408,8 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
     const int width = _widthSpinCtrl->GetValue();
     const int height = _heightSpinCtrl->GetValue();
     const NativeVideoEncodingOptions encodingOptions{
-        static_cast<unsigned int>(_bitRateSpinCtrl->GetValue()) * 1000000U,
-        static_cast<unsigned int>(_qualitySpinCtrl->GetValue())
+        static_cast<unsigned int>(_qualitySpinCtrl->GetValue()),
+        static_cast<NativeVideoEncodingSpeed>(_encodingSpeedChoice->GetSelection())
     };
     const double colorSpeed = _colorSpeedCtrl->GetValue();
     const std::string outputPath = AppPaths::ToStdPath(outputFile.GetFullPath());

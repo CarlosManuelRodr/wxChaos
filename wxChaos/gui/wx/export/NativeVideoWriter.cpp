@@ -33,7 +33,8 @@ class NativeVideoWriter::Impl
     uint64_t _frameIndex{};
 
     static unsigned int MakeEvenDimension(unsigned int value);
-    static unsigned int CalculateBitRate(unsigned int width, unsigned int height, unsigned int fps);
+    static unsigned int CalculateMaximumBitRate(unsigned int width, unsigned int height, unsigned int fps);
+    static NativeVideoEncodingSpeed NormalizeSpeed(NativeVideoEncodingSpeed speed);
 
 #ifdef _WIN32
     IMFSinkWriter* _writer{};
@@ -45,6 +46,10 @@ class NativeVideoWriter::Impl
     void ReleaseResources();
     static std::wstring Utf8ToWide(const std::string& value);
     static std::string HResultToString(const char* action, HRESULT result);
+    bool SetCodecUInt32(ICodecAPI* codecApi, const GUID& property, unsigned int value, const char* action);
+    static void TrySetCodecUInt32(ICodecAPI* codecApi, const GUID& property, unsigned int value);
+    static void TrySetCodecBoolean(ICodecAPI* codecApi, const GUID& property, bool value);
+    static unsigned int GetWindowsQualityVsSpeed(NativeVideoEncodingSpeed speed);
 
     template<class T>
     static void SafeRelease(T*& value)
@@ -61,6 +66,7 @@ class NativeVideoWriter::Impl
 
     bool SetError(std::string error);
     void ReleaseResources();
+    static unsigned int GetX264SpeedPreset(NativeVideoEncodingSpeed speed);
 #else
     bool SetError(std::string error);
 #endif
@@ -78,12 +84,25 @@ unsigned int NativeVideoWriter::Impl::MakeEvenDimension(const unsigned int value
     return std::max(2U, value - value % 2U);
 }
 
-unsigned int NativeVideoWriter::Impl::CalculateBitRate(const unsigned int width, const unsigned int height,
-                                                       const unsigned int fps)
+unsigned int NativeVideoWriter::Impl::CalculateMaximumBitRate(const unsigned int width, const unsigned int height,
+                                                              const unsigned int fps)
 {
     const uint64_t scaledBitRate = static_cast<uint64_t>(width) * height * fps / 2U;
     return static_cast<unsigned int>(std::clamp<uint64_t>(
         scaledBitRate, 1000000U, std::numeric_limits<unsigned int>::max()));
+}
+
+NativeVideoEncodingSpeed NativeVideoWriter::Impl::NormalizeSpeed(const NativeVideoEncodingSpeed speed)
+{
+    switch (speed)
+    {
+        case NativeVideoEncodingSpeed::Fast:
+        case NativeVideoEncodingSpeed::Balanced:
+        case NativeVideoEncodingSpeed::Slow:
+            return speed;
+        default:
+            return NativeVideoEncodingSpeed::Balanced;
+    }
 }
 
 #ifdef _WIN32
@@ -112,6 +131,55 @@ bool NativeVideoWriter::Impl::SetError(const char* action, const HRESULT result)
 {
     _error = HResultToString(action, result);
     return false;
+}
+
+bool NativeVideoWriter::Impl::SetCodecUInt32(ICodecAPI* codecApi, const GUID& property, const unsigned int value,
+                                             const char* action)
+{
+    VARIANT variant;
+    VariantInit(&variant);
+    variant.vt = VT_UI4;
+    variant.ulVal = value;
+    const HRESULT result = codecApi->SetValue(&property, &variant);
+    if (FAILED(result))
+        return SetError(action, result);
+    return true;
+}
+
+void NativeVideoWriter::Impl::TrySetCodecUInt32(ICodecAPI* codecApi, const GUID& property,
+                                                const unsigned int value)
+{
+    if (codecApi->IsSupported(&property) != S_OK)
+        return;
+
+    VARIANT variant;
+    VariantInit(&variant);
+    variant.vt = VT_UI4;
+    variant.ulVal = value;
+    codecApi->SetValue(&property, &variant);
+}
+
+void NativeVideoWriter::Impl::TrySetCodecBoolean(ICodecAPI* codecApi, const GUID& property, const bool value)
+{
+    if (codecApi->IsSupported(&property) != S_OK)
+        return;
+
+    VARIANT variant;
+    VariantInit(&variant);
+    variant.vt = VT_BOOL;
+    variant.boolVal = value ? VARIANT_TRUE : VARIANT_FALSE;
+    codecApi->SetValue(&property, &variant);
+}
+
+unsigned int NativeVideoWriter::Impl::GetWindowsQualityVsSpeed(const NativeVideoEncodingSpeed speed)
+{
+    switch (speed)
+    {
+        case NativeVideoEncodingSpeed::Fast: return 25U;
+        case NativeVideoEncodingSpeed::Slow: return 80U;
+        case NativeVideoEncodingSpeed::Balanced:
+        default: return 50U;
+    }
 }
 
 void NativeVideoWriter::Impl::ReleaseResources()
@@ -172,7 +240,10 @@ bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned
     if (SUCCEEDED(result))
         result = outputType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_H264);
     if (SUCCEEDED(result))
-        result = outputType->SetUINT32(MF_MT_AVG_BITRATE, options.bitRate);
+        result = outputType->SetUINT32(MF_MT_MPEG2_PROFILE, eAVEncH264VProfile_High);
+    if (SUCCEEDED(result))
+        result = outputType->SetUINT32(
+            MF_MT_AVG_BITRATE, CalculateMaximumBitRate(_width, _height, _fps));
     if (SUCCEEDED(result))
         result = outputType->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
     if (SUCCEEDED(result))
@@ -215,14 +286,28 @@ bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned
     if (FAILED(result))
         return SetError("Accessing video encoder settings", result);
 
-    VARIANT quality;
-    VariantInit(&quality);
-    quality.vt = VT_UI4;
-    quality.ulVal = std::min(options.quality, 100U);
-    result = codecApi->SetValue(&CODECAPI_AVEncCommonQualityVsSpeed, &quality);
+    if (!SetCodecUInt32(codecApi, CODECAPI_AVEncCommonRateControlMode,
+                        eAVEncCommonRateControlMode_Quality, "Configuring quality-based variable bitrate"))
+    {
+        SafeRelease(codecApi);
+        return false;
+    }
+    if (!SetCodecUInt32(codecApi, CODECAPI_AVEncCommonQuality, options.quality,
+                        "Configuring video quality"))
+    {
+        SafeRelease(codecApi);
+        return false;
+    }
+    if (!SetCodecUInt32(codecApi, CODECAPI_AVEncCommonQualityVsSpeed,
+                        GetWindowsQualityVsSpeed(options.speed), "Configuring encoding speed"))
+    {
+        SafeRelease(codecApi);
+        return false;
+    }
+
+    TrySetCodecBoolean(codecApi, CODECAPI_AVEncH264CABACEnable, true);
+    TrySetCodecUInt32(codecApi, CODECAPI_AVEncMPVDefaultBPictureCount, 2U);
     SafeRelease(codecApi);
-    if (FAILED(result))
-        return SetError("Configuring video encoder quality", result);
 
     result = _writer->BeginWriting();
     if (FAILED(result))
@@ -342,6 +427,17 @@ void NativeVideoWriter::Impl::ReleaseResources()
     }
 }
 
+unsigned int NativeVideoWriter::Impl::GetX264SpeedPreset(const NativeVideoEncodingSpeed speed)
+{
+    switch (speed)
+    {
+        case NativeVideoEncodingSpeed::Fast: return 4U;
+        case NativeVideoEncodingSpeed::Slow: return 7U;
+        case NativeVideoEncodingSpeed::Balanced:
+        default: return 6U;
+    }
+}
+
 bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned int width, const unsigned int height,
                                   const unsigned int fps, const NativeVideoEncodingOptions& options)
 {
@@ -386,12 +482,18 @@ bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned
                  "stream-type", GST_APP_STREAM_TYPE_STREAM,
                  nullptr);
     gst_caps_unref(caps);
-    const unsigned int bitRateKbps = options.bitRate / 1000U + (options.bitRate % 1000U != 0);
-    const unsigned int speedPreset = 1U + std::min(options.quality, 100U) * 8U / 100U;
+    const unsigned int maximumBitRate = CalculateMaximumBitRate(_width, _height, _fps);
+    const unsigned int maximumBitRateKbps = maximumBitRate / 1000U + (maximumBitRate % 1000U != 0);
     g_object_set(encoder,
-                 "bitrate", bitRateKbps,
-                 "tune", 0x00000004,
-                 "speed-preset", speedPreset,
+                 "speed-preset", GetX264SpeedPreset(options.speed),
+                 nullptr);
+    g_object_set(encoder,
+                 "pass", 5,
+                 "quantizer", NativeVideoWriter::GetH264Quantizer(options.quality),
+                 "bitrate", maximumBitRateKbps,
+                 "cabac", TRUE,
+                 "bframes", 3U,
+                 "dct8x8", TRUE,
                  nullptr);
     g_object_set(fileSink, "location", outputPath.c_str(), nullptr);
 
@@ -522,9 +624,8 @@ bool NativeVideoWriter::Open(const std::string& outputPath, const unsigned int w
                              const unsigned int fps, const NativeVideoEncodingOptions& options) const
 {
     NativeVideoEncodingOptions normalizedOptions = options;
-    if (normalizedOptions.bitRate == 0)
-        normalizedOptions.bitRate = GetRecommendedBitRate(width, height, fps);
-    normalizedOptions.quality = std::min(normalizedOptions.quality, 100U);
+    normalizedOptions.quality = std::clamp(normalizedOptions.quality, 1U, 100U);
+    normalizedOptions.speed = Impl::NormalizeSpeed(normalizedOptions.speed);
     return _impl->Open(outputPath, width, height, fps, normalizedOptions);
 }
 
@@ -543,8 +644,8 @@ std::string NativeVideoWriter::GetError() const
     return _impl->GetError();
 }
 
-unsigned int NativeVideoWriter::GetRecommendedBitRate(const unsigned int width, const unsigned int height,
-                                                      const unsigned int fps)
+unsigned int NativeVideoWriter::GetH264Quantizer(const unsigned int quality)
 {
-    return Impl::CalculateBitRate(Impl::MakeEvenDimension(width), Impl::MakeEvenDimension(height), std::max(1U, fps));
+    const unsigned int normalizedQuality = std::clamp(quality, 1U, 100U);
+    return 51U - (39U * normalizedQuality + 50U) / 100U;
 }

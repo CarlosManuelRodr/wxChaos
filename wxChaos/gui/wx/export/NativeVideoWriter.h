@@ -4,10 +4,17 @@
 #include <string>
 #include <SFML/Graphics/Image.hpp>
 
+enum class NativeVideoEncodingSpeed
+{
+    Fast,
+    Balanced,
+    Slow
+};
+
 struct NativeVideoEncodingOptions
 {
-    unsigned int bitRate{};
-    unsigned int quality{50};
+    unsigned int quality{80};
+    NativeVideoEncodingSpeed speed{NativeVideoEncodingSpeed::Balanced};
 };
 
 /**
@@ -28,5 +35,5 @@ public:
     [[nodiscard]] bool WriteFrame(const sf::Image& frame) const;
     [[nodiscard]] bool Close() const;
     [[nodiscard]] std::string GetError() const;
-    [[nodiscard]] static unsigned int GetRecommendedBitRate(unsigned int width, unsigned int height, unsigned int fps);
+    [[nodiscard]] static unsigned int GetH264Quantizer(unsigned int quality);
 };

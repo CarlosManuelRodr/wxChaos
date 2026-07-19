@@ -3,6 +3,7 @@
 #include <wx/gdicmn.h>
 #include <wx/string.h>
 #include <wx/spinctrl.h>
+#include <wx/choice.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/frame.h>
@@ -38,8 +39,8 @@ class ZoomRecorder : public wxDialog
     wxStaticText* _framesPerSecondText;
     wxSpinCtrl* _widthSpinCtrl;
     wxSpinCtrl* _heightSpinCtrl;
-    wxSpinCtrl* _bitRateSpinCtrl;
     wxSpinCtrl* _qualitySpinCtrl;
+    wxChoice* _encodingSpeedChoice;
     wxCheckBox* _rotateCheckbox;
     wxStaticText* _colorRotateSpeedText;
     wxSpinCtrlDouble* _colorSpeedCtrl;
