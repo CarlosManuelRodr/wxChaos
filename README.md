@@ -1,88 +1,105 @@
-wxChaos
-========
-An open source fractal generator extensible with scripts. wxChaos aims to be relatively simple and yet providing the user with many predefined fractals and algorithms to create beautiful results in less time. It also allows the user to create new fractals with user formulas and user scripts.
+<p align="center">
+  <img src="images/Title.png" width="820" alt="wxChaos">
+</p>
 
-Features
-========
-* Many fractals and algorithms preimplemented.
-* Quick preview of Julia fractals.
-* Zoom recorder.
-* User formulas.
-* Fractal dimension calculator.
-* Create any types of fractals through an scripting language.
+<p align="center">
+  <strong>An interactive fractal explorer for discovering, understanding, and creating complex patterns.</strong>
+</p>
 
-Download
-========
-* [Windows portable app](https://github.com/CarlosManuelRodr/wxChaos/releases/tag/v1.2.0-beta)
+<p align="center">
+  <a href="https://github.com/CarlosManuelRodr/wxChaos/releases/latest"><strong>Download the latest release</strong></a>
+  &nbsp;&middot;&nbsp;
+  <a href="Build.md">Build from source</a>
+  &nbsp;&middot;&nbsp;
+  <a href="https://github.com/CarlosManuelRodr/wxChaos/issues">Report an issue</a>
+</p>
 
-Screenshot
-==========
-Main window
+![wxChaos running in light and dark mode](images/Screenshots.png)
 
-![Screenshot](images/screenshot.png?raw=true "Screenshot")
+wxChaos is an open-source application for exploring fractals through direct
+interaction. Move through familiar sets, follow the orbit behind a point,
+compare rendering methods, open a Julia preview, or examine the mathematics
+without leaving the application.
 
-Script editor
+It includes classic complex-plane fractals, chaotic maps, numerical systems,
+and vector constructions. The collection ranges from Mandelbrot and Julia sets
+to Newton basins, the Burning Ship, the Henon and Logistic maps, the double
+pendulum, Sierpinski constructions, and the Koch snowflake.
 
-![ScriptEditor](images/ScriptEditor.png?raw=true "ScriptEditor")
+## What You Can Do
 
-Fractal dimension calculator
-![Dimension](images/Dimension.png?raw=true "Dimension")
+- **Explore freely.** Pan, zoom, revisit earlier views, inspect coordinates, and
+  move between related parameter and dynamical spaces.
+- **See how the image is built.** Display point orbits, select Julia constants,
+  inspect values with the point picker, and use interactive documentation that
+  connects explanations directly to the application.
+- **Change the rendering.** Experiment with palettes, smooth coloring, orbit
+  traps, Gaussian-integer coloring, escape angles, triangle inequality, and
+  other algorithms supported by each fractal.
+- **Create your own fractals.** Enter custom formulas or use the AngelScript
+  interface to define complete fractals with options, rendering logic, orbits,
+  and their own documentation.
+- **Measure and record.** Estimate box-counting dimension, export still images,
+  and create videos from a sequence of zooms.
+- **Work in your preferred theme and language.** The interface and bundled
+  documentation support light and dark themes as well as English and Spanish.
 
-Zoom recorder
-![ZoomRecorder](images/ZoomRecorder.png?raw=true "ZoomRecorder")
+## Learn While Exploring
 
+Every fractal can have its own illustrated documentation page. These pages
+introduce the visual idea first, then make the mathematics available when you
+want it. Interactive links can open a fractal, change its coloring, enable a
+tool, or move directly to a notable location.
 
-Showcase
-========
-Examples of images generated with wxChaos.
+Several pages also contain small simulations and iteration labs, so formulas
+such as the Mandelbrot iteration, Newton-Raphson method, and double-pendulum
+equations can be watched step by step rather than treated as static notation.
 
-![Example1](images/example1.jpg?raw=true "Example 1")
-![Example2](images/example2.jpg?raw=true "Example 2")
-![Example3](images/example3.jpg?raw=true "Example 3")
-![Example4](images/example4.jpg?raw=true "Example 4")
+## Tools
 
-Build Instructions
-==================  
+| Script editor | Dimension calculator |
+|:--:|:--:|
+| Write and run scripted fractals without rebuilding wxChaos. | Estimate fractal dimension with the box-counting method. |
+| ![The wxChaos script editor](images/ScriptEditor.png) | ![The wxChaos fractal dimension calculator](images/Dimension.png) |
 
-### 📦 Supported Build Types
-There are two ways to build wxChaos:
+| Zoom recorder |
+|:--:|
+| Export a video from a sequence of selected zoom views. |
+| ![The wxChaos zoom recorder](images/ZoomRecorder.png) |
 
-#### 1. **Visual Studio Solution**
-Open `wxChaos.sln` with Visual Studio and build the solution for `x86` (32-bit). Only `x86` builds are supported.
+## Gallery
 
-#### 2. **CMake Build (Recommended for CLI/Ninja)**
-The CMake project is configured to use `wxWidgets` through [vcpkg](https://github.com/microsoft/vcpkg).
+<table>
+  <tr>
+    <td><img src="images/example1.jpg" alt="Fractal image generated with wxChaos"></td>
+    <td><img src="images/example2.jpg" alt="Fractal image generated with wxChaos"></td>
+  </tr>
+  <tr>
+    <td><img src="images/example3.jpg" alt="Fractal image generated with wxChaos"></td>
+    <td><img src="images/example4.jpg" alt="Fractal image generated with wxChaos"></td>
+  </tr>
+</table>
 
-##### Steps:
-1. Clone and bootstrap vcpkg:
-   ```bash
-   git clone https://github.com/microsoft/vcpkg.git
-   cd vcpkg
-   bootstrap-vcpkg.bat
-   
-2. Install wxWidgets (x86):
-   ```bash
-   vcpkg install wxwidgets:x86-windows
+## Download
 
-3. Configure your project with CMake:
-   ```bash
-   cmake -S . -B build ^
-   DCMAKE_TOOLCHAIN_FILE=C:/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake ^
-   -DVCPKG_TARGET_TRIPLET=x86-windows ^
-   -G Ninja
+Get the newest packaged version from the
+[latest GitHub release](https://github.com/CarlosManuelRodr/wxChaos/releases/latest).
+Previous versions and release notes are available on the
+[releases page](https://github.com/CarlosManuelRodr/wxChaos/releases).
 
-4. Build:
-   ```bash
-   cmake --build build
+## Build From Source
 
+wxChaos can be built on Windows and Linux using CMake. Dependencies,
+configuration options, platform notes, and verified commands are documented in
+[Build.md](Build.md).
 
-🛑 Only the x86-windows triplet is supported. Make sure your compiler matches the architecture. If you're using CLion, you can specify the above options in the CMake Profile settings.
+## Contributing
 
-License
-========
-wxChaos is licensed under the GNU General Public License version 3.0 (GPLv3).
+Bug reports and focused improvements are welcome. Please use the
+[issue tracker](https://github.com/CarlosManuelRodr/wxChaos/issues) for problems,
+feature ideas, and discussion.
 
-Bugs
-========
-All bugs must be reported at:
-https://github.com/CarlosManuelRodr/wxChaos/issues
+## License
+
+wxChaos is free software licensed under the
+[GNU General Public License version 3](License).
