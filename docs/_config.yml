@@ -8,9 +8,10 @@ timezone: America/Mexico_City
 
 github_url: https://github.com/CarlosManuelRodr/wxChaos
 releases_url: https://github.com/CarlosManuelRodr/wxChaos/releases
-windows_installer_url: https://github.com/CarlosManuelRodr/wxChaos/releases/download/v2.0.0/wxChaos-2.0.0-windows-x64-setup.exe
-windows_portable_url: https://github.com/CarlosManuelRodr/wxChaos/releases/download/v2.0.0/wxChaos-2.0.0-windows-x64-portable.zip
-linux_appimage_url: https://github.com/CarlosManuelRodr/wxChaos/releases/download/v2.0.0/wxChaos-2.0.0-x86_64.AppImage
+download_urls:
+  windows_installer: https://github.com/CarlosManuelRodr/wxChaos/releases/download/v2.0.0/wxChaos-2.0.0-windows-x64-setup.exe
+  windows_portable: https://github.com/CarlosManuelRodr/wxChaos/releases/download/v2.0.0/wxChaos-2.0.0-windows-x64-portable.zip
+  linux_appimage: https://github.com/CarlosManuelRodr/wxChaos/releases/download/v2.0.0/wxChaos-2.0.0-x86_64.AppImage
 issues_url: https://github.com/CarlosManuelRodr/wxChaos/issues
 build_url: https://github.com/CarlosManuelRodr/wxChaos/blob/master/Build.md
 license_url: https://github.com/CarlosManuelRodr/wxChaos/blob/master/License

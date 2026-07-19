@@ -7,12 +7,17 @@ folder from the desired branch.
 The repository-level `README.md`, `README.es.md`, and `README.ja.md` remain
 independent so they continue to render naturally on GitHub.
 
+The repository READMEs are the canonical source for the website's product
+description, feature claims, section order, and terminology. When a README
+changes materially, update the corresponding entries in `_data/content.yml` so
+the website remains an accurate, lightly styled companion.
+
 ## Structure
 
 - `_data/content.yml` contains the English, Spanish, and Japanese page copy.
 - `_layouts/home.html` contains the shared landing-page structure.
 - `assets/css/style.css` contains the complete responsive theme.
-- `assets/js/site.js` provides the mobile menu and theme preference.
+- `assets/js/site.js` provides the mobile menu.
 - `index.md`, `es/index.md`, and `ja/index.md` define the localized routes.
 
 The site expects the project URL configured in `_config.yml`. Use Jekyll's

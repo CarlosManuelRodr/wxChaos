@@ -1,12 +1,12 @@
 ---
 ---
 <!doctype html>
-<html lang="{{ page.lang | default: site.lang }}" data-theme="dark">
+<html lang="{{ page.lang | default: site.lang }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#10071f">
-    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#101214">
+    <meta name="color-scheme" content="dark">
     <title>{{ page.title }} · {{ site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
 
@@ -27,20 +27,6 @@
 
     <link rel="icon" type="image/png" href="{{ '/assets/images/favicon.png' | relative_url }}">
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-    <script>
-      (function () {
-        var savedTheme = null;
-        var preferredTheme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-
-        try {
-          savedTheme = localStorage.getItem("wxchaos-theme");
-        } catch (error) {
-          savedTheme = null;
-        }
-
-        document.documentElement.dataset.theme = savedTheme || preferredTheme;
-      })();
-    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">{{ site.data.content[page.lang].nav.skip }}</a>

@@ -1,3 +1,4 @@
+
 en:
   nav:
     skip: Skip to content
@@ -6,71 +7,46 @@ en:
     features: Features
     tools: Tools
     gallery: Gallery
+    download: Download
     build: Build
     github: GitHub
     language: Choose a language
-    theme: Change color theme
-  downloads:
-    windows_installer: Windows installer
-    windows_portable: Windows portable (.zip)
-    linux_appimage: Linux AppImage
   hero:
-    kicker: Open-source fractal explorer
-    title: Explore the beauty of chaos.
-    lead: Discover familiar sets, follow the mathematics behind every point, and create complex worlds of your own.
-    source: View on GitHub
-    meta_label: Project highlights
-    meta:
-      - Interactive exploration
-      - Rich rendering
-      - Scriptable
-    image_alt: wxChaos running in its light and dark themes
+    tagline: An interactive fractal explorer for discovering, understanding, and creating complex patterns.
+    first: wxChaos is an open-source application for exploring fractals through direct interaction. Move through familiar sets, follow the orbit behind a point, compare rendering methods, open a Julia preview, or examine the mathematics without leaving the application.
+    second: It includes classic complex-plane fractals, chaotic maps, numerical systems, and vector constructions—from Mandelbrot and Julia sets to Newton basins, the Burning Ship, the Henon and Logistic maps, the double pendulum, Sierpinski constructions, and the Koch snowflake.
+    download: Download v2.0.0
+    source: View source
+    image_alt: wxChaos running in light and dark mode
     image_width: 2630
     image_height: 1973
-    scroll: Discover wxChaos
-  intro:
-    kicker: Fractals within reach
-    title: A window into infinite complexity.
-    first: wxChaos is an open-source application for exploring fractals through direct interaction. Move through familiar sets, follow the orbit behind a point, compare rendering methods, or examine the mathematics without leaving the application.
-    second: Its collection spans classic complex-plane fractals, chaotic maps, numerical systems, and vector constructions—from Mandelbrot and Julia sets to Newton basins, the double pendulum, and Sierpinski patterns.
   features:
-    kicker: Made for discovery
-    title: Everything you need to explore.
-    lead: Move from curious observation to creative experimentation with a toolkit designed around the fractal itself.
+    title: What you can do
     items:
-      - symbol: "⌖"
-        title: Explore freely
+      - title: Explore freely
         text: Pan, zoom, revisit earlier views, inspect coordinates, and move between related parameter and dynamical spaces.
-      - symbol: "⤨"
-        title: See how it is built
-        text: Display point orbits, select Julia constants, inspect values, and connect explanations directly to the application.
-      - symbol: "◉"
-        title: Change the rendering
-        text: Experiment with palettes, smooth coloring, orbit traps, Gaussian integers, escape angles, and triangle inequality.
-      - symbol: "{ }"
-        title: Create your own
-        text: Enter custom formulas or use AngelScript to define complete fractals with options, rendering logic, and documentation.
-      - symbol: "↗"
-        title: Measure and record
-        text: Estimate box-counting dimension, export still images, and create videos from a sequence of selected zooms.
-      - symbol: "◐"
-        title: Make it yours
-        text: Work in light or dark mode and explore the interface and bundled documentation in your preferred language.
-  explore:
-    kicker: Learn while exploring
-    title: Mathematics you can see and touch.
-    first: Every fractal can have its own illustrated documentation page. Start with the visual idea, then reveal the mathematics when you want to go deeper.
+      - title: See how the image is built
+        text: Display point orbits, select Julia constants, inspect values with the point picker, and use documentation that connects explanations directly to the application.
+      - title: Change the rendering
+        text: Experiment with palettes, smooth coloring, orbit traps, Gaussian-integer coloring, escape angles, triangle inequality, and the other algorithms supported by each fractal.
+      - title: Create your own fractals
+        text: Enter custom formulas or use AngelScript to define complete fractals with options, rendering logic, orbits, and their own documentation.
+      - title: Measure and record
+        text: Estimate box-counting dimension, export still images, and create videos from a sequence of zooms.
+      - title: Choose your language
+        text: Use the interface and bundled documentation in English or Spanish, with additional project information available in Japanese.
+  learn:
+    title: Learn while exploring
+    first: Every fractal can have its own illustrated documentation page. These pages introduce the visual idea first, then make the mathematics available when you want it.
     second: Interactive links can open a fractal, change its coloring, enable a tool, or move directly to a notable location.
     points:
       - Step-by-step iteration labs
       - Interactive formulas and simulations
-      - Illustrated guides for individual fractals
-    image_alt: Animated zoom into a colorful fractal
-    caption: Zoom without limits
+      - Illustrated documentation for individual fractals
+    image_alt: Animated zoom into a fractal in wxChaos
   tools:
-    kicker: A complete workshop
-    title: Go beyond the picture.
-    lead: Powerful tools turn wxChaos from a viewer into a place to experiment, measure, and create.
+    title: Tools
+    intro: wxChaos includes tools for defining, measuring, configuring, and recording fractals.
     items:
       - image: script-editor.webp
         title: Script editor
@@ -82,40 +58,56 @@ en:
         alt: The wxChaos fractal dimension calculator
       - image: renderer-options.webp
         title: Renderer options
-        text: Choose coloring, palettes, precision, smoothing, orbit traps, and other rendering controls.
+        text: Choose the coloring algorithm, palette, precision, smoothing, orbit traps, and other rendering controls.
         alt: The wxChaos renderer options
       - image: zoom-recorder.webp
         title: Zoom recorder
         text: Export a video from a sequence of selected zoom views.
         alt: The wxChaos zoom recorder
   gallery:
-    kicker: Generated with wxChaos
-    title: A universe of forms.
-    lead: Every formula, parameter, and palette opens another path through the boundary between order and chaos.
+    title: Gallery
     images:
       - file: fractal-1.webp
-        alt: Fractal generated with wxChaos
+        alt: Fractal image generated with wxChaos
       - file: fractal-2.webp
-        alt: Fractal generated with wxChaos
+        alt: Fractal image generated with wxChaos
       - file: fractal-3.webp
-        alt: Fractal generated with wxChaos
+        alt: Fractal image generated with wxChaos
       - file: fractal-4.webp
-        alt: Fractal generated with wxChaos
-  cta:
-    kicker: Begin exploring
-    title: Ready to enter the fractal?
-    text: Download the latest release, choose a starting point, and see where curiosity takes you.
-    build: Build from source
+        alt: Fractal image generated with wxChaos
+  downloads:
+    title: Download
+    intro: Version 2.0.0 is available for 64-bit Windows and Linux.
+    action: Download
+    items:
+      - key: windows_installer
+        title: Windows installer
+        detail: 64-bit setup executable
+        filename: wxChaos-2.0.0-windows-x64-setup.exe
+      - key: windows_portable
+        title: Windows portable
+        detail: 64-bit portable ZIP archive
+        filename: wxChaos-2.0.0-windows-x64-portable.zip
+      - key: linux_appimage
+        title: Linux AppImage
+        detail: x86_64 AppImage
+        filename: wxChaos-2.0.0-x86_64.AppImage
+  project:
+    title: Project information
+    build_title: Build from source
+    build_text: wxChaos builds on Windows and Linux using CMake. The build guide documents dependencies, configuration options, platform notes, and verified commands.
+    build_link: Read the build guide
+    contribute_title: Contributing
+    contribute_text: Bug reports and focused improvements are welcome. Use the issue tracker for problems, feature ideas, and discussion.
+    contribute_link: Open the issue tracker
+    license_title: License
+    license_text: wxChaos is free software licensed under the GNU General Public License version 3.
+    license_link: Read the license
   footer:
-    tagline: An interactive, open-source fractal explorer.
-    project: Project
-    download: Download
-    build: Build from source
-    releases: Release notes
-    community: Community
+    description: Open-source fractal exploration for Windows and Linux.
+    releases: Releases
     source: Source code
-    issues: Report an issue
-    license: GPL v3 license
+    issues: Issues
     copyright: "© 2026 wxChaos contributors."
 
 es:
@@ -126,71 +118,46 @@ es:
     features: Funciones
     tools: Herramientas
     gallery: Galería
+    download: Descargar
     build: Compilar
     github: GitHub
     language: Elegir idioma
-    theme: Cambiar tema de color
-  downloads:
-    windows_installer: Instalador para Windows
-    windows_portable: Windows portátil (.zip)
-    linux_appimage: AppImage para Linux
   hero:
-    kicker: Explorador de fractales de código abierto
-    title: Explora la belleza del caos.
-    lead: Descubre conjuntos conocidos, sigue las matemáticas detrás de cada punto y crea tus propios mundos complejos.
-    source: Ver en GitHub
-    meta_label: Características del proyecto
-    meta:
-      - Exploración interactiva
-      - Renderizado avanzado
-      - Programable
-    image_alt: wxChaos ejecutándose en sus temas claro y oscuro
+    tagline: Un explorador de fractales interactivo para descubrir, comprender y crear patrones complejos.
+    first: wxChaos es una aplicación de código abierto para explorar fractales mediante la interacción directa. Recorre conjuntos conocidos, sigue la órbita detrás de un punto, compara métodos de renderizado, abre una vista previa de Julia o examina las matemáticas sin salir de la aplicación.
+    second: Incluye fractales clásicos del plano complejo, mapas caóticos, sistemas numéricos y construcciones vectoriales, desde los conjuntos de Mandelbrot y Julia hasta las cuencas de Newton, Burning Ship, los mapas de Henon y Logístico, el péndulo doble, las construcciones de Sierpinski y el copo de nieve de Koch.
+    download: Descargar v2.0.0
+    source: Ver código fuente
+    image_alt: wxChaos ejecutándose en los temas claro y oscuro
     image_width: 2629
     image_height: 1936
-    scroll: Descubre wxChaos
-  intro:
-    kicker: Fractales a tu alcance
-    title: Una ventana a la complejidad infinita.
-    first: wxChaos es una aplicación de código abierto para explorar fractales mediante la interacción directa. Recorre conjuntos conocidos, sigue la órbita detrás de un punto, compara métodos de renderizado o examina las matemáticas sin salir de la aplicación.
-    second: Su colección abarca fractales clásicos del plano complejo, mapas caóticos, sistemas numéricos y construcciones vectoriales, desde Mandelbrot y Julia hasta las cuencas de Newton, el péndulo doble y los patrones de Sierpinski.
   features:
-    kicker: Creado para descubrir
-    title: Todo lo necesario para explorar.
-    lead: Pasa de la observación curiosa a la experimentación creativa con herramientas diseñadas alrededor del propio fractal.
+    title: Qué puedes hacer
     items:
-      - symbol: "⌖"
-        title: Explora libremente
-        text: Desplázate, haz zoom, vuelve a vistas anteriores, inspecciona coordenadas y recorre espacios relacionados.
-      - symbol: "⤨"
-        title: Observa cómo se construye
-        text: Muestra órbitas, selecciona constantes de Julia, inspecciona valores y conecta las explicaciones con la aplicación.
-      - symbol: "◉"
-        title: Cambia el renderizado
-        text: Experimenta con paletas, suavizado, trampas de órbita, enteros gaussianos, ángulos de escape y desigualdad triangular.
-      - symbol: "{ }"
-        title: Crea tus propios fractales
-        text: Introduce fórmulas o utiliza AngelScript para definir fractales completos con opciones, lógica de renderizado y documentación.
-      - symbol: "↗"
-        title: Mide y graba
+      - title: Explorar con libertad
+        text: Desplázate, haz zoom, vuelve a vistas anteriores, inspecciona coordenadas y muévete entre espacios de parámetros y espacios dinámicos relacionados.
+      - title: Observar cómo se construye la imagen
+        text: Muestra las órbitas de los puntos, selecciona constantes de Julia, inspecciona valores con el selector de puntos y utiliza documentación conectada directamente con la aplicación.
+      - title: Cambiar el renderizado
+        text: Experimenta con paletas, coloreado suave, trampas de órbita, enteros gaussianos, ángulos de escape, desigualdad triangular y los demás algoritmos compatibles con cada fractal.
+      - title: Crear tus propios fractales
+        text: Introduce fórmulas personalizadas o utiliza AngelScript para definir fractales completos con opciones, lógica de renderizado, órbitas y documentación propia.
+      - title: Medir y grabar
         text: Estima la dimensión por conteo de cajas, exporta imágenes y crea vídeos a partir de una secuencia de acercamientos.
-      - symbol: "◐"
-        title: Hazlo tuyo
-        text: Trabaja en modo claro u oscuro y utiliza la interfaz y la documentación en tu idioma preferido.
-  explore:
-    kicker: Aprende mientras exploras
-    title: Matemáticas que puedes ver y tocar.
-    first: Cada fractal puede tener su propia página de documentación ilustrada. Comienza con la idea visual y descubre las matemáticas cuando quieras profundizar.
-    second: Los enlaces interactivos pueden abrir un fractal, cambiar su color, activar una herramienta o llevarte a un lugar destacado.
+      - title: Elegir tu idioma
+        text: Utiliza la interfaz y la documentación incluida en español o inglés, con información adicional del proyecto disponible en japonés.
+  learn:
+    title: Aprende mientras exploras
+    first: Cada fractal puede tener su propia página de documentación ilustrada. Estas páginas presentan primero la idea visual y dejan disponibles los detalles matemáticos para cuando quieras profundizar.
+    second: Los enlaces interactivos pueden abrir un fractal, cambiar su coloreado, activar una herramienta o ir directamente a una ubicación destacada.
     points:
       - Laboratorios de iteración paso a paso
       - Fórmulas y simulaciones interactivas
-      - Guías ilustradas para cada fractal
-    image_alt: Acercamiento animado a un fractal colorido
-    caption: Acércate sin límites
+      - Documentación ilustrada para cada fractal
+    image_alt: Acercamiento animado a un fractal en wxChaos
   tools:
-    kicker: Un taller completo
-    title: Ve más allá de la imagen.
-    lead: Sus herramientas convierten wxChaos en un lugar para experimentar, medir y crear.
+    title: Herramientas
+    intro: wxChaos incluye herramientas para definir, medir, configurar y grabar fractales.
     items:
       - image: script-editor.webp
         title: Editor de scripts
@@ -202,40 +169,56 @@ es:
         alt: La calculadora de dimensión fractal de wxChaos
       - image: renderer-options.webp
         title: Opciones del renderizador
-        text: Elige el color, la paleta, la precisión, el suavizado, las trampas de órbita y otros controles.
+        text: Elige el algoritmo de coloreado, la paleta, la precisión, el suavizado, las trampas de órbita y otros controles.
         alt: Las opciones del renderizador de wxChaos
       - image: zoom-recorder.webp
         title: Grabador de zoom
         text: Exporta un vídeo a partir de una secuencia de vistas seleccionadas.
         alt: El grabador de zoom de wxChaos
   gallery:
-    kicker: Generado con wxChaos
-    title: Un universo de formas.
-    lead: Cada fórmula, parámetro y paleta abre otro camino por la frontera entre el orden y el caos.
+    title: Galería
     images:
       - file: fractal-1.webp
-        alt: Fractal generado con wxChaos
+        alt: Imagen fractal generada con wxChaos
       - file: fractal-2.webp
-        alt: Fractal generado con wxChaos
+        alt: Imagen fractal generada con wxChaos
       - file: fractal-3.webp
-        alt: Fractal generado con wxChaos
+        alt: Imagen fractal generada con wxChaos
       - file: fractal-4.webp
-        alt: Fractal generado con wxChaos
-  cta:
-    kicker: Comienza a explorar
-    title: ¿Listo para entrar en el fractal?
-    text: Descarga la versión más reciente, elige un punto de partida y descubre hasta dónde te lleva la curiosidad.
-    build: Compilar desde el código
+        alt: Imagen fractal generada con wxChaos
+  downloads:
+    title: Descargar
+    intro: La versión 2.0.0 está disponible para Windows y Linux de 64 bits.
+    action: Descargar
+    items:
+      - key: windows_installer
+        title: Instalador para Windows
+        detail: Ejecutable de instalación de 64 bits
+        filename: wxChaos-2.0.0-windows-x64-setup.exe
+      - key: windows_portable
+        title: Windows portátil
+        detail: Archivo ZIP portátil de 64 bits
+        filename: wxChaos-2.0.0-windows-x64-portable.zip
+      - key: linux_appimage
+        title: AppImage para Linux
+        detail: AppImage para x86_64
+        filename: wxChaos-2.0.0-x86_64.AppImage
+  project:
+    title: Información del proyecto
+    build_title: Compilar desde el código fuente
+    build_text: wxChaos se compila en Windows y Linux mediante CMake. La guía de compilación documenta las dependencias, opciones de configuración, notas de cada plataforma y comandos verificados.
+    build_link: Leer la guía de compilación
+    contribute_title: Contribuir
+    contribute_text: Los reportes de errores y las mejoras concretas son bienvenidos. Utiliza el sistema de incidencias para problemas, ideas de funciones y discusión.
+    contribute_link: Abrir el sistema de incidencias
+    license_title: Licencia
+    license_text: wxChaos es software libre publicado bajo la Licencia Pública General de GNU, versión 3.
+    license_link: Leer la licencia
   footer:
-    tagline: Un explorador de fractales interactivo y de código abierto.
-    project: Proyecto
-    download: Descargar
-    build: Compilar desde el código
-    releases: Notas de versiones
-    community: Comunidad
+    description: Exploración de fractales de código abierto para Windows y Linux.
+    releases: Versiones
     source: Código fuente
-    issues: Reportar un problema
-    license: Licencia GPL v3
+    issues: Incidencias
     copyright: "© 2026 Colaboradores de wxChaos."
 
 ja:
@@ -246,71 +229,46 @@ ja:
     features: 機能
     tools: ツール
     gallery: ギャラリー
+    download: ダウンロード
     build: ビルド
     github: GitHub
     language: 言語を選択
-    theme: カラーテーマを変更
-  downloads:
-    windows_installer: Windows インストーラー
-    windows_portable: Windows ポータブル (.zip)
-    linux_appimage: Linux AppImage
   hero:
-    kicker: オープンソースのフラクタル探索アプリ
-    title: カオスの美しさを探索しよう。
-    lead: よく知られた集合を巡り、各点の背後にある数学をたどり、自分だけの複雑な世界を作り出せます。
-    source: GitHubで見る
-    meta_label: プロジェクトの特長
-    meta:
-      - インタラクティブな探索
-      - 多彩な描画方式
-      - スクリプト対応
+    tagline: 複雑なパターンを探索し、その仕組みを理解し、自分で作るためのインタラクティブなフラクタル探索アプリケーションです。
+    first: wxChaosは、直接操作しながらフラクタルを探索できるオープンソースのアプリケーションです。よく知られた集合の中を移動し、点の軌道をたどり、描画方法を比較し、Juliaプレビューを開き、アプリケーションを離れることなく数学的な仕組みを確認できます。
+    second: 複素平面上の古典的なフラクタルだけでなく、カオス写像、数値計算によるシステム、ベクター図形による構成も収録しています。Mandelbrot集合やJulia集合、Newton法の吸引域、Burning Ship、Henon写像とLogistic写像、二重振り子、Sierpinski図形、Koch雪片まで幅広く探索できます。
+    download: v2.0.0をダウンロード
+    source: ソースコードを見る
     image_alt: ライトテーマとダークテーマで動作するwxChaos
     image_width: 2582
     image_height: 1899
-    scroll: wxChaosを詳しく見る
-  intro:
-    kicker: フラクタルを身近に
-    title: 無限の複雑さをのぞく窓。
-    first: wxChaosは、直接操作しながらフラクタルを探索できるオープンソースのアプリケーションです。集合の中を移動し、点の軌道をたどり、描画方法を比較し、アプリを離れずに数学を確認できます。
-    second: 複素平面上の古典的なフラクタルから、カオス写像、数値計算システム、ベクター図形までを収録。Mandelbrot集合やJulia集合、Newton法の吸引域、二重振り子、Sierpinski図形などを探索できます。
   features:
-    kicker: 発見のための設計
-    title: 探索に必要なすべてを。
-    lead: フラクタルそのものを中心に設計されたツールで、好奇心から創造的な実験へ進めます。
+    title: 主な機能
     items:
-      - symbol: "⌖"
-        title: 自由に探索
-        text: パンやズーム、以前の表示への復帰、座標の確認、関連するパラメータ空間と力学系平面の移動ができます。
-      - symbol: "⤨"
-        title: 仕組みを観察
-        text: 点の軌道やJulia定数、各種の値を表示し、解説からアプリケーションを直接操作できます。
-      - symbol: "◉"
-        title: 描画方法を変更
-        text: パレット、スムーズカラーリング、軌道トラップ、ガウス整数、発散角、三角不等式などを試せます。
-      - symbol: "{ }"
-        title: 独自のフラクタルを作成
-        text: 数式の入力やAngelScriptを使い、オプション、描画ロジック、ドキュメントを備えたフラクタルを定義できます。
-      - symbol: "↗"
-        title: 測定と記録
-        text: ボックスカウント法による次元の推定、静止画の保存、連続ズームからの動画作成ができます。
-      - symbol: "◐"
-        title: 自分好みの環境
-        text: ライト・ダークテーマを切り替え、好みの言語でインターフェースとドキュメントを利用できます。
-  explore:
-    kicker: 探索しながら学ぶ
-    title: 見て、触れて理解する数学。
-    first: 各フラクタルには図を使った専用ドキュメントを用意できます。まず視覚的なアイデアに触れ、必要なときに数学を深く学べます。
-    second: インタラクティブなリンクからフラクタルを開き、配色を変更し、ツールを有効にし、注目すべき場所へ移動できます。
+      - title: 自由に探索
+        text: パンやズーム、以前の表示への復帰、座標の確認ができ、関連するパラメータ空間と力学系平面の間を行き来できます。
+      - title: 画像が作られる過程を観察
+        text: 点の軌道を表示し、Julia定数を選択し、ポイントピッカーで値を調べ、アプリケーションに直接つながるドキュメントを利用できます。
+      - title: 描画方法を変更
+        text: パレット、スムーズカラーリング、軌道トラップ、ガウス整数カラーリング、発散角、三角不等式など、各フラクタルが対応するアルゴリズムを試せます。
+      - title: 独自のフラクタルを作成
+        text: 数式の入力やAngelScriptを使って、オプション、描画ロジック、軌道、専用ドキュメントを備えたフラクタルを定義できます。
+      - title: 測定と記録
+        text: ボックスカウント法による次元の推定、静止画のエクスポート、連続するズームからの動画作成ができます。
+      - title: 言語を選択
+        text: インターフェースと付属ドキュメントは英語とスペイン語に対応し、プロジェクト情報は日本語でも読めます。
+  learn:
+    title: 探索しながら学ぶ
+    first: 各フラクタルには図を使った専用のドキュメントページを用意できます。まず視覚的な考え方を紹介し、必要に応じて数学的な詳細を読める構成です。
+    second: インタラクティブなリンクから、フラクタルを開く、配色を変更する、ツールを有効にする、注目すべき場所へ直接移動するといった操作ができます。
     points:
-      - 段階的に進む反復計算ラボ
+      - 段階ごとに進む反復計算ラボ
       - インタラクティブな数式とシミュレーション
-      - 各フラクタルの図解ガイド
-    image_alt: 鮮やかなフラクタルへズームするアニメーション
-    caption: 限界のないズーム
+      - 各フラクタルの図解ドキュメント
+    image_alt: wxChaosでフラクタルへズームするアニメーション
   tools:
-    kicker: 充実したワークショップ
-    title: 画像の先へ。
-    lead: wxChaosは、眺めるだけでなく実験し、測定し、創造するための強力なツールを備えています。
+    title: ツール
+    intro: wxChaosには、フラクタルの定義、測定、設定、記録に使うツールが含まれています。
     items:
       - image: script-editor.webp
         title: スクリプトエディター
@@ -322,38 +280,54 @@ ja:
         alt: wxChaosのフラクタル次元計算ツール
       - image: renderer-options.webp
         title: レンダラー設定
-        text: カラーリング、パレット、精度、スムージング、軌道トラップなどを変更できます。
+        text: カラーリングアルゴリズム、パレット、精度、スムージング、軌道トラップなどを変更できます。
         alt: wxChaosのレンダラー設定
       - image: zoom-recorder.webp
         title: ズームレコーダー
         text: 選択した複数のズーム表示から動画をエクスポートします。
         alt: wxChaosのズームレコーダー
   gallery:
-    kicker: wxChaosで生成
-    title: 無限に広がる形。
-    lead: 数式、パラメータ、パレットを変えるたびに、秩序とカオスの境界を巡る新しい道が開きます。
+    title: ギャラリー
     images:
       - file: fractal-1.webp
-        alt: wxChaosで生成したフラクタル
+        alt: wxChaosで生成したフラクタル画像
       - file: fractal-2.webp
-        alt: wxChaosで生成したフラクタル
+        alt: wxChaosで生成したフラクタル画像
       - file: fractal-3.webp
-        alt: wxChaosで生成したフラクタル
+        alt: wxChaosで生成したフラクタル画像
       - file: fractal-4.webp
-        alt: wxChaosで生成したフラクタル
-  cta:
-    kicker: 探索を始めよう
-    title: フラクタルの世界へ入りませんか？
-    text: 最新版をダウンロードして出発点を選び、好奇心の向かう先を探してみましょう。
-    build: ソースからビルド
+        alt: wxChaosで生成したフラクタル画像
+  downloads:
+    title: ダウンロード
+    intro: バージョン2.0.0は、64ビット版WindowsおよびLinuxで利用できます。
+    action: ダウンロード
+    items:
+      - key: windows_installer
+        title: Windows インストーラー
+        detail: 64ビット版セットアップ実行ファイル
+        filename: wxChaos-2.0.0-windows-x64-setup.exe
+      - key: windows_portable
+        title: Windows ポータブル
+        detail: 64ビット版ポータブルZIP
+        filename: wxChaos-2.0.0-windows-x64-portable.zip
+      - key: linux_appimage
+        title: Linux AppImage
+        detail: x86_64 AppImage
+        filename: wxChaos-2.0.0-x86_64.AppImage
+  project:
+    title: プロジェクト情報
+    build_title: ソースからビルド
+    build_text: wxChaosはCMakeを使用してWindowsおよびLinux上でビルドできます。ビルドガイドには、依存関係、設定オプション、各プラットフォームの注意事項、検証済みのコマンドが記載されています。
+    build_link: ビルドガイドを読む
+    contribute_title: コントリビューション
+    contribute_text: バグ報告や目的の明確な改善を歓迎します。問題の報告、機能の提案、ディスカッションにはIssueトラッカーをご利用ください。
+    contribute_link: Issueトラッカーを開く
+    license_title: ライセンス
+    license_text: wxChaosはGNU General Public Licenseバージョン3の下で公開されているフリーソフトウェアです。
+    license_link: ライセンスを読む
   footer:
-    tagline: インタラクティブなオープンソースのフラクタル探索アプリ。
-    project: プロジェクト
-    download: ダウンロード
-    build: ソースからビルド
-    releases: リリースノート
-    community: コミュニティ
+    description: WindowsとLinux向けのオープンソースのフラクタル探索アプリ。
+    releases: リリース
     source: ソースコード
-    issues: 問題を報告
-    license: GPL v3 ライセンス
+    issues: Issue
     copyright: "© 2026 wxChaos contributors."
