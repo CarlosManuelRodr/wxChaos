@@ -36,7 +36,7 @@
 /** @brief Event posted to the parent when the dimension-calculator window closes. */
 wxDECLARE_EVENT(wxEVT_DIMENSION_FRAME_CLOSED, wxCommandEvent);
 
-#define DimensionFrameSize wxSize(1300, 1260)
+#define DimensionFrameSize wxSize(1300, 960)
 
 /**
 * @class DimensionFrame

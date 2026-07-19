@@ -80,7 +80,7 @@ class ScriptEditor : public wxFrame
     void OnClearConsole(wxCommandEvent& event);
 public:
     explicit ScriptEditor(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxTRANSLATE("Script editor"),
-                          const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 1100),
+                          const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1400, 1000),
                           long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
     ~ScriptEditor() override;
 };
