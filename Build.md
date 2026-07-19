@@ -104,6 +104,12 @@ This installs dependencies such as:
 The generated `vcpkg_installed` directory is build output. Do not edit it by
 hand.
 
+The repository's `vcpkg-configuration.json` enables the local
+`vcpkg-overlays` directory. Its FLINT port disables AVX2 and AVX512 so release
+binaries retain the Windows x64 baseline and run on older CPUs and virtual
+machines that do not expose AVX state. Keep the overlay synchronized with the
+FLINT version selected by the manifest when updating the vcpkg baseline.
+
 The manifest pins SFML with a vcpkg override. Keep that override in place while
 the codebase remains on the SFML 2 API; `version>= 2.6.2` alone is only a
 minimum and may otherwise resolve to SFML 3 on newer registries.
