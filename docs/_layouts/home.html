@@ -43,8 +43,13 @@ layout: default
         <h1>{{ t.hero.title }}</h1>
         <p class="hero-lead">{{ t.hero.lead }}</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="{{ site.release_url }}">
-            <span>{{ t.hero.download }}</span>
+          <a class="button button-primary" href="{{ site.release_url }}"
+             data-platform-download
+             data-windows-url="{{ site.windows_installer_url }}"
+             data-linux-url="{{ site.linux_appimage_url }}"
+             data-windows-label="{{ t.downloads.windows }}"
+             data-linux-label="{{ t.downloads.linux }}">
+            <span data-download-label>{{ t.hero.download }}</span>
             <span aria-hidden="true">↓</span>
           </a>
           <a class="button button-secondary" href="{{ site.github_url }}">
@@ -191,7 +196,15 @@ layout: default
           <p>{{ t.cta.text }}</p>
         </div>
         <div class="cta-actions">
-          <a class="button button-light" href="{{ site.release_url }}">{{ t.cta.download }} <span aria-hidden="true">↓</span></a>
+          <a class="button button-light" href="{{ site.release_url }}"
+             data-platform-download
+             data-windows-url="{{ site.windows_installer_url }}"
+             data-linux-url="{{ site.linux_appimage_url }}"
+             data-windows-label="{{ t.downloads.windows }}"
+             data-linux-label="{{ t.downloads.linux }}">
+            <span data-download-label>{{ t.cta.download }}</span>
+            <span aria-hidden="true">↓</span>
+          </a>
           <a class="text-link" href="{{ site.build_url }}">{{ t.cta.build }} <span aria-hidden="true">→</span></a>
         </div>
       </div>

@@ -10,6 +10,9 @@ en:
     github: GitHub
     language: Choose a language
     theme: Change color theme
+  downloads:
+    windows: Download for Windows
+    linux: Download AppImage
   hero:
     kicker: Open-source fractal explorer
     title: Explore the beauty of chaos.
@@ -128,6 +131,9 @@ es:
     github: GitHub
     language: Elegir idioma
     theme: Cambiar tema de color
+  downloads:
+    windows: Descargar para Windows
+    linux: Descargar AppImage
   hero:
     kicker: Explorador de fractales de código abierto
     title: Explora la belleza del caos.
@@ -246,6 +252,9 @@ ja:
     github: GitHub
     language: 言語を選択
     theme: カラーテーマを変更
+  downloads:
+    windows: Windows版をダウンロード
+    linux: AppImageをダウンロード
   hero:
     kicker: オープンソースのフラクタル探索アプリ
     title: カオスの美しさを探索しよう。
