@@ -123,6 +123,49 @@ TEST_CASE("AppConfigStore persists the welcome guide startup preference")
     std::filesystem::remove(path);
 }
 
+TEST_CASE("AppConfigStore persists the guided tutorial status")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path =
+        std::filesystem::temp_directory_path() / "wxchaos_tutorial_status_config_test.ini";
+    std::filesystem::remove(path);
+    const AppConfigStore store(path.string());
+
+    store.Load();
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Pending);
+    store.SetTutorialStatus(TutorialStatus::Completed);
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Completed);
+    store.SetTutorialStatus(TutorialStatus::Dismissed);
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Dismissed);
+
+    AppConfig config = store.Load();
+    config.targetFrameRate = 144;
+    store.Save(config);
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Dismissed);
+
+    std::filesystem::remove(path);
+}
+
+TEST_CASE("AppConfigStore legacy config defaults tutorial status to pending")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path =
+        std::filesystem::temp_directory_path() / "wxchaos_legacy_tutorial_config_test.ini";
+    {
+        std::ofstream file(path);
+        file << "FRACTAL_TYPE=Mandelbrot\n";
+    }
+
+    const AppConfigStore store(path.string());
+    store.Load();
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Pending);
+    std::filesystem::remove(path);
+}
+
 TEST_CASE("AppConfigStore persists and clamps target frame rate")
 {
     wxInitializer wx;

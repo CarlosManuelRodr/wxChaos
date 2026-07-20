@@ -1292,3 +1292,105 @@ msgstr "' no es booleano. Usa true o false."
 
 #~ msgid "OK"
 #~ msgstr "OK"
+msgid "To continue:"
+msgstr "Para continuar:"
+
+msgid "Skip this step"
+msgstr "Omitir este paso"
+
+msgid "Press Esc to skip. You can play the tutorial again from the Help menu."
+msgstr "Pulsa Esc para omitirlo. Puedes volver a iniciar el tutorial desde el menú Ayuda."
+
+#, c-format
+msgid "Step %d of 8"
+msgstr "Paso %d de 8"
+
+msgid "Cursor: zoom in"
+msgstr "Cursor: acercar"
+
+msgid "The Cursor is the default tool. Hold the left mouse button and drag a rectangle around the area you want to explore."
+msgstr "El Cursor es la herramienta predeterminada. Mantén pulsado el botón izquierdo y arrastra un rectángulo alrededor del área que quieras explorar."
+
+msgid "Left-click and drag a selection rectangle on the fractal."
+msgstr "Haz clic izquierdo y arrastra un rectángulo de selección sobre el fractal."
+
+msgid "Cursor: zoom back"
+msgstr "Cursor: volver al zoom anterior"
+
+msgid "Right-clicking returns the fractal to the previous view."
+msgstr "Al hacer clic derecho, el fractal vuelve a la vista anterior."
+
+msgid "Right-click the fractal to zoom back."
+msgstr "Haz clic derecho sobre el fractal para volver al zoom anterior."
+
+msgid "Cursor: move around"
+msgstr "Cursor: desplazarse"
+
+msgid "You can move around the fractal with the middle mouse button, the Arrow keys, or WASD."
+msgstr "Puedes desplazarte por el fractal con el botón central del ratón, las flechas o WASD."
+
+msgid "Pan the view using a middle-button drag, an Arrow key, or a WASD key."
+msgstr "Desplaza la vista arrastrando con el botón central o pulsando una tecla de flecha o WASD."
+
+msgid "Hand tool"
+msgstr "Herramienta Mano"
+
+msgid "The Hand is an optional convenience for panning. Select it, then hold the left mouse button and drag the fractal."
+msgstr "La Mano es una herramienta opcional que facilita el desplazamiento. Selecciónala, mantén pulsado el botón izquierdo y arrastra el fractal."
+
+msgid "Select the Hand tool, then left-click and drag the fractal."
+msgstr "Selecciona la herramienta Mano y arrastra el fractal con el botón izquierdo."
+
+msgid "Zoom tool"
+msgstr "Herramienta Zoom"
+
+msgid "The Zoom tool provides a smooth way to zoom in or out by dragging vertically."
+msgstr "La herramienta Zoom permite acercar o alejar suavemente arrastrando en vertical."
+
+msgid "Select the Zoom tool, then left-click and drag up or down."
+msgstr "Selecciona Zoom y arrastra hacia arriba o abajo con el botón izquierdo."
+
+msgid "Point Picker"
+msgstr "Selector de puntos"
+
+msgid "Select the Point Picker and move over the canvas to inspect a point's trajectory and result. It is useful when exploring the mathematics, but you may skip this step."
+msgstr "Selecciona el Selector de puntos y mueve el cursor por el lienzo para inspeccionar la trayectoria y el resultado de un punto. Es útil para explorar las matemáticas, pero puedes omitir este paso."
+
+msgid "Select the Point Picker and move the pointer over the canvas, or choose Skip this step."
+msgstr "Selecciona el Selector de puntos y mueve el cursor sobre el lienzo, o elige Omitir este paso."
+
+msgid "Color animation"
+msgstr "Animación de colores"
+
+msgid "Color animation is an optional toy for a trippy viewing experience."
+msgstr "La animación de colores es un juguete opcional para disfrutar de una experiencia visual psicodélica."
+
+msgid "Click the Play button to start the color animation."
+msgstr "Pulsa el botón Reproducir para iniciar la animación de colores."
+
+msgid "Fractal information"
+msgstr "Información del fractal"
+
+msgid "Every supported fractal has its own interesting museum page."
+msgstr "Cada fractal compatible tiene su propia e interesante página de museo."
+
+msgid "Click the Information button to open this fractal's museum page and finish the tutorial."
+msgstr "Pulsa el botón Información para abrir la página de museo de este fractal y finalizar el tutorial."
+
+msgid "You're all set"
+msgstr "Todo listo"
+
+msgid "Have fun exploring wxChaos!"
+msgstr "¡Diviértete explorando wxChaos!"
+
+msgid "Tutorial skipped"
+msgstr "Tutorial omitido"
+
+msgid "You can play it again at any time from the Help menu."
+msgstr "Puedes volver a iniciarlo en cualquier momento desde el menú Ayuda."
+
+msgid "Play tutorial"
+msgstr "Iniciar tutorial"
+
+msgid "The tutorial uses the Mandelbrot set and will replace the current fractal view. Continue?"
+msgstr "El tutorial usa el conjunto de Mandelbrot y reemplazará la vista actual del fractal. ¿Deseas continuar?"

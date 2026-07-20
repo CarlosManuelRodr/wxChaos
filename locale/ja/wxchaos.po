@@ -1263,3 +1263,106 @@ msgstr "エラー: 色成分は 0 から 255 までの整数である必要が�
 
 msgid "' is not a boolean. Use true or false."
 msgstr "' は真偽値ではありません。true または false を使用してください。"
+
+msgid "To continue:"
+msgstr "続けるには："
+
+msgid "Skip this step"
+msgstr "このステップをスキップ"
+
+msgid "Press Esc to skip. You can play the tutorial again from the Help menu."
+msgstr "Esc キーでスキップできます。チュートリアルはヘルプメニューから再実行できます。"
+
+#, c-format
+msgid "Step %d of 8"
+msgstr "8 ステップ中 %d"
+
+msgid "Cursor: zoom in"
+msgstr "カーソル：拡大"
+
+msgid "The Cursor is the default tool. Hold the left mouse button and drag a rectangle around the area you want to explore."
+msgstr "カーソルは既定のツールです。マウスの左ボタンを押したまま、見たい範囲を囲むようにドラッグしてください。"
+
+msgid "Left-click and drag a selection rectangle on the fractal."
+msgstr "フラクタル上で左クリックし、選択範囲の四角形をドラッグしてください。"
+
+msgid "Cursor: zoom back"
+msgstr "カーソル：前の表示に戻る"
+
+msgid "Right-clicking returns the fractal to the previous view."
+msgstr "右クリックすると、フラクタルが前の表示に戻ります。"
+
+msgid "Right-click the fractal to zoom back."
+msgstr "フラクタルを右クリックして前のズームに戻ってください。"
+
+msgid "Cursor: move around"
+msgstr "カーソル：表示を移動"
+
+msgid "You can move around the fractal with the middle mouse button, the Arrow keys, or WASD."
+msgstr "マウスの中央ボタン、矢印キー、または WASD キーでフラクタル内を移動できます。"
+
+msgid "Pan the view using a middle-button drag, an Arrow key, or a WASD key."
+msgstr "中央ボタンでドラッグするか、矢印キーまたは WASD キーを押して表示を移動してください。"
+
+msgid "Hand tool"
+msgstr "手のひらツール"
+
+msgid "The Hand is an optional convenience for panning. Select it, then hold the left mouse button and drag the fractal."
+msgstr "手のひらツールを使うと簡単に表示を移動できます。選択してから、左ボタンを押したままフラクタルをドラッグしてください。"
+
+msgid "Select the Hand tool, then left-click and drag the fractal."
+msgstr "手のひらツールを選択し、左ボタンでフラクタルをドラッグしてください。"
+
+msgid "Zoom tool"
+msgstr "ズームツール"
+
+msgid "The Zoom tool provides a smooth way to zoom in or out by dragging vertically."
+msgstr "ズームツールでは、上下にドラッグして滑らかに拡大または縮小できます。"
+
+msgid "Select the Zoom tool, then left-click and drag up or down."
+msgstr "ズームツールを選択し、左ボタンで上または下へドラッグしてください。"
+
+msgid "Point Picker"
+msgstr "ポイントピッカー"
+
+msgid "Select the Point Picker and move over the canvas to inspect a point's trajectory and result. It is useful when exploring the mathematics, but you may skip this step."
+msgstr "ポイントピッカーを選択し、キャンバス上で動かすと点の軌道と結果を調べられます。数学的な仕組みを探るのに便利ですが、このステップはスキップできます。"
+
+msgid "Select the Point Picker and move the pointer over the canvas, or choose Skip this step."
+msgstr "ポイントピッカーを選択してキャンバス上でポインターを動かすか、「このステップをスキップ」を選んでください。"
+
+msgid "Color animation"
+msgstr "カラーアニメーション"
+
+msgid "Color animation is an optional toy for a trippy viewing experience."
+msgstr "カラーアニメーションは、トリッピーな表示を楽しむためのオプション機能です。"
+
+msgid "Click the Play button to start the color animation."
+msgstr "再生ボタンをクリックしてカラーアニメーションを開始してください。"
+
+msgid "Fractal information"
+msgstr "フラクタル情報"
+
+msgid "Every supported fractal has its own interesting museum page."
+msgstr "対応する各フラクタルには、それぞれ興味深いミュージアムページがあります。"
+
+msgid "Click the Information button to open this fractal's museum page and finish the tutorial."
+msgstr "情報ボタンをクリックしてこのフラクタルのミュージアムページを開き、チュートリアルを完了してください。"
+
+msgid "You're all set"
+msgstr "準備完了"
+
+msgid "Have fun exploring wxChaos!"
+msgstr "wxChaos を存分に楽しんでください！"
+
+msgid "Tutorial skipped"
+msgstr "チュートリアルをスキップしました"
+
+msgid "You can play it again at any time from the Help menu."
+msgstr "ヘルプメニューからいつでも再実行できます。"
+
+msgid "Play tutorial"
+msgstr "チュートリアルを開始"
+
+msgid "The tutorial uses the Mandelbrot set and will replace the current fractal view. Continue?"
+msgstr "チュートリアルではマンデルブロ集合を使用し、現在のフラクタル表示を置き換えます。続行しますか？"

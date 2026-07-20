@@ -6,6 +6,7 @@
 #include "coloring/ColorPaletteTypes.h"
 #include "../common/AppAppearance.h"
 #include "../common/AppLanguage.h"
+#include "config/TutorialStatus.h"
 #include "../../../core/types/FractalType.h"
 
 /**
@@ -40,7 +41,7 @@ struct AppConfig
     bool colorPaletteWindow = false;
     bool colorFractal = true;
     bool colorSet = true;
-    bool showWelcomeOnStartup = true;                    ///< Opens the welcome guide whenever wxChaos starts.
+    bool showWelcomeOnStartup = true;                ///< Opens the welcome guide whenever wxChaos starts.
     AppAppearance appearance = AppAppearance::System; ///< Application appearance preference.
     AppLanguage language = AppLanguage::System;       ///< Application language preference.
     int targetFrameRate = DefaultTargetFrameRate;     ///< Target SFML canvas presentation frequency in hertz.
@@ -73,6 +74,13 @@ public:
     ///@brief Updates whether the welcome guide should open at startup.
     ///@param showWelcomeOnStartup True to open the welcome guide whenever wxChaos starts.
     void SetShowWelcomeOnStartup(bool showWelcomeOnStartup) const;
+
+    ///@brief Updates the guided tutorial lifecycle state.
+    void SetTutorialStatus(TutorialStatus tutorialStatus) const;
+
+    ///@brief Loads the guided tutorial lifecycle state.
+    ///@return Persisted state, or Pending when it is absent or invalid.
+    [[nodiscard]] TutorialStatus LoadTutorialStatus() const;
 
     ///@brief Updates whether the command console should open at startup.
     void SetCommandConsole(bool commandConsole) const;
@@ -117,6 +125,8 @@ private:
     static std::string AppearanceToString(AppAppearance appearance);
     static AppLanguage LanguageFromString(const std::string& value, AppLanguage defaultValue);
     static std::string LanguageToString(AppLanguage language);
+    static TutorialStatus TutorialStatusFromString(const std::string& value, TutorialStatus defaultValue);
+    static std::string TutorialStatusToString(TutorialStatus status);
     ///@brief Identifies whether a saved gradient string matches a built-in preset.
     ///@param gradient Serialized gradient string.
     ///@return Matching preset, or CustomGradient when no preset matches.

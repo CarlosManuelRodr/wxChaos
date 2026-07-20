@@ -332,6 +332,33 @@ std::string AppConfigStore::LanguageToString(const AppLanguage language)
     return "System";
 }
 
+TutorialStatus AppConfigStore::TutorialStatusFromString(const std::string& value,
+                                                        const TutorialStatus defaultValue)
+{
+    const std::string normalized = ToLower(Trim(value));
+    if (normalized == "pending")
+        return TutorialStatus::Pending;
+    if (normalized == "completed")
+        return TutorialStatus::Completed;
+    if (normalized == "dismissed")
+        return TutorialStatus::Dismissed;
+    return defaultValue;
+}
+
+std::string AppConfigStore::TutorialStatusToString(const TutorialStatus status)
+{
+    switch (status)
+    {
+        case TutorialStatus::Completed:
+            return "Completed";
+        case TutorialStatus::Dismissed:
+            return "Dismissed";
+        case TutorialStatus::Pending:
+        default:
+            return "Pending";
+    }
+}
+
 ColorPaletteTypes AppConfigStore::InferColorStyleFromGradient(const std::string& gradient)
 {
     for (const auto& item : ColorStyles())
@@ -489,6 +516,7 @@ AppConfig AppConfigStore::Load() const
 
 void AppConfigStore::Save(const AppConfig& config) const
 {
+    const TutorialStatus tutorialStatus = LoadTutorialStatus();
     wxFileConfig fileConfig(wxEmptyString, wxEmptyString, ToWxString(filename));
 
     fileConfig.DeleteAll();
@@ -506,6 +534,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Fractal/julia_mode", config.juliaMode);
     fileConfig.Write("/Fractal/command_console", config.commandConsole);
     fileConfig.Write("/General/show_welcome_on_startup", config.showWelcomeOnStartup);
+    fileConfig.Write("/General/tutorial_status", ToWxString(TutorialStatusToString(tutorialStatus)));
     fileConfig.Write("/Color/palette_window", config.colorPaletteWindow);
     fileConfig.Write("/Color/fractal", config.colorFractal);
     fileConfig.Write("/Color/set", config.colorSet);
@@ -524,6 +553,36 @@ void AppConfigStore::SetShowWelcomeOnStartup(const bool showWelcomeOnStartup) co
     AppConfig config = Load();
     config.showWelcomeOnStartup = showWelcomeOnStartup;
     Save(config);
+}
+
+void AppConfigStore::SetTutorialStatus(const TutorialStatus tutorialStatus) const
+{
+    if (!FileExists(filename))
+        Save(AppConfig{});
+
+    wxFileConfig fileConfig(wxEmptyString, wxEmptyString, ToWxString(filename));
+    fileConfig.Write("/General/tutorial_status", ToWxString(TutorialStatusToString(tutorialStatus)));
+    fileConfig.Flush();
+}
+
+TutorialStatus AppConfigStore::LoadTutorialStatus() const
+{
+    if (!FileExists(filename))
+        return TutorialStatus::Pending;
+
+    if (!HasIniSections(filename))
+    {
+        const std::map<std::string, std::string> values = ReadLegacyConfig(filename);
+        return TutorialStatusFromString(
+            ReadString(values, "TUTORIAL_STATUS", "Pending"), TutorialStatus::Pending);
+    }
+
+    wxFileConfig fileConfig(wxEmptyString, wxEmptyString, ToWxString(filename));
+    wxString tutorialStatus;
+    if (!fileConfig.Read("/General/tutorial_status", &tutorialStatus))
+        return TutorialStatus::Pending;
+
+    return TutorialStatusFromString(tutorialStatus.ToStdString(), TutorialStatus::Pending);
 }
 
 void AppConfigStore::SetCommandConsole(const bool commandConsole) const

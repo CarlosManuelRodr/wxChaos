@@ -1,8 +1,23 @@
 cmake_minimum_required(VERSION 3.28)
+
+# Ninja parses MSVC's localized /showIncludes output to track header
+# dependencies. Keep the compiler output in a stable language so accented
+# prefixes cannot be corrupted and silently leave stale object files behind.
+if(WIN32)
+        set(ENV{VSLANG} 1033)
+endif()
+
 project(wxChaos VERSION 2.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(MSVC)
+        set(CMAKE_CL_SHOWINCLUDES_PREFIX "Note: including file: ")
+        set(CMAKE_CXX_COMPILER_LAUNCHER
+                "${CMAKE_COMMAND};-E;env;VSLANG=1033"
+        )
+endif()
 
 # Output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -49,9 +64,22 @@ else()
 endif()
 find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS ${WXCHAOS_SFML_COMPONENTS})
 find_package(Angelscript CONFIG REQUIRED)
+
+# vcpkg dependencies can be platform-conditional. If a tool disappears after
+# the manifest changes, FindGettext otherwise keeps its stale cached path and
+# generates build rules that invoke a nonexistent executable.
+if(GETTEXT_MSGFMT_EXECUTABLE AND NOT EXISTS "${GETTEXT_MSGFMT_EXECUTABLE}")
+        unset(GETTEXT_MSGFMT_EXECUTABLE CACHE)
+endif()
+if(GETTEXT_MSGMERGE_EXECUTABLE AND NOT EXISTS "${GETTEXT_MSGMERGE_EXECUTABLE}")
+        unset(GETTEXT_MSGMERGE_EXECUTABLE CACHE)
+endif()
 find_package(Gettext)
 if(GETTEXT_MSGFMT_EXECUTABLE)
         get_filename_component(WXCHAOS_GETTEXT_BIN_DIR "${GETTEXT_MSGFMT_EXECUTABLE}" DIRECTORY)
+endif()
+if(GETTEXT_XGETTEXT_EXECUTABLE AND NOT EXISTS "${GETTEXT_XGETTEXT_EXECUTABLE}")
+        unset(GETTEXT_XGETTEXT_EXECUTABLE CACHE)
 endif()
 find_program(GETTEXT_XGETTEXT_EXECUTABLE
         NAMES xgettext
@@ -179,6 +207,9 @@ set(WXCHAOS_GUI_SOURCES
         wxChaos/gui/wx/analysis/LinePlotter.cpp
         wxChaos/gui/wx/analysis/PlotWindow.cpp
         wxChaos/gui/wx/canvas/FractalCanvas.cpp
+        wxChaos/gui/wx/canvas/FractalTutorialModel.cpp
+        wxChaos/gui/wx/canvas/FractalTutorialController.cpp
+        wxChaos/gui/wx/canvas/FractalTutorialOverlay.cpp
         wxChaos/gui/wx/canvas/FractalToolbar.cpp
         wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp
         wxChaos/gui/wx/canvas/RenderStatusWidget.cpp
@@ -558,6 +589,7 @@ if(BUILD_TESTING)
             tests/gui/wx/FractalDocumentationTests.cpp
             tests/gui/wx/NativeVideoWriterTests.cpp
             tests/gui/wx/AppConfigStoreTests.cpp
+            tests/gui/wx/FractalTutorialModelTests.cpp
             tests/gui/wx/AppPathsTests.cpp
             tests/gui/wx/AppLocalizationTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
@@ -565,6 +597,7 @@ if(BUILD_TESTING)
             wxChaos/core/coloring/ColorPalette.cpp
             wxChaos/gui/sfml/SelectionRect.cpp
             wxChaos/gui/wx/config/AppConfigStore.cpp
+            wxChaos/gui/wx/canvas/FractalTutorialModel.cpp
             wxChaos/gui/wx/common/AppTheme.cpp
             wxChaos/gui/wx/common/AppLocalization.cpp
             wxChaos/gui/wx/docs/DocumentationLinkAction.cpp

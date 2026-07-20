@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
+#include <utility>
 #include <wx/popupwin.h>
 #include <wx/settings.h>
 #include <wx/stattext.h>
@@ -37,6 +38,7 @@ FractalCanvas::FractalCanvas(const FractalType fractalType, wxWindow* parent, co
     _hasLastMousePosition = false;
     _mouseWheelPanning = false;
     _toolPanning = false;
+    _mousePanMoved = false;
     _zoomToolDragging = false;
     _showMainCanvasOverlays = true;
     _lastMousePosition = wxPoint(0, 0);
@@ -284,6 +286,7 @@ void FractalCanvas::BeginMousePanAt(const wxPoint position)
         return;
 
     _mouseWheelPanning = true;
+    _mousePanMoved = false;
     _lastMouseWheelPanPosition = position;
     _fractalPresenter->BeginMousePan();
 
@@ -299,6 +302,7 @@ void FractalCanvas::ContinueMousePanAt(const wxPoint position)
     if (const wxPoint delta = position - _lastMouseWheelPanPosition; delta.x != 0 || delta.y != 0)
     {
         _fractalPresenter->PanByMousePixels(delta.x, delta.y);
+        _mousePanMoved = true;
         UpdateCoordinateSelectorValue();
         _lastMouseWheelPanPosition = position;
         Refresh(false);
@@ -314,12 +318,19 @@ void FractalCanvas::EndMousePanGesture()
         return;
     }
 
+    const bool handPan = _toolPanning;
+    const bool moved = _mousePanMoved;
     _mouseWheelPanning = false;
     _toolPanning = false;
+    _mousePanMoved = false;
     _fractalPresenter->EndMousePan();
 
     if (HasCapture())
         ReleaseMouse();
+
+    if (moved)
+        NotifyInteractionCompleted(
+            handPan ? FractalTutorialAction::HandPan : FractalTutorialAction::MiddleMousePan);
 }
 
 double FractalCanvas::CalculateZoomToolScale(const wxPoint position) const
@@ -519,8 +530,17 @@ void FractalCanvas::OnUpdate()
     this->clear();
 
     const double elapsedSeconds = _movementClock.restart().asSeconds();
+    const Rect viewBeforeMovement = _fractalPresenter->GetCurrentZoom();
     const bool wasMoving = _fractalPresenter->IsMoving();
     _fractalPresenter->Move(elapsedSeconds);
+    const Rect viewAfterMovement = _fractalPresenter->GetCurrentZoom();
+    if (viewBeforeMovement._left != viewAfterMovement._left
+        || viewBeforeMovement._right != viewAfterMovement._right
+        || viewBeforeMovement._bottom != viewAfterMovement._bottom
+        || viewBeforeMovement._top != viewAfterMovement._top)
+    {
+        NotifyInteractionCompleted(FractalTutorialAction::KeyboardPan);
+    }
     if (wasMoving || _fractalPresenter->IsMoving())
         UpdateCoordinateSelectorValue();
 
@@ -649,6 +669,19 @@ FractalInteractionTool FractalCanvas::GetInteractionTool() const
 {
     return _interactionTool;
 }
+
+void FractalCanvas::SetInteractionCompletedHandler(
+    std::function<void(FractalTutorialAction)> handler)
+{
+    _interactionCompletedHandler = std::move(handler);
+}
+
+void FractalCanvas::NotifyInteractionCompleted(const FractalTutorialAction action) const
+{
+    if (_interactionCompletedHandler)
+        _interactionCompletedHandler(action);
+}
+
 FractalType FractalCanvas::GetFractalType() const
 {
     return _fractal != nullptr ? _fractal->GetType() : FractalType::Undefined;
@@ -854,8 +887,12 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
             if (_zoomToolDragging && !HasCapture())
                 CaptureMouse();
         }
-        else if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_fractalPresenter->IsMoving())
+        else if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_fractalPresenter->IsMoving()
+                 && !_fractalPresenter->IsZoomPreviewActive())
+        {
             _fractalPresenter->ZoomBack();
+            NotifyInteractionCompleted(FractalTutorialAction::ZoomBack);
+        }
         return;
     }
 
@@ -892,8 +929,12 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
             _guideImagesMode = false;
     }
 
-    if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_fractalPresenter->IsMoving())
+    if (event.ButtonDown(wxMOUSE_BTN_RIGHT) && !_fractalPresenter->IsMoving()
+        && !_fractalPresenter->IsZoomPreviewActive())
+    {
         _fractalPresenter->ZoomBack();
+        NotifyInteractionCompleted(FractalTutorialAction::ZoomBack);
+    }
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
@@ -907,11 +948,15 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 
     if (event.ButtonUp(wxMOUSE_BTN_LEFT) && _zoomToolDragging)
     {
-        CommitZoomToolDrag(GetRenderMousePosition(event));
+        const wxPoint endPosition = GetRenderMousePosition(event);
+        const double scale = CalculateZoomToolScale(endPosition);
+        CommitZoomToolDrag(endPosition);
         _zoomToolDragging = false;
 
         if (HasCapture())
             ReleaseMouse();
+        if (std::abs(scale - 1.0) >= 0.001)
+            NotifyInteractionCompleted(FractalTutorialAction::ZoomToolDrag);
         return;
     }
 
@@ -924,7 +969,10 @@ void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
         if (!_fractal->IsRendering() && !_fractalPresenter->IsMoving())
         {
             if (_selectionRect->UnClickEvent(renderEvent))
+            {
                 _fractalPresenter->SetAreaOfView(_selectionRect->GetSelection());
+                NotifyInteractionCompleted(FractalTutorialAction::SelectionZoom);
+            }
         }
     }
 }
@@ -959,6 +1007,7 @@ void FractalCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
     _zoomToolDragging = false;
     _toolPanning = false;
     _mouseWheelPanning = false;
+    _mousePanMoved = false;
     _fractalPresenter->EndMousePan();
     event.Skip();
 }
@@ -995,6 +1044,7 @@ void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
     if (_interactionTool == FractalInteractionTool::PointPicker)
     {
         ShowPointInfo(event.GetPosition(), InspectPointAt(renderPosition));
+        NotifyInteractionCompleted(FractalTutorialAction::PointPickerHovered);
         _lastMousePosition = renderPosition;
         _hasLastMousePosition = true;
         EmitStatusText();

@@ -12,9 +12,11 @@
 
 #pragma once
 
+#include <functional>
 #include <SFML/Graphics.hpp>
 #include "canvas/wxSFMLCanvas.h"
 #include "canvas/FractalInteractionTool.h"
+#include "canvas/FractalTutorialModel.h"
 #include "numeric/HighPrecision.h"
 #include "FractalFactory.h"
 #include "FormulaOptions.h"
@@ -80,6 +82,7 @@ class FractalCanvas : public wxSFMLCanvas
     bool _hasLastMousePosition;
     bool _mouseWheelPanning;
     bool _toolPanning;
+    bool _mousePanMoved;
     bool _zoomToolDragging;
     bool _showMainCanvasOverlays;
     wxPoint _lastMousePosition;
@@ -118,6 +121,9 @@ class FractalCanvas : public wxSFMLCanvas
     wxString FormatStatusCoordinate(const HighPrecisionReal& value) const;
 
     FractalInteractionTool _interactionTool;
+    std::function<void(FractalTutorialAction)> _interactionCompletedHandler;
+
+    void NotifyInteractionCompleted(FractalTutorialAction action) const;
 
 public:
     ///@brief Constructor
@@ -175,6 +181,9 @@ public:
 
     ///@return The active mouse interaction tool.
     FractalInteractionTool GetInteractionTool() const;
+
+    ///@brief Installs a callback for semantic interactions completed on the canvas.
+    void SetInteractionCompletedHandler(std::function<void(FractalTutorialAction)> handler);
 
     ///@return The type of the current fractal.
     FractalType GetFractalType() const;
