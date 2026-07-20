@@ -1292,3 +1292,78 @@ msgstr "' no es booleano. Usa true o false."
 
 #~ msgid "OK"
 #~ msgstr "OK"
+msgid "Skip this step"
+msgstr "Omitir este paso"
+
+msgid "Press Esc to skip. You can play the tutorial again from the Help menu."
+msgstr "Pulsa Esc para omitirlo. Puedes volver a iniciar el tutorial desde el menú Ayuda."
+
+#, c-format
+msgid "Step %d of 8"
+msgstr "Paso %d de 8"
+
+msgid "Cursor: zoom in"
+msgstr "Cursor: acercar"
+
+msgid "The Cursor is the default tool. Hold the left mouse button and drag a rectangle around the area you want to explore."
+msgstr "El Cursor es la herramienta predeterminada. Mantén pulsado el botón izquierdo y arrastra un rectángulo alrededor del área que quieras explorar."
+
+msgid "Cursor: zoom back"
+msgstr "Cursor: volver al zoom anterior"
+
+msgid "Right-click the fractal to return to the previous view."
+msgstr "Haz clic derecho sobre el fractal para volver a la vista anterior."
+
+msgid "Cursor: move around"
+msgstr "Cursor: desplazarse"
+
+msgid "Drag with the middle mouse button, or use the Arrow keys or WASD, to move around the fractal."
+msgstr "Arrastra con el botón central del ratón o usa las flechas o WASD para desplazarte por el fractal."
+
+msgid "Hand tool"
+msgstr "Herramienta Mano"
+
+msgid "The Hand is an optional convenience for panning. Select it, then hold the left mouse button and drag the fractal."
+msgstr "La Mano es una herramienta opcional que facilita el desplazamiento. Selecciónala, mantén pulsado el botón izquierdo y arrastra el fractal."
+
+msgid "Zoom tool"
+msgstr "Herramienta Zoom"
+
+msgid "Select the Zoom tool. Hold the left mouse button and drag up to zoom in or down to zoom out."
+msgstr "Selecciona Zoom. Mantén pulsado el botón izquierdo y arrastra hacia arriba para acercar o hacia abajo para alejar."
+
+msgid "Point Picker"
+msgstr "Selector de puntos"
+
+msgid "Select the Point Picker and move over the canvas to inspect a point's trajectory and result. It is useful when exploring the mathematics, but you may skip this step."
+msgstr "Selecciona el Selector de puntos y mueve el cursor por el lienzo para inspeccionar la trayectoria y el resultado de un punto. Es útil para explorar las matemáticas, pero puedes omitir este paso."
+
+msgid "Fractal information"
+msgstr "Información del fractal"
+
+msgid "Click the Information button to open this fractal's museum page. Each supported fractal has its own interesting documentation."
+msgstr "Pulsa el botón Información para abrir la página de museo de este fractal. Cada fractal compatible tiene su propia e interesante documentación."
+
+msgid "Color animation"
+msgstr "Animación de colores"
+
+msgid "Click Play to animate the fractal colors. It is an optional toy for a delightfully trippy viewing experience."
+msgstr "Pulsa Reproducir para animar los colores del fractal. Es un juguete opcional para disfrutar de una experiencia visual deliciosamente psicodélica."
+
+msgid "You're all set"
+msgstr "Todo listo"
+
+msgid "Have fun exploring wxChaos!"
+msgstr "¡Diviértete explorando wxChaos!"
+
+msgid "Tutorial skipped"
+msgstr "Tutorial omitido"
+
+msgid "You can play it again at any time from the Help menu."
+msgstr "Puedes volver a iniciarlo en cualquier momento desde el menú Ayuda."
+
+msgid "Play tutorial"
+msgstr "Iniciar tutorial"
+
+msgid "The tutorial uses the Mandelbrot set and will replace the current fractal view. Continue?"
+msgstr "El tutorial usa el conjunto de Mandelbrot y reemplazará la vista actual del fractal. ¿Deseas continuar?"

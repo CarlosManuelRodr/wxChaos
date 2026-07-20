@@ -261,6 +261,7 @@ void SettingsFrame::LoadControls(const AppConfig& config)
     _juliaMode->SetValue(config.juliaMode);
     _colorPaletteWindow->SetValue(config.colorPaletteWindow);
     _showWelcomeOnStartup = config.showWelcomeOnStartup;
+    _tutorialStatus = config.tutorialStatus;
     _targetFrameRate->SetValue(config.targetFrameRate);
     switch (config.appearance)
     {
@@ -361,6 +362,7 @@ AppConfig SettingsFrame::ReadControls()
     config.colorFractal = _colorFractal->GetValue();
     config.colorSet = _colorSet->GetValue();
     config.showWelcomeOnStartup = _showWelcomeOnStartup;
+    config.tutorialStatus = _tutorialStatus;
     config.targetFrameRate = _targetFrameRate->GetValue();
     config.zoomStepPercent = _zoomStepPercent->GetValue();
     config.zoomInertiaMilliseconds = _zoomInertiaMilliseconds->GetValue();
@@ -445,7 +447,9 @@ void SettingsFrame::OnEditGradient(wxCommandEvent&)
 
 void SettingsFrame::OnRestoreDefaults(wxCommandEvent&)
 {
+    const TutorialStatus tutorialStatus = _tutorialStatus;
     LoadControls(AppConfig{});
+    _tutorialStatus = tutorialStatus;
 }
 
 void SettingsFrame::OnApply(wxCommandEvent&)

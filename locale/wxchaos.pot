@@ -1246,3 +1246,78 @@ msgstr ""
 
 msgid "' is not a boolean. Use true or false."
 msgstr ""
+msgid "Skip this step"
+msgstr ""
+
+msgid "Press Esc to skip. You can play the tutorial again from the Help menu."
+msgstr ""
+
+#, c-format
+msgid "Step %d of 8"
+msgstr ""
+
+msgid "Cursor: zoom in"
+msgstr ""
+
+msgid "The Cursor is the default tool. Hold the left mouse button and drag a rectangle around the area you want to explore."
+msgstr ""
+
+msgid "Cursor: zoom back"
+msgstr ""
+
+msgid "Right-click the fractal to return to the previous view."
+msgstr ""
+
+msgid "Cursor: move around"
+msgstr ""
+
+msgid "Drag with the middle mouse button, or use the Arrow keys or WASD, to move around the fractal."
+msgstr ""
+
+msgid "Hand tool"
+msgstr ""
+
+msgid "The Hand is an optional convenience for panning. Select it, then hold the left mouse button and drag the fractal."
+msgstr ""
+
+msgid "Zoom tool"
+msgstr ""
+
+msgid "Select the Zoom tool. Hold the left mouse button and drag up to zoom in or down to zoom out."
+msgstr ""
+
+msgid "Point Picker"
+msgstr ""
+
+msgid "Select the Point Picker and move over the canvas to inspect a point's trajectory and result. It is useful when exploring the mathematics, but you may skip this step."
+msgstr ""
+
+msgid "Fractal information"
+msgstr ""
+
+msgid "Click the Information button to open this fractal's museum page. Each supported fractal has its own interesting documentation."
+msgstr ""
+
+msgid "Color animation"
+msgstr ""
+
+msgid "Click Play to animate the fractal colors. It is an optional toy for a delightfully trippy viewing experience."
+msgstr ""
+
+msgid "You're all set"
+msgstr ""
+
+msgid "Have fun exploring wxChaos!"
+msgstr ""
+
+msgid "Tutorial skipped"
+msgstr ""
+
+msgid "You can play it again at any time from the Help menu."
+msgstr ""
+
+msgid "Play tutorial"
+msgstr ""
+
+msgid "The tutorial uses the Mandelbrot set and will replace the current fractal view. Continue?"
+msgstr ""

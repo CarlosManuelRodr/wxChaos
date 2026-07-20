@@ -10,6 +10,7 @@
 #include "canvas/FractalCanvas.h"
 #include "canvas/JuliaPreviewFrame.h"
 #include "canvas/FractalToolbar.h"
+#include "canvas/FractalTutorialController.h"
 #include "canvas/RenderStatusWidget.h"
 #include "common/FractalOptionsPanel.h"
 #include "main/AboutDialog.h"
@@ -69,8 +70,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     if (!_appConfig.colorSet)
         _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(false);
 
-    if (_appConfig.showWelcomeOnStartup)
-        CallAfter([this] { ShowWelcomeGuide(); });
+    CallAfter([this] { HandleStartupGuidance(); });
 
     if (_fractalType != FractalType::Mandelbrot && _fractalType != FractalType::Manowar)
         _juliaMode->Enable(false);
@@ -80,7 +80,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     if (_appConfig.commandConsole)
         this->ShowCommandConsole();
 }
-void MainFrame::ShowWelcomeGuide()
+void MainFrame::ShowWelcomeGuide(const bool automatic)
 {
     const auto welcomeGuide = new DocumentViewer(
         AppPaths::ResourceFile({"Documents", "welcome.html"}),
@@ -101,7 +101,46 @@ void MainFrame::ShowWelcomeGuide()
         );
 
     welcomeGuide->Show(true);
-    _fractalCanvas->ShowGuideImages();
+    if (automatic)
+    {
+        welcomeGuide->Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent& event)
+        {
+            event.Skip();
+            CallAfter([this]
+            {
+                if (_appConfig.tutorialStatus == TutorialStatus::Pending)
+                    StartTutorial(true);
+                else if (_appConfig.tutorialStatus == TutorialStatus::Completed
+                    && _appConfig.showWelcomeOnStartup)
+                    _fractalCanvas->ShowGuideImages();
+            });
+        });
+    }
+}
+
+void MainFrame::HandleStartupGuidance()
+{
+    switch (FractalTutorialModel::GetStartupAction(
+        _appConfig.tutorialStatus, _appConfig.showWelcomeOnStartup))
+    {
+        case FractalTutorialStartupAction::OpenWelcome:
+        case FractalTutorialStartupAction::OpenWelcomeThenTutorial:
+        case FractalTutorialStartupAction::OpenWelcomeThenSummary:
+            ShowWelcomeGuide(true);
+            break;
+        case FractalTutorialStartupAction::StartTutorial:
+            StartTutorial(true);
+            break;
+        case FractalTutorialStartupAction::None:
+            break;
+    }
+}
+
+void MainFrame::StartTutorial(const bool automatic)
+{
+    if (_fractalType != FractalType::Mandelbrot)
+        ChangeFractal(FractalType::Mandelbrot, true);
+    _tutorialController->Start(automatic);
 }
 void MainFrame::ConnectEvents()
 {
@@ -117,6 +156,8 @@ void MainFrame::ConnectEvents()
     this->Bind(wxEVT_DIMENSION_FRAME_CLOSED, &MainFrame::OnDimensionFrameClosed, this);
     this->Bind(wxEVT_COMMAND_CONSOLE_CLOSED, &MainFrame::OnCommandConsoleClosed, this);
     this->Bind(wxEVT_MENU, &MainFrame::OnWelcomeDialog, this, ID_WELCOME_DIALOG);
+    this->Bind(wxEVT_MENU, &MainFrame::OnPlayTutorial, this, ID_PLAY_TUTORIAL);
+    this->Bind(wxEVT_CHAR_HOOK, &MainFrame::OnCharHook, this);
     this->Bind(wxEVT_MENU, &MainFrame::OnAbout, this, ID_ABOUT);
     this->Bind(wxEVT_MENU, &MainFrame::OnKeyboardGuide, this, ID_KEYBOARD_GUIDE);
     this->Bind(wxEVT_MENU, &MainFrame::OnSave, this, ID_SAVE);
@@ -190,6 +231,8 @@ void MainFrame::CreateInteractionToolbar()
     {
         if (_fractalCanvas != nullptr)
             _fractalCanvas->SetInteractionTool(tool);
+        if (_tutorialController != nullptr)
+            _tutorialController->HandleToolSelected(tool);
     });
     _interactionToolbar->SetColorRotationHandler([this]
     {
@@ -198,9 +241,15 @@ void MainFrame::CreateInteractionToolbar()
             return false;
 
         _fractalCanvas->GetFractalPresenter()->ToggleColorRotation();
+        if (_tutorialController != nullptr)
+            _tutorialController->HandleAction(FractalTutorialAction::ColorAnimationToggled);
         return true;
     });
-    _interactionToolbar->SetInformationHandler([this] { OpenFractalInformation(); });
+    _interactionToolbar->SetInformationHandler([this]
+    {
+        if (OpenFractalInformation() && _tutorialController != nullptr)
+            _tutorialController->HandleAction(FractalTutorialAction::FractalInformationOpened);
+    });
 }
 
 void MainFrame::CreateStatusBarControls()
@@ -260,14 +309,14 @@ void MainFrame::OpenIterationsDialog()
     }
 }
 
-void MainFrame::OpenFractalInformation()
+bool MainFrame::OpenFractalInformation()
 {
     if (_fractalCanvas == nullptr)
-        return;
+        return false;
 
     const wxString documentFile = _fractalCanvas->GetFractal()->GetFractalInformationFile();
     if (documentFile.empty())
-        return;
+        return false;
 
     _informationViewer = new DocumentViewer(
         documentFile,
@@ -286,10 +335,13 @@ void MainFrame::OpenFractalInformation()
         {
             _informationViewer = nullptr;
             _informationFrameIsActive = false;
+            if (_tutorialController != nullptr)
+                _tutorialController->NotifyDocumentationClosed();
         }
         event.Skip();
     });
     _informationViewer->Show(true);
+    return true;
 }
 
 void MainFrame::OpenRendererOptions()
@@ -711,6 +763,7 @@ void MainFrame::SetUpGUI()
 
     // Help menu.
     _helpMenu->Append(ID_WELCOME_DIALOG, _("Open welcome guide"));
+    _helpMenu->Append(ID_PLAY_TUTORIAL, _("Play tutorial"));
     _keyboardGuide = new wxMenuItem(_helpMenu, ID_KEYBOARD_GUIDE, _("Keyboard guide"), wxEmptyString, wxITEM_CHECK);
     _helpMenu->Append(_keyboardGuide);
     _helpMenu->Append(ID_ABOUT, _("About"));
@@ -781,6 +834,17 @@ void MainFrame::SetUpGUI()
     _fractalCanvas->SetTargetFrameRate(_appConfig.targetFrameRate);
     _fractalCanvas->GetFractalPresenter()->SetZoomOptions(_appConfig.zoomStepPercent, _appConfig.zoomInertiaMilliseconds);
     _fractalSizer->Add(_fractalCanvas, 1, wxEXPAND | wxALL, 0);
+    _fractalCanvas->SetInteractionCompletedHandler([this](const FractalTutorialAction action)
+    {
+        if (_tutorialController != nullptr)
+            _tutorialController->HandleAction(action);
+    });
+    _tutorialController = std::make_unique<FractalTutorialController>(
+        _fractalCanvas, _interactionToolbar, [this](const TutorialStatus status)
+        {
+            _appConfig.tutorialStatus = status;
+            AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).SetTutorialStatus(status);
+        });
     CreateStatusBarControls();
     this->Layout();
     LayoutStatusBarControls();
@@ -851,6 +915,7 @@ void MainFrame::CloseAll()
 
     if (_fractalCanvas != nullptr)
         _fractalCanvas->PrepareForClose();
+    _tutorialController.reset();
 
     if (_commandConsole != nullptr)
     {
@@ -947,7 +1012,29 @@ void MainFrame::ShowCommandConsole()
 }
 void MainFrame::OnWelcomeDialog(wxCommandEvent&)
 {
-    this->ShowWelcomeGuide();
+    this->ShowWelcomeGuide(false);
+}
+
+void MainFrame::OnPlayTutorial(wxCommandEvent&)
+{
+    if (_fractalType != FractalType::Mandelbrot)
+    {
+        const int result = wxMessageBox(
+            _("The tutorial uses the Mandelbrot set and will replace the current fractal view. Continue?"),
+            _("Play tutorial"), wxYES_NO | wxICON_QUESTION, this);
+        if (result != wxYES)
+            return;
+    }
+
+    StartTutorial(false);
+}
+
+void MainFrame::OnCharHook(wxKeyEvent& event)
+{
+    if (event.GetKeyCode() == WXK_ESCAPE && _tutorialController != nullptr
+        && _tutorialController->HandleEscape())
+        return;
+    event.Skip();
 }
 void MainFrame::OnAbout(wxCommandEvent&)
 {

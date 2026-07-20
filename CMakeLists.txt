@@ -179,6 +179,9 @@ set(WXCHAOS_GUI_SOURCES
         wxChaos/gui/wx/analysis/LinePlotter.cpp
         wxChaos/gui/wx/analysis/PlotWindow.cpp
         wxChaos/gui/wx/canvas/FractalCanvas.cpp
+        wxChaos/gui/wx/canvas/FractalTutorialModel.cpp
+        wxChaos/gui/wx/canvas/FractalTutorialController.cpp
+        wxChaos/gui/wx/canvas/FractalTutorialOverlay.cpp
         wxChaos/gui/wx/canvas/FractalToolbar.cpp
         wxChaos/gui/wx/canvas/JuliaPreviewFrame.cpp
         wxChaos/gui/wx/canvas/RenderStatusWidget.cpp
@@ -558,6 +561,7 @@ if(BUILD_TESTING)
             tests/gui/wx/FractalDocumentationTests.cpp
             tests/gui/wx/NativeVideoWriterTests.cpp
             tests/gui/wx/AppConfigStoreTests.cpp
+            tests/gui/wx/FractalTutorialModelTests.cpp
             tests/gui/wx/AppPathsTests.cpp
             tests/gui/wx/AppLocalizationTests.cpp
             tests/gui/wx/PanelOptionsTests.cpp
@@ -565,6 +569,7 @@ if(BUILD_TESTING)
             wxChaos/core/coloring/ColorPalette.cpp
             wxChaos/gui/sfml/SelectionRect.cpp
             wxChaos/gui/wx/config/AppConfigStore.cpp
+            wxChaos/gui/wx/canvas/FractalTutorialModel.cpp
             wxChaos/gui/wx/common/AppTheme.cpp
             wxChaos/gui/wx/common/AppLocalization.cpp
             wxChaos/gui/wx/docs/DocumentationLinkAction.cpp

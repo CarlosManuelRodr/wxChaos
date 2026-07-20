@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
@@ -32,6 +33,7 @@ class ScriptEditor;
 class DimensionFrame;
 class CommandConsole;
 class FractalToolbar;
+class FractalTutorialController;
 class RenderStatusWidget;
 class FractalOptionsPanel;
 class wxMenuBar;
@@ -93,6 +95,7 @@ enum IDS
     ID_FORMULA_DIALOG,
     ID_OPTION_PANEL,
     ID_WELCOME_DIALOG,
+    ID_PLAY_TUTORIAL,
     ID_SCRIPT_EDITOR,
     ID_ZOOM_RECORDER,
     ID_DIMENSION_CALCULATOR,
@@ -159,6 +162,7 @@ class MainFrame : public wxFrame
     wxMenuItem* _abortRenderItem{};
     wxBoxSizer* _sizer{};
     FractalToolbar* _interactionToolbar{};
+    std::unique_ptr<FractalTutorialController> _tutorialController;
     wxSize _size;
     wxStatusBar* _statusBar{};
     RenderStatusWidget* _renderStatusWidget{};
@@ -194,7 +198,9 @@ class MainFrame : public wxFrame
     bool OpenJuliaModeAt(double real, double imaginary);
     void DestroyDimensionFrame();
     void ShowCommandConsole();
-    void ShowWelcomeGuide();
+    void ShowWelcomeGuide(bool automatic);
+    void HandleStartupGuidance();
+    void StartTutorial(bool automatic);
     /// @brief Applies saved settings that can safely change during the current session.
     /// @param config Newly saved application configuration.
     void ApplyAppConfig(const AppConfig& config);
@@ -207,7 +213,7 @@ class MainFrame : public wxFrame
     void CreateStatusBarControls();
     void LayoutStatusBarControls();
     void OpenIterationsDialog();
-    void OpenFractalInformation();
+    bool OpenFractalInformation();
     void OpenRendererOptions();
     void OpenDimensionCalculator();
     void UpdateInformationTool();
@@ -247,6 +253,8 @@ public :
     void OnJuliaMode(wxCommandEvent& event);               ///< Opens a window with the Julia version of the selected fractal.
     void OnPalette(wxCommandEvent& event);                 ///< Opens a ColorFrame.
     void OnWelcomeDialog(wxCommandEvent& event);           ///< Shows the welcome dialog.
+    void OnPlayTutorial(wxCommandEvent& event);            ///< Starts or replays the guided tutorial.
+    void OnCharHook(wxKeyEvent& event);                     ///< Handles tutorial-wide keyboard shortcuts.
     void OnAbout(wxCommandEvent& event);                   ///< Opens the About frame.
     void OnClose(wxCloseEvent& event);                     ///< Closes the frame.
     void OnQuit(wxCommandEvent& event);
