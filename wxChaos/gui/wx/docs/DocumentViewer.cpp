@@ -288,7 +288,10 @@ void DocumentViewer::OnNavigating(wxWebViewEvent& event)
     {
         event.Veto();
         if (_wxChaosLinkHandler)
+        {
+            // ReSharper disable once CppExpressionWithoutSideEffects
             _wxChaosLinkHandler(event.GetURL());
+        }
         return;
     }
 
@@ -327,6 +330,7 @@ void DocumentViewer::OnLoaded(wxWebViewEvent&)
     UpdateNavigationButtons();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void DocumentViewer::OnOpenInBrowser(wxCommandEvent&)
 {
     if (!wxLaunchDefaultBrowser(_documentUrl))
@@ -334,11 +338,14 @@ void DocumentViewer::OnOpenInBrowser(wxCommandEvent&)
 }
 
 #ifdef __WXMSW__
+// ReSharper disable once CppMemberFunctionMayBeStatic
 void DocumentViewer::OnDownloadWebView(wxCommandEvent&)
 {
-    constexpr auto downloadUrl = "https://developer.microsoft.com/microsoft-edge/webview2/";
-    if (!wxLaunchDefaultBrowser(downloadUrl))
+    if (constexpr auto downloadUrl = "https://developer.microsoft.com/microsoft-edge/webview2/";
+        !wxLaunchDefaultBrowser(downloadUrl))
+    {
         wxLogError("Failed to open the Microsoft Edge WebView2 download page");
+    }
 }
 #endif
 
@@ -347,6 +354,7 @@ void DocumentViewer::OnClose(wxCommandEvent&)
     Close(true);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void DocumentViewer::OnStartupDisplayChanged(wxCommandEvent&)
 {
     if (_startupDisplayChanged)
