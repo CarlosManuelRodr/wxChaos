@@ -65,7 +65,7 @@ public:
 
     ///@brief Loads the configuration file.
     ///@return Parsed configuration values, with defaults used for missing or invalid entries.
-    [[nodiscard]] AppConfig Load() const;
+    AppConfig Load() const;
 
     ///@brief Saves configuration values using the current sectioned INI format.
     ///@param config Configuration values to write.
