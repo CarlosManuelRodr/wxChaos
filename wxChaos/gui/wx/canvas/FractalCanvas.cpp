@@ -728,8 +728,7 @@ void FractalCanvas::Reset()
     if (_fractal->IsRendering())
         _fractal->StopRender();
 
-    const FractalType fractalType = GetFractalType();
-    if (fractalType == FractalType::ScriptFractal)
+    if (const FractalType fractalType = GetFractalType(); fractalType == FractalType::ScriptFractal)
         this->CreateScriptFractal(_scriptData);
     else
         this->CreateFractal(fractalType);
