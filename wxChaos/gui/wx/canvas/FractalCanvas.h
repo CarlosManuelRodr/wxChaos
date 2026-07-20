@@ -70,7 +70,7 @@ class FractalCanvas : public wxSFMLCanvas
     double _kImaginary;
     double _prevKReal;
     double _prevKImag;
-    bool _coordinateSelectorChange;                    ///< If there is a change in the pointer, this boolean is activated.
+    bool _coordinateSelectorChange;         ///< If there is a change in the pointer, this boolean is activated.
     bool _keyboardGuide;                    ///< State of the keyboard guide.
     bool _keyboardGuideMode;
     bool _guideImagesMode;
