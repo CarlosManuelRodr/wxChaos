@@ -2,6 +2,7 @@
 #include "export/NativeVideoWriter.h"
 
 #ifdef _WIN32
+#include <cstdint>
 #include <filesystem>
 #endif
 
@@ -30,30 +31,55 @@ TEST_CASE("Native video quality maps deterministically to bounded H.264 quantize
 }
 
 #ifdef _WIN32
-TEST_CASE("Windows native video writer accepts quality-based VBR settings")
+TEST_CASE("Windows native video writer applies quality before encoder negotiation")
 {
-    const std::filesystem::path outputPath =
-        std::filesystem::temp_directory_path() / "wxchaos-quality-vbr-test.mp4";
+    const std::filesystem::path lowQualityPath =
+        std::filesystem::temp_directory_path() / "wxchaos-low-quality-vbr-test.mp4";
+    const std::filesystem::path highQualityPath =
+        std::filesystem::temp_directory_path() / "wxchaos-high-quality-vbr-test.mp4";
     std::error_code fileError;
-    std::filesystem::remove(outputPath, fileError);
-
-    NativeVideoWriter writer;
-    const bool opened = writer.Open(outputPath.string(), 320U, 240U, 30U, {});
-    INFO(writer.GetError());
-    REQUIRE(opened);
+    std::filesystem::remove(lowQualityPath, fileError);
+    std::filesystem::remove(highQualityPath, fileError);
 
     sf::Image frame;
-    frame.create(320U, 240U, sf::Color::Black);
-    for (unsigned int y = 0; y < 240U; ++y)
+    frame.create(320U, 240U);
+    const auto encode = [&frame](const std::filesystem::path& outputPath, const unsigned int quality)
     {
-        for (unsigned int x = 0; x < 320U; ++x)
-            frame.setPixel(x, y, y < 120U ? sf::Color::Red : sf::Color::Blue);
-    }
+        NativeVideoWriter writer;
+        const bool opened = writer.Open(
+            outputPath.string(), 320U, 240U, 30U, {quality, NativeVideoEncodingSpeed::Slow});
+        INFO(writer.GetError());
+        REQUIRE(opened);
 
-    REQUIRE(writer.WriteFrame(frame));
-    REQUIRE(writer.WriteFrame(frame));
-    REQUIRE(writer.Close());
-    CHECK(std::filesystem::file_size(outputPath) > 0U);
-    std::filesystem::remove(outputPath, fileError);
+        for (unsigned int frameIndex = 0; frameIndex < 12U; ++frameIndex)
+        {
+            for (unsigned int y = 0; y < 240U; ++y)
+            {
+                for (unsigned int x = 0; x < 320U; ++x)
+                {
+                    const unsigned int noise = x * 73U + y * 151U + frameIndex * 199U;
+                    frame.setPixel(x, y, {
+                        static_cast<uint8_t>((x + frameIndex * 3U) % 256U),
+                        static_cast<uint8_t>((y + noise / 17U) % 256U),
+                        static_cast<uint8_t>(noise % 256U)
+                    });
+                }
+            }
+
+            REQUIRE(writer.WriteFrame(frame));
+        }
+
+        REQUIRE(writer.Close());
+    };
+
+    encode(lowQualityPath, 1U);
+    encode(highQualityPath, 100U);
+
+    const uintmax_t lowQualitySize = std::filesystem::file_size(lowQualityPath);
+    const uintmax_t highQualitySize = std::filesystem::file_size(highQualityPath);
+    CHECK(highQualitySize > lowQualitySize * 2U);
+
+    std::filesystem::remove(lowQualityPath, fileError);
+    std::filesystem::remove(highQualityPath, fileError);
 }
 #endif

@@ -46,7 +46,6 @@ class NativeVideoWriter::Impl
     void ReleaseResources();
     static std::wstring Utf8ToWide(const std::string& value);
     static std::string HResultToString(const char* action, HRESULT result);
-    bool SetCodecUInt32(ICodecAPI* codecApi, const GUID& property, unsigned int value, const char* action);
     static void TrySetCodecUInt32(ICodecAPI* codecApi, const GUID& property, unsigned int value);
     static void TrySetCodecBoolean(ICodecAPI* codecApi, const GUID& property, bool value);
     static unsigned int GetWindowsQualityVsSpeed(NativeVideoEncodingSpeed speed);
@@ -131,19 +130,6 @@ bool NativeVideoWriter::Impl::SetError(const char* action, const HRESULT result)
 {
     _error = HResultToString(action, result);
     return false;
-}
-
-bool NativeVideoWriter::Impl::SetCodecUInt32(ICodecAPI* codecApi, const GUID& property, const unsigned int value,
-                                             const char* action)
-{
-    VARIANT variant;
-    VariantInit(&variant);
-    variant.vt = VT_UI4;
-    variant.ulVal = value;
-    const HRESULT result = codecApi->SetValue(&property, &variant);
-    if (FAILED(result))
-        return SetError(action, result);
-    return true;
 }
 
 void NativeVideoWriter::Impl::TrySetCodecUInt32(ICodecAPI* codecApi, const GUID& property,
@@ -275,35 +261,31 @@ bool NativeVideoWriter::Impl::Open(const std::string& outputPath, const unsigned
         result = MFSetAttributeRatio(inputType, MF_MT_FRAME_RATE, _fps, 1);
     if (SUCCEEDED(result))
         result = MFSetAttributeRatio(inputType, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
+
+    // Media Foundation otherwise negotiates the H.264 output type before these values reach the encoder.
+    // In particular, AVEncCommonQuality can be ignored when it is applied after output-type negotiation.
+    IMFAttributes* encodingParameters = nullptr;
     if (SUCCEEDED(result))
-        result = _writer->SetInputMediaType(_streamIndex, inputType, nullptr);
+        result = MFCreateAttributes(&encodingParameters, 3);
+    if (SUCCEEDED(result))
+        result = encodingParameters->SetUINT32(
+            CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_Quality);
+    if (SUCCEEDED(result))
+        result = encodingParameters->SetUINT32(CODECAPI_AVEncCommonQuality, options.quality);
+    if (SUCCEEDED(result))
+        result = encodingParameters->SetUINT32(
+            CODECAPI_AVEncCommonQualityVsSpeed, GetWindowsQualityVsSpeed(options.speed));
+    if (SUCCEEDED(result))
+        result = _writer->SetInputMediaType(_streamIndex, inputType, encodingParameters);
+    SafeRelease(encodingParameters);
     releaseInputType();
     if (FAILED(result))
-        return SetError("Configuring input media type", result);
+        return SetError("Configuring input media type and quality-based VBR", result);
 
     ICodecAPI* codecApi = nullptr;
     result = _writer->GetServiceForStream(_streamIndex, GUID_NULL, IID_PPV_ARGS(&codecApi));
     if (FAILED(result))
         return SetError("Accessing video encoder settings", result);
-
-    if (!SetCodecUInt32(codecApi, CODECAPI_AVEncCommonRateControlMode,
-                        eAVEncCommonRateControlMode_Quality, "Configuring quality-based variable bitrate"))
-    {
-        SafeRelease(codecApi);
-        return false;
-    }
-    if (!SetCodecUInt32(codecApi, CODECAPI_AVEncCommonQuality, options.quality,
-                        "Configuring video quality"))
-    {
-        SafeRelease(codecApi);
-        return false;
-    }
-    if (!SetCodecUInt32(codecApi, CODECAPI_AVEncCommonQualityVsSpeed,
-                        GetWindowsQualityVsSpeed(options.speed), "Configuring encoding speed"))
-    {
-        SafeRelease(codecApi);
-        return false;
-    }
 
     TrySetCodecBoolean(codecApi, CODECAPI_AVEncH264CABACEnable, true);
     TrySetCodecUInt32(codecApi, CODECAPI_AVEncMPVDefaultBPictureCount, 2U);
