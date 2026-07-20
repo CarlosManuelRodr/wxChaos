@@ -561,7 +561,6 @@ wxString Fractal::DescribeOrbit(const bool escaped) const
     const double finalIm = orbitLines.back().y2;
 
     double totalDistance = 0.0;
-    double largestStep = 0.0;
     double closestToOrigin = hypot(startRe, startIm);
     double farthestFromOrigin = closestToOrigin;
 
@@ -570,25 +569,16 @@ wxString Fractal::DescribeOrbit(const bool escaped) const
         const double stepDistance = hypot(line.x2 - line.x1, line.y2 - line.y1);
         const double distanceToOrigin = hypot(line.x2, line.y2);
         totalDistance += stepDistance;
-        largestStep = std::max(largestStep, stepDistance);
         closestToOrigin = std::min(closestToOrigin, distanceToOrigin);
         farthestFromOrigin = std::max(farthestFromOrigin, distanceToOrigin);
     }
 
-    const double displacement = hypot(finalRe - startRe, finalIm - startIm);
-    const double averageStep = totalDistance / static_cast<double>(orbitLines.size());
-    const double pathEfficiency = totalDistance > 0.0 ? 100.0 * displacement / totalDistance : 0.0;
     const double finalModulus = hypot(finalRe, finalIm);
     constexpr double radiansToDegrees = 180.0 / 3.14159265358979323846;
     const double finalAngle = atan2(finalIm, finalRe) * radiansToDegrees;
 
     wxString output;
-    output << "Orbit transitions: " << orbitLines.size() << "\n"
-           << "Orbit path length: " << FormatNumber(totalDistance) << "\n"
-           << "Straight-line displacement: " << FormatNumber(displacement)
-           << " (" << FormatNumber(pathEfficiency) << "% of path length)\n"
-           << "Average / largest step: " << FormatNumber(averageStep) << " / "
-           << FormatNumber(largestStep) << "\n"
+    output << "Orbit path length: " << FormatNumber(totalDistance) << "\n"
            << "Closest / farthest from origin: " << FormatNumber(closestToOrigin) << " / "
            << FormatNumber(farthestFromOrigin) << "\n"
            << (escaped ? "Escape value: " : "Last recorded value: ")
