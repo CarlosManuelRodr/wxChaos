@@ -85,7 +85,6 @@ class SettingsFrame final : public wxDialog
     wxCheckBox* _juliaMode{};                             ///< Opens Julia mode at startup.
     wxCheckBox* _colorPaletteWindow{};                    ///< Opens renderer options at startup.
     bool _showWelcomeOnStartup{};                         ///< Preserves the welcome guide startup preference.
-    TutorialStatus _tutorialStatus{TutorialStatus::Pending}; ///< Preserves the guided tutorial state.
     wxChoice* _theme{};                                   ///< Selects the system, light, or dark application appearance.
     wxChoice* _language{};                                ///< Selects the system, English, Spanish, or Japanese application language.
     wxSpinCtrl* _targetFrameRate{};                       ///< Selects the canvas presentation frequency in hertz.

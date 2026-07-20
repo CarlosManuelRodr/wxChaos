@@ -178,6 +178,7 @@ class MainFrame : public wxFrame
     // Configuration.
     FractalType _fractalType{};
     AppConfig _appConfig;
+    TutorialStatus _tutorialStatus{TutorialStatus::Pending};
 
     void SetUpGUI();                      ///< Create the main window.
     void UpdateMenu();                    ///< Adjust menu items when a new fractal type is selected.

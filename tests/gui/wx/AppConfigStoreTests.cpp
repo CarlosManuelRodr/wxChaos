@@ -133,11 +133,17 @@ TEST_CASE("AppConfigStore persists the guided tutorial status")
     std::filesystem::remove(path);
     const AppConfigStore store(path.string());
 
-    CHECK(store.Load().tutorialStatus == TutorialStatus::Pending);
+    store.Load();
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Pending);
     store.SetTutorialStatus(TutorialStatus::Completed);
-    CHECK(store.Load().tutorialStatus == TutorialStatus::Completed);
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Completed);
     store.SetTutorialStatus(TutorialStatus::Dismissed);
-    CHECK(store.Load().tutorialStatus == TutorialStatus::Dismissed);
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Dismissed);
+
+    AppConfig config = store.Load();
+    config.targetFrameRate = 144;
+    store.Save(config);
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Dismissed);
 
     std::filesystem::remove(path);
 }
@@ -154,7 +160,9 @@ TEST_CASE("AppConfigStore legacy config defaults tutorial status to pending")
         file << "FRACTAL_TYPE=Mandelbrot\n";
     }
 
-    CHECK(AppConfigStore(path.string()).Load().tutorialStatus == TutorialStatus::Pending);
+    const AppConfigStore store(path.string());
+    store.Load();
+    CHECK(store.LoadTutorialStatus() == TutorialStatus::Pending);
     std::filesystem::remove(path);
 }
 

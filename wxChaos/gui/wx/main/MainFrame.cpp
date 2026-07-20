@@ -108,9 +108,9 @@ void MainFrame::ShowWelcomeGuide(const bool automatic)
             event.Skip();
             CallAfter([this]
             {
-                if (_appConfig.tutorialStatus == TutorialStatus::Pending)
+                if (_tutorialStatus == TutorialStatus::Pending)
                     StartTutorial(true);
-                else if (_appConfig.tutorialStatus == TutorialStatus::Completed
+                else if (_tutorialStatus == TutorialStatus::Completed
                     && _appConfig.showWelcomeOnStartup)
                     _fractalCanvas->ShowGuideImages();
             });
@@ -121,7 +121,7 @@ void MainFrame::ShowWelcomeGuide(const bool automatic)
 void MainFrame::HandleStartupGuidance()
 {
     switch (FractalTutorialModel::GetStartupAction(
-        _appConfig.tutorialStatus, _appConfig.showWelcomeOnStartup))
+        _tutorialStatus, _appConfig.showWelcomeOnStartup))
     {
         case FractalTutorialStartupAction::OpenWelcome:
         case FractalTutorialStartupAction::OpenWelcomeThenTutorial:
@@ -842,7 +842,7 @@ void MainFrame::SetUpGUI()
     _tutorialController = std::make_unique<FractalTutorialController>(
         _fractalCanvas, _interactionToolbar, [this](const TutorialStatus status)
         {
-            _appConfig.tutorialStatus = status;
+            _tutorialStatus = status;
             AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile())).SetTutorialStatus(status);
         });
     CreateStatusBarControls();
@@ -1501,6 +1501,7 @@ void MainFrame::GetParserOpt()
 {
     const AppConfigStore configStore(AppPaths::ToStdPath(AppPaths::ConfigFile()));
     _appConfig = configStore.Load();
+    _tutorialStatus = configStore.LoadTutorialStatus();
 }
 void MainFrame::UpdateOptionsPanel()
 {

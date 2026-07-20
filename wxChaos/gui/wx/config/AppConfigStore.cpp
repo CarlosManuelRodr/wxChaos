@@ -399,8 +399,6 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     config.colorSet = ReadBool(values, "COLOR_SET", config.colorSet);
     config.showWelcomeOnStartup =
         ReadBool(values, "SHOW_WELCOME_ON_STARTUP", config.showWelcomeOnStartup);
-    config.tutorialStatus = TutorialStatusFromString(
-        ReadString(values, "TUTORIAL_STATUS", "Pending"), config.tutorialStatus);
     config.targetFrameRate = std::max(
         AppConfig::MinimumTargetFrameRate, ReadInt(values, "TARGET_FRAME_RATE", config.targetFrameRate));
     config.zoomStepPercent = std::clamp(ReadInt(values, "ZOOM_STEP_PERCENT", config.zoomStepPercent), 1, 95);
@@ -483,9 +481,6 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/General/show_welcome_on_startup",
                     &config.showWelcomeOnStartup,
                     config.showWelcomeOnStartup);
-    wxString tutorialStatus;
-    if (fileConfig.Read("/General/tutorial_status", &tutorialStatus))
-        config.tutorialStatus = TutorialStatusFromString(tutorialStatus.ToStdString(), config.tutorialStatus);
     fileConfig.Read("/Color/palette_window", &config.colorPaletteWindow, config.colorPaletteWindow);
     fileConfig.Read("/Color/fractal", &config.colorFractal, config.colorFractal);
     fileConfig.Read("/Color/set", &config.colorSet, config.colorSet);
@@ -521,6 +516,7 @@ AppConfig AppConfigStore::Load() const
 
 void AppConfigStore::Save(const AppConfig& config) const
 {
+    const TutorialStatus tutorialStatus = LoadTutorialStatus();
     wxFileConfig fileConfig(wxEmptyString, wxEmptyString, ToWxString(filename));
 
     fileConfig.DeleteAll();
@@ -538,7 +534,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Fractal/julia_mode", config.juliaMode);
     fileConfig.Write("/Fractal/command_console", config.commandConsole);
     fileConfig.Write("/General/show_welcome_on_startup", config.showWelcomeOnStartup);
-    fileConfig.Write("/General/tutorial_status", ToWxString(TutorialStatusToString(config.tutorialStatus)));
+    fileConfig.Write("/General/tutorial_status", ToWxString(TutorialStatusToString(tutorialStatus)));
     fileConfig.Write("/Color/palette_window", config.colorPaletteWindow);
     fileConfig.Write("/Color/fractal", config.colorFractal);
     fileConfig.Write("/Color/set", config.colorSet);
@@ -561,9 +557,32 @@ void AppConfigStore::SetShowWelcomeOnStartup(const bool showWelcomeOnStartup) co
 
 void AppConfigStore::SetTutorialStatus(const TutorialStatus tutorialStatus) const
 {
-    AppConfig config = Load();
-    config.tutorialStatus = tutorialStatus;
-    Save(config);
+    if (!FileExists(filename))
+        Save(AppConfig{});
+
+    wxFileConfig fileConfig(wxEmptyString, wxEmptyString, ToWxString(filename));
+    fileConfig.Write("/General/tutorial_status", ToWxString(TutorialStatusToString(tutorialStatus)));
+    fileConfig.Flush();
+}
+
+TutorialStatus AppConfigStore::LoadTutorialStatus() const
+{
+    if (!FileExists(filename))
+        return TutorialStatus::Pending;
+
+    if (!HasIniSections(filename))
+    {
+        const std::map<std::string, std::string> values = ReadLegacyConfig(filename);
+        return TutorialStatusFromString(
+            ReadString(values, "TUTORIAL_STATUS", "Pending"), TutorialStatus::Pending);
+    }
+
+    wxFileConfig fileConfig(wxEmptyString, wxEmptyString, ToWxString(filename));
+    wxString tutorialStatus;
+    if (!fileConfig.Read("/General/tutorial_status", &tutorialStatus))
+        return TutorialStatus::Pending;
+
+    return TutorialStatusFromString(tutorialStatus.ToStdString(), TutorialStatus::Pending);
 }
 
 void AppConfigStore::SetCommandConsole(const bool commandConsole) const

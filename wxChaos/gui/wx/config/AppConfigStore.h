@@ -41,8 +41,7 @@ struct AppConfig
     bool colorPaletteWindow = false;
     bool colorFractal = true;
     bool colorSet = true;
-    bool showWelcomeOnStartup = true;                    ///< Opens the welcome guide whenever wxChaos starts.
-    TutorialStatus tutorialStatus = TutorialStatus::Pending; ///< Guided tutorial lifecycle state.
+    bool showWelcomeOnStartup = true;                ///< Opens the welcome guide whenever wxChaos starts.
     AppAppearance appearance = AppAppearance::System; ///< Application appearance preference.
     AppLanguage language = AppLanguage::System;       ///< Application language preference.
     int targetFrameRate = DefaultTargetFrameRate;     ///< Target SFML canvas presentation frequency in hertz.
@@ -78,6 +77,10 @@ public:
 
     ///@brief Updates the guided tutorial lifecycle state.
     void SetTutorialStatus(TutorialStatus tutorialStatus) const;
+
+    ///@brief Loads the guided tutorial lifecycle state.
+    ///@return Persisted state, or Pending when it is absent or invalid.
+    [[nodiscard]] TutorialStatus LoadTutorialStatus() const;
 
     ///@brief Updates whether the command console should open at startup.
     void SetCommandConsole(bool commandConsole) const;
