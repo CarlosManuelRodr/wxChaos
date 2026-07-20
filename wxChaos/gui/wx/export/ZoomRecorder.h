@@ -9,6 +9,7 @@
 #include <wx/frame.h>
 #include <wx/bmpbndl.h>
 #include "FractalFactory.h"
+#include "export/ZoomRecordingOptions.h"
 #include "numeric/PreciseRect.h"
 
 class FractalCanvas;
@@ -39,6 +40,7 @@ class ZoomRecorder : public wxDialog
     wxStaticText* _framesPerSecondText;
     wxSpinCtrl* _widthSpinCtrl;
     wxSpinCtrl* _heightSpinCtrl;
+    wxChoice* _antiAliasingChoice;
     wxSpinCtrl* _qualitySpinCtrl;
     wxChoice* _encodingSpeedChoice;
     wxCheckBox* _rotateCheckbox;
@@ -53,6 +55,7 @@ class ZoomRecorder : public wxDialog
     int _recordingHeight{};
     double _recordingAspectRatio{};
     bool _updatingResolution{};
+    ZoomRecordingOptions _recordingOptions;
 
     PreciseRect _outermostZoom, _innermostZoom;
 
@@ -64,13 +67,16 @@ class ZoomRecorder : public wxDialog
     void OnChangeSpeedDbl(wxSpinDoubleEvent&);
     void OnWidthChanged(wxSpinEvent&);
     void OnHeightChanged(wxSpinEvent&);
+    void OnAntiAliasing(wxCommandEvent&);
 
     void CreateFractalFactory();
     void InitializeRenderSizes();
     void SetSpinControlWidth(wxWindow* control) const;
+    static int GetAntiAliasingSelection(unsigned int scale);
     void RenderPreview(int zoom, double colorSpeed = -1.0) const;
     void RenderPreview();
     void UpdateTotalFrames();
+    void UpdateRecordingAntiAliasing();
     [[nodiscard]] int GetTotalFrames() const;
     [[nodiscard]] static wxPanel* CreateSectionHeader(wxWindow* parent, const wxString& text, const wxString& lightIcon,
                                                       const wxString& darkIcon);
@@ -78,7 +84,8 @@ class ZoomRecorder : public wxDialog
                                                          const wxSize& size);
     void SetButtonIcon(wxButton* button, const wxString& lightIcon, const wxString& darkIcon) const;
     static void CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
-    static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
+    static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width,
+                                              int height, unsigned int antiAliasingScale);
 public:
     ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, wxWindowID id = wxID_ANY,
                  const wxString& title = wxTRANSLATE("Zoom recorder"),

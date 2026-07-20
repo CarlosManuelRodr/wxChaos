@@ -137,6 +137,18 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     resolutionSizer->Add(new wxStaticText(_panel, wxID_ANY, _("pixels")), 0, wxALIGN_CENTER_VERTICAL);
     optionGridSizer->Add(resolutionSizer, 1, wxEXPAND);
 
+    optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Anti-aliasing:")),
+                         0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
+    const wxString antiAliasingChoices[] = {_("Off"), "2x", "4x"};
+    _antiAliasingChoice = new wxChoice(_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                       std::size(antiAliasingChoices), antiAliasingChoices);
+    _antiAliasingChoice->SetSelection(GetAntiAliasingSelection(_recordingOptions.antiAliasingScale));
+    _antiAliasingChoice->Enable(_fractalFactory.GetFractal()->SupportsAntiAliasing());
+    _antiAliasingChoice->SetToolTip(
+        _("Supersampling used only for this video. Higher values improve edges but increase rendering time"));
+    optionGridSizer->Add(_antiAliasingChoice, 1, wxEXPAND);
+    UpdateRecordingAntiAliasing();
+
     optionGridSizer->Add(new wxStaticText(_panel, wxID_ANY, _("Visual quality:")),
                          0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
     const auto qualitySizer = new wxBoxSizer(wxHORIZONTAL);
@@ -208,6 +220,7 @@ ZoomRecorder::ZoomRecorder(FractalCanvas* fractalCanvas, wxWindow* parent, const
     _framerateSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _widthSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnWidthChanged, this);
     _heightSpinCtrl->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnHeightChanged, this);
+    _antiAliasingChoice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &ZoomRecorder::OnAntiAliasing, this);
     _rotateCheckbox->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &ZoomRecorder::OnColorRotate, this);
     _colorSpeedCtrl->Bind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
@@ -231,6 +244,7 @@ ZoomRecorder::~ZoomRecorder()
     _framerateSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnUpdateTotalFrames, this);
     _widthSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnWidthChanged, this);
     _heightSpinCtrl->Unbind(wxEVT_COMMAND_SPINCTRL_UPDATED, &ZoomRecorder::OnHeightChanged, this);
+    _antiAliasingChoice->Unbind(wxEVT_COMMAND_CHOICE_SELECTED, &ZoomRecorder::OnAntiAliasing, this);
     _rotateCheckbox->Unbind(wxEVT_COMMAND_CHECKBOX_CLICKED, &ZoomRecorder::OnColorRotate, this);
     _colorSpeedCtrl->Unbind(wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, &ZoomRecorder::OnChangeSpeedDbl, this);
 }
@@ -287,12 +301,15 @@ void ZoomRecorder::CreateFractalInstance(FractalFactory& fractalFactory, Fractal
 }
 
 PreciseRect ZoomRecorder::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas,
-                                                 const int width, const int height)
+                                                 const int width, const int height,
+                                                 const unsigned int antiAliasingScale)
 {
     CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
     const PreciseRect defaultView = fractalFactory.GetFractal()->GetPreciseView();
     fractalFactory.SetFormula(fractalCanvas->GetFormula());
-    fractalFactory.GetFractal()->SetOptions(fractalCanvas->GetFractal()->GetOptions());
+    Options recordingOptions = fractalCanvas->GetFractal()->GetOptions();
+    recordingOptions.antiAliasingScale = antiAliasingScale;
+    fractalFactory.GetFractal()->SetOptions(recordingOptions);
     return defaultView;
 }
 
@@ -306,7 +323,8 @@ Rect ZoomRecorder::GetDefaultView(FractalCanvas* fractalCanvas, const int width,
 void ZoomRecorder::CreateFractalFactory()
 {
     _outermostZoom = _fractalCanvasPtr->GetFractalPresenter()->GetPreciseOutermostZoom();
-    CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, _previewWidth, _previewHeight);
+    CreateRecordingFractal(_fractalFactory, _fractalCanvasPtr, _previewWidth, _previewHeight,
+                           _recordingOptions.antiAliasingScale);
     _innermostZoom = _fractalCanvasPtr->GetFractal()->GetPreciseView();
 }
 
@@ -333,6 +351,16 @@ void ZoomRecorder::InitializeRenderSizes()
 void ZoomRecorder::SetSpinControlWidth(wxWindow* control) const
 {
     control->SetMinSize(wxSize(FromDIP(110), -1));
+}
+
+int ZoomRecorder::GetAntiAliasingSelection(const unsigned int scale)
+{
+    switch (scale)
+    {
+        case 4: return 2;
+        case 2: return 1;
+        default: return 0;
+    }
 }
 
 void ZoomRecorder::RenderPreview(const int zoom, const double colorSpeed) const
@@ -373,6 +401,24 @@ void ZoomRecorder::UpdateTotalFrames()
     _previewSlider->SetMax(totalFrames - 1);
     _previewSlider->SetValue(0);
     this->RenderPreview(0);
+}
+
+void ZoomRecorder::UpdateRecordingAntiAliasing()
+{
+    switch (_antiAliasingChoice->GetSelection())
+    {
+        case 2:
+            _recordingOptions.antiAliasingScale = 4;
+            break;
+        case 1:
+            _recordingOptions.antiAliasingScale = 2;
+            break;
+        default:
+            _recordingOptions.antiAliasingScale = 1;
+            break;
+    }
+
+    _fractalFactory.GetFractal()->SetAntiAliasingScale(_recordingOptions.antiAliasingScale);
 }
 
 // ZoomRecorder events.
@@ -416,7 +462,7 @@ void ZoomRecorder::OnSaveVideo(wxCommandEvent&)
 
     wxProgressDialog progressDialog(_("Generating video..."), _("Please wait until the process is complete."), totalFrames, this);
     auto* renderer = new ZoomRenderer(outputPath, _fractalCanvasPtr, width, height, totalFrames, framerate,
-                                      encodingOptions, colorSpeed);
+                                      _recordingOptions.antiAliasingScale, encodingOptions, colorSpeed);
     wxThreadError err = renderer->Create();
 
     if (err != wxTHREAD_NO_ERROR)
@@ -505,4 +551,10 @@ void ZoomRecorder::OnHeightChanged(wxSpinEvent&)
     if (width != requestedWidth)
         _heightSpinCtrl->SetValue(static_cast<int>(std::round(width / _recordingAspectRatio)));
     _updatingResolution = false;
+}
+
+void ZoomRecorder::OnAntiAliasing(wxCommandEvent&)
+{
+    UpdateRecordingAntiAliasing();
+    RenderPreview();
 }

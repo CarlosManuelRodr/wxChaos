@@ -19,12 +19,16 @@ void ZoomRenderer::CreateFractalInstance(FractalFactory& fractalFactory, Fractal
         fractalFactory.CreateFractal(fractalType, width, height);
 }
 
-PreciseRect ZoomRenderer::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, const int width, const int height)
+PreciseRect ZoomRenderer::CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas,
+                                                 const int width, const int height,
+                                                 const unsigned int antiAliasingScale)
 {
     CreateFractalInstance(fractalFactory, fractalCanvas, width, height);
     const PreciseRect defaultView = fractalFactory.GetFractal()->GetPreciseView();
     fractalFactory.SetFormula(fractalCanvas->GetFormula());
-    fractalFactory.GetFractal()->SetOptions(fractalCanvas->GetFractal()->GetOptions());
+    Options recordingOptions = fractalCanvas->GetFractal()->GetOptions();
+    recordingOptions.antiAliasingScale = antiAliasingScale;
+    fractalFactory.GetFractal()->SetOptions(recordingOptions);
     return defaultView;
 }
 
@@ -77,7 +81,7 @@ PreciseRect ZoomRenderer::GetZoomViewport(const PreciseRect& outermostZoom, cons
 wxThread::ExitCode ZoomRenderer::Entry()
 {
     FractalFactory fractalHandler;
-    CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height);
+    CreateRecordingFractal(fractalHandler, _fractalCanvasPtr, _width, _height, _antiAliasingScale);
     const PreciseRect outermostZoom = _fractalCanvasPtr->GetFractalPresenter()->GetPreciseOutermostZoom();
     const PreciseRect innermostZoom = _fractalCanvasPtr->GetFractal()->GetPreciseView();
 
@@ -119,8 +123,9 @@ wxThread::ExitCode ZoomRenderer::Entry()
 }
 
 ZoomRenderer::ZoomRenderer(std::string outputPath, FractalCanvas* fractalCanvas, const int width, const int height,
-                           const int totalFrames, const int framerate, NativeVideoEncodingOptions encodingOptions,
-                           const double colorSpeed) : wxThread(wxTHREAD_JOINABLE)
+                           const int totalFrames, const int framerate, const unsigned int antiAliasingScale,
+                           NativeVideoEncodingOptions encodingOptions, const double colorSpeed)
+                           : wxThread(wxTHREAD_JOINABLE)
 {
     _outputPath = std::move(outputPath);
     _fractalCanvasPtr = fractalCanvas;
@@ -129,6 +134,7 @@ ZoomRenderer::ZoomRenderer(std::string outputPath, FractalCanvas* fractalCanvas,
     _framerate = framerate;
     _width = width;
     _height = height;
+    _antiAliasingScale = antiAliasingScale;
     _encodingOptions = encodingOptions;
     _colorSpeed = colorSpeed;
 }

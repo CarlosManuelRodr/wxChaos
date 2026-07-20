@@ -21,20 +21,23 @@ class ZoomRenderer : public wxThread
     int _framerate;
     int _width;
     int _height;
+    unsigned int _antiAliasingScale;
     NativeVideoEncodingOptions _encodingOptions;
     double _colorSpeed;
     std::string _outputPath;
     std::string _error;
 
     static void CreateFractalInstance(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
-    static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width, int height);
+    static PreciseRect CreateRecordingFractal(FractalFactory& fractalFactory, FractalCanvas* fractalCanvas, int width,
+                                              int height, unsigned int antiAliasingScale);
 
 protected:
     ExitCode Entry() override;
 
 public:
     ZoomRenderer(std::string outputPath, FractalCanvas* fractalCanvas, int width, int height, int totalFrames,
-                 int framerate, NativeVideoEncodingOptions encodingOptions, double colorSpeed);
+                 int framerate, unsigned int antiAliasingScale, NativeVideoEncodingOptions encodingOptions,
+                 double colorSpeed);
 
     static double GetFrameProgress(int frame, int totalFrames);
     static PreciseRect GetZoomViewport(const PreciseRect& outermostZoom, const PreciseRect& innermostZoom, double progress);

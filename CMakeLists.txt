@@ -588,6 +588,7 @@ if(BUILD_TESTING)
             tests/gui/wx/DocumentationLinkActionTests.cpp
             tests/gui/wx/FractalDocumentationTests.cpp
             tests/gui/wx/NativeVideoWriterTests.cpp
+            tests/gui/wx/ZoomRecordingOptionsTests.cpp
             tests/gui/wx/AppConfigStoreTests.cpp
             tests/gui/wx/FractalTutorialModelTests.cpp
             tests/gui/wx/AppPathsTests.cpp
