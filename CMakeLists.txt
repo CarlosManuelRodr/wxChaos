@@ -64,9 +64,22 @@ else()
 endif()
 find_package(SFML 2.6.2 CONFIG REQUIRED COMPONENTS ${WXCHAOS_SFML_COMPONENTS})
 find_package(Angelscript CONFIG REQUIRED)
+
+# vcpkg dependencies can be platform-conditional. If a tool disappears after
+# the manifest changes, FindGettext otherwise keeps its stale cached path and
+# generates build rules that invoke a nonexistent executable.
+if(GETTEXT_MSGFMT_EXECUTABLE AND NOT EXISTS "${GETTEXT_MSGFMT_EXECUTABLE}")
+        unset(GETTEXT_MSGFMT_EXECUTABLE CACHE)
+endif()
+if(GETTEXT_MSGMERGE_EXECUTABLE AND NOT EXISTS "${GETTEXT_MSGMERGE_EXECUTABLE}")
+        unset(GETTEXT_MSGMERGE_EXECUTABLE CACHE)
+endif()
 find_package(Gettext)
 if(GETTEXT_MSGFMT_EXECUTABLE)
         get_filename_component(WXCHAOS_GETTEXT_BIN_DIR "${GETTEXT_MSGFMT_EXECUTABLE}" DIRECTORY)
+endif()
+if(GETTEXT_XGETTEXT_EXECUTABLE AND NOT EXISTS "${GETTEXT_XGETTEXT_EXECUTABLE}")
+        unset(GETTEXT_XGETTEXT_EXECUTABLE CACHE)
 endif()
 find_program(GETTEXT_XGETTEXT_EXECUTABLE
         NAMES xgettext
