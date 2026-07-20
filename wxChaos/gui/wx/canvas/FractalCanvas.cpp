@@ -821,6 +821,7 @@ void FractalCanvas::OnResize(wxSizeEvent& event)
     UpdateOverlayLayout();
 }
 
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnClick(wxMouseEvent& event)
 {
     if (_zoomToolDragging)
@@ -896,6 +897,7 @@ void FractalCanvas::OnClick(wxMouseEvent& event)
         _fractalPresenter->ZoomBack();
 }
 // ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnReleaseClick(wxMouseEvent& event)
 {
     if (event.ButtonUp(wxMOUSE_BTN_MIDDLE) || (event.ButtonUp(wxMOUSE_BTN_LEFT) && _toolPanning))
@@ -962,6 +964,7 @@ void FractalCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
     event.Skip();
 }
 
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
 void FractalCanvas::OnMoveMouse(wxMouseEvent& event)
 {
     wxMouseEvent renderEvent = ToRenderMouseEvent(event);
