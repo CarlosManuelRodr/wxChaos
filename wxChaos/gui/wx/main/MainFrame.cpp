@@ -335,8 +335,6 @@ bool MainFrame::OpenFractalInformation()
         {
             _informationViewer = nullptr;
             _informationFrameIsActive = false;
-            if (_tutorialController != nullptr)
-                _tutorialController->NotifyDocumentationClosed();
         }
         event.Skip();
     });

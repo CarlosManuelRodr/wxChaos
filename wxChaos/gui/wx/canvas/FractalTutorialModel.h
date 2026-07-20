@@ -9,8 +9,8 @@ enum class FractalTutorialStep
     HandPan,
     ZoomTool,
     PointPicker,
-    FractalInformation,
     ColorAnimation,
+    FractalInformation,
     Completed
 };
 

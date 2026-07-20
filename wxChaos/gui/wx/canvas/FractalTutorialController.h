@@ -25,7 +25,6 @@ class FractalTutorialController : public wxEvtHandler
         WaitingForRender,
         Active,
         SuccessTransition,
-        PausedForDocumentation,
         FinalMessage,
         SkippedMessage
     };
@@ -40,8 +39,6 @@ class FractalTutorialController : public wxEvtHandler
     Phase _phase{Phase::Inactive};
     FractalInteractionTool _currentTool{FractalInteractionTool::Cursor};
     bool _automaticRun{};
-    bool _pauseAfterTransition{};
-    bool _documentationClosedDuringTransition{};
     int _phaseElapsedMilliseconds{};
 
     void PersistStatus(TutorialStatus status) const;
@@ -59,7 +56,6 @@ public:
     void Start(bool automaticRun);
     void HandleAction(FractalTutorialAction action);
     void HandleToolSelected(FractalInteractionTool tool);
-    void NotifyDocumentationClosed();
     bool HandleEscape();
     [[nodiscard]] bool IsActive() const;
 };

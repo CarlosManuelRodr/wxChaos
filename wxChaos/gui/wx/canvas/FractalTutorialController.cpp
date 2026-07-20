@@ -45,8 +45,6 @@ void FractalTutorialController::Start(const bool automaticRun)
     _timer.Stop();
     _model.Reset();
     _automaticRun = automaticRun;
-    _pauseAfterTransition = false;
-    _documentationClosedDuringTransition = false;
     _phaseElapsedMilliseconds = 0;
     _phase = Phase::WaitingForRender;
     _currentTool = FractalInteractionTool::Cursor;
@@ -76,9 +74,6 @@ void FractalTutorialController::HandleAction(const FractalTutorialAction action)
     if (!_model.HandleAction(action))
         return;
 
-    if (action == FractalTutorialAction::FractalInformationOpened)
-        _pauseAfterTransition = true;
-
     if (_model.IsCompleted())
         PersistStatus(TutorialStatus::Completed);
 
@@ -90,22 +85,6 @@ void FractalTutorialController::HandleToolSelected(const FractalInteractionTool 
     _currentTool = tool;
     if (tool == FractalInteractionTool::PointPicker)
         HandleAction(FractalTutorialAction::PointPickerSelected);
-}
-
-void FractalTutorialController::NotifyDocumentationClosed()
-{
-    if (_phase == Phase::SuccessTransition && _pauseAfterTransition)
-    {
-        _documentationClosedDuringTransition = true;
-        return;
-    }
-
-    if (_phase != Phase::PausedForDocumentation)
-        return;
-
-    _phase = Phase::Active;
-    _overlay->ShowStep(_model.GetStep());
-    _canvas->SetFocus();
 }
 
 bool FractalTutorialController::HandleEscape()
@@ -171,21 +150,6 @@ void FractalTutorialController::OnTimer(wxTimerEvent&)
                 _overlay->ShowFinal();
                 _timer.StartOnce(2500);
             }
-            else if (_pauseAfterTransition)
-            {
-                _pauseAfterTransition = false;
-                if (_documentationClosedDuringTransition)
-                {
-                    _documentationClosedDuringTransition = false;
-                    _phase = Phase::Active;
-                    _overlay->ShowStep(_model.GetStep());
-                }
-                else
-                {
-                    _phase = Phase::PausedForDocumentation;
-                    _overlay->HideAll();
-                }
-            }
             else
             {
                 _phase = Phase::Active;
@@ -213,17 +177,18 @@ void FractalTutorialController::OnTimer(wxTimerEvent&)
             break;
         case Phase::Inactive:
         case Phase::Active:
-        case Phase::PausedForDocumentation:
             break;
     }
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void FractalTutorialController::OnCanvasSize(wxSizeEvent& event)
 {
     _overlay->Reposition();
     event.Skip();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void FractalTutorialController::OnFrameMove(wxMoveEvent& event)
 {
     _overlay->Reposition();

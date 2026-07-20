@@ -50,7 +50,7 @@ TEST_CASE("Fractal tutorial optional Point Picker step can be skipped")
     model.HandleAction(FractalTutorialAction::ZoomToolDrag);
 
     CHECK(model.HandleAction(FractalTutorialAction::SkipPointPicker));
-    CHECK(model.GetStep() == FractalTutorialStep::FractalInformation);
+    CHECK(model.GetStep() == FractalTutorialStep::ColorAnimation);
 }
 
 TEST_CASE("Fractal tutorial completes its full ordered sequence")
@@ -62,10 +62,11 @@ TEST_CASE("Fractal tutorial completes its full ordered sequence")
     CHECK(model.HandleAction(FractalTutorialAction::HandPan));
     CHECK(model.HandleAction(FractalTutorialAction::ZoomToolDrag));
     CHECK(model.HandleAction(FractalTutorialAction::SkipPointPicker));
-    CHECK(model.HandleAction(FractalTutorialAction::FractalInformationOpened));
     CHECK(model.HandleAction(FractalTutorialAction::ColorAnimationToggled));
-    CHECK(model.IsCompleted());
     CHECK_FALSE(model.HandleAction(FractalTutorialAction::ColorAnimationToggled));
+    CHECK(model.HandleAction(FractalTutorialAction::FractalInformationOpened));
+    CHECK(model.IsCompleted());
+    CHECK_FALSE(model.HandleAction(FractalTutorialAction::FractalInformationOpened));
 }
 
 TEST_CASE("Fractal tutorial startup and abort lifecycle follows saved preferences")

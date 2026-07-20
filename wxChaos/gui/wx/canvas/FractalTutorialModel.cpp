@@ -46,11 +46,11 @@ bool FractalTutorialModel::HandleAction(const FractalTutorialAction action)
             completedStep = action == FractalTutorialAction::SkipPointPicker
                 || (_pointPickerSelected && action == FractalTutorialAction::PointPickerHovered);
             break;
-        case FractalTutorialStep::FractalInformation:
-            completedStep = action == FractalTutorialAction::FractalInformationOpened;
-            break;
         case FractalTutorialStep::ColorAnimation:
             completedStep = action == FractalTutorialAction::ColorAnimationToggled;
+            break;
+        case FractalTutorialStep::FractalInformation:
+            completedStep = action == FractalTutorialAction::FractalInformationOpened;
             break;
         case FractalTutorialStep::Completed:
             return false;

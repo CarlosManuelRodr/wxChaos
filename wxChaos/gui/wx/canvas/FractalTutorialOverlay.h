@@ -21,6 +21,8 @@ class FractalTutorialOverlay
     wxStaticText* _stepText;
     wxStaticText* _titleText;
     wxStaticText* _bodyText;
+    wxStaticText* _actionHeadingText;
+    wxStaticText* _actionText;
     wxStaticBitmap* _toolImage;
     wxStaticBitmap* _gestureImage;
     wxStaticBitmap* _secondaryGestureImage;
@@ -31,7 +33,8 @@ class FractalTutorialOverlay
     wxBitmap LoadBitmap(const wxString& filename, const wxSize& maximumSize) const;
     void SetImages(const wxString& tool, const wxString& gesture = wxEmptyString,
                    const wxString& secondaryGesture = wxEmptyString);
-    void SetCard(const wxString& step, const wxString& title, const wxString& body);
+    void SetCard(const wxString& step, const wxString& title, const wxString& body,
+                 const wxString& action = wxEmptyString);
 
 public:
     explicit FractalTutorialOverlay(wxWindow* canvas);

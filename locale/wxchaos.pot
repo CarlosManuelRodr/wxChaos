@@ -1246,6 +1246,10 @@ msgstr ""
 
 msgid "' is not a boolean. Use true or false."
 msgstr ""
+
+msgid "To continue:"
+msgstr ""
+
 msgid "Skip this step"
 msgstr ""
 
@@ -1262,16 +1266,25 @@ msgstr ""
 msgid "The Cursor is the default tool. Hold the left mouse button and drag a rectangle around the area you want to explore."
 msgstr ""
 
+msgid "Left-click and drag a selection rectangle on the fractal."
+msgstr ""
+
 msgid "Cursor: zoom back"
 msgstr ""
 
-msgid "Right-click the fractal to return to the previous view."
+msgid "Right-clicking returns the fractal to the previous view."
+msgstr ""
+
+msgid "Right-click the fractal to zoom back."
 msgstr ""
 
 msgid "Cursor: move around"
 msgstr ""
 
-msgid "Drag with the middle mouse button, or use the Arrow keys or WASD, to move around the fractal."
+msgid "You can move around the fractal with the middle mouse button, the Arrow keys, or WASD."
+msgstr ""
+
+msgid "Pan the view using a middle-button drag, an Arrow key, or a WASD key."
 msgstr ""
 
 msgid "Hand tool"
@@ -1280,10 +1293,16 @@ msgstr ""
 msgid "The Hand is an optional convenience for panning. Select it, then hold the left mouse button and drag the fractal."
 msgstr ""
 
+msgid "Select the Hand tool, then left-click and drag the fractal."
+msgstr ""
+
 msgid "Zoom tool"
 msgstr ""
 
-msgid "Select the Zoom tool. Hold the left mouse button and drag up to zoom in or down to zoom out."
+msgid "The Zoom tool provides a smooth way to zoom in or out by dragging vertically."
+msgstr ""
+
+msgid "Select the Zoom tool, then left-click and drag up or down."
 msgstr ""
 
 msgid "Point Picker"
@@ -1292,16 +1311,25 @@ msgstr ""
 msgid "Select the Point Picker and move over the canvas to inspect a point's trajectory and result. It is useful when exploring the mathematics, but you may skip this step."
 msgstr ""
 
-msgid "Fractal information"
-msgstr ""
-
-msgid "Click the Information button to open this fractal's museum page. Each supported fractal has its own interesting documentation."
+msgid "Select the Point Picker and move the pointer over the canvas, or choose Skip this step."
 msgstr ""
 
 msgid "Color animation"
 msgstr ""
 
-msgid "Click Play to animate the fractal colors. It is an optional toy for a delightfully trippy viewing experience."
+msgid "Color animation is an optional toy for a trippy viewing experience."
+msgstr ""
+
+msgid "Click the Play button to start the color animation."
+msgstr ""
+
+msgid "Fractal information"
+msgstr ""
+
+msgid "Every supported fractal has its own interesting museum page."
+msgstr ""
+
+msgid "Click the Information button to open this fractal's museum page and finish the tutorial."
 msgstr ""
 
 msgid "You're all set"

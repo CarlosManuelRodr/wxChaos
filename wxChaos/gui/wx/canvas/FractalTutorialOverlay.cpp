@@ -51,6 +51,18 @@ FractalTutorialOverlay::FractalTutorialOverlay(wxWindow* canvas)
     gestureSizer->Add(_secondaryGestureImage, 0, wxALIGN_CENTER_VERTICAL);
     cardSizer->Add(gestureSizer, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxBOTTOM, 12);
 
+    _actionHeadingText = new wxStaticText(_instructionPopup, wxID_ANY, _("To continue:"));
+    wxFont actionHeadingFont = _actionHeadingText->GetFont();
+    actionHeadingFont.MakeBold();
+    _actionHeadingText->SetFont(actionHeadingFont);
+    _actionHeadingText->SetForegroundColour(foreground);
+    cardSizer->Add(_actionHeadingText, 0, wxLEFT | wxRIGHT, 12);
+
+    _actionText = new wxStaticText(_instructionPopup, wxID_ANY, wxEmptyString);
+    _actionText->SetForegroundColour(foreground);
+    _actionText->Wrap(370);
+    cardSizer->Add(_actionText, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 12);
+
     _skipStepButton = new wxButton(_instructionPopup, wxID_ANY, _("Skip this step"));
     _skipStepButton->Hide();
     cardSizer->Add(_skipStepButton, 0, wxALIGN_RIGHT | wxLEFT | wxRIGHT | wxBOTTOM, 12);
@@ -123,18 +135,25 @@ void FractalTutorialOverlay::SetImages(const wxString& tool, const wxString& ges
     _secondaryGestureImage->Show(!secondaryGesture.empty());
 }
 
-void FractalTutorialOverlay::SetCard(const wxString& step, const wxString& title, const wxString& body)
+void FractalTutorialOverlay::SetCard(const wxString& step, const wxString& title, const wxString& body,
+                                     const wxString& action)
 {
     _stepText->SetLabel(step);
     _titleText->SetLabel(title);
     _bodyText->SetLabel(body);
     _bodyText->Wrap(_canvas->FromDIP(370));
+    _actionText->SetLabel(action);
+    _actionText->Wrap(_canvas->FromDIP(370));
+    _actionHeadingText->Show(!action.empty());
+    _actionText->Show(!action.empty());
 }
 
 void FractalTutorialOverlay::ShowStep(const FractalTutorialStep step)
 {
     _titleText->SetForegroundColour(AppTheme::Foreground());
     _bodyText->SetForegroundColour(AppTheme::Foreground());
+    _actionHeadingText->SetForegroundColour(AppTheme::Foreground());
+    _actionText->SetForegroundColour(AppTheme::Foreground());
     const int stepNumber = static_cast<int>(step) + 1;
     const wxString progress = wxString::Format(_("Step %d of 8"), stepNumber);
     _skipStepButton->Show(step == FractalTutorialStep::PointPicker);
@@ -144,47 +163,53 @@ void FractalTutorialOverlay::ShowStep(const FractalTutorialStep step)
         case FractalTutorialStep::CursorZoomIn:
             SetCard(progress, _("Cursor: zoom in"),
                     _("The Cursor is the default tool. Hold the left mouse button and drag a rectangle around "
-                      "the area you want to explore."));
+                      "the area you want to explore."),
+                    _("Left-click and drag a selection rectangle on the fractal."));
             SetImages("cursor_button.png", "ClickDragSelection.png");
             break;
         case FractalTutorialStep::CursorZoomBack:
             SetCard(progress, _("Cursor: zoom back"),
-                    _("Right-click the fractal to return to the previous view."));
+                    _("Right-clicking returns the fractal to the previous view."),
+                    _("Right-click the fractal to zoom back."));
             SetImages("cursor_button.png", "mouse.png");
             break;
         case FractalTutorialStep::CursorPan:
             SetCard(progress, _("Cursor: move around"),
-                    _("Drag with the middle mouse button, or use the Arrow keys or WASD, to move around the fractal."));
+                    _("You can move around the fractal with the middle mouse button, the Arrow keys, or WASD."),
+                    _("Pan the view using a middle-button drag, an Arrow key, or a WASD key."));
             SetImages("cursor_button.png", "keyboard.png", "mouse_middle_click.png");
             break;
         case FractalTutorialStep::HandPan:
             SetCard(progress, _("Hand tool"),
                     _("The Hand is an optional convenience for panning. Select it, then hold the left mouse button "
-                      "and drag the fractal."));
+                      "and drag the fractal."),
+                    _("Select the Hand tool, then left-click and drag the fractal."));
             SetImages("hand_button.png");
             break;
         case FractalTutorialStep::ZoomTool:
             SetCard(progress, _("Zoom tool"),
-                    _("Select the Zoom tool. Hold the left mouse button and drag up to zoom in or down to zoom out."));
+                    _("The Zoom tool provides a smooth way to zoom in or out by dragging vertically."),
+                    _("Select the Zoom tool, then left-click and drag up or down."));
             SetImages("zoom_button.png");
             break;
         case FractalTutorialStep::PointPicker:
             SetCard(progress, _("Point Picker"),
                     _("Select the Point Picker and move over the canvas to inspect a point's trajectory and result. "
-                      "It is useful when exploring the mathematics, but you may skip this step."));
+                      "It is useful when exploring the mathematics, but you may skip this step."),
+                    _("Select the Point Picker and move the pointer over the canvas, or choose Skip this step."));
             SetImages("picker_button.png");
-            break;
-        case FractalTutorialStep::FractalInformation:
-            SetCard(progress, _("Fractal information"),
-                    _("Click the Information button to open this fractal's museum page. Each supported fractal has "
-                      "its own interesting documentation."));
-            SetImages("help_button.png");
             break;
         case FractalTutorialStep::ColorAnimation:
             SetCard(progress, _("Color animation"),
-                    _("Click Play to animate the fractal colors. It is an optional toy for a delightfully trippy "
-                      "viewing experience."));
+                    _("Color animation is an optional toy for a trippy viewing experience."),
+                    _("Click the Play button to start the color animation."));
             SetImages("play_button.png");
+            break;
+        case FractalTutorialStep::FractalInformation:
+            SetCard(progress, _("Fractal information"),
+                    _("Every supported fractal has its own interesting museum page."),
+                    _("Click the Information button to open this fractal's museum page and finish the tutorial."));
+            SetImages("help_button.png");
             break;
         case FractalTutorialStep::Completed:
             ShowFinal();
