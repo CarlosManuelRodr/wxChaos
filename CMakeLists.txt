@@ -1,23 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 
-# Ninja parses MSVC's localized /showIncludes output to track header
-# dependencies. Keep the compiler output in a stable language so accented
-# prefixes cannot be corrupted and silently leave stale object files behind.
-if(WIN32)
-        set(ENV{VSLANG} 1033)
-endif()
-
 project(wxChaos VERSION 2.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-if(MSVC)
-        set(CMAKE_CL_SHOWINCLUDES_PREFIX "Note: including file: ")
-        set(CMAKE_CXX_COMPILER_LAUNCHER
-                "${CMAKE_COMMAND};-E;env;VSLANG=1033"
-        )
-endif()
 
 # Output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
