@@ -370,7 +370,8 @@ AppConfig AppConfigStore::LoadLegacyConfig(const std::string& filename)
     config.colorPaletteWindow = ReadBool(values, "COLOR_PALETTE_WINDOW", config.colorPaletteWindow);
     config.colorFractal = ReadBool(values, "COLOR_FRACTAL", config.colorFractal);
     config.colorSet = ReadBool(values, "COLOR_SET", config.colorSet);
-    config.firstUse = ReadBool(values, "FIRST_USE", config.firstUse);
+    config.showWelcomeOnStartup =
+        ReadBool(values, "SHOW_WELCOME_ON_STARTUP", config.showWelcomeOnStartup);
     config.targetFrameRate = std::max(
         AppConfig::MinimumTargetFrameRate, ReadInt(values, "TARGET_FRAME_RATE", config.targetFrameRate));
     config.zoomStepPercent = std::clamp(ReadInt(values, "ZOOM_STEP_PERCENT", config.zoomStepPercent), 1, 95);
@@ -450,7 +451,9 @@ AppConfig AppConfigStore::Load() const
     fileConfig.Read("/Fractal/constant_window", &config.constantWindow, config.constantWindow);
     fileConfig.Read("/Fractal/command_console", &config.commandConsole, config.commandConsole);
     fileConfig.Read("/Fractal/julia_mode", &config.juliaMode, config.juliaMode);
-    fileConfig.Read("/Fractal/first_use", &config.firstUse, config.firstUse);
+    fileConfig.Read("/General/show_welcome_on_startup",
+                    &config.showWelcomeOnStartup,
+                    config.showWelcomeOnStartup);
     fileConfig.Read("/Color/palette_window", &config.colorPaletteWindow, config.colorPaletteWindow);
     fileConfig.Read("/Color/fractal", &config.colorFractal, config.colorFractal);
     fileConfig.Read("/Color/set", &config.colorSet, config.colorSet);
@@ -502,7 +505,7 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Write("/Fractal/constant_window", config.constantWindow);
     fileConfig.Write("/Fractal/julia_mode", config.juliaMode);
     fileConfig.Write("/Fractal/command_console", config.commandConsole);
-    fileConfig.Write("/Fractal/first_use", config.firstUse);
+    fileConfig.Write("/General/show_welcome_on_startup", config.showWelcomeOnStartup);
     fileConfig.Write("/Color/palette_window", config.colorPaletteWindow);
     fileConfig.Write("/Color/fractal", config.colorFractal);
     fileConfig.Write("/Color/set", config.colorSet);
@@ -516,10 +519,10 @@ void AppConfigStore::Save(const AppConfig& config) const
     fileConfig.Flush();
 }
 
-void AppConfigStore::SetFirstUse(const bool firstUse) const
+void AppConfigStore::SetShowWelcomeOnStartup(const bool showWelcomeOnStartup) const
 {
     AppConfig config = Load();
-    config.firstUse = firstUse;
+    config.showWelcomeOnStartup = showWelcomeOnStartup;
     Save(config);
 }
 

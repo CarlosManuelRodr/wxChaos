@@ -6,6 +6,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <vector>
 #include <wx/bmpbndl.h>
 #include <wx/webview.h>
@@ -24,12 +25,15 @@ public:
     /// @brief Callback invoked when a wxchaos:// link is clicked.
     /// @return true when the link was handled by the parent window.
     using WxChaosLinkHandler = std::function<bool(const wxString&)>;
+    /// @brief Callback invoked when the document's startup display preference changes.
+    using StartupDisplayChanged = std::function<void(bool)>;
 
 private:
     wxWebView* _webView{};
     wxButton* _backButton{};
     wxButton* _forwardButton{};
     wxButton* _closeButton{};
+    wxCheckBox* _showAtStartupCheckBox{};
     wxButton* _openInBrowserButton{};
 #ifdef __WXMSW__
     wxButton* _downloadWebViewButton{};
@@ -38,6 +42,7 @@ private:
     wxString _documentUrl;
     std::vector<wxString> _navigationHistory;
     WxChaosLinkHandler _wxChaosLinkHandler;
+    StartupDisplayChanged _startupDisplayChanged;
     int _navigationHistoryIndex{-1};
     bool _hasLoadedInitialDocument{};
     bool _isNavigatingHistory{};
@@ -103,6 +108,10 @@ private:
     /// @param event Button click event.
     void OnClose(wxCommandEvent& event);
 
+    /// @brief Saves a change to the document's startup display preference.
+    /// @param event Checkbox event.
+    void OnStartupDisplayChanged(wxCommandEvent& event);
+
 public:
     /// @brief Creates a documentation viewer for a local HTML file.
     /// @param htmlFile Local HTML file to load.
@@ -112,11 +121,15 @@ public:
     /// @param pos Initial frame position.
     /// @param size Initial frame size.
     /// @param style Frame style.
-    /// @param wxChaosLinkHandler
+    /// @param wxChaosLinkHandler Callback for wxchaos:// links.
+    /// @param showAtStartup When set, displays a checkbox initialized to this value.
+    /// @param startupDisplayChanged Callback that persists changes to the startup checkbox.
     DocumentViewer(const wxString& htmlFile, wxWindow* parent, wxWindowID id = wxID_ANY,
                    const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxSize(1100, 760), long style = wxDEFAULT_FRAME_STYLE,
-                   WxChaosLinkHandler wxChaosLinkHandler = nullptr);
+                   WxChaosLinkHandler wxChaosLinkHandler = nullptr,
+                   std::optional<bool> showAtStartup = std::nullopt,
+                   StartupDisplayChanged startupDisplayChanged = nullptr);
     ~DocumentViewer() override;
 
     /// @brief Closes every currently open documentation viewer.

@@ -40,7 +40,7 @@ struct AppConfig
     bool colorPaletteWindow = false;
     bool colorFractal = true;
     bool colorSet = true;
-    bool firstUse = true;
+    bool showWelcomeOnStartup = true;                    ///< Opens the welcome guide whenever wxChaos starts.
     AppAppearance appearance = AppAppearance::System; ///< Application appearance preference.
     AppLanguage language = AppLanguage::System;       ///< Application language preference.
     int targetFrameRate = DefaultTargetFrameRate;     ///< Target SFML canvas presentation frequency in hertz.
@@ -70,9 +70,9 @@ public:
     ///@param config Configuration values to write.
     void Save(const AppConfig& config) const;
 
-    ///@brief Updates the first-use flag in the configuration file.
-    ///@param firstUse New value for the first-use flag.
-    void SetFirstUse(bool firstUse) const;
+    ///@brief Updates whether the welcome guide should open at startup.
+    ///@param showWelcomeOnStartup True to open the welcome guide whenever wxChaos starts.
+    void SetShowWelcomeOnStartup(bool showWelcomeOnStartup) const;
 
     ///@brief Updates whether the command console should open at startup.
     void SetCommandConsole(bool commandConsole) const;

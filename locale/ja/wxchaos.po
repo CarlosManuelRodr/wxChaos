@@ -796,8 +796,8 @@ msgstr "Julia モードを開く"
 msgid "Open renderer options"
 msgstr "レンダラーオプションを開く"
 
-msgid "Show the welcome guide on next launch"
-msgstr "次回起動時にようこそガイドを表示"
+msgid "Show this welcome guide when wxChaos starts"
+msgstr "wxChaos の起動時にこのウェルカムガイドを表示する"
 
 msgid "System"
 msgstr "システム"

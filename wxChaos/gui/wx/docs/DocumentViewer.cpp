@@ -10,11 +10,13 @@
 
 DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const wxWindowID id,
                                const wxString& title, const wxPoint& pos, const wxSize& size, const long style,
-                               WxChaosLinkHandler wxChaosLinkHandler)
+                               WxChaosLinkHandler wxChaosLinkHandler, const std::optional<bool> showAtStartup,
+                               StartupDisplayChanged startupDisplayChanged)
                                : wxFrame(nullptr, id, title, pos, size, style),
                                  _lifetimeOwner(parent),
                                  _documentUrl(wxFileSystem::FileNameToURL(wxFileName(htmlFile).GetFullPath())),
-                                 _wxChaosLinkHandler(std::move(wxChaosLinkHandler))
+                                 _wxChaosLinkHandler(std::move(wxChaosLinkHandler)),
+                                 _startupDisplayChanged(std::move(startupDisplayChanged))
 {
     SetSizeHints(wxSize(900, 620), wxDefaultSize);
 
@@ -62,6 +64,13 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
         buttonSizer->Add(_forwardButton, 0, wxALL, 5);
     }
     buttonSizer->AddStretchSpacer();
+    if (showAtStartup.has_value())
+    {
+        _showAtStartupCheckBox =
+            new wxCheckBox(this, wxID_ANY, _("Show this welcome guide when wxChaos starts"));
+        _showAtStartupCheckBox->SetValue(*showAtStartup);
+        buttonSizer->Add(_showAtStartupCheckBox, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+    }
     _closeButton = new wxButton(this, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0);
     buttonSizer->Add(_closeButton, 0, wxALL, 5);
     mainSizer->Add(buttonSizer, 0, wxEXPAND, 5);
@@ -85,6 +94,8 @@ DocumentViewer::DocumentViewer(const wxString& htmlFile, wxWindow* parent, const
         _webView->Bind(wxEVT_WEBVIEW_LOADED, &DocumentViewer::OnLoaded, this);
         _webView->LoadURL(_documentUrl);
     }
+    if (_showAtStartupCheckBox != nullptr)
+        _showAtStartupCheckBox->Bind(wxEVT_CHECKBOX, &DocumentViewer::OnStartupDisplayChanged, this);
     _closeButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnClose, this);
     UpdateNavigationButtons();
 }
@@ -110,6 +121,8 @@ DocumentViewer::~DocumentViewer()
 #endif
     }
     _closeButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DocumentViewer::OnClose, this);
+    if (_showAtStartupCheckBox != nullptr)
+        _showAtStartupCheckBox->Unbind(wxEVT_CHECKBOX, &DocumentViewer::OnStartupDisplayChanged, this);
 
     std::vector<DocumentViewer*>& openViewers = GetOpenViewers();
     openViewers.erase(std::remove(openViewers.begin(), openViewers.end(), this), openViewers.end());
@@ -332,4 +345,10 @@ void DocumentViewer::OnDownloadWebView(wxCommandEvent&)
 void DocumentViewer::OnClose(wxCommandEvent&)
 {
     Close(true);
+}
+
+void DocumentViewer::OnStartupDisplayChanged(wxCommandEvent&)
+{
+    if (_startupDisplayChanged)
+        _startupDisplayChanged(_showAtStartupCheckBox->GetValue());
 }

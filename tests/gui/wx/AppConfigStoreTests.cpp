@@ -106,6 +106,23 @@ TEST_CASE("AppConfigStore persists application language")
     std::filesystem::remove(path);
 }
 
+TEST_CASE("AppConfigStore persists the welcome guide startup preference")
+{
+    wxInitializer wx;
+    REQUIRE(wx.IsOk());
+
+    const std::filesystem::path path =
+        std::filesystem::temp_directory_path() / "wxchaos_welcome_startup_config_test.ini";
+    std::filesystem::remove(path);
+    const AppConfigStore store(path.string());
+
+    CHECK(store.Load().showWelcomeOnStartup);
+    store.SetShowWelcomeOnStartup(false);
+    CHECK_FALSE(store.Load().showWelcomeOnStartup);
+
+    std::filesystem::remove(path);
+}
+
 TEST_CASE("AppConfigStore persists and clamps target frame rate")
 {
     wxInitializer wx;

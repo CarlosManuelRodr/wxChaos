@@ -787,7 +787,7 @@ msgstr ""
 msgid "Open renderer options"
 msgstr ""
 
-msgid "Show the welcome guide on next launch"
+msgid "Show this welcome guide when wxChaos starts"
 msgstr ""
 
 msgid "System"

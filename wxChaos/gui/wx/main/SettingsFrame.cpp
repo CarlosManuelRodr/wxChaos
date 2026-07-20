@@ -66,7 +66,6 @@ wxPanel* SettingsFrame::CreateGeneralPage()
     _commandConsole = new wxCheckBox(page, wxID_ANY, _("Open the command console"));
     _juliaMode = new wxCheckBox(page, wxID_ANY, _("Open Julia mode"));
     _colorPaletteWindow = new wxCheckBox(page, wxID_ANY, _("Open renderer options"));
-    _firstUse = new wxCheckBox(page, wxID_ANY, _("Show the welcome guide on next launch"));
     const wxString themeChoices[] = {_("System"), _("Light"), _("Dark")};
     _theme = new wxChoice(page, wxID_ANY, wxDefaultPosition, wxDefaultSize, std::size(themeChoices), themeChoices);
     const wxString languageChoices[] = {_("System"), _("English"), _("Spanish"), _("Japanese")};
@@ -81,7 +80,6 @@ wxPanel* SettingsFrame::CreateGeneralPage()
     sizer->Add(_commandConsole, 0, wxBOTTOM, 8);
     sizer->Add(_juliaMode, 0, wxBOTTOM, 8);
     sizer->Add(_colorPaletteWindow, 0, wxBOTTOM, 8);
-    sizer->Add(_firstUse, 0, wxBOTTOM, 8);
     const auto themeRow = new wxBoxSizer(wxHORIZONTAL);
     themeRow->Add(new wxStaticText(page, wxID_ANY, _("Appearance:")), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 12);
     themeRow->Add(_theme, 0);
@@ -262,7 +260,7 @@ void SettingsFrame::LoadControls(const AppConfig& config)
     _commandConsole->SetValue(config.commandConsole);
     _juliaMode->SetValue(config.juliaMode);
     _colorPaletteWindow->SetValue(config.colorPaletteWindow);
-    _firstUse->SetValue(config.firstUse);
+    _showWelcomeOnStartup = config.showWelcomeOnStartup;
     _targetFrameRate->SetValue(config.targetFrameRate);
     switch (config.appearance)
     {
@@ -362,7 +360,7 @@ AppConfig SettingsFrame::ReadControls()
     config.colorPaletteWindow = _colorPaletteWindow->GetValue();
     config.colorFractal = _colorFractal->GetValue();
     config.colorSet = _colorSet->GetValue();
-    config.firstUse = _firstUse->GetValue();
+    config.showWelcomeOnStartup = _showWelcomeOnStartup;
     config.targetFrameRate = _targetFrameRate->GetValue();
     config.zoomStepPercent = _zoomStepPercent->GetValue();
     config.zoomInertiaMilliseconds = _zoomInertiaMilliseconds->GetValue();

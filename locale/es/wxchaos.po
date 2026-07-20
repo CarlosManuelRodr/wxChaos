@@ -800,8 +800,8 @@ msgstr "Abrir modo Julia"
 msgid "Open renderer options"
 msgstr "Abrir opciones de renderizado"
 
-msgid "Show the welcome guide on next launch"
-msgstr "Mostrar la guía de bienvenida en el próximo inicio"
+msgid "Show this welcome guide when wxChaos starts"
+msgstr "Mostrar esta guía de bienvenida al iniciar wxChaos"
 
 msgid "System"
 msgstr "Sistema"

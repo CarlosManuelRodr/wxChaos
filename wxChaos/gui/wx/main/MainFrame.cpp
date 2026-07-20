@@ -69,11 +69,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     if (!_appConfig.colorSet)
         _fractalCanvas->GetFractalPresenter()->SetFractalSetColorMode(false);
 
-    if (_appConfig.firstUse)
-    {
-        CallAfter([this] { ShowFirstUseDialog(); });
-        _appConfig.firstUse = false;
-    }
+    if (_appConfig.showWelcomeOnStartup)
+        CallAfter([this] { ShowWelcomeGuide(); });
 
     if (_fractalType != FractalType::Mandelbrot && _fractalType != FractalType::Manowar)
         _juliaMode->Enable(false);
@@ -83,9 +80,9 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "wxChaos", wxDefaultPosition
     if (_appConfig.commandConsole)
         this->ShowCommandConsole();
 }
-void MainFrame::ShowFirstUseDialog()
+void MainFrame::ShowWelcomeGuide()
 {
-    const auto firstUseDialog = new DocumentViewer(
+    const auto welcomeGuide = new DocumentViewer(
         AppPaths::ResourceFile({"Documents", "welcome.html"}),
         this,
         wxID_ANY,
@@ -93,10 +90,17 @@ void MainFrame::ShowFirstUseDialog()
         wxDefaultPosition,
         wxSize(1500, 960),
         wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-        [this](const wxString& url) { return HandleDocumentationLink(url); }
+        [this](const wxString& url) { return HandleDocumentationLink(url); },
+        _appConfig.showWelcomeOnStartup,
+        [this](const bool showAtStartup)
+        {
+            _appConfig.showWelcomeOnStartup = showAtStartup;
+            AppConfigStore(AppPaths::ToStdPath(AppPaths::ConfigFile()))
+                .SetShowWelcomeOnStartup(showAtStartup);
+        }
         );
 
-    firstUseDialog->Show(true);
+    welcomeGuide->Show(true);
     _fractalCanvas->ShowGuideImages();
 }
 void MainFrame::ConnectEvents()
@@ -943,7 +947,7 @@ void MainFrame::ShowCommandConsole()
 }
 void MainFrame::OnWelcomeDialog(wxCommandEvent&)
 {
-    this->ShowFirstUseDialog();
+    this->ShowWelcomeGuide();
 }
 void MainFrame::OnAbout(wxCommandEvent&)
 {
@@ -1410,7 +1414,6 @@ void MainFrame::GetParserOpt()
 {
     const AppConfigStore configStore(AppPaths::ToStdPath(AppPaths::ConfigFile()));
     _appConfig = configStore.Load();
-    configStore.SetFirstUse(false);
 }
 void MainFrame::UpdateOptionsPanel()
 {

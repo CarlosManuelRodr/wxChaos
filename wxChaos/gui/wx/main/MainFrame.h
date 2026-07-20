@@ -194,7 +194,7 @@ class MainFrame : public wxFrame
     bool OpenJuliaModeAt(double real, double imaginary);
     void DestroyDimensionFrame();
     void ShowCommandConsole();
-    void ShowFirstUseDialog();
+    void ShowWelcomeGuide();
     /// @brief Applies saved settings that can safely change during the current session.
     /// @param config Newly saved application configuration.
     void ApplyAppConfig(const AppConfig& config);
