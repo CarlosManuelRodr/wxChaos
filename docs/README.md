@@ -23,3 +23,10 @@ the website remains an accurate, lightly styled companion.
 The site expects the project URL configured in `_config.yml`. Use Jekyll's
 `relative_url` and `absolute_url` filters for new internal links so previews and
 the `/wxChaos` project path continue to work correctly.
+
+## Preview changes
+Run
+```aiignore
+jekyll serve --source docs --destination "$env:TEMP\wxchaos-site-preview" --baseurl= --livereload
+```
+from the project root.
