@@ -334,7 +334,8 @@ bool NativeVideoWriter::Impl::WriteFrame(const sf::Image& frame)
     for (unsigned int y = 0; y < _height; ++y)
     {
         const uint8_t* sourceRow = source + y * frameSize.x * 4;
-        BYTE* destinationRow = destination + y * stride;
+        // Media Foundation RGB32 uses bottom-up scanlines, while sf::Image is top-down.
+        BYTE* destinationRow = destination + (_height - 1U - y) * stride;
         for (unsigned int x = 0; x < _width; ++x)
         {
             const uint8_t* pixel = sourceRow + x * 4;
